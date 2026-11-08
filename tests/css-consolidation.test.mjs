@@ -31,6 +31,11 @@ function semantic(node) {
 test('consolidated compatibility preserves every ordered rule and declaration', async () => {
   const before = await expanded('docs/archive/styles/app/core/compatibility.css');
   const after = await expanded('app/core/compatibility.css');
+  // Consent is now owned by its scoped component; the obsolete global rules
+  // were deliberately removed in the preceding theme cleanup.
+  before.walkRules(rule => {
+    if (/^\.(analytics-consent|consent-actions)(?:[ .:]|$)/.test(rule.selector)) rule.remove();
+  });
   assert.deepEqual(semantic(after), semantic(before));
   let rules = 0;
   after.walkRules(() => rules++);

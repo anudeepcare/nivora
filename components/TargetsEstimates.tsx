@@ -43,10 +43,6 @@ export default function TargetsEstimates({
         <div>
           <span className="eyebrow">Expectations & assumptions</span>
           <h2>Targets & Estimates</h2>
-          <p>
-            Published expectations, conditional AURYN models and historical
-            price risk answer different questions.
-          </p>
         </div>
         <div className={styles.quote}>
           <small>
@@ -201,27 +197,20 @@ export default function TargetsEstimates({
         {active === 2 && (
           <>
             <div className={styles.subhead}>
-              <h3>Conditional earnings & revenue sensitivity</h3>
+              <h3>Earnings scenarios</h3>
               <span>Conditional assumptions · not analyst price targets</span>
             </div>
-            <p className={styles.note}>
-              Analyst targets are published opinions. This model applies an exit
-              multiple to a fiscal-year forecast; historical outcomes use past
-              price moves. Different dates and assumptions produce different
-              values.
-            </p>
+
             <details className={styles.assumptions}>
-              <summary>Inspect or change the earnings P/E assumption</summary>
+              <summary>Adjust P/E assumption</summary>
               <p className={styles.note}>
                 Source: {r.evidence?.source ?? "Estimate provider"} · dataset
                 updated {dateLabel(model.asOf)}. Reported forward P/E:{" "}
                 {r.evidence?.multiples?.ForwardPE != null
                   ? `${r.evidence.multiples.ForwardPE.toFixed(1)}×`
                   : "not supplied"}
-                . Its denominator period and accounting/split basis are not
-                supplied. Automatic use requires compatibility with the nearest
-                annual EPS range. The model selects the eligible forecast
-                nearest three years.
+                . Forecast horizon: nearest eligible three-year estimate. EPS
+                period and split basis need verification.
               </p>
               <label className={styles.control}>
                 Your exit P/E assumption (earnings cases only)
@@ -252,8 +241,7 @@ export default function TargetsEstimates({
               )}
               <p className={styles.note}>
                 Low / central / high cases use 0.8× / 1.0× / 1.2× this multiple.
-                Changing it does not change analyst consensus or validate the
-                EPS accounting basis.
+                Your assumption does not change analyst consensus.
               </p>
             </details>
             {forecast.available ? (

@@ -63,7 +63,7 @@ export function contributionGuide(
         : ["Reduce", "Sell", "Avoid"].includes(action)
           ? "A risk action takes priority over the price zone. Do not add until the holding case is reviewed."
           : gatedZone
-            ? `A confirmed ${paceCode(rawLevel)} price zone is visible. Complete the stated business and data checks before assigning a contribution; the zone does not override them.`
+            ? `A ${paceCode(rawLevel)} price zone is visible. Complete the stated business and data checks before assigning a contribution; the zone does not override them.`
             : action === "Review"
               ? "A price zone may be visible, but the business or data checks have not qualified a contribution."
               : rawLevel === 1
@@ -100,13 +100,13 @@ export function dcaDisplay(input: {
   confirmed?: Reading | null;
   forming?: Reading | null;
 }) {
-  const reading = input.confirmed ?? input.forming ?? null;
+  const reading = input.forming ?? input.confirmed ?? null;
   return {
     reading,
-    period: input.confirmed
-      ? `${input.confirmed.month ?? ""} · confirmed`
-      : input.forming
-        ? "Current month · forming"
+    period: input.forming
+      ? "Current month · provisional"
+      : input.confirmed
+        ? `${input.confirmed.month ?? ""} · closing history`
         : "View coverage",
   } as const;
 }
@@ -124,7 +124,7 @@ export function pacePeriods(
       },
       {
         key: "confirmed",
-        label: `Completed ${weekly ? "week" : "month"} · confirmed`,
+        label: `Previous ${weekly ? "week" : "month"} closing zone`,
         value: input,
       },
     ] as const
@@ -145,8 +145,10 @@ export function pacePeriods(
 export function pacePresentation(
   action: DecisionAction,
   multiplier: number | null | undefined,
+  eligible: number | null | undefined = multiplier,
 ) {
   const rawLevel = paceLevel(multiplier);
+  const eligibleLevel = paceLevel(eligible);
   const blocked = ["Reduce", "Sell", "Avoid"].includes(action);
   const permitted = action === "Buy" || action === "Add";
   const gatedReview = action === "Review" && rawLevel != null;
@@ -176,7 +178,7 @@ export function pacePresentation(
         : PACE_DESCRIPTIONS[1]
       : action === "Review"
         ? gatedReview
-          ? `A confirmed ${paceCode(rawLevel)} price zone is visible. Review the stated business or data checks before adding; the zone does not establish business quality on its own.`
+          ? `A ${paceCode(rawLevel)} price zone is visible. Review the stated business or data checks before adding; the zone does not establish business quality on its own.`
           : "Review the stated business or data checks before adding. A price reading alone cannot complete the assessment or establish business quality."
         : !permitted
           ? "Entry conditions are not yet met. This reading explains the price setup; it is not an instruction to add."
@@ -187,6 +189,7 @@ export function pacePresentation(
               : PACE_DESCRIPTIONS[rawLevel];
   const effectiveCode =
     permitted && rawLevel != null && rawLevel > 0 ? paceCode(rawLevel) : null;
+  const actionLevel = eligibleLevel;
   const actionLabel = permitted
     ? rawLevel === 0
       ? "Pause new contributions"
@@ -194,9 +197,9 @@ export function pacePresentation(
         ? action === "Add"
           ? "Hold"
           : "Watch"
-        : rawLevel === 2
+        : actionLevel === 2
           ? `${action} small`
-          : rawLevel === 4
+          : actionLevel === 4
             ? "Accumulate"
             : `${action} gradually`
     : action === "Hold"
@@ -210,6 +213,7 @@ export function pacePresentation(
           : action;
   return {
     actionLabel,
+    eligibleLevel,
     effectiveCode,
     rawLevel,
     code: paceCode(rawLevel),

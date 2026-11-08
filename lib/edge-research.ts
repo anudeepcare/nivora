@@ -40,7 +40,11 @@ export function researchEdge(
             : specialist && d.value === "unassessed"
               ? "Sector review"
               : d.action;
-  const paceView = pacePresentation(d.action, brief.accumulation.multiplier);
+  const paceView = pacePresentation(
+    d.action,
+    d.pace.level,
+    d.pace.eligibleLevel,
+  );
   const surfacedPaceView =
     d.explanation.code === "business" || d.explanation.code === "financials"
       ? {
@@ -88,10 +92,10 @@ export function researchEdge(
       d.risks[0] ??
       brief.counterCase[0] ??
       "Review how the position fits your total portfolio.",
-    pace: brief.accumulation.multiplier,
+    pace: d.pace.level,
     pacePresentation: surfacedPaceView,
     pacePeriods: pacePeriods(brief.accumulation),
-    pricePace: brief.accumulation.multiplier,
+    pricePace: d.pace.level,
     formingPace: brief.accumulation.forming?.multiplier ?? null,
     referenceBasis: d.reference?.basis ?? "unavailable",
     confidence: d.confidence,

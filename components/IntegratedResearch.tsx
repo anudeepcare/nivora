@@ -1,14 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowDownRight,
-  ArrowUpRight,
-  Minus,
-  Bell,
-  ChevronDown,
-} from "lucide-react";
+import { ArrowRight, ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import type { Research } from "@/lib/types";
 import {
   approvedResearch,
@@ -17,9 +9,9 @@ import {
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { valuationScale } from "@/lib/research-summary";
 import { useProduct } from "./Session";
+import AssessmentSummary from "./AssessmentSummary";
 import PaceInstrument from "./PaceInstrument";
 import ScenarioSensitivity from "./ScenarioSensitivity";
-import DecisionInsights from "./DecisionInsights";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./IntegratedExperience.module.css";
 import { amount, percent, dateLabel } from "@/lib/format";
@@ -60,12 +52,13 @@ export default function IntegratedResearch({
           m.scenarioReference,
         )
       : null;
-  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
     <>
+      <AssessmentSummary decision={d} onTab={onTab} />
       <div className={s.overview}>
         <PaceInstrument
           research={r}
+          decision={d}
           ownsPosition={owns}
           now={now}
           view={m.edge.pacePresentation}
@@ -75,11 +68,7 @@ export default function IntegratedResearch({
         <div className={s.chart}>{chart}</div>
         <div
           className={s.scenarios}
-          aria-label={
-            m.scenarioEnd
-              ? "Explore valuation scenarios"
-              : "Historical price risk"
-          }
+          aria-label={"Explore AURYN valuation assumptions"}
         >
           {scenarioCases.length === 0 ? (
             <div className={s.scenarioUnavailable}>
@@ -95,13 +84,11 @@ export default function IntegratedResearch({
             <>
               <div className={s.scenarioCaption}>
                 <span>
-                  {m.scenarioEnd
-                    ? "Conditional valuation scenarios"
-                    : "Historical price-risk cases"}
+                  {m.scenarioBasis}
                   {" · "}
                   {m.scenarioEnd
                     ? dateLabel(m.scenarioEnd)
-                    : `${m.scenarioHorizon} sessions`}
+                    : "Present model value"}
                 </span>
                 <span>
                   Reference {amount(m.scenarioReference, r.quote.currency)} ·{" "}
@@ -110,27 +97,15 @@ export default function IntegratedResearch({
               </div>
               {scenarioCases.map((c, i) => {
                 const name = ["Bear", "Base", "Bull"][i];
-                const title = m.scenarioEnd
-                  ? `${name} scenario`
-                  : [
-                      "Historical downside",
-                      "Historical midpoint",
-                      "Historical upside",
-                    ][i];
+                const title = `${name} scenario`;
                 const Icon = [ArrowDownRight, Minus, ArrowUpRight][i];
                 return (
                   <button
                     key={name}
                     className={s.scenario}
                     data-case={name}
-                    onClick={() =>
-                      onTab(m.scenarioEnd ? "Analysts" : "Technicals")
-                    }
-                    aria-label={
-                      m.scenarioEnd
-                        ? `Explore ${name.toLowerCase()} scenario assumptions`
-                        : `Explore historical ${["lower", "median", "upper"][i]} outcome`
-                    }
+                    onClick={() => onTab("Valuation")}
+                    aria-label={`Explore ${name.toLowerCase()} scenario assumptions`}
                   >
                     <span className={s.scenarioHeading}>
                       <i aria-hidden="true">
@@ -145,13 +120,17 @@ export default function IntegratedResearch({
                       <small>{percent(c.change, true)}</small>
                     </span>
                     <span className={s.scenarioBasis}>
-                      {m.scenarioEnd
+                      {m.scenarioKind === "earnings"
                         ? [
                             "Lower earnings power",
                             "Central assumptions",
                             "Higher earnings power",
                           ][i]
-                        : `${[10, 50, 90][i]}th percentile`}
+                        : [
+                            "Lower growth · higher required return",
+                            "Central cash-flow assumptions",
+                            "Higher growth · lower required return",
+                          ][i]}
                     </span>
                     {scenarioScale && (
                       <ScenarioSensitivity
@@ -169,9 +148,9 @@ export default function IntegratedResearch({
                 <span>
                   Sensitivity diagrams · shared price scale · not a time path
                 </span>
-                {m.scenarioEnd
-                  ? "Conditional estimates, not probabilities."
-                  : "Past return percentiles applied to the reference; not fair values or forecasts."}
+                {
+                  "Conditional estimates, not probabilities. Analyst consensus is separate."
+                }
               </p>
             </>
           )}
@@ -179,32 +158,6 @@ export default function IntegratedResearch({
         <div className={s.overviewMetrics}>
           <ResearchEvidenceGrid research={r} onTab={onTab} />
         </div>
-      </div>
-      <DecisionInsights research={r} owns={owns} now={now} prefix={prefix} />
-      <div className={s.market}>
-        <details className={s.evidence}>
-          <summary>
-            Supporting facts & risks <ChevronDown size={15} />
-          </summary>
-          <ul>
-            {d.reasons.map((reason) => (
-              <li key={reason}>{reason}</li>
-            ))}
-          </ul>
-          {d.risks.slice(1).map((reason) => (
-            <p key={reason}>{reason}</p>
-          ))}
-          <div className={s.evidenceActions}>
-            <Link
-              href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}
-            >
-              <Bell size={15} /> Set an alert
-            </Link>
-            <button className="text-link" onClick={() => onTab("Valuation")}>
-              See valuation assumptions <ArrowRight size={15} />
-            </button>
-          </div>
-        </details>
       </div>
     </>
   );

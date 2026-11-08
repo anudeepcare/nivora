@@ -773,6 +773,7 @@ test("valuation tool withholds unsupported models rather than fabricating sensit
       useMemo: React.useMemo,
       useState: React.useState,
       ValuationMethods,
+      SelectedValuation: empty,
       ...engine,
       ...format,
     },
@@ -1171,7 +1172,7 @@ test("public sample explains actual contribution levels without fictional observ
     assert.match(html, /Business/);
     assert.match(html, /Value/);
     assert.match(html, /Risk/);
-    assert.match(html, /Completed month · confirmed/);
+    assert.match(html, /Previous month closing zone/);
     assert.match(html, /Current month · forming/);
     for (const level of ["P0", "P1", "P2", "P3", "P4"])
       assert.ok(html.includes(level));
@@ -1479,7 +1480,7 @@ test("weekly accumulation has its own history, date labels and no misleading mon
   );
   assert.match(html, /Weekly conditions/);
   assert.match(html, /Accumulation time horizon/);
-  assert.match(html, /Completed week · confirmed/);
+  assert.match(html, /Previous week closing zone/);
   assert.match(html, /52 completed weeks/);
   assert.match(html, /historical simulation remains monthly only/);
   assert.doesNotMatch(
@@ -1649,7 +1650,7 @@ test("technical accumulation shows both periods and anchors calculations to comp
   const html = renderToStaticMarkup(
     React.createElement(View, { research: demoData.research.MSFT }),
   );
-  assert.match(html, /Completed month · confirmed P1 Sep 30, 2026/);
+  assert.match(html, /Previous month closing zone P1 Sep 30, 2026/);
   assert.match(html, /Current month · forming/);
   assert.match(html, /forming P2 Oct 22, 2026/);
   assert.match(html, /Confirmed baseline/);
@@ -2015,7 +2016,7 @@ test("price-risk cases render historical percentiles separately from earnings an
   assert.doesNotMatch(whole, /Wall Street consensus|Analyst expectations/);
 });
 
-test("integrated scenarios keep historical ranks distinct from conditional valuations on a shared price scale", async () => {
+test("integrated selected cash-flow and earnings models have distinct horizons on one price scale", async () => {
   const { valuationScale } = await import("../lib/research-summary.ts");
   const model = {
     cases: [80, 105, 140].map((target, i) => ({
@@ -2025,7 +2026,9 @@ test("integrated scenarios keep historical ranks distinct from conditional valua
     })),
     scenarioReference: 100,
     scenarioReferenceDate: "2026-10-19",
-    scenarioHorizon: 63,
+    scenarioHorizon: null,
+    scenarioKind: "cash-flow",
+    scenarioBasis: "Cash-flow valuation",
     scenarioEnd: null,
     edge: { pacePresentation: {}, pacePeriods: [] },
     decision: { reasons: [], risks: [] },
@@ -2053,6 +2056,7 @@ test("integrated scenarios keep historical ranks distinct from conditional valua
       Bell: empty,
       ChevronDown: empty,
       PaceInstrument: empty,
+      AssessmentSummary: empty,
       PositionFit: empty,
       ResearchEvidenceGrid: empty,
       DecisionInsights: empty,
@@ -2068,12 +2072,12 @@ test("integrated scenarios keep historical ranks distinct from conditional valua
       }),
     );
   const historical = render();
-  assert.match(historical, /Historical downside/);
-  assert.match(historical, /50th percentile/);
-  assert.match(historical, /not fair values or forecasts/);
+  assert.match(historical, /Cash-flow valuation/);
+  assert.match(historical, /Present model value/);
+  assert.match(historical, /Conditional estimates, not probabilities/);
   assert.doesNotMatch(
     historical,
-    /Bear scenario|Bull scenario|Lower earnings power/,
+    /Historical downside|Historical midpoint|Lower earnings power/,
   );
   const dots = [
     ...historical.matchAll(/<circle cx="282" cy="([^"]+)" r="4"/g),
@@ -2085,6 +2089,8 @@ test("integrated scenarios keep historical ranks distinct from conditional valua
   assert.equal(new Set(ticks).size, 1);
   assert.ok(dots[0] > ticks[0] && dots[1] < ticks[0] && dots[2] < dots[1]);
   model.scenarioEnd = "2029-12-31";
+  model.scenarioKind = "earnings";
+  model.scenarioBasis = "Earnings sensitivity";
   const conditional = render();
   assert.match(conditional, /Bear scenario/);
   assert.match(conditional, /Base scenario/);

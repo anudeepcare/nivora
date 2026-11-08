@@ -1,4 +1,5 @@
 "use client";
+import SelectedValuation from "./SelectedValuation";
 import ValuationMethods from "./ValuationMethods";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
@@ -19,6 +20,7 @@ export default function ValuationLab({ research: r }: { research: Research }) {
   if (!d.modelEligible || d.modelCashFlowPerShare == null)
     return (
       <>
+        <SelectedValuation research={r} />
         <ValuationMethods research={r} cashCases={[]} />
         <section className="model-notice">
           <h3>Use the right model for this business</h3>
@@ -48,169 +50,178 @@ export default function ValuationLab({ research: r }: { research: Research }) {
         : { ...p, growth: growth - 5 },
   );
   return (
-    <section
-      className="valuation-lab"
-      aria-label="Interactive cash-flow sensitivity"
-    >
-      <header className="section-head">
-        <div>
-          <span className="eyebrow">Test the story yourself</span>
-          <h2>What must go right at this price?</h2>
-          <p>
-            Your assumptions, calculated deterministically. This is a
-            sensitivity model, not a validated fair value.
-          </p>
-        </div>
-      </header>
-      <ValuationMethods
-        research={r}
-        cashCases={[
-          { name: "Conservative assumption", value: bear },
-          { name: "Central assumption", value: base },
-          { name: "Optimistic assumption", value: bull },
-        ]}
-      />
-      <div className="model-columns">
-        <div className="model-controls">
-          {[
-            ["Cash-flow growth", growth, setGrowth, -10, 40, 0.5],
-            ["Required equity return", discount, setDiscount, 6, 20, 0.25],
-            ["Long-run growth", terminal, setTerminal, 0, 4, 0.25],
-          ].map(([label, value, set, min, max, step]) => (
-            <label key={String(label)}>
-              <span>
-                {String(label)}
-                <b>{Number(value).toFixed(1)}%</b>
-              </span>
-              <input
-                type="range"
-                aria-label={String(label)}
-                value={Number(value)}
-                min={Number(min)}
-                max={Number(max)}
-                step={Number(step)}
-                onChange={(e) =>
-                  (set as (n: number) => void)(Number(e.target.value))
-                }
-              />
-            </label>
-          ))}
-          <label className="model-checkbox">
-            <input
-              type="checkbox"
-              checked={strict}
-              disabled={d.modelSbcPerShare == null}
-              onChange={(e) => setStrict(e.target.checked)}
-            />
-            Deduct reported stock compensation as a sensitivity
-          </label>
-          <p className="small muted">
-            Starting cash-flow proxy: {amount(cash, r.quote.currency)} per
-            current share. OCF less capex is not automatically distributable
-            equity cash flow; net borrowing, future dilution and
-            company-specific reinvestment may change it.
-          </p>
-        </div>
-        <div className="model-result" aria-live="polite">
-          <span>Cash-flow central assumption · per share</span>
-          <strong>{amount(base, r.quote.currency)}</strong>
-          <p>
-            {base != null && price != null
-              ? `${percent((base / price - 1) * 100, true)} against the current price under these assumptions`
-              : "Positive cash flow is required, and required return must exceed terminal growth by at least one percentage point."}
-          </p>
-          <div className="model-case-row">
-            {[
-              ["Conservative", bear],
-              ["Central", base],
-              ["Optimistic", bull],
-            ].map(([n, v]) => (
-              <div key={String(n)}>
-                <small>{n}</small>
-                <b>{amount(v as number | null, r.quote.currency)}</b>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="model-insights">
-        <section>
-          <h3>What today’s price requires</h3>
-          <strong>
-            {reverse == null
-              ? "Outside the tested range"
-              : `${reverse.toFixed(1)}% starting cash-flow growth`}
-          </strong>
-          <p>
-            Under your required-return and long-run-growth assumptions,
-            cash-flow growth would need to start here and fade over ten years to
-            justify today’s price. This is not a forecast.
-          </p>
-        </section>
-        <section>
-          <h3>Return built into this model</h3>
-          <strong>
-            {implied == null
-              ? "Outside the tested range"
-              : `${implied.toFixed(1)}%`}
-          </strong>
-          <p>
-            The discount rate that makes these assumed cash flows equal today’s
-            price. It is not an expected or promised investment return.
-          </p>
-        </section>
-      </div>
-      <section className="model-stress">
-        <div>
-          <h3>Challenge the assumptions</h3>
-          <div className="style-options">
-            {[
-              ["cash", "Cash flow −20%"],
-              ["rates", "Required return +2pp"],
-              ["growth", "Initial growth −5pp"],
-            ].map(([v, l]) => (
-              <button
-                key={v}
-                aria-pressed={shock === v}
-                onClick={() => setShock(v)}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-          <p className="small muted">
-            Hypothetical parameter shocks, not a forecast of recession losses or
-            a solvency test.
-          </p>
-        </div>
-        <strong>
-          {amount(shocked, r.quote.currency)}
-          <small>
-            {base != null && shocked != null
-              ? percent((shocked / base - 1) * 100, true) +
-                " vs cash-flow central assumption"
-              : ""}
-          </small>
-        </strong>
-      </section>
+    <>
+      <SelectedValuation research={r} />
       <details>
-        <summary>Model definition & assumptions</summary>
-        <p>
-          Ten annual cash flows; the starting growth assumption fades linearly
-          to terminal growth. Each cash flow and the terminal perpetuity are
-          discounted at the chosen equity return. Defaults of 10%, 10% and 2.5%
-          are editable assumptions, not inferred company forecasts or a
-          calculated WACC. Bear lowers initial growth by four points and raises
-          the return requirement by one; bull adds three points and reduces the
-          requirement by half a point.
-        </p>
-        <p>
-          Reverse and implied-rate solvers return no result if the target cannot
-          be bracketed. No peer model, analyst target or factor rank is
-          manufactured to create an agreement score. Enterprise cash flows
-          require a separate WACC/enterprise-to-equity reconciliation.
-        </p>
+        <summary>
+          Explore your own assumptions · separate from the assessment
+        </summary>
+        <section
+          className="valuation-lab"
+          aria-label="Interactive cash-flow sensitivity"
+        >
+          <header className="section-head">
+            <div>
+              <span className="eyebrow">Test the story yourself</span>
+              <h2>What must go right at this price?</h2>
+              <p>
+                Your assumptions, calculated deterministically. This is a
+                sensitivity model, not a validated fair value.
+              </p>
+            </div>
+          </header>
+          <ValuationMethods
+            research={r}
+            cashCases={[
+              { name: "Conservative assumption", value: bear },
+              { name: "Central assumption", value: base },
+              { name: "Optimistic assumption", value: bull },
+            ]}
+          />
+          <div className="model-columns">
+            <div className="model-controls">
+              {[
+                ["Cash-flow growth", growth, setGrowth, -10, 40, 0.5],
+                ["Required equity return", discount, setDiscount, 6, 20, 0.25],
+                ["Long-run growth", terminal, setTerminal, 0, 4, 0.25],
+              ].map(([label, value, set, min, max, step]) => (
+                <label key={String(label)}>
+                  <span>
+                    {String(label)}
+                    <b>{Number(value).toFixed(1)}%</b>
+                  </span>
+                  <input
+                    type="range"
+                    aria-label={String(label)}
+                    value={Number(value)}
+                    min={Number(min)}
+                    max={Number(max)}
+                    step={Number(step)}
+                    onChange={(e) =>
+                      (set as (n: number) => void)(Number(e.target.value))
+                    }
+                  />
+                </label>
+              ))}
+              <label className="model-checkbox">
+                <input
+                  type="checkbox"
+                  checked={strict}
+                  disabled={d.modelSbcPerShare == null}
+                  onChange={(e) => setStrict(e.target.checked)}
+                />
+                Deduct reported stock compensation as a sensitivity
+              </label>
+              <p className="small muted">
+                Starting cash-flow proxy: {amount(cash, r.quote.currency)} per
+                current share. OCF less capex is not automatically distributable
+                equity cash flow; net borrowing, future dilution and
+                company-specific reinvestment may change it.
+              </p>
+            </div>
+            <div className="model-result" aria-live="polite">
+              <span>Cash-flow central assumption · per share</span>
+              <strong>{amount(base, r.quote.currency)}</strong>
+              <p>
+                {base != null && price != null
+                  ? `${percent((base / price - 1) * 100, true)} against the current price under these assumptions`
+                  : "Positive cash flow is required, and required return must exceed terminal growth by at least one percentage point."}
+              </p>
+              <div className="model-case-row">
+                {[
+                  ["Conservative", bear],
+                  ["Central", base],
+                  ["Optimistic", bull],
+                ].map(([n, v]) => (
+                  <div key={String(n)}>
+                    <small>{n}</small>
+                    <b>{amount(v as number | null, r.quote.currency)}</b>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="model-insights">
+            <section>
+              <h3>What today’s price requires</h3>
+              <strong>
+                {reverse == null
+                  ? "Outside the tested range"
+                  : `${reverse.toFixed(1)}% starting cash-flow growth`}
+              </strong>
+              <p>
+                Under your required-return and long-run-growth assumptions,
+                cash-flow growth would need to start here and fade over ten
+                years to justify today’s price. This is not a forecast.
+              </p>
+            </section>
+            <section>
+              <h3>Return built into this model</h3>
+              <strong>
+                {implied == null
+                  ? "Outside the tested range"
+                  : `${implied.toFixed(1)}%`}
+              </strong>
+              <p>
+                The discount rate that makes these assumed cash flows equal
+                today’s price. It is not an expected or promised investment
+                return.
+              </p>
+            </section>
+          </div>
+          <section className="model-stress">
+            <div>
+              <h3>Challenge the assumptions</h3>
+              <div className="style-options">
+                {[
+                  ["cash", "Cash flow −20%"],
+                  ["rates", "Required return +2pp"],
+                  ["growth", "Initial growth −5pp"],
+                ].map(([v, l]) => (
+                  <button
+                    key={v}
+                    aria-pressed={shock === v}
+                    onClick={() => setShock(v)}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+              <p className="small muted">
+                Hypothetical parameter shocks, not a forecast of recession
+                losses or a solvency test.
+              </p>
+            </div>
+            <strong>
+              {amount(shocked, r.quote.currency)}
+              <small>
+                {base != null && shocked != null
+                  ? percent((shocked / base - 1) * 100, true) +
+                    " vs cash-flow central assumption"
+                  : ""}
+              </small>
+            </strong>
+          </section>
+          <details>
+            <summary>Model definition & assumptions</summary>
+            <p>
+              Ten annual cash flows; the starting growth assumption fades
+              linearly to terminal growth. Each cash flow and the terminal
+              perpetuity are discounted at the chosen equity return. Defaults of
+              10%, 10% and 2.5% are editable assumptions, not inferred company
+              forecasts or a calculated WACC. Bear lowers initial growth by four
+              points and raises the return requirement by one; bull adds three
+              points and reduces the requirement by half a point.
+            </p>
+            <p>
+              Reverse and implied-rate solvers return no result if the target
+              cannot be bracketed. No peer model, analyst target or factor rank
+              is manufactured to create an agreement score. Enterprise cash
+              flows require a separate WACC/enterprise-to-equity reconciliation.
+            </p>
+          </details>
+        </section>
       </details>
-    </section>
+    </>
   );
 }

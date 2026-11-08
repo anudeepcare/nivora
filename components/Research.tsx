@@ -23,7 +23,6 @@ import {
   subscribeQuotes,
 } from "@/lib/shared-quotes";
 import { retainResearchQuote } from "@/lib/research-quote";
-const ResearchReceipt = dynamic(() => import("./ResearchReceipt"));
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
 });
@@ -130,7 +129,6 @@ const tabPresentation = {
 };
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
-  const [receiptOpen, setReceiptOpen] = useState(false);
   const workspacePreferences = useWorkspacePreferences();
   const rangeTouched = useRef(false);
   const { preferences } = useResearchPreferences();
@@ -539,9 +537,6 @@ export default function Research({ symbol }: { symbol: string }) {
         </div>
       </header>
       <StockFacts research={r} />
-      {receiptOpen && (
-        <ResearchReceipt research={r} onClose={() => setReceiptOpen(false)} />
-      )}
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
@@ -728,12 +723,6 @@ export default function Research({ symbol }: { symbol: string }) {
                 <Financials research={r} />
                 <BusinessHistory research={r} />
                 <FinancingContext research={r} />
-                <button
-                  className="text-link"
-                  onClick={() => setReceiptOpen(true)}
-                >
-                  Metric formulas &amp; sources
-                </button>
               </>
             )}
             {tab === "Valuation" && (
@@ -825,7 +814,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   <DecisionWatch key={r.company.symbol} research={r} />
                 </details>
                 <details className="research-reference">
-                  <summary>Notes &amp; saved research</summary>
+                  <summary>My notes</summary>
                   <FeatureGate feature="advanced">
                     <ResearchNotes research={r} />
                   </FeatureGate>

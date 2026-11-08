@@ -1,3 +1,4 @@
+import { currentPace } from "./current-pace.ts";
 import { pacePresentation } from "./pace-presentation.ts";
 import type { Research } from "./types";
 import {
@@ -257,6 +258,7 @@ export function aurynDecision(
   const { latest: p, prior: q } = latestFinancialEvidence(r),
     brief = researchBrief(r),
     funding = financingContext(r);
+  const pace = currentPace(brief.accumulation, now);
   const growth = p ? comparableGrowth(p, q) : null;
   const family = brief.coverage.family;
   const specialist = [
@@ -620,8 +622,9 @@ export function aurynDecision(
   const decisionInputs = {
     ownsPosition,
     growthEligible: growthAssessment.eligible,
-    confirmedPace: brief.accumulation.multiplier,
-    priceUsable: !!reference,
+    confirmedPace: pace.eligibleLevel,
+    priceUsable:
+      !!reference && !(pace.historicalLevel !== null && pace.level === null),
     financialsUsable,
     business,
     value,
@@ -636,15 +639,10 @@ export function aurynDecision(
   };
   const action = ownsPosition ? actions.holding : actions.entry;
   const assessment = assessDecision(decisionInputs);
-  const actionLabel = pacePresentation(
-    action,
-    brief.accumulation.multiplier,
-  ).actionLabel;
+  const actionLabel = pacePresentation(action, pace.eligibleLevel).actionLabel;
   const actionLabels = {
-    entry: pacePresentation(actions.entry, brief.accumulation.multiplier)
-      .actionLabel,
-    holding: pacePresentation(actions.holding, brief.accumulation.multiplier)
-      .actionLabel,
+    entry: pacePresentation(actions.entry, pace.eligibleLevel).actionLabel,
+    holding: pacePresentation(actions.holding, pace.eligibleLevel).actionLabel,
   };
   if (assessment.code === "accumulation") {
     changeConditions.push(
@@ -652,21 +650,24 @@ export function aurynDecision(
     );
     if (!valuation)
       risks.push(
-        "A suitable valuation model is not established. Gradual accumulation is supported by the business screen and confirmed Pace, not a claim that this stock is cheap.",
+        "A suitable valuation model is not established. Gradual accumulation is supported by the business screen and current eligible Pace, not a claim that this stock is cheap.",
       );
   }
-  const paused = !reference || !financialsUsable;
+  const paused =
+    !reference ||
+    !financialsUsable ||
+    (pace.historicalLevel !== null && pace.level === null);
   let headline = "The price needs a stronger margin of safety.";
   if (action === "Buy" || action === "Add")
     headline =
       assessment.code === "accumulation"
-        ? `Business supported; ${brief.accumulation.multiplier === 2 ? "initial" : brief.accumulation.multiplier === 3 ? "deeper" : "deep"} accumulation conditions met.`
+        ? `Business supported; ${pace.eligibleLevel === 2 ? "initial" : pace.eligibleLevel === 3 ? "deeper" : "deep"} accumulation conditions met.`
         : "The business and valuation screens support a gradual entry.";
   else if (action === "Hold" || action === "Watch")
     headline =
       assessment.code === "zone"
         ? "Business supported; accumulation conditions not established."
-        : "The business case holds; confirmed Pace pauses new contributions.";
+        : "The business case holds; current eligible Pace pauses new contributions.";
   else if (action === "Sell")
     headline =
       "Cash runway and balance-sheet weakness threaten the holding case.";
@@ -685,20 +686,23 @@ export function aurynDecision(
     headline = p
       ? "Refresh the financial report before sizing an entry."
       : "Price and Pace are ready; company analysis is still developing.";
+  else if (assessment.code === "price")
+    headline =
+      "Refresh settled price history; the previous zone is historical.";
   else if (assessment.code === "history")
-    headline = "The business screen passes. Confirmed Pace needs more history.";
+    headline = "The business screen passes. Current Pace needs recent history.";
   else if (assessment.code === "business")
     headline =
       "Review operating progress and funding before committing more capital.";
   if (
     (action === "Hold" || action === "Wait") &&
-    brief.accumulation.multiplier === 0 &&
+    pace.eligibleLevel === 0 &&
     financialsUsable &&
     reference &&
     (strong || growthAssessment.eligible)
   ) {
     headline =
-      "The business case holds; confirmed Pace pauses new contributions.";
+      "The business case holds; current eligible Pace pauses new contributions.";
     changeConditions.unshift(
       "Reassess additions when a completed monthly Pace reading reaches P2 or higher and the business still qualifies.",
     );
@@ -819,12 +823,12 @@ export function aurynDecision(
     price: {
       label: "Price refresh needed",
       detail:
-        "A current quote or recent completed close is needed to compare price with the business case.",
+        "A current quote and recent settled price history are needed. A previous month’s zone cannot stand in for current conditions.",
     },
     pace: {
       label: "P0 pauses additions",
       detail:
-        "The confirmed monthly reading is P0. Pause new contributions, not the business assessment. Reassess after a completed month reaches P2 or higher if the business still qualifies. P0 is not a sell signal.",
+        "The eligible price reading is P0. Pause new contributions, not the business assessment. Reassess after a completed month reaches P2 or higher if the business still qualifies. P0 is not a sell signal.",
     },
     zone: {
       label: "P1 · Outside the accumulation zone",
@@ -832,18 +836,18 @@ export function aurynDecision(
         "The business screen passes, but a qualifying accumulation zone is not established. Watch for a new entry; hold an existing position if the business case remains intact. P1 does not prescribe a purchase amount.",
     },
     accumulation: {
-      label: `${actionLabel} · P${brief.accumulation.multiplier}`,
-      detail: pacePresentation(action, brief.accumulation.multiplier).detail,
+      label: `${actionLabel} · P${pace.eligibleLevel}`,
+      detail: pacePresentation(action, pace.eligibleLevel).detail,
     },
     history: {
       label: "Contribution history incomplete",
       detail:
-        "The business screen passes, but a confirmed Pace level is not available and the separate valuation-entry screen does not qualify. Review the available business and price evidence; missing history is not a negative business verdict.",
+        "The business screen passes, but a current eligible Pace level is not available and the separate valuation-entry screen does not qualify. Review the available business and price evidence; missing history is not a negative business verdict.",
     },
     entry: {
       label: "Entry conditions met",
       detail:
-        "The business screen and independent valuation-entry conditions qualify. A confirmed contribution level is not available; size purchases to your risk budget without assuming a Pace level.",
+        "The business screen and independent valuation-entry conditions qualify. A contribution level is not available; size purchases to your risk budget without assuming a Pace level.",
     },
     business: {
       label: "Business checks to review",
@@ -863,7 +867,8 @@ export function aurynDecision(
           ? "neutral"
           : "caution";
   return {
-    version: "auryn-decision-v6-zones",
+    version: "auryn-decision-v7-current-context",
+    pace,
     explanation,
     actions,
     contextLabel: ownsPosition ? "For your holding" : "For new purchases",

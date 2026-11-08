@@ -194,7 +194,7 @@ test("public and account previews explain Pace without fictional company results
     assert.match(html, /Illustrative product guide/);
     assert.match(html, /AURYN Accumulation Pace/);
     assert.match(html, /not predicted returns/);
-    assert.match(html, /Completed month · confirmed/);
+    assert.match(html, /Previous month closing zone · history/);
     assert.match(html, /Current month · forming/);
     assert.doesNotMatch(
       html,

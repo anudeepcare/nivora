@@ -49,27 +49,40 @@ test("partial and crypto evidence retain actual prices without invented business
   assert.ok(!m.factors.some((x) => /cash flow|revenue|margin/i.test(x.text)));
   assert.ok(m.cases.every((x) => Number.isFinite(x.target)));
 });
-test("scenario values use matching quote currency and positive current prices", () => {
+test("scenario values use the decision engine reference and matching currency", () => {
   const r = structuredClone(demoData.research.MSFT);
   r.quote.price = null;
-  assert.equal(approvedResearch(r).cases.length, 0);
+  const model = approvedResearch(r);
+  assert.equal(model.scenarioReference, model.decision.reference?.price ?? null);
   r.quote.price = 100;
   r.quote.currency = "EUR";
   r.company.currency = "USD";
   assert.equal(approvedResearch(r).cases.length, 0);
 });
-test("historical scenarios preserve their exact horizon and settled-close reference", () => {
+test("historical price percentiles never substitute for valuation scenarios", () => {
   const r = structuredClone(demoData.research.MSFT);
-  r.facts = [];
-  r.evidence = undefined;
-  r.quote.asOf = "2020-01-01T00:00:00Z";
-  r.quote.price = 100;
+  r.facts = []; r.evidence = undefined;
   const m = approvedResearch(r);
-  assert.equal(m.scenarioHorizon, 63);
-  assert.equal(m.scenarioReferenceBasis, "settled-close");
-  assert.equal(m.scenarioReference, m.edge.brief.priceRisk.reference);
-  assert.equal(
-    m.cases[0].change,
-    (m.cases[0].target / m.scenarioReference - 1) * 100,
-  );
+  assert.equal(m.scenarioKind, null);
+  assert.equal(m.cases.length, 0);
+  assert.equal(m.scenarioHorizon, null);
+});
+test("overview cases exactly match the selected decision valuation", () => {
+  const r = structuredClone(demoData.research.MSFT);
+  const m = approvedResearch(r);
+  assert.ok(m.decision.valuation);
+  const v=m.decision.valuation;
+  assert.deepEqual(m.cases.map(c=>c.target),[v.bear,v.base,v.bull]);
+  assert.equal(m.scenarioKind,v.basis);
+  assert.equal(m.scenarioEnd,v.end);
+});
+
+test("quote-only moves change the gap, not the selected cash-flow values",()=>{
+ const r=structuredClone(demoData.research.MSFT);
+ r.history=[];
+ r.quote={...r.quote,asOf:r.retrievedAt,stale:false,session:'Last available quote'};
+ const values=[100,110].map(price=>approvedResearch({...r,quote:{...r.quote,price}}));
+ assert.equal(values[0].scenarioKind,'cash-flow');
+ assert.deepEqual(values[0].cases.map(c=>c.target),values[1].cases.map(c=>c.target));
+ assert.notEqual(values[0].cases[1].change,values[1].cases[1].change);
 });

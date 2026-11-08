@@ -164,3 +164,18 @@ test("Review names missing business evidence instead of sending users to an unre
     assert.match(d.changeConditions[0], expected);
   }
 });
+
+test("a recovered price zone cannot retain an old P4 buying instruction", () => {
+  const r=withPace();
+  r.history=r.history.map(row=>{
+    const close=row.time>='2026-10-01'?110:row.time>='2026-09-01'?60:100;
+    return {...row,open:close,high:close*1.01,low:close*.99,close};
+  });
+  const d=aurynDecision(r,{now:Date.parse(r.retrievedAt)});
+  assert.equal(d.brief.accumulation.multiplier,4);
+  assert.equal(d.pace.level,1);
+  assert.equal(d.pace.eligibleLevel,1);
+  assert.equal(d.action,'Watch');
+  assert.equal(d.actions.holding,'Hold');
+  assert.equal(d.actionLabel,'Watch');
+});

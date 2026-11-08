@@ -141,9 +141,9 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
           {index === 2 && (
             <p className="signal-demo-note">
               AURYN Accumulation Pace: P0 Pause · P1 Watch · P2 Initial · P3
-              Deeper · P4 Deep. Completed month · confirmed. Current month ·
-              forming. Price zones, not predicted returns. Risk and business
-              checks still apply.
+              Deeper · P4 Deep. Previous month closing zone · history. Current
+              month · forming. Price zones, not predicted returns. Risk and
+              business checks still apply.
             </p>
           )}
         </div>

@@ -2,6 +2,18 @@
 
 This is the current handoff and supersedes older checkpoints. Source ZIP only: no deployment, production database write, scheduler activation, public observation or external outreach was performed.
 
+## Latest simplification — 8 November 2026 UTC
+Removed the standalone Metric formulas & sources entry/modal mount from Research, duplicate Investment context and Supporting facts sections from Overview. Shortened Targets and Valuation introductions, simplified the P/E control wording, and reduced the private notes heading. Existing metric-level help and dated model assumptions remain accessible. These removals do not alter financial calculations. This is a focused simplification of the reported panels, not a claim that every screen has been redesigned.
+
+## Reliability follow-up — 8 November 2026 UTC
+Current settled-price context now drives displayed Pace and shared action eligibility. Prior-month closing zones are historical context; an old P4 cannot authorize additions after the current zone weakens to P1. A developing deeper zone cannot increase contribution eligibility above the closing zone. Missing current history blocks Pace additions.
+
+Overview and the default Valuation detail share the decision engine's selected model, reference price and assumptions. Historical price percentiles no longer stand in for valuation scenarios. Alternative price assumptions remain separately accessible. A compact assessment connects business, valuation, price conditions, main concern and the next condition.
+
+No monthly-v5 threshold calibration was introduced. The saved 614-symbol audit has 589 usable comparisons: 74.4% exact monthly-zone agreement, 91.9% inside/outside P2–P4 agreement, and only 34.4% exact agreement within competitor 2X–4X. These results are not 99% parity, live API verification or proof of performance. See `docs/RELIABILITY-RELEASE-20261107.md` for scope. This follow-up requires no new database migration or environment variable. Earlier configuration and migration instructions below still apply.
+
+Fresh verification is recorded in `verification/reliability-20261108/`. Earlier browser checks below predate these new assessment components; no new browser/performance measurement is claimed for them.
+
 ## Latest follow-up: mobile menu and header cleanup
 Removed the standalone evidence button above Research tabs; metric formulas/sources remain inside Business. Mobile account menu uses a mostly opaque glass surface, explicit readable text, a short transform/opacity entrance and reduced-motion/transparency alternatives. Removed eight unused legacy consent rules (1,142 raw bytes); this is targeted cleanup, not a claim of complete legacy CSS removal or measurable latency improvement by itself. Ten related regression tests, lint, TypeScript and shell browser checks passed.
 

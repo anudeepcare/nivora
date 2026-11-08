@@ -1,4 +1,5 @@
 "use client";
+import SelectedValuation from "./SelectedValuation";
 import SectionIcon from "./SectionIcon";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
@@ -40,13 +41,16 @@ export default function ValueStudio({
             <SectionIcon name="Valuation" size={25} />
             Price in context.
           </h2>
-          <p>Read the scenario, the multiple and the assumptions together.</p>
         </div>
         <button type="button" className="button" onClick={onWorkbench}>
           Test assumptions →
         </button>
       </header>
-      <ScenarioCompass research={r} />
+      <SelectedValuation research={r} />
+      <details>
+        <summary>Explore alternative price assumptions</summary>
+        <ScenarioCompass research={r} />
+      </details>
       <details className="value-personal-model">
         <summary>Your assumptions · optional workbench</summary>
         <p className="desk-footnote">

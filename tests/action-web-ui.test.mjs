@@ -51,7 +51,7 @@ const Guidance = component("components/PaceGuidance.tsx", "PaceGuidance", {
 const show = (action, confirmed, forming) =>
   renderToStaticMarkup(
     React.createElement(Guidance, {
-      view: pacePresentation(action, confirmed),
+      view: pacePresentation(action, forming, Math.min(confirmed, forming)),
       readings: pacePeriods({
         multiplier: confirmed,
         date: "2026-09-30",
@@ -59,16 +59,16 @@ const show = (action, confirmed, forming) =>
       }),
     }),
   );
-test("Pace leads with confirmed action and keeps both technical periods in details", () => {
+test("Pace shows current context while contribution sizing stays capped by closing evidence", () => {
   const html = show("Buy", 2, 4);
   assert.match(html, /Buy small/);
   const visible = html.replace(/<details[\s\S]*?<\/details>/g, "");
-  assert.match(visible, /Confirmed Pace P2; P means Pace/);
-  assert.match(visible, /data-active="true"[^>]*>P2/);
-  assert.match(visible, /Confirmed/);
+  assert.match(visible, /Current provisional Pace P4; P means Pace/);
+  assert.match(visible, /data-active="true"[^>]*>P4/);
+  assert.match(visible, /Current/);
   assert.match(html, /Deep zone/);
   assert.match(html, /Initial zone/);
-  assert.match(visible, /2026-09-30/);
+  assert.match(html, /2026-09-30/);
   assert.match(html, /2026-10-26/);
   assert.match(html, /1× your planned contribution/);
   assert.match(html, /\$100 for a usual \$100 contribution/);
@@ -122,14 +122,15 @@ test("missing monthly history shows one explanation with no duplicate Pending ti
   );
   assert.match(html, /Buy gradually/);
 });
-test("a reading keeps its calculation reason with the visible confirmed Pace", () => {
+test("a current reading keeps its calculation reason", () => {
   const html = renderToStaticMarkup(
     React.createElement(Guidance, {
       view: pacePresentation("Wait", 2),
       readings: pacePeriods({
         multiplier: 2,
         date: "2026-09-30",
-        reason: "12% below the prior average.",
+        reason: "Historical calculation.",
+        forming: {multiplier: 2, date: "2026-10-26", reason: "12% below the prior average."},
       }),
     }),
   );
