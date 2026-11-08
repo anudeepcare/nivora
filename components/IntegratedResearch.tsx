@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { ArrowRight } from "lucide-react";
 import type { Research } from "@/lib/types";
 import {
   approvedResearch,
@@ -14,7 +13,6 @@ import PaceInstrument from "./PaceInstrument";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import s from "./ResearchOverview.module.css";
 import EvidenceCrystal from "./EvidenceCrystal";
-import { amount, percent, dateLabel } from "@/lib/format";
 export default function IntegratedResearch({
   research: r,
   onTab,
@@ -29,6 +27,7 @@ export default function IntegratedResearch({
   const owns = !!workspace?.positions.some(
     (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
   );
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [context, setContext] = useState<boolean | null>(null);
   const decisionOwns = context ?? owns;
   const [clock, setClock] = useState(() => Date.now());
@@ -80,6 +79,26 @@ export default function IntegratedResearch({
             onHistory={() => onTab("Technicals")}
             editorial
           />
+          <ul className={s.reasonList} aria-label="Decision evidence">
+            {d.reasons.slice(0, 2).map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+            {!!d.risks.length && (
+              <li data-risk="true">
+                <details className={s.risks}>
+                  <summary>
+                    {d.risks.length} {d.risks.length === 1 ? "risk" : "risks"}{" "}
+                    to review
+                  </summary>
+                  <ul>
+                    {d.risks.map((risk) => (
+                      <li key={risk}>{risk}</li>
+                    ))}
+                  </ul>
+                </details>
+              </li>
+            )}
+          </ul>
           <ResearchChanges
             research={r}
             now={now}
@@ -96,9 +115,23 @@ export default function IntegratedResearch({
             onOpen={onTab}
           />
         </div>
-        <div className={s.crystal}>
-          <EvidenceCrystal research={r} onOpen={() => onTab("Thesis")} />
-        </div>
+        <details
+          className={s.crystal}
+          open={evidenceOpen}
+          onToggle={(event) => setEvidenceOpen(event.currentTarget.open)}
+        >
+          <summary>
+            <span>Explore the evidence</span>
+            <small>Eight research lenses · inputs and explanations</small>
+          </summary>
+          {evidenceOpen && (
+            <EvidenceCrystal
+              key={r.company.symbol}
+              research={r}
+              onOpen={() => onTab("Thesis")}
+            />
+          )}
+        </details>
         <div className={s.chart}>{chart}</div>
         <div
           className={s.scenarios}

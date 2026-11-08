@@ -161,11 +161,12 @@ export function PriceChart({
     lastRange.current = "";
     // A retained dialog starts at width zero. Fit again when it gains layout width.
     let previousWidth = 0;
+    let fitFrame = 0;
     const observer = new ResizeObserver(([entry]) => {
       const width = entry?.contentRect.width ?? 0;
       if (width > 0 && width !== previousWidth) {
-        api.applyOptions({ width });
-        api.timeScale().fitContent();
+        cancelAnimationFrame(fitFrame);
+        fitFrame = requestAnimationFrame(() => api.timeScale().fitContent());
       }
       previousWidth = width;
     });
@@ -173,6 +174,7 @@ export function PriceChart({
     return () => {
       api.unsubscribeCrosshairMove(readCrosshair);
       observer.disconnect();
+      cancelAnimationFrame(fitFrame);
       api.remove();
       chart.current = null;
       series.current = null;

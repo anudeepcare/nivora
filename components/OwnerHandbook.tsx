@@ -17,7 +17,7 @@ import styles from "./OwnerHandbook.module.css";
 const topicGuides = [
   [
     "Start here",
-    "Find a company, understand its Pace, then check the business and price.",
+    "Find a company, review its business and valuation, then use Pace for price context.",
     "Pace guides contribution timing.|Business evidence explains company quality.|Valuation explores what assumptions imply.",
   ],
   [

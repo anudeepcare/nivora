@@ -96,7 +96,7 @@ export default function SelectedValuation({
       <header className={s.heading}>
         <div>
           <span className={s.eyebrow}>AURYN valuation</span>
-          <h2>{v?.label ?? "Valuation needs more evidence"}</h2>
+          <h2>Bear, base &amp; bull</h2>
           {projection.available && ends.length > 1 && (
             <div
               className={s.years}
@@ -150,6 +150,28 @@ export default function SelectedValuation({
                     ? percent((v[name] / d.reference.price - 1) * 100, true)
                     : "Reference unavailable"}
                 </small>
+                {projection.available &&
+                  (() => {
+                    const input = projection.cases.find(
+                      (x) => x.name.toLowerCase() === name,
+                    );
+                    return input ? (
+                      <p className={s.caseInput}>
+                        {input.eps != null ? (
+                          <>
+                            EPS {amount(input.eps, projection.currency)}{" "}
+                            <span>×</span> {input.multiple.toFixed(1)}× P/E
+                          </>
+                        ) : input.revenue != null ? (
+                          <>
+                            Revenue{" "}
+                            {amount(input.revenue, projection.currency, true)} ·{" "}
+                            {input.multiple.toFixed(1)}× EV/revenue
+                          </>
+                        ) : null}
+                      </p>
+                    ) : null;
+                  })()}
               </div>
             ))}
           </div>

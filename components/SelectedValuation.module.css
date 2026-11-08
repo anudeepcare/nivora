@@ -175,3 +175,52 @@
     padding: 16px 0;
   }
 }
+.root.root {
+  padding: 12px 0;
+  margin-bottom: 12px;
+}
+.heading h2 {
+  font-size: 26px;
+  margin: 6px 0;
+}
+.reasons {
+  gap: 24px;
+  margin: 22px 0 18px;
+}
+.root.root .case {
+  gap: 6px;
+}
+.case strong {
+  font-size: clamp(24px, 2.8vw, 34px);
+}
+.caseInput {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+.caseInput > span {
+  padding: 0 3px;
+}
+.priceMap {
+  padding: 8px 10px 32px;
+  max-width: 980px;
+}
+.root.root .assumptions {
+  padding-top: 6px;
+}
+@media (max-width: 600px) {
+  .heading h2 {
+    font-size: 23px;
+  }
+  .reasons {
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .caseInput {
+    font-size: 10px;
+  }
+  .case strong {
+    font-size: 24px;
+  }
+}

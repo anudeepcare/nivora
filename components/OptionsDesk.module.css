@@ -426,3 +426,46 @@
   color: var(--muted);
   font-size: 12px;
 }
+.commandBar {
+  padding: 14px 0;
+  gap: 12px 20px;
+  align-items: center;
+}
+.views {
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface);
+  border-radius: 12px;
+}
+.views button {
+  border: 0;
+  background: transparent;
+  border-radius: 9px;
+  padding-inline: 14px;
+}
+.views button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: 0 3px 9px #112e2210;
+}
+.marketLine {
+  padding: 14px 0;
+  gap: 10px 24px;
+}
+.desk h3 {
+  font-size: 20px;
+  letter-spacing: -0.025em;
+}
+@media (max-width: 600px) {
+  .views {
+    width: 100%;
+  }
+  .views button {
+    flex: 1;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .commandBar {
+    gap: 12px;
+  }
+}

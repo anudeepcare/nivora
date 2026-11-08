@@ -2,17 +2,17 @@
   min-width: 0;
   width: 100%;
 }
-.portfolio :global(.portfolio-grid) {
+.portfolio.portfolio.portfolio :global(.portfolio-grid) {
   display: grid;
   grid-template-columns: minmax(0, 2.15fr) minmax(260px, 1fr);
   gap: 16px;
 }
-.portfolio :global(.portfolio-grid) > div,
-.portfolio :global(.card) {
+.portfolio.portfolio.portfolio :global(.portfolio-grid) > div,
+.portfolio.portfolio.portfolio :global(.card) {
   min-width: 0;
   max-width: 100%;
 }
-.portfolio :global(.wealth-strip.four) {
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
@@ -21,7 +21,7 @@
   background: transparent;
   margin-bottom: 20px;
 }
-.portfolio :global(.wealth-strip.four) > div {
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
   min-width: 0;
   padding: 18px;
   border: 1px solid var(--line);
@@ -32,36 +32,36 @@
     color-mix(in srgb, var(--orchid) 15%, var(--card))
   );
 }
-.portfolio :global(.wealth-strip.four) > div:nth-child(2) {
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(2) {
   background: linear-gradient(
     140deg,
     var(--card) 60%,
     color-mix(in srgb, var(--jade) 18%, var(--card))
   );
 }
-.portfolio :global(.wealth-strip.four) > div:nth-child(3) {
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) {
   background: linear-gradient(
     140deg,
     var(--card) 60%,
     color-mix(in srgb, var(--citron) 20%, var(--card))
   );
 }
-.portfolio :global(.wealth-strip.four) > div > strong {
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > strong {
   font-size: clamp(20px, 2vw, 30px);
   overflow-wrap: anywhere;
 }
-.portfolio :global(.approved-portfolio-chart) {
+.portfolio.portfolio.portfolio :global(.approved-portfolio-chart) {
   width: 100%;
   max-width: 100%;
   height: auto;
   color: #227f73;
 }
-.portfolio :global(.approved-table-toolbar) {
+.portfolio.portfolio.portfolio :global(.approved-table-toolbar) {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
-.portfolio :global(.approved-table-toolbar) > label {
+.portfolio.portfolio.portfolio :global(.approved-table-toolbar) > label {
   min-width: 0;
 }
 .ledger {
@@ -71,50 +71,54 @@
   overflow-x: auto;
 }
 @media (max-width: 900px) {
-  .portfolio :global(.portfolio-grid) {
+  .portfolio.portfolio.portfolio :global(.portfolio-grid) {
     grid-template-columns: minmax(0, 1fr);
   }
-  .portfolio :global(.portfolio-grid) > div:nth-child(2) {
+  .portfolio.portfolio.portfolio :global(.portfolio-grid) > div:nth-child(2) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
   }
 }
 @media (max-width: 700px) {
-  .portfolio :global(.portfolio-grid) > div:nth-child(2) {
+  .portfolio.portfolio.portfolio :global(.portfolio-grid) > div:nth-child(2) {
     display: block;
   }
-  .portfolio :global(.wealth-strip.four) {
+  .portfolio.portfolio.portfolio :global(.wealth-strip.four) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
-  .portfolio :global(.wealth-strip.four) > div {
+  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
     grid-column: auto;
     border: 1px solid var(--line);
     padding: 12px;
   }
-  .portfolio :global(.wealth-strip.four) > div > strong {
+  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > strong {
     font-size: 22px;
     line-height: 1.2;
     letter-spacing: -0.04em;
   }
-  .portfolio :global(.wealth-strip.four) > div > span {
+  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > span {
     font-size: 11px;
     min-height: 32px;
     gap: 5px;
   }
-  .portfolio :global(.wealth-strip.four) > div > small {
+  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > small {
     font-size: 11px;
   }
-  .portfolio :global(.card) {
+  .portfolio.portfolio.portfolio :global(.card) {
     padding: 16px;
     margin-bottom: 14px;
     border-radius: 12px;
   }
-  .portfolio :global(.approved-table-toolbar) > label:first-child {
+  .portfolio.portfolio.portfolio
+    :global(.approved-table-toolbar)
+    > label:first-child {
     flex: 1 1 100%;
   }
-  .portfolio :global(.approved-table-toolbar) :is(input, select) {
+  .portfolio.portfolio.portfolio
+    :global(.approved-table-toolbar)
+    :is(input, select) {
     font-size: 16px;
     width: 100%;
     min-width: 0;
@@ -323,24 +327,33 @@
   }
 }
 
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(n),
-.portfolio.portfolio :global(.portfolio-grid) > div > :global(.card) {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:nth-child(n),
+.portfolio.portfolio.portfolio.portfolio
+  :global(.portfolio-grid)
+  > div
+  > :global(.card) {
   background: var(--card);
   color: var(--ink);
   border-color: var(--line);
 }
-.portfolio.portfolio :global(.approved-portfolio-chart) {
+.portfolio.portfolio.portfolio.portfolio :global(.approved-portfolio-chart) {
   color: var(--muted);
 }
-.portfolio.portfolio :global(.approved-portfolio-chart[data-direction="down"]) {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.approved-portfolio-chart[data-direction="down"]) {
   color: var(--red);
 }
-.portfolio.portfolio :global(.approved-portfolio-chart[data-direction="up"]) {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.approved-portfolio-chart[data-direction="up"]) {
   color: var(--green);
 }
 
 /* Summary roles carry restrained gradients; the analytical canvas stays clear. */
-.portfolio.portfolio :global(.wealth-strip.four) > div:first-child {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:first-child {
   background:
     radial-gradient(ellipse at 100% 0%, #414c51, transparent 70%),
     linear-gradient(135deg, #293338, #192126);
@@ -351,37 +364,50 @@
   --green: #83d8b3;
   --red: #ffb6af;
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div:first-child svg {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:first-child
+  svg {
   color: #d8edab;
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(2) {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:nth-child(2) {
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--surface) 65%, var(--card)),
     var(--card)
   );
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="negative"] {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div[data-tone="negative"] {
   background: linear-gradient(135deg, var(--card), var(--red-soft));
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div[data-tone="green"] {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div[data-tone="green"] {
   background: linear-gradient(135deg, var(--card), var(--green-soft));
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:nth-child(3) {
   background: linear-gradient(
     135deg,
     var(--card),
     color-mix(in srgb, #79a9cc 7%, var(--card))
   );
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(4) {
+.portfolio.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:nth-child(4) {
   background: linear-gradient(
     135deg,
     var(--card),
     color-mix(in srgb, #d3ac61 7%, var(--card))
   );
 }
-.portfolio.portfolio :global(.wealth-strip.four) > div {
+.portfolio.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
   border-radius: 14px;
   box-shadow: 0 5px 20px #17251a08;
 }
@@ -421,27 +447,36 @@
 
 /* Mobile ledger: aligned compact values, no full-screen holding cards. */
 @media (max-width: 700px) {
-  .portfolio.portfolio :global(.wealth-strip.four) {
+  .portfolio.portfolio.portfolio.portfolio :global(.wealth-strip.four) {
     gap: 8px;
     margin-bottom: 12px;
     align-items: stretch;
   }
-  .portfolio.portfolio :global(.wealth-strip.four) > div {
+  .portfolio.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
     padding: 12px;
     gap: 6px;
     min-height: 0;
   }
-  .portfolio.portfolio :global(.wealth-strip.four) > div > strong {
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.wealth-strip.four)
+    > div
+    > strong {
     font-size: 20px;
     margin: 0;
     letter-spacing: -0.025em;
   }
-  .portfolio.portfolio :global(.wealth-strip.four) > div > span {
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.wealth-strip.four)
+    > div
+    > span {
     min-height: 24px;
     font-size: 10px;
     gap: 4px;
   }
-  .portfolio.portfolio :global(.wealth-strip.four) > div > small {
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.wealth-strip.four)
+    > div
+    > small {
     font-size: 10px;
     line-height: 1.35;
     margin: 0;
@@ -595,12 +630,15 @@
     text-align: left;
   }
 }
-.portfolio.portfolio.portfolio :global(.approved-table-toolbar) {
+.portfolio.portfolio.portfolio.portfolio.portfolio
+  :global(.approved-table-toolbar) {
   margin: 12px 0;
   gap: 12px;
   align-items: center;
 }
-.portfolio.portfolio.portfolio :global(.approved-table-toolbar) select {
+.portfolio.portfolio.portfolio.portfolio.portfolio
+  :global(.approved-table-toolbar)
+  select {
   appearance: none;
   background-color: var(--card);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23788985' stroke-width='1.8'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
@@ -782,33 +820,90 @@
   }
 }
 
-.portfolio :global(.approved-holdings-table) :is(th, td) {
+.portfolio.portfolio.portfolio :global(.approved-holdings-table) :is(th, td) {
   font-variant-numeric: tabular-nums;
 }
-.portfolio :global(.approved-holdings-table) th:not(:first-child),
-.portfolio :global(.approved-holdings-table) td:not(:first-child) {
+.portfolio.portfolio.portfolio
+  :global(.approved-holdings-table)
+  th:not(:first-child),
+.portfolio.portfolio.portfolio
+  :global(.approved-holdings-table)
+  td:not(:first-child) {
   text-align: right;
 }
-.portfolio :global(.approved-holdings-table) td {
+.portfolio.portfolio.portfolio :global(.approved-holdings-table) td {
   padding-top: 14px;
   padding-bottom: 14px;
 }
-.portfolio :global(.approved-holdings-table) .company-row {
+.portfolio.portfolio.portfolio :global(.approved-holdings-table) .company-row {
   gap: 12px;
 }
 @media (min-width: 900px) {
-  .portfolio :global(.approved-holdings-table) td:first-child {
+  .portfolio.portfolio.portfolio
+    :global(.approved-holdings-table)
+    td:first-child {
     width: 42%;
   }
-  .portfolio :global(.approved-holdings-table) td:nth-child(2) {
+  .portfolio.portfolio.portfolio
+    :global(.approved-holdings-table)
+    td:nth-child(2) {
     width: 10%;
   }
-  .portfolio :global(.approved-holdings-table) td:nth-child(3) {
+  .portfolio.portfolio.portfolio
+    :global(.approved-holdings-table)
+    td:nth-child(3) {
     width: 18%;
   }
 }
 @media (max-width: 700px) {
-  .portfolio :global(.approved-holdings-table) td:not(:first-child) {
+  .portfolio.portfolio.portfolio
+    :global(.approved-holdings-table)
+    td:not(:first-child) {
     text-align: inherit;
+  }
+}
+/* Net value anchors the summary; supporting balances remain quiet and readable. */
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) {
+  gap: 0;
+  border-radius: 18px;
+  background: var(--card);
+  overflow: hidden;
+  box-shadow: 0 10px 36px #112e2208;
+}
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 24px;
+}
+.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div:first-child {
+  background:
+    radial-gradient(ellipse at 100% 0, #a4d39322, transparent 70%),
+    linear-gradient(130deg, #172d2c, #2a4639);
+  color: #eff7ed;
+}
+.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:first-child
+  :is(span, small) {
+  color: #c0d3c5;
+}
+.portfolio.portfolio.portfolio
+  :global(.wealth-strip.four)
+  > div:not(:first-child) {
+  background: transparent;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-grid) {
+  gap: 24px;
+}
+@media (max-width: 700px) {
+  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
+    padding: 18px 14px;
+  }
+  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > strong {
+    font-size: 22px;
+  }
+  .portfolio.portfolio.portfolio :global(.portfolio-grid) {
+    gap: 18px;
   }
 }

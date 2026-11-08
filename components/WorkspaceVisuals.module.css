@@ -1,9 +1,62 @@
 .workspaceVisuals {
   min-width: 0;
 }
-.workspaceVisuals.workspaceVisuals :global(.watch-summary) {
-  background: var(--card);
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.page-heading) {
+  margin-bottom: 22px;
+  align-items: center;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.page-heading) h1 {
+  font-size: clamp(27px, 3vw, 36px);
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.watch-summary) {
+  padding: 12px 0;
+  background: transparent;
   color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 10px 36px #112e2208;
+  padding: 22px;
+  margin-bottom: 22px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.section-head) {
+  margin-bottom: 18px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.section-head) h2 {
+  font-size: 19px;
+  letter-spacing: -0.025em;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals
+  :global(.approved-table-toolbar) {
+  padding: 10px 0 18px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals
+  :global(.holdings-table)
+  :is(td, th) {
+  padding-block: 16px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals
+  :global(.holdings-table)
+  tbody
+  tr:hover {
+  background: color-mix(in srgb, var(--green) 4%, transparent);
+}
+@media (max-width: 700px) {
+  .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
+    padding: 18px 14px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+  }
+  .workspaceVisuals.workspaceVisuals.workspaceVisuals
+    :global(.holdings-table)
+    td {
+    padding-block: 0;
+  }
 }

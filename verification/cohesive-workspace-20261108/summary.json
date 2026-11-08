@@ -1,0 +1,33 @@
+{
+  "actualAppRoutes": 40,
+  "routeWidths": [
+    390,
+    1440
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "routePageErrors": 0,
+  "routeHorizontalOverflow": 0,
+  "researchInteractionLayouts": 8,
+  "researchWidths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "depthInteractionLayouts": 40,
+  "depthScreens": [
+    "Options",
+    "Owner guide",
+    "Public portfolio check",
+    "Track record",
+    "Education"
+  ],
+  "consoleCheck": "Actual MSFT preview: no console errors or warnings after deferring optional crystal and removing manual width with autoSize",
+  "data": "Local illustrative demo data and explicit options/handbook fixtures; no live-provider accuracy certification",
+  "deployment": "Not deployed",
+  "regressionTests": 1234,
+  "regressionFailures": 0
+}

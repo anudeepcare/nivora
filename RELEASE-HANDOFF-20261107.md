@@ -58,3 +58,11 @@ ZIP contains source, lockfile, tests, migrations, private owner reference and ve
 Applied ideas from both supplied Overview HTML references: open decision presentation with holding/new-purchase context, compact diamond price stages, full-width chart placement, and a faceted eight-lens evidence explorer using existing 0–10 research scores. Missing scores are striped and unscored. Bear/base/bull math remains unchanged and visible. Evidence groups and selected Business/Technical/Valuation metric groups use open rows rather than outlined cards; the valuation expectations calculator starts expanded. Pro tools remain available.
 
 Validation: 1,234 regression tests; lint/types/build; eight responsive light/dark fixture layouts with lens selection, decision context and short-history checks. The browser chart slot is a layout fixture, not a live provider check. No deployment or database changes.
+
+## November 8: cohesive workspace refinement
+
+The opening Research view puts the real price chart beside a compact decision, price checkpoint and five diamond stages with their meanings. Two actual reasons appear immediately; full risks remain accessible. The evidence crystal is optional, mounts when opened and no longer causes an initial hydration mismatch. The Pace caption explicitly names its settled-history reference rather than presenting a potentially different raw quote as Current. Bear/base/bull remain synchronized, with actual EPS/multiple inputs visible when the selected earnings model supplies them. No valuation or decision arithmetic changed.
+
+Shared navigation, Home lists, Watchlist/Portfolio surfaces, summary balances, Options controls and the owner guide use consistent hierarchy, spacing and restrained brand depth. Empty chart states are smaller. Existing Pro metrics and tools remain. The automatic chart resize uses its built-in size observer; the separate fit handler no longer supplies an incompatible manual width and cancels pending work at unmount.
+
+Validation: 40 actual local app-route/theme/viewport checks; eight research interactions with the real chart component, including short-history and 320px states; 40 Options/guide/public-tool interaction layouts; regression suite, production build and types/lint. Demo/fixture observations do not certify paid-provider data or forecast accuracy. No deployment or database changes.

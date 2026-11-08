@@ -463,3 +463,58 @@
 :global([data-theme="dark"]) .instrument.editorial[data-tone="risk"] {
   --decision-ink: #ffb3a7;
 }
+/* Decision and chart share the opening viewport. */
+.instrument.instrument.editorial .title h2 {
+  font-size: clamp(34px, 3.4vw, 48px);
+  line-height: 1.08;
+}
+.instrument.instrument.editorial .reason {
+  font-size: 14px;
+  line-height: 1.55;
+  margin-top: 10px;
+  max-width: 46ch;
+}
+.editorial .readout {
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+.editorial .title > small {
+  display: none;
+}
+.instrument.instrument.editorial .insight {
+  margin-top: 12px;
+}
+.instrument.editorial .boundary > strong {
+  font-size: 17px;
+}
+.editorial .readingDetail {
+  margin-top: 10px;
+}
+.editorial .header > span {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.editorial .header > button {
+  width: 36px;
+  height: 36px;
+}
+.editorial .zoneContext {
+  margin-top: 6px;
+}
+@media (max-width: 600px) {
+  .instrument.instrument.editorial .title h2 {
+    font-size: 40px;
+  }
+  .instrument.instrument.editorial .reason {
+    font-size: 14px;
+  }
+}
+.instrument.editorial .brandArt {
+  display: block;
+  top: 48px;
+  right: 8px;
+  width: 90px;
+  opacity: 0.09;
+  transform: rotate(8deg);
+  filter: none;
+}

@@ -104,6 +104,7 @@ export default function PacePriceZones({
                 P{level}
                 {current ? " · now" : ""}
               </strong>
+              <small className={styles.stageAction}>{label}</small>
               <span>
                 {band
                   ? amount(
@@ -122,8 +123,8 @@ export default function PacePriceZones({
           );
         })}
         <small className={styles.currentPrice}>
-          ● Current {amount(research.quote.price, research.quote.currency)} ·
-          approximate zone edges
+          Pace reference {amount(zones.reference, research.quote.currency)} ·
+          settled price history · approximate zone edges
         </small>
       </div>
     );

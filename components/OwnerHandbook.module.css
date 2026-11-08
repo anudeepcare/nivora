@@ -372,3 +372,73 @@
     display: none;
   }
 }
+/* An editorial guide, with navigation separate from the reading surface. */
+.cover {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 30px;
+  background:
+    radial-gradient(ellipse at 100% 0, #b3da7a24, transparent 65%),
+    linear-gradient(125deg, #172c2a, #2d4434);
+  border-radius: 18px;
+}
+.cover:after {
+  content: "";
+  position: absolute;
+  right: 30%;
+  top: -70px;
+  width: 200px;
+  height: 260px;
+  background: url("/pace-diamond.svg") center/contain no-repeat;
+  opacity: 0.12;
+  transform: rotate(14deg);
+  pointer-events: none;
+}
+.cover h2 {
+  font-size: 32px;
+  margin: 8px 0;
+}
+.layout {
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 40px;
+}
+.reader {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 16px 0 24px;
+}
+.reader article {
+  max-width: 70ch;
+}
+.reader h1,
+.reader h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+.topics button {
+  border-radius: 0;
+  padding: 10px 12px;
+  min-height: 44px;
+  font-size: 12px;
+}
+.topics button[aria-current="page"] {
+  box-shadow: inset 2px 0 var(--green);
+  background: color-mix(in srgb, var(--green) 5%, transparent);
+}
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .cover {
+    padding: 22px;
+  }
+  .cover h2 {
+    font-size: 28px;
+  }
+  .reader {
+    padding-top: 10px;
+  }
+}

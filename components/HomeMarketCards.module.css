@@ -400,3 +400,20 @@
   outline-offset: 3px;
   border-radius: 6px;
 }
+.card {
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px #18332208;
+}
+.grid {
+  gap: 18px;
+}
+.card .unavailable {
+  height: auto;
+  min-height: 74px;
+  gap: 7px;
+  padding-top: 14px;
+}
+.card .unavailable > svg {
+  display: none;
+}
