@@ -10,12 +10,12 @@ await fs.mkdir(out, { recursive: true });
 const fixtures = {
   "next/link": `import React from 'react';export default function Link({children,...props}){return <a {...props}>{children}</a>}`,
   "next/navigation": `export function usePathname(){return '/research/IREN'};export function useSearchParams(){return new URLSearchParams()};export function useRouter(){return{push(){}}}`,
-  "./Session": `export function useProduct(){return {owner:'fixture',theme:'light',demo:{routePrefix:'/preview'},workspace:{positions:[],watchlist:[]},cache:new Map()}};export function useResource(){return{data:{snapshots:[],documents:[]},loading:false,error:'',refresh(){}}}`,
+  "./Session": `export function useProduct(){return {owner:'fixture',theme:'light',demo:{routePrefix:'/preview'},workspace:{positions:[],watchlist:[]},cache:new Map()}};export function useResource(key){return{data:key?.startsWith('news?')?{items:Array.from({length:6},(_,i)=>({title:'AppLovin reports quarterly results and updated operating outlook for investors '+i,url:'https://example.com/news/'+i,date:'2026-11-08'}))}:key?.startsWith('filings?')?{filings:Array.from({length:6},(_,i)=>({form:i%2?'8-K':'10-Q',title:'Results of Operations and Financial Condition · Submission of Matters to a Vote of Security Holders · Financial Statements and Exhibits',date:'2026-11-04',url:'https://example.com/filing/'+i})),issues:[]}:{snapshots:[],documents:[]},loading:false,error:'',refresh(){}}}`,
   "./WorkspacePreferences": `export function useWorkspacePreferences(){return {preferences:{visibleMetrics:['business','valuation','price','ownership']}}}`,
 };
 await build({
   stdin: {
-    contents: `import React from 'react';import{createRoot}from'react-dom/client';import Value from './components/ValueStudio';import Financial from './components/FinancialPicture';import Targets from './components/TargetsEstimates';import Ratings from './components/AnalystRatings';import r from './tests/fixtures/iren-observed-20261019.json';import desk from './components/ResearchDeskLayout.module.css';import visual from './components/ResearchTabVisuals.module.css';import './app/core/compatibility.css';import './app/core/foundation.css';import './app/appearance.css';import './app/core/surfaces.css';import './app/core/readability.css';import './app/core/mobile-glass.css';function App(){const[view,setView]=React.useState('Valuation');return <main className={\`product approved-product approved-research-page \${visual.root}\`} style={{padding:16}}><nav aria-label="Fixture views">{['Valuation','Financials','Analysts'].map(v=><button onClick={()=>setView(v)} key={v}>{v}</button>)}</nav><div data-research-section={view}><div className={desk.content} data-desk={view}>{view==='Valuation'?<Value research={r} onWorkbench={()=>{}}/>:view==='Financials'?<Financial research={r}/>:<><Targets research={r} ratings={<Ratings research={r} hideConsensus/>}/></>}</div></div></main>};createRoot(document.getElementById('root')).render(<App/>);`,
+    contents: `import React from 'react';import{createRoot}from'react-dom/client';import Value from './components/ValueStudio';import Financial from './components/FinancialPicture';import Targets from './components/TargetsEstimates';import Ratings from './components/AnalystRatings';import Updates from './components/CompanyUpdates';import Earnings from './components/EarningsReview';import r from './tests/fixtures/iren-observed-20261019.json';import desk from './components/ResearchDeskLayout.module.css';import visual from './components/ResearchTabVisuals.module.css';import './app/core/compatibility.css';import './app/core/foundation.css';import './app/appearance.css';import './app/core/surfaces.css';import './app/core/readability.css';import './app/core/mobile-glass.css';function App(){const[view,setView]=React.useState('Valuation');return <main className={\`product approved-product approved-research-page \${visual.root}\`} style={{padding:16}}><nav aria-label="Fixture views">{['Valuation','Financials','Analysts','News'].map(v=><button onClick={()=>setView(v)} key={v}>{v}</button>)}</nav><div data-research-section={view}><div className={desk.content} data-desk={view}>{view==='Valuation'?<Value research={r} onWorkbench={()=>{}}/>:view==='Financials'?<Financial research={r}/>:view==='News'?<Updates research={{...r,evidence:{...r.evidence,earnings:[{date:'2026-10-15',period:'2026-Q3',actual:4.30,estimate:3.94}]}}}><Earnings research={{...r,evidence:{...r.evidence,earnings:[{date:'2026-10-15',period:'2026-Q3',actual:4.30,estimate:3.94}]}}}/></Updates>:<><Targets research={r} ratings={<Ratings research={r} hideConsensus/>}/></>}</div></div></main>};createRoot(document.getElementById('root')).render(<App/>);`,
     resolveDir: root,
     loader: "tsx",
   },
@@ -45,7 +45,7 @@ const browser = await chromium.launch({
 });
 const report = [];
 try {
-  for (const width of [320, 390, 768, 1440])
+  for (const width of [320, 390, 768, 1440, 1920])
     for (const theme of ["light", "dark"]) {
       const page = await browser.newPage({ viewport: { width, height: 1000 } }),
         errors = [];
@@ -59,7 +59,7 @@ try {
       await page.goto("http://fixture.local/");
       await page.addStyleTag({ path: out + "/app.css" });
       await page.addScriptTag({ path: out + "/app.js" });
-      for (const view of ["Valuation", "Financials", "Analysts"]) {
+      for (const view of ["Valuation", "Financials", "Analysts", "News"]) {
         await page.getByRole("button", { name: view, exact: true }).click();
         await page.locator(`[data-research-section="${view}"]`).waitFor();
         await page.evaluate(
@@ -123,6 +123,62 @@ try {
             .first()
             .waitFor();
         }
+        if (view === "News") {
+          assert.equal(
+            await page.locator(".coverage-grid .source-row").count(),
+            12,
+          );
+          assert.equal(
+            await page.getByText("Quarterly report", { exact: true }).count(),
+            3,
+          );
+          if (width >= 1440) {
+            const panels = await page
+              .locator(
+                ".coverage-grid > section, .news-context-column > .earnings-review",
+              )
+              .evaluateAll((xs) =>
+                xs.map((x) => ({
+                  top: x.getBoundingClientRect().top,
+                  heading: x.querySelector("h2").getBoundingClientRect().top,
+                })),
+              );
+            assert.ok(
+              Math.max(...panels.map((x) => x.top)) -
+                Math.min(...panels.map((x) => x.top)) <
+                2,
+              JSON.stringify(panels),
+            );
+            assert.ok(
+              Math.max(...panels.map((x) => x.heading)) -
+                Math.min(...panels.map((x) => x.heading)) <
+                2,
+              JSON.stringify(panels),
+            );
+          }
+          assert.ok(
+            await page
+              .locator(".source-row")
+              .evaluateAll((xs) =>
+                xs.every((x) => getComputedStyle(x).borderLeftWidth === "0px"),
+              ),
+          );
+        }
+        if (view === "Analysts") {
+          await page
+            .getByRole("tab", { name: "Conditional valuation", exact: true })
+            .click();
+          const bar = page.getByRole("region", {
+            name: "Scenario P/E assumption",
+          });
+          await bar.waitFor();
+          await bar.locator("input").fill("25");
+          await page
+            .getByRole("button", { name: "Reset P/E", exact: true })
+            .click();
+          assert.equal(await bar.locator("input").inputValue(), "");
+          await bar.getByText("Assumptions & limits", { exact: true }).click();
+        }
         const overflow = await page.evaluate(() => ({
           width: innerWidth,
           scroll: document.documentElement.scrollWidth,
@@ -154,9 +210,11 @@ try {
     }
 } finally {
   await browser.close();
-  await fs.mkdir("verification/refined-grids-20261108", { recursive: true });
+  await fs.mkdir("verification/alignment-cleanup-20261108", {
+    recursive: true,
+  });
   await fs.writeFile(
-    "verification/refined-grids-20261108/populated.json",
+    "verification/alignment-cleanup-20261108/populated.json",
     JSON.stringify(report, null, 2),
   );
 }

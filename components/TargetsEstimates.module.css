@@ -418,3 +418,71 @@
     padding: 16px 14px;
   }
 }
+
+.assumptionBar {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 14px 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--green) 4%, var(--card));
+}
+.assumptionBar .control {
+  max-width: none;
+  margin: 0;
+  font-size: 12px;
+}
+.assumptionBar input {
+  min-height: 40px;
+  font-size: 14px;
+}
+.assumptionFacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0 0 6px;
+}
+.assumptionFacts dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+.assumptionFacts dd {
+  margin: 5px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.resetAssumption {
+  min-height: 40px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.assumptionHelp {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.assumptionHelp summary {
+  padding: 4px 0;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.assumptionHelp p {
+  max-width: 90ch;
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+@media (max-width: 650px) {
+  .assumptionBar {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 14px;
+  }
+  .assumptionFacts {
+    gap: 12px 20px;
+  }
+  .resetAssumption {
+    justify-self: start;
+  }
+}

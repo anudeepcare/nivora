@@ -215,40 +215,115 @@
   gap: 8px;
   font-size: 12px;
 }
+/* Source lists and the earnings sidebar share one top edge. */
 .content.content.content[data-desk="News"] > :global(.depth-news) {
-  grid-column: span 8;
+  grid-column: 1 / -1;
   display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
   gap: 16px;
-}
-.content.content.content[data-desk="News"] > :global(.earnings-review) {
-  grid-column: span 4;
+  margin: 0;
+  padding: 0;
 }
 .content.content.content :global(.coverage-grid) {
+  grid-column: span 8;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  align-items: start;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+.content.content.content :global(.news-context-column) {
+  grid-column: span 4;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+.content.content.content :global(.news-context-column > *) {
+  min-width: 0;
+  margin: 0;
 }
 .content.content.content :global(.coverage-grid > .au-panel) {
-  padding: 18px;
+  padding: 20px;
   margin: 0;
   border: 0;
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--card);
 }
 .content.content.content :global(.au-panel-head) {
-  margin-bottom: 12px;
+  margin: 0 0 12px;
+  padding: 0 0 12px;
+  min-height: 26px;
+  align-items: center;
 }
-.content.content.content :global(.au-panel-head h2) {
+.content.content.content :global(.au-panel-head h2),
+.content.content.content[data-desk="News"] :global(.section-head h2) {
   font-size: 18px;
+  font-weight: 650;
+  line-height: 1.3;
+  margin: 0;
 }
 .content.content.content :global(.source-row) {
-  padding: 13px 0;
+  padding: 14px 0;
+  margin: 0;
+  border-left: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
   font-size: 13px;
   line-height: 1.5;
 }
+.content.content.content :global(.source-row strong) {
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.content.content.content :global(.source-row small) {
+  font-size: 11px;
+}
 .content.content.content :global(.news-event-layout) {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.content.content.content :global(.news-next-report) {
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+}
+.content.content.content :global(.transaction-note) {
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.content.content.content :global(.transaction-note summary) {
+  padding: 6px 0;
+  background: transparent;
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .content.content.content :global(.coverage-grid),
+  .content.content.content :global(.news-context-column) {
+    grid-column: 1 / -1;
+  }
+  .content.content.content :global(.news-context-column) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+@media (max-width: 650px) {
+  .content.content.content :global(.news-context-column) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .content.content.content :global(.coverage-grid > .au-panel) {
+    padding: 16px;
+  }
 }
 .content.content.content :global(.earnings-kpis) {
   display: grid;
@@ -445,4 +520,21 @@
     :global(.desk-secondary-metrics) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+.content.content.content :global(.news-context-column h3) {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0 0 6px;
+}
+.content.content.content :global(.news-context-column .context-note) {
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.content.content.content :global(.news-context-column .news-transaction-list) {
+  padding: 0;
+  margin: 0;
 }

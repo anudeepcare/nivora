@@ -724,8 +724,9 @@ export default function Research({ symbol }: { symbol: string }) {
           >
             {tab === "News" && (
               <>
-                <CompanyUpdates research={r} preview={!!demo} />
-                <EarningsReview research={r} />
+                <CompanyUpdates research={r} preview={!!demo}>
+                  <EarningsReview research={r} />
+                </CompanyUpdates>
                 <details className="research-reference">
                   <summary>Earnings history &amp; estimates</summary>
                   <EarningsWorkspace research={r} />

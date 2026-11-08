@@ -165,30 +165,18 @@ export default function TargetsEstimates({
         )}
         {active === 2 && (
           <>
-            <div className={styles.subhead}>
-              <h3>Earnings scenarios</h3>
-              <span>Conditional assumptions · not analyst price targets</span>
-            </div>
-
-            <details className={styles.assumptions}>
-              <summary>Adjust P/E assumption</summary>
-              <p className={styles.note}>
-                Source: {r.evidence?.source ?? "Estimate provider"} · dataset
-                updated {dateLabel(model.asOf)}. Reported forward P/E:{" "}
-                {r.evidence?.multiples?.ForwardPE != null
-                  ? `${r.evidence.multiples.ForwardPE.toFixed(1)}×`
-                  : "not supplied"}
-                . Forecast horizon: nearest eligible three-year estimate. EPS
-                period and split basis need verification.
-              </p>
+            <section
+              className={styles.assumptionBar}
+              aria-label="Scenario P/E assumption"
+            >
               <label className={styles.control}>
-                Your exit P/E assumption (earnings cases only)
+                Exit P/E assumption
                 <input
                   type="number"
                   min="0.1"
                   max="500"
                   step="0.1"
-                  placeholder="Use checked provider P/E"
+                  placeholder="Use reported P/E"
                   value={multipleValue}
                   onChange={(event) =>
                     setMultipleInput({
@@ -198,21 +186,46 @@ export default function TargetsEstimates({
                   }
                 />
               </label>
+              <dl className={styles.assumptionFacts}>
+                <div>
+                  <dt>Reported forward P/E</dt>
+                  <dd>
+                    {r.evidence?.multiples?.ForwardPE != null
+                      ? `${r.evidence.multiples.ForwardPE.toFixed(1)}×`
+                      : "Not supplied"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Estimate horizon</dt>
+                  <dd>Nearest eligible 3-year</dd>
+                </div>
+                <div>
+                  <dt>Dataset updated</dt>
+                  <dd>{dateLabel(model.asOf)}</dd>
+                </div>
+              </dl>
               {multipleValue && (
                 <button
                   type="button"
+                  className={styles.resetAssumption}
                   onClick={() =>
                     setMultipleInput({ symbol: r.company.symbol, value: "" })
                   }
                 >
-                  Reset to checked provider P/E
+                  Reset P/E
                 </button>
               )}
-              <p className={styles.note}>
-                Low / central / high cases use 0.8× / 1.0× / 1.2× this multiple.
-                Your assumption does not change analyst consensus.
-              </p>
-            </details>
+              <details className={styles.assumptionHelp}>
+                <summary>Assumptions & limits</summary>
+                <p className={styles.note}>
+                  The earnings cases use 0.8× / 1.0× / 1.2× the selected
+                  multiple. Changing this input does not change analyst
+                  consensus. The nearest eligible three-year estimate supplies
+                  the horizon; EPS period, accounting and split basis need
+                  verification.
+                </p>
+              </details>
+            </section>
             {!multipleValue ? (
               <SelectedValuation research={r} />
             ) : forecast.available ? (
