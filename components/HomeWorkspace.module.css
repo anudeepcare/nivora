@@ -1,9 +1,9 @@
 .home.home.home :global(.home-evidence-layout) {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  align-items: flex-start;
+  align-items: stretch;
   gap: 16px;
-  margin: 22px 0;
+  margin: 16px 0;
 }
 .home.home.home :global(.home-evidence-panel) {
   min-width: 0;

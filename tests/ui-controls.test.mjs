@@ -2418,3 +2418,25 @@ test("a measured zero analyst rating is retained rather than treated as missing 
   assert.match(html, /0\.00/);
   assert.doesNotMatch(html, /Rating coverage/);
 });
+
+test('embedded price question uses native labelled controls and compares only positive same-period EPS', async () => {
+  const tools = await import('../lib/decision-tools.ts');
+  const listing = await import('../lib/listing-reconciliation.ts');
+  const targets = await import('../lib/targets-estimates.ts');
+  const scope = {React, useMemo:React.useMemo, useState:React.useState, ...tools, ...listing, ...targets, ...format, Help:empty, Link:empty, s:experience};
+  const Insights = loadComponent('components/DecisionInsights.tsx','Insights',scope);
+  const View = loadComponent('components/DecisionInsights.tsx','DecisionInsights',{React,Insights});
+  const r = structuredClone(demoData.research.MSFT);
+  r.evidence = {...r.evidence, updatedAt:r.retrievedAt, reportingCurrency:'USD', estimates:[{date:'2027-12-31',period:'FY2027',frequency:'annual',currency:'USD',eps:20,epsLow:18,epsHigh:22,revenue:null,analysts:12}]};
+  const render = () => renderToStaticMarkup(React.createElement(View,{research:r,now:Date.parse(r.retrievedAt),initialTab:1,embedded:true}));
+  let html = render();
+  assert.match(html,/What the price needs/);
+  assert.match(html,/aria-label="Future P\/E assumption"/);
+  assert.match(html,/aria-label="Desired annual price return \(%\)"/);
+  assert.match(html,/aria-label="Horizon"/);
+  assert.match(html,/Analysts expect/);
+  r.evidence.estimates[0].eps = -1;
+  html = render();
+  assert.doesNotMatch(html,/Analysts expect/);
+  assert.match(html,/Price needs/);
+});

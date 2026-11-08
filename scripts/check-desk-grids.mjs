@@ -76,6 +76,44 @@ try {
               .count(),
             1,
           );
+          const question = page.getByRole("region", {
+            name: "What the price needs",
+            exact: true,
+          });
+          const multiple = question.getByRole("spinbutton", {
+            name: "Future P/E assumption",
+            exact: true,
+          });
+          const returnInput = question.getByRole("spinbutton", {
+            name: "Desired annual price return (%)",
+            exact: true,
+          });
+          assert.equal(await multiple.inputValue(), "25");
+          assert.equal(await returnInput.inputValue(), "8");
+          const before = Number(
+            (
+              await question.locator('[aria-live="polite"]').innerText()
+            ).replace(/[^0-9.]/g, ""),
+          );
+          await multiple.fill("50");
+          const after = Number(
+            (
+              await question.locator('[aria-live="polite"]').innerText()
+            ).replace(/[^0-9.]/g, ""),
+          );
+          assert.ok(
+            Math.abs(before / 2 - after) <= 0.011,
+            "Doubling the future P/E should halve the required EPS",
+          );
+          await multiple.fill("25");
+          const inputStyle = await multiple.evaluate((el) => ({
+            font: parseFloat(getComputedStyle(el).fontSize),
+            width: el.getBoundingClientRect().width,
+          }));
+          assert.ok(
+            inputStyle.font >= 22 && inputStyle.width >= 35,
+            JSON.stringify(inputStyle),
+          );
           const market = page.locator(".valuation-board");
           assert.ok((await market.locator("article").count()) >= 4);
           if (width === 1440) {
@@ -86,7 +124,7 @@ try {
             assert.ok(b.x > a.x + a.width);
           }
           await page
-            .getByText("Price expectations calculator", { exact: true })
+            .getByText("What the price needs", { exact: true })
             .waitFor();
         }
         if (view === "Financials" && width === 1440) {
@@ -210,11 +248,11 @@ try {
     }
 } finally {
   await browser.close();
-  await fs.mkdir("verification/alignment-cleanup-20261108", {
+  await fs.mkdir("verification/reference-consistency-20261108", {
     recursive: true,
   });
   await fs.writeFile(
-    "verification/alignment-cleanup-20261108/populated.json",
+    "verification/reference-consistency-20261108/populated.json",
     JSON.stringify(report, null, 2),
   );
 }

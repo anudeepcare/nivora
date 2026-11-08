@@ -38,3 +38,9 @@ The actual shared TypeScript engine reproduces all 589 saved candidate outputs e
 
 ## Delivery
 Source only; no deployment or database changes. Optional public Pace record publishing requires scripts/sql/enable-pace-v6.sql to accept the new version. App display/calculation does not require that SQL. Existing public-record permissions are preserved. No newly verified APP forecast values are claimed.
+
+## Reference-led responsive refinement — November 8
+- Valuation now leads with the HTML-inspired editable “What the price needs” sentence, followed by the existing bear/base/bull view. EPS requirements use the selected price reference; comparable positive estimates have a common-scale bar comparison.
+- Ownership and Ask AURYN share their own row; the investment case and business map retain their desktop alignment.
+- Financial categories, technical panels, Overview evidence, Home, Watchlist and public examples use coordinated gutters and card sizing.
+- Model-fit detail remains accessible without dominating the valuation page. Calculations, scenarios and Pro tools remain available.

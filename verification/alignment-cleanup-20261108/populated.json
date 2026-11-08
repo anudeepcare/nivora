@@ -166,5 +166,77 @@
     "width": 1440,
     "theme": "light",
     "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "News",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 1920,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 1920,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 1920,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "News",
+    "width": 1920,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 1920,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 1920,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 1920,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "News",
+    "width": 1920,
+    "theme": "dark",
+    "passed": true
   }
 ]

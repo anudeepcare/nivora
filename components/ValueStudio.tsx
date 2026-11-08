@@ -5,7 +5,7 @@ import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
 import SelectedValuation from "./SelectedValuation";
 import SectionIcon from "./SectionIcon";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
 import { percent } from "@/lib/format";
@@ -24,7 +24,6 @@ export default function ValueStudio({
   research: Research;
   onWorkbench: () => void;
 }) {
-  const [calculatorOpen, setCalculatorOpen] = useState(true);
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
   const available = d.metrics.filter(
@@ -42,6 +41,14 @@ export default function ValueStudio({
       className={`${layout.root} value-studio depth-value`}
       data-has-consensus={!!consensusOutlook(r)}
     >
+      <section className={layout.calculator} aria-label="What the price needs">
+        <DecisionInsights
+          research={r}
+          now={Date.parse(r.priceObservedAt ?? r.retrievedAt)}
+          initialTab={1}
+          embedded
+        />
+      </section>
       <div className={layout.scenarios}>
         <SelectedValuation
           research={r}
@@ -120,46 +127,34 @@ export default function ValueStudio({
           </p>
         </details>
       )}
-      <details
-        className={layout.calculator}
-        open={calculatorOpen}
-        onToggle={(e) => setCalculatorOpen(e.currentTarget.open)}
-      >
-        <summary>Price expectations calculator</summary>
-        {calculatorOpen && (
-          <DecisionInsights
-            research={r}
-            now={Date.parse(r.priceObservedAt ?? r.retrievedAt)}
-            initialTab={1}
-            embedded
-          />
-        )}
-      </details>
-      <section className={`value-model-fit ${layout.methods}`}>
-        <header className="section-head">
-          <h3>
-            <SectionIcon name="Business" />
-            The right lens for this business.
-          </h3>
-          <span className="eyebrow">Model fit</span>
-        </header>
-        {methods.methods.map((method) => (
-          <div key={method.key}>
-            <i data-state={method.status} />
-            <div>
-              <strong>{method.name}</strong>
-              <p>{method.reason}</p>
+      <details className={`value-model-fit ${layout.methods}`}>
+        <summary>Model fit & evidence</summary>
+        <div className={layout.methodGrid}>
+          <header className="section-head">
+            <h3>
+              <SectionIcon name="Business" />
+              The right lens for this business.
+            </h3>
+            <span className="eyebrow">Model fit</span>
+          </header>
+          {methods.methods.map((method) => (
+            <div key={method.key}>
+              <i data-state={method.status} />
+              <div>
+                <strong>{method.name}</strong>
+                <p>{method.reason}</p>
+              </div>
+              <span>
+                {method.status === "available"
+                  ? "Available"
+                  : method.status === "unsuitable"
+                    ? "Different model"
+                    : "More evidence needed"}
+              </span>
             </div>
-            <span>
-              {method.status === "available"
-                ? "Available"
-                : method.status === "unsuitable"
-                  ? "Different model"
-                  : "More evidence needed"}
-            </span>
-          </div>
-        ))}
-      </section>
+          ))}
+        </div>
+      </details>
       <div className={layout.manual}>
         <PriceProjection key={r.company.symbol} research={r} />
       </div>

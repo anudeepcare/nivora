@@ -538,3 +538,58 @@
   padding: 0;
   margin: 0;
 }
+
+/* Case tables and evidence questions share a full-width row below the thesis. */
+.content.content.content :global(.case-ownership-row) {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.content.content.content :global(.case-ownership-row > *) {
+  min-width: 0;
+  margin: 0;
+}
+.content.content.content :global(.thesis-evidence) {
+  align-items: stretch;
+}
+.content.content.content :global(.thesis-group) {
+  height: 100%;
+}
+.content.content.content :global(.technical-desk-groups) {
+  align-items: stretch;
+}
+.content.content.content :global(.technical-desk-groups > section) {
+  height: 100%;
+}
+@media (max-width: 900px) {
+  .content.content.content :global(.case-ownership-row) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.content.content.content[data-desk="Thesis"] > :global(.depth-thesis) {
+  grid-row: 1;
+  grid-column: 1 / span 8;
+}
+.content.content.content[data-desk="Thesis"] > :global(.depth-business) {
+  grid-row: 1;
+  grid-column: 9 / -1;
+}
+.content.content.content[data-desk="Thesis"] > :global(.case-ownership-row) {
+  grid-row: 2;
+}
+.content.content.content :global(.case-ownership-row > :only-child) {
+  grid-column: 1 / -1;
+}
+@media (max-width: 1100px) {
+  .content.content.content.content[data-desk="Thesis"] > :global(.depth-thesis),
+  .content.content.content.content[data-desk="Thesis"]
+    > :global(.depth-business),
+  .content.content.content.content[data-desk="Thesis"]
+    > :global(.case-ownership-row) {
+    grid-row: auto;
+    grid-column: 1 / -1;
+  }
+}

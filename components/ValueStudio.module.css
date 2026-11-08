@@ -19,10 +19,10 @@
   grid-column: span 4;
 }
 .root.root.root > .market {
-  grid-column: span 7;
+  grid-column: 1 / -1;
 }
 .root.root.root > .calculator {
-  grid-column: span 5;
+  grid-column: 1 / -1;
 }
 .root.root.root > .manual:empty {
   display: none;
@@ -37,7 +37,7 @@
 }
 .root.root.root :global(.valuation-board-grid) {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
   gap: 10px;
 }
 .root.root.root :global(.valuation-board-grid > article) {
@@ -62,56 +62,51 @@
 .root.root.root :global(.valuation-board-grid > article > span) {
   font-size: 12px;
 }
-.root.root.root > .calculator > summary {
-  padding: 0 0 14px;
-  min-height: 34px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  font-size: 16px;
-}
 .root.root.root > .methods {
+  grid-column: 1 / -1;
   padding: 20px;
+  margin: 0;
   background: var(--card);
   border-radius: 18px;
+}
+.methods > summary {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0;
+  min-height: 28px;
+  background: transparent;
+}
+.methodGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
+  margin-top: 16px;
 }
-.methods > header {
-  grid-column: 1/-1;
+.methodGrid > header {
+  display: none;
 }
-.root.root.root .methods > div {
+.root.root.root .methodGrid > div {
   display: grid;
   grid-template-columns: 6px minmax(0, 1fr);
-  gap: 9px;
+  gap: 8px;
   padding: 0;
   border: 0;
-  align-items: start;
 }
-.root.root.root .methods > div > span {
+.root.root.root .methodGrid > div > span {
   grid-column: 2;
+  font-size: 11px;
   margin: 0;
   text-align: left;
-  font-size: 11px;
 }
-.root.root.root .methods > div p {
+.root.root.root .methodGrid p {
   font-size: 12px;
   line-height: 1.5;
   margin: 5px 0;
 }
-.root.root.root .methods > div strong {
+.root.root.root .methodGrid strong {
   font-size: 13px;
 }
-.root.root.root .methods h3 {
-  font-size: 18px;
-}
-.root.root.root:not(:has(.market)) > .calculator {
-  grid-column: span 7;
-}
 .root.root.root:not(:has(.market)) > .methods {
-  grid-column: span 5;
-  grid-template-columns: minmax(0, 1fr);
+  grid-column: 1 / -1;
 }
 .root.root.root > :global(.desk-footnote) {
   font-size: 11px;
@@ -123,8 +118,8 @@
     grid-column: 1/-1;
   }
   .root.root.root > .market,
-  .root.root.root > .calculator {
-    grid-column: span 6;
+  .root.root.root > .methods {
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 760px) {
@@ -153,10 +148,6 @@
 .root.root.root
   :global(.valuation-board-grid:has(> article:nth-child(4):last-child)) {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.root.root.root
-  :global(.valuation-board-grid > article:nth-child(5):last-child) {
-  grid-column: span 2;
 }
 @media (max-width: 760px) {
   .root.root.root

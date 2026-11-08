@@ -2,7 +2,7 @@
   min-width: 0;
 }
 .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.page-heading) {
-  margin-bottom: 22px;
+  margin-bottom: 16px;
   align-items: center;
 }
 .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.page-heading) h1 {
@@ -24,7 +24,7 @@
   background: var(--card);
   box-shadow: 0 10px 36px #112e2208;
   padding: 22px;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
 }
 .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.section-head) {
   margin-bottom: 18px;
@@ -35,7 +35,7 @@
 }
 .workspaceVisuals.workspaceVisuals.workspaceVisuals
   :global(.approved-table-toolbar) {
-  padding: 10px 0 18px;
+  padding: 0 0 12px;
 }
 .workspaceVisuals.workspaceVisuals.workspaceVisuals
   :global(.holdings-table)
@@ -84,5 +84,31 @@
     :global(.holdings-table)
     td {
     padding-block: 0;
+  }
+}
+
+.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.watch-summary) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-height: 48px;
+  padding: 0;
+  margin-bottom: 12px;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals
+  :global(.approved-table-toolbar) {
+  margin: 0;
+  padding: 0 0 12px;
+  align-items: center;
+}
+.workspaceVisuals.workspaceVisuals.workspaceVisuals
+  :global(.card .section-head h2) {
+  margin: 0;
+}
+@media (max-width: 700px) {
+  .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
+    padding: 16px;
   }
 }

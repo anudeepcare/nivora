@@ -28,6 +28,7 @@ try {
       for (const route of process.env.AURYN_CANVAS_ROUTES
         ? JSON.parse(process.env.AURYN_CANVAS_ROUTES)
         : [
+            "/",
             "/preview/overview",
             "/preview/watchlist",
             "/preview/portfolio",

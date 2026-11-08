@@ -7,7 +7,7 @@
   padding: 56px 5% 48px;
   display: grid;
   grid-template-columns: 1.03fr 1fr;
-  gap: 56px;
+  gap: 32px;
   align-items: center;
   background:
     radial-gradient(ellipse at 8% 18%, #d6f35a30, transparent 55%),
@@ -303,7 +303,7 @@
 .evidence {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 32px;
   padding-top: 48px;
   padding-bottom: 60px;
   border-top: 1px solid var(--line);
@@ -361,7 +361,7 @@
 .faq {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 80px;
+  gap: 32px;
   padding-block: 48px;
   border-top: 1px solid var(--line);
 }
@@ -509,7 +509,7 @@
   padding-block: 58px;
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;
-  gap: 80px;
+  gap: 32px;
 }
 .workflowHeading h2 {
   font-size: clamp(32px, 3.6vw, 46px);
@@ -1421,5 +1421,33 @@
   }
   .page.page.page :global(.ap-menu-button:active) {
     transform: none;
+  }
+}
+
+/* Shared card rhythm in the public product examples. */
+.scenarios {
+  align-items: stretch;
+}
+.scenarios article {
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--green) 6%, var(--card)),
+    var(--card)
+  );
+}
+.scenarios article > small {
+  margin-top: auto;
+  padding-top: 10px;
+}
+@media (max-width: 650px) {
+  .hero {
+    gap: 24px;
+  }
+  .scenarios article {
+    padding: 12px 8px;
   }
 }

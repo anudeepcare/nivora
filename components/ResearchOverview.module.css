@@ -2,15 +2,15 @@
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   grid-template-areas: "context context" "pace chart" "scenarios scenarios" "metrics metrics" "changes changes" "crystal crystal";
-  gap: 26px 36px;
+  gap: 16px;
   align-items: start;
-  margin: 20px 0 36px;
+  margin: 16px 0 24px;
 }
 .paceColumn {
   grid-area: pace;
   min-width: 0;
   position: relative;
-  padding: 18px 22px 18px 0;
+  padding: 0;
 }
 .paceColumn:before {
   content: "";
@@ -132,12 +132,13 @@
   font-weight: 400;
 }
 .crystal > section {
-  max-width: 760px;
-  margin: 0 auto 24px;
+  max-width: none;
+  width: 100%;
+  margin: 0 0 16px;
 }
 @media (max-width: 1100px) {
   .overview {
-    gap: 24px;
+    gap: 16px;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
   .paceColumn {
@@ -151,7 +152,7 @@
   .overview {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "context" "pace" "chart" "scenarios" "metrics" "changes" "crystal";
-    gap: 22px;
+    gap: 16px;
     margin-top: 12px;
   }
   .paceColumn {
