@@ -51,6 +51,8 @@ export function consensusOutlook(r: Research): {
   change: number | null;
   referenceStatus: "current" | "older" | "unavailable";
   referencePrice: number | null;
+  referenceAsOf: string | null;
+  referenceBasis: "quote" | "settled-close";
 } | null {
   const e = r.evidence;
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
@@ -95,9 +97,11 @@ export function consensusOutlook(r: Research): {
     asOf: e!.updatedAt!,
     change: comparable ? (target / price! - 1) * 100 : null,
     referencePrice: comparable ? price! : null,
+    referenceAsOf: comparable ? (selected?.asOf ?? r.quote.asOf) : null,
+    referenceBasis: selected?.basis ?? "quote",
     referenceStatus: !comparable
       ? "unavailable"
-      : r.quote.stale
+      : !selected && r.quote.stale
         ? "older"
         : "current",
   };

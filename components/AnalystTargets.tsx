@@ -123,6 +123,18 @@ export default function AnalystTargets({
           </div>
         </div>
       )}
+      <p>
+        Analyst opinion, not AURYN fair value or a guaranteed return. Dataset
+        observed {dateLabel(c.asOf)}; individual target revision dates and
+        forecast horizon are not supplied.
+      </p>
+      {c.referenceAsOf && (
+        <small>
+          Compared with {amount(c.referencePrice, r.quote.currency)} ·{" "}
+          {c.referenceBasis === "settled-close" ? "settled close" : "quote"} ·{" "}
+          {dateLabel(c.referenceAsOf)}
+        </small>
+      )}
     </section>
   );
 }

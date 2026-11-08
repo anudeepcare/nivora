@@ -32,7 +32,6 @@ export default function IntegratedResearch({
     (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
   );
   const [evidenceOpen, setEvidenceOpen] = useState(false);
-  const [metricsOpen, setMetricsOpen] = useState(false);
   const [context, setContext] = useState<boolean | null>(null);
   const decisionOwns = context ?? owns;
   const [clock, setClock] = useState(() => Date.now());
@@ -153,14 +152,7 @@ export default function IntegratedResearch({
         </div>
         <div className={s.overviewMetrics}>
           <CompanyMetrics research={r} />
-          <details
-            className={s.researchTools}
-            open={metricsOpen}
-            onToggle={(event) => setMetricsOpen(event.currentTarget.open)}
-          >
-            <summary>All research metrics</summary>
-            {metricsOpen && <ResearchEvidenceGrid research={r} onTab={onTab} />}
-          </details>
+          <ResearchEvidenceGrid research={r} onTab={onTab} />
         </div>
       </div>
     </>

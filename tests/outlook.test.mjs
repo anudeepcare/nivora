@@ -384,3 +384,18 @@ test("complete annual EPS ranges 90–269 days away remain eligible without annu
     r.evidence.estimates[0].frequency="annual";r.evidence.estimates[0].date="2026-12-31";assert.equal(load().researchOutlook(r).available,false);
   }
 });
+
+ test("selected analyst reference provenance survives a discarded stale quote", () => {
+  const r = research();
+  r.company.exchange = "NASDAQ";
+  r.retrievedAt = "2026-10-27T01:00:00Z";
+  r.evidence.updatedAt = "2026-10-26";
+  r.evidence.consensus = {target:150};
+  r.quote = {...r.quote, price:120, stale:true, asOf:"2026-10-23T20:00:00Z"};
+  r.history = [{time:"2026-10-26",open:110,high:110,low:110,close:110,volume:100}];
+  const c = outlook.consensusOutlook(r);
+  assert.equal(c.referencePrice,110);
+  assert.equal(c.referenceStatus,"current");
+  assert.equal(c.referenceAsOf,"2026-10-26");
+  assert.equal(c.referenceBasis,"settled-close");
+});
