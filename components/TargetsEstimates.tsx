@@ -7,7 +7,7 @@ import { amount, dateLabel, percent } from "@/lib/format";
 import AnalystTargets from "./AnalystTargets";
 import EstimateRevisions from "./EstimateRevisions";
 import PriceRiskCases from "./PriceRiskCases";
-import ValuationLab from "./ValuationLab";
+import SelectedValuation from "./SelectedValuation";
 import styles from "./TargetsEstimates.module.css";
 
 const tabs = [
@@ -244,7 +244,9 @@ export default function TargetsEstimates({
                 Your assumption does not change analyst consensus.
               </p>
             </details>
-            {forecast.available ? (
+            {!multipleValue ? (
+              <SelectedValuation research={r} />
+            ) : forecast.available ? (
               <>
                 <p>
                   {forecast.multipleSource === "user-assumption"
@@ -306,10 +308,6 @@ export default function TargetsEstimates({
             ) : (
               <p className={styles.empty}>{forecast.reason}</p>
             )}
-            <details className={styles.lab}>
-              <summary>Test cash-flow assumptions & reverse valuation</summary>
-              <ValuationLab research={r} />
-            </details>
           </>
         )}
         {active === 3 && (

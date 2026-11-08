@@ -1,7 +1,7 @@
 import {
   researchAccumulation,
   type CycleSignal,
-} from "./accumulation-policy-v5.ts";
+} from "./accumulation-policy-v6.ts";
 import type { Candle } from "./types";
 
 type BoundaryReading = Pick<
@@ -10,6 +10,24 @@ type BoundaryReading = Pick<
 >;
 /** Interpret the published v5 boundaries; never change the policy or forecast price. */
 export function paceBoundary(reading: BoundaryReading | null) {
+  if (
+    reading &&
+    "policyVersion" in reading &&
+    reading.policyVersion === "monthly-v6"
+  ) {
+    return (
+      (
+        reading as BoundaryReading & {
+          conditionalBoundary?: {
+            price: number;
+            level: number;
+            operator: string;
+            distancePercent: number;
+          } | null;
+        }
+      ).conditionalBoundary ?? null
+    );
+  }
   if (
     !reading ||
     ![

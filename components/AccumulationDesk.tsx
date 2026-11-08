@@ -7,7 +7,7 @@ import type { Research, Candle } from "@/lib/types";
 import {
   researchAccumulation,
   adaptiveSettledBars,
-} from "@/lib/accumulation-policy-v5";
+} from "@/lib/accumulation-policy-v6";
 import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
@@ -213,7 +213,7 @@ export default function AccumulationDesk({
       <div className="accumulation-chart">
         <PriceChart
           bars={monthly}
-          range={weekly ? "weekly-policy-v1" : "monthly-policy-v5"}
+          range={weekly ? "weekly-policy-v1" : chosen.version}
           style="candles"
           candleColors={candleColors}
           levels={levels}
@@ -253,7 +253,7 @@ export default function AccumulationDesk({
         <p>
           {weekly
             ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."
-            : "Monthly v5 uses the preceding 12 completed monthly closes for its cycle average and sample spread (minimum 10% of that average). Readings with 12–23 prior completed months are labelled limited history; 24 prior months use the standard robust-trend guard. The 2×/3×/4× gates require 10%/25%/35% below the cycle average and 0.5/0.95/1.3 spread units below it. Positive extension reviews also retain the robust-trend upper guard and a severe cycle-extension check."}
+            : "Monthly v6 uses a fixed technical classifier across monthly price position, daily trend, volatility and momentum. Existing extension rules remain in place. Earlier observations and insufficient-history cases retain v5. Conditional price levels are local transitions, not guarantees for all prices beyond a threshold."}
           Weekly and monthly calculations differ. Historical readings do not
           establish future outperformance.
         </p>
@@ -279,7 +279,7 @@ export default function AccumulationDesk({
         >
           {showEvaluation
             ? "Hide historical comparison"
-            : "Test this policy on available history ↗"}
+            : "View legacy-policy backtest ↗"}
         </button>
       )}
       {showEvaluation && !weekly && (

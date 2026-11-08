@@ -1,6 +1,6 @@
 "use client";
 import type { Research } from "@/lib/types";
-import { researchAccumulation } from "@/lib/accumulation-policy-v5";
+import { researchAccumulation } from "@/lib/accumulation-policy-v6";
 import { amount, percent } from "@/lib/format";
 import { Help, Notice } from "./Ui";
 import { PriceChart } from "./Charts";
@@ -146,9 +146,9 @@ export default function Accumulation({ research }: { research: Research }) {
         </section>
       )}
       <p className="footnote">
-        Experimental policy · {result.version}. Historical zones may change
-        after source corrections. These observations are not simulated returns
-        or proof that variable contributions outperform a fixed schedule.
+        Technical policy · {result.version}. Historical zones may change after
+        source corrections. These observations are not simulated returns or
+        proof that variable contributions outperform a fixed schedule.
       </p>
     </section>
   );

@@ -364,35 +364,6 @@ export default function ExposureBoard({
             {metric === "gex" ? "estimated gamma exposure" : "open contracts"}.
             Select a level to inspect its data.
           </p>
-          <div className={s.readingGuide}>
-            <strong>How to read this map</strong>
-            <p>
-              Rows are strike prices; columns are expiration dates. Darker cells
-              mark larger concentrations in the loaded data. Teal is the
-              call-side estimate and coral is the put-side estimate—not a buy or
-              sell signal.
-            </p>
-            <p>
-              Start near the outlined stock-price row. Select a cell to see its
-              value, input coverage and observation date. Use Open contracts
-              (OI) to compare contract counts instead of gamma estimates.
-            </p>
-            <details>
-              <summary>What do the controls change?</summary>
-              <p>
-                Nearby strikes changes how many price levels you see. Expiration
-                range limits the dates. Hide values below filters smaller cells;
-                % of largest switches the threshold to a relative size. Center
-                returns to the stock-price area; Largest locates the strongest
-                measured concentration.
-              </p>
-              <p>
-                Blank or unmeasured cells mean missing inputs, not zero. These
-                estimates describe the returned contracts; they do not establish
-                support, resistance or how dealers are positioned.
-              </p>
-            </details>
-          </div>
           <div className={s.toolbar}>
             <label>
               Measure

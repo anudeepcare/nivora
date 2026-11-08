@@ -33,7 +33,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 22px;
-  border-block: 1px solid var(--line, #dfe5e3);
+  gap: 12px;
 }
 .reasons span,
 .reasons small {
@@ -76,5 +76,26 @@
 }
 .assumptions summary {
   cursor: pointer;
+  font-weight: 650;
+}
+
+.case {
+  --case-color: #72847e;
+  border: 1px solid color-mix(in srgb, var(--case-color) 35%, var(--line));
+  border-top: 3px solid var(--case-color);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--case-color) 6%, var(--surface, #fff));
+}
+.case[data-case="bear"] {
+  --case-color: #c65050;
+}
+.case[data-case="base"] {
+  --case-color: #a38232;
+}
+.case[data-case="bull"] {
+  --case-color: #00866b;
+}
+.case span {
+  color: var(--case-color);
   font-weight: 650;
 }

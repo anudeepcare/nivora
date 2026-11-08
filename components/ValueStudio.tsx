@@ -6,7 +6,6 @@ import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
 import { percent, dateLabel } from "@/lib/format";
 import PriceProjection from "./PriceProjection";
-import ScenarioCompass from "./ScenarioCompass";
 import { modelAssessment } from "@/lib/model-assessment";
 const display = (m: DeskMetric) =>
   m.value == null
@@ -47,10 +46,6 @@ export default function ValueStudio({
         </button>
       </header>
       <SelectedValuation research={r} />
-      <details>
-        <summary>Compare valuation methods</summary>
-        <ScenarioCompass research={r} />
-      </details>
       <PriceProjection key={r.company.symbol} research={r} />
       {available.length > 0 && (
         <section

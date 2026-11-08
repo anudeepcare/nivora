@@ -36,7 +36,7 @@ export default function SelectedValuation({
         <>
           <div className={s.reasons}>
             {(["bear", "base", "bull"] as const).map((name) => (
-              <div className={s.case} key={name}>
+              <div className={s.case} key={name} data-case={name}>
                 <span>
                   {v.basis === "cash-flow"
                     ? { bear: "Low", base: "Base", bull: "High" }[name] +
@@ -46,7 +46,13 @@ export default function SelectedValuation({
                 <strong>
                   {amount(v[name], d.reference?.currency ?? r.quote.currency)}
                 </strong>
-                <small>
+                <small
+                  className={
+                    d.reference && v[name] < d.reference.price
+                      ? "negative"
+                      : undefined
+                  }
+                >
                   {d.reference
                     ? percent((v[name] / d.reference.price - 1) * 100, true)
                     : "Reference unavailable"}

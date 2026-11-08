@@ -6,7 +6,7 @@ from sklearn.tree import DecisionTreeClassifier,export_text
 from sklearn.ensemble import HistGradientBoostingClassifier,RandomForestClassifier,ExtraTreesClassifier
 from sklearn.model_selection import StratifiedKFold,cross_val_score
 from sklearn.metrics import confusion_matrix
-p=argparse.ArgumentParser();p.add_argument('audit');p.add_argument('--output',required=True);a=p.parse_args();base=pathlib.Path(a.audit)
+p=argparse.ArgumentParser();p.add_argument('audit');p.add_argument('--output',required=True);p.add_argument('--export-model');a=p.parse_args();base=pathlib.Path(a.audit)
 report=json.loads((base/'comparison.json').read_text());rows=[r for r in report['rows'] if r['status']=='compared'];groups={'GOOGL':'GOOG','BRK.B':'BRK.A','BBDO':'BBD','FOX':'FOXA','NWS':'NWSA','UAA':'UA'}
 def ishold(r):return int(hashlib.sha256(('auryn-pace-20261108:'+groups.get(r['symbol'],r['symbol'])).encode()).hexdigest()[:8],16)%10<3
 features=[];names=[]
@@ -46,3 +46,12 @@ def score(mask,pred):
  idx=np.where(mask)[0];deep=[i for i in idx if y[i] in ['2','3','4']];return {'n':len(idx),'matches':int(sum(pred[idx]==y[idx])),'exact':float(np.mean(pred[idx]==y[idx])),'deeperN':len(deep),'deeperMatches':int(sum(pred[deep]==y[deep])),'deeperExact':float(np.mean(pred[deep]==y[deep])),'byReference':{k:{'n':int(sum(y[idx]==k)),'matches':int(sum((y[idx]==k)&(pred[idx]==k)))} for k in ['1','2','3','4','LIGHT_TRIM','STRONG_TRIM']}}
 out={'scope':'Research-only imitation of saved reference labels, not investment accuracy. Reserved symbols were already used for the simpler threshold diagnostic, so this is NOT a pristine final holdout. No later-date validation. No production formula changed.','asOf':report['asOf'],'inputSha256':hashlib.sha256((base/'comparison.json').read_bytes()).hexdigest(),'features':names,'selection':'Four-fold development balanced accuracy; selected before feature-model reserved-symbol evaluation. Known paired classes grouped in outer split; inner folds and other issuer overlap not group-verified.','crossValidation':scores,'selected':name,'productionPolicyChanged':False,'promotionBlockedBy':['No temporal reference labels','Unknown proprietary method','Only one trim reference','Exploratory reuse of reserved symbols','No performance backtest of candidate'],'results':{k:{'baseline':score(mask,basepred),'candidate':score(mask,pred)} for k,mask in [('development',~hold),('reservedSymbols',hold),('allSnapshot',np.ones(len(rows),dtype=bool)),('reservedSamePrice',hold&np.array([r['priceMatchCents'] for r in rows]))]},'rows':[{'symbol':r['symbol'],'split':'reserved' if hold[i] else 'development','reference':y[i],'baseline':basepred[i],'candidate':pred[i]} for i,r in enumerate(rows)]}
 path=pathlib.Path(a.output);path.write_text(json.dumps(out,indent=2)+'\n');print(json.dumps({'selected':name,'crossValidation':scores,'results':out['results']},indent=2))
+
+if a.export_model:
+ def tree_nodes(t):
+  return [[float(n['value']),int(n['feature_idx']),float(n['num_threshold']),int(n['left']),int(n['right']),int(n['is_leaf']),int(n['missing_go_to_left'])] for n in t.nodes]
+ artifact={'version':'monthly-v6','trainedThrough':'2026-11-06','availableFrom':'2026-11-07','features':names,'classes':[int(c) for c in model.classes_],'baseline':model._baseline_prediction[0].tolist(),'trees':[[tree_nodes(t) for t in stage] for stage in model._predictors],'trainingSymbols':[r['symbol'] for i,r in enumerate(rows) if train[i]],'inputSha256':out['inputSha256']}
+ dest=pathlib.Path(a.export_model)
+ dest.write_text('/* Generated fixed technical classifier. Do not hand-edit weights. */\nexport const paceModel: {version:string;trainedThrough:string;availableFrom:string;features:string[];classes:number[];baseline:number[];trees:number[][][][];trainingSymbols:string[];inputSha256:string} = '+json.dumps(artifact,separators=(',',':'))+';\n')
+ golden=[{'symbol':r['symbol'],'features':features[i],'expected':int(model.predict(X[i:i+1])[0])} for i,r in enumerate(rows)]
+ pathlib.Path('tests/fixtures/pace-v6-golden.json').write_text(json.dumps(golden,separators=(',',':'))+'\n')

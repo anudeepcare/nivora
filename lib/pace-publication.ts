@@ -1,5 +1,6 @@
 export function publicationInput(
   input: {
+    policy?: "monthly-v5" | "monthly-v6";
     symbol: string;
     period: string;
     pace: number;
@@ -46,7 +47,7 @@ export function publicationInput(
   return {
     symbol: input.symbol,
     signal_period: input.period,
-    policy: "monthly-v5",
+    policy: input.policy ?? "monthly-v5",
     pace: input.pace,
     reference_price: input.price,
     quote_at: input.quoteAt,
@@ -84,7 +85,7 @@ export function verifyProspectivePublication(
     (r) =>
       r.symbol === symbol &&
       r.signal_period === row.signalDate.slice(0, 7) &&
-      r.policy === "monthly-v5" &&
+      ["monthly-v5", "monthly-v6"].includes(r.policy) &&
       r.policy_hash === row.policyHash,
   );
   if (matches.length !== 1)

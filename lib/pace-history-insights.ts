@@ -1,9 +1,11 @@
+import { classifyPace, paceFeatures } from "./pace-classifier.ts";
+import { paceModel } from "./pace-model-v6.ts";
 import type { Candle } from "./types";
 import {
   adaptiveSettledBars,
   cycleReading,
   researchAccumulation,
-} from "./accumulation-policy-v5.ts";
+} from "./accumulation-policy-v6.ts";
 import { trendAccumulationReading } from "./accumulation-policy-v3.ts";
 import { monthEndSession } from "./calendar.ts";
 const index = (month: string) =>
@@ -45,20 +47,36 @@ export function paceHistoryInsights(
     let touched: number | null = null;
     const observations = months.get(signal.month) ?? [];
     for (const bar of observations) {
-      const reading = cycleReading(
+      let reading = cycleReading(
         previous,
         bar,
         trendAccumulationReading(previous, bar),
       );
+      if (
+        reading &&
+        signal.policyVersion === "monthly-v6" &&
+        bar.time >= paceModel.trainedThrough &&
+        reading.multiplier !== 0
+      ) {
+        const features = paceFeatures(
+          settled.filter((b) => b.time <= bar.time),
+          reading.z,
+          reading.deviation / 100,
+        );
+        const level = features && classifyPace(features);
+        if (level != null) reading = { ...reading, multiplier: level };
+      }
       if (reading) strongest = Math.max(strongest, reading.multiplier);
       const touch =
-        bar.low <= signal.buy4
-          ? 4
-          : bar.low <= signal.buy3
-            ? 3
-            : bar.low <= signal.buy2
-              ? 2
-              : null;
+        signal.policyVersion === "monthly-v6"
+          ? null
+          : bar.low <= signal.buy4
+            ? 4
+            : bar.low <= signal.buy3
+              ? 3
+              : bar.low <= signal.buy2
+                ? 2
+                : null;
       if (touch !== null) touched = Math.max(touched ?? 0, touch);
     }
     return {
