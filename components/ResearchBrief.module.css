@@ -167,12 +167,26 @@
   font-weight: 500;
 }
 .briefGrid article {
-  background: transparent;
-  padding: 8px 12px;
+  padding: 12px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--green) 6%, var(--card)),
+    color-mix(in srgb, var(--green) 3%, var(--card))
+  );
 }
-.briefGrid article[data-tone="caution"],
+.briefGrid article[data-tone="caution"] {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, #e8a557 10%, var(--card)),
+    color-mix(in srgb, #e8a557 4%, var(--card))
+  );
+}
 .briefGrid article[data-tone="target"] {
-  background: transparent;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, #7199e8 9%, var(--card)),
+    color-mix(in srgb, #7199e8 4%, var(--card))
+  );
 }
 .brief.brief .briefGrid p {
   font-size: 13px;

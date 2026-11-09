@@ -1,7 +1,7 @@
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0 20px;
+  gap: 12px;
   border: 0;
   padding: 0;
 }
@@ -20,9 +20,15 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 12px 0;
+  padding: 12px 14px;
   border: 0;
-  border-bottom: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--green) 5%, var(--card)),
+    var(--card)
+  );
+  box-shadow: 0 8px 28px #17342c08;
 }
 .metrics strong {
   font-size: 20px;
@@ -37,7 +43,7 @@
 @media (max-width: 760px) {
   .metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 16px;
+    gap: 10px;
   }
 }
 @media (max-width: 320px) {
