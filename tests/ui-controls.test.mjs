@@ -1,6 +1,9 @@
 import { earningsCalendar } from "../lib/earnings-calendar.ts";
 import { modelCoverage } from "../lib/research-depth.ts";
-import { scenarioStartingValues, operatingScenarioSupported } from "../lib/scenario-inputs.ts";
+import {
+  scenarioStartingValues,
+  operatingScenarioSupported,
+} from "../lib/scenario-inputs.ts";
 import { scenarioGeometry } from "../lib/scenario-geometry.ts";
 import { latestFinancialEvidence } from "../lib/analysis.ts";
 import {
@@ -36,7 +39,10 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = { revenueSensitivity: () => ({available:false}), RevenueSensitivityCases: () => null, QuickRead: () => null,
+  bindings = {
+    revenueSensitivity: () => ({ available: false }),
+    RevenueSensitivityCases: () => null,
+    QuickRead: () => null,
     SectionIcon: () => null,
     PaceBoard: () => null,
     PaceBadge: () => null,
@@ -61,7 +67,7 @@ function loadComponent(file, name, bindings) {
     ...bindings,
   };
   bindings = {
-    layout: { panel: "panel",root:"root" },
+    layout: { panel: "panel", root: "root" },
     searchStyles: { search: "search-module" },
     ...bindings,
   };
@@ -947,7 +953,7 @@ test("technical desk separates four evidence groups and formats missing data saf
       perspective,
       ...format,
       TechnicalLevels: () => null,
-    TechnicalLevelMap: () => null,
+      TechnicalLevelMap: () => null,
       X: () => null,
     },
   );
@@ -1339,7 +1345,7 @@ test("analyst fallback presents actual consensus without invented low/high targe
   const View = loadComponent(
     "components/AnalystTargets.tsx",
     "AnalystTargets",
-    { React, consensusOutlook, ...format, styles: {root:"targets"} },
+    { React, consensusOutlook, ...format, styles: { root: "targets" } },
   );
   const html = renderToStaticMarkup(React.createElement(View, { research: r }));
   r.quote.stale = true;
@@ -1900,7 +1906,7 @@ test("analyst range requires both ordered reported bounds and never manufactures
   const View = loadComponent(
     "components/AnalystTargets.tsx",
     "AnalystTargets",
-    { React, consensusOutlook, ...format, styles: {root:"targets"} },
+    { React, consensusOutlook, ...format, styles: { root: "targets" } },
   );
   const html = renderToStaticMarkup(React.createElement(View, { research: r }));
   assert.match(html, /\$50\.00/);
@@ -1968,7 +1974,10 @@ test("price-risk cases render historical percentiles separately from earnings an
   );
   assert.match(full, /Historical price-risk cases/);
   assert.doesNotMatch(full, /Bear|Bull|aria-pressed/);
-  assert.equal((full.match(/Shared vertical price scale/g) ?? []).length, 3);
+  assert.doesNotMatch(full, /Shared vertical price scale/);
+  assert.equal((full.match(/<article /g) ?? []).length, 3);
+  assert.match(full, /Reference/);
+  assert.match(full, /not forecasts or fair value/);
   for (const targets of [
     [110, 120, 140],
     [60, 80, 90],
@@ -1986,20 +1995,10 @@ test("price-risk cases render historical percentiles separately from earnings an
     const output = renderToStaticMarkup(
       React.createElement(PriceRiskCases, { scenarios: sample }),
     );
-    const dots = [
-      ...output.matchAll(/<circle cx="282" cy="([^"]+)" r="4"/g),
-    ].map((m) => Number(m[1]));
-    const ticks = [...output.matchAll(/<circle cx="18" cy="([^"]+)"/g)].map(
-      (m) => Number(m[1]),
-    );
-    assert.equal(dots.length, 3);
-    assert.equal(new Set(ticks).size, 1);
-    if (targets.every((x) => x > 100))
-      assert.ok(dots.every((y) => y < ticks[0]));
-    if (targets.every((x) => x < 100))
-      assert.ok(dots.every((y) => y > ticks[0]));
-    if (targets.every((x) => x === 100))
-      assert.ok(dots.every((y) => Math.abs(y - ticks[0]) < 1e-8));
+    for (const target of targets)
+      assert.ok(output.includes(format.amount(target, s.currency)));
+    assert.ok(output.includes(format.amount(100, s.currency)));
+    assert.equal((output.match(/<article /g) ?? []).length, 3);
     assert.doesNotMatch(output, /NaN|Infinity/);
   }
 
@@ -2028,20 +2027,69 @@ test("price-risk cases render historical percentiles separately from earnings an
 });
 
 test("shared scenario surface keeps conditional horizons visible and all views use it", () => {
-  const d = {valuation:{label:"Cash-flow valuation",basis:"cash-flow",bear:80,base:105,bull:140,end:null,assumptions:"Model assumptions"}, reference:{price:100,currency:"USD",asOf:"2026-10-19"},period:"2026-06-30"};
-  const Selected = loadComponent("components/SelectedValuation.tsx","SelectedValuation",{
-    React,useMemo:React.useMemo,useSyncExternalStore:React.useSyncExternalStore,subscribe:()=>()=>{}, selectedEnds:new Map(),listeners:new Set(),
-    aurynDecision:()=>d,researchOutlook:()=>({available:false,reason:"Matching dated cash/debt evidence is required."}),ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
-  });
-  const render = ()=>renderToStaticMarkup(React.createElement(Selected,{research:demoData.research.MSFT}));
+  const d = {
+    valuation: {
+      label: "Cash-flow valuation",
+      basis: "cash-flow",
+      bear: 80,
+      base: 105,
+      bull: 140,
+      end: null,
+      assumptions: "Model assumptions",
+    },
+    reference: { price: 100, currency: "USD", asOf: "2026-10-19" },
+    period: "2026-06-30",
+  };
+  const Selected = loadComponent(
+    "components/SelectedValuation.tsx",
+    "SelectedValuation",
+    {
+      React,
+      useMemo: React.useMemo,
+      useSyncExternalStore: React.useSyncExternalStore,
+      subscribe: () => () => {},
+      selectedEnds: new Map(),
+      listeners: new Set(),
+      aurynDecision: () => d,
+      researchOutlook: () => ({
+        available: false,
+        reason: "Matching dated cash/debt evidence is required.",
+      }),
+      ShieldAlert,
+      Scale,
+      Sparkles,
+      Info,
+      ...format,
+      s: experience,
+    },
+  );
+  const render = () =>
+    renderToStaticMarkup(
+      React.createElement(Selected, { research: demoData.research.MSFT }),
+    );
   let html = render();
-  assert.match(html,/Bear model value/);assert.match(html,/Base model value/);assert.match(html,/Bull model value/);
-  assert.match(html,/ten-year cash-flow/);assert.equal((html.match(/data-case=/g)||[]).length,3);
-  d.valuation={...d.valuation,basis:"earnings",end:"2029-12-31"};
-  html=render(); assert.match(html,/Bear scenario/);assert.match(html,/2029/);assert.match(html,/not independent fair value/);
-  d.valuation=null;
-  html=render(); assert.match(html,/Inputs needed/);assert.match(html,/Matching dated cash\/debt evidence is required/);assert.equal((html.match(/data-case=/g)||[]).length,3);assert.equal((html.match(/target not calculated/g)||[]).length,3);assert.doesNotMatch(html,/\$0\.00/);
-  for(const file of ["IntegratedResearch","ValueStudio","TargetsEstimates"]) assert.match(fs.readFileSync(`components/${file}.tsx`,"utf8"),/<SelectedValuation\s+research=\{r\}/);
+  assert.match(html, /Bear model value/);
+  assert.match(html, /Base model value/);
+  assert.match(html, /Bull model value/);
+  assert.match(html, /ten-year cash-flow/);
+  assert.equal((html.match(/data-case=/g) || []).length, 3);
+  d.valuation = { ...d.valuation, basis: "earnings", end: "2029-12-31" };
+  html = render();
+  assert.match(html, /Bear scenario/);
+  assert.match(html, /2029/);
+  assert.match(html, /not independent fair value/);
+  d.valuation = null;
+  html = render();
+  assert.match(html, /Inputs needed/);
+  assert.match(html, /Matching dated cash\/debt evidence is required/);
+  assert.equal((html.match(/data-case=/g) || []).length, 3);
+  assert.equal((html.match(/target not calculated/g) || []).length, 3);
+  assert.doesNotMatch(html, /\$0\.00/);
+  for (const file of ["IntegratedResearch", "ValueStudio", "TargetsEstimates"])
+    assert.match(
+      fs.readFileSync(`components/${file}.tsx`, "utf8"),
+      /<SelectedValuation\s+research=\{r\}/,
+    );
 });
 
 test("Home exposes complete matching-news count and expands past three companies without additional feed requests", async () => {
@@ -2204,7 +2252,7 @@ test("Overview renders the actual analyst range beside separately labelled AURYN
   const AnalystTargets = loadComponent(
     "components/AnalystTargets.tsx",
     "AnalystTargets",
-    { React, consensusOutlook, ...format, styles: {root:"targets"} },
+    { React, consensusOutlook, ...format, styles: { root: "targets" } },
   );
   const View = loadComponent(
     "components/DecisionOverview.tsx",
@@ -2364,7 +2412,10 @@ test("Pace help opens a labelled portal dialog and clears state when native clos
   let tree = render();
   const trigger = tree.props.children[0];
   assert.equal(trigger.props["aria-haspopup"], "dialog");
-  assert.equal(trigger.props["aria-label"], "About How AURYN Accumulation Pace works");
+  assert.equal(
+    trigger.props["aria-label"],
+    "About How AURYN Accumulation Pace works",
+  );
   assert.equal(tree.props.children[1], false);
   trigger.props.onClick();
   tree = render();
@@ -2389,182 +2440,559 @@ test("Pace instrument renders the shared dialog trigger without an inline help p
   assert.doesNotMatch(html, /<dialog/);
 });
 
-test('price expectations can open directly with all three controls for advanced users', async()=>{
- const tools=await import('../lib/decision-tools.ts');
- const listing=await import('../lib/listing-reconciliation.ts');
- const targets=await import('../lib/targets-estimates.ts');
- const scope={React,useMemo:React.useMemo,useState:React.useState,...tools,...listing,...targets,...format,Help:empty,Link:empty,s:experience};
- const Insights=loadComponent('components/DecisionInsights.tsx','Insights',scope);
- const View=loadComponent('components/DecisionInsights.tsx','DecisionInsights',{React,Insights});
- const r=structuredClone(demoData.research.MSFT);r.quote={...r.quote,price:100,asOf:r.retrievedAt,stale:false};
- const html=renderToStaticMarkup(React.createElement(View,{research:r,now:Date.parse(r.retrievedAt),initialTab:1}));
- assert.match(html,/Future P\/E assumption/);assert.match(html,/Desired annual price return/);assert.match(html,/Required EPS at this horizon/);
+test("price expectations can open directly with all three controls for advanced users", async () => {
+  const tools = await import("../lib/decision-tools.ts");
+  const listing = await import("../lib/listing-reconciliation.ts");
+  const targets = await import("../lib/targets-estimates.ts");
+  const scope = {
+    React,
+    useMemo: React.useMemo,
+    useState: React.useState,
+    ...tools,
+    ...listing,
+    ...targets,
+    ...format,
+    Help: empty,
+    Link: empty,
+    s: experience,
+  };
+  const Insights = loadComponent(
+    "components/DecisionInsights.tsx",
+    "Insights",
+    scope,
+  );
+  const View = loadComponent(
+    "components/DecisionInsights.tsx",
+    "DecisionInsights",
+    { React, Insights },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.quote = { ...r.quote, price: 100, asOf: r.retrievedAt, stale: false };
+  const html = renderToStaticMarkup(
+    React.createElement(View, {
+      research: r,
+      now: Date.parse(r.retrievedAt),
+      initialTab: 1,
+    }),
+  );
+  assert.match(html, /Future P\/E assumption/);
+  assert.match(html, /Desired annual price return/);
+  assert.match(html, /Required EPS at this horizon/);
 });
 
 test("missing analyst ratings collapse to one coverage message without empty metric cards", () => {
-  const View = loadComponent("components/AnalystRatings.tsx", "AnalystRatings", {
-    React, ...format, consensusOutlook: () => null,
-  });
-  const html = renderToStaticMarkup(React.createElement(View, {
-    research: { retrievedAt: "2026-11-08T12:00:00Z", evidence: {}, quote: { currency: "USD" } },
-    hideConsensus: true,
-  }));
+  const View = loadComponent(
+    "components/AnalystRatings.tsx",
+    "AnalystRatings",
+    {
+      React,
+      ...format,
+      consensusOutlook: () => null,
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(View, {
+      research: {
+        retrievedAt: "2026-11-08T12:00:00Z",
+        evidence: {},
+        quote: { currency: "USD" },
+      },
+      hideConsensus: true,
+    }),
+  );
   assert.match(html, /Rating coverage/);
-  assert.doesNotMatch(html, /Published rating score|Reported recommendations|Recommendation distribution/);
+  assert.doesNotMatch(
+    html,
+    /Published rating score|Reported recommendations|Recommendation distribution/,
+  );
 });
 
 test("a measured zero analyst rating is retained rather than treated as missing coverage", () => {
-  const View = loadComponent("components/AnalystRatings.tsx", "AnalystRatings", {
-    React, ...format, consensusOutlook: () => null,
-  });
-  const html = renderToStaticMarkup(React.createElement(View, {
-    research: { retrievedAt: "2026-11-08T12:00:00Z", evidence: { consensus: { rating: 0, strongBuy: 0, buy: 0, hold: 0, sell: 0, strongSell: 0 } }, quote: { currency: "USD" } },
-    hideConsensus: true,
-  }));
+  const View = loadComponent(
+    "components/AnalystRatings.tsx",
+    "AnalystRatings",
+    {
+      React,
+      ...format,
+      consensusOutlook: () => null,
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(View, {
+      research: {
+        retrievedAt: "2026-11-08T12:00:00Z",
+        evidence: {
+          consensus: {
+            rating: 0,
+            strongBuy: 0,
+            buy: 0,
+            hold: 0,
+            sell: 0,
+            strongSell: 0,
+          },
+        },
+        quote: { currency: "USD" },
+      },
+      hideConsensus: true,
+    }),
+  );
   assert.match(html, /Published rating score/);
   assert.match(html, /0\.00/);
   assert.doesNotMatch(html, /Rating coverage/);
 });
 
-test('embedded price question uses native labelled controls and compares only positive same-period EPS', async () => {
-  const tools = await import('../lib/decision-tools.ts');
-  const listing = await import('../lib/listing-reconciliation.ts');
-  const targets = await import('../lib/targets-estimates.ts');
-  const scope = {React, useMemo:React.useMemo, useState:React.useState, ...tools, ...listing, ...targets, ...format, Help:empty, Link:empty, s:experience};
-  const Insights = loadComponent('components/DecisionInsights.tsx','Insights',scope);
-  const View = loadComponent('components/DecisionInsights.tsx','DecisionInsights',{React,Insights});
+test("embedded price question uses native labelled controls and compares only positive same-period EPS", async () => {
+  const tools = await import("../lib/decision-tools.ts");
+  const listing = await import("../lib/listing-reconciliation.ts");
+  const targets = await import("../lib/targets-estimates.ts");
+  const scope = {
+    React,
+    useMemo: React.useMemo,
+    useState: React.useState,
+    ...tools,
+    ...listing,
+    ...targets,
+    ...format,
+    Help: empty,
+    Link: empty,
+    s: experience,
+  };
+  const Insights = loadComponent(
+    "components/DecisionInsights.tsx",
+    "Insights",
+    scope,
+  );
+  const View = loadComponent(
+    "components/DecisionInsights.tsx",
+    "DecisionInsights",
+    { React, Insights },
+  );
   const r = structuredClone(demoData.research.MSFT);
-  r.evidence = {...r.evidence, updatedAt:r.retrievedAt, reportingCurrency:'USD', estimates:[{date:'2027-12-31',period:'FY2027',frequency:'annual',currency:'USD',eps:20,epsLow:18,epsHigh:22,revenue:null,analysts:12}]};
-  const render = () => renderToStaticMarkup(React.createElement(View,{research:r,now:Date.parse(r.retrievedAt),initialTab:1,embedded:true}));
+  r.evidence = {
+    ...r.evidence,
+    updatedAt: r.retrievedAt,
+    reportingCurrency: "USD",
+    estimates: [
+      {
+        date: "2027-12-31",
+        period: "FY2027",
+        frequency: "annual",
+        currency: "USD",
+        eps: 20,
+        epsLow: 18,
+        epsHigh: 22,
+        revenue: null,
+        analysts: 12,
+      },
+    ],
+  };
+  const render = () =>
+    renderToStaticMarkup(
+      React.createElement(View, {
+        research: r,
+        now: Date.parse(r.retrievedAt),
+        initialTab: 1,
+        embedded: true,
+      }),
+    );
   let html = render();
-  assert.match(html,/What the price needs/);
-  assert.match(html,/aria-label="Future P\/E assumption"/);
-  assert.match(html,/aria-label="Desired annual price return \(%\)"/);
-  assert.match(html,/aria-label="Horizon"/);
-  assert.match(html,/Analysts expect/);
+  assert.match(html, /What the price needs/);
+  assert.match(html, /aria-label="Future P\/E assumption"/);
+  assert.match(html, /aria-label="Desired annual price return \(%\)"/);
+  assert.match(html, /aria-label="Horizon"/);
+  assert.match(html, /Analysts expect/);
   r.evidence.estimates[0].eps = -1;
   html = render();
-  assert.doesNotMatch(html,/Analysts expect/);
-  assert.match(html,/Price needs/);
+  assert.doesNotMatch(html, /Analysts expect/);
+  assert.match(html, /Price needs/);
 });
-
 
 test("funded scenario workbench preserves all cases without fabricating incomplete assumptions", async () => {
   const { modelCoverage } = await import("../lib/research-depth.ts");
-  const { fundedScenario, impliedFundedMultiple } = await import("../lib/funded-scenarios.ts");
-  const View = loadComponent("components/FundedScenarios.tsx", "FundedScenarios", {
-    React, useState: React.useState, scenarioStartingValues, modelCoverage,
-    fundedScenario, impliedFundedMultiple, styles: { workbench: "funded", confirm: "confirm" },
-    sharedFields: [["startRevenue", "Annual revenue"], ["shares", "Current shares"]],
-    caseFields: [["terminalRevenue", "Terminal revenue"]], names: ["Bear", "Base", "Bull"], ...format,
-  });
-  const html = renderToStaticMarkup(React.createElement(View, {research: demoData.research.MSFT}));
-  for (const name of ["Bear", "Base", "Bull"]) assert.match(html, new RegExp(`data-case="${name}"`));
+  const { fundedScenario, impliedFundedMultiple } = await import(
+    "../lib/funded-scenarios.ts"
+  );
+  const View = loadComponent(
+    "components/FundedScenarios.tsx",
+    "FundedScenarios",
+    {
+      React,
+      useState: React.useState,
+      scenarioStartingValues,
+      modelCoverage,
+      fundedScenario,
+      impliedFundedMultiple,
+      styles: { workbench: "funded", confirm: "confirm" },
+      sharedFields: [
+        ["startRevenue", "Annual revenue"],
+        ["shares", "Current shares"],
+      ],
+      caseFields: [["terminalRevenue", "Terminal revenue"]],
+      names: ["Bear", "Base", "Bull"],
+      ...format,
+    },
+  );
+  const html = renderToStaticMarkup(
+    React.createElement(View, { research: demoData.research.MSFT }),
+  );
+  for (const name of ["Bear", "Base", "Bull"])
+    assert.match(html, new RegExp(`data-case="${name}"`));
   assert.match(html, /not probabilities or validated forecasts/);
   assert.match(html, /Reconcile starting facts/);
   assert.doesNotMatch(html, /NaN|Infinity|Terminal equity \/ share/);
 });
 
-
 test("both scenario modes withhold generic valuations for every specialized financial family", async () => {
   const { modelCoverage } = await import("../lib/research-depth.ts");
-  const { fundedScenario, impliedFundedMultiple } = await import("../lib/funded-scenarios.ts");
-  const { enterpriseExpectations, impliedOperatingMargin } = await import("../lib/expectation-engine.ts");
-  const bindings = {React, useState: React.useState, scenarioStartingValues, modelCoverage,
-    fundedScenario, impliedFundedMultiple, enterpriseExpectations, impliedOperatingMargin,
-    styles: { workbench: "funded", confirm: "confirm" }, sharedFields: [], caseFields: [],
-    futureFields: [], names: ["Bear", "Base", "Bull"], ...format};
-  const Funded = loadComponent("components/FundedScenarios.tsx", "FundedScenarios", bindings);
-  const Operating = loadComponent("components/ExpectationMap.tsx", "ExpectationMap", bindings);
+  const { fundedScenario, impliedFundedMultiple } = await import(
+    "../lib/funded-scenarios.ts"
+  );
+  const { enterpriseExpectations, impliedOperatingMargin } = await import(
+    "../lib/expectation-engine.ts"
+  );
+  const bindings = {
+    React,
+    useState: React.useState,
+    scenarioStartingValues,
+    modelCoverage,
+    fundedScenario,
+    impliedFundedMultiple,
+    enterpriseExpectations,
+    impliedOperatingMargin,
+    styles: { workbench: "funded", confirm: "confirm" },
+    sharedFields: [],
+    caseFields: [],
+    futureFields: [],
+    names: ["Bear", "Base", "Bull"],
+    ...format,
+  };
+  const Funded = loadComponent(
+    "components/FundedScenarios.tsx",
+    "FundedScenarios",
+    bindings,
+  );
+  const Operating = loadComponent(
+    "components/ExpectationMap.tsx",
+    "ExpectationMap",
+    bindings,
+  );
   for (const [sector, industry, family] of [
-    ["Financial Services","Insurance - Property & Casualty","insurance"],
-    ["Financial Services","Asset Management","specialized-financial"],
-    ["Real Estate","Real Estate Services","real-estate"],
-    ["Financial Services","Banks - Regional","financial"],
+    ["Financial Services", "Insurance - Property & Casualty", "insurance"],
+    ["Financial Services", "Asset Management", "specialized-financial"],
+    ["Real Estate", "Real Estate Services", "real-estate"],
+    ["Financial Services", "Banks - Regional", "financial"],
   ]) {
-    const r=structuredClone(demoData.research.MSFT);
-    r.company.symbol="EXAMPLE";r.company.sector=sector;
-    r.evidence={...r.evidence,profile:{...r.evidence?.profile,sector,industry}};
-    assert.equal(modelCoverage(r.company.symbol,"stock",{sector,industry}).family,family);
-    for (const View of [Funded,Operating]) {
-      const html=renderToStaticMarkup(React.createElement(View,{research:r}));
-      assert.match(html,/capital model/,family);
-      assert.doesNotMatch(html,/data-case=|Specify the economics|Build and inspect/);
+    const r = structuredClone(demoData.research.MSFT);
+    r.company.symbol = "EXAMPLE";
+    r.company.sector = sector;
+    r.evidence = {
+      ...r.evidence,
+      profile: { ...r.evidence?.profile, sector, industry },
+    };
+    assert.equal(
+      modelCoverage(r.company.symbol, "stock", { sector, industry }).family,
+      family,
+    );
+    for (const View of [Funded, Operating]) {
+      const html = renderToStaticMarkup(
+        React.createElement(View, { research: r }),
+      );
+      assert.match(html, /capital model/, family);
+      assert.doesNotMatch(
+        html,
+        /data-case=|Specify the economics|Build and inspect/,
+      );
     }
   }
 });
 
-test('unsupported frontier scenarios offer an entitlement-gated funding workbench rather than invented targets',()=>{
- let opened=false,allowed=false;
- const recovery={kind:'funded-assumptions',title:'Model deployment and financing',detail:'Enter sourced capacity, capex and financing assumptions.'};
- const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
-  React,useMemo:React.useMemo,useState:()=>[opened,()=>{}],useSyncExternalStore:React.useSyncExternalStore,
-  subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),aurynDecision:()=>({valuation:null,reference:null}),
-  researchOutlook:()=>({available:false,reason:'Milestones need explicit assumptions.',recovery}),
-  useAccess:()=>({access:{features:{advanced:allowed}}}),
-  FeatureGate:({feature,children})=>{assert.equal(feature,'advanced');return allowed?children:React.createElement('p',null,'Advanced access required');},
-  FundedScenarios:()=>React.createElement('div',null,'Explicit funding cases'),ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
- });
- const r=structuredClone(demoData.research.MSFT);r.company.symbol='ASTS';
- const render=()=>renderToStaticMarkup(React.createElement(Selected,{research:r}));
- let html=render();assert.match(html,/Build funding assumptions/);assert.equal((html.match(/target not calculated/g)||[]).length,3);
- opened=true;html=render();assert.match(html,/Advanced access required/);assert.doesNotMatch(html,/Explicit funding cases/);assert.equal((html.match(/target not calculated/g)||[]).length,3);
- allowed=true;html=render();assert.match(html,/Explicit funding cases/);assert.match(html,/not automatic AURYN targets/);
+test("unsupported frontier scenarios offer an entitlement-gated funding workbench rather than invented targets", () => {
+  let opened = false,
+    allowed = false;
+  const recovery = {
+    kind: "funded-assumptions",
+    title: "Model deployment and financing",
+    detail: "Enter sourced capacity, capex and financing assumptions.",
+  };
+  const Selected = loadComponent(
+    "components/SelectedValuation.tsx",
+    "SelectedValuation",
+    {
+      React,
+      useMemo: React.useMemo,
+      useState: () => [opened, () => {}],
+      useSyncExternalStore: React.useSyncExternalStore,
+      subscribe: () => () => {},
+      selectedEnds: new Map(),
+      listeners: new Set(),
+      aurynDecision: () => ({ valuation: null, reference: null }),
+      researchOutlook: () => ({
+        available: false,
+        reason: "Milestones need explicit assumptions.",
+        recovery,
+      }),
+      useAccess: () => ({ access: { features: { advanced: allowed } } }),
+      FeatureGate: ({ feature, children }) => {
+        assert.equal(feature, "advanced");
+        return allowed
+          ? children
+          : React.createElement("p", null, "Advanced access required");
+      },
+      FundedScenarios: () =>
+        React.createElement("div", null, "Explicit funding cases"),
+      ShieldAlert,
+      Scale,
+      Sparkles,
+      Info,
+      ...format,
+      s: experience,
+    },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.company.symbol = "ASTS";
+  const render = () =>
+    renderToStaticMarkup(React.createElement(Selected, { research: r }));
+  let html = render();
+  assert.match(html, /Build funding assumptions/);
+  assert.equal((html.match(/target not calculated/g) || []).length, 3);
+  opened = true;
+  html = render();
+  assert.match(html, /Advanced access required/);
+  assert.doesNotMatch(html, /Explicit funding cases/);
+  assert.equal((html.match(/target not calculated/g) || []).length, 3);
+  allowed = true;
+  html = render();
+  assert.match(html, /Explicit funding cases/);
+  assert.match(html, /not automatic AURYN targets/);
 });
 
-test('selected valuation reference does not inherit the discarded quote stale flag',()=>{
- let reference={price:100,asOf:'2026-10-19T20:00:00Z',currency:'USD'};
- const seen=[];
- const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
-  React,useMemo:React.useMemo,useSyncExternalStore:React.useSyncExternalStore,
-  subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),aurynDecision:()=>({valuation:null,reference}),
-  researchOutlook:(r)=>{seen.push(r.quote);return {available:false,reason:'Unavailable'};},
-  ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
- });
- const r=structuredClone(demoData.research.MSFT);r.quote.stale=true;
- renderToStaticMarkup(React.createElement(Selected,{research:r}));
- assert.ok(seen.length>0);
- for(const quote of seen){assert.equal(quote.stale,false);assert.equal(quote.price,100);assert.equal(quote.asOf,reference.asOf);}
- assert.equal(r.quote.stale,true);
- reference=null;seen.length=0;
- renderToStaticMarkup(React.createElement(Selected,{research:r}));
- assert.ok(seen.length>0);for(const quote of seen)assert.equal(quote.stale,true);
+test("selected valuation reference does not inherit the discarded quote stale flag", () => {
+  let reference = { price: 100, asOf: "2026-10-19T20:00:00Z", currency: "USD" };
+  const seen = [];
+  const Selected = loadComponent(
+    "components/SelectedValuation.tsx",
+    "SelectedValuation",
+    {
+      React,
+      useMemo: React.useMemo,
+      useSyncExternalStore: React.useSyncExternalStore,
+      subscribe: () => () => {},
+      selectedEnds: new Map(),
+      listeners: new Set(),
+      aurynDecision: () => ({ valuation: null, reference }),
+      researchOutlook: (r) => {
+        seen.push(r.quote);
+        return { available: false, reason: "Unavailable" };
+      },
+      ShieldAlert,
+      Scale,
+      Sparkles,
+      Info,
+      ...format,
+      s: experience,
+    },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.quote.stale = true;
+  renderToStaticMarkup(React.createElement(Selected, { research: r }));
+  assert.ok(seen.length > 0);
+  for (const quote of seen) {
+    assert.equal(quote.stale, false);
+    assert.equal(quote.price, 100);
+    assert.equal(quote.asOf, reference.asOf);
+  }
+  assert.equal(r.quote.stale, true);
+  reference = null;
+  seen.length = 0;
+  renderToStaticMarkup(React.createElement(Selected, { research: r }));
+  assert.ok(seen.length > 0);
+  for (const quote of seen) assert.equal(quote.stale, true);
 });
 
-test('main valuation never substitutes price-anchored revenue for missing fundamentals',()=>{
- let fallbackCalls=0;let valid=false;
- const automatic={available:true,basis:'earnings',end:'2027-12-31',currency:'USD',cases:[{name:'Bear',target:80,eps:4,multiple:20},{name:'Base',target:100,eps:5,multiple:20},{name:'Bull',target:120,eps:6,multiple:20}]};
- const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
- React,useMemo:React.useMemo,useState:React.useState,useSyncExternalStore:React.useSyncExternalStore,useAccess:()=>({access:{features:{advanced:false}}}),subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),aurynDecision:()=>({valuation:null,reference:{price:100,currency:'USD',asOf:'2026-11-06'}}),
- researchOutlook:()=>valid?automatic:{available:false,reason:'Share evidence missing'},
- revenueSensitivity:()=>{fallbackCalls++;return {available:true};},RevenueSensitivityCases:()=>React.createElement('p',null,'Price-anchored revenue sensitivity'),ShieldAlert,Scale,Sparkles,Info,...format,s:experience,
- });
- const r=structuredClone(demoData.research.MSFT);r.company.symbol='HIMS';
- assert.doesNotMatch(renderToStaticMarkup(React.createElement(Selected,{research:r})),/Price-anchored revenue sensitivity/);
- assert.equal(fallbackCalls,0);
- assert.equal(renderToStaticMarkup(React.createElement(Selected,{research:r,hideUnavailable:true})), '', 'overview can lead with supplied analyst targets when valuation is unavailable');
- const called=fallbackCalls;valid=true;
- for(const symbol of ['APP','MSFT']){r.company.symbol=symbol;const html=renderToStaticMarkup(React.createElement(Selected,{research:r}));assert.match(html,/\$100\.00/);assert.doesNotMatch(html,/Price-anchored revenue sensitivity/);}
- assert.equal(fallbackCalls,called,'working models must not invoke the fallback');
+test("main valuation never substitutes price-anchored revenue for missing fundamentals", () => {
+  let fallbackCalls = 0;
+  let valid = false;
+  const automatic = {
+    available: true,
+    basis: "earnings",
+    end: "2027-12-31",
+    currency: "USD",
+    cases: [
+      { name: "Bear", target: 80, eps: 4, multiple: 20 },
+      { name: "Base", target: 100, eps: 5, multiple: 20 },
+      { name: "Bull", target: 120, eps: 6, multiple: 20 },
+    ],
+  };
+  const Selected = loadComponent(
+    "components/SelectedValuation.tsx",
+    "SelectedValuation",
+    {
+      React,
+      useMemo: React.useMemo,
+      useState: React.useState,
+      useSyncExternalStore: React.useSyncExternalStore,
+      useAccess: () => ({ access: { features: { advanced: false } } }),
+      subscribe: () => () => {},
+      selectedEnds: new Map(),
+      listeners: new Set(),
+      aurynDecision: () => ({
+        valuation: null,
+        reference: { price: 100, currency: "USD", asOf: "2026-11-06" },
+      }),
+      researchOutlook: () =>
+        valid
+          ? automatic
+          : { available: false, reason: "Share evidence missing" },
+      revenueSensitivity: () => {
+        fallbackCalls++;
+        return { available: true };
+      },
+      RevenueSensitivityCases: () =>
+        React.createElement("p", null, "Price-anchored revenue sensitivity"),
+      ShieldAlert,
+      Scale,
+      Sparkles,
+      Info,
+      ...format,
+      s: experience,
+    },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.company.symbol = "HIMS";
+  assert.doesNotMatch(
+    renderToStaticMarkup(React.createElement(Selected, { research: r })),
+    /Price-anchored revenue sensitivity/,
+  );
+  assert.equal(fallbackCalls, 0);
+  assert.equal(
+    renderToStaticMarkup(
+      React.createElement(Selected, { research: r, hideUnavailable: true }),
+    ),
+    "",
+    "overview can lead with supplied analyst targets when valuation is unavailable",
+  );
+  const called = fallbackCalls;
+  valid = true;
+  for (const symbol of ["APP", "MSFT"]) {
+    r.company.symbol = symbol;
+    const html = renderToStaticMarkup(
+      React.createElement(Selected, { research: r }),
+    );
+    assert.match(html, /\$100\.00/);
+    assert.doesNotMatch(html, /Price-anchored revenue sensitivity/);
+  }
+  assert.equal(
+    fallbackCalls,
+    called,
+    "working models must not invoke the fallback",
+  );
 });
 
-test('overview restores production historical fallback without replacing qualified valuations', async()=>{
- const {priceRiskScenarios}=await import('../lib/price-risk-scenarios.ts');
- const {valuationScale}=await import('../lib/research-summary.ts');
- const Risk=loadComponent('components/PriceRiskCases.tsx','PriceRiskCases',{React,...format,valuationScale,ArrowDownRight,ArrowUpRight,Minus,ScenarioSensitivity:()=>null,styles:experience});
- let valuation=null;
- const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
- React,useMemo:React.useMemo,useState:React.useState,useSyncExternalStore:React.useSyncExternalStore,
- useAccess:()=>({access:{features:{advanced:false}}}),subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),
- aurynDecision:()=>({valuation,reference:{price:120,currency:'USD',asOf:'2026-11-06T21:00:00Z'}}),
- researchOutlook:()=>({available:false,reason:'No fundamental model qualifies'}),
- priceRiskScenarios,PriceRiskCases:Risk,ShieldAlert,Scale,Sparkles,Info,...format,s:experience});
- const r=structuredClone(demoData.research.MSFT);r.retrievedAt='2026-11-09T00:00:00Z';delete r.priceObservedAt;
- r.quote={...r.quote,price:120,currency:'USD',asOf:'2026-11-06T21:00:00Z'};
- r.history=[];for(let i=0;i<180;i++){const date=new Date(Date.UTC(2026,4,11+i));if([0,6].includes(date.getUTCDay()))continue;const close=100*1.01**r.history.length;r.history.push({time:date.toISOString().slice(0,10),open:close,high:close,low:close,close,volume:100});}
- const render=()=>renderToStaticMarkup(React.createElement(Selected,{research:r,historicalFallback:true,hideUnavailable:true}));
- for(const symbol of ['IREN','HIMS','CIFR','NBIS','ASTS']){r.company.symbol=symbol;const html=render();assert.match(html,/Historical price-risk cases/);assert.equal((html.match(/\$146\.42/g)||[]).length,3);assert.doesNotMatch(html,/Not calculated|AURYN fair value/);}
- valuation={basis:'cash-flow',bear:80,base:100,bull:140,assumptions:'Qualified model',end:null};
- for(const symbol of ['APP','MSFT']){r.company.symbol=symbol;const html=render();assert.match(html,/\$100\.00/);assert.doesNotMatch(html,/Historical price-risk cases/);}
- valuation=null;r.history=[];assert.equal(render(),'');
+test("overview restores production historical fallback without replacing qualified valuations", async () => {
+  const { priceRiskScenarios } = await import("../lib/price-risk-scenarios.ts");
+  const { valuationScale } = await import("../lib/research-summary.ts");
+  const Risk = loadComponent(
+    "components/PriceRiskCases.tsx",
+    "PriceRiskCases",
+    {
+      React,
+      ...format,
+      valuationScale,
+      ArrowDownRight,
+      ArrowUpRight,
+      Minus,
+      ScenarioSensitivity: () => null,
+      styles: experience,
+    },
+  );
+  let valuation = null;
+  const Selected = loadComponent(
+    "components/SelectedValuation.tsx",
+    "SelectedValuation",
+    {
+      React,
+      useMemo: React.useMemo,
+      useState: React.useState,
+      useSyncExternalStore: React.useSyncExternalStore,
+      useAccess: () => ({ access: { features: { advanced: false } } }),
+      subscribe: () => () => {},
+      selectedEnds: new Map(),
+      listeners: new Set(),
+      aurynDecision: () => ({
+        valuation,
+        reference: {
+          price: 120,
+          currency: "USD",
+          asOf: "2026-11-06T21:00:00Z",
+        },
+      }),
+      researchOutlook: () => ({
+        available: false,
+        reason: "No fundamental model qualifies",
+      }),
+      priceRiskScenarios,
+      PriceRiskCases: Risk,
+      ShieldAlert,
+      Scale,
+      Sparkles,
+      Info,
+      ...format,
+      s: experience,
+    },
+  );
+  const r = structuredClone(demoData.research.MSFT);
+  r.retrievedAt = "2026-11-09T00:00:00Z";
+  delete r.priceObservedAt;
+  r.quote = {
+    ...r.quote,
+    price: 120,
+    currency: "USD",
+    asOf: "2026-11-06T21:00:00Z",
+  };
+  r.history = [];
+  for (let i = 0; i < 180; i++) {
+    const date = new Date(Date.UTC(2026, 4, 11 + i));
+    if ([0, 6].includes(date.getUTCDay())) continue;
+    const close = 100 * 1.01 ** r.history.length;
+    r.history.push({
+      time: date.toISOString().slice(0, 10),
+      open: close,
+      high: close,
+      low: close,
+      close,
+      volume: 100,
+    });
+  }
+  const render = () =>
+    renderToStaticMarkup(
+      React.createElement(Selected, {
+        research: r,
+        historicalFallback: true,
+        hideUnavailable: true,
+      }),
+    );
+  for (const symbol of ["IREN", "HIMS", "CIFR", "NBIS", "ASTS"]) {
+    r.company.symbol = symbol;
+    const html = render();
+    assert.match(html, /Historical price-risk cases/);
+    assert.equal((html.match(/\$146\.42/g) || []).length, 3);
+    assert.doesNotMatch(html, /Not calculated|AURYN fair value/);
+  }
+  valuation = {
+    basis: "cash-flow",
+    bear: 80,
+    base: 100,
+    bull: 140,
+    assumptions: "Qualified model",
+    end: null,
+  };
+  for (const symbol of ["APP", "MSFT"]) {
+    r.company.symbol = symbol;
+    const html = render();
+    assert.match(html, /\$100\.00/);
+    assert.doesNotMatch(html, /Historical price-risk cases/);
+  }
+  valuation = null;
+  r.history = [];
+  assert.equal(render(), "");
 });

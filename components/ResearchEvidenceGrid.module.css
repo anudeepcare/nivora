@@ -164,68 +164,44 @@
     font-size: 16px;
   }
 }
-/* Preserve the user's metric grids and their category identity. */
+/* Preserve all metric groups without card surfaces. */
 .grid {
-  gap: 16px;
-  margin: 0;
+  gap: 16px 24px;
+  margin: 8px 0;
 }
-.panel {
-  padding: 20px;
-  border: 0;
-  border-radius: 18px;
-  box-shadow: 0 8px 28px #17342c08;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--category) 5%, var(--card)),
-    var(--card)
-  );
-}
+.panel,
 .panel[data-category] {
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--category) 5%, var(--card)),
-    var(--card)
-  );
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.panel header {
+  margin-bottom: 6px;
 }
 .panel h3 {
   font-size: 14px;
   font-weight: 600;
 }
-.panel header {
-  margin-bottom: 16px;
-}
 .panel dd {
   font-weight: 600;
-}
-.panel footer {
-  font-size: 12px;
 }
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 16px;
   }
-  .panel {
-    padding: 16px 12px;
-  }
-  .panel header {
-    gap: 6px;
+  .panel dl > div {
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 0;
   }
   .panel h3 {
     font-size: 12px;
   }
-  .panel dl > div {
-    flex-direction: column;
-    gap: 4px;
-  }
   .panel dd {
-    font-size: 18px;
-  }
-  .panel dt {
-    font-size: 12px;
-  }
-  .panel footer {
-    font-size: 12px;
+    font-size: 16px;
   }
 }
 .snapshot {

@@ -474,3 +474,45 @@
   min-height: 44px;
   margin-bottom: 12px;
 }
+
+/* Compact scenario grid: no outer panel or case tiles. */
+.root.root {
+  padding: 12px 0;
+  margin: 0 0 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.root.root .heading h2 {
+  font-size: 20px;
+  margin: 4px 0;
+}
+.root.root .heading p {
+  font-size: 12px;
+}
+.root.root .reasons {
+  margin: 12px 0;
+  gap: 16px;
+}
+.root.root .case {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 4px;
+}
+.root.root .case strong {
+  font-size: clamp(22px, 2vw, 28px);
+}
+.root.root .case span,
+.root.root .case small {
+  font-size: 12px;
+}
+.root.root .priceMap {
+  padding: 6px 18px 32px;
+}
+.root.root .assumptions {
+  padding: 0;
+}
