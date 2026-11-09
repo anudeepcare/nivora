@@ -15,7 +15,7 @@
 .root .cases {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 12px;
   margin: 0;
 }
 .root .cases article {
@@ -24,11 +24,15 @@
   flex-direction: column;
   min-width: 0;
   gap: 4px;
-  padding: 0;
+  padding: 12px 14px;
   border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--case-color) 5%, var(--card)),
+    var(--card)
+  );
+  box-shadow: 0 8px 28px #17342c08;
 }
 .root .cases article[data-case="downside"] {
   --case-color: var(--red);

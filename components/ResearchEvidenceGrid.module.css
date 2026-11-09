@@ -164,44 +164,68 @@
     font-size: 16px;
   }
 }
-/* Preserve all metric groups without card surfaces. */
+/* Preserve the user's metric grids and their category identity. */
 .grid {
-  gap: 16px 24px;
-  margin: 8px 0;
+  gap: 16px;
+  margin: 0;
 }
-.panel,
-.panel[data-category] {
-  padding: 0;
+.panel {
+  padding: 20px;
   border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px #17342c08;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--category) 5%, var(--card)),
+    var(--card)
+  );
 }
-.panel header {
-  margin-bottom: 6px;
+.panel[data-category] {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--category) 5%, var(--card)),
+    var(--card)
+  );
 }
 .panel h3 {
   font-size: 14px;
   font-weight: 600;
 }
+.panel header {
+  margin-bottom: 16px;
+}
 .panel dd {
   font-weight: 600;
+}
+.panel footer {
+  font-size: 12px;
 }
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    gap: 12px;
   }
-  .panel dl > div {
-    flex-direction: column;
-    gap: 3px;
-    padding: 6px 0;
+  .panel {
+    padding: 16px 12px;
+  }
+  .panel header {
+    gap: 6px;
   }
   .panel h3 {
     font-size: 12px;
   }
+  .panel dl > div {
+    flex-direction: column;
+    gap: 4px;
+  }
   .panel dd {
-    font-size: 16px;
+    font-size: 18px;
+  }
+  .panel dt {
+    font-size: 12px;
+  }
+  .panel footer {
+    font-size: 12px;
   }
 }
 .snapshot {
@@ -215,5 +239,24 @@
 @media (max-width: 600px) {
   .panel:last-of-type:nth-child(odd) {
     grid-column: 1/-1;
+  }
+}
+
+/* Keep the original category boxes; reduce only their whitespace. */
+.grid {
+  gap: 12px;
+}
+.panel {
+  padding: 14px;
+}
+.panel header {
+  margin-bottom: 8px;
+}
+.panel dl > div {
+  padding: 6px 0;
+}
+@media (max-width: 600px) {
+  .panel {
+    padding: 12px;
   }
 }
