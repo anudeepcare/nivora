@@ -1,10 +1,9 @@
 "use client";
 import { useMemo } from "react";
-import { TrendingUp, Diamond, Target, Activity } from "lucide-react";
+import { TrendingUp, Diamond, Target, ShieldAlert } from "lucide-react";
 import type { Research } from "@/lib/types";
-import { indicators, latestFinancialEvidence } from "@/lib/analysis";
+import { latestFinancialEvidence } from "@/lib/analysis";
 import { consensusOutlook } from "@/lib/outlook";
-import { movementContext } from "@/lib/movement-context";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
 import s from "./ResearchBrief.module.css";
@@ -22,50 +21,52 @@ export function OverviewBrief({
 }) {
   const model = useMemo(() => {
     const decision = provided ?? aurynDecision(r, { now, ownsPosition: owns });
-    const movement = movementContext(r, [], { now });
-    const technical = indicators(r.history, new Date(now).toISOString());
     const consensus = consensusOutlook(r);
     const rows = [];
-    if (movement.change != null)
-      rows.push({
-        key: "movement",
-        icon: TrendingUp,
-        tone: movement.change < 0 ? "caution" : "positive",
-        text: `${percent(movement.change, true)} between ${movement.priceBasis === "settled-close" ? "completed closes" : "the quoted session references"}.`,
-      });
     rows.push({
       key: "pace",
+      label: owns ? "Your holding" : "New purchase",
       icon: Diamond,
       tone: "pace",
+      text: `${decision.actionLabel}${decision.pace?.level != null ? ` · Zone P${decision.pace.level}` : ""}. ${decision.headline ?? "Review business eligibility before adding."}`,
+    });
+    rows.push({
+      key: "business",
+      label: "Business",
+      icon: TrendingUp,
+      tone: "neutral",
       text:
-        decision.pace?.level != null
-          ? `${decision.actionLabel} · Zone P${decision.pace.level}. ${decision.pace.level < 2 ? "Watch for an entry; review before adding." : "Adding depends on the business checks and your position limits."}`
-          : "Price history is still being assessed. Review the business evidence first.",
+        decision.brief?.business.reason ??
+        "Comparable business evidence is incomplete.",
     });
     if (consensus?.referencePrice != null && consensus.target > 0)
       rows.push({
         key: "target",
+        label: "Analyst view",
         icon: Target,
         tone: "target",
-        text: `${percent((consensus.target / consensus.referencePrice - 1) * 100, true)} to the ${amount(consensus.target, r.quote.currency)} analyst target.`,
+        text: `${percent((consensus.target / consensus.referencePrice - 1) * 100, true)} to the ${amount(consensus.target, r.quote.currency)} analyst target; not fair value.`,
       });
-    if (technical.rsi != null)
-      rows.push({
-        key: "momentum",
-        icon: Activity,
-        tone: technical.rsi > 70 || technical.rsi < 30 ? "caution" : "neutral",
-        text: `RSI ${technical.rsi.toFixed(1)} · ${technical.rsi > 70 ? "overbought" : technical.rsi < 30 ? "oversold" : "within the 30–70 range"}.${technical.ma200 != null && decision.reference ? ` Price is ${decision.reference.price < technical.ma200 ? "below" : "above"} its 200-session average.` : ""}`,
-      });
+    rows.push({
+      key: "risk",
+      label: "What to watch",
+      icon: ShieldAlert,
+      tone: "caution",
+      text:
+        decision.risks?.[0] ??
+        decision.changeConditions?.[0] ??
+        "Review valuation uncertainty and position concentration.",
+    });
     return rows.slice(0, 4);
   }, [r, now, owns, provided]);
   return (
     <section className={s.brief} aria-label="The 30-second read">
       <header>
         <h2>The 30-second read</h2>
-        <small>Evidence through {dateLabel(r.retrievedAt)}</small>
+        <small>Workspace refreshed {dateLabel(r.retrievedAt)}</small>
       </header>
       <div className={s.briefGrid}>
-        {model.map(({ key, icon: Icon, tone, text }) => (
+        {model.map(({ key, label, icon: Icon, tone, text }) => (
           <article key={key} data-tone={tone}>
             <span className={s.icon}>
               <Icon
@@ -74,7 +75,10 @@ export function OverviewBrief({
                 aria-hidden="true"
               />
             </span>
-            <p>{text}</p>
+            <div>
+              <b className={s.rowLabel}>{label}</b>
+              <p>{text}</p>
+            </div>
           </article>
         ))}
       </div>

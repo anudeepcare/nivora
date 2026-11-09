@@ -83,7 +83,9 @@ export default function PriceRiskCases({
       <p className="price-risk-selected">
         Sensitivity diagrams · shared price scale · not a time path. Past{" "}
         {s.horizon}-session returns applied to the reference; not fair values or
-        forecasts. The midpoint is the historical median.
+        forecasts. The midpoint is the historical median, not the expected
+        future price. Predictive accuracy has not been validated; outcomes can
+        fall outside this range.
       </p>
       <details>
         <summary>Basis &amp; limits · {s.samples} historical windows</summary>

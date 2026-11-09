@@ -150,3 +150,26 @@ test("a quote reference retains its time while a settled close remains date-only
   );
   assert.match(html, /11:59 UTC/);
 });
+
+test("overview leads with decision, business evidence and risk without repeating the quote move", () => {
+  const { OverviewBrief } = views();
+  const html = renderToStaticMarkup(
+    React.createElement(OverviewBrief, {
+      research,
+      now: Date.parse(research.retrievedAt),
+      decision: {
+        actionLabel: "Review business",
+        pace: { level: 2 },
+        explanation: { detail: "Funding must be reviewed before adding." },
+        brief: {
+          business: { reason: "Investment exceeds internally generated cash." },
+        },
+        risks: ["Funding depends on new capital."],
+      },
+    }),
+  );
+  assert.match(html, /Investment exceeds internally generated cash/);
+  assert.match(html, /Funding depends on new capital/);
+  assert.match(html, /not fair value/);
+  assert.doesNotMatch(html, /Evidence through|RSI|quoted session references/);
+});
