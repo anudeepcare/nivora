@@ -5,6 +5,8 @@ import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
 import { researchOutlook } from "@/lib/outlook";
+import { priceRiskScenarios } from "@/lib/price-risk-scenarios";
+import PriceRiskCases from "./PriceRiskCases";
 import s from "./SelectedValuation.module.css";
 import dynamic from "next/dynamic";
 import { FeatureGate, useAccess } from "./Access";
@@ -23,9 +25,13 @@ const subscribe = (fn: () => void) => {
 export default function SelectedValuation({
   research: r,
   actions,
+  hideUnavailable = false,
+  historicalFallback = false,
 }: {
   research: Research;
   actions?: ReactNode;
+  hideUnavailable?: boolean;
+  historicalFallback?: boolean;
 }) {
   const d = useMemo(
     () =>
@@ -98,6 +104,13 @@ export default function SelectedValuation({
     : d.valuation;
   const recovery = projection.available ? undefined : projection.recovery;
   if (r.company.assetType !== "stock") return null;
+  // Preserve production’s observed-return fallback without calling it valuation.
+  // Use the original price/history input so the established calculation is unchanged.
+  if (!v && historicalFallback) {
+    const risk = priceRiskScenarios(r);
+    if (risk.available) return <PriceRiskCases scenarios={risk} />;
+  }
+  if (!v && hideUnavailable) return null;
   if (!v)
     return (
       <section

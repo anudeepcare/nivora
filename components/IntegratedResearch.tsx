@@ -12,6 +12,7 @@ import SelectedValuation from "./SelectedValuation";
 import PaceInstrument from "./PaceInstrument";
 import s from "./ResearchOverview.module.css";
 import CompanyMetrics from "./CompanyMetrics";
+import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import EvidenceCrystal from "./EvidenceCrystal";
 import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
@@ -132,12 +133,13 @@ export default function IntegratedResearch({
           )}
         </details>
         <div className={s.chart}>{chart}</div>
-        <div
-          className={s.scenarios}
-          aria-label={"Explore AURYN valuation assumptions"}
-        >
+        <div className={s.scenarios} aria-label="Scenario evidence">
           <div style={{ gridColumn: "1 / -1" }}>
-            <SelectedValuation research={r} />
+            <SelectedValuation
+              research={r}
+              hideUnavailable={!!consensusOutlook(r)}
+              historicalFallback
+            />
           </div>
         </div>
         <div className={s.consensusRow} data-has-target={!!consensusOutlook(r)}>
@@ -151,6 +153,7 @@ export default function IntegratedResearch({
         </div>
         <div className={s.overviewMetrics}>
           <CompanyMetrics research={r} />
+          <ResearchEvidenceGrid research={r} onTab={onTab} />
         </div>
       </div>
     </>

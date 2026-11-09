@@ -97,7 +97,7 @@ test("active overview omits the removed position size and cash tool", () => {
     /Review position size|funding and concentration review/,
   );
   assert.match(html, /contextual company metrics/);
-  assert.doesNotMatch(html, /all evidence/);
+  assert.match(html, /all evidence/);
   assert.doesNotMatch(html, /All research metrics/);
 });
 
@@ -189,4 +189,22 @@ test("company metrics show every selected available metric without an expand but
       html.includes(row.label),
       row.label + " should be visible by default",
     );
+});
+
+test("restored lower grid renders real metric rows and category navigation without a disclosure", async () => {
+  const source = fs.readFileSync("components/ResearchEvidenceGrid.tsx", "utf8");
+  const ast = ts.createSourceFile("grid.tsx",source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
+  const fn = ast.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text==='ResearchEvidenceGrid');
+  const code = ts.transpileModule(fn.getText(ast).replace('export default ',''),{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.CommonJS}}).outputText;
+  const {overviewEvidence}=await import('../lib/overview-evidence.ts');
+  const format=await import('../lib/format.ts');
+  const r=JSON.parse(fs.readFileSync('tests/fixtures/iren-observed-20261019.json','utf8'));
+  const scope={React,useMemo:f=>f(),useWorkspacePreferences:()=>({preferences:{visibleMetrics:['business','valuation','price','ownership']}}),overviewEvidence,...format,s:{},Help:({trigger})=>React.createElement('span',null,trigger),Building2:()=>null,Scale:()=>null,Activity:()=>null,Users:()=>null,ArrowUpRight:()=>null};
+  const Grid=new Function(...Object.keys(scope),code+';return ResearchEvidenceGrid;')(...Object.values(scope));
+  const html=renderToStaticMarkup(React.createElement(Grid,{research:r,onTab:()=>{}}));
+  const e=overviewEvidence(r);
+  assert.ok(e.valuation.length>0);
+  for(const row of e.valuation.slice(0,3))assert.ok(html.includes(row.label),row.label);
+  assert.match(html,/Open Valuation/);
+  assert.doesNotMatch(html,/<details|<summary/);
 });

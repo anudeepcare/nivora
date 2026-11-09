@@ -2542,7 +2542,29 @@ test('main valuation never substitutes price-anchored revenue for missing fundam
  const r=structuredClone(demoData.research.MSFT);r.company.symbol='HIMS';
  assert.doesNotMatch(renderToStaticMarkup(React.createElement(Selected,{research:r})),/Price-anchored revenue sensitivity/);
  assert.equal(fallbackCalls,0);
+ assert.equal(renderToStaticMarkup(React.createElement(Selected,{research:r,hideUnavailable:true})), '', 'overview can lead with supplied analyst targets when valuation is unavailable');
  const called=fallbackCalls;valid=true;
  for(const symbol of ['APP','MSFT']){r.company.symbol=symbol;const html=renderToStaticMarkup(React.createElement(Selected,{research:r}));assert.match(html,/\$100\.00/);assert.doesNotMatch(html,/Price-anchored revenue sensitivity/);}
  assert.equal(fallbackCalls,called,'working models must not invoke the fallback');
+});
+
+test('overview restores production historical fallback without replacing qualified valuations', async()=>{
+ const {priceRiskScenarios}=await import('../lib/price-risk-scenarios.ts');
+ const {valuationScale}=await import('../lib/research-summary.ts');
+ const Risk=loadComponent('components/PriceRiskCases.tsx','PriceRiskCases',{React,...format,valuationScale,ArrowDownRight,ArrowUpRight,Minus,ScenarioSensitivity:()=>null,styles:experience});
+ let valuation=null;
+ const Selected=loadComponent('components/SelectedValuation.tsx','SelectedValuation',{
+ React,useMemo:React.useMemo,useState:React.useState,useSyncExternalStore:React.useSyncExternalStore,
+ useAccess:()=>({access:{features:{advanced:false}}}),subscribe:()=>()=>{},selectedEnds:new Map(),listeners:new Set(),
+ aurynDecision:()=>({valuation,reference:{price:120,currency:'USD',asOf:'2026-11-06T21:00:00Z'}}),
+ researchOutlook:()=>({available:false,reason:'No fundamental model qualifies'}),
+ priceRiskScenarios,PriceRiskCases:Risk,ShieldAlert,Scale,Sparkles,Info,...format,s:experience});
+ const r=structuredClone(demoData.research.MSFT);r.retrievedAt='2026-11-09T00:00:00Z';delete r.priceObservedAt;
+ r.quote={...r.quote,price:120,currency:'USD',asOf:'2026-11-06T21:00:00Z'};
+ r.history=[];for(let i=0;i<180;i++){const date=new Date(Date.UTC(2026,4,11+i));if([0,6].includes(date.getUTCDay()))continue;const close=100*1.01**r.history.length;r.history.push({time:date.toISOString().slice(0,10),open:close,high:close,low:close,close,volume:100});}
+ const render=()=>renderToStaticMarkup(React.createElement(Selected,{research:r,historicalFallback:true,hideUnavailable:true}));
+ for(const symbol of ['IREN','HIMS','CIFR','NBIS','ASTS']){r.company.symbol=symbol;const html=render();assert.match(html,/Historical price-risk cases/);assert.equal((html.match(/\$146\.42/g)||[]).length,3);assert.doesNotMatch(html,/Not calculated|AURYN fair value/);}
+ valuation={basis:'cash-flow',bear:80,base:100,bull:140,assumptions:'Qualified model',end:null};
+ for(const symbol of ['APP','MSFT']){r.company.symbol=symbol;const html=render();assert.match(html,/\$100\.00/);assert.doesNotMatch(html,/Historical price-risk cases/);}
+ valuation=null;r.history=[];assert.equal(render(),'');
 });
