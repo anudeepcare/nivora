@@ -56,6 +56,12 @@ Owner screenshots of live CIFR showed two different bear/base/bull sets on one p
 - The bear-above-price result came from scaling the consensus by revenue-forecast spread; that method was removed in the previous pass.
 - Pace first on Overview; plain-words panel directly under Pace and the chart.
 
+## Sell-side prompts (eighth pass)
+The plain-words panel now shows a Trim watch when the price is above a model or analyst bull case, and a Thesis watch when growth, profitability and funding all read Careful. Both are prompts beside the call. The decision engine and its Sell / Reduce rules are unchanged, and neither prompt has been backtested.
+
+## Overview shows the cases once (ninth pass)
+Owner request: bear/base/bull appeared twice on Overview. The valuation cards are removed from Overview; the cases appear once, beside the call in the plain-words panel, from the same shared source. The method comparison is collapsed behind one disclosure. Valuation and Targets tabs keep the full cards. The test that required the cards on Overview was updated to assert the new rule.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 

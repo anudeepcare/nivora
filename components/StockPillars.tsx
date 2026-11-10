@@ -62,6 +62,11 @@ export default function StockPillars({
           </p>
         </div>
       )}
+      {view.exitWatch && (
+        <p className={s.exit} role="note" data-level={view.exitWatch.level}>
+          {view.exitWatch.text}
+        </p>
+      )}
       <ul className={s.list}>
         {view.pillars.map((p) => (
           <li key={p.id} data-status={p.status}>

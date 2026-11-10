@@ -18,6 +18,8 @@ export type StockPillars = {
   caution: number;
   unknown: number;
   summary: string;
+  /** Sell-side prompt. Informational: it never changes the decision engine's call. */
+  exitWatch: { level: "trim" | "thesis"; text: string } | null;
   /** Bear / base / bull beside the call, with their named source. */
   cases: {
     bear: number;
@@ -277,7 +279,25 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
           })[p.id],
       )
       .join(", ");
+  const stretched = num(price) && !!range && price > range.bull;
+  const weak = pillars.filter(
+    (p) =>
+      ["growth", "profit", "funding"].includes(p.id) && p.status === "caution",
+  ).length;
+  const exitWatch: StockPillars["exitWatch"] =
+    stretched && range!.kind !== "history"
+      ? {
+          level: "trim",
+          text: `Trim watch: the price is above the bull case${level === 0 ? " and Pace reads stretched (P0)" : ""}. If you hold it, check whether the position has grown beyond the size you intended. This is a prompt, not a Sell call.`,
+        }
+      : weak === 3
+        ? {
+            level: "thesis",
+            text: "Thesis watch: growth, profitability and funding all read Careful at once. If you hold it, write down what would have to improve, and by when, for you to keep holding.",
+          }
+        : null;
   return {
+    exitWatch,
     cases: range
       ? {
           ...range,

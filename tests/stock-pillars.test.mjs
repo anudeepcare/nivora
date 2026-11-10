@@ -35,4 +35,15 @@ test("holds for every market shape and reports missing evidence as not measured,
   const v = run(bare);
   assert.equal(v.unknown, 6);
   assert.equal(v.cases, null);
+  assert.equal(v.exitWatch, null);
+});
+test("sell-side prompts appear when the price is above the bull case or the whole business case is weak", () => {
+  const all = Object.values(demoData.research).filter((r) => r.company.assetType === "stock").map(run);
+  for (const v of all) {
+    const above = v.cases?.position === "above-bull";
+    if (above) assert.equal(v.exitWatch?.level, "trim");
+    if (v.exitWatch?.level === "trim") assert.ok(above);
+    if (v.exitWatch) assert.match(v.exitWatch.text, /watch:/);
+  }
+  assert.ok(all.some((v) => v.exitWatch?.level === "trim"));
 });

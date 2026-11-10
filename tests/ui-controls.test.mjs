@@ -2085,11 +2085,16 @@ test("shared scenario surface keeps conditional horizons visible and all views u
   assert.equal((html.match(/data-case=/g) || []).length, 3);
   assert.equal((html.match(/target not calculated/g) || []).length, 3);
   assert.doesNotMatch(html, /\$0\.00/);
-  for (const file of ["IntegratedResearch", "ValueStudio", "TargetsEstimates"])
+  for (const file of ["ValueStudio", "TargetsEstimates"])
     assert.match(
       fs.readFileSync(`components/${file}.tsx`, "utf8"),
       /<SelectedValuation\s+research=\{r\}/,
     );
+  // Owner request, 10 Nov 2026: Overview shows bear/base/bull once, beside the
+  // call in the plain-words panel, which reads the same shared cases.
+  const overview = fs.readFileSync("components/IntegratedResearch.tsx", "utf8");
+  assert.match(overview, /<StockPillars research=\{r\} decision=\{d\} \/>/);
+  assert.doesNotMatch(overview, /<SelectedValuation/);
 });
 
 test("Home exposes complete matching-news count and expands past three companies without additional feed requests", async () => {

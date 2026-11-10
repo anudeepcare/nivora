@@ -8,8 +8,6 @@ import {
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { useProduct } from "./Session";
 import ResearchChanges from "./ResearchChanges";
-import SelectedValuation from "./SelectedValuation";
-import { scenarioHeadline } from "@/lib/scenario-headline";
 import ScenarioLenses from "./ScenarioLenses";
 import StockPillars from "./StockPillars";
 import PaceInstrument from "./PaceInstrument";
@@ -148,13 +146,11 @@ export default function IntegratedResearch({
         </div>
         <div className={s.scenarios} aria-label="Scenario evidence">
           <div style={{ gridColumn: "1 / -1" }}>
-            <SelectedValuation
-              research={r}
-              hideUnavailable={!!consensusOutlook(r)}
-              historicalFallback
-              headline={scenarioHeadline(r)}
-            />
-            <ScenarioLenses research={r} decision={d} hideSingle />
+            {/* Bear, base and bull are shown once, beside the call above. */}
+            <details>
+              <summary>Compare how each method arrives at its range</summary>
+              <ScenarioLenses research={r} decision={d} hideSingle />
+            </details>
           </div>
         </div>
         <div className={s.consensusRow} data-has-target={!!consensusOutlook(r)}>
