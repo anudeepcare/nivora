@@ -10,7 +10,9 @@ Scenario cross-check produced a view for 1,305 of 1,305, with 0 unordered or non
 |---|---|---|---|
 | Raw historical percentiles | 73.6% | 70.8% | 58.9% |
 | Volatility-adjusted | 78.5% | 77.9% | 69.5% |
-Scored walk-forward, non-overlapping: 138,433 one-month, 42,869 three-month and 8,902 one-year tests.
+| Volatility-adjusted, widened (out-of-sample half) | 80.2% | 79.7% | 80.4% |
+
+The widening factors (1.044, 1.055, 1.354) were fitted on half of the stocks and checked on the other half. Scored walk-forward, non-overlapping: 138,433 one-month, 42,869 three-month and 8,902 one-year tests.
 
 ## Twelve months after each monthly Pace level, by business check (point-in-time)
 34,297 stock-months, signals March 2022 to October 2025. The business check used only the latest annual report at least 90 days old on the signal date. Pass: operating profit, positive free cash flow, share count up 10% or less, revenue not down more than 5%. Fail: operating loss and negative free cash flow.
@@ -47,7 +49,7 @@ Reading:
 The app now shows each stock the measured record of its own state (`lib/evidence-odds.ts`, table in `lib/evidence-table.ts`).
 
 ## Automated page crawl
-68 page views (10 pages and 8 research tabs for 3 demo companies, at 1280px and 390px) checked for failed loads, NaN/undefined text, horizontal overflow, duplicate headings and repeated bear/base/bull. Findings: a nested-paragraph markup error on the Labs page (`/research-lab`), and development-only hydration attribute warnings on one demo company. Nothing else. Demo data only.
+68 page views (10 pages and 8 research tabs for 3 demo companies, at 1280px and 390px) checked for failed loads, NaN/undefined text, horizontal overflow, duplicate headings and repeated bear/base/bull. Findings: a nested-paragraph markup error on the Labs page (`/research-lab`), since fixed, and development-only hydration attribute warnings on one demo company. Nothing else. Demo data only.
 
 ## Limits
 - Survivorship: only companies listed today.

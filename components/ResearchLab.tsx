@@ -216,13 +216,13 @@ export default function ResearchLab() {
               : "Compare before adopting a policy"
           }
         >
-          {result?.reason && <p>{result.reason}</p>}
+          {result?.reason && <span>{result.reason} </span>}
           {mode === "current-v6" && (
-            <p>
+            <span>
               The frozen model was released November 7, 2026. No older
               performance is relabeled as v6, and a price replay is not a
-              verified prospective record.
-            </p>
+              verified prospective record.{" "}
+            </span>
           )}
           Both policies receive the same cash at the same time. Stronger
           multipliers cannot borrow from future contributions.

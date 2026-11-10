@@ -72,6 +72,12 @@ See `verification/market-study-20261110/REPORT.md`. 1,305 real stocks, ten years
 ## Measured record for each stock (eleventh pass)
 Design comparison on the point-in-time data (REPORT.md): business check first, trend second; deeper falls were worse, not better. The plain-words panel now shows the measured one-year record of stocks in the same state as the one on screen (business check × above/below 200-day average, with deep-fall and near-high cases called out), the timing answer is driven by that record, and the sell-side prompts follow it: Thesis watch when the business check fails; a stretched price in a sound business is a size check, not a sell prompt. The Pace classifier, thresholds and decision engine are still unchanged; their P2–P4 sizing is not supported by this evidence and needs an owner decision.
 
+## Evidence rules in the call, and calibrated ranges (twelfth pass)
+Owner instruction: Pace, the cases and the sell side must be better, not relabelled.
+- **Decision engine (`assessDecision`), three added rules, active only when the measured-record state is available:** a business that is not supported and is losing money and burning cash reads Reduce (holder) or Avoid; a supported, passing business at P1 with the price above its 200-day average, not expensive and not overbought, reads Add / Buy at the planned pace; a supported business at P2–P4 that is 30% or more below its one-year high reads Hold / Wait until the fall steadies. All other rules, the Pace classifier and its thresholds are unchanged. Two existing tests whose fixtures are deep falls were updated to the new call.
+- **Ranges:** volatility-adjusted ranges are widened by factors fitted on half of the study and verified on the other half, where they held 80.2%, 79.7% and 80.4% at one month, three months and one year.
+- These rules come from 2022–2025 data on companies listed today. They are evidence-based, not proven for other periods.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 

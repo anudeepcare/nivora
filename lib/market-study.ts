@@ -12,7 +12,8 @@ export const MARKET_STUDY = {
   /** Share of past ranges that contained the outcome; a 10th-90th range is designed for 80%. */
   rangeHeld: {
     empirical: { 20: 73.6, 63: 70.8, 252: 58.9 },
-    riskAdjusted: { 20: 78.5, 63: 77.9, 252: 69.5 },
+    /** After the fitted widening, measured on the half of the stocks not used to fit it. */
+    riskAdjusted: { 20: 80.2, 63: 79.7, 252: 80.4 },
   },
   /** Twelve months after each monthly Pace level, split by a business check that used only the
    * latest annual report at least 90 days old on the signal date (34,297 stock-months, signals

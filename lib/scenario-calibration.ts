@@ -31,6 +31,11 @@ const EWMA = 0.94;
 /** Fewer scored ranges than this cannot separate a good range from luck. */
 export const MIN_CALIBRATION_TESTS = 8;
 
+/** Widening that brought volatility-adjusted ranges to their 80% design. Fitted on half of the
+ * 1,305-stock study and checked on the other half, where ranges then held 80.2% (one month),
+ * 79.7% (three months) and 80.4% (one year). Without it: 78.5%, 77.8% and 69.7%. */
+export const RANGE_WIDENING = { 20: 1.044, 63: 1.055, 252: 1.354 } as const;
+
 const quantile = (sorted: number[], p: number) => {
   const rank = p * (sorted.length - 1),
     lo = Math.floor(rank);
@@ -84,8 +89,9 @@ export function rangeBounds(
     Math.sqrt(weight * variance + (1 - weight) * long * long) *
     Math.sqrt(horizon);
   const middle = quantile(standard, 0.5);
-  const lo = (quantile(standard, 0.1) - middle) * scale,
-    hi = (quantile(standard, 0.9) - middle) * scale;
+  const widen = RANGE_WIDENING[horizon >= 252 ? 252 : horizon >= 63 ? 63 : 20];
+  const lo = (quantile(standard, 0.1) - middle) * scale * widen,
+    hi = (quantile(standard, 0.9) - middle) * scale * widen;
   return Number.isFinite(lo) && Number.isFinite(hi) && lo < 0 && hi > 0
     ? [lo, 0, hi]
     : null;

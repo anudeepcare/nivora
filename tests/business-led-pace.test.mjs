@@ -133,9 +133,11 @@ test("a small daily price change leaves confirmed Pace and the business decision
   assert.equal(decisions[0].brief.accumulation.multiplier, 2);
   assert.equal(decisions[0].brief.accumulation.forming.multiplier, 4);
   for (const d of decisions) {
-    assert.equal(d.action, "Buy");
-    assert.equal(d.explanation.code, "accumulation");
-    assert.match(d.headline, /initial accumulation/i);
+    // Evidence rule, 10 Nov 2026: this fixture sits 30%+ below its one-year high,
+    // so a supported business reads Wait until the fall steadies. Stability is the point here.
+    assert.equal(d.action, "Wait");
+    assert.equal(d.explanation.code, "steady");
+    assert.match(d.headline, /deep fall/i);
     assert.ok(d.risks.some((r) => /model|valuation/i.test(r)));
     assert.doesNotMatch(d.changeConditions[0], /entry at/i);
     assert.equal(
