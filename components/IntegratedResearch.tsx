@@ -57,8 +57,6 @@ export default function IntegratedResearch({
     d = m.decision;
   return (
     <>
-      <OverviewBrief research={r} now={now} owns={decisionOwns} decision={d} />
-      <StockPillars research={r} decision={d} />
       <div className={s.overview}>
         <div className={s.context} aria-label="Decision context">
           <button
@@ -137,6 +135,17 @@ export default function IntegratedResearch({
           )}
         </details>
         <div className={s.chart}>{chart}</div>
+        <div style={{ gridArea: "pillars", minWidth: 0 }}>
+          <StockPillars research={r} decision={d} />
+        </div>
+        <div style={{ gridArea: "brief", minWidth: 0 }}>
+          <OverviewBrief
+            research={r}
+            now={now}
+            owns={decisionOwns}
+            decision={d}
+          />
+        </div>
         <div className={s.scenarios} aria-label="Scenario evidence">
           <div style={{ gridColumn: "1 / -1" }}>
             <SelectedValuation

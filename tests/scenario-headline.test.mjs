@@ -5,15 +5,19 @@ import { universe } from "./helpers/market-universe.mjs";
 
 const market = universe(8);
 const pick = (kind) => market.find((m) => m.kind === kind).research;
-test("supplied analyst range leads; otherwise consensus scaled by revenue forecasts; otherwise named history", () => {
+test("supplied analyst range leads; otherwise consensus with a historical bear and bull; otherwise named history", () => {
   const full = scenarioHeadline(pick("analyst-full"));
   assert.equal(full.source, "analyst");
   assert.ok(full.bear < full.base && full.base < full.bull);
-  const r = pick("analyst-consensus-only"), px = r.quote.price, end = "2027-12-31";
-  const withRevenue = { ...r, company: { ...r.company, sector: "Technology" }, evidence: { ...r.evidence, profile: { sector: "Technology", industry: "Software" }, consensus: { target: px * 2 }, estimates: [{ date: end, period: "FY2027", frequency: "annual", currency: "USD", revenueLow: 80, revenue: 100, revenueHigh: 130 }] } };
-  const h = scenarioHeadline(withRevenue);
-  assert.equal(h.source, "analyst-revenue");
-  assert.ok(Math.abs(h.base - px * 2) < 1e-9 && Math.abs(h.bear - px * 1.6) < 1e-9 && Math.abs(h.bull - px * 2.6) < 1e-9);
+  const r = pick("large-cap"), plain = scenarioHeadline({ ...r, evidence: undefined });
+  const mid = (plain.bear + plain.bull) / 2;
+  const h = scenarioHeadline({ ...r, evidence: { ...r.evidence, consensus: { target: mid } } });
+  assert.equal(h.source, "analyst-history");
+  assert.equal(h.base, mid);
+  assert.equal(h.bear, plain.bear);
+  assert.equal(h.bull, plain.bull);
+  // A consensus outside the historical range is never forced into an unordered set.
+  assert.equal(scenarioHeadline({ ...r, evidence: { ...r.evidence, consensus: { target: plain.bull * 3 } } }).source, "history");
   const hist = scenarioHeadline({ ...pick("large-cap"), evidence: undefined });
   assert.equal(hist.source, "history");
   assert.match(hist.detail, /Not fair value or a forecast/);

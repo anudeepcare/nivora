@@ -1,7 +1,7 @@
 .overview {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  grid-template-areas: "context context" "pace chart" "notes notes" "scenarios scenarios" "consensus consensus" "metrics metrics" "changes changes" "crystal crystal";
+  grid-template-areas: "context context" "pace chart" "brief brief" "pillars pillars" "notes notes" "scenarios scenarios" "consensus consensus" "metrics metrics" "changes changes" "crystal crystal";
   gap: 16px;
   align-items: stretch;
   margin: 16px 0 24px;
@@ -151,7 +151,7 @@
 @media (max-width: 760px) {
   .overview {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "context" "pace" "chart" "notes" "scenarios" "consensus" "metrics" "changes" "crystal";
+    grid-template-areas: "context" "pace" "chart" "brief" "pillars" "notes" "scenarios" "consensus" "metrics" "changes" "crystal";
     gap: 16px;
     margin-top: 12px;
   }
