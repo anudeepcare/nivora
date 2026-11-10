@@ -10,17 +10,21 @@ test("supplied analyst range leads; otherwise consensus with a historical bear a
   assert.equal(full.source, "analyst");
   assert.ok(full.bear < full.base && full.base < full.bull);
   const r = pick("large-cap"), plain = scenarioHeadline({ ...r, evidence: undefined });
-  const mid = (plain.bear + plain.bull) / 2;
+  assert.equal(plain.source, "history");
+  assert.ok(plain.bear < plain.base && plain.base < plain.bull);
+  const mid = (plain.base + plain.bull) / 2;
   const h = scenarioHeadline({ ...r, evidence: { ...r.evidence, consensus: { target: mid } } });
   assert.equal(h.source, "analyst-history");
   assert.equal(h.base, mid);
   assert.equal(h.bear, plain.bear);
   assert.equal(h.bull, plain.bull);
-  // A consensus outside the historical range is never forced into an unordered set.
+  assert.ok(h.bear < r.quote.price * 1.02, "bear is a real downside from today's price");
+  // A consensus outside the range is never forced into an unordered set.
   assert.equal(scenarioHeadline({ ...r, evidence: { ...r.evidence, consensus: { target: plain.bull * 3 } } }).source, "history");
   const hist = scenarioHeadline({ ...pick("large-cap"), evidence: undefined });
   assert.equal(hist.source, "history");
   assert.match(hist.detail, /Not fair value or a forecast/);
+  assert.match(hist.detail, /held about \d+% of the time/);
 });
 test("every market shape yields ordered positive cases or nothing; never a base pinned to today's price", () => {
   for (const { kind, research } of market) {

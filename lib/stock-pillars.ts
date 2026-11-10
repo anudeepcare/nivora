@@ -3,6 +3,7 @@ import type { aurynDecision } from "./auryn-decision.ts";
 import { researchBrief } from "./research-brief.ts";
 import { scenarioCases } from "./scenario-cases.ts";
 import { percent } from "./format.ts";
+import { MARKET_STUDY } from "./market-study.ts";
 
 export type PillarStatus = "supportive" | "mixed" | "caution" | "unknown";
 export type Pillar = {
@@ -197,24 +198,30 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
           answer: "Not measured",
           why: "There is not enough settled price history for a Pace reading.",
         }
-      : level >= 2
+      : level >= 2 && !["Buy", "Add"].includes(d.actionLabel)
         ? {
-            status: "supportive",
-            answer:
-              level >= 3 ? "In a deeper buying zone" : "In a starting zone",
-            why: `Pace reads P${level}: the price has pulled back relative to its own longer trend. Timing alone is never a reason to buy.`,
+            status: "caution",
+            answer: "Cheaper, but not a buy signal",
+            why: `Pace reads P${level}, a pullback zone, but the business checks do not support adding. In a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, pullbacks this deep were followed by a positive year about ${MARKET_STUDY.pace12m.established.win[level].toFixed(0)}% of the time for established companies and only about ${MARKET_STUDY.pace12m.other.win[level].toFixed(0)}% for the rest.`,
           }
-        : level === 1
+        : level >= 2
           ? {
-              status: "mixed",
-              answer: "No pullback yet",
-              why: "Pace reads P1: the price is near its trend, with no discount to act on.",
+              status: "supportive",
+              answer:
+                level >= 3 ? "In a deeper buying zone" : "In a starting zone",
+              why: `Pace reads P${level}: the price has pulled back relative to its own longer trend. In a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, established companies in this zone were higher a year later about ${MARKET_STUDY.pace12m.established.win[level].toFixed(0)}% of the time. Timing alone is never a reason to buy.`,
             }
-          : {
-              status: "caution",
-              answer: "Stretched",
-              why: "Pace reads P0: the price has run well ahead of its own trend.",
-            }),
+          : level === 1
+            ? {
+                status: "mixed",
+                answer: "No pullback yet",
+                why: "Pace reads P1: the price is near its trend, with no discount to act on.",
+              }
+            : {
+                status: "caution",
+                answer: "Stretched",
+                why: "Pace reads P0: the price has run well ahead of its own trend.",
+              }),
   });
   const closes = [...r.history]
     .filter((x) => num(x.close) && x.close > 0)

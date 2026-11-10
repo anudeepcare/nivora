@@ -62,6 +62,12 @@ The plain-words panel now shows a Trim watch when the price is above a model or 
 ## Overview shows the cases once (ninth pass)
 Owner request: bear/base/bull appeared twice on Overview. The valuation cards are removed from Overview; the cases appear once, beside the call in the plain-words panel, from the same shared source. The method comparison is collapsed behind one disclosure. Valuation and Targets tabs keep the full cards. The test that required the cards on Overview was updated to assert the new rule.
 
+## Broad-market study and what it changed (tenth pass)
+See `verification/market-study-20261110/REPORT.md`. 1,305 real stocks, ten years.
+- Volatility-adjusted ranges held 78% at one and three months and 70% at one year; raw percentiles 74%, 71% and 59%. Headline bear/bull that come from price history now use the volatility-adjusted range, and the text states the measured hit rate.
+- Deeper Pace zones were followed by better years for S&P 500 members (P4: 77% positive) and worse years for other Nasdaq stocks (P4: 32% positive). The timing answer in the plain-words panel now reads Careful when Pace is P2–P4 but the business checks do not support adding, and quotes these figures.
+- No Pace threshold, classifier or decision rule was changed.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 
