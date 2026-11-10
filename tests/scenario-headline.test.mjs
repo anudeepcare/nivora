@@ -24,7 +24,7 @@ test("supplied analyst range leads; otherwise consensus with a historical bear a
   const hist = scenarioHeadline({ ...pick("large-cap"), evidence: undefined });
   assert.equal(hist.source, "history");
   assert.match(hist.detail, /Not fair value or a forecast/);
-  assert.match(hist.detail, /held about \d+% of the time/);
+  assert.match(hist.detail, /one year in five/);
 });
 test("every market shape yields ordered positive cases or nothing; never a base pinned to today's price", () => {
   for (const { kind, research } of market) {
@@ -53,4 +53,17 @@ test("every panel reads the same single set of cases", () => {
     assert.deepEqual(p.cases && [p.cases.bear, p.cases.base, p.cases.bull], c && [c.bear, c.base, c.bull], kind);
     if (c) assert.ok(c.bear <= c.base && c.base <= c.bull, kind);
   }
+});
+
+import { expectedRange, EXPECTED_RANGE } from "../lib/scenario-calibration.ts";
+test("expected range scales with the stock's own volatility and stays within sane bounds", () => {
+  const mk = (vol) => { let p = 100, seed = 3; const out = []; for (let i = 0; i < 400; i++) { seed = (seed * 16807) % 2147483647; const u = seed / 2147483647, v = ((seed * 48271) % 2147483647) / 2147483647; p *= Math.exp(vol * Math.sqrt(-2 * Math.log(u || 1e-9)) * Math.cos(2 * Math.PI * v)); const d = new Date(Date.UTC(2025, 0, 1 + i)); out.push({ time: d.toISOString().slice(0, 10), open: p, high: p, low: p, close: p, volume: 1 }); } return out; };
+  const asOf = "2026-06-01T00:00:00Z";
+  const calm = expectedRange(mk(0.012), asOf, 252, "crypto"), wild = expectedRange(mk(0.045), asOf, 252, "crypto");
+  assert.ok(calm.available && wild.available);
+  assert.ok(calm.bear > -25 && calm.bull < 35, JSON.stringify(calm));
+  assert.ok(wild.bear > -60 && wild.bear < -35 && wild.bull < 160, JSON.stringify(wild));
+  assert.ok(Math.abs(Math.log(1 + calm.bull / 100) + Math.log(1 + calm.bear / 100)) < 1e-9, "symmetric in log terms");
+  assert.equal(expectedRange(mk(0.02).slice(0, 80), asOf, 252, "crypto").available, false);
+  assert.ok(EXPECTED_RANGE.z[252] > EXPECTED_RANGE.z[63]);
 });

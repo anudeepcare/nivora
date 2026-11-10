@@ -204,3 +204,62 @@ export function rangeCalibration(
     through: bars[latest].time,
   };
 }
+
+/** One-in-five bounds for a volatility-scaled range: z times the past year's daily volatility times
+ * the square root of the horizon, symmetric in log terms, no direction assumed. z was fitted on half
+ * of the 1,305-stock study and checked on the other half: the range held 60.2% (three months) and
+ * 60.6% (one year); 18-19% of outcomes finished below it and about 21% above. Calibration was similar
+ * across low-, mid- and high-volatility stocks (56-63%). */
+export const EXPECTED_RANGE = {
+  z: { 63: 0.763, 252: 0.859 },
+  held: { 63: 60.2, 252: 60.6 },
+} as const;
+export type ExpectedRange =
+  | { available: false; reason: string }
+  | {
+      available: true;
+      horizon: 63 | 252;
+      bear: number;
+      bull: number;
+      /** Annualised daily volatility over the sessions used, percent. */
+      volatility: number;
+      sessions: number;
+      through: string;
+    };
+/** A poor and a strong outcome for a stock this volatile: roughly one period in five finished
+ * below the lower bound and one in five above the upper. A risk range, not a valuation. */
+export function expectedRange(
+  history: Candle[],
+  asOf: string,
+  horizon: 63 | 252,
+  market: "us-equity" | "crypto" = "us-equity",
+): ExpectedRange {
+  const bars = adaptiveSettledBars(history, asOf, market).slice(-253);
+  const moves: number[] = [];
+  for (let i = 1; i < bars.length; i++) {
+    const move = Math.log(bars[i].close / bars[i - 1].close);
+    if (Number.isFinite(move)) moves.push(move);
+  }
+  if (moves.length < 120)
+    return {
+      available: false,
+      reason:
+        "At least six months of settled daily prices are needed for an expected range.",
+    };
+  const sigma = Math.sqrt(moves.reduce((a, x) => a + x * x, 0) / moves.length);
+  const span = EXPECTED_RANGE.z[horizon] * sigma * Math.sqrt(horizon);
+  if (!(span > 0) || !Number.isFinite(span))
+    return {
+      available: false,
+      reason: "Price history does not show measurable movement.",
+    };
+  return {
+    available: true,
+    horizon,
+    bear: (Math.exp(-span) - 1) * 100,
+    bull: (Math.exp(span) - 1) * 100,
+    volatility: sigma * Math.sqrt(252) * 100,
+    sessions: moves.length,
+    through: bars.at(-1)!.time,
+  };
+}

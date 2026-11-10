@@ -78,6 +78,12 @@ Owner instruction: Pace, the cases and the sell side must be better, not relabel
 - **Ranges:** volatility-adjusted ranges are widened by factors fitted on half of the study and verified on the other half, where they held 80.2%, 79.7% and 80.4% at one month, three months and one year.
 - These rules come from 2022–2025 data on companies listed today. They are evidence-based, not proven for other periods.
 
+## Bear and bull corrected after live review (thirteenth pass)
+Owner screenshots of the deployed build showed APP at bear $21 / bull $4,400, BE at $45 / $2,802 and META at $254 / $1,329. The percentile-of-standardised-past-moves range, widened to hit 80% on average, produced extreme bounds for stocks that had trended hard (its width at the 90th percentile was over five annual volatilities).
+- Headline bear and bull now use `expectedRange`: 0.859 × the past year's daily volatility × √252, either side of today's price. Fitted on half of the 1,305-stock study and checked on the other half: about one year in five finished below the bear case and one in five above the bull case (held 60.6%), with similar results for low-, mid- and high-volatility stocks.
+- On today's public prices this gives APP $201 / $799 (actual 52-week range $229–$734), META $451 / $915 ($525–$778), BE $74 / $496 ($77–$346).
+- These are risk ranges from volatility, not valuation cases. A fundamentals-based bear case still requires the earnings model to qualify; why it did not for APP, a profitable company, is unexplained and needs the live data.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 
