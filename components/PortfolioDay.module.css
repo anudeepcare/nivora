@@ -1,0 +1,134 @@
+.root {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 16px 32px;
+  align-items: center;
+  margin: 0 0 20px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: linear-gradient(
+    115deg,
+    color-mix(in srgb, #76b6aa 13%, var(--card)),
+    var(--card) 62%
+  );
+  box-shadow: var(--panel-shadow);
+  color: var(--ink);
+}
+.eyebrow {
+  display: block;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.total strong {
+  display: block;
+  margin: 8px 0 2px;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.total p {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.root [data-direction="up"] {
+  --tone: var(--green);
+}
+.root [data-direction="down"] {
+  --tone: var(--red);
+}
+.total p[data-direction="up"],
+.total p[data-direction="down"] {
+  color: var(--tone);
+}
+.total small {
+  display: block;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.movers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
+  padding-right: 8px;
+}
+.movers h3 {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.movers ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.movers li {
+  display: grid;
+  grid-template-columns: 56px minmax(84px, max-content) max-content;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.movers a {
+  font-weight: 650;
+}
+.movers span {
+  color: var(--tone);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.movers small {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.open {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.movers {
+  margin-top: 26px;
+}
+@media (max-width: 760px) {
+  .root {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 18px 16px;
+  }
+  .movers {
+    margin-top: 0;
+    padding-right: 0;
+  }
+  .open {
+    position: static;
+    justify-self: start;
+  }
+}
+@media (max-width: 420px) {
+  .movers {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

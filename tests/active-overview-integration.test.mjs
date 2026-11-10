@@ -56,6 +56,7 @@ function setup() {
     ResearchChanges: marker("changes"),
     EvidenceCrystal: marker("crystal"),
     SelectedValuation: marker("valuation"),
+    ScenarioLenses: marker("scenario lenses"),
     AnalystTargets: marker("targets"),
     DataFreshness: marker("freshness"),
     ResearchEvidenceGrid: marker("all evidence"),

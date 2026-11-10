@@ -32,6 +32,7 @@ import Link from "next/link";
 import { FeatureGate } from "./Access";
 import CompanySparkline from "./CompanySparkline";
 import homeStyles from "./HomeWorkspace.module.css";
+import PortfolioDay from "./PortfolioDay";
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
 import {
@@ -251,6 +252,14 @@ function HomeOverview() {
           Research a company <SearchIcon size={16} />
         </Link>
       </div>
+      {!!workspace?.positions.length && (
+        <PortfolioDay
+          positions={workspace.positions}
+          quotes={quotes.data}
+          prefix={prefix}
+          now={today.getTime()}
+        />
+      )}
       <ContributionCompare symbols={symbols} prefix={prefix} />
       <HomeMarketCards
         symbols={symbols}

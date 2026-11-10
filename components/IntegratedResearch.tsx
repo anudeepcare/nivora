@@ -9,6 +9,7 @@ import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { useProduct } from "./Session";
 import ResearchChanges from "./ResearchChanges";
 import SelectedValuation from "./SelectedValuation";
+import ScenarioLenses from "./ScenarioLenses";
 import PaceInstrument from "./PaceInstrument";
 import s from "./ResearchOverview.module.css";
 import CompanyMetrics from "./CompanyMetrics";
@@ -140,6 +141,7 @@ export default function IntegratedResearch({
               hideUnavailable={!!consensusOutlook(r)}
               historicalFallback
             />
+            <ScenarioLenses research={r} decision={d} hideSingle />
           </div>
         </div>
         <div className={s.consensusRow} data-has-target={!!consensusOutlook(r)}>

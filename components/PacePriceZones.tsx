@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { Research } from "@/lib/types";
 import type { PacePriceZones as Zones } from "@/lib/pace-price-zones";
 import { amount } from "@/lib/format";
+import { paceLadder } from "@/lib/pace-ladder";
 import styles from "./PacePriceZones.module.css";
 const labels = [
   "Pause",
@@ -80,16 +81,8 @@ export default function PacePriceZones({
         className={styles.ladder}
         aria-label="Five Pace stages with price levels"
       >
-        {labels.map((label, level) => {
-          const ranges = zones.ranges.filter((x) => x.level === level);
-          const current = ranges.some(
-            (x) => x.low <= zones.reference && zones.reference <= x.high,
-          );
-          const band = [...ranges].sort(
-            (a, b) =>
-              Math.abs((a.low + a.high) / 2 - zones.reference) -
-              Math.abs((b.low + b.high) / 2 - zones.reference),
-          )[0];
+        {paceLadder(zones, labels.length).map((step) => {
+          const { level, current } = step;
           return (
             <button
               type="button"
@@ -104,35 +97,33 @@ export default function PacePriceZones({
                 P{level}
                 {current ? " · now" : ""}
               </strong>
-              <small className={styles.stageAction}>{label}</small>
-              <span>
-                {band
-                  ? amount(
-                      current
-                        ? zones.reference
-                        : level < 2
-                          ? band.low
-                          : band.high,
+              <small className={styles.stageAction}>{labels[level]}</small>
+              <span
+                title={
+                  step.relation === "at-or-below"
+                    ? "Nearest band for this stage begins at or below this price"
+                    : step.relation === "at-or-above"
+                      ? "Nearest band for this stage begins at or above this price"
+                      : undefined
+                }
+              >
+                {step.price == null
+                  ? "—"
+                  : `${step.relation === "at-or-below" ? "≤ " : step.relation === "at-or-above" ? "≥ " : ""}${amount(
+                      step.price,
                       research.quote.currency,
-                      (current
-                        ? zones.reference
-                        : level < 2
-                          ? band.low
-                          : band.high) >= 1000,
-                    )
-                  : "—"}
+                      step.price >= 1000,
+                    )}`}
               </span>
-              {ranges.length > 1 && (
-                <small className={styles.bandCount}>
-                  {ranges.length} bands
-                </small>
+              {step.bands > 1 && (
+                <small className={styles.bandCount}>{step.bands} bands</small>
               )}
             </button>
           );
         })}
         <small className={styles.currentPrice}>
           Pace reference {amount(zones.reference, research.quote.currency)} ·
-          settled price history · approximate zone edges
+          settled price history · ≤ / ≥ mark the nearest approximate zone edge
         </small>
       </div>
     );

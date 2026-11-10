@@ -4,6 +4,7 @@ import DecisionInsights from "./DecisionInsights";
 import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
 import SelectedValuation from "./SelectedValuation";
+import ScenarioLenses from "./ScenarioLenses";
 import SectionIcon from "./SectionIcon";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
@@ -58,6 +59,7 @@ export default function ValueStudio({
             </button>
           }
         />
+        <ScenarioLenses research={r} />
       </div>
       {consensusOutlook(r) && (
         <div className={layout.consensus}>

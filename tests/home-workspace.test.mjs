@@ -28,6 +28,7 @@ function load(name, bindings) {
     HomeMarketCards: () => null,
     OpportunityMap: () => null,
     MarketRadar: () => null,
+    PortfolioDay: () => null,
     SearchIcon: () => null,
     ...bindings,
   };
