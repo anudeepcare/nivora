@@ -107,8 +107,17 @@ export default function SelectedValuation({
     : d.valuation;
   // A price-anchored sensitivity has a base equal to today's price by
   // construction, so a named analyst or historical range leads instead.
+  // A revenue model that carries a multiple above 20x forward, or lands above
+  // three times the price, is applying a trailing multiple to a much larger
+  // forecast. It is withheld (same rule as lib/scenario-cases.ts).
+  const extreme =
+    projection.available &&
+    projection.basis === "revenue" &&
+    (projection.cases[1].multiple > 20 ||
+      (!!d.reference && projection.cases[1].target > 3 * d.reference.price));
   const lead =
-    headline && (!modelled || (projection.available && !ordinary.available))
+    headline &&
+    (!modelled || extreme || (projection.available && !ordinary.available))
       ? headline
       : null;
   const v = lead
@@ -121,7 +130,9 @@ export default function SelectedValuation({
         bull: lead.bull,
         assumptions: lead.note,
       }
-    : modelled;
+    : extreme
+      ? null
+      : modelled;
   const recovery = projection.available ? undefined : projection.recovery;
   if (r.company.assetType !== "stock") return null;
   // Preserve production’s observed-return fallback without calling it valuation.

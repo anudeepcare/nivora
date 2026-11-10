@@ -1,7 +1,7 @@
 import type { Research } from "./types";
 import type { aurynDecision } from "./auryn-decision.ts";
 import { researchBrief } from "./research-brief.ts";
-import { scenarioHeadline } from "./scenario-headline.ts";
+import { scenarioCases } from "./scenario-cases.ts";
 import { percent } from "./format.ts";
 
 export type PillarStatus = "supportive" | "mixed" | "caution" | "unknown";
@@ -145,14 +145,17 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
             }),
   });
   const price = d.reference?.price;
-  const lead = d.valuation
-    ? { base: d.valuation.base, label: "AURYN's base case" }
-    : (() => {
-        const h = scenarioHeadline(r);
-        return h && h.source !== "history"
-          ? { base: h.base, label: "the analyst consensus target" }
-          : null;
-      })();
+  const range = scenarioCases(r, d);
+  const lead =
+    range && range.kind !== "history"
+      ? {
+          base: range.base,
+          label:
+            range.kind === "model"
+              ? "AURYN's base case"
+              : "the analyst consensus target",
+        }
+      : null;
   const gap =
     lead && num(price) && price > 0 ? (lead.base / price - 1) * 100 : null;
   pillars.push({
@@ -274,22 +277,6 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
           })[p.id],
       )
       .join(", ");
-  const head = d.valuation ? null : scenarioHeadline(r);
-  const range = d.valuation
-    ? {
-        bear: d.valuation.bear,
-        base: d.valuation.base,
-        bull: d.valuation.bull,
-        source: d.valuation.label,
-      }
-    : head
-      ? {
-          bear: head.bear,
-          base: head.base,
-          bull: head.bull,
-          source: head.eyebrow,
-        }
-      : null;
   return {
     cases: range
       ? {

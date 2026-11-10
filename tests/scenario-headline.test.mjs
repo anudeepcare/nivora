@@ -31,3 +31,22 @@ test("every market shape yields ordered positive cases or nothing; never a base 
   }
   assert.equal(scenarioHeadline(pick("crypto")), null);
 });
+import { extremeRevenueModel, scenarioCases } from "../lib/scenario-cases.ts";
+import { aurynDecision } from "../lib/auryn-decision.ts";
+import { stockPillars } from "../lib/stock-pillars.ts";
+test("a trailing revenue multiple carried onto a much larger forecast is withheld, as on the live CIFR page", () => {
+  const model = (multiple, target, basis = "revenue") => ({ available: true, basis, cases: [{}, { multiple, target }, {}] });
+  assert.equal(extremeRevenueModel(model(54.4, 83.58), 6.81), true);
+  assert.equal(extremeRevenueModel(model(8, 30), 6.81), true);
+  assert.equal(extremeRevenueModel(model(8, 12), 6.81), false);
+  assert.equal(extremeRevenueModel(model(54.4, 83.58, "earnings"), 6.81), false);
+});
+test("every panel reads the same single set of cases", () => {
+  for (const { kind, research } of market) {
+    const d = aurynDecision(research, { now: Date.parse(research.retrievedAt) });
+    const c = scenarioCases(research, d), p = stockPillars(research, d);
+    if (!p) { assert.equal(c, null, kind); continue; }
+    assert.deepEqual(p.cases && [p.cases.bear, p.cases.base, p.cases.bull], c && [c.bear, c.base, c.bull], kind);
+    if (c) assert.ok(c.bear <= c.base && c.base <= c.bull, kind);
+  }
+});

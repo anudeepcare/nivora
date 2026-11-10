@@ -49,6 +49,13 @@ Owner feedback: Overview is not understandable and looks driven by technicals al
 - The plain-words panel now shows bear / base / bull beside the call, with the named source and whether today's price sits inside, above or below the range.
 - **Sell-side audit of `assessDecision` (no rule changed):** Sell triggers only on insolvency. Reduce triggers only on funding distress or business deterioration. Price never triggers either: a held stock at P0, or priced above its bull case, reads Hold. A business that fails the support screen reads Review indefinitely unless it reaches distress. Whether to add a valuation-based Reduce is an owner decision and needs a backtest first.
 
+## One set of cases, runaway revenue model withheld (seventh pass)
+Owner screenshots of live CIFR showed two different bear/base/bull sets on one page ($18.80/$22.95/$28.45 in the plain-words panel, $46.97/$83.58/$142.26 in AURYN valuation at 43–65x EV/revenue against a $6.81 price), and APP with a bear case above the price.
+- `lib/scenario-cases.ts` is now the single source for cases; the plain-words panel and the valuation cards follow the same order (qualifying model, then named analyst or historical headline). A test asserts they agree for every market shape.
+- A revenue-multiple model is withheld when its base multiple is above 20x or its base case is above three times the price (`REVENUE_MODEL_LIMITS`). The underlying engine applies the provider's trailing EV/revenue to a much larger forecast revenue; that calculation is not changed, only no longer shown as a case.
+- The bear-above-price result came from scaling the consensus by revenue-forecast spread; that method was removed in the previous pass.
+- Pace first on Overview; plain-words panel directly under Pace and the chart.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 
