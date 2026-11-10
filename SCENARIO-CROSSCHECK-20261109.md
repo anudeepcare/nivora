@@ -69,6 +69,9 @@ See `verification/market-study-20261110/REPORT.md`. 1,305 real stocks, ten years
 - Automated crawl of 68 page views on demo data found one markup error on the Labs page and nothing else.
 - No Pace threshold, classifier or decision rule was changed.
 
+## Measured record for each stock (eleventh pass)
+Design comparison on the point-in-time data (REPORT.md): business check first, trend second; deeper falls were worse, not better. The plain-words panel now shows the measured one-year record of stocks in the same state as the one on screen (business check × above/below 200-day average, with deep-fall and near-high cases called out), the timing answer is driven by that record, and the sell-side prompts follow it: Thesis watch when the business check fails; a stretched price in a sound business is a size check, not a sell prompt. The Pace classifier, thresholds and decision engine are still unchanged; their P2–P4 sizing is not supported by this evidence and needs an owner decision.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 

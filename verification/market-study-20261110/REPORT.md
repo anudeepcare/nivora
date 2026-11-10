@@ -28,6 +28,24 @@ Reading:
 - Deeper Pace zones did not improve outcomes in this period, even for companies passing the check. P1 (no pullback) had the best record; P4 the worst.
 - An earlier split by today's S&P 500 membership showed the opposite (deeper zones better). That split is hindsight-biased, because today's members are companies that recovered, and it is discarded.
 
+## Design comparison (same data)
+| State on the signal date | Cases | Higher a year later | Beat the typical stock | Median |
+|---|---|---|---|---|
+| All stocks | 34,291 | 53% | 50% | +3.1% |
+| Check passes, above 200-day average | 9,169 | 63% | 61% | +10.0% |
+| Check passes, within 5% of one-year high | 4,367 | 66% | 65% | +10.6% |
+| Check passes, below 200-day average | 6,042 | 58% | 53% | +7.4% |
+| Check passes, 30%+ below one-year high | 2,424 | 53% | 50% | +4.4% |
+| Check passes, pullback 20%+ and back above 50-day | 1,346 | 56% | 53% | +6.8% |
+| Check fails, above 200-day average | 4,272 | 40% | 39% | −15.2% |
+| Check fails, below 200-day average | 7,496 | 37% | 36% | −24.1% |
+
+- Business first: the check is the largest separator and held in each of 2023, 2024 and 2025.
+- Trend second: within passing businesses, strength beat weakness. A "recovering pullback" rule did not help.
+- Sell side: failing the check is a supported reason to step back. Stretched prices in passing businesses kept rising more often than not, so stretch alone is not a supported reason to sell.
+
+The app now shows each stock the measured record of its own state (`lib/evidence-odds.ts`, table in `lib/evidence-table.ts`).
+
 ## Automated page crawl
 68 page views (10 pages and 8 research tabs for 3 demo companies, at 1280px and 390px) checked for failed loads, NaN/undefined text, horizontal overflow, duplicate headings and repeated bear/base/bull. Findings: a nested-paragraph markup error on the Labs page (`/research-lab`), and development-only hydration attribute warnings on one demo company. Nothing else. Demo data only.
 

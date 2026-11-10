@@ -158,3 +158,28 @@
 .exit[data-level="trim"] {
   background: color-mix(in srgb, #a38232 13%, transparent);
 }
+.odds {
+  --tone: #a38232;
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border-left: 4px solid var(--tone);
+  background: color-mix(in srgb, var(--tone) 9%, transparent);
+}
+.odds[data-grade="favourable"] {
+  --tone: #00866b;
+}
+.odds[data-grade="unfavourable"] {
+  --tone: #c65050;
+}
+.odds strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+}
+.odds p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}

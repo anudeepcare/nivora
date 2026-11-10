@@ -43,7 +43,39 @@ test("sell-side prompts appear when the price is above the bull case or the whol
     const above = v.cases?.position === "above-bull";
     if (above) assert.equal(v.exitWatch?.level, "trim");
     if (v.exitWatch?.level === "trim") assert.ok(above);
-    if (v.exitWatch) assert.match(v.exitWatch.text, /watch:/);
+    if (v.exitWatch) assert.match(v.exitWatch.text, /watch:|Size check:/);
   }
   assert.ok(all.some((v) => v.exitWatch?.level === "trim"));
+});
+
+import { evidenceOdds, businessState } from "../lib/evidence-odds.ts";
+import { EVIDENCE_TABLE } from "../lib/evidence-table.ts";
+test("business state follows the study's stated check and never guesses from missing figures", () => {
+  assert.equal(businessState({ operatingMargin: 20, fcf: 5, dilution: 2, revenueGrowth: 10 }), "pass");
+  assert.equal(businessState({ operatingMargin: 20, fcf: 5, dilution: 14, revenueGrowth: 10 }), "mixed");
+  assert.equal(businessState({ operatingMargin: 20, fcf: 5, dilution: null, revenueGrowth: -9 }), "mixed");
+  assert.equal(businessState({ operatingMargin: -20, fcf: -5, dilution: null, revenueGrowth: 90 }), "fail");
+  assert.equal(businessState({ operatingMargin: -20, fcf: 5, dilution: null, revenueGrowth: null }), "mixed");
+  assert.equal(businessState({ operatingMargin: null, fcf: 5, dilution: null, revenueGrowth: null }), null);
+});
+test("each stock is matched to the measured record of its own state, with the deep-fall and near-high cases called out", () => {
+  const bars = (f) => Array.from({ length: 300 }, (_, i) => ({ time: new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10), open: f(i), high: f(i), low: f(i), close: f(i), volume: 1 }));
+  const r = (f) => ({ company: { assetType: "stock" }, history: bars(f) });
+  const pass = { operatingMargin: 20, fcf: 5, dilution: 1, revenueGrowth: 8 }, fail = { operatingMargin: -30, fcf: -5, dilution: 1, revenueGrowth: 8 };
+  const up = evidenceOdds(r((i) => 100 + i), pass);
+  assert.deepEqual([up.business, up.trend, up.grade], ["pass", "up", "favourable"]);
+  assert.equal(up.cell, EVIDENCE_TABLE["pass:up"]);
+  assert.equal(up.modifier.cell, EVIDENCE_TABLE["pass:nearHigh"]);
+  const deep = evidenceOdds(r((i) => (i < 200 ? 100 : 100 - (i - 200) * 0.6)), pass);
+  assert.equal(deep.trend, "down");
+  assert.equal(deep.modifier.cell, EVIDENCE_TABLE["pass:deep"]);
+  assert.equal(deep.grade, "neutral");
+  const bad = evidenceOdds(r((i) => 100 + i), fail);
+  assert.deepEqual([bad.business, bad.grade], ["fail", "unfavourable"]);
+  assert.match(bad.detail, /higher a year later 40% of the time/);
+  assert.equal(evidenceOdds({ company: { assetType: "stock" }, history: bars((i) => 1 + i).slice(0, 150) }, pass), null);
+  assert.equal(evidenceOdds({ company: { assetType: "crypto" }, history: bars((i) => 1 + i) }, pass), null);
+  for (const c of Object.values(EVIDENCE_TABLE)) assert.ok(c.n >= 2000 && c.win > 0 && c.win < 100 && c.bad < 0);
+  // The study's central finding is encoded, not assumed.
+  assert.ok(EVIDENCE_TABLE["pass:up"].win > EVIDENCE_TABLE["pass:deep"].win && EVIDENCE_TABLE["pass:deep"].win > EVIDENCE_TABLE["fail:up"].win);
 });

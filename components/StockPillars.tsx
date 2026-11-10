@@ -62,6 +62,12 @@ export default function StockPillars({
           </p>
         </div>
       )}
+      {view.odds && (
+        <div className={s.odds} data-grade={view.odds.grade}>
+          <strong>{view.odds.headline}</strong>
+          <p>{view.odds.detail}</p>
+        </div>
+      )}
       {view.exitWatch && (
         <p className={s.exit} role="note" data-level={view.exitWatch.level}>
           {view.exitWatch.text}
@@ -81,8 +87,10 @@ export default function StockPillars({
       </ul>
       <p className={s.note}>
         Six separate checks from reported financials, analyst estimates and
-        price history. They are not added into a score: one weak answer can
-        outweigh several good ones. Not a recommendation.
+        price history. The record is what happened to similar cases among 1,305
+        US stocks; it describes the past and is not a forecast for this stock.
+        They are not added into a score: one weak answer can outweigh several
+        good ones. Not a recommendation.
       </p>
     </section>
   );

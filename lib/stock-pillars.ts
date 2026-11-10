@@ -3,7 +3,7 @@ import type { aurynDecision } from "./auryn-decision.ts";
 import { researchBrief } from "./research-brief.ts";
 import { scenarioCases } from "./scenario-cases.ts";
 import { percent } from "./format.ts";
-import { MARKET_STUDY } from "./market-study.ts";
+import { evidenceOdds, type EvidenceOdds } from "./evidence-odds.ts";
 
 export type PillarStatus = "supportive" | "mixed" | "caution" | "unknown";
 export type Pillar = {
@@ -19,6 +19,8 @@ export type StockPillars = {
   caution: number;
   unknown: number;
   summary: string;
+  /** Measured record of stocks in the same business and trend state. */
+  odds: EvidenceOdds | null;
   /** Sell-side prompt. Informational: it never changes the decision engine's call. */
   exitWatch: { level: "trim" | "thesis"; text: string } | null;
   /** Bear / base / bull beside the call, with their named source. */
@@ -189,40 +191,41 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
             }),
   });
   const level = d.pace?.level;
+  const odds = evidenceOdds(r, b);
+  const zone = num(level) ? ` Pace reads P${level}.` : "";
   pillars.push({
     id: "timing",
     question: "Is now a sensible time to add?",
-    ...(!num(level)
+    ...(!odds
       ? {
           status: "unknown",
           answer: "Not measured",
-          why: "There is not enough settled price history for a Pace reading.",
+          why: `Reported profit and cash flow plus 200 sessions of price history are needed to compare this stock with the record.${zone}`,
         }
-      : level >= 2 && !["Buy", "Add"].includes(d.actionLabel)
+      : odds.business === "fail"
         ? {
             status: "caution",
-            answer: "Cheaper, but not a buy signal",
-            why: `Pace reads P${level}, a pullback zone, but the business checks do not support adding. In a 2022–2025 test, companies failing a business check were higher a year after this zone only about ${MARKET_STUDY.pace12m.fail.win[level].toFixed(0)}% of the time.`,
+            answer: "The record says wait",
+            why: `Stocks failing the business check were higher a year later only ${odds.cell.win.toFixed(0)}% of the time, whatever the price had done.${zone} A lower price did not improve those odds.`,
           }
-        : level >= 2
+        : odds.modifier && odds.offHigh >= 30
           ? {
-              status: "mixed",
-              answer:
-                level >= 3 ? "In a deeper pullback zone" : "In a pullback zone",
-              why: `Pace reads P${level}: the price has pulled back relative to its own trend. In a 2022–2025 test, companies passing a business check were higher a year after this zone about ${MARKET_STUDY.pace12m.pass.win[level].toFixed(0)}% of the time. A pullback alone is not a reason to buy.`,
+              status: "caution",
+              answer: "Deep fall: wait for it to steady",
+              why: `It is ${percent(odds.offHigh)} below its one-year high. Sound businesses that had fallen this far were higher a year later ${odds.modifier.cell.win.toFixed(0)}% of the time, against ${odds.cell.win.toFixed(0)}% for this group overall.${zone}`,
             }
-          : level === 1
+          : odds.trend === "up"
             ? {
-                status: "mixed",
-                answer: "No pullback yet",
-                why: "Pace reads P1: the price is near its trend, with no discount to act on.",
+                status: odds.business === "pass" ? "supportive" : "mixed",
+                answer: "Trend is with you",
+                why: `The price is above its 200-day average. ${odds.business === "pass" ? "Sound" : "Mixed"} businesses in that position were higher a year later ${odds.cell.win.toFixed(0)}% of the time.${zone}`,
               }
             : {
-                status: "caution",
-                answer: "Stretched",
-                why: "Pace reads P0: the price has run well ahead of its own trend.",
+                status: "mixed",
+                answer: "Trend is against you",
+                why: `The price is below its 200-day average. ${odds.business === "pass" ? "Sound" : "Mixed"} businesses in that position were higher a year later ${odds.cell.win.toFixed(0)}% of the time, and beat the typical stock only ${odds.cell.beat.toFixed(0)}% of the time.${zone}`,
               }),
-  });
+  } as Pillar);
   const closes = [...r.history]
     .filter((x) => num(x.close) && x.close > 0)
     .sort((a, c) => a.time.localeCompare(c.time))
@@ -292,18 +295,24 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
       ["growth", "profit", "funding"].includes(p.id) && p.status === "caution",
   ).length;
   const exitWatch: StockPillars["exitWatch"] =
-    stretched && range!.kind !== "history"
+    odds?.business === "fail"
       ? {
-          level: "trim",
-          text: `Trim watch: the price is above the bull case${level === 0 ? " and Pace reads stretched (P0)" : ""}. If you hold it, check whether the position has grown beyond the size you intended. This is a prompt, not a Sell call.`,
+          level: "thesis",
+          text: `Thesis watch: the company is losing money and burning cash. Stocks in that state lost a median ${Math.abs(odds.cell.median).toFixed(0)}% over the following year and were higher only ${odds.cell.win.toFixed(0)}% of the time. If you hold it, write down what must improve, and by when, for you to keep holding.`,
         }
       : weak === 3
         ? {
             level: "thesis",
             text: "Thesis watch: growth, profitability and funding all read Careful at once. If you hold it, write down what would have to improve, and by when, for you to keep holding.",
           }
-        : null;
+        : stretched && range!.kind !== "history"
+          ? {
+              level: "trim",
+              text: "Size check: the price is above the bull case. In the record, sound businesses that were stretched kept rising more often than not, so this is not a signal to sell. Check only whether the position has grown beyond the size you intended.",
+            }
+          : null;
   return {
+    odds,
     exitWatch,
     cases: range
       ? {
