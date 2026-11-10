@@ -39,7 +39,7 @@ test("one-year historical range is opt-in, needs three years and leaves the defa
 test("history alone yields ordered lenses, a single-method agreement and no invented analyst or model rows", () => {
   const v = scenarioLenses(research());
   assert.equal(v.available, true);
-  assert.deepEqual(v.lenses.map((x) => x.id), ["history-12m", "history-3m"]);
+  assert.deepEqual(v.lenses.map((x) => x.id), ["history-12m", "history-3m", "risk-adjusted"]);
   for (const x of v.lenses) assert.ok(x.bear < x.base && x.base < x.bull);
   assert.equal(v.primary.id, "history-12m");
   assert.equal(v.agreement.level, "single");
@@ -50,12 +50,12 @@ test("history alone yields ordered lenses, a single-method agreement and no inve
 test("short history falls back to a labelled 1-month row instead of leaving a recent listing with nothing", () => {
   const v = scenarioLenses(research(300));
   // ~214 sessions: the engine's 20-session range is shown as one month, never as three.
-  assert.deepEqual(v.lenses.map((x) => x.id), ["history-1m"]);
+  assert.deepEqual(v.lenses.map((x) => x.id), ["history-1m", "risk-adjusted"]);
   assert.match(v.lenses[0].horizon, /one month · 20 sessions/);
   assert.equal(v.agreement.level, "single");
   assert.deepEqual(v.agreement.compared, []);
   const mid = scenarioLenses(research(500));
-  assert.deepEqual(mid.lenses.map((x) => x.id), ["history-3m"]);
+  assert.deepEqual(mid.lenses.map((x) => x.id), ["history-3m", "risk-adjusted"]);
   assert.equal(scenarioLenses(research(60)).available, false);
 });
 

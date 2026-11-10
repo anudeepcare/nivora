@@ -27,11 +27,18 @@ The first pass was checked against too few names. This pass makes the new pieces
 - **`tests/market-robustness.test.mjs`**: 384 seeded synthetic instruments in 24 market shapes and 120 random baskets through every new engine and view, asserting ordering, finiteness, reproducibility and clean rendering.
 - **`scripts/audit-scenario-coverage.mjs`**: the same consistency checks on real provider histories in the existing audit raw-folder format (`universe.json` + `raw/<SYMBOL>.json`), with `--ladder` for the Pace ladder. Run it on the 500-ticker folder to get a real-market coverage report.
 
+## Accuracy pass (third pass)
+Question asked: how accurate are these cases? Answer measured, not assumed.
+- **Past check** (`lib/scenario-calibration.ts`): every historical row is rebuilt at earlier dates from prices known then and scored against what followed, one non-overlapping period at a time. The row shows "held 24 of 36 (67%)" against the 80% a 10th–90th range is designed for, or "too few to judge" under 8 scored ranges. No look-ahead (tested).
+- **Finding:** raw historical percentiles run too narrow on the three real histories in the repo — about 64% at one month and 61% at three months instead of 80%. Past drift and stale volatility are the causes.
+- **Volatility-adjusted range:** new row with drift removed and volatility rescaled to current conditions. Same check: about 70% at one month on the real histories, 79% including the synthetic market. Better, still short of 80% on real data, and the row says so.
+- Seven candidate methods were compared before choosing this one; the comparison is reproducible from the functions in the calibration module.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 
 ## Verification
-- Full suite: 1,339 passed, 0 failed (1,311 before this work; 28 new).
+- Full suite: 1,345 passed, 0 failed (1,311 before this work; 34 new).
 - Audit script run on the three real histories in the repo (AVGO, APP, ALAB): 3 covered, 0 failed, ladders consistent.
 - ESLint, Prettier check, TypeScript and `next build` passed.
 - Rendered locally from demo fixtures at desktop and 390px: cross-check, Pace ladder, portfolio range, Home strip. No page errors.

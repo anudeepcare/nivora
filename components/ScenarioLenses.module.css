@@ -107,6 +107,17 @@
   font-size: 11px;
   line-height: 1.35;
 }
+.label .record {
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.label .record[data-verdict="consistent"] {
+  color: var(--bull);
+}
+.label .record[data-verdict="too-narrow"],
+.label .record[data-verdict="too-wide"] {
+  color: var(--base);
+}
 .row[data-primary="true"] .label strong::after {
   content: "Primary";
   margin-left: 8px;

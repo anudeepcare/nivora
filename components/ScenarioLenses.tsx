@@ -172,6 +172,19 @@ export default function ScenarioLenses({
             <div className={s.label}>
               <strong>{x.label}</strong>
               <small>{x.horizon}</small>
+              {x.track && (
+                <small className={s.record} data-verdict={x.track.verdict}>
+                  {x.track.verdict === "too-few"
+                    ? `Past check: ${x.track.inside} of ${x.track.tests} held · too few to judge`
+                    : `Past check: held ${x.track.inside} of ${x.track.tests} (${x.track.hitRate.toFixed(0)}%) · ${
+                        x.track.verdict === "consistent"
+                          ? "in line with the 80% design"
+                          : x.track.verdict === "too-narrow"
+                            ? "ran narrower than the 80% design"
+                            : "ran wider than the 80% design"
+                      }`}
+                </small>
+              )}
             </div>
             <div className={s.track}>
               <i
@@ -247,6 +260,13 @@ export default function ScenarioLenses({
             </li>
           ))}
         </ul>
+        <p>
+          Past check: each historical row is rebuilt at earlier dates using only
+          prices known then and scored against what followed, one
+          non-overlapping period at a time. A 10th–90th percentile range is
+          designed to contain about 80% of outcomes. A past record does not
+          guarantee the current range will hold.
+        </p>
         <p>{view.caveat}</p>
       </details>
     </section>

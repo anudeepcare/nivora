@@ -3,6 +3,11 @@ import { consensusOutlook } from "./outlook.ts";
 import { priceRiskScenarios } from "./price-risk-scenarios.ts";
 import { revenueSensitivity } from "./revenue-sensitivity.ts";
 import { selectPriceReference } from "./price-reference.ts";
+import {
+  rangeCalibration,
+  riskAdjustedRange,
+  type RangeCalibration,
+} from "./scenario-calibration.ts";
 
 export type ScenarioLensId =
   | "model"
@@ -10,11 +15,14 @@ export type ScenarioLensId =
   | "revenue"
   | "history-1m"
   | "history-3m"
-  | "history-12m";
+  | "history-12m"
+  | "risk-adjusted";
 export type ScenarioLens = {
   id: ScenarioLensId;
   label: string;
-  kind: "model" | "analyst" | "sensitivity" | "history";
+  kind: "model" | "analyst" | "sensitivity" | "history" | "risk";
+  /** Walk-forward record of this row's method on the instrument's own past, when it can be scored. */
+  track?: Extract<RangeCalibration, { available: true }>;
   /** Plain-language horizon. Never implies that different lenses share a date. */
   horizon: string;
   asOf: string | null;
@@ -98,6 +106,7 @@ const order: ScenarioLensId[] = [
   "history-12m",
   "history-3m",
   "history-1m",
+  "risk-adjusted",
   "revenue",
 ];
 
@@ -181,6 +190,8 @@ export function scenarioLenses(
       });
   }
   const warnings: string[] = [];
+  const asOf = new Date(now).toISOString(),
+    market = r.company.assetType === "crypto" ? "crypto" : "us-equity";
   // One-year and three-month rows when the history supports them; a recently
   // listed stock falls back to the engine's 20-session row, labelled as such.
   const yearly = priceRiskScenarios(r, { horizon: 252 });
@@ -197,7 +208,9 @@ export function scenarioLenses(
     const [bear, base, bull] = [at(0), at(1), at(2)];
     if (![bear, base, bull].every(positive) || bear > base || base > bull)
       continue;
+    const track = rangeCalibration(r.history, asOf, h.horizon, market);
     lenses.push({
+      ...(track.available ? { track } : {}),
       id,
       label,
       kind: "history",
@@ -209,6 +222,36 @@ export function scenarioLenses(
       neutralBase: false,
       note: `10th / 50th / 90th percentile of this instrument's own ${text} returns since ${h.from.slice(0, 10)}, applied to the reference price. About ${h.independent} non-overlapping period${h.independent === 1 ? "" : "s"}; overlapping windows are not independent.`,
     });
+  }
+  // Drift-neutral, volatility-adjusted range at the shortest horizon shown.
+  // In walk-forward checks it contained outcomes more often than raw percentiles.
+  if (recent.available) {
+    const risk = riskAdjustedRange(r.history, asOf, recent.horizon, market);
+    if (risk.available) {
+      const bear = reference.price * (1 + risk.bear / 100),
+        bull = reference.price * (1 + risk.bull / 100);
+      const track = rangeCalibration(
+        r.history,
+        asOf,
+        recent.horizon,
+        market,
+        "risk-adjusted",
+      );
+      if (positive(bear) && positive(bull) && bear < bull)
+        lenses.push({
+          id: "risk-adjusted",
+          label: "Volatility-adjusted range",
+          kind: "risk",
+          horizon: `${recent.horizon === 63 ? "three months" : "one month"} · ${recent.horizon} sessions · no direction assumed`,
+          asOf: risk.through,
+          bear,
+          base: reference.price,
+          bull,
+          neutralBase: true,
+          ...(track.available ? { track } : {}),
+          note: "Past moves with their average drift removed, each rescaled from the volatility at the time to a blend of current and long-run volatility. It answers how far the price could plausibly move from here, not which way. The middle equals today's price by construction.",
+        });
+    }
   }
   const jump = [yearly, recent].flatMap((h) =>
     h.available && h.largestMove ? [h.largestMove] : [],
@@ -247,6 +290,7 @@ export function scenarioLenses(
     lenses.find((x) => x.id === "model") ??
     lenses.find((x) => x.id === "analyst" && ranged(x)) ??
     lenses.find((x) => x.kind === "history") ??
+    lenses.find((x) => x.kind === "risk") ??
     lenses[0];
   // Compare like with like: only the model, analyst targets and the one-year
   // historical row describe roughly comparable horizons. Shorter historical
