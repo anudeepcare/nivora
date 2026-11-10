@@ -8,6 +8,7 @@ export type ScenarioLensId =
   | "model"
   | "analyst"
   | "revenue"
+  | "history-1m"
   | "history-3m"
   | "history-12m";
 export type ScenarioLens = {
@@ -67,12 +68,19 @@ export type ScenarioLensView =
         downside: number;
         ratio: number | null;
       } | null;
+      /** Data-quality notes that can distort a row; shown, never silently corrected. */
+      warnings: string[];
       caveat: string;
     };
 
 /** Presentation thresholds for how far informative base cases sit apart.
  * They describe disagreement between methods, not forecast accuracy. */
 export const AGREEMENT_LIMITS = { aligned: 25, mixed: 75 } as const;
+
+/** One-session moves beyond these percents are flagged as a possible split or bad tick.
+ * Asymmetric because a 2-for-1 split looks like -50% while real one-day gains of
+ * 40-70% do occur on earnings; a reverse split looks like +100% or more. */
+export const EXTREME_SESSION_MOVE = { fall: -45, rise: 80 } as const;
 
 const positive = (x: unknown): x is number =>
   typeof x === "number" && Number.isFinite(x) && x > 0;
@@ -89,6 +97,7 @@ const order: ScenarioLensId[] = [
   "analyst",
   "history-12m",
   "history-3m",
+  "history-1m",
   "revenue",
 ];
 
@@ -171,17 +180,23 @@ export function scenarioLenses(
             : "Lowest, consensus and highest supplied analyst targets. Opinions, not fair value.",
       });
   }
-  for (const [id, horizon, label, text] of [
-    ["history-12m", 252, "Past 1-year moves", "one year"],
-    ["history-3m", 63, "Past 3-month moves", "three months"],
-  ] as const) {
-    const h = priceRiskScenarios(r, { horizon });
-    // The default call falls back to 20 sessions for short histories; keep
-    // only the horizon this row is labelled with.
-    if (!h.available || h.horizon !== horizon) continue;
+  const warnings: string[] = [];
+  // One-year and three-month rows when the history supports them; a recently
+  // listed stock falls back to the engine's 20-session row, labelled as such.
+  const yearly = priceRiskScenarios(r, { horizon: 252 });
+  const recent = priceRiskScenarios(r);
+  for (const h of [yearly, recent]) {
+    if (!h.available) continue;
+    const [id, label, text] =
+      h.horizon === 252
+        ? (["history-12m", "Past 1-year moves", "one year"] as const)
+        : h.horizon === 63
+          ? (["history-3m", "Past 3-month moves", "three months"] as const)
+          : (["history-1m", "Past 1-month moves", "one month"] as const);
     const at = (i: number) => reference.price * (1 + h.cases[i].change / 100);
     const [bear, base, bull] = [at(0), at(1), at(2)];
-    if (![bear, base, bull].every(positive)) continue;
+    if (![bear, base, bull].every(positive) || bear > base || base > bull)
+      continue;
     lenses.push({
       id,
       label,
@@ -192,9 +207,20 @@ export function scenarioLenses(
       base,
       bull,
       neutralBase: false,
-      note: `10th / 50th / 90th percentile of this stock's own ${text} returns since ${h.from.slice(0, 10)}, applied to the reference price. About ${h.independent} non-overlapping period${h.independent === 1 ? "" : "s"}; overlapping windows are not independent.`,
+      note: `10th / 50th / 90th percentile of this instrument's own ${text} returns since ${h.from.slice(0, 10)}, applied to the reference price. About ${h.independent} non-overlapping period${h.independent === 1 ? "" : "s"}; overlapping windows are not independent.`,
     });
   }
+  const jump = [yearly, recent].flatMap((h) =>
+    h.available && h.largestMove ? [h.largestMove] : [],
+  )[0];
+  if (
+    jump &&
+    (jump.change <= EXTREME_SESSION_MOVE.fall ||
+      jump.change >= EXTREME_SESSION_MOVE.rise)
+  )
+    warnings.push(
+      `Price history includes a one-session move of ${jump.change > 0 ? "+" : ""}${jump.change.toFixed(0)}% on ${jump.date.slice(0, 10)}. If that was a share split, reverse split or data error rather than a real move, the historical rows are distorted.`,
+    );
   if (!lenses.some((x) => x.id === "model")) {
     const s = revenueSensitivity(r);
     if (s.available)
@@ -222,12 +248,11 @@ export function scenarioLenses(
     lenses.find((x) => x.id === "analyst" && ranged(x)) ??
     lenses.find((x) => x.kind === "history") ??
     lenses[0];
-  // Compare like with like: a three-month historical range is context, not a
-  // counterpart to longer-dated targets, whenever the one-year range exists.
+  // Compare like with like: only the model, analyst targets and the one-year
+  // historical row describe roughly comparable horizons. Shorter historical
+  // rows are near-term context and never count as agreement or disagreement.
   const informative = lenses.filter(
-    (x) =>
-      !x.neutralBase &&
-      (x.id !== "history-3m" || !lenses.some((y) => y.id === "history-12m")),
+    (x) => x.id === "model" || x.id === "analyst" || x.id === "history-12m",
   );
   const bases = informative.map((x) => x.base);
   const spread =
@@ -254,7 +279,7 @@ export function scenarioLenses(
     }[level],
     detail:
       spread == null
-        ? "Only one method supplies an informative base case, so there is nothing to cross-check it against."
+        ? "Fewer than two methods with a comparable horizon are available, so base cases are not cross-checked. Shorter historical rows are near-term context only."
         : `Base cases from ${informative.length} methods sit ${spread.toFixed(0)}% of the current price apart. ${
             level === "aligned"
               ? "Agreement between methods is not evidence that they are right."
@@ -299,12 +324,13 @@ export function scenarioLenses(
     primary,
     envelope: {
       bear: span(lenses.flatMap((x) => (x.bear == null ? [] : [x.bear]))),
-      base: span(bases),
+      base: span(lenses.flatMap((x) => (x.neutralBase ? [] : [x.base]))),
       bull: span(lenses.flatMap((x) => (x.bull == null ? [] : [x.bull]))),
     },
     agreement,
     position,
     asymmetry,
+    warnings,
     caveat:
       "Each row is a different method with its own basis, horizon and date. They are conditional ranges, not probabilities, price forecasts or independent fair value, and are never averaged together. Outcomes can fall outside every range shown.",
   };

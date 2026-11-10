@@ -20,6 +20,8 @@ export type PriceRiskScenarios =
       samples: number;
       /** Non-overlapping periods of this length inside the sample; overlapping windows are dependent. */
       independent: number;
+      /** Largest one-session move inside the sample, percent. A very large value can be an unadjusted split or bad tick. */
+      largestMove: { date: string; change: number } | null;
       from: string;
       through: string;
       caveat: string;
@@ -86,6 +88,16 @@ export function priceRiskScenarios(
     const move = Math.log(bars[i].close / bars[i - horizon].close);
     if (Number.isFinite(move)) returns.push(move);
   }
+  let largestMove: { date: string; change: number } | null = null;
+  for (let i = 1; i < bars.length; i++) {
+    if (gaps[i] !== gaps[i - 1]) continue;
+    const change = (bars[i].close / bars[i - 1].close - 1) * 100;
+    if (
+      Number.isFinite(change) &&
+      (!largestMove || Math.abs(change) > Math.abs(largestMove.change))
+    )
+      largestMove = { date: bars[i].time, change };
+  }
   if (returns.length < 40)
     return unavailable(
       "At least 40 intact historical return windows are needed; the supplied history is too short or discontinuous.",
@@ -126,6 +138,7 @@ export function priceRiskScenarios(
     horizon,
     samples: returns.length,
     independent: Math.max(1, Math.floor((bars.length - 1) / horizon)),
+    largestMove,
     from: bars[0].time,
     through: last.time,
     caveat:

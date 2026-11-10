@@ -47,12 +47,35 @@ test("history alone yields ordered lenses, a single-method agreement and no inve
   assert.deepEqual(v.agreement.compared, ["history-12m"]);
 });
 
-test("short history keeps only the horizon it can support and never relabels a 20-session range", () => {
+test("short history falls back to a labelled 1-month row instead of leaving a recent listing with nothing", () => {
   const v = scenarioLenses(research(300));
-  // ~214 sessions: the default engine uses 20 sessions, which is not a three-month row.
-  assert.equal(v.available, false);
+  // ~214 sessions: the engine's 20-session range is shown as one month, never as three.
+  assert.deepEqual(v.lenses.map((x) => x.id), ["history-1m"]);
+  assert.match(v.lenses[0].horizon, /one month · 20 sessions/);
+  assert.equal(v.agreement.level, "single");
+  assert.deepEqual(v.agreement.compared, []);
   const mid = scenarioLenses(research(500));
   assert.deepEqual(mid.lenses.map((x) => x.id), ["history-3m"]);
+  assert.equal(scenarioLenses(research(60)).available, false);
+});
+
+test("shorter historical rows never count as agreement with longer-dated targets", () => {
+  const r = research(500), price = r.quote.price;
+  const v = scenarioLenses(withAnalyst(r, { target: price * 3 }));
+  assert.deepEqual(v.agreement.compared, ["analyst"]);
+  assert.equal(v.agreement.level, "single");
+});
+
+test("a split-sized one-session move is flagged rather than silently trusted or removed", () => {
+  const r = research();
+  assert.deepEqual(scenarioLenses(r).warnings, []);
+  const k = r.history.length - 200;
+  r.history = r.history.map((b, i) => (i >= k ? { ...b, open: b.open / 10, high: b.high / 10, low: b.low / 10, close: b.close / 10 } : b));
+  r.quote.price = r.history.at(-1).close;
+  const v = scenarioLenses(r);
+  assert.equal(v.warnings.length, 1);
+  assert.match(v.warnings[0], /-90% on \d{4}-\d{2}-\d{2}/);
+  assert.ok(v.lenses.length >= 1);
 });
 
 test("a model takes priority, analyst consensus without a range stays a base-only row, and nothing is averaged", () => {

@@ -4,7 +4,7 @@ import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { researchOutlook } from "@/lib/outlook";
 import { scenarioLenses, type ScenarioLensModel } from "@/lib/scenario-lenses";
-import { amount, dateLabel, percent } from "@/lib/format";
+import { dateLabel, percent, priceAmount } from "@/lib/format";
 import s from "./ScenarioLenses.module.css";
 
 type Decision = ReturnType<typeof aurynDecision>;
@@ -92,7 +92,7 @@ export default function ScenarioLenses({
     high = Math.max(...prices);
   const at = (price: number) => 2 + (96 * (price - low)) / (high - low || 1);
   const money = (v: number | null) =>
-    v == null ? "—" : amount(v, currency, v >= 1000);
+    v == null ? "—" : priceAmount(v, currency);
   const gap = (v: number) => percent((v / reference.price - 1) * 100, true);
   const positionText =
     view.position.state === "inside"
@@ -232,6 +232,11 @@ export default function ScenarioLenses({
           <span>{money(high)}</span>
         </p>
       </div>
+      {view.warnings.map((warning) => (
+        <p className={s.warning} role="note" key={warning}>
+          {warning}
+        </p>
+      ))}
       <details className={s.basis}>
         <summary>How each method works &amp; its limits</summary>
         <ul>

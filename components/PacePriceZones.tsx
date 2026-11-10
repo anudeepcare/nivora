@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import type { Research } from "@/lib/types";
 import type { PacePriceZones as Zones } from "@/lib/pace-price-zones";
-import { amount } from "@/lib/format";
+import { amount, priceAmount } from "@/lib/format";
 import { paceLadder } from "@/lib/pace-ladder";
 import styles from "./PacePriceZones.module.css";
 const labels = [
@@ -109,11 +109,7 @@ export default function PacePriceZones({
               >
                 {step.price == null
                   ? "—"
-                  : `${step.relation === "at-or-below" ? "≤ " : step.relation === "at-or-above" ? "≥ " : ""}${amount(
-                      step.price,
-                      research.quote.currency,
-                      step.price >= 1000,
-                    )}`}
+                  : `${step.relation === "at-or-below" ? "≤ " : step.relation === "at-or-above" ? "≥ " : ""}${priceAmount(step.price, research.quote.currency)}`}
               </span>
               {step.bands > 1 && (
                 <small className={styles.bandCount}>{step.bands} bands</small>

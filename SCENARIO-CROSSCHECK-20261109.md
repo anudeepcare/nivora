@@ -18,15 +18,26 @@ Reviewed on the signed-in preprod preview (IREN, Portfolio, Home):
 
 Formulas are recorded in the owner handbook addendum.
 
+## Market-wide hardening (second pass)
+The first pass was checked against too few names. This pass makes the new pieces hold for any instrument:
+- **Recent listings** (80–251 sessions, e.g. CBRS, FPS on the watchlist) now get a labelled 1-month historical row instead of nothing. Under 80 sessions no historical row is invented.
+- **Agreement compares like with like:** only the model, analyst targets and the 1-year historical row. Shorter rows are context, so a 3-month median is never read as "disagreeing" with a 12-month target.
+- **Sub-dollar and very large prices** use `priceAmount`, so $0.0712 and $0.0745 no longer both print as $0.07 in the cross-check and the Pace ladder.
+- **Unadjusted splits and bad ticks** are flagged (one-session fall ≥45% or rise ≥80%), shown as supplied and not corrected. The real APP +46% earnings day is correctly not flagged.
+- **`tests/market-robustness.test.mjs`**: 384 seeded synthetic instruments in 24 market shapes and 120 random baskets through every new engine and view, asserting ordering, finiteness, reproducibility and clean rendering.
+- **`scripts/audit-scenario-coverage.mjs`**: the same consistency checks on real provider histories in the existing audit raw-folder format (`universe.json` + `raw/<SYMBOL>.json`), with `--ladder` for the Pace ladder. Run it on the 500-ticker folder to get a real-market coverage report.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 
 ## Verification
-- Full suite: 1,330 passed, 0 failed (1,311 before; 19 new across scenario lenses, Pace ladder, portfolio range, portfolio day).
+- Full suite: 1,339 passed, 0 failed (1,311 before this work; 28 new).
+- Audit script run on the three real histories in the repo (AVGO, APP, ALAB): 3 covered, 0 failed, ladders consistent.
 - ESLint, Prettier check, TypeScript and `next build` passed.
 - Rendered locally from demo fixtures at desktop and 390px: cross-check, Pace ladder, portfolio range, Home strip. No page errors.
 
 ## Not verified
+- Real-market breadth: only three real price histories exist in this source tree. The synthetic universe proves the code does not break or mislabel; it cannot prove behaviour on every live ticker. The audit script is the way to measure that with provider data.
 - Not run against live provider data or the signed-in account; the IREN ladder case is reproduced by a unit test built from the live figures, not from the live payload.
 - No physical-device check. Dark theme was not screenshotted for the new sections.
 - The Portfolio range uses the existing 6-month chart reads (about 126 sessions, roughly six non-overlapping months). A longer window would need a longer chart range request.
