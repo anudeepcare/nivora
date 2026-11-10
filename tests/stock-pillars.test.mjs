@@ -15,6 +15,8 @@ test("six plain questions are answered from measured evidence for the demo compa
     for (const p of v.pillars) assert.doesNotMatch(p.answer + p.why + v.summary, /NaN|undefined|Infinity|—%/, r.company.symbol);
   }
   const msft = run(demoData.research.MSFT);
+  assert.ok(msft.cases.bear <= msft.cases.base && msft.cases.base <= msft.cases.bull);
+  assert.equal(msft.cases.position, msft.cases.price > msft.cases.bull ? "above-bull" : msft.cases.price < msft.cases.bear ? "below-bear" : "inside");
   assert.equal(msft.pillars[1].status, "supportive");
   assert.equal(msft.pillars[2].answer, "Funds itself");
 });
@@ -32,4 +34,5 @@ test("holds for every market shape and reports missing evidence as not measured,
   const bare = { ...universe(1)[0].research, facts: [], evidence: undefined, history: [] };
   const v = run(bare);
   assert.equal(v.unknown, 6);
+  assert.equal(v.cases, null);
 });

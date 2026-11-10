@@ -18,6 +18,17 @@ export type StockPillars = {
   caution: number;
   unknown: number;
   summary: string;
+  /** Bear / base / bull beside the call, with their named source. */
+  cases: {
+    bear: number;
+    base: number;
+    bull: number;
+    source: string;
+    price: number | null;
+    currency: string;
+    /** Where today's price sits relative to the range. */
+    position: "below-bear" | "inside" | "above-bull" | null;
+  } | null;
 };
 type Decision = ReturnType<typeof aurynDecision>;
 
@@ -263,7 +274,37 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
           })[p.id],
       )
       .join(", ");
+  const head = d.valuation ? null : scenarioHeadline(r);
+  const range = d.valuation
+    ? {
+        bear: d.valuation.bear,
+        base: d.valuation.base,
+        bull: d.valuation.bull,
+        source: d.valuation.label,
+      }
+    : head
+      ? {
+          bear: head.bear,
+          base: head.base,
+          bull: head.bull,
+          source: head.eyebrow,
+        }
+      : null;
   return {
+    cases: range
+      ? {
+          ...range,
+          price: num(price) ? price : null,
+          currency: d.reference?.currency ?? r.quote.currency,
+          position: !num(price)
+            ? null
+            : price < range.bear
+              ? "below-bear"
+              : price > range.bull
+                ? "above-bull"
+                : "inside",
+        }
+      : null,
     pillars,
     supportive,
     caution,

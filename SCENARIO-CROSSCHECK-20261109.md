@@ -45,6 +45,10 @@ Qualifying earnings and cash-flow models are unchanged and still lead. Not yet s
 ## The case in plain words (fifth pass)
 Owner feedback: Overview is not understandable and looks driven by technicals alone. `lib/stock-pillars.ts` and `components/StockPillars.tsx` add a panel at the top of Overview with six questions, each with a plain answer and its reason: Is the business growing? Does it make money? Can it pay for its plans? Is the price reasonable? Is now a sensible time to add? How bumpy is the ride? Inputs are the existing decision, research brief and scenario headline. Reading thresholds are in `PILLAR_LIMITS`. The answers are not combined into a score and do not change the decision engine or Pace. Missing evidence reads "Not measured", never as a negative. Market and macro context is not included: the research payload carries no benchmark or macro data.
 
+## One call with its cases, and a sell-side audit (sixth pass)
+- The plain-words panel now shows bear / base / bull beside the call, with the named source and whether today's price sits inside, above or below the range.
+- **Sell-side audit of `assessDecision` (no rule changed):** Sell triggers only on insolvency. Reduce triggers only on funding distress or business deterioration. Price never triggers either: a held stock at P0, or priced above its bull case, reads Hold. A business that fails the support screen reads Review indefinitely unless it reaches distress. Whether to add a valuation-based Reduce is an owner decision and needs a backtest first.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import type { aurynDecision } from "@/lib/auryn-decision";
 import { stockPillars } from "@/lib/stock-pillars";
+import { priceAmount, percent } from "@/lib/format";
 import s from "./StockPillars.module.css";
 
 const mark = {
@@ -34,6 +35,33 @@ export default function StockPillars({
         </h2>
         <p>{view.summary}</p>
       </header>
+      {view.cases && (
+        <div className={s.cases}>
+          {(["bear", "base", "bull"] as const).map((name) => {
+            const c = view.cases!;
+            return (
+              <div key={name} data-case={name}>
+                <small>{name[0].toUpperCase() + name.slice(1)} case</small>
+                <strong>{priceAmount(c[name], c.currency)}</strong>
+                {c.price != null && (
+                  <span>{percent((c[name] / c.price - 1) * 100, true)}</span>
+                )}
+              </div>
+            );
+          })}
+          <p>
+            {view.cases.source}
+            {view.cases.price != null
+              ? ` · today ${priceAmount(view.cases.price, view.cases.currency)}`
+              : ""}
+            {view.cases.position === "above-bull"
+              ? " · the price is above even the bull case."
+              : view.cases.position === "below-bear"
+                ? " · the price is below even the bear case."
+                : "."}
+          </p>
+        </div>
+      )}
       <ul className={s.list}>
         {view.pillars.map((p) => (
           <li key={p.id} data-status={p.status}>
