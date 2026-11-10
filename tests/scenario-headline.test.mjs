@@ -66,4 +66,7 @@ test("expected range scales with the stock's own volatility and stays within san
   assert.ok(Math.abs(Math.log(1 + calm.bull / 100) + Math.log(1 + calm.bear / 100)) < 1e-9, "symmetric in log terms");
   assert.equal(expectedRange(mk(0.02).slice(0, 80), asOf, 252, "crypto").available, false);
   assert.ok(EXPECTED_RANGE.z[252] > EXPECTED_RANGE.z[63]);
+  const violent = expectedRange(mk(0.12), asOf, 252, "crypto");
+  assert.equal(violent.available, false);
+  assert.match(violent.reason, /too violently/);
 });

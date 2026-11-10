@@ -213,6 +213,7 @@ export function rangeCalibration(
 export const EXPECTED_RANGE = {
   z: { 63: 0.763, 252: 0.859 },
   held: { 63: 60.2, 252: 60.6 },
+  maxVolatility: 150,
 } as const;
 export type ExpectedRange =
   | { available: false; reason: string }
@@ -252,6 +253,13 @@ export function expectedRange(
     return {
       available: false,
       reason: "Price history does not show measurable movement.",
+    };
+  // Above this the bounds stop being informative (bull beyond roughly +260%):
+  // about 4% of the 1,305-stock study, almost all micro-caps.
+  if (sigma * Math.sqrt(252) * 100 > EXPECTED_RANGE.maxVolatility)
+    return {
+      available: false,
+      reason: `This stock's price has moved more than ${EXPECTED_RANGE.maxVolatility}% a year, too violently for a meaningful bear and bull range.`,
     };
   return {
     available: true,
