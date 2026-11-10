@@ -27,11 +27,14 @@ export default function SelectedValuation({
   actions,
   hideUnavailable = false,
   historicalFallback = false,
+  headline,
 }: {
   research: Research;
   actions?: ReactNode;
   hideUnavailable?: boolean;
   historicalFallback?: boolean;
+  /** Named non-model cases used when no earnings or cash-flow model qualifies. */
+  headline?: import("@/lib/scenario-headline").ScenarioHeadline | null;
 }) {
   const d = useMemo(
     () =>
@@ -90,7 +93,7 @@ export default function SelectedValuation({
         ),
     [input, r.evidence?.estimates],
   );
-  const v = projection.available
+  const modelled = projection.available
     ? {
         label: "Bear, base & bull",
         basis: projection.basis,
@@ -102,6 +105,23 @@ export default function SelectedValuation({
           projection.caveat ?? "Conditional market-multiple sensitivity.",
       }
     : d.valuation;
+  // A price-anchored sensitivity has a base equal to today's price by
+  // construction, so a named analyst or historical range leads instead.
+  const lead =
+    headline && (!modelled || (projection.available && !ordinary.available))
+      ? headline
+      : null;
+  const v = lead
+    ? {
+        label: lead.eyebrow,
+        basis: "reference" as const,
+        end: null,
+        bear: lead.bear,
+        base: lead.base,
+        bull: lead.bull,
+        assumptions: lead.note,
+      }
+    : modelled;
   const recovery = projection.available ? undefined : projection.recovery;
   if (r.company.assetType !== "stock") return null;
   // Preserve production’s observed-return fallback without calling it valuation.
@@ -200,9 +220,11 @@ export default function SelectedValuation({
     <section className={s.root} aria-label="Selected AURYN valuation model">
       <header className={s.heading}>
         <div>
-          <span className={s.eyebrow}>AURYN valuation</span>
+          <span className={s.eyebrow}>
+            {lead ? lead.eyebrow : "AURYN valuation"}
+          </span>
           <h2>Bear, base &amp; bull</h2>
-          {projection.available && ends.length > 1 && (
+          {!lead && projection.available && ends.length > 1 && (
             <div
               className={s.years}
               role="group"
@@ -223,11 +245,13 @@ export default function SelectedValuation({
             </div>
           )}
           <p>
-            {v
-              ? v.basis === "cash-flow"
-                ? "Present model values from a ten-year cash-flow projection."
-                : `${projection.available && projection.basis === "revenue" ? "Conditional revenue sensitivity" : projection.available && projection.multipleSource === "price-implied" ? "Price-anchored earnings" : "Conditional earnings"} · ${dateLabel(v.end)} · scenario prices, not independent fair value.`
-              : "No suitable model has qualified. Analyst consensus and historical price risk remain separate."}
+            {lead
+              ? lead.detail
+              : v
+                ? v.basis === "cash-flow"
+                  ? "Present model values from a ten-year cash-flow projection."
+                  : `${projection.available && projection.basis === "revenue" ? "Conditional revenue sensitivity" : projection.available && projection.multipleSource === "price-implied" ? "Price-anchored earnings" : "Conditional earnings"} · ${dateLabel(v.end)} · scenario prices, not independent fair value.`
+                : "No suitable model has qualified. Analyst consensus and historical price risk remain separate."}
           </p>
         </div>
         {actions}
@@ -263,7 +287,8 @@ export default function SelectedValuation({
                     ? percent((v[name] / d.reference.price - 1) * 100, true)
                     : "Reference unavailable"}
                 </small>
-                {projection.available &&
+                {!lead &&
+                  projection.available &&
                   (() => {
                     const input = projection.cases.find(
                       (x) => x.name.toLowerCase() === name,
@@ -327,9 +352,11 @@ export default function SelectedValuation({
               price.
             </p>
             <p>
-              {v.basis === "cash-flow"
-                ? "Quote changes affect the percentage gap, not the cash-flow model values when financial inputs and assumptions are unchanged."
-                : "The reference multiple comes from market evidence. A refreshed multiple or earnings dataset can change these scenarios even without a new company report."}
+              {lead
+                ? "These cases come from the source named above, not from an AURYN valuation model."
+                : v.basis === "cash-flow"
+                  ? "Quote changes affect the percentage gap, not the cash-flow model values when financial inputs and assumptions are unchanged."
+                  : "The reference multiple comes from market evidence. A refreshed multiple or earnings dataset can change these scenarios even without a new company report."}
             </p>
           </details>
         </>

@@ -51,6 +51,8 @@ function setup() {
     sameProviderSymbol,
     s: {},
     consensusOutlook: () => null,
+    scenarioHeadline: () => null,
+    StockPillars: marker("pillars"),
     OverviewBrief: marker("brief"),
     PaceInstrument: marker("pace"),
     ResearchChanges: marker("changes"),

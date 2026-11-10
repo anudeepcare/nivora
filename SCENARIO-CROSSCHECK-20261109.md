@@ -34,11 +34,22 @@ Question asked: how accurate are these cases? Answer measured, not assumed.
 - **Volatility-adjusted range:** new row with drift removed and volatility rescaled to current conditions. Same check: about 70% at one month on the real histories, 79% including the synthetic market. Better, still short of 80% on real data, and the row says so.
 - Seven candidate methods were compared before choosing this one; the comparison is reproducible from the functions in the calibration module.
 
+## Headline cases never blank or pinned to price (fourth pass)
+Owner report: bear/base/bull missing or wrong for HIMS, IREN, CIFR, WYFI, NBIS, FPS, CBRS. Cause in code: without positive earnings the cards were either "Not calculated" or a price-anchored sensitivity whose base equals today's price.
+`lib/scenario-headline.ts` now supplies the headline cards on Overview and Valuation when no earnings or cash-flow model qualifies, in this order, always naming the source:
+1. Supplied analyst low / consensus / high.
+2. Analyst consensus as base, with bear and bull scaled by the lowest and highest analyst revenue forecasts for the same fiscal year (fundamentals, stated assumption of an unchanged multiple).
+3. The stock's own historical range, labelled as such.
+Qualifying earnings and cash-flow models are unchanged and still lead. Not yet seen on live data for the named tickers.
+
+## The case in plain words (fifth pass)
+Owner feedback: Overview is not understandable and looks driven by technicals alone. `lib/stock-pillars.ts` and `components/StockPillars.tsx` add a panel at the top of Overview with six questions, each with a plain answer and its reason: Is the business growing? Does it make money? Can it pay for its plans? Is the price reasonable? Is now a sensible time to add? How bumpy is the ride? Inputs are the existing decision, research brief and scenario headline. Reading thresholds are in `PILLAR_LIMITS`. The answers are not combined into a score and do not change the decision engine or Pace. Missing evidence reads "Not measured", never as a negative. Market and macro context is not included: the research payload carries no benchmark or macro data.
+
 ## Not changed
 Pace thresholds and classifier, the decision engine, `researchOutlook`, revenue sensitivity, analyst target handling, the existing historical fallback card, schema, API routes.
 
 ## Verification
-- Full suite: 1,345 passed, 0 failed (1,311 before this work; 34 new).
+- Full suite: 1349 passed, 0 failed (1,311 before this work).
 - Audit script run on the three real histories in the repo (AVGO, APP, ALAB): 3 covered, 0 failed, ladders consistent.
 - ESLint, Prettier check, TypeScript and `next build` passed.
 - Rendered locally from demo fixtures at desktop and 390px: cross-check, Pace ladder, portfolio range, Home strip. No page errors.

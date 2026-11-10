@@ -9,7 +9,9 @@ import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { useProduct } from "./Session";
 import ResearchChanges from "./ResearchChanges";
 import SelectedValuation from "./SelectedValuation";
+import { scenarioHeadline } from "@/lib/scenario-headline";
 import ScenarioLenses from "./ScenarioLenses";
+import StockPillars from "./StockPillars";
 import PaceInstrument from "./PaceInstrument";
 import s from "./ResearchOverview.module.css";
 import CompanyMetrics from "./CompanyMetrics";
@@ -56,6 +58,7 @@ export default function IntegratedResearch({
   return (
     <>
       <OverviewBrief research={r} now={now} owns={decisionOwns} decision={d} />
+      <StockPillars research={r} decision={d} />
       <div className={s.overview}>
         <div className={s.context} aria-label="Decision context">
           <button
@@ -140,6 +143,7 @@ export default function IntegratedResearch({
               research={r}
               hideUnavailable={!!consensusOutlook(r)}
               historicalFallback
+              headline={scenarioHeadline(r)}
             />
             <ScenarioLenses research={r} decision={d} hideSingle />
           </div>
