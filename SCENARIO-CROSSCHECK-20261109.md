@@ -65,7 +65,8 @@ Owner request: bear/base/bull appeared twice on Overview. The valuation cards ar
 ## Broad-market study and what it changed (tenth pass)
 See `verification/market-study-20261110/REPORT.md`. 1,305 real stocks, ten years.
 - Volatility-adjusted ranges held 78% at one and three months and 70% at one year; raw percentiles 74%, 71% and 59%. Headline bear/bull that come from price history now use the volatility-adjusted range, and the text states the measured hit rate.
-- Deeper Pace zones were followed by better years for S&P 500 members (P4: 77% positive) and worse years for other Nasdaq stocks (P4: 32% positive). The timing answer in the plain-words panel now reads Careful when Pace is P2–P4 but the business checks do not support adding, and quotes these figures.
+- Point-in-time business-check test (34,297 stock-months, 2022 to 2025): the check separated outcomes strongly (about 60% positive years when it passed, about 37% when it failed). Deeper Pace zones did not improve outcomes even for passing companies (P1 63% positive, P4 46%). The earlier S&P-membership split was hindsight-biased and is discarded. The timing answer in the plain-words panel now reads Partly for a pullback in a passing business and Careful in a failing one, with these figures.
+- Automated crawl of 68 page views on demo data found one markup error on the Labs page and nothing else.
 - No Pace threshold, classifier or decision rule was changed.
 
 ## Not changed

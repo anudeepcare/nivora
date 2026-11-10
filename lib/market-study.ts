@@ -1,9 +1,10 @@
 /** Measured on 10 November 2026 with scripts/market-study.mjs: 1,305 US-listed stocks
  * (S&P 500 members, the owner's holdings and about 900 randomly drawn Nasdaq common stocks),
  * ten years of split- and dividend-adjusted daily closes from a public source.
- * Limits: only companies listed today are included (survivorship), S&P membership is today's
- * list (hindsight), prices only (no historical fundamentals), and the monthly Pace history is the
- * rule-based policy that preceded the current classifier. Evidence, not a promise. */
+ * Limits: only companies listed today are included (survivorship), the business-check test covers
+ * 2022 to 2025 only, and the monthly Pace history is the rule-based policy that preceded the
+ * current classifier. An earlier split by today's S&P 500 membership was discarded as hindsight-biased.
+ * Evidence, not a promise. */
 export const MARKET_STUDY = {
   date: "2026-11-10",
   stocks: 1305,
@@ -13,17 +14,20 @@ export const MARKET_STUDY = {
     empirical: { 20: 73.6, 63: 70.8, 252: 58.9 },
     riskAdjusted: { 20: 78.5, 63: 77.9, 252: 69.5 },
   },
-  /** Median 12-month return and share of positive outcomes after each monthly Pace level. */
+  /** Twelve months after each monthly Pace level, split by a business check that used only the
+   * latest annual report at least 90 days old on the signal date (34,297 stock-months, signals
+   * March 2022 to October 2025). Pass: operating profit, positive free cash flow, share count up
+   * 10% or less, revenue not down more than 5%. Fail: operating loss and negative free cash flow.
+   * This proxy is not the app's full decision engine. */
   pace12m: {
-    established: {
-      label: "S&P 500 members",
-      median: [17.6, 10.6, 18.2, 31.8, 55.9],
-      win: [69.2, 65.6, 70.3, 74.4, 76.5],
+    months: 34297,
+    pass: {
+      median: [12.5, 9.6, 6.4, 3.8, -5.0],
+      win: [60.5, 63.1, 56.2, 53.0, 46.2],
     },
-    other: {
-      label: "other Nasdaq stocks priced $5 or more",
-      median: [-15.5, -3.9, -10.1, -24.3, -32.1],
-      win: [37.9, 45.8, 42.8, 35.8, 32.3],
+    fail: {
+      median: [-25.1, -11.9, -26.1, -31.8, -23.9],
+      win: [32.4, 42.3, 37.1, 34.2, 38.2],
     },
   },
 } as const;

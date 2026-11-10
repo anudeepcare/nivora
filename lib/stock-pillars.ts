@@ -202,14 +202,14 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
         ? {
             status: "caution",
             answer: "Cheaper, but not a buy signal",
-            why: `Pace reads P${level}, a pullback zone, but the business checks do not support adding. In a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, pullbacks this deep were followed by a positive year about ${MARKET_STUDY.pace12m.established.win[level].toFixed(0)}% of the time for established companies and only about ${MARKET_STUDY.pace12m.other.win[level].toFixed(0)}% for the rest.`,
+            why: `Pace reads P${level}, a pullback zone, but the business checks do not support adding. In a 2022–2025 test, companies failing a business check were higher a year after this zone only about ${MARKET_STUDY.pace12m.fail.win[level].toFixed(0)}% of the time.`,
           }
         : level >= 2
           ? {
-              status: "supportive",
+              status: "mixed",
               answer:
-                level >= 3 ? "In a deeper buying zone" : "In a starting zone",
-              why: `Pace reads P${level}: the price has pulled back relative to its own longer trend. In a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, established companies in this zone were higher a year later about ${MARKET_STUDY.pace12m.established.win[level].toFixed(0)}% of the time. Timing alone is never a reason to buy.`,
+                level >= 3 ? "In a deeper pullback zone" : "In a pullback zone",
+              why: `Pace reads P${level}: the price has pulled back relative to its own trend. In a 2022–2025 test, companies passing a business check were higher a year after this zone about ${MARKET_STUDY.pace12m.pass.win[level].toFixed(0)}% of the time. A pullback alone is not a reason to buy.`,
             }
           : level === 1
             ? {
