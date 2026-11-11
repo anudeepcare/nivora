@@ -44,6 +44,27 @@ export function scenarioCases(
         },
       }
     : r;
+  // The decision engine has already qualified this model against business,
+  // currency, consecutive cash-flow history and dilution safeguards. Keep the
+  // headline on the same valuation rather than replacing it with market multiples.
+  const valuation = d.valuation;
+  const validValuation =
+    valuation &&
+    [valuation.bear, valuation.base, valuation.bull].every(
+      (value) => Number.isFinite(value) && value > 0,
+    ) &&
+    valuation.bear <= valuation.base &&
+    valuation.base <= valuation.bull;
+  const valuationCases: ScenarioCases | null = validValuation
+    ? {
+        bear: valuation.bear,
+        base: valuation.base,
+        bull: valuation.bull,
+        source: valuation.label,
+        kind: "model",
+      }
+    : null;
+  if (valuation?.basis === "cash-flow" && valuationCases) return valuationCases;
   const o = researchOutlook(input);
   if (o.available && !extremeRevenueModel(o, d.reference?.price))
     return {
@@ -54,14 +75,7 @@ export function scenarioCases(
         o.basis === "revenue" ? "AURYN revenue model" : "AURYN earnings model",
       kind: "model",
     };
-  if (!o.available && d.valuation)
-    return {
-      bear: d.valuation.bear,
-      base: d.valuation.base,
-      bull: d.valuation.bull,
-      source: d.valuation.label,
-      kind: "model",
-    };
+  if (valuationCases) return valuationCases;
   const h = scenarioHeadline(r);
   return h
     ? {
