@@ -1,5 +1,5 @@
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
-import { selectPriceReference } from "./price-reference.ts";
+import { selectPriceReference, settledPriceBars } from "./price-reference.ts";
 import type { Research } from "./types";
 import { listingReconciliation } from "./listing-reconciliation.ts";
 import { compareFinancialFacts } from "./financial-period-selection.ts";
@@ -70,7 +70,12 @@ export function consensusOutlook(r: Research): {
     target <= 0
   )
     return null;
-  const selected = r.history?.length ? selectPriceReference(r, now) : null;
+  // Analyst upside is compared with the finished daily session. A newer
+  // after-hours quote must not move this reference away from that close.
+  const last = r.history?.length ? settledPriceBars(r, now).at(-1) : null;
+  const selected = last
+    ? { price: last.close, asOf: last.time, basis: "settled-close" as const }
+    : null;
   const price = selected?.price ?? r.quote.price;
   const stamp = Date.parse(selected?.asOf ?? r.quote.asOf ?? "");
   const comparable =

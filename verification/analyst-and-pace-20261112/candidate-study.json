@@ -1,0 +1,7199 @@
+{
+  "scope": "Offline candidate study on previously inspected reference snapshot. Outer rows excluded from fitting, but this is not pristine blind or later-date validation. No app model change.",
+  "selection": "development three-fold grouped exact agreement",
+  "selected": "forest",
+  "crossValidation": [
+    {
+      "name": "boost2",
+      "cvExact": 0.8380840346273338,
+      "folds": [
+        0.8372093023255814,
+        0.8404669260700389,
+        0.8365758754863813
+      ]
+    },
+    {
+      "name": "boost3",
+      "cvExact": 0.8277229813289898,
+      "folds": [
+        0.8255813953488372,
+        0.8326848249027238,
+        0.8249027237354085
+      ]
+    },
+    {
+      "name": "forest",
+      "cvExact": 0.8523059753265164,
+      "folds": [
+        0.872093023255814,
+        0.8365758754863813,
+        0.8482490272373541
+      ]
+    }
+  ],
+  "inputSha256": "d76e2d4090a895e32881716ff57e8ea7b0357030e8cddfb6ab2aa4ed30f52156",
+  "eligible": 995,
+  "excludedFeatureRows": 2,
+  "productionChanged": false,
+  "results": {
+    "development": {
+      "baseline": {
+        "n": 772,
+        "matches": 633,
+        "exact": 0.8199481865284974,
+        "byReference": {
+          "1X DCA": {
+            "n": 496,
+            "matches": 452
+          },
+          "2X DCA": {
+            "n": 84,
+            "matches": 47
+          },
+          "3X DCA": {
+            "n": 67,
+            "matches": 27
+          },
+          "4X DCA": {
+            "n": 115,
+            "matches": 107
+          },
+          "LIGHT TRIM": {
+            "n": 6,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 0
+          }
+        }
+      },
+      "candidate": {
+        "n": 772,
+        "matches": 765,
+        "exact": 0.9909326424870466,
+        "byReference": {
+          "1X DCA": {
+            "n": 496,
+            "matches": 496
+          },
+          "2X DCA": {
+            "n": 84,
+            "matches": 81
+          },
+          "3X DCA": {
+            "n": 67,
+            "matches": 67
+          },
+          "4X DCA": {
+            "n": 115,
+            "matches": 114
+          },
+          "LIGHT TRIM": {
+            "n": 6,
+            "matches": 3
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 4
+          }
+        }
+      }
+    },
+    "heldOutFromFit": {
+      "baseline": {
+        "n": 223,
+        "matches": 181,
+        "exact": 0.8116591928251121,
+        "byReference": {
+          "1X DCA": {
+            "n": 151,
+            "matches": 129
+          },
+          "2X DCA": {
+            "n": 20,
+            "matches": 15
+          },
+          "3X DCA": {
+            "n": 15,
+            "matches": 5
+          },
+          "4X DCA": {
+            "n": 36,
+            "matches": 32
+          },
+          "LIGHT TRIM": {
+            "n": 1,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 0,
+            "matches": 0
+          }
+        }
+      },
+      "candidate": {
+        "n": 223,
+        "matches": 205,
+        "exact": 0.9192825112107623,
+        "byReference": {
+          "1X DCA": {
+            "n": 151,
+            "matches": 148
+          },
+          "2X DCA": {
+            "n": 20,
+            "matches": 18
+          },
+          "3X DCA": {
+            "n": 15,
+            "matches": 7
+          },
+          "4X DCA": {
+            "n": 36,
+            "matches": 32
+          },
+          "LIGHT TRIM": {
+            "n": 1,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 0,
+            "matches": 0
+          }
+        }
+      }
+    },
+    "all": {
+      "baseline": {
+        "n": 995,
+        "matches": 814,
+        "exact": 0.8180904522613065,
+        "byReference": {
+          "1X DCA": {
+            "n": 647,
+            "matches": 581
+          },
+          "2X DCA": {
+            "n": 104,
+            "matches": 62
+          },
+          "3X DCA": {
+            "n": 82,
+            "matches": 32
+          },
+          "4X DCA": {
+            "n": 151,
+            "matches": 139
+          },
+          "LIGHT TRIM": {
+            "n": 7,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 0
+          }
+        }
+      },
+      "candidate": {
+        "n": 995,
+        "matches": 970,
+        "exact": 0.9748743718592965,
+        "byReference": {
+          "1X DCA": {
+            "n": 647,
+            "matches": 644
+          },
+          "2X DCA": {
+            "n": 104,
+            "matches": 99
+          },
+          "3X DCA": {
+            "n": 82,
+            "matches": 74
+          },
+          "4X DCA": {
+            "n": 151,
+            "matches": 146
+          },
+          "LIGHT TRIM": {
+            "n": 7,
+            "matches": 3
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 4
+          }
+        }
+      }
+    }
+  },
+  "rows": [
+    {
+      "symbol": "A",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AA",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "AAL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AAMI",
+      "split": "development",
+      "reference": 6,
+      "baseline": 1,
+      "candidate": 6
+    },
+    {
+      "symbol": "AAOI",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AAON",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "AAP",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AAPL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AARD",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AAT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AAUC",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABAT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ABBV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABCB",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABCL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABEO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ABEV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABM",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABNB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABOS",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ABR",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ABSI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABTC",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ABUS",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ABVX",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ABX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACAD",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "ACCO",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACDC",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ACEL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACGL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACH",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ACHC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACHR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "ACHV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACI",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "ACIC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACIU",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ACIW",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACLS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACM",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "ACMR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ACN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACNB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACR",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ACRE",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "ACRS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACTG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ACU",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "AD",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ADAM",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ADBE",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ADC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADCT",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "ADEA",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ADI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADMA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADNT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ADP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADPT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADSK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADTN",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ADUS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ADV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AEBI",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AEE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AEFC",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "AEG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AEHR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AEIS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "AEM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AEO",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AEP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AER",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AES",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AESI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AEVA",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "AFG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AFL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AFRI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AFRM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AG",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "AGCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AGEN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AGI",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AGIO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AGL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AGM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AGNC",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AGNT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AGO",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AGRO",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AGX",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AGYS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AHCO",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "AHR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "AIG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AII",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AIN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AIOT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AIP",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AIR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AIRJ",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AIRO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AIRS",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AIT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AIV",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AIZ",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AIZN",
+      "split": "development",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "AJG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AKAM",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AKBA",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AKR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALAB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALB",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALEC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALG",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALGM",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "ALGN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALGT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALHC",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALK",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ALKS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALKT",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "ALL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALLE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALLO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALLY",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ALM",
+      "split": "development",
+      "reference": 4,
+      "baseline": 2,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALMS",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALMU",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALNT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALNY",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALOY",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "ALRM",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALRS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALSN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALT",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALTG",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "ALTI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ALTO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALVO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ALXO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMAL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMAT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMBA",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AMBP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMBQ",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMCR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMCX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AME",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMG",
+      "split": "development",
+      "reference": 5,
+      "baseline": 1,
+      "candidate": 5
+    },
+    {
+      "symbol": "AMGN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMKR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "AMLX",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMPH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMPL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMPX",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AMPY",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "AMR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "AMRC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMRX",
+      "split": "development",
+      "reference": 6,
+      "baseline": 1,
+      "candidate": 6
+    },
+    {
+      "symbol": "AMRZ",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "AMSC",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "AMSF",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AMT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMTB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMTM",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "AMTX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AMX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AMZN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ANAB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ANDE",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ANET",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ANF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ANGI",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "ANGO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ANIK",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "ANIP",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "ANNX",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 4,
+      "candidate": 2
+    },
+    {
+      "symbol": "ANRO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ANTX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AOMR",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AON",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AORT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AOS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AOSL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APAM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APD",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APEI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APLD",
+      "split": "development",
+      "reference": 2,
+      "baseline": 4,
+      "candidate": 2
+    },
+    {
+      "symbol": "APLE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APOG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APOS",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "APP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APPF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APPN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "APPS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "APTV",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AQN",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "AQNB",
+      "split": "development",
+      "reference": 3,
+      "baseline": 1,
+      "candidate": 3
+    },
+    {
+      "symbol": "AQST",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "AR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARCB",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARCC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARCT",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "ARDT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 6,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARDX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ARE",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AREC",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ARES",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARGX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARHS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARIS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARKB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARKK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARKO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ARL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARLO",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "ARM",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "ARMK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARMP",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "AROC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AROW",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARQQ",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "ARQT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARR",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ARRY",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "ARTV",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ARVN",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ARW",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ARWR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "ARX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AS",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ASAN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASIC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASIX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ASLE",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ASMB",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ASML",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASND",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASPI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ASPN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "ASST",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASTE",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ASTH",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASTS",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "ASUR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ASYS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATAT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATEC",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ATEN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATEX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATHM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATHS",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "ATI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATLC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATLO",
+      "split": "development",
+      "reference": 5,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATMU",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATNI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATOM",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "ATR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATRC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "ATRO",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AU",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AUB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AUGO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AUPH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AUR",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AURA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AUTL",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AVA",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVAH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVAL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVAV",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AVBC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVBH",
+      "split": "development",
+      "reference": 5,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVBP",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AVGO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVIR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVNT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVNW",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "AVO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVPT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "AVT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVTR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "AVTX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AVXL",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AVY",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AWI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AWK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AWR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AXGN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AXON",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "AXP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AXS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AXSM",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "AXTA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AXTI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "AYI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AZN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AZO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "AZTA",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "AZZ",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "B",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BA",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "BABA",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "BAC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "BAH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BALL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BALY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BAM",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BANC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BAND",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BANF",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BANR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BAP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BATRA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BATRK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BAX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBAI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BBAR",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BBCP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBD",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BBDO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BBIO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBNX",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBOT",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BBSI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBUC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBVA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBW",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BBWI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BBY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCAL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCAX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BCBP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCC",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BCE",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BCH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCML",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCPC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCRX",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BCS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BCYC",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BDC",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "BDN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BDTX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BDX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BEAM",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "BEKE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BELFA",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "BELFB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BEN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BEP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BEPC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BEPH",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "BEPI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "BETR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "BF-B",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BFAM",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BFC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BFH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BFLY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BFS",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BFST",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BG",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "BGC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BGS",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "BH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BH-A",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BHB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BHC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "BHE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BHF",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BHP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BHR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "BHRB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BHVN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BIDU",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BIIB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BILI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BILL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BIO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BIOA",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BIP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BIPC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BIPH",
+      "split": "development",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "BIPI",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BIRK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "BJ",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BJRI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BKD",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BKE",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BKH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BKKT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BKNG",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BKR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BKSY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "BKTI",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BKU",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BKV",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BL",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BLBD",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BLCO",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BLDR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BLK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BLKB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BLMN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BLND",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BLSH",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BLTE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BLX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BLZE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BMA",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BMBL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "BMI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "BMNR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BMO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BMRC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BMRN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BMY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BNAI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BNED",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BNH",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BNJ",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "BNL",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BNS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BNT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BNTC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "BNTX",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BNY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BOC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BOH",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "BOKF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BOOT",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BORR",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "BOTZ",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BOW",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BOX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "BP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BPOP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BPRN",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BPYPO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRBR",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BRBS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRCB",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "BRCC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 6,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRK-A",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRK-B",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRKR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BROS",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BRSL",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BRSP",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BRT",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "BRUN",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BRX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BRZE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BSAC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BSBR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "BSRR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BSVN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BSX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BSY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "BTBT",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BTC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BTDR",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BTE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BTG",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BTI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BTSG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BTU",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BUD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BULL",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BUR",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BURL",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BUSE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BV",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BVFL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BVN",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "BVS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BW",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "BWA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "BWB",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BWFG",
+      "split": "development",
+      "reference": 5,
+      "baseline": 1,
+      "candidate": 5
+    },
+    {
+      "symbol": "BWIN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BWLP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BWMN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BWXT",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BXC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BXMT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "BXP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BXSL",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "BY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BYD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BZ",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "BZAI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "C",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAAP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CABA",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CABO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CAC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CACC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CACI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CADL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAG",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CAH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAKE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CALM",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CALX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CALY",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAMP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAMT",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CAPR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 4,
+      "candidate": 2
+    },
+    {
+      "symbol": "CAR",
+      "split": "development",
+      "reference": 4,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CARE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CARG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CARL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CARR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CARS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CART",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CASH",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CASS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CASY",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAT",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "CATX",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CATY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CAVA",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBAN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBFV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBIO",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CBL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBLL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBNA",
+      "split": "development",
+      "reference": 6,
+      "baseline": 1,
+      "candidate": 6
+    },
+    {
+      "symbol": "CBNK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBOE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBRE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBRL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBSH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CBT",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CBU",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CC",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CCB",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CCBG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCCC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CCEP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCJ",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "CCK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCNE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCOI",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CCS",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CCSI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CCZ",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CD",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CDE",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CDNA",
+      "split": "heldOutFromFit",
+      "reference": 5,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CDNS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CDP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CDRE",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CDW",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CDXS",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CDZI",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CECO",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CEF",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CEG",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CELC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "CELH",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CENT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CENTA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CENX",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CERS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CERT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CEVA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CFBK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CFFI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CFFN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CFG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CFR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CG",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CGABL",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CGAU",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CGEM",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CGNX",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CGON",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHCI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHCT",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CHD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHDN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHEF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHKP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHMG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHPT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 6,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHPY",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "CHRD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHRS",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CHRW",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CHT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CHTR",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CHWY",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CHYM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CIA",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "CIB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CIBR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CIEN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CIFR",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CIG",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "CIGI",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CIM",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CINF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CIVB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CIX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 6,
+      "candidate": 1
+    },
+    {
+      "symbol": "CL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLB",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CLBK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLBT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLDT",
+      "split": "development",
+      "reference": 6,
+      "baseline": 1,
+      "candidate": 6
+    },
+    {
+      "symbol": "CLDX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLFD",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CLH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLLS",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CLMB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLMT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLNE",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLOU",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLOV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLPT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CLS",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CLSK",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CLVT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLW",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CLX",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CLYM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMBT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMCO",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMCSA",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMDB",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CME",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMI",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CMP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMPR",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CMPS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMPX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CMRC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMRE",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "CMS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMSA",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CMSC",
+      "split": "development",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "CMSD",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "CMT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CMTG",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CMTV",
+      "split": "development",
+      "reference": 5,
+      "baseline": 1,
+      "candidate": 5
+    },
+    {
+      "symbol": "CNA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNDT",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CNH",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNMD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNNE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNO",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNOB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNP",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNQ",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CNS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNTB",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CNTN",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CNTX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CNX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNXC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CNXN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CODI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COFS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COGT",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "COHR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "COHU",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COIN",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "COKE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COLB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COLD",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COLL",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "COLM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COMP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CON",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "COO",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "COP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CORT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CORZ",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "COSO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COST",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "COTY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "COUR",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPAY",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPB",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CPF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPNG",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CPRI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPRT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPS",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CPSS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CPT",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CQP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRAI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRBG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRBP",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CRBU",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CRC",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "CRCL",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CRCT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 6,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRD-A",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRDO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRGY",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRK",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CRL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRMD",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CRML",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CRNC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CROX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRS",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "CRSP",
+      "split": "development",
+      "reference": 4,
+      "baseline": 2,
+      "candidate": 4
+    },
+    {
+      "symbol": "CRSR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRUS",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CRVL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRVS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRWD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CRWV",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CSCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CSGP",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CSIQ",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CSL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CSR",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "CSTL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CSTM",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CSV",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CSW",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CSX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTAS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTBI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTEV",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTGO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CTKB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTMX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CTNM",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CTO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTOS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTRE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTRI",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "CTRN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTSH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CTVA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CUBE",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CUBI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CURB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CURI",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "CURV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CUZ",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CV",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CVBF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVEO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVGI",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVLG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVLT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVNA",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVRX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CVS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVSA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CVX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CW",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "CWBC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CWCO",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CWEN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CWH",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CWK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CWST",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CWT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CX",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CXDO",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CXM",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CXT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CXW",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "CYH",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "CYRX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CYTK",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "CZFS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CZNC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CZR",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "CZWI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "D",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DAC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DAKT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DAL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DAN",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "DAO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DAR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DASH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DAVE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DBD",
+      "split": "development",
+      "reference": 4,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "DBI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DBX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DCH",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "DCI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DCOM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DCTH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 6,
+      "candidate": 1
+    },
+    {
+      "symbol": "DD",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DDD",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DDOG",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DDS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DEA",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DEC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "DECK",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "DEI",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "DELL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DEO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "DFH",
+      "split": "development",
+      "reference": 2,
+      "baseline": 3,
+      "candidate": 2
+    },
+    {
+      "symbol": "DFIN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "DFTX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DG",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DGICA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DGII",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DGX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DHC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DHI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DHR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DHT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DIA",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DIBS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DIN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DINO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DIOD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DIS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DJCO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DJT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DK",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DKNG",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "DKS",
+      "split": "development",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 3
+    },
+    {
+      "symbol": "DLB",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DLO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DLR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DLTR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DLX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DMAC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DMC",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 3,
+      "candidate": 4
+    },
+    {
+      "symbol": "DMRA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DMRC",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "DNA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DNLI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DNN",
+      "split": "development",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 3
+    },
+    {
+      "symbol": "DNOW",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DNTH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DNUT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOCN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOCS",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOCU",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOLE",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DORM",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOUG",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "DOV",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOW",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DOX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DPZ",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "DQ",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DRD",
+      "split": "development",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 1
+    },
+    {
+      "symbol": "DRH",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DRI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DRS",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "DRUG",
+      "split": "heldOutFromFit",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DRVN",
+      "split": "development",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "DSGN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DSGR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DSGX",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "DSP",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DTE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DTIL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DTM",
+      "split": "heldOutFromFit",
+      "reference": 2,
+      "baseline": 2,
+      "candidate": 2
+    },
+    {
+      "symbol": "DTW",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DUK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DUKB",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DUOL",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DUOT",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DV",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "DVA",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DVN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DX",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DXC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 5,
+      "candidate": 1
+    },
+    {
+      "symbol": "DXCM",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DXPE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "DY",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "DYN",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "E",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EAF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EAT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EBAY",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EBC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EBF",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EBMT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EBS",
+      "split": "heldOutFromFit",
+      "reference": 3,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "EC",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ECBK",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ECG",
+      "split": "development",
+      "reference": 3,
+      "baseline": 2,
+      "candidate": 3
+    },
+    {
+      "symbol": "ECHO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ECL",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ECO",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ECPG",
+      "split": "development",
+      "reference": 5,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ECVT",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "ED",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EDIT",
+      "split": "development",
+      "reference": 2,
+      "baseline": 1,
+      "candidate": 2
+    },
+    {
+      "symbol": "EDU",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EE",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EEFT",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EEM",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EFA",
+      "split": "heldOutFromFit",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EFC",
+      "split": "development",
+      "reference": 4,
+      "baseline": 4,
+      "candidate": 4
+    },
+    {
+      "symbol": "EFOR",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EFSC",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    },
+    {
+      "symbol": "EFSI",
+      "split": "development",
+      "reference": 1,
+      "baseline": 1,
+      "candidate": 1
+    }
+  ]
+}

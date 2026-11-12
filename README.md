@@ -1,8 +1,6 @@
-Current work: [Live reference comparison and valuation correction](RELEASE-LIVE-COMPARISON-20261112.md).
-
 # AURYN
 
-Current source release: [Scenario selection correction — 11 November 2026](RELEASE-SCENARIO-SELECTION-20261111.md).
+Current source release: [Analyst close correction and Pace candidate](RELEASE-ANALYST-AND-PACE-20261112.md).
 
 
 Prior enhancement handoff: 8 November 2026. The documents below describe earlier releases; use the current source release above for this ZIP.

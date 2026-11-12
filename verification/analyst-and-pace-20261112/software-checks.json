@@ -1,0 +1,22 @@
+{
+  "verify": {
+    "exitCode": 0,
+    "tests": 1365,
+    "passed": 1365,
+    "failed": 0,
+    "lint": true,
+    "format": true,
+    "typecheck": true,
+    "productionBuild": true
+  },
+  "ownerGuideOnlyFollowupTypecheck": {
+    "exitCode": 0
+  },
+  "candidateExport": {
+    "predictionsChecked": 995,
+    "heldOutCount": 223,
+    "heldOutMatches": 205,
+    "activeInApplication": false
+  },
+  "deployed": false
+}

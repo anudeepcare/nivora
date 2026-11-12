@@ -7021,3 +7021,7 @@ export function cashFlowValuation(x: {
     : null;
 }
 ```
+
+
+## Analyst comparison reference — 12 November 2026
+Analyst low, consensus and high percentage gaps use the latest completed daily close when available. A later after-hours quote no longer replaces that reference. If no eligible settled bar exists, the existing explicitly labelled quote fallback remains. The supplied low/high targets are not clamped around the stock price: a low target above the close legitimately has positive upside. No analyst target is generated from AURYN intrinsic valuation. The research-only Pace candidate is not active; monthly-v6 remains the application policy.
