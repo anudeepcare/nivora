@@ -5,6 +5,8 @@ import {
   adaptiveSettledBars,
 } from "./accumulation-policy-v5.ts";
 import { researchAccumulation as currentAccumulation } from "./accumulation-policy-v6.ts";
+import { researchAccumulation as v7Accumulation } from "./accumulation-policy-v7.ts";
+import { paceModelV7 } from "./pace-model-v7.ts";
 import { paceModel } from "./pace-model-v6.ts";
 import { symbolInput } from "./format.ts";
 export function compareDca(
@@ -12,13 +14,19 @@ export function compareDca(
   asOf: string,
   costBps = 10,
   market: "us-equity" | "crypto" = "us-equity",
-  mode: "legacy" | "current-v6" = "legacy",
+  mode: "legacy" | "current-v6" | "current-v7" = "legacy",
 ) {
   if (!Number.isFinite(costBps) || costBps < 0 || costBps > 200)
     throw Error("Costs must be between zero and two hundred basis points.");
-  const current = mode === "current-v6";
+  const current = mode !== "legacy";
+  const version = mode === "current-v7" ? "monthly-v7" : "monthly-v6";
+  const model = mode === "current-v7" ? paceModelV7 : paceModel;
   const signals = current
-      ? currentAccumulation(bars, asOf, market)
+      ? (mode === "current-v7" ? v7Accumulation : currentAccumulation)(
+          bars,
+          asOf,
+          market,
+        )
       : researchAccumulation(bars, asOf, market),
     lookup = new Map(signals.history.map((s) => [s.month, s])),
     months = new Map<string, Candle[]>();
@@ -66,8 +74,8 @@ export function compareDca(
     if (
       current &&
       (!("policyVersion" in signal) ||
-        signal.policyVersion !== "monthly-v6" ||
-        signal.date < paceModel.availableFrom)
+        signal.policyVersion !== version ||
+        signal.date < model.availableFrom)
     )
       continue;
     const multiple = current
@@ -103,7 +111,7 @@ export function compareDca(
       month,
       signalDate: signal.date,
       executionDate: rows[0].time,
-      policyVersion: current ? "monthly-v6" : signals.version,
+      policyVersion: current ? version : signals.version,
       fixed: fixed.value,
       adaptive: adaptive.value,
       multiplier: multiple,
@@ -111,13 +119,13 @@ export function compareDca(
     });
   }
   return {
-    policy: current ? "monthly-v6" : signals.version,
+    policy: current ? version : signals.version,
     mode,
-    availableFrom: current ? paceModel.availableFrom : null,
+    availableFrom: current ? model.availableFrom : null,
     reason: history.length
       ? null
       : current
-        ? "No completed execution months with eligible v6 signals since its release. Historical v5 readings are not substituted."
+        ? `No completed execution months with eligible ${version} signals since its release. Historical readings are not substituted.`
         : "More completed history is required.",
     months: history.length,
     costBps,
@@ -126,7 +134,7 @@ export function compareDca(
     history,
     limitations: [
       current
-        ? "Replay of the frozen v6 technical rules on post-release signals, not authenticated prospective results or the full investment decision."
+        ? `Replay of the frozen ${version} technical rules on post-release signals, not authenticated prospective results or the full investment decision.`
         : "Legacy v5 price-only simulation; it buys at P1 and does not evaluate current v6 or current P1 Hold/Watch guidance.",
       "Historical business gates, valuation checks and personal portfolio constraints are not modeled; contemporaneous evidence is unavailable.",
       ...(current

@@ -176,10 +176,10 @@ test("Strategy Lab visibly distinguishes its P1-spending legacy simulation from 
   assert.doesNotMatch(html, />AURYN Pace<|AURYN Pace model/);
 });
 
-test("current v6 Lab withholds pre-release performance and explains the unavailable full decision evidence", () => {
+test("current v7 Lab withholds pre-release performance and explains the unavailable full decision evidence", () => {
   const r = structuredClone(demoData.research.MSFT);
   r.retrievedAt = "2026-11-08T12:00:00Z";
-  const states = ["MSFT", 10, "current-v6", r, false, ""];
+  const states = ["MSFT", 10, "current-v7", r, false, ""];
   let index = 0;
   const empty = () => null;
   const Lab = component("components/ResearchLab.tsx", "ResearchLab", {
@@ -192,7 +192,7 @@ test("current v6 Lab withholds pre-release performance and explains the unavaila
     Empty: ({title, children}) => React.createElement("div", null, title, children),
   });
   const html = renderToStaticMarkup(React.createElement(Lab));
-  assert.match(html, /Current v6 evidence is still accumulating/);
+  assert.match(html, /Current v7 evidence is still accumulating/);
   assert.match(html, /P0\/P1 retain cash/);
   assert.match(html, /No completed execution months/);
   assert.match(html, /historical business eligibility/);

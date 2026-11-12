@@ -1,0 +1,30 @@
+{
+  "tests": {
+    "passed": 1375,
+    "failed": 0,
+    "logSha256": "d265631f928f9f6f5dc58535d9198138a510144d7fcd528b8d68f5fcafed1c4d"
+  },
+  "afterTypeNarrowingFix": {
+    "paceV7TestsPassed": 4,
+    "lint": "passed",
+    "format": "passed",
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "logSha256": "ddd39097c3199f8e729a7dee3dbb5bc0a921048849413201a162f8f45ab2f0e1"
+  },
+  "pace": {
+    "heldOutMatches": 205,
+    "heldOutCount": 223,
+    "allRequestedMatches": 971,
+    "allRequestedCount": 1000,
+    "includesTrainingRows": true
+  },
+  "analyst500": {
+    "requested": 500,
+    "livePairsCompared": 0,
+    "complete": false
+  },
+  "productionDeployed": false,
+  "databaseMigrationExecuted": false,
+  "visualBrowserPass": false
+}

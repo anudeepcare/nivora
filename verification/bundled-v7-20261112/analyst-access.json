@@ -1,0 +1,9 @@
+{
+  "scope": "500-stock live analyst parity, not screenshot calculation fixtures",
+  "referenceSource": "Four user-provided screenshots; date assigned from conversation context. Remaining 496 references not captured.",
+  "twelveDataPriceTarget": "Plan denied: ultra or enterprise required",
+  "eodhd": "Vercel project has sensitive EODHD_API_KEY; get_project_env does not return its value",
+  "productionRead": "Vercel web_fetch returned deployment_authentication_required, HTTP 401",
+  "actualFeedObservations": 0,
+  "complete": false
+}

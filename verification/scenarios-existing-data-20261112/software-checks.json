@@ -1,0 +1,15 @@
+{
+  "testsPassed": 1376,
+  "testsFailed": 0,
+  "lint": "passed",
+  "format": "passed",
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "logSha256": "fa927af7ce660c468393389420f953f5787ca995d47a8262279d5c3090d41d0f",
+  "providersAdded": [],
+  "tickerSpecificOverridesAdded": false,
+  "productionDeployed": false,
+  "databaseChanged": false,
+  "scenarioAccuracyMeasuredAgainstDca": false,
+  "browserVisualPassClaimed": false
+}

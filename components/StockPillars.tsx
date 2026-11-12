@@ -52,7 +52,7 @@ export default function StockPillars({
           <p>
             {view.cases.source}
             {view.cases.price != null
-              ? ` · today ${priceAmount(view.cases.price, view.cases.currency)}`
+              ? ` · ${view.cases.referenceBasis === "settled-close" ? "settled close" : "quote"} ${priceAmount(view.cases.price, view.cases.currency)}`
               : ""}
             {view.cases.position === "above-bull"
               ? " · the price is above even the bull case."
@@ -61,6 +61,9 @@ export default function StockPillars({
                 : "."}
           </p>
         </div>
+      )}
+      {!view.cases && (
+        <p>More company evidence is needed for a supported scenario range.</p>
       )}
       {view.odds && (
         <div className={s.odds} data-grade={view.odds.grade}>

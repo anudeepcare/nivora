@@ -2,6 +2,7 @@ import type { Research } from "./types";
 import type { aurynDecision } from "./auryn-decision.ts";
 import { researchBrief } from "./research-brief.ts";
 import { scenarioCases } from "./scenario-cases.ts";
+import { consensusOutlook } from "./outlook.ts";
 import { percent } from "./format.ts";
 import { evidenceOdds, type EvidenceOdds } from "./evidence-odds.ts";
 
@@ -31,6 +32,7 @@ export type StockPillars = {
     source: string;
     price: number | null;
     currency: string;
+    referenceBasis: "quote" | "settled-close";
     /** Where today's price sits relative to the range. */
     position: "below-bear" | "inside" | "above-bull" | null;
   } | null;
@@ -149,20 +151,51 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
               why: "Cash, spending and share-count figures are not available together.",
             }),
   });
-  const price = d.reference?.price;
-  const range = scenarioCases(r, d);
-  const lead =
-    range && range.kind !== "history"
+  const analyst = consensusOutlook(r);
+  // Keep complete analyst observations intact. Missing bounds may use a
+  // separately named, qualified fundamental model; never synthesize analyst targets.
+  const analystRange =
+    analyst?.low != null && analyst.high != null
       ? {
-          base: range.base,
-          label:
-            range.kind === "model"
-              ? "AURYN's base case"
-              : "the analyst consensus target",
+          bear: analyst.low,
+          base: analyst.target,
+          bull: analyst.high,
+          source: "Analyst targets · low / consensus / high",
+          kind: "analyst" as const,
+        }
+      : null;
+  const model = analystRange
+    ? null
+    : scenarioCases(r, d, { fundamentalsOnly: true });
+  const range =
+    analystRange ??
+    (model
+      ? {
+          ...model,
+          source: model.source.startsWith("AURYN")
+            ? model.source
+            : `AURYN model · ${model.source}`,
+        }
+      : null);
+  const price =
+    range?.kind === "analyst" ? analyst?.referencePrice : d.reference?.price;
+  const lead = analyst
+    ? {
+        base: analyst.target,
+        price: analyst.referencePrice,
+        label: "the analyst consensus target",
+      }
+    : model
+      ? {
+          base: model.base,
+          price: d.reference?.price,
+          label: "the AURYN model base case",
         }
       : null;
   const gap =
-    lead && num(price) && price > 0 ? (lead.base / price - 1) * 100 : null;
+    lead && num(lead.price) && lead.price > 0
+      ? (lead.base / lead.price - 1) * 100
+      : null;
   pillars.push({
     id: "price",
     question: "Is the price reasonable?",
@@ -170,13 +203,13 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
       ? {
           status: "unknown",
           answer: "Not measured",
-          why: "No valuation model or analyst target is available to compare with the price.",
+          why: "A supported valuation or analyst target and a usable comparison price are needed.",
         }
       : gap >= L.priceGap
         ? {
             status: "supportive",
             answer: "Below expectations",
-            why: `The price is ${percent((1 - price! / lead!.base) * 100)} below ${lead!.label}. That is an estimate, not a promise.`,
+            why: `The price is ${percent((1 - lead!.price! / lead!.base) * 100)} below ${lead!.label}. That is an estimate, not a promise.`,
           }
         : gap > -L.priceGap
           ? {
@@ -187,7 +220,7 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
           : {
               status: "caution",
               answer: "Ahead of expectations",
-              why: `The price is ${percent((price! / lead!.base - 1) * 100)} above ${lead!.label}; a lot of good news is already assumed.`,
+              why: `The price is ${percent((lead!.price! / lead!.base - 1) * 100)} above ${lead!.label}; a lot of good news is already assumed.`,
             }),
   });
   const level = d.pace?.level;
@@ -305,7 +338,7 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
             level: "thesis",
             text: "Thesis watch: growth, profitability and funding all read Careful at once. If you hold it, write down what would have to improve, and by when, for you to keep holding.",
           }
-        : stretched && range!.kind !== "history"
+        : stretched
           ? {
               level: "trim",
               text: "Size check: the price is above the bull case. In the record, sound businesses that were stretched kept rising more often than not, so this is not a signal to sell. Check only whether the position has grown beyond the size you intended.",
@@ -319,6 +352,8 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
           ...range,
           price: num(price) ? price : null,
           currency: d.reference?.currency ?? r.quote.currency,
+          referenceBasis:
+            range.kind === "analyst" ? analyst!.referenceBasis : "quote",
           position: !num(price)
             ? null
             : price < range.bear

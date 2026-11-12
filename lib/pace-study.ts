@@ -34,7 +34,7 @@ export type StudyAsset = {
 };
 export type PaceStudyInput = {
   schemaVersion: "pace-study-1";
-  policyVersion: "monthly-v5" | "monthly-v6";
+  policyVersion: "monthly-v5" | "monthly-v6" | "monthly-v7";
   policyHash: string;
   startMonth: string;
   endMonth: string;
@@ -77,7 +77,7 @@ export function runPaceStudy(
 ) {
   requireThat(
     input.schemaVersion === "pace-study-1" &&
-      ["monthly-v5", "monthly-v6"].includes(input.policyVersion),
+      ["monthly-v5", "monthly-v6", "monthly-v7"].includes(input.policyVersion),
     "Unsupported study or policy version",
   );
   requireThat(

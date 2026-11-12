@@ -1,7 +1,7 @@
 import {
   researchAccumulation,
   type CycleSignal,
-} from "./accumulation-policy-v6.ts";
+} from "./accumulation-policy-v7.ts";
 import type { Candle } from "./types";
 
 type BoundaryReading = Pick<
@@ -13,7 +13,8 @@ export function paceBoundary(reading: BoundaryReading | null) {
   if (
     reading &&
     "policyVersion" in reading &&
-    reading.policyVersion === "monthly-v6"
+    (reading.policyVersion === "monthly-v6" ||
+      reading.policyVersion === "monthly-v7")
   ) {
     return (
       (

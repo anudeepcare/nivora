@@ -2,8 +2,12 @@ import type { Candle } from "./types";
 import { cycleReading } from "./accumulation-policy-v5.ts";
 import { trendAccumulationReading } from "./accumulation-policy-v3.ts";
 import { classifyPace, paceFeatures } from "./pace-classifier.ts";
+import { classifyPaceV7, paceV7Signal } from "./pace-classifier-v7.ts";
 /** Re-evaluate a hypothetical latest close with every historical input fixed. */
-export function makePacePriceEvaluator(rows: Candle[], calibrated: boolean) {
+export function makePacePriceEvaluator(
+  rows: Candle[],
+  calibrated: boolean | "monthly-v7",
+) {
   const monthly = new Map<string, Candle>();
   for (const bar of rows) monthly.set(bar.time.slice(0, 7), bar);
   const prior = [...monthly.values()].slice(0, -1).slice(-24),
@@ -19,12 +23,18 @@ export function makePacePriceEvaluator(rows: Candle[], calibrated: boolean) {
     };
     const rule = cycleReading(prior, bar, trendAccumulationReading(prior, bar));
     if (!rule) return null;
-    if (!calibrated || rule.multiplier === 0) return rule.multiplier;
+    if (!calibrated || (calibrated !== "monthly-v7" && rule.multiplier === 0))
+      return rule.multiplier;
     const features = paceFeatures(
       [...earlier, bar],
       rule.z,
       rule.deviation / 100,
     );
-    return features ? classifyPace(features) : null;
+    if (!features) return null;
+    if (calibrated === "monthly-v7") {
+      const label = classifyPaceV7(features);
+      return label == null ? null : paceV7Signal(label).multiplier;
+    }
+    return classifyPace(features);
   };
 }

@@ -1,3 +1,5 @@
+import { researchAccumulation as v7Accumulation } from "./accumulation-policy-v7.ts";
+import { paceModelV7 } from "./pace-model-v7.ts";
 import { researchAccumulation } from "./accumulation-policy-v5.ts";
 import { researchAccumulation as currentAccumulation } from "./accumulation-policy-v6.ts";
 import { paceModel } from "./pace-model-v6.ts";
@@ -14,7 +16,7 @@ export type PriceReplay = {
 export function verifyStudyRow(
   replay: PriceReplay,
   row: StudyRow,
-  policyVersion: "monthly-v5" | "monthly-v6" = "monthly-v5",
+  policyVersion: "monthly-v5" | "monthly-v6" | "monthly-v7" = "monthly-v5",
 ) {
   if (
     !replay.sourceRecord?.trim() ||
@@ -38,17 +40,23 @@ export function verifyStudyRow(
     );
   });
   const signal = (
-    policyVersion === "monthly-v6" ? currentAccumulation : researchAccumulation
+    policyVersion === "monthly-v7"
+      ? v7Accumulation
+      : policyVersion === "monthly-v6"
+        ? currentAccumulation
+        : researchAccumulation
   )(bars, row.signalKnownAt, replay.market).confirmed;
   if (
-    policyVersion === "monthly-v6" &&
+    policyVersion !== "monthly-v5" &&
     (!signal ||
       !("policyVersion" in signal) ||
-      signal.policyVersion !== "monthly-v6" ||
-      signal.date < paceModel.availableFrom)
+      signal.policyVersion !== policyVersion ||
+      signal.date <
+        (policyVersion === "monthly-v7" ? paceModelV7 : paceModel)
+          .availableFrom)
   )
     throw Error(
-      "Replay requires a v6 signal observed after model release; legacy fallback is not v6.",
+      `Replay requires a ${policyVersion} signal observed after model release; legacy fallback is not ${policyVersion}.`,
     );
   const multiple = signal
     ? ([0, 0, 1, 2, 4] as const)[signal.multiplier]

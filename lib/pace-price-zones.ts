@@ -2,7 +2,7 @@ import type { Candle } from "./types";
 import {
   adaptiveSettledBars,
   researchAccumulation,
-} from "./accumulation-policy-v6.ts";
+} from "./accumulation-policy-v7.ts";
 import { makePacePriceEvaluator } from "./pace-price-evaluator.ts";
 export type PacePriceRange = { level: number; low: number; high: number };
 export type PacePriceZones = {
@@ -51,7 +51,9 @@ export async function pacePriceZones(
   if (!Number.isFinite(high) || high <= low) return null;
   const at = makePacePriceEvaluator(
     rows,
-    reading.policyVersion === "monthly-v6",
+    reading.policyVersion === "monthly-v7"
+      ? "monthly-v7"
+      : reading.policyVersion === "monthly-v6",
   );
   const grid = [
     ...Array.from(

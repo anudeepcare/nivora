@@ -1,7 +1,8 @@
+import { paceModelV7 } from "./pace-model-v7.ts";
 import { paceModel } from "./pace-model-v6.ts";
 export function publicationInput(
   input: {
-    policy?: "monthly-v5" | "monthly-v6";
+    policy?: "monthly-v5" | "monthly-v6" | "monthly-v7";
     symbol: string;
     period: string;
     pace: number;
@@ -74,7 +75,7 @@ export type PublishedPaceRecord = {
 export function verifyProspectivePublication(
   symbol: string,
   row: {
-    policyVersion?: "monthly-v5" | "monthly-v6";
+    policyVersion?: "monthly-v5" | "monthly-v6" | "monthly-v7";
     signalDate: string;
     signalKnownAt: string;
     executionAt: string;
@@ -85,10 +86,13 @@ export function verifyProspectivePublication(
 ) {
   const policyVersion = row.policyVersion ?? "monthly-v5";
   if (
-    policyVersion === "monthly-v6" &&
-    row.signalDate.slice(0, 10) < paceModel.availableFrom
+    policyVersion !== "monthly-v5" &&
+    row.signalDate.slice(0, 10) <
+      (policyVersion === "monthly-v7" ? paceModelV7 : paceModel).availableFrom
   )
-    throw Error("A prospective v6 signal must follow model release.");
+    throw Error(
+      `A prospective ${policyVersion === "monthly-v7" ? "v7" : "v6"} signal must follow model release.`,
+    );
   const matches = records.filter(
     (r) =>
       r.symbol === symbol &&

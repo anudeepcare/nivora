@@ -30,6 +30,7 @@ export function extremeRevenueModel(
 export function scenarioCases(
   r: Research,
   d: ReturnType<typeof aurynDecision>,
+  options: { fundamentalsOnly?: boolean } = {},
 ): ScenarioCases | null {
   if (r.company.assetType !== "stock") return null;
   const input = d.reference
@@ -76,6 +77,7 @@ export function scenarioCases(
       kind: "model",
     };
   if (valuationCases) return valuationCases;
+  if (options.fundamentalsOnly) return null;
   const h = scenarioHeadline(r);
   return h
     ? {

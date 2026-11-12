@@ -1,6 +1,10 @@
+**Current deployable release:** [Existing-subscription scenarios](RELEASE-SCENARIOS-20261112.md). This supersedes earlier analyst-only headline notes.
+
+**Latest combined release:** [Pace v7 and analyst fixes](RELEASE-BUNDLED-V7-20261112.md). Use this note over older release notes.
+
 # AURYN
 
-Current source release: [Analyst close correction and Pace candidate](RELEASE-ANALYST-AND-PACE-20261112.md).
+Current source release: [Overview analyst headline correction](RELEASE-ANALYST-HEADLINE-20261112.md).
 
 
 Prior enhancement handoff: 8 November 2026. The documents below describe earlier releases; use the current source release above for this ZIP.

@@ -1,0 +1,14 @@
+{
+  "verifyExitCode": 0,
+  "tests": 1368,
+  "passed": 1368,
+  "failed": 0,
+  "lint": "passed",
+  "format": "passed",
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "browserVisualCheck": "blocked by local-file URL policy; no visual pass claimed",
+  "liveAnalystFeedParity": "not established",
+  "paceChanged": false,
+  "deployed": false
+}

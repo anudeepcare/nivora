@@ -48,6 +48,9 @@ export default function IntegratedResearch({
     };
   }, []);
   const now = demo ? Date.parse(r.retrievedAt) : clock;
+  const analyst = useMemo(() => consensusOutlook(r), [r]);
+  const showConsensus =
+    !!analyst && (analyst.low == null || analyst.high == null);
   const m = useMemo(
       () => approvedResearch(r, decisionOwns, now),
       [r, decisionOwns, now],
@@ -153,12 +156,12 @@ export default function IntegratedResearch({
             </details>
           </div>
         </div>
-        <div className={s.consensusRow} data-has-target={!!consensusOutlook(r)}>
-          {consensusOutlook(r) && <AnalystTargets research={r} />}
+        <div className={s.consensusRow} data-has-target={showConsensus}>
+          {showConsensus && <AnalystTargets research={r} />}
           <DataFreshness
             research={r}
             now={now}
-            wide={!consensusOutlook(r)}
+            wide={!showConsensus}
             decision={d}
           />
         </div>

@@ -15,7 +15,7 @@ export default function ResearchLab() {
   const { demo } = useProduct(),
     [symbol, setSymbol] = useState(""),
     [cost, setCost] = useState(10),
-    [mode, setMode] = useState<"current-v6" | "legacy">("current-v6"),
+    [mode, setMode] = useState<"current-v7" | "legacy">("current-v7"),
     [data, setData] = useState<Research | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState("");
@@ -88,9 +88,9 @@ export default function ResearchLab() {
         subtitle="Compare contribution rules with the same cash, dates and modeled costs."
       />
       <p className="footnote">
-        {mode === "current-v6"
-          ? "Current v6 technical rules: P0/P1 retain cash, P2 starts at 1×, P3 adds at 2× and P4 uses up to 4× the regular contribution, limited by available cash. Only completed months after model release qualify."
-          : "The legacy v5 simulation buys at P1. It does not implement current P1 Watch/Hold guidance or the v6 model."}{" "}
+        {mode === "current-v7"
+          ? "Current v7 technical rules: P0/P1 retain cash, P2 starts at 1×, P3 adds at 2× and P4 uses up to 4× the regular contribution, limited by available cash. Only completed months after model release qualify."
+          : "The legacy v5 simulation buys at P1. It does not implement current P1 Watch/Hold guidance or the v7 model."}{" "}
         Neither replay includes historical business eligibility, valuation or
         personal position limits. Results cannot validate the full AURYN
         decision.
@@ -100,10 +100,10 @@ export default function ResearchLab() {
           Rule set
           <select
             value={mode}
-            onChange={(e) => setMode(e.target.value as "current-v6" | "legacy")}
+            onChange={(e) => setMode(e.target.value as "current-v7" | "legacy")}
           >
-            <option value="current-v6">
-              Current v6 · technical rules only
+            <option value="current-v7">
+              Current v7 · technical rules only
             </option>
             <option value="legacy">Legacy v5 · price-only research</option>
           </select>
@@ -145,7 +145,7 @@ export default function ResearchLab() {
               {data?.company.symbol} · {result.months} months
             </h2>
             <small>
-              {mode === "current-v6"
+              {mode === "current-v7"
                 ? "Current technical model"
                 : "Legacy price-only model"}{" "}
               {result.policy} · hypothetical comparison
@@ -155,8 +155,8 @@ export default function ResearchLab() {
             {[
               ["Fixed contributions", result.fixed, "blue"],
               [
-                mode === "current-v6"
-                  ? "Current v6 technical rules"
+                mode === "current-v7"
+                  ? "Current v7 technical rules"
                   : "Legacy price-only policy",
                 result.adaptive,
                 "violet",
@@ -210,17 +210,17 @@ export default function ResearchLab() {
         <Empty
           title={
             result
-              ? mode === "current-v6"
-                ? "Current v6 evidence is still accumulating"
+              ? mode === "current-v7"
+                ? "Current v7 evidence is still accumulating"
                 : "More completed history is required"
               : "Compare before adopting a policy"
           }
         >
           {result?.reason && <span>{result.reason} </span>}
-          {mode === "current-v6" && (
+          {mode === "current-v7" && (
             <span>
-              The frozen model was released November 7, 2026. No older
-              performance is relabeled as v6, and a price replay is not a
+              The frozen model was released November 12, 2026. No older
+              performance is relabeled as v7, and a price replay is not a
               verified prospective record.{" "}
             </span>
           )}
