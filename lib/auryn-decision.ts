@@ -229,10 +229,12 @@ export function cashFlowValuation(x: {
   if (
     !Object.values(x).every(Number.isFinite) ||
     x.cashPerShare <= 0 ||
+    x.growth <= -100 ||
     x.dilution < 0
   )
     return null;
-  const growth = Math.max(0, Math.min(10, x.growth));
+  // A shrinking business must not be silently valued as flat growth.
+  const growth = Math.min(10, x.growth);
   const presentValue = (
     startGrowth: number,
     discount: number,
@@ -252,7 +254,7 @@ export function cashFlowValuation(x: {
     const value = pv + terminalValue / (1 + discount / 100) ** 10;
     return Number.isFinite(value) && value > 0 ? value : null;
   };
-  const bear = presentValue(0, 15, 1),
+  const bear = presentValue(Math.min(0, growth), 15, 1),
     base = presentValue(growth, 12, 2),
     bull = presentValue(Math.min(15, growth + 5), 10, 3);
   return bear != null &&
@@ -630,7 +632,7 @@ export function aurynDecision(
             upside: (v.base / reference.price - 1) * 100,
             entryPrice: Math.min(v.base * 0.8, v.bear / 0.65),
             end: null,
-            assumptions: `Starting cash is the lower of latest cash after capex and the median of the latest three consecutive annual observations, all positive. Company cash-flow growth starts at ${v.growth.toFixed(1)}% and fades over ten years. Shares grow ${v.dilution.toFixed(1)}% annually throughout the forecast and terminal period. Bear/base/bull discount rates: 15%/12%/10%; terminal growth: 1%/2%/3%. These are explicit model assumptions, not company guidance.${diluted == null ? " Future dilution is assumed 0% because comparable share counts were not reported." : ""}`,
+            assumptions: `Starting cash is the lower of latest cash after capex and the median of the latest three consecutive annual observations, all positive. Starting company cash-flow growth uses comparable revenue growth as a proxy, capped at 10% on the upside while preserving contraction (${v.growth.toFixed(1)}%). It fades over ten years. Bear starts at the lower of that growth and 0%. Shares grow ${v.dilution.toFixed(1)}% annually throughout the forecast and terminal period. Bear/base/bull discount rates: 15%/12%/10%; terminal growth: 1%/2%/3%. These are explicit model assumptions, not company guidance.${diluted == null ? " Future dilution is assumed 0% because comparable share counts were not reported." : ""}`,
           };
       }
     }

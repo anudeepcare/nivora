@@ -6967,3 +6967,57 @@ export function researchChanges(
 ## Automatic revenue sensitivity fallback (November 8 correction)
 
 Only after a qualifying existing earnings/cash-flow/revenue valuation is unavailable, use the same eligible fiscal-year revenue mean as the anchor: reference quote × case revenue / mean revenue × relative pricing stress (0.8 / 1 / 1.2). Base reproduces the quote exactly; it is neutral, not most likely. Constant FX, share count and listing/ADR ratio are declared assumptions. No EV multiple, cash/debt conversion, share count, funding proceeds or analyst coverage count is inferred. Revenue low/mean/high must be supplied, positive, ordered, finite and in one valid currency; eligible stock families operating/infrastructure/frontier only. Dates90–1461 days and dataset120day freshness guards apply. This is market-expectations sensitivity, not intrinsic fair value or a price forecast. Missing data and unsupported specialist models remain unavailable.
+
+
+## Cash-flow contraction correction — 11 November 2026
+The mature-business model preserves negative input growth instead of flooring it at zero. Growth at or below -100% is rejected. Base growth retains the 10% positive cap; bear starts at min(0, base growth); bull starts at min(15, base growth + 5). Existing discount rates, terminal rates and dilution treatment are unchanged. At the integration boundary, comparable revenue growth is a disclosed proxy for starting cash-flow growth, not a measured cash-flow forecast.
+
+Source: lib/auryn-decision.ts
+SHA-256: 952fc77aabe32a77164319d4360a92400f6b5f139e4d766efa6af156322446a0
+
+```ts
+export function cashFlowValuation(x: {
+  cashPerShare: number;
+  growth: number;
+  dilution: number;
+}) {
+  if (
+    !Object.values(x).every(Number.isFinite) ||
+    x.cashPerShare <= 0 ||
+    x.growth <= -100 ||
+    x.dilution < 0
+  )
+    return null;
+  // A shrinking business must not be silently valued as flat growth.
+  const growth = Math.min(10, x.growth);
+  const presentValue = (
+    startGrowth: number,
+    discount: number,
+    terminal: number,
+  ) => {
+    let cash = x.cashPerShare,
+      pv = 0;
+    for (let year = 1; year <= 10; year++) {
+      const companyGrowth =
+        startGrowth - ((startGrowth - terminal) * (year - 1)) / 9;
+      cash *= (1 + companyGrowth / 100) / (1 + x.dilution / 100);
+      pv += cash / (1 + discount / 100) ** year;
+    }
+    const perShareTerminal = (1 + terminal / 100) / (1 + x.dilution / 100) - 1;
+    const terminalValue =
+      (cash * (1 + perShareTerminal)) / (discount / 100 - perShareTerminal);
+    const value = pv + terminalValue / (1 + discount / 100) ** 10;
+    return Number.isFinite(value) && value > 0 ? value : null;
+  };
+  const bear = presentValue(Math.min(0, growth), 15, 1),
+    base = presentValue(growth, 12, 2),
+    bull = presentValue(Math.min(15, growth + 5), 10, 3);
+  return bear != null &&
+    base != null &&
+    bull != null &&
+    bear <= base &&
+    base <= bull
+    ? { bear, base, bull, growth, dilution: x.dilution }
+    : null;
+}
+```

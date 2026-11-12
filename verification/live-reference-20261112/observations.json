@@ -1,0 +1,76 @@
+{
+  "observedAt": "2026-11-12T03:38:08.761Z",
+  "membership": "Standard",
+  "screener": {
+    "count": 1000,
+    "sort": "ticker ascending",
+    "filter": "U.S. stocks",
+    "defaultSensitivity": "standard",
+    "helpSays": "Current month forming; intramonth touch distinct",
+    "guideConflict": "Learn page also describes screener as confirmed; ticker checks needed"
+  },
+  "nbis": {
+    "close": 154.69,
+    "closeDate": "2026-11-11",
+    "monthly": "2X DCA",
+    "weekly": "2X DCA",
+    "quarterly": null,
+    "yearly": null,
+    "analystTargets": {
+      "low": 84,
+      "consensus": 278.05,
+      "high": 410,
+      "count": 20
+    },
+    "projectedRanges": "Pro-only; values not visible",
+    "latestCompletedMonthly": {
+      "month": "2026-10",
+      "close": 154.14,
+      "zone": "1X DCA"
+    },
+    "contributionMultipliers": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "backtest": "Equal total capital; trim counted but no simulated sales; excludes fees, taxes, slippage",
+    "aurynAtSameClose": {
+      "forming": 1,
+      "confirmed": 1,
+      "policy": "monthly-v6",
+      "referenceMonthly": 2
+    }
+  },
+  "aa": {
+    "monthly": "3X DCA",
+    "close": 41.04,
+    "closeDate": "2026-11-11"
+  },
+  "businessBadges": "Separate from technical verdict; banks, insurers and REITs not rated by generic cash-flow badge",
+  "app": {
+    "close": 404.77,
+    "closeDate": "2026-11-11",
+    "monthly": "1X DCA",
+    "analystTargets": {
+      "low": 345,
+      "consensus": 454.28,
+      "high": 610,
+      "count": 30
+    },
+    "targetMeaning": "Third-party Wall Street analyst targets, not proprietary intrinsic valuation"
+  },
+  "symbolMappings": {
+    "BF-B": "BF.B",
+    "BH-A": "BH.A",
+    "BRK-B": "BRK.B",
+    "BRK-A": "BRK.A",
+    "CRD-A": "CRD.A",
+    "BTCUSD": "BTC/USD"
+  },
+  "providerHistoryGap": {
+    "symbol": "AGPXX",
+    "instrument": "money-market fund",
+    "search": "Twelve Data returned no matching instrument"
+  }
+}
