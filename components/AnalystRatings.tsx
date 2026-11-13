@@ -95,10 +95,12 @@ export default function AnalystRatings({
         )}
       </div>
       <p className="small muted">
-        Dataset retrieved {dateLabel(r.evidence?.updatedAt || r.retrievedAt)}.
-        Rating publication dates, revision history and target ranges are not
-        supplied by this snapshot. They are not inferred. A consensus target is
-        not intrinsic fair value.
+        {r.evidence?.updatedAt
+          ? `Dataset updated ${dateLabel(r.evidence.updatedAt)}.`
+          : "Dataset update date is not supplied."}{" "}
+        Rating publication dates and revision history are not supplied by this
+        snapshot. They are not inferred. A consensus target is not intrinsic
+        fair value.
       </p>
     </section>
   );

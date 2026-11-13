@@ -1,0 +1,40 @@
+{
+  "result": "No saved directory with enough verified common-stock classifications was found. Preserve the deterministic 1,000-symbol cohort and flag ETF contamination rather than invent classifications.",
+  "sourcesReviewed": [
+    {
+      "path": "verification/market-study-20261110/REPORT.md",
+      "finding": "Reports 1,305 US-listed stocks, but states raw files are not included in source ZIP. Recovered directory contains only report and aggregate summary."
+    },
+    {
+      "path": "verification/ticker-audit-20261104/universe.json",
+      "finding": "200 unique symbols; no per-symbol instrument metadata."
+    },
+    {
+      "path": "verification/continuation/audit-500/universe.json",
+      "finding": "500 unique symbols; no per-symbol instrument metadata."
+    },
+    {
+      "path": "verification/analyst-and-pace-20261112/features.json",
+      "finding": "Pace feature rows with broad us-equity market label; not a verified common-stock instrument directory."
+    },
+    {
+      "path": "tests/helpers/market-universe.mjs",
+      "finding": "Explicitly synthetic; cannot establish real instrument eligibility."
+    }
+  ],
+  "explicitEtfLabelsInCohort": [
+    {
+      "symbol": "ARKB",
+      "sourceName": "ARK 21Shares Bitcoin ETF"
+    },
+    {
+      "symbol": "BTC",
+      "sourceName": "Grayscale Bitcoin Mini Trust ETF"
+    },
+    {
+      "symbol": "CHPY",
+      "sourceName": "YieldMax Semiconductor Portfolio Option Income ETF"
+    }
+  ],
+  "newNetworkRequests": 0
+}

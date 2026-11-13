@@ -307,40 +307,6 @@ function HomeOverview() {
         <>
           <Coverage state={state} />
           <div className="home-evidence-layout">
-            <section className="home-evidence-panel">
-              <SectionHead
-                title="Your companies"
-                subtitle="Prices and updates for companies you follow."
-                action={
-                  <Link className="text-link" href={`${prefix}/watchlist`}>
-                    View all <ArrowUpRight size={16} />
-                  </Link>
-                }
-              />
-              {symbols.length ? (
-                symbols
-                  .slice(0, 5)
-                  .map((symbol) => (
-                    <HomeCompany
-                      key={symbol}
-                      symbol={symbol}
-                      row={quotes.data[symbol]}
-                      prefix={prefix}
-                    />
-                  ))
-              ) : (
-                <Empty
-                  title="Begin with one company"
-                  action={
-                    <Link className="btn" href={`${prefix}/research`}>
-                      Find a company
-                    </Link>
-                  }
-                >
-                  Save an idea or record a holding to make this space yours.
-                </Empty>
-              )}
-            </section>
             <section
               className="home-evidence-panel home-events-panel"
               id="home-earnings"

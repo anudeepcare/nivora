@@ -183,3 +183,18 @@
   font-size: 13px;
   line-height: 1.55;
 }
+
+.details {
+  margin-top: 18px;
+}
+.details > summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 0;
+}
+.details > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}

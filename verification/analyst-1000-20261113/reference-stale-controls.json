@@ -1,0 +1,34 @@
+[
+  {
+    "symbol": "IREN",
+    "currency": "USD",
+    "closeDate": "2026-11-11",
+    "close": 20.84,
+    "low": 23,
+    "consensus": 56.69,
+    "high": 139,
+    "analysts": 19,
+    "observedOn": null,
+    "targetAsOf": null,
+    "closeDateBasis": "inferred",
+    "analystCountKind": "target-contributors",
+    "source": "verification/bundled-v7-20261112/analyst-screenshot-samples.json",
+    "provenanceNote": "User screenshot fixture; close date was assigned from conversation context, not verified on this saved screenshot record."
+  },
+  {
+    "symbol": "NBIS",
+    "currency": "USD",
+    "closeDate": "2026-11-11",
+    "close": 154.69,
+    "low": 84,
+    "consensus": 278.05,
+    "high": 410,
+    "analysts": 20,
+    "observedOn": "2026-11-12",
+    "targetAsOf": null,
+    "closeDateBasis": "observed",
+    "analystCountKind": "target-contributors",
+    "source": "verification/live-reference-20261112/observations.json",
+    "provenanceNote": "Archived independent UI observation; target revision date not recorded."
+  }
+]

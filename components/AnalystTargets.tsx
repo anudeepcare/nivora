@@ -76,7 +76,7 @@ export default function AnalystTargets({
               [c.high, "#098770"],
             ].map(([value, color]) => (
               <circle
-                key={value}
+                key={color}
                 cx={position(Number(value))}
                 cy="20"
                 r="4"
@@ -107,7 +107,9 @@ export default function AnalystTargets({
                 ? "Versus older quote"
                 : c.referenceStatus === "unavailable"
                   ? "Price comparison unavailable"
-                  : "Versus current price"}
+                  : c.referenceBasis === "settled-close"
+                    ? "Versus settled close"
+                    : "Versus current quote"}
             </span>
             <strong
               className={
@@ -123,10 +125,18 @@ export default function AnalystTargets({
           </div>
         </div>
       )}
+      {c.rangeStatus !== "complete" && (
+        <p>
+          {c.rangeStatus === "missing"
+            ? "Low and high targets are not supplied as a complete range."
+            : "The supplied low/high range is invalid and is withheld."}{" "}
+          AURYN models are separate calculations.
+        </p>
+      )}
       <p>
-        Analyst opinion, not AURYN fair value or a guaranteed return. Dataset
-        observed {dateLabel(c.asOf)}; individual target revision dates and
-        forecast horizon are not supplied.
+        Analyst opinion, not AURYN fair value or a guaranteed return.{" "}
+        {c.source ? `${c.source} · ` : ""}Dataset updated {dateLabel(c.asOf)};
+        individual target revision dates and forecast horizon are not supplied.
       </p>
       {c.referenceAsOf && (
         <small>

@@ -25,14 +25,14 @@ manifest=''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(r
 files.append(root/'MANIFEST.sha256')
 output.parent.mkdir(parents=True,exist_ok=True)
 with zipfile.ZipFile(output,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as archive:
- for path in files:archive.write(path,'AURYN/'+path.relative_to(root).as_posix())
+ for path in files:archive.write(path,path.relative_to(root).as_posix())
 with zipfile.ZipFile(output) as archive:
  bad=archive.testzip()
  if bad:raise SystemExit('Archive integrity failure: '+bad)
  for line in manifest.splitlines():
   expected,name=line.split('  ',1)
-  if hashlib.sha256(archive.read('AURYN/'+name)).hexdigest()!=expected:raise SystemExit('Manifest mismatch: '+name)
+  if hashlib.sha256(archive.read(name)).hexdigest()!=expected:raise SystemExit('Manifest mismatch: '+name)
  names=set(archive.namelist())
  for expected in ['package.json','package-lock.json','app/layout.tsx','lib/engine.ts','supabase/migrations/202610170000_workspace_base.sql','tests/database.test.mjs','verification/REPORT.json','.github/workflows/auryn-product-verify.yml','docs/DEPLOYMENT.md']:
-  if 'AURYN/'+expected not in names:raise SystemExit('Required source missing: '+expected)
+  if expected not in names:raise SystemExit('Required source missing: '+expected)
 print(json.dumps({'archive':str(output),'files':len(files),'bytes':output.stat().st_size,'sha256':hashlib.sha256(output.read_bytes()).hexdigest(),'crc':'passed','manifest':'passed','privateConfigurationScan':'passed' if scan else 'not requested'}))

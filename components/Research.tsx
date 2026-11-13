@@ -588,7 +588,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       </header>
-      <StockFacts research={r} />
+      {tab === "Snapshot" && <StockFacts research={r} />}
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}

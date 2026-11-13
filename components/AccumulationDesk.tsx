@@ -7,7 +7,7 @@ import type { Research, Candle } from "@/lib/types";
 import {
   researchAccumulation,
   adaptiveSettledBars,
-} from "@/lib/accumulation-policy-v6";
+} from "@/lib/accumulation-policy-v7";
 import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";

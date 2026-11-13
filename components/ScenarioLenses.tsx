@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
-import { researchOutlook } from "@/lib/outlook";
+import { consensusOutlook, researchOutlook } from "@/lib/outlook";
 import { scenarioLenses, type ScenarioLensModel } from "@/lib/scenario-lenses";
 import { dateLabel, percent, priceAmount } from "@/lib/format";
 import s from "./ScenarioLenses.module.css";
@@ -93,7 +93,17 @@ export default function ScenarioLenses({
   const at = (price: number) => 2 + (96 * (price - low)) / (high - low || 1);
   const money = (v: number | null) =>
     v == null ? "—" : priceAmount(v, currency);
-  const gap = (v: number) => percent((v / reference.price - 1) * 100, true);
+  const analystReference = consensusOutlook(r)?.referencePrice;
+  const gap = (v: number, kind?: string) =>
+    percent(
+      (v /
+        (kind === "analyst" && analystReference
+          ? analystReference
+          : reference.price) -
+        1) *
+        100,
+      true,
+    );
   const positionText =
     view.position.state === "inside"
       ? `${view.position.percent.toFixed(0)}% of the way from bear to bull`
@@ -171,7 +181,12 @@ export default function ScenarioLenses({
           <div className={s.row} key={x.id} data-primary={x === primary}>
             <div className={s.label}>
               <strong>{x.label}</strong>
-              <small>{x.horizon}</small>
+              <small>
+                {x.horizon}
+                {x.kind === "analyst" && analystReference
+                  ? ` · percentages vs settled close ${priceAmount(analystReference, currency)}`
+                  : ""}
+              </small>
               {x.track && (
                 <small className={s.record} data-verdict={x.track.verdict}>
                   {x.track.verdict === "too-few"
@@ -224,15 +239,15 @@ export default function ScenarioLenses({
             <div className={s.values}>
               <span data-case="bear">
                 {money(x.bear)}
-                {x.bear != null && <small>{gap(x.bear)}</small>}
+                {x.bear != null && <small>{gap(x.bear, x.kind)}</small>}
               </span>
               <span data-case="base">
                 {money(x.base)}
-                <small>{x.neutralBase ? "= price" : gap(x.base)}</small>
+                <small>{x.neutralBase ? "= price" : gap(x.base, x.kind)}</small>
               </span>
               <span data-case="bull">
                 {money(x.bull)}
-                {x.bull != null && <small>{gap(x.bull)}</small>}
+                {x.bull != null && <small>{gap(x.bull, x.kind)}</small>}
               </span>
             </div>
           </div>

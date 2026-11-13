@@ -1,0 +1,188 @@
+{
+  "requested": 2,
+  "compared": 0,
+  "matches": 0,
+  "agreement": 0,
+  "pairAgreement": null,
+  "coverage": 0,
+  "fullTriples": {
+    "compared": 0,
+    "matches": 0,
+    "agreement": null,
+    "coverage": 0,
+    "revisionVerified": 0
+  },
+  "consensus": {
+    "compared": 0,
+    "matches": 0,
+    "agreement": null,
+    "coverage": 0,
+    "revisionVerified": 0
+  },
+  "statusCounts": {
+    "missing": 0,
+    "partial": 0,
+    "invalid": 0,
+    "date-incomparable": 2,
+    "basis-incomparable": 0,
+    "compared": 0
+  },
+  "outOfCohort": {
+    "reference": [],
+    "actual": []
+  },
+  "completeExactMatch": false,
+  "rows": [
+    {
+      "symbol": "IREN",
+      "status": "date-incomparable",
+      "missingReference": false,
+      "missingActual": false,
+      "referenceEvidence": {
+        "state": "complete",
+        "missingFields": [],
+        "invalidFields": []
+      },
+      "actualEvidence": {
+        "state": "partial",
+        "missingFields": [
+          "low",
+          "high",
+          "analysts"
+        ],
+        "invalidFields": []
+      },
+      "reference": {
+        "symbol": "IREN",
+        "currency": "USD",
+        "closeDate": "2026-11-11",
+        "close": 20.84,
+        "low": 23,
+        "consensus": 56.69,
+        "high": 139,
+        "analysts": 19,
+        "observedOn": null,
+        "targetAsOf": null,
+        "closeDateBasis": "inferred",
+        "analystCountKind": "target-contributors",
+        "source": "verification/bundled-v7-20261112/analyst-screenshot-samples.json",
+        "provenanceNote": "User screenshot fixture; close date was assigned from conversation context, not verified on this saved screenshot record."
+      },
+      "actual": {
+        "symbol": "IREN",
+        "currency": "USD",
+        "closeDate": "2026-11-12",
+        "close": 19.48,
+        "low": null,
+        "consensus": 56.69,
+        "high": null,
+        "analysts": null,
+        "observedOn": "2026-11-13",
+        "targetAsOf": null,
+        "datasetAsOf": "2026-11-12",
+        "closeDateBasis": "observed",
+        "source": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/IREN"
+      },
+      "targetDateBasis": "unknown",
+      "dateIssues": [
+        "closeDate",
+        "inferredCloseDate",
+        "missingTargetDates"
+      ],
+      "match": false,
+      "mismatches": [],
+      "consensusComparison": {
+        "compared": false,
+        "match": null,
+        "mismatches": [],
+        "targetDifference": null
+      },
+      "fullTripleComparison": {
+        "compared": false,
+        "match": null,
+        "mismatches": []
+      },
+      "analystCountComparison": {
+        "compared": false,
+        "match": null
+      },
+      "referencePercentages": null,
+      "actualPercentages": null
+    },
+    {
+      "symbol": "NBIS",
+      "status": "date-incomparable",
+      "missingReference": false,
+      "missingActual": false,
+      "referenceEvidence": {
+        "state": "complete",
+        "missingFields": [],
+        "invalidFields": []
+      },
+      "actualEvidence": {
+        "state": "partial",
+        "missingFields": [
+          "low",
+          "high",
+          "analysts"
+        ],
+        "invalidFields": []
+      },
+      "reference": {
+        "symbol": "NBIS",
+        "currency": "USD",
+        "closeDate": "2026-11-11",
+        "close": 154.69,
+        "low": 84,
+        "consensus": 278.05,
+        "high": 410,
+        "analysts": 20,
+        "observedOn": "2026-11-12",
+        "targetAsOf": null,
+        "closeDateBasis": "observed",
+        "analystCountKind": "target-contributors",
+        "source": "verification/live-reference-20261112/observations.json",
+        "provenanceNote": "Archived independent UI observation; target revision date not recorded."
+      },
+      "actual": {
+        "symbol": "NBIS",
+        "currency": "USD",
+        "closeDate": "2026-11-12",
+        "close": 128.64,
+        "low": null,
+        "consensus": 278.05,
+        "high": null,
+        "analysts": null,
+        "observedOn": "2026-11-13",
+        "targetAsOf": null,
+        "datasetAsOf": "2026-11-12",
+        "closeDateBasis": "observed",
+        "source": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/NBIS?tab=Analysts"
+      },
+      "targetDateBasis": "unknown",
+      "dateIssues": [
+        "closeDate",
+        "observedOn"
+      ],
+      "match": false,
+      "mismatches": [],
+      "consensusComparison": {
+        "compared": false,
+        "match": null,
+        "mismatches": [],
+        "targetDifference": null
+      },
+      "fullTripleComparison": {
+        "compared": false,
+        "match": null,
+        "mismatches": []
+      },
+      "analystCountComparison": {
+        "compared": false,
+        "match": null
+      },
+      "referencePercentages": null,
+      "actualPercentages": null
+    }
+  ]
+}

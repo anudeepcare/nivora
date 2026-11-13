@@ -1,10 +1,11 @@
-import fs from 'node:fs';
-import {compareAnalystSnapshots} from '../lib/analyst-parity.ts';
-const [cohort, reference, actual, output] = process.argv.slice(2);
-if(!output)throw Error('Usage: node --experimental-strip-types scripts/compare-analyst-500.mjs cohort.json reference.json actual.json report.json');
-const symbols=JSON.parse(fs.readFileSync(cohort));
-if(symbols.length<500)throw Error('At least 500 unique stocks required');
-const report=compareAnalystSnapshots(symbols,JSON.parse(fs.readFileSync(reference)),JSON.parse(fs.readFileSync(actual)));
-fs.writeFileSync(output,JSON.stringify(report,null,2));
-console.log(JSON.stringify({...report,rows:undefined}));
-if(!report.completeExactMatch)process.exitCode=1;
+// Backward-compatible entry point. Prefer compare-analyst.mjs (exactly 1,000 by default).
+import { runComparison } from "./compare-analyst.mjs";
+try {
+  process.exitCode = runComparison(process.argv.slice(2), {
+    expectedCount: null,
+    minimumCount: 500,
+  });
+} catch (error) {
+  console.error(error.message);
+  process.exitCode = 2;
+}

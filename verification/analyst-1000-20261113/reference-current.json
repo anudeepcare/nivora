@@ -1,0 +1,44 @@
+[
+  {
+    "symbol": "IREN",
+    "currency": "USD",
+    "closeDate": "2026-11-12",
+    "close": 19.48,
+    "low": 23,
+    "consensus": 56.69,
+    "high": 139,
+    "analysts": 19,
+    "displayedWholePercentGaps": [
+      18,
+      191,
+      614
+    ],
+    "url": "https://dcaoptimizer.com/app/charts?symbol=IREN",
+    "observedOn": "2026-11-13",
+    "targetAsOf": null,
+    "closeDateBasis": "observed",
+    "analystCountKind": "target-contributors",
+    "source": "https://dcaoptimizer.com/app/charts?symbol=IREN"
+  },
+  {
+    "symbol": "NBIS",
+    "currency": "USD",
+    "closeDate": "2026-11-12",
+    "close": 128.64,
+    "low": 84,
+    "consensus": 271.2,
+    "high": 410,
+    "analysts": 20,
+    "displayedWholePercentGaps": [
+      -35,
+      111,
+      219
+    ],
+    "url": "https://dcaoptimizer.com/app/ticker/NBIS",
+    "observedOn": "2026-11-13",
+    "targetAsOf": null,
+    "closeDateBasis": "observed",
+    "analystCountKind": "target-contributors",
+    "source": "https://dcaoptimizer.com/app/ticker/NBIS"
+  }
+]

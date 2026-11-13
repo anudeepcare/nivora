@@ -12,10 +12,10 @@ This release retains active Pace v7 and all prior fixes. Its recorded held-out P
 
 ## Deploy
 
-1. Extract the ZIP and use **AURYN/** as the project root. **reference-data/** is optional evidence and is not needed for deployment.
+1. Extract the ZIP. The extracted directory is the project root: `package.json`, `app/` and `lib/` are directly inside it. No inner AURYN folder or separate bundle is required.
 2. Use Node.js 24 and run `npm ci`.
 3. Retain the existing application configuration (Supabase, authentication and other enabled features). Configure `EODHD_API_KEY` and `TWELVE_DATA_API_KEY` server-side from your existing subscriptions. Never prefix provider secrets with `NEXT_PUBLIC_` or commit them.
-4. Run `npm run verify`. Build command: `npm run build`. Start command for a Node host: `npm start`. On Vercel, use the Next.js preset and AURYN as the root directory.
+4. Run `npm run verify`. Build command: `npm run build`. Start command for a Node host: `npm start`. On Vercel, use the Next.js preset and `.` as the root directory.
 5. Deploy to preproduction first and check populated research pages with your live provider configuration.
 
 No FMP account or new paid dataset is required by this change. No production deployment or database modification was performed. Optional public Pace publication still requires the separately documented `scripts/sql/enable-pace-v7.sql`; scenario display does not require that migration.

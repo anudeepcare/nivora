@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-11-13T15:09:50.546103+00:00",
+  "commands": [
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "checks": [
+        "lint",
+        "format:check",
+        "unit tests",
+        "typecheck",
+        "production build"
+      ],
+      "tests": 1395,
+      "passed": 1395,
+      "failed": 0,
+      "logSha256": "b3cfb8960484c4bf72451df82c6c9a954b786d974b556ed315a97508c94b8fe8"
+    },
+    {
+      "command": "npm run test:api",
+      "exitCode": 0,
+      "scope": "Compiled routes with synthetic provider/auth/database transport; no live provider or payment requests.",
+      "productionFileTracesChecked": 56,
+      "logSha256": "50337c69def12bfb9c3b4d828ea65650f664f60376f90d2b3c920a2f4bc0fbc5"
+    }
+  ],
+  "review": "Independent review of changed source, no blocking defects found.",
+  "redGreen": "All six new source-coverage tests failed against the original source and passed after fixes.",
+  "limitations": [
+    "No deployment or fresh provider acquisition performed.",
+    "Source verification does not establish 1,000-stock target agreement.",
+    "No full browser visual review of the modified local build; Research layout structure was retained."
+  ]
+}

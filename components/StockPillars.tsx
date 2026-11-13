@@ -16,7 +16,9 @@ const mark = {
 export default function StockPillars({
   research,
   decision,
+  casesOnly = false,
 }: {
+  casesOnly?: boolean;
   research: Research;
   decision: ReturnType<typeof aurynDecision>;
 }) {
@@ -26,14 +28,13 @@ export default function StockPillars({
   );
   if (!view) return null;
   return (
-    <section className={s.root} aria-label="The case in plain words">
+    <section
+      className={s.root}
+      aria-label={casesOnly ? "Bear, base and bull" : "The case in plain words"}
+    >
       <header>
-        <span className={s.eyebrow}>The case in plain words</span>
-        <h2>
-          {decision.actionLabel}
-          {decision.headline ? ` — ${decision.headline}` : ""}
-        </h2>
-        <p>{view.summary}</p>
+        <span className={s.eyebrow}>Valuation scenarios</span>
+        <h2>Bear, base &amp; bull</h2>
       </header>
       {view.cases && (
         <div className={s.cases}>
@@ -65,36 +66,42 @@ export default function StockPillars({
       {!view.cases && (
         <p>More company evidence is needed for a supported scenario range.</p>
       )}
-      {view.odds && (
-        <div className={s.odds} data-grade={view.odds.grade}>
-          <strong>{view.odds.headline}</strong>
-          <p>{view.odds.detail}</p>
-        </div>
-      )}
-      {view.exitWatch && (
-        <p className={s.exit} role="note" data-level={view.exitWatch.level}>
-          {view.exitWatch.text}
-        </p>
-      )}
-      <ul className={s.list}>
-        {view.pillars.map((p) => (
-          <li key={p.id} data-status={p.status}>
-            <span className={s.badge}>{mark[p.status]}</span>
-            <div>
-              <small>{p.question}</small>
-              <strong>{p.answer}</strong>
-              <p>{p.why}</p>
+      {!casesOnly && (
+        <details className={s.details}>
+          <summary>Business checks &amp; historical context</summary>
+          <p>{view.summary}</p>
+          {view.odds && (
+            <div className={s.odds} data-grade={view.odds.grade}>
+              <strong>{view.odds.headline}</strong>
+              <p>{view.odds.detail}</p>
             </div>
-          </li>
-        ))}
-      </ul>
-      <p className={s.note}>
-        Six separate checks from reported financials, analyst estimates and
-        price history. The record is what happened to similar cases among 1,305
-        US stocks; it describes the past and is not a forecast for this stock.
-        They are not added into a score: one weak answer can outweigh several
-        good ones. Not a recommendation.
-      </p>
+          )}
+          {view.exitWatch && (
+            <p className={s.exit} role="note" data-level={view.exitWatch.level}>
+              {view.exitWatch.text}
+            </p>
+          )}
+          <ul className={s.list}>
+            {view.pillars.map((p) => (
+              <li key={p.id} data-status={p.status}>
+                <span className={s.badge}>{mark[p.status]}</span>
+                <div>
+                  <small>{p.question}</small>
+                  <strong>{p.answer}</strong>
+                  <p>{p.why}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p className={s.note}>
+            Six separate checks from reported financials, analyst estimates and
+            price history. The record is what happened to similar cases among
+            1,305 US stocks; it describes the past and is not a forecast for
+            this stock. They are not added into a score: one weak answer can
+            outweigh several good ones. Not a recommendation.
+          </p>
+        </details>
+      )}
     </section>
   );
 }

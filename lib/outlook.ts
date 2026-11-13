@@ -47,6 +47,9 @@ export function consensusOutlook(r: Research): {
   target: number;
   low?: number;
   high?: number;
+  rangeStatus: "complete" | "missing" | "invalid";
+  source: string | null;
+  sourceField: string | null;
   asOf: string;
   change: number | null;
   referenceStatus: "current" | "older" | "unavailable";
@@ -61,6 +64,8 @@ export function consensusOutlook(r: Research): {
   if (
     r.company.assetType !== "stock" ||
     r.company.currency !== r.quote.currency ||
+    (e?.consensus?.currency != null &&
+      e.consensus.currency !== r.quote.currency) ||
     !Number.isFinite(now) ||
     !Number.isFinite(at) ||
     at > now + 86400000 ||
@@ -94,11 +99,17 @@ export function consensusOutlook(r: Research): {
     Number.isFinite(high) &&
     low > 0 &&
     low <= target &&
-    target <= high &&
-    low < high;
+    target <= high;
   return {
     target,
     ...(rangeValid ? { low: low!, high: high! } : {}),
+    rangeStatus: rangeValid
+      ? "complete"
+      : low == null || high == null
+        ? "missing"
+        : "invalid",
+    source: e?.source || null,
+    sourceField: e?.consensus?.targetSourceField || null,
     asOf: e!.updatedAt!,
     change: comparable ? (target / price! - 1) * 100 : null,
     referencePrice: comparable ? price! : null,

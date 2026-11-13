@@ -158,16 +158,22 @@ export default function IntegratedResearch({
         </div>
         <div className={s.consensusRow} data-has-target={showConsensus}>
           {showConsensus && <AnalystTargets research={r} />}
-          <DataFreshness
-            research={r}
-            now={now}
-            wide={!showConsensus}
-            decision={d}
-          />
+          <details>
+            <summary>Data dates &amp; coverage</summary>
+            <DataFreshness
+              research={r}
+              now={now}
+              wide={!showConsensus}
+              decision={d}
+            />
+          </details>
         </div>
         <div className={s.overviewMetrics}>
-          <CompanyMetrics research={r} />
-          <ResearchEvidenceGrid research={r} onTab={onTab} />
+          <details>
+            <summary>Company metrics &amp; research sections</summary>
+            <CompanyMetrics research={r} />
+            <ResearchEvidenceGrid research={r} onTab={onTab} />
+          </details>
         </div>
       </div>
     </>

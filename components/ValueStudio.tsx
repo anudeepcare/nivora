@@ -3,8 +3,8 @@ import layout from "./ValueStudio.module.css";
 import DecisionInsights from "./DecisionInsights";
 import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
-import SelectedValuation from "./SelectedValuation";
-import { scenarioHeadline } from "@/lib/scenario-headline";
+import StockPillars from "./StockPillars";
+import { aurynDecision } from "@/lib/auryn-decision";
 import ScenarioLenses from "./ScenarioLenses";
 import SectionIcon from "./SectionIcon";
 import { useMemo } from "react";
@@ -28,7 +28,11 @@ export default function ValueStudio({
 }) {
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
-  const headline = useMemo(() => scenarioHeadline(r), [r]);
+  const decision = useMemo(
+    () =>
+      aurynDecision(r, { now: Date.parse(r.priceObservedAt ?? r.retrievedAt) }),
+    [r],
+  );
   const available = d.metrics.filter(
     (m) =>
       m.value != null &&
@@ -53,16 +57,14 @@ export default function ValueStudio({
         />
       </section>
       <div className={layout.scenarios}>
-        <SelectedValuation
-          research={r}
-          headline={headline}
-          actions={
-            <button type="button" className="button" onClick={onWorkbench}>
-              Test assumptions →
-            </button>
-          }
-        />
-        <ScenarioLenses research={r} />
+        <StockPillars research={r} decision={decision} casesOnly />
+        <button type="button" className="button" onClick={onWorkbench}>
+          Test assumptions →
+        </button>
+        <details>
+          <summary>Compare models &amp; historical price risk</summary>
+          <ScenarioLenses research={r} decision={decision} />
+        </details>
       </div>
       {consensusOutlook(r) && (
         <div className={layout.consensus}>

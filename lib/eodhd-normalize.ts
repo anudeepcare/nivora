@@ -196,6 +196,8 @@ export type EodEvidence = {
   consensus: {
     rating: number | null;
     target: number | null;
+    currency?: string;
+    targetSourceField?: string | null;
     low?: number | null;
     high?: number | null;
     strongBuy: number | null;
@@ -418,6 +420,10 @@ export function normalizeEodFundamentals(
     }
   };
   const a = raw.AnalystRatings ?? {};
+  const analystTarget = numeric(a.TargetPrice),
+    highlightTarget = numeric(raw.Highlights?.WallStreetTargetPrice),
+    hasAnalystTarget = analystTarget != null && analystTarget > 0,
+    hasHighlightTarget = highlightTarget != null && highlightTarget > 0;
   const evidence: EodEvidence = {
     updatedAt: date(g.UpdatedAt),
     source: "EODHD",
@@ -449,9 +455,21 @@ export function normalizeEodFundamentals(
     ]),
     consensus: {
       rating: numeric(a.Rating),
-      target: numeric(a.TargetPrice),
-      low: numeric(a.TargetPriceLow),
-      high: numeric(a.TargetPriceHigh),
+      target: hasAnalystTarget
+        ? analystTarget
+        : hasHighlightTarget
+          ? highlightTarget
+          : null,
+      currency: g.CurrencyCode,
+      targetSourceField: hasAnalystTarget
+        ? "AnalystRatings.TargetPrice"
+        : hasHighlightTarget
+          ? "Highlights.WallStreetTargetPrice"
+          : null,
+      // The documented Highlights average is a consensus-only fallback. Do not
+      // attach bounds from a different target collection or invent a range.
+      low: hasAnalystTarget ? numeric(a.TargetPriceLow) : null,
+      high: hasAnalystTarget ? numeric(a.TargetPriceHigh) : null,
       strongBuy: numeric(a.StrongBuy),
       buy: numeric(a.Buy),
       hold: numeric(a.Hold),

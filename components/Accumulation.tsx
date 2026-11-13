@@ -1,6 +1,6 @@
 "use client";
 import type { Research } from "@/lib/types";
-import { researchAccumulation } from "@/lib/accumulation-policy-v6";
+import { researchAccumulation } from "@/lib/accumulation-policy-v7";
 import { amount, percent } from "@/lib/format";
 import { Help, Notice } from "./Ui";
 import { PriceChart } from "./Charts";
@@ -37,13 +37,13 @@ export default function Accumulation({ research }: { research: Research }) {
             <p className="muted">{signal?.reason || result.reason}</p>
           </div>
           <Help label="Monthly Pace">
-            AURYN’s monthly-v5 price policy measures settled prices against the
-            previous 12 completed monthly closes and their variability. It
-            requires at least 12 consecutive prior completed months; 12–23
-            months are labelled limited history. It is empirically calibrated,
-            not a copy of the private reference formula. Multipliers describe
-            your usual contribution, not leverage or expected returns. No amount
-            is required. It does not establish business quality or suitability.
+            AURYN’s monthly-v7 price policy uses a frozen classifier based on
+            monthly price position, daily trend, volatility and momentum for
+            eligible equity readings. Earlier observations, crypto and cases
+            without enough data for the classifier retain the prior policy.
+            Multipliers describe your usual contribution, not leverage or
+            expected returns. No amount is required. Pace does not establish
+            business quality or suitability.
           </Help>
         </div>
         <div className="zone-scale" aria-label="Monthly contribution zones">

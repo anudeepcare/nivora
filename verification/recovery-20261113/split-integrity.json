@@ -1,0 +1,220 @@
+{
+  "featureRows": 997,
+  "eligibleFeatureRows": 995,
+  "splitCounts": {
+    "development": 772,
+    "heldOutFromFit": 223
+  },
+  "trainingSymbols": 772,
+  "heldOutSymbols": 223,
+  "trainHeldoutOverlap": [],
+  "exportedModelEqualsActiveModel": false,
+  "treeCount": 250,
+  "candidateStudyResults": {
+    "development": {
+      "baseline": {
+        "n": 772,
+        "matches": 633,
+        "exact": 0.8199481865284974,
+        "byReference": {
+          "1X DCA": {
+            "n": 496,
+            "matches": 452
+          },
+          "2X DCA": {
+            "n": 84,
+            "matches": 47
+          },
+          "3X DCA": {
+            "n": 67,
+            "matches": 27
+          },
+          "4X DCA": {
+            "n": 115,
+            "matches": 107
+          },
+          "LIGHT TRIM": {
+            "n": 6,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 0
+          }
+        }
+      },
+      "candidate": {
+        "n": 772,
+        "matches": 765,
+        "exact": 0.9909326424870466,
+        "byReference": {
+          "1X DCA": {
+            "n": 496,
+            "matches": 496
+          },
+          "2X DCA": {
+            "n": 84,
+            "matches": 81
+          },
+          "3X DCA": {
+            "n": 67,
+            "matches": 67
+          },
+          "4X DCA": {
+            "n": 115,
+            "matches": 114
+          },
+          "LIGHT TRIM": {
+            "n": 6,
+            "matches": 3
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 4
+          }
+        }
+      }
+    },
+    "heldOutFromFit": {
+      "baseline": {
+        "n": 223,
+        "matches": 181,
+        "exact": 0.8116591928251121,
+        "byReference": {
+          "1X DCA": {
+            "n": 151,
+            "matches": 129
+          },
+          "2X DCA": {
+            "n": 20,
+            "matches": 15
+          },
+          "3X DCA": {
+            "n": 15,
+            "matches": 5
+          },
+          "4X DCA": {
+            "n": 36,
+            "matches": 32
+          },
+          "LIGHT TRIM": {
+            "n": 1,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 0,
+            "matches": 0
+          }
+        }
+      },
+      "candidate": {
+        "n": 223,
+        "matches": 205,
+        "exact": 0.9192825112107623,
+        "byReference": {
+          "1X DCA": {
+            "n": 151,
+            "matches": 148
+          },
+          "2X DCA": {
+            "n": 20,
+            "matches": 18
+          },
+          "3X DCA": {
+            "n": 15,
+            "matches": 7
+          },
+          "4X DCA": {
+            "n": 36,
+            "matches": 32
+          },
+          "LIGHT TRIM": {
+            "n": 1,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 0,
+            "matches": 0
+          }
+        }
+      }
+    },
+    "all": {
+      "baseline": {
+        "n": 995,
+        "matches": 814,
+        "exact": 0.8180904522613065,
+        "byReference": {
+          "1X DCA": {
+            "n": 647,
+            "matches": 581
+          },
+          "2X DCA": {
+            "n": 104,
+            "matches": 62
+          },
+          "3X DCA": {
+            "n": 82,
+            "matches": 32
+          },
+          "4X DCA": {
+            "n": 151,
+            "matches": 139
+          },
+          "LIGHT TRIM": {
+            "n": 7,
+            "matches": 0
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 0
+          }
+        }
+      },
+      "candidate": {
+        "n": 995,
+        "matches": 970,
+        "exact": 0.9748743718592965,
+        "byReference": {
+          "1X DCA": {
+            "n": 647,
+            "matches": 644
+          },
+          "2X DCA": {
+            "n": 104,
+            "matches": 99
+          },
+          "3X DCA": {
+            "n": 82,
+            "matches": 74
+          },
+          "4X DCA": {
+            "n": 151,
+            "matches": 146
+          },
+          "LIGHT TRIM": {
+            "n": 7,
+            "matches": 3
+          },
+          "STRONG TRIM": {
+            "n": 4,
+            "matches": 4
+          }
+        }
+      }
+    }
+  },
+  "caveat": "Offline candidate study on previously inspected reference snapshot. Outer rows excluded from fitting, but this is not pristine blind or later-date validation. No app model change.",
+  "featureFileSha256": "d76e2d4090a895e32881716ff57e8ea7b0357030e8cddfb6ab2aa4ed30f52156",
+  "studyExpectedFeatureSha256": "d76e2d4090a895e32881716ff57e8ea7b0357030e8cddfb6ab2aa4ed30f52156",
+  "activeForestTreesIdentical": true,
+  "activeClassesIdentical": true,
+  "modelMetadataDifferences": [
+    "trainedThrough",
+    "inputSha256",
+    "scope",
+    "kind",
+    "trainingSymbols",
+    "createdOn"
+  ]
+}
