@@ -142,6 +142,15 @@ export default function PaceInstrument({
                 className={s.zoneContext}
               >{`${exploring ? "Explore" : "Price zone"} P${selected} · ${PACE_LEVELS[selected]}`}</p>
             )}
+            {!exploring && current?.awaitingClose && (
+              <p className={s.zoneContext}>
+                P{current.level} is provisional. The decision{" "}
+                {current.eligibleLevel === null
+                  ? "needs a completed qualifying zone"
+                  : `uses P${current.eligibleLevel}`}{" "}
+                until month-end confirms the deeper zone.
+              </p>
+            )}
           </div>
           {!exploring && (
             <div className={s.insight}>

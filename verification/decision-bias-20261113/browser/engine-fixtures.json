@@ -1,0 +1,87 @@
+{
+  "qualified-p2": {
+    "expected": "Buy small",
+    "pace": {
+      "level": 2,
+      "eligibleLevel": 2,
+      "date": "2026-10-16",
+      "provisional": true,
+      "historicalLevel": 2,
+      "historicalDate": "2026-09-30",
+      "changed": false,
+      "awaitingClose": false
+    },
+    "actions": {
+      "entry": "Buy",
+      "holding": "Add"
+    }
+  },
+  "qualified-p4": {
+    "expected": "Buy within limits",
+    "pace": {
+      "level": 4,
+      "eligibleLevel": 4,
+      "date": "2026-10-16",
+      "provisional": true,
+      "historicalLevel": 4,
+      "historicalDate": "2026-09-30",
+      "changed": false,
+      "awaitingClose": false
+    },
+    "actions": {
+      "entry": "Buy",
+      "holding": "Add"
+    }
+  },
+  "funded-review": {
+    "expected": "Review business",
+    "pace": {
+      "level": 2,
+      "eligibleLevel": 2,
+      "date": "2026-10-16",
+      "provisional": true,
+      "historicalLevel": 2,
+      "historicalDate": "2026-09-30",
+      "changed": false,
+      "awaitingClose": false
+    },
+    "actions": {
+      "entry": "Review",
+      "holding": "Review"
+    }
+  },
+  "short-runway": {
+    "expected": "Avoid",
+    "pace": {
+      "level": 2,
+      "eligibleLevel": 2,
+      "date": "2026-10-16",
+      "provisional": true,
+      "historicalLevel": 2,
+      "historicalDate": "2026-09-30",
+      "changed": false,
+      "awaitingClose": false
+    },
+    "actions": {
+      "entry": "Avoid",
+      "holding": "Reduce"
+    }
+  },
+  "forming-p2": {
+    "expected": "Watch",
+    "pace": {
+      "level": 2,
+      "eligibleLevel": 1,
+      "date": "2026-10-16",
+      "provisional": true,
+      "historicalLevel": 1,
+      "historicalDate": "2026-09-30",
+      "changed": true,
+      "awaitingClose": true
+    },
+    "actions": {
+      "entry": "Watch",
+      "holding": "Hold"
+    }
+  }
+}

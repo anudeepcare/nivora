@@ -7039,3 +7039,8 @@ The candidate matched 205 of 223 stocks excluded from fitting (91.9%). The full 
 
 ## Existing-subscription scenarios — 12 November 2026
 Overview preserves a complete analyst target range when supplied. Otherwise it uses a qualifying AURYN fundamental model, explicitly named, and keeps available analyst consensus separate. It never fills missing analyst low/high with volatility or ticker-specific constants. The model must meet the existing cash-flow, earnings/revenue, currency, listing and evidence gates; an unsupported case remains unexplained by a price target, rather than fabricated. Pace v7 is unchanged. These modeled cases are not certified third-party analyst matches.
+
+
+## Decision audit correction — 13 November 2026
+The initial 10 November action overrides were removed on 13 November: this retrospective cohort comparison is descriptive context, not validation of an investment decision. It cannot turn losses and negative cash after capex into Avoid/Reduce, veto qualifying P2–P4 accumulation after a drawdown, or turn P1 into Buy/Add. The business, funding and Pace rules in section 6 take priority.
+P2 is Buy/Add small, P3 is Buy/Add gradually, and P4 is Buy/Add within limits. When a forming zone is deeper than the eligible completed zone, the headline names both. The historic code listings above are snapshots, not the current implementation. See DECISION-AUDIT-20261113.md and lib/auryn-decision.ts.

@@ -200,7 +200,7 @@ export function pacePresentation(
         : actionLevel === 2
           ? `${action} small`
           : actionLevel === 4
-            ? "Accumulate"
+            ? `${action} within limits`
             : `${action} gradually`
     : action === "Hold"
       ? rawLevel === 0

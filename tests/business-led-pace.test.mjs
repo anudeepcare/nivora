@@ -133,11 +133,10 @@ test("a small daily price change leaves confirmed Pace and the business decision
   assert.equal(decisions[0].brief.accumulation.multiplier, 2);
   assert.equal(decisions[0].brief.accumulation.forming.multiplier, 4);
   for (const d of decisions) {
-    // Evidence rule, 10 Nov 2026: this fixture sits 30%+ below its one-year high,
-    // so a supported business reads Wait until the fall steadies. Stability is the point here.
-    assert.equal(d.action, "Wait");
-    assert.equal(d.explanation.code, "steady");
-    assert.match(d.headline, /deep fall/i);
+    // A deep fall is a caution, not a veto of a qualified completed P2.
+    assert.equal(d.action, "Buy");
+    assert.equal(d.explanation.code, "accumulation");
+    assert.match(d.headline, /initial accumulation/i);
     assert.ok(d.risks.some((r) => /model|valuation/i.test(r)));
     assert.doesNotMatch(d.changeConditions[0], /entry at/i);
     assert.equal(
@@ -168,16 +167,23 @@ test("Review names missing business evidence instead of sending users to an unre
 });
 
 test("a recovered price zone cannot retain an old P4 buying instruction", () => {
-  const r=withPace();
-  r.history=r.history.map(row=>{
-    const close=row.time>='2026-10-01'?110:row.time>='2026-09-01'?60:100;
-    return {...row,open:close,high:close*1.01,low:close*.99,close};
+  const r = withPace();
+  r.history = r.history.map((row) => {
+    const close =
+      row.time >= "2026-10-01" ? 110 : row.time >= "2026-09-01" ? 60 : 100;
+    return {
+      ...row,
+      open: close,
+      high: close * 1.01,
+      low: close * 0.99,
+      close,
+    };
   });
-  const d=aurynDecision(r,{now:Date.parse(r.retrievedAt)});
-  assert.equal(d.brief.accumulation.multiplier,4);
-  assert.equal(d.pace.level,1);
-  assert.equal(d.pace.eligibleLevel,1);
-  assert.equal(d.action,'Watch');
-  assert.equal(d.actions.holding,'Hold');
-  assert.equal(d.actionLabel,'Watch');
+  const d = aurynDecision(r, { now: Date.parse(r.retrievedAt) });
+  assert.equal(d.brief.accumulation.multiplier, 4);
+  assert.equal(d.pace.level, 1);
+  assert.equal(d.pace.eligibleLevel, 1);
+  assert.equal(d.action, "Watch");
+  assert.equal(d.actions.holding, "Hold");
+  assert.equal(d.actionLabel, "Watch");
 });

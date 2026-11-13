@@ -224,7 +224,7 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
             }),
   });
   const level = d.pace?.level;
-  const odds = evidenceOdds(r, b);
+  const odds = evidenceOdds(r, b, d.evaluatedAt);
   const zone = num(level) ? ` Pace reads P${level}.` : "";
   pillars.push({
     id: "timing",
@@ -233,19 +233,19 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
       ? {
           status: "unknown",
           answer: "Not measured",
-          why: `Reported profit and cash flow plus 200 sessions of price history are needed to compare this stock with the record.${zone}`,
+          why: `A measured business category and 252 unique completed price sessions with a recent close are needed for this historical comparison.${zone}`,
         }
       : odds.business === "fail"
         ? {
             status: "caution",
-            answer: "The record says wait",
-            why: `Stocks failing the business check were higher a year later only ${odds.cell.win.toFixed(0)}% of the time, whatever the price had done.${zone} A lower price did not improve those odds.`,
+            answer: "Weak historical outcomes",
+            why: `Stocks failing the business check were higher a year later only ${odds.cell.win.toFixed(0)}% of the time, in this historical business-and-trend sample.${zone} This is context, not an instruction to wait or sell.`,
           }
         : odds.modifier && odds.offHigh >= 30
           ? {
               status: "caution",
-              answer: "Deep fall: wait for it to steady",
-              why: `It is ${percent(odds.offHigh)} below its one-year high. Sound businesses that had fallen this far were higher a year later ${odds.modifier.cell.win.toFixed(0)}% of the time, against ${odds.cell.win.toFixed(0)}% for this group overall.${zone}`,
+              answer: "Deep-fall historical caution",
+              why: `It is ${percent(odds.offHigh)} below its one-year high. Passing businesses in the historical sample that had fallen this far were higher a year later ${odds.modifier.cell.win.toFixed(0)}% of the time, against ${odds.cell.win.toFixed(0)}% for the business-and-trend group.${zone} These overlapping historical groups do not determine the action.`,
             }
           : odds.trend === "up"
             ? {

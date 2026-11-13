@@ -1,4 +1,5 @@
 import type { Research } from "./types";
+import { settledPriceBars } from "./price-reference.ts";
 import {
   EVIDENCE_TABLE,
   EVIDENCE_PERIOD,
@@ -28,14 +29,24 @@ type Numbers = {
 const num = (x: unknown): x is number =>
   typeof x === "number" && Number.isFinite(x);
 
-/** The same simple business check the market study used, from the latest reported figures. */
+/** Study business categories; incomplete passing checks remain unknown. */
 export function businessState(b: Numbers): BusinessState | null {
   if (!num(b.operatingMargin) || !num(b.fcf)) return null;
   if (
     b.operatingMargin > 0 &&
     b.fcf > 0 &&
-    (!num(b.dilution) || b.dilution <= 10) &&
-    (!num(b.revenueGrowth) || b.revenueGrowth > -5)
+    (!num(b.dilution) || !num(b.revenueGrowth)) &&
+    !(num(b.dilution) && b.dilution > 10) &&
+    !(num(b.revenueGrowth) && b.revenueGrowth <= -5)
+  )
+    return null;
+  if (
+    b.operatingMargin > 0 &&
+    b.fcf > 0 &&
+    num(b.dilution) &&
+    b.dilution <= 10 &&
+    num(b.revenueGrowth) &&
+    b.revenueGrowth > -5
   )
     return "pass";
   return b.operatingMargin < 0 && b.fcf < 0 ? "fail" : "mixed";
@@ -44,14 +55,23 @@ export function businessState(b: Numbers): BusinessState | null {
 /** Measured one-year record of stocks that were in the same state as this one:
  * business check result, and price above or below its 200-day average.
  * A description of what happened to similar cases, not a forecast for this stock. */
-export function evidenceOdds(r: Research, b: Numbers): EvidenceOdds | null {
+export function evidenceOdds(
+  r: Research,
+  b: Numbers,
+  now = Date.parse(r.priceObservedAt ?? r.retrievedAt),
+): EvidenceOdds | null {
   if (r.company.assetType !== "stock") return null;
   const business = businessState(b);
-  const closes = [...r.history]
-    .filter((x) => num(x.close) && x.close > 0)
-    .sort((a, c) => a.time.localeCompare(c.time))
-    .map((x) => x.close);
-  if (!business || closes.length < 200) return null;
+  const bars = settledPriceBars(r, now);
+  const lastBar = bars.at(-1);
+  if (
+    !business ||
+    bars.length < 252 ||
+    !lastBar ||
+    now - Date.parse(lastBar.time) > 4 * 86400000
+  )
+    return null;
+  const closes = bars.map((x) => x.close);
   const last = closes.at(-1)!;
   const average = closes.slice(-200).reduce((a, x) => a + x, 0) / 200;
   const trend = last > average ? "up" : "down";

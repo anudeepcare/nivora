@@ -1,0 +1,74 @@
+✔ six plain questions are answered from measured evidence for the demo companies (285.882424ms)
+✔ holds for every market shape and reports missing evidence as not measured, never as a negative (2444.082534ms)
+✔ sell-side prompts appear when the price is above the bull case or the whole business case is weak (91.882458ms)
+✔ business state follows the study's stated check and never guesses from missing figures (0.227207ms)
+✔ each stock is matched to the measured record of its own state, with the deep-fall and near-high cases called out (5.736581ms)
+✔ incomplete growth or dilution cannot claim a complete passing cohort (0.1793ms)
+✔ cohort history excludes future and duplicate observations (4.179853ms)
+✔ cohort needs a fresh completed year of unique sessions (9.376596ms)
+✔ deep-fall timing describes history without an instruction to wait (19.872086ms)
+✖ an aging cached snapshot cannot retain current cohort context after the decision clock advances (22.170087ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3276.564487
+
+✖ failing tests:
+
+test at tests/stock-pillars.test.mjs:288:1
+✖ an aging cached snapshot cannot retain current cohort context after the decision clock advances (22.170087ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   all: {
+  +     bad: -58.9,
+  +     beat: 50,
+  +     median: 3.1,
+  +     n: 34291,
+  +     win: 52.8
+  +   },
+  +   business: 'pass',
+  +   cell: {
+  +     bad: -34.3,
+  +     beat: 52.6,
+  +     median: 7.4,
+  +     n: 6042,
+  +     win: 58.3
+  +   },
+  +   detail: 'Companies passing the business check and trading below their 200-day average were higher a year later 58% of the time and beat the typical stock 53% of the time (6,042 cases, 2022–2025; all stocks: 53%). Those within 5% of their one-year high: 66% higher, 65% beat the typical stock. One year in ten was worse than -22%.',
+  +   grade: 'favourable',
+  +   headline: 'The record for stocks like this is favourable',
+  +   modifier: {
+  +     cell: {
+  +       bad: -22.4,
+  +       beat: 64.5,
+  +       median: 10.6,
+  +       n: 4367,
+  +       win: 65.9
+  +     },
+  +     label: 'within 5% of their one-year high'
+  +   },
+  +   offHigh: 0,
+  +   trend: 'down'
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/b21f0b93fce6/auryn-avoid-audit/tests/stock-pillars.test.mjs:294:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { business: 'pass', trend: 'down', offHigh: 0, cell: { n: 6042, win: 58.3, beat: 52.6, median: 7.4, bad: -34.3 }, modifier: { label: 'within 5% of their one-year high', cell: [Object] }, all: { n: 34291, win: 52.8, beat: 50, median: 3.1, bad: -58.9 }, grade: 'favourable', headline: 'The record for stocks like this is favourable', detail: 'Companies passing the business check and trading below their 200-day average were higher a year later 58% of the time and beat the typical stock 53% of the time (6,042 cases, 2022–2025; all stocks: 53%). Those within 5% of their one-year high: 66% higher, 65% beat the typical stock. One year in ten was worse than -22%.' },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

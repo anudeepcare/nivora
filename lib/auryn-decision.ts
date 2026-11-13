@@ -36,7 +36,7 @@ export type DecisionInput = {
   distress: boolean;
   deterioration: boolean;
   insolvency: boolean;
-  /** Measured-record state (lib/evidence-odds.ts). Absent leaves the price-zone rules unchanged. */
+  /** Descriptive cohort context only; it must not override business risk or Pace. */
   record?: {
     business: "pass" | "mixed" | "fail";
     uptrend: boolean;
@@ -147,10 +147,7 @@ export function assessDecision(x: DecisionInput): {
     | "pace"
     | "zone"
     | "entry"
-    | "business"
-    | "record"
-    | "trend"
-    | "steady";
+    | "business";
 } {
   if (!x.financialsUsable) return { action: "Review", code: "financials" };
   if (x.insolvency)
@@ -162,31 +159,14 @@ export function assessDecision(x: DecisionInput): {
     };
   if (!x.priceUsable) return { action: "Review", code: "price" };
   const supported = x.business === "strong" || x.growthEligible === true;
-  // Evidence rules (verification/market-study-20261110): stocks losing money and
-  // burning cash were higher a year later about 38% of the time whatever the price
-  // zone; sound businesses did best in an uptrend and worst after a deep fall.
-  if (!supported)
-    return x.record?.business === "fail"
-      ? { action: x.ownsPosition ? "Reduce" : "Avoid", code: "record" }
-      : { action: "Review", code: "business" };
+  // The historical cohort study is descriptive, not a validation of this
+  // decision policy. Losses plus expansion capex are not liquidity distress,
+  // and missing qualification is Review, never an inferred adverse verdict.
+  if (!supported) return { action: "Review", code: "business" };
   if (x.confirmedPace === 0)
     return { action: x.ownsPosition ? "Hold" : "Wait", code: "pace" };
-  if (
-    x.confirmedPace === 1 &&
-    x.record?.business === "pass" &&
-    x.record.uptrend &&
-    x.value !== "expensive" &&
-    !x.extended
-  )
-    return { action: x.ownsPosition ? "Add" : "Buy", code: "trend" };
   if (x.confirmedPace === 1)
     return { action: x.ownsPosition ? "Hold" : "Watch", code: "zone" };
-  if (
-    x.record?.deepFall &&
-    Number.isInteger(x.confirmedPace) &&
-    x.confirmedPace! >= 2
-  )
-    return { action: x.ownsPosition ? "Hold" : "Wait", code: "steady" };
   // Confirmed accumulation zones require a supported business.
   // Do not let forming readings, RSI or a conservative model rewrite this plan.
   if (
@@ -659,15 +639,19 @@ export function aurynDecision(
       );
   }
   const odds = p
-    ? evidenceOdds(r, {
-        operatingMargin:
-          p.revenue != null && p.revenue > 0 && p.operatingIncome != null
-            ? (p.operatingIncome / p.revenue) * 100
-            : null,
-        fcf: p.fcf ?? null,
-        dilution: funding.dilution,
-        revenueGrowth: growth,
-      })
+    ? evidenceOdds(
+        r,
+        {
+          operatingMargin:
+            p.revenue != null && p.revenue > 0 && p.operatingIncome != null
+              ? (p.operatingIncome / p.revenue) * 100
+              : null,
+          fcf: p.fcf ?? null,
+          dilution: funding.dilution,
+          revenueGrowth: growth,
+        },
+        now,
+      )
     : null;
   const record = odds
     ? {
@@ -718,14 +702,7 @@ export function aurynDecision(
     !financialsUsable ||
     (pace.historicalLevel !== null && pace.level === null);
   let headline = "The price needs a stronger margin of safety.";
-  if (assessment.code === "trend")
-    headline = "Business supported and the price trend is positive.";
-  else if (assessment.code === "steady")
-    headline = "Business supported; wait for a deep fall to steady.";
-  else if (assessment.code === "record")
-    headline =
-      "Losing money and burning cash; the record for stocks like this is poor.";
-  else if (action === "Buy" || action === "Add")
+  if (action === "Buy" || action === "Add")
     headline =
       assessment.code === "accumulation"
         ? `Business supported; ${pace.eligibleLevel === 2 ? "initial" : pace.eligibleLevel === 3 ? "deeper" : "deep"} accumulation conditions met.`
@@ -830,6 +807,14 @@ export function aurynDecision(
     risks.push(
       "Short-term momentum is stretched (RSI at least 75). Use staged purchases and respect your position limit; this does not change the confirmed monthly Pace.",
     );
+  if (odds?.offHigh != null && odds.offHigh >= 30)
+    risks.push(
+      `The settled price is ${odds.offHigh.toFixed(0)}% below its one-year high. Review the reason for the drawdown and position limits; a fall alone does not establish business deterioration or funding distress.`,
+    );
+  if (odds?.business === "fail")
+    risks.push(
+      "Operating losses and negative cash after capex warrant review. The historical cohort comparison is context, not proof of operating cash burn or a reason by itself to sell or avoid this company.",
+    );
   if (
     !valuation &&
     financialsUsable &&
@@ -902,24 +887,6 @@ export function aurynDecision(
       detail:
         "The business screen passes, but a qualifying accumulation zone is not established. Watch for a new entry; hold an existing position if the business case remains intact. P1 does not prescribe a purchase amount.",
     },
-    record: {
-      label: "Poor record for this state",
-      detail: odds
-        ? odds.detail
-        : "Operations lose money and cash after investment is negative.",
-    },
-    trend: {
-      label: `${actionLabel} · trend positive`,
-      detail: odds
-        ? `The business check passes and the price is above its 200-day average. ${odds.detail} Add at your planned pace; no extra size for a deeper zone.`
-        : "The business check passes and the price is above its 200-day average.",
-    },
-    steady: {
-      label: "Deep fall · wait",
-      detail: odds
-        ? `The price is ${odds.offHigh.toFixed(0)}% below its one-year high. ${odds.detail} Wait for the fall to steady before adding.`
-        : "The price has fallen deeply from its one-year high. Wait for it to steady before adding.",
-    },
     accumulation: {
       label: `${actionLabel} · P${pace.eligibleLevel}`,
       detail: pacePresentation(action, pace.eligibleLevel).detail,
@@ -952,7 +919,8 @@ export function aurynDecision(
           ? "neutral"
           : "caution";
   return {
-    version: "auryn-decision-v7-current-context",
+    version: "auryn-decision-v8-business-risk-pace",
+    evaluatedAt: now,
     pace,
     explanation,
     actions,

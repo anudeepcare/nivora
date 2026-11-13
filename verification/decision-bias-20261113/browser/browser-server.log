@@ -1,0 +1,11 @@
+   ▲ Next.js 15.5.28
+   - Local:        http://127.0.0.1:3194
+   - Network:      http://127.0.0.1:3194
+
+ ✓ Starting...
+ ✓ Ready in 3.9s
+ ✓ Compiled /middleware in 158ms (117 modules)
+ ○ Compiling /[[...route]] ...
+ ✓ Compiled /[[...route]] in 11.8s (2519 modules)
+ GET / 200 in 12825ms
+[?25h

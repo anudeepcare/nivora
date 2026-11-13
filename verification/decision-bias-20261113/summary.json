@@ -1,0 +1,39 @@
+{
+  "sourceSha256": "68ad33f71d2b372077e3ce43f34c76e3c08306d91a23d2be4625a3e8855e2916",
+  "checks": {
+    "lint": "passed",
+    "format": "passed",
+    "tests": {
+      "passed": 1422,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "controlledApiTests": "passed",
+    "productionTraceIsolation": "passed, 56 traces",
+    "livePreprodUiInspection": "passed, NBIS IREN NVDA NOW",
+    "fixedLocalVisualQa": "blocked: Chromium process singleton socket EPERM; not verified"
+  },
+  "noPushOrDeployment": true,
+  "noPaidProviderRequests": true,
+  "changedExistingFiles": [
+    "README.md",
+    "components/PaceInstrument.tsx",
+    "docs/OWNER-HANDBOOK.md",
+    "lib/auryn-decision.ts",
+    "lib/evidence-odds.ts",
+    "lib/legal-content.ts",
+    "lib/owner-handbook-content.ts",
+    "lib/pace-presentation.ts",
+    "lib/stock-pillars.ts",
+    "tests/action-web-decision.test.mjs",
+    "tests/business-led-pace.test.mjs",
+    "tests/pace-zone-contract.test.mjs",
+    "tests/stock-pillars.test.mjs"
+  ],
+  "notes": [
+    "Historical cohort overrides removed in both directions.",
+    "Actual funding risk protections, P0/P1 behavior, financial values, scenarios and classifier preserved.",
+    "Full-engine synthetic checks are not actual-stock recommendations or performance validation."
+  ]
+}

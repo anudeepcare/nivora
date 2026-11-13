@@ -35,7 +35,7 @@ test("eligible zones produce distinct actions without promising purchase multipl
   for (const [level, entry, holding] of [
     [2, "Buy small", "Add small"],
     [3, "Buy gradually", "Add gradually"],
-    [4, "Accumulate", "Accumulate"],
+    [4, "Buy within limits", "Add within limits"],
   ]) {
     assert.equal(
       assessDecision({ ...base, confirmedPace: level }).action,
@@ -68,9 +68,8 @@ test("a completed P2 and forming P4 keep their independent identities through de
   const d = aurynDecision(r, { now: Date.parse(r.retrievedAt) });
   assert.equal(d.brief.accumulation.multiplier, 2);
   assert.equal(d.brief.accumulation.forming.multiplier, 4);
-  // Evidence rule, 10 Nov 2026: the fixture is a deep fall, so the call waits; the
-  // completed and forming zones keep their separate identities below.
-  assert.equal(d.actionLabel, "Wait before buying");
+  // The completed P2 controls sizing; forming P4 cannot increase it.
+  assert.equal(d.actionLabel, "Buy small");
 });
 test("P4 cannot bypass any business risk or essential data check", () => {
   for (const level of [0, 1, 2, 3, 4]) {
