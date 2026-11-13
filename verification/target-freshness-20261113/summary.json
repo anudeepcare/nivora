@@ -1,0 +1,49 @@
+{
+  "scope": "Source-only guarded fundamentals freshness correction; no claimed live target parity",
+  "baseLibraryFileId": "libfile_c19cd30295308191987c50f5947d6177",
+  "baseArchiveSha256": "546d33a425c9e7d9107183b835ba35b550064b27893513c4b66b29ba153addd2",
+  "files": [
+    {
+      "path": "lib/eodhd.ts",
+      "sha256": "2f374c3744b63bda4454f44577bc5f7d5ee8cf210cbeb1a336c204d489d2a5ae"
+    },
+    {
+      "path": "tests/analyst-cache-freshness.test.mjs",
+      "sha256": "ce74091778efcc935ed6bdffe7a0d8bbffa2e67b777bf0c658a8d4f5b434dcf6"
+    },
+    {
+      "path": "TARGET-FRESHNESS-FIX-20261113.md",
+      "sha256": "bc885af20d1a4d880a59941b78f2ea5e1fea917546db03443da4938cbe673ae6"
+    }
+  ],
+  "verification": {
+    "redRegressionFailures": 3,
+    "greenRegressionChecks": 6,
+    "npmRunVerify": {
+      "exitCode": 0,
+      "testsPassed": 1401,
+      "testsFailed": 0,
+      "lint": "passed",
+      "format": "passed",
+      "typecheck": "passed",
+      "productionBuild": "passed"
+    },
+    "npmRunTestApi": {
+      "exitCode": 0,
+      "transport": "controlled fixtures only"
+    },
+    "appComponentChanges": []
+  },
+  "liveProviderCalls": 0,
+  "purchases": 0,
+  "budgetChanges": 0,
+  "deployment": "not attempted",
+  "zip": "held for integration as requested",
+  "blocker": "Existing permitted source has no verified analyst low/high values or per-target revision dates. Matching same-day means does not establish full-triple parity.",
+  "remainingLimits": [
+    "Guarded fundamentals branch only",
+    "Framework stale republishing fixed; local re-aging of shared cache hits not changed",
+    "No post-fix live or deployed matching verification",
+    "No tolerance chosen or claimed pass"
+  ]
+}

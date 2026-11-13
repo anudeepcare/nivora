@@ -121,7 +121,7 @@ export function Portfolio() {
     >
       <Heading
         title="Portfolio"
-        subtitle="Holdings, performance and allocation."
+        subtitle="Your holdings, market context and allocation."
         actions={
           <>
             <button
@@ -216,18 +216,7 @@ export function Portfolio() {
         loading={state.paceScan.loading}
       />
       <div className="portfolio-grid">
-        <div>
-          <section className="card portfolio-trend-panel">
-            <SectionHead
-              title="Portfolio trend"
-              subtitle="Current holdings · historical prices"
-            />
-            <ApprovedPortfolioChart
-              positions={positions}
-              quotes={quotes.data}
-            />
-          </section>
-        </div>
+        <ApprovedPortfolioChart positions={positions} quotes={quotes.data} />
         <div className="portfolio-sidebar">
           <section className="card portfolio-allocation-panel">
             <SectionHead title="Allocation" subtitle="Priced investments" />

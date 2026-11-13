@@ -1,0 +1,67 @@
+✖ guarded v1.1 fundamentals do not republish a stale framework target after expiry (409.962293ms)
+✖ guarded legacy fundamentals do not republish a stale framework target after expiry (166.538356ms)
+✔ the freshness fix retains local deduplication and shared cache hits across workers (206.663687ms)
+✔ an expired target cannot bypass the shared daily budget to refresh (114.008928ms)
+✖ a failed refresh is not republished as a newly fresh old target and remains retryable (115.34103ms)
+✔ unguarded deployments retain their existing framework cache policy (51.37673ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 3
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1750.939235
+
+✖ failing tests:
+
+test at tests/analyst-cache-freshness.test.mjs:68:3
+✖ guarded v1.1 fundamentals do not republish a stale framework target after expiry (409.962293ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  120 !== 130
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/b21f0b93fce6/auryn-target-matching/tests/analyst-cache-freshness.test.mjs:74:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 120,
+    expected: 130,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/analyst-cache-freshness.test.mjs:68:3
+✖ guarded legacy fundamentals do not republish a stale framework target after expiry (166.538356ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  120 !== 130
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/b21f0b93fce6/auryn-target-matching/tests/analyst-cache-freshness.test.mjs:74:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 120,
+    expected: 130,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/analyst-cache-freshness.test.mjs:101:1
+✖ a failed refresh is not republished as a newly fresh old target and remains retryable (115.34103ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  120 !== 130
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/b21f0b93fce6/auryn-target-matching/tests/analyst-cache-freshness.test.mjs:110:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 120,
+    expected: 130,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -2,6 +2,7 @@ import {
   sharedEodRead,
   MarketGuardError,
   pauseSharedEod,
+  sharedMarketEnabled,
 } from "./shared-market";
 import { canonicalMarketKey } from "./market-policy";
 import { HttpError } from "./server";
@@ -46,9 +47,12 @@ export async function eodRequest(
     const response = await fetch(
       `https://eodhd.com/api/${path}?${new URLSearchParams({ ...params, api_token: token, fmt: "json" })}`,
       {
-        // Earnings already use the bounded memory/shared caches. Avoid retaining
-        // a pre-release response in a third cache with an older six-hour TTL.
-        ...(path === "calendar/earnings"
+        // A shared, budgeted fundamentals refresh must reach the provider.
+        // Next's stale-while-revalidate response would otherwise be published
+        // back into the application/shared cache for another full TTL. Keep
+        // unguarded deployments' existing cross-worker cache/call behavior.
+        ...(path === "calendar/earnings" ||
+        (sharedMarketEnabled() && /(?:^|\/)fundamentals\//.test(path))
           ? { cache: "no-store" as const }
           : { next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) } }),
         signal: AbortSignal.timeout(15000),

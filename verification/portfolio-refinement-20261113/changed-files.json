@@ -1,0 +1,67 @@
+[
+  {
+    "path": "components/ApprovedPortfolioChart.tsx",
+    "sha256": "9435ed9d3e90c12758aef4b2809e1cb9d349b57938746e55351742e01a8b86a4",
+    "baselineSha256": "b179892c6c8771a1903dc784d686b65ecb47f97c4d3cc4d142778988d6b856ca"
+  },
+  {
+    "path": "components/PortfolioChart.module.css",
+    "sha256": "b32de1d769a4e2d74be0216beec4d2cbdccb7996c30e6a6541aa07d313be7239",
+    "baselineSha256": "4b6dfcc337bf62b77525d1666bdecbeb4bd032bf5677928ee7fadce1d6026dfc"
+  },
+  {
+    "path": "components/PortfolioPage.tsx",
+    "sha256": "9290e149b9181003a1779a75d5b24a4eaddcd0cacba706a8ad40fca6903c81aa",
+    "baselineSha256": "79665672c1a178264dae4d03e3c62b8e32b118d03dfdeb310be5087fdf1a3792"
+  },
+  {
+    "path": "components/PortfolioWorkspace.module.css",
+    "sha256": "cb8d9d1888c4928b3cc3ea2401580491f594974e64e88f56b2de4eb7dc9af3d8",
+    "baselineSha256": "3c4117e61abe73eca742ba799b00f63fb8e3db123c6260d470be3c7136e642b4"
+  },
+  {
+    "path": "components/PortfolioRange.tsx",
+    "sha256": "9c0a9e9a8a75153e2de6a4dc272bbf1edd6c668969c57830a6f94a525ae810e8",
+    "baselineSha256": "084e7a4f2015e3ccffeaf7d3b70103a743f285178111269e253d320b7c6246a8"
+  },
+  {
+    "path": "components/PortfolioRange.module.css",
+    "sha256": "7966312453893b30e05c07b371d46f4e6087fce32d24ec17b7295e52d105c80b",
+    "baselineSha256": "2768193f0af987f7c03b8f977a516f94457fd560263f184fcf0788b0e23c6ef7"
+  },
+  {
+    "path": "lib/portfolio-comparison.ts",
+    "sha256": "c3c79e3b6524cb2af91cbedf219e77264da91fc9148fefa023c7c65eaf56a82d",
+    "baselineSha256": null
+  },
+  {
+    "path": "lib/approved-workspace.ts",
+    "sha256": "6851074c7435e5d4c4d61262542519aff352010dd3877f1f34a2927759caf8d6",
+    "baselineSha256": "da14397269bd98f287900ab215655dd8ce1993ca08db063f4b7c4b02c1aa0d9a"
+  },
+  {
+    "path": "tests/portfolio-comparison.test.mjs",
+    "sha256": "685923d553a7fd45ad16bcb8f91fbabbe6405c3a1067cde006f5cf294328d8a5",
+    "baselineSha256": null
+  },
+  {
+    "path": "tests/portfolio-chart-loading.test.mjs",
+    "sha256": "97b43f85ca79f261538d7eff25a215b9812e70d05286aaa755a6e16c12bcbe41",
+    "baselineSha256": null
+  },
+  {
+    "path": "scripts/verify-portfolio-browser.mjs",
+    "sha256": "e72585143ee8308877acbf89dbd0d80e4c4b71f58b45f6e6c7d71b9e5a998de1",
+    "baselineSha256": null
+  },
+  {
+    "path": "PORTFOLIO-REFINEMENT-20261113.md",
+    "sha256": "0b4d37ba01eef84c729028d45525e8bd4ee1f21d786388794d064dea00e88b42",
+    "baselineSha256": null
+  },
+  {
+    "path": "docs/superpowers/plans/2026-11-13-portfolio-comparison.md",
+    "sha256": "c426e673e1f738faed6bbedcd1b510778b33f694c3670cc6b96f7b6aa7246b16",
+    "baselineSha256": null
+  }
+]

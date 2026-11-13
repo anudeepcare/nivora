@@ -1,6 +1,6 @@
 # AURYN working instructions
 
-Use README.md as the entry point. Current source status and verification are in RELEASE-HANDOFF-20261107.md. Deployment is not requested. Keep one current release entry; archive older narratives rather than prepending contradictory “current” sections.
+Use README.md as the entry point. Current source status and verification are in RELEASE-PORTFOLIO-TARGETS-20261113.md. Deployment is not requested. Keep one current release entry; archive older narratives rather than prepending contradictory “current” sections.
 
 Preserve mobile readability, solid navigation surfaces, one-tap selectors, visibly expandable controls and coherent colors. Avoid sparse tall panels and divider-heavy layouts the owner rejected. Meaningful heatmaps and compact comparison layouts remain appropriate.
 

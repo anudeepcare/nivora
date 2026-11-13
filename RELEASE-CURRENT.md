@@ -1,3 +1,5 @@
+> Historical notes: the current source release is [Portfolio comparison and target freshness](RELEASE-PORTFOLIO-TARGETS-20261113.md). The older implementation and test counts below do not describe the current handoff.
+
 # Current release — synchronized analyst targets and Pace v6
 
 This release supersedes earlier notes saying the candidate was offline or monthly-v5 remained the current app engine.

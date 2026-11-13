@@ -1075,3 +1075,68 @@
     grid-row: 3;
   }
 }
+
+/* Each section owns a row: no tall chart forcing a blank sidebar below it. */
+.portfolio.portfolio.portfolio
+  :global(.portfolio-grid > .portfolio-range-panel) {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--blue) 4%, var(--card)),
+    var(--card)
+  );
+}
+.portfolio.portfolio.portfolio
+  :global(.portfolio-grid > .portfolio-holdings-panel) {
+  grid-row: 3;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-sidebar) {
+  gap: 12px;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-sidebar .section-head) {
+  margin-bottom: 12px;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-sidebar .chart-note) {
+  font-size: 11px;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-exposure-rows) {
+  gap: 10px;
+  margin: 12px 0;
+}
+.portfolio.portfolio.portfolio :global(.allocation-row) {
+  min-height: 32px;
+  padding: 6px 0;
+}
+.portfolio.portfolio.portfolio
+  :global(.portfolio-grid .portfolio-sidebar .card) {
+  padding: 18px;
+}
+@media (max-width: 900px) {
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid > .portfolio-range-panel) {
+    grid-row: 2;
+    order: 1;
+  }
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid > .portfolio-holdings-panel) {
+    grid-row: 3;
+    order: 2;
+  }
+  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
+    grid-row: 4;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-sidebar .card) {
+    grid-column: auto;
+    padding: 16px 14px;
+  }
+}
+@media (max-width: 600px) {
+  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

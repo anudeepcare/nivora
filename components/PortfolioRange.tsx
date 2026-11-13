@@ -6,7 +6,29 @@ import s from "./PortfolioRange.module.css";
 const text = { Bear: "Rough stretch", Base: "Typical", Bull: "Strong stretch" };
 /** Portfolio-level bear/base/bull from the same shared history as the trend chart. */
 export default function PortfolioRange({ range: r }: { range: Range }) {
-  if (!r.available) return null;
+  if (!r.available)
+    return (
+      <section className={s.root} aria-label="Portfolio bear, base and bull">
+        <header className={s.heading}>
+          <div>
+            <span className={s.eyebrow}>Portfolio range</span>
+            <h3>Bear, base &amp; bull</h3>
+          </div>
+        </header>
+        <div className={s.unavailableCases}>
+          {(["Bear", "Base", "Bull"] as const).map((name) => (
+            <div key={name} data-case={name.toLowerCase()}>
+              <span>{name}</span>
+              <strong>—</strong>
+            </div>
+          ))}
+        </div>
+        <p className={s.unavailable}>
+          {r.reason} No scenario values are invented.
+          {r.excluded.length ? ` Not included: ${r.excluded.join(", ")}.` : ""}
+        </p>
+      </section>
+    );
   const weeks = Math.round(r.horizon / 5);
   const period =
     r.horizon === 21 ? "1 month" : `${weeks} week${weeks === 1 ? "" : "s"}`;
@@ -28,40 +50,42 @@ export default function PortfolioRange({ range: r }: { range: Range }) {
           investments · {dateLabel(r.from)}–{dateLabel(r.through)}
         </p>
       </header>
-      <div className={s.cases}>
-        {r.cases.map((c) => (
-          <div key={c.name} data-case={c.name.toLowerCase()}>
-            <span>
-              {c.name} · {text[c.name]}
-            </span>
-            <strong>{amount(c.value, "USD", c.value >= 1e6)}</strong>
-            <small>
-              {percent(c.change, true)} · {c.delta >= 0 ? "+" : "−"}
-              {amount(Math.abs(c.delta), "USD", Math.abs(c.delta) >= 1e5)}
-            </small>
+      <div className={s.summary}>
+        <div className={s.cases}>
+          {r.cases.map((c) => (
+            <div key={c.name} data-case={c.name.toLowerCase()}>
+              <span>
+                {c.name} · {text[c.name]}
+              </span>
+              <strong>{amount(c.value, "USD", c.value >= 1e6)}</strong>
+              <small>
+                {percent(c.change, true)} · {c.delta >= 0 ? "+" : "−"}
+                {amount(Math.abs(c.delta), "USD", Math.abs(c.delta) >= 1e5)}
+              </small>
+            </div>
+          ))}
+        </div>
+        <dl className={s.stats}>
+          <div>
+            <dt>Today, same holdings</dt>
+            <dd>{amount(r.reference, "USD", r.reference >= 1e6)}</dd>
           </div>
-        ))}
+          <div>
+            <dt>Swing size · annualised</dt>
+            <dd>{percent(r.volatility)}</dd>
+          </div>
+          <div>
+            <dt>Largest fall in window</dt>
+            <dd>{percent(-r.drawdown, true)}</dd>
+          </div>
+        </dl>
       </div>
-      <dl className={s.stats}>
-        <div>
-          <dt>Today, same holdings</dt>
-          <dd>{amount(r.reference, "USD", r.reference >= 1e6)}</dd>
-        </div>
-        <div>
-          <dt>Swing size · annualised</dt>
-          <dd>{percent(r.volatility)}</dd>
-        </div>
-        <div>
-          <dt>Largest fall in window</dt>
-          <dd>{percent(-r.drawdown, true)}</dd>
-        </div>
-      </dl>
       {top.length > 1 && (
         <div className={s.drivers}>
           <h4>What drives the swings</h4>
           <p>
             {lead.symbol} is {percent(lead.weight)} of the basket and
-            contributed {percent(lead.riskShare)} of its day-to-day movement.
+            contributed {percent(lead.riskShare)} of its daily variance.
           </p>
           <div
             className={s.bars}

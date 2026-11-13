@@ -122,6 +122,7 @@ export function portfolioHistory(
   quotes: QuoteRows,
   history: WorkspaceHistory,
   asOf = new Date().toISOString().slice(0, 10),
+  observationLimit = 60,
 ) {
   const holdings = new Map<string, number>();
   for (const p of positions) {
@@ -166,7 +167,7 @@ export function portfolioHistory(
           included.every((symbol) => series.get(symbol)!.has(time)),
         )
         .sort()
-        .slice(-60)
+        .slice(-Math.max(2, Math.floor(observationLimit)))
     : [];
   const points = dates.map((time) => ({
     time,

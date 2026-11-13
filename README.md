@@ -2,7 +2,7 @@
 
 Extract this ZIP and deploy the extracted directory directly. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current release: [Existing-subscription scenarios](RELEASE-SCENARIOS-20261112.md). Earlier release notes are historical.
+Current release: [Portfolio comparison and target freshness](RELEASE-PORTFOLIO-TARGETS-20261113.md). Earlier release notes are historical.
 
 ## Run and verify
 Use Node 24.x (`.nvmrc` and CI agree), then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.

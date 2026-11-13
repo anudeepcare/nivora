@@ -1,0 +1,14 @@
+✔ guarded v1.1 fundamentals do not republish a stale framework target after expiry (306.661861ms)
+✔ guarded legacy fundamentals do not republish a stale framework target after expiry (280.042676ms)
+✔ the freshness fix retains local deduplication and shared cache hits across workers (170.165647ms)
+✔ an expired target cannot bypass the shared daily budget to refresh (119.934545ms)
+✔ a failed refresh is not republished as a newly fresh old target and remains retryable (116.205247ms)
+✔ unguarded deployments retain their existing framework cache policy (65.182009ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1554.181361
