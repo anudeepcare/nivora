@@ -114,6 +114,9 @@ export function DataFreshness({
       : undefined;
   };
   const datasetDate = validDate(r.evidence?.updatedAt);
+  const target = consensusOutlook(r);
+  const separateTargets = target?.source === "SentiSense";
+  const targetDate = validDate(target?.asOf);
   const financialDate = validDate(financial.latest?.end);
   const analystCurrent =
     !!datasetDate && now - Date.parse(datasetDate) <= 120 * 86400000;
@@ -138,12 +141,19 @@ export function DataFreshness({
     },
     {
       label: "Analyst dataset",
-      date:
-        r.evidence?.consensus || r.evidence?.estimates?.length
+      date: separateTargets
+        ? targetDate
+        : r.evidence?.consensus || r.evidence?.estimates?.length
           ? datasetDate
           : undefined,
-      current: analystCurrent,
-      context: analystCurrent ? "" : "Older dataset · refresh",
+      current: separateTargets
+        ? !!targetDate && now - Date.parse(targetDate) <= 7 * 86400000
+        : analystCurrent,
+      context: separateTargets
+        ? `SentiSense targets · ${r.evidence?.source ?? "Provider"} estimates/ratings ${datasetDate ? dateLabel(datasetDate) : "date unavailable"}${datasetDate && !analystCurrent ? " · older dataset" : ""}`
+        : analystCurrent
+          ? ""
+          : "Older dataset · refresh",
     },
     {
       label: "Financial period",

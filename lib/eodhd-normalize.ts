@@ -6,12 +6,19 @@ import {
   US_EXCHANGES,
 } from "./provider-symbol.ts";
 const text = (v: unknown) => (typeof v === "string" ? v.slice(0, 10000) : "");
-const date = (v: unknown) =>
-  typeof v === "string" &&
-  /^\d{4}-\d{2}-\d{2}$/.test(v.slice(0, 10)) &&
-  Number.isFinite(Date.parse(v))
-    ? v.slice(0, 10)
+const date = (v: unknown) => {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v.slice(0, 10)))
+    return null;
+  const day = v.slice(0, 10),
+    time = Date.parse(`${day}T00:00:00Z`);
+  // Date.parse rolls dates such as February 30 into March. A rolled date is
+  // not a supplied fiscal end or observation date and must not establish age.
+  return Number.isFinite(Date.parse(v)) &&
+    Number.isFinite(time) &&
+    new Date(time).toISOString().slice(0, 10) === day
+    ? day
     : null;
+};
 const entries = (v: any): any[] =>
   v && typeof v === "object" ? Object.values(v) : [];
 export const eodSource =

@@ -1,0 +1,112 @@
+{
+  "recorded_at_utc": "2026-11-14T01:05:32Z",
+  "observation_window_utc": "2026-11-14, browser observations immediately preceding record time; individual snapshot timestamps not exposed",
+  "source_status": "Live preprod UI, not modified by the current local patch. No deployment performed.",
+  "auth": "Existing signed-in session worked; no blocker.",
+  "method": "Read-only UI inspection; no DCA access or extraction, no purchases, budget changes, or account modifications.",
+  "date_caveat": "Dates and prices are displayed by AURYN; no claim of matching external provider dates or independently validating market facts.",
+  "provider": "EODHD",
+  "dataset_date": "2026-11-13",
+  "target_date_note": "Individual target revision dates and forecast horizon not supplied.",
+  "instruments": [
+    {
+      "symbol": "IREN",
+      "url": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/IREN",
+      "analyst_consensus": 56.69,
+      "analyst_low": null,
+      "analyst_high": null,
+      "range_status": "Low and high targets are not supplied as a complete range.",
+      "settled_close": 18.17,
+      "settled_close_date": "2026-11-13",
+      "displayed_upside_percent": 212.0,
+      "pace": "P4",
+      "pace_status": "Provisional \u00b7 this month",
+      "pace_reference": 18.17,
+      "pace_reference_type": "settled price history",
+      "decision_headline": "Review business",
+      "approximate_zone_edges": {
+        "P1_min": 34.24,
+        "P2_min": 26.88,
+        "P3_min": 24.88
+      },
+      "main_scenario_heading": "Bear, base & bull",
+      "main_scenario_status": "More company evidence is needed for a supported scenario range.",
+      "additional_verified_url": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/IREN?tab=Analysts"
+    },
+    {
+      "symbol": "NBIS",
+      "url": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/NBIS",
+      "analyst_consensus": 271.2,
+      "analyst_low": null,
+      "analyst_high": null,
+      "range_status": "Low and high targets are not supplied as a complete range.",
+      "settled_close": 115.88,
+      "settled_close_date": "2026-11-13",
+      "displayed_upside_percent": 134.0,
+      "pace": "P2",
+      "pace_status": "Provisional \u00b7 this month",
+      "pace_reference": 115.88,
+      "pace_reference_type": "settled price history",
+      "decision_headline": "Review business",
+      "approximate_zone_edges": {
+        "P1_min": 128.39,
+        "P3_max": 108.78,
+        "P4_max": 104.23
+      },
+      "main_scenario_heading": "Bear, base & bull",
+      "main_scenario_status": "More company evidence is needed for a supported scenario range.",
+      "confirmed_prior_pace": {
+        "pace": "P1",
+        "date": "2026-10-30",
+        "note": "UI explicitly says decision uses P1 until month-end confirms deeper P2 zone."
+      },
+      "scenario_crosscheck": {
+        "heading": "Bear, base & bull across methods",
+        "analyst_targets": {
+          "bear": null,
+          "base": 271.2,
+          "bull": null
+        },
+        "past_3_month_moves": {
+          "bear": 79.68,
+          "base": 145.52,
+          "bull": 270.09
+        },
+        "volatility_adjusted_range": {
+          "bear": 15.26,
+          "base": 115.88,
+          "bull": 283.38
+        },
+        "revenue_forecast_spread": {
+          "bear": 67.39,
+          "base": 115.88,
+          "bull": 167.84
+        },
+        "limitation": "Analyst consensus remains labeled base in scenario range accessibility description; methods separately disclose basis and limits. One method available for horizon-comparable agreement."
+      }
+    },
+    {
+      "symbol": "APP",
+      "url": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/APP",
+      "analyst_consensus": 449.61,
+      "analyst_low": null,
+      "analyst_high": null,
+      "range_status": "Low and high targets are not supplied as a complete range.",
+      "settled_close": 409.1,
+      "settled_close_date": "2026-11-13",
+      "displayed_upside_percent": 9.9,
+      "pace": "P1",
+      "pace_status": "Provisional \u00b7 this month",
+      "pace_reference": 409.1,
+      "pace_reference_type": "settled price history",
+      "decision_headline": "Hold",
+      "approximate_zone_edges": {
+        "P2_max": 389.89,
+        "P3_max": 351.61,
+        "P4_max": 288.57
+      },
+      "main_scenario_heading": "Bear, base & bull",
+      "main_scenario_status": "More company evidence is needed for a supported scenario range."
+    }
+  ]
+}

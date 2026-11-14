@@ -43,7 +43,11 @@ export default function AnalystRatings({
             <strong>
               {outlook ? amount(outlook.target, r.quote.currency) : "—"}
             </strong>
-            <small>Opinion, separate from model valuation</small>
+            <small>
+              Opinion, separate from model valuation
+              {outlook?.source ? ` · ${outlook.source}` : ""}
+              {outlook ? ` · ${dateLabel(outlook.asOf)}` : ""}
+            </small>
           </div>
         )}
         <div>
@@ -95,6 +99,7 @@ export default function AnalystRatings({
         )}
       </div>
       <p className="small muted">
+        {r.evidence?.source ? `Ratings: ${r.evidence.source} · ` : ""}
         {r.evidence?.updatedAt
           ? `Dataset updated ${dateLabel(r.evidence.updatedAt)}.`
           : "Dataset update date is not supplied."}{" "}

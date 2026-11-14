@@ -145,6 +145,7 @@ export type Research = {
   priceObservedAt?: string;
   issues: string[];
   evidence?: import("./eodhd-normalize").EodEvidence;
+  analystTargets?: import("./sentisense-targets").AnalystTargets;
   snapshot?: import("./canonical").Canonical;
   demo?: boolean;
 };

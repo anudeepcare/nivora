@@ -1,0 +1,154 @@
+{
+  "scope": "17 direct authorized, bounded API reads: 9 consensus probes and 8 listing profiles. No production deployment; these were provider contract checks, not live app verification.",
+  "temporaryKeyCreated": true,
+  "keyExpiresAt": "2026-11-17T02:06:05Z",
+  "keyKeptOnAccount": false,
+  "successfulStockBands": 8,
+  "validatedStockProfiles": 8,
+  "stocks": [
+    {
+      "symbol": "IREN",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNAS",
+      "targetDatasetUpdatedAt": "2026-11-13T23:37:41Z",
+      "preview": true,
+      "ratingCountsAreWithheld": true,
+      "observedAt": "2026-11-14T02:06:35.285855+00:00"
+    },
+    {
+      "symbol": "NBIS",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNAS",
+      "targetDatasetUpdatedAt": "2026-11-13T23:37:41Z",
+      "preview": true,
+      "ratingCountsAreWithheld": true,
+      "observedAt": "2026-11-14T02:06:46.023795+00:00"
+    },
+    {
+      "symbol": "APP",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNAS",
+      "targetDatasetUpdatedAt": "2026-11-13T14:12:52Z",
+      "preview": true,
+      "ratingCountsAreWithheld": true,
+      "observedAt": "2026-11-14T02:06:55.295667+00:00"
+    },
+    {
+      "symbol": "AAPL",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNAS",
+      "targetDatasetUpdatedAt": "2026-11-13T23:37:41Z",
+      "preview": true,
+      "ratingCountsAreWithheld": true,
+      "observedAt": "2026-11-14T02:07:04.510169+00:00"
+    },
+    {
+      "symbol": "NVDA",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNAS",
+      "targetDatasetUpdatedAt": "2026-11-13T23:37:41Z",
+      "preview": true,
+      "ratingCountsAreWithheld": true,
+      "observedAt": "2026-11-14T02:07:19.193470+00:00"
+    },
+    {
+      "symbol": "TSLA",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNAS",
+      "targetDatasetUpdatedAt": "2026-11-13T23:37:42Z",
+      "preview": false,
+      "ratingCountsAreWithheld": false,
+      "observedAt": "2026-11-14T02:07:28.744641+00:00"
+    },
+    {
+      "symbol": "BABA",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNYS",
+      "targetDatasetUpdatedAt": "2026-11-13T14:12:52Z",
+      "preview": true,
+      "ratingCountsAreWithheld": true,
+      "observedAt": "2026-11-14T02:07:37.959741+00:00"
+    },
+    {
+      "symbol": "BRK.B",
+      "targetHttpStatus": 200,
+      "profileHttpStatus": 200,
+      "completeOrderedBand": true,
+      "positiveAnalystCount": true,
+      "sameReturnedSecurity": true,
+      "explicitTradingCurrency": "USD",
+      "listingMarket": "United States",
+      "exchangeMIC": "XNYS",
+      "targetDatasetUpdatedAt": "2026-11-13T14:12:52Z",
+      "preview": true,
+      "ratingCountsAreWithheld": true,
+      "observedAt": "2026-11-14T02:07:47.801030+00:00"
+    }
+  ],
+  "notApplicable": [
+    {
+      "symbol": "SPY",
+      "httpStatus": 404,
+      "error": "ticker_is_etf"
+    }
+  ],
+  "sameDateDcaParityEstablished": false,
+  "numericSavedReferenceComparison": {
+    "symbols": [
+      "IREN",
+      "NBIS"
+    ],
+    "lowMeanHighAndAnalystCountMatch": true,
+    "note": "Mean compared at displayed two-decimal precision. Saved DCA captures were observed November13 with November12 settled prices and no target revision date; SentiSense captures November14 have November13 refresh dates. Not same-date parity."
+  },
+  "limitations": [
+    "This is a small selected sample, not universe-wide coverage.",
+    "Target timestamps identify dataset refreshes, not individual target revisions.",
+    "The free preview rating-count zeros are withheld data, not zero recommendations.",
+    "The consensus currentPrice/upsidePercent belongs to the snapshot, not the current AURYN settled close.",
+    "Currency is reconciled using the same provider's exact-security listing profile.",
+    "Raw provider response bodies, credentials and key-keeping links are excluded from the distributable source."
+  ]
+}

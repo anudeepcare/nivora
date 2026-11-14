@@ -165,6 +165,8 @@ export function resolveAccess(i: Input) {
 export type Access = ReturnType<typeof resolveAccess>;
 /** Never return locked raw evidence in an otherwise cached full research payload. */
 export function projectResearch<T extends Research>(r: T, a: Access): T {
+  // Private experimental evidence never survives projection to another account.
+  if (!a.owner && r.analystTargets) r = { ...r, analystTargets: undefined };
   if (!a.enabled || (a.owner && !a.preview)) return r;
   const rich =
     a.features.overview ||
@@ -231,6 +233,7 @@ export function projectResearch<T extends Research>(r: T, a: Access): T {
     filings: a.features.business ? r.filings : [],
     snapshot: undefined,
     evidence,
+    analystTargets: a.owner && analyst ? r.analystTargets : undefined,
   };
   return result as T;
 }

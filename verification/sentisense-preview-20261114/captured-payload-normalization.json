@@ -1,0 +1,70 @@
+{
+  "runAt": "2026-11-14T02:34:35.473Z",
+  "count": 8,
+  "results": [
+    {
+      "symbol": "IREN",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    },
+    {
+      "symbol": "NBIS",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    },
+    {
+      "symbol": "APP",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    },
+    {
+      "symbol": "AAPL",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    },
+    {
+      "symbol": "NVDA",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    },
+    {
+      "symbol": "TSLA",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    },
+    {
+      "symbol": "BABA",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    },
+    {
+      "symbol": "BRK.B",
+      "valid": true,
+      "exactValuesPreserved": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "dateBasis": "dataset-refresh"
+    }
+  ]
+}

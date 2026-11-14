@@ -15,6 +15,7 @@ export type VisitSnapshot = {
   } | null;
   estimate: { end: string; eps: number } | null;
   target: number | null;
+  targetDataset?: { source: string; date: string } | null;
   dataset: { source: string; date: string } | null;
 };
 export type ResearchChange = {
@@ -82,6 +83,14 @@ export function parseVisitSnapshot(
         Date.parse(x.dataset.date) > now + 86400000)
     )
       return null;
+    if (
+      x.targetDataset != null &&
+      (typeof x.targetDataset.source !== "string" ||
+        x.targetDataset.source.length > 120 ||
+        !dated(x.targetDataset.date) ||
+        Date.parse(x.targetDataset.date) > now + 86400000)
+    )
+      return null;
     if (x.target !== null && !positive(x.target)) return null;
     return x as VisitSnapshot;
   } catch {
@@ -94,6 +103,7 @@ export function researchVisitSnapshot(
   now: number,
 ): VisitSnapshot {
   const reference = selectPriceReference(r, now);
+  const consensus = consensusOutlook(r);
   const estimate = (r.evidence?.estimates ?? [])
     .filter(
       (x) =>
@@ -112,13 +122,64 @@ export function researchVisitSnapshot(
     price: reference ? { value: reference.price, date: reference.asOf } : null,
     pace,
     estimate: estimate ? { end: estimate.date, eps: estimate.eps! } : null,
-    target: consensusOutlook(r)?.target ?? null,
+    target: consensus?.target ?? null,
+    targetDataset: consensus?.source
+      ? { source: consensus.source, date: consensus.asOf }
+      : null,
     dataset:
       r.evidence?.source &&
       dated(r.evidence.updatedAt) &&
       Date.parse(r.evidence.updatedAt) <= now + 86400000
         ? { source: r.evidence.source, date: r.evidence.updatedAt }
         : null,
+  };
+}
+/** Retain each observation and its provenance together, independently of other datasets. */
+export function retainVisitSnapshot(
+  stored: VisitSnapshot | null,
+  next: VisitSnapshot,
+): VisitSnapshot {
+  if (
+    !stored ||
+    stored.currency !== next.currency ||
+    stored.symbol !== next.symbol
+  )
+    return next;
+  const previousTarget =
+    stored.targetDataset === undefined ? stored.dataset : stored.targetDataset;
+  const currentTarget =
+    next.targetDataset === undefined ? next.dataset : next.targetDataset;
+  const retainTarget =
+    stored.target != null &&
+    (!next.target ||
+      (previousTarget &&
+        currentTarget &&
+        previousTarget.source === currentTarget.source &&
+        Date.parse(previousTarget.date) > Date.parse(currentTarget.date)));
+  return {
+    ...next,
+    price:
+      stored.price &&
+      (!next.price ||
+        Date.parse(stored.price.date) > Date.parse(next.price.date))
+        ? stored.price
+        : next.price,
+    pace:
+      stored.pace &&
+      (!next.pace || Date.parse(stored.pace.date) > Date.parse(next.pace.date))
+        ? stored.pace
+        : next.pace,
+    ...(stored.dataset &&
+    (!next.dataset ||
+      Date.parse(stored.dataset.date) > Date.parse(next.dataset.date))
+      ? {
+          dataset: stored.dataset,
+          estimate: stored.estimate,
+        }
+      : {}),
+    ...(retainTarget
+      ? { target: stored.target, targetDataset: previousTarget }
+      : {}),
   };
 }
 export function researchChanges(
@@ -162,7 +223,18 @@ export function researchChanges(
         destination: "Analysts",
       });
   }
-  if (comparableDataset && before.target && next.target) {
+  // Legacy observations inherited the EOD dataset identity. Explicit null means
+  // unknown, while new snapshots keep the target provider independent of financials.
+  const previousTarget =
+    before.targetDataset === undefined ? before.dataset : before.targetDataset;
+  const currentTarget =
+    next.targetDataset === undefined ? next.dataset : next.targetDataset;
+  const comparableTargets =
+    previousTarget &&
+    currentTarget &&
+    previousTarget.source === currentTarget.source &&
+    Date.parse(currentTarget.date) >= Date.parse(previousTarget.date);
+  if (comparableTargets && before.target && next.target) {
     const gap = (next.target / before.target - 1) * 100;
     if (Number.isFinite(gap) && Math.abs(gap) >= 2)
       rows.push({

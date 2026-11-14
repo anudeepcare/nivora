@@ -1,0 +1,20 @@
+{
+  "scope": "Recomputed using fixed extractor with each row reference close date, settlement validation and signal-date cutoff; archived evidence only",
+  "n": 995,
+  "maxFeatureDelta": 0.005464000156393589,
+  "differences": [
+    {
+      "symbol": "BBT",
+      "delta": 0.005464000156393589,
+      "actual": 1,
+      "frozen": 1
+    },
+    {
+      "symbol": "CCC",
+      "delta": 0.003568423678691257,
+      "actual": 1,
+      "frozen": 1
+    }
+  ],
+  "classChanges": []
+}

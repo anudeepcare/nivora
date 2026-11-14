@@ -1,3 +1,4 @@
+import { consensusOutlook } from "./outlook.ts";
 import { earningsCalendar } from "./earnings-calendar.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
 import type { Research } from "./types";
@@ -130,6 +131,7 @@ function computeResearchDecision(
   r: Research,
   style: ResearchStyle = "Balanced",
 ) {
+  const selectedTarget = consensusOutlook(r);
   const e = latestFinancialEvidence(r),
     p = e.latest,
     q = e.prior,
@@ -512,9 +514,11 @@ function computeResearchDecision(
         metric(
           "target",
           "Analyst target",
-          r.evidence?.consensus?.target,
+          selectedTarget?.target,
           "money",
-          "Published opinion; horizon and dispersion may be unavailable.",
+          selectedTarget
+            ? `Published opinion · ${selectedTarget.source ?? "Provider"} · dataset refreshed ${selectedTarget.asOf}. Target revision dates and horizon are not supplied.`
+            : "A current, compatible analyst target is not supplied.",
         ),
       ],
     },

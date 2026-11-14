@@ -101,3 +101,52 @@ test("next-report snapshot excludes reported, invalid and stale calendar observa
     null,
   );
 });
+
+test("the unscored ownership target follows selected provider without changing scores or model outputs", () => {
+  const base = structuredClone(demoData.research.MSFT);
+  base.retrievedAt = base.priceObservedAt = "2026-11-14T00:00:00Z";
+  base.evidence = {
+    ...(base.evidence ?? {}),
+    source: "EODHD",
+    updatedAt: "2026-11-13",
+    consensus: { target: 40 },
+  };
+  const before = researchDecision(base);
+  const target = {
+    symbol: base.company.symbol,
+    currency: "USD",
+    source: "SentiSense",
+    sourceField: "consensus.targetMean",
+    timestampBasis: "dataset-refresh",
+    updatedAt: "2026-11-13T23:37:41Z",
+    low: 23,
+    target: 56.6874,
+    high: 139,
+    analysts: 19,
+  };
+  const next = researchDecision({ ...base, analystTargets: target });
+  const metric = next.lenses
+    .find((x) => x.id === "sentiment")
+    .metrics.find((x) => x.id === "target");
+  assert.equal(metric.value, 56.6874);
+  assert.equal(metric.score, null);
+  assert.match(metric.reason, /SentiSense/);
+  assert.match(metric.reason, /2026-11-13/);
+  assert.equal(next.overall, before.overall);
+  assert.deepEqual(
+    next.lenses.map((x) => x.score),
+    before.lenses.map((x) => x.score),
+  );
+  assert.deepEqual(
+    { ...next, lenses: undefined },
+    { ...before, lenses: undefined },
+  );
+  const fallback = researchDecision({
+    ...base,
+    analystTargets: { ...target, updatedAt: "2020-01-01T00:00:00Z" },
+  })
+    .lenses.find((x) => x.id === "sentiment")
+    .metrics.find((x) => x.id === "target");
+  assert.equal(fallback.value, 40);
+  assert.match(fallback.reason, /EODHD/);
+});

@@ -1,0 +1,91 @@
+{
+  "verifiedAt": "2026-11-14T01:10:01.542059+00:00",
+  "commands": [
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "lint": "passed",
+      "format": "passed",
+      "tests": {
+        "total": 1427,
+        "passed": 1427,
+        "failed": 0
+      },
+      "typecheck": "passed",
+      "productionBuild": "passed"
+    },
+    {
+      "command": "npm run test:api",
+      "exitCode": 0,
+      "scope": "Compiled routes with controlled identity/provider/database transports; no paid market calls",
+      "productionTraces": 56
+    }
+  ],
+  "regressions": {
+    "scenarioSourceDates": {
+      "failedBefore": 4,
+      "passedAfter": 4,
+      "focusedRelatedTestsPassed": 29
+    },
+    "paceExtraction": {
+      "failedBefore": 1,
+      "passedAfter": 1,
+      "failureBefore": "Malformed OHLC row produced feature distance 99 instead of 0"
+    },
+    "frozenModelFocusedTestsPassed": 4
+  },
+  "codeReview": "Independent review found no material issues; five regression cases inspected",
+  "preservation": {
+    "baseline": "AURYN-decision-gates-fix-20261113.zip",
+    "modifiedExistingFiles": [
+      "README.md",
+      "lib/eodhd-normalize.ts",
+      "lib/listing-reconciliation.ts",
+      "scripts/extract-live-pace-features.mjs"
+    ],
+    "uiFilesChecked": 372,
+    "uiByteIdentical": true,
+    "activePolicyFilesChecked": 14,
+    "activePolicyByteIdentical": true,
+    "sourcePatchFiles": [
+      "lib/eodhd-normalize.ts",
+      "lib/listing-reconciliation.ts",
+      "scripts/extract-live-pace-features.mjs"
+    ],
+    "sourceHashes": {
+      "README.md": "27833afde31f7dfb2ea5f4d6719b41900070a03b018ebe204504dba435f00716",
+      "lib/eodhd-normalize.ts": "7a6b8caa5700e5894d40dda7dfa22f591acea6d1a9444b3672ecb5c39ae3154c",
+      "lib/listing-reconciliation.ts": "de943d64223bd6104ecd47fa192eb77593768dddb3b46492d49c2b9421bf46f6",
+      "scripts/extract-live-pace-features.mjs": "1d75691def9c3593afdb38ce1f75b746db1b04e52f4ab05880ac32565dce0ab9"
+    }
+  },
+  "pace": {
+    "scope": "Rerun archived November 11 inputs; not fresh-market or pristine blind validation",
+    "cohort": 1000,
+    "matches": 971,
+    "compared": 999,
+    "disagreements": 28,
+    "inputErrors": 1,
+    "excludedFromFitMatches": 205,
+    "excludedFromFitCount": 223,
+    "modelRefit": false,
+    "predictionsChanged": 0
+  },
+  "liveUiEvidence": "../preprod-targets-20261114/evidence.json",
+  "remaining": [
+    "Analyst low/high unavailable for IREN, NBIS and APP in inspected preprod feed",
+    "Individual target revision dates unavailable",
+    "No same-date full-triple external parity validation",
+    "Exact Pace parity not established",
+    "Current patch is source-only, not deployed or browser-validated as a new build"
+  ],
+  "warnings": [
+    "npm reports a deprecated environment proxy config",
+    "Next build warns no Next.js ESLint plugin was detected; configured ESLint command passed"
+  ],
+  "logs": {
+    "verifySha256": "75c96e6821c75e8ea37be2f56378ccf7204648fa7c243ba1e0f0889210775699",
+    "apiSha256": "eb1e0b9234762af206f1e21d4571b9f7602b784b2dfc325f7aeec86ec8b60438",
+    "bundled": false
+  }
+}

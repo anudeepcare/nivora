@@ -135,8 +135,10 @@ export default function AnalystTargets({
       )}
       <p>
         Analyst opinion, not AURYN fair value or a guaranteed return.{" "}
-        {c.source ? `${c.source} · ` : ""}Dataset updated {dateLabel(c.asOf)};
-        individual target revision dates and forecast horizon are not supplied.
+        {c.source ? `${c.source} · ` : ""}
+        {c.analysts != null ? `${c.analysts} analysts · ` : ""}
+        Dataset updated {dateLabel(c.asOf)}; individual target revision dates
+        and forecast horizon are not supplied.
       </p>
       {c.referenceAsOf && (
         <small>

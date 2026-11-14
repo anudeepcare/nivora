@@ -5,6 +5,7 @@ import {
   parseVisitSnapshot,
   researchVisitSnapshot,
   researchChanges,
+  retainVisitSnapshot,
   type ResearchChange,
   type VisitSnapshot,
 } from "@/lib/research-changes";
@@ -52,31 +53,7 @@ export default function ResearchChanges({
           : null,
       );
       const storedData = parseVisitSnapshot(localStorage.getItem(key), now);
-      const stored = storedData?.currency === next.currency ? storedData : null;
-      const latest = {
-        ...next,
-        price:
-          stored?.price &&
-          (!next.price ||
-            Date.parse(stored.price.date) > Date.parse(next.price.date))
-            ? stored.price
-            : next.price,
-        pace:
-          stored?.pace &&
-          (!next.pace ||
-            Date.parse(stored.pace.date) > Date.parse(next.pace.date))
-            ? stored.pace
-            : next.pace,
-        ...(stored?.dataset &&
-        (!next.dataset ||
-          Date.parse(stored.dataset.date) > Date.parse(next.dataset.date))
-          ? {
-              dataset: stored.dataset,
-              estimate: stored.estimate,
-              target: stored.target,
-            }
-          : {}),
-      };
+      const latest = retainVisitSnapshot(storedData, next);
       if (latest.price || latest.pace)
         localStorage.setItem(key, JSON.stringify(latest));
     } catch {

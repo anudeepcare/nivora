@@ -1,0 +1,19 @@
+{
+  "scope": "Fixed extraction script rerun on archived histories, no retraining",
+  "rows": 995,
+  "featureDifferences": [
+    {
+      "symbol": "BBT",
+      "delta": 0.005464000156393589,
+      "actual": 1,
+      "frozen": 1
+    },
+    {
+      "symbol": "CCC",
+      "delta": 0.003568423678691257,
+      "actual": 1,
+      "frozen": 1
+    }
+  ],
+  "classChanges": []
+}

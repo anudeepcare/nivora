@@ -113,6 +113,12 @@ export function listingReconciliation(r: Research): {
     return missing(
       "Market cap, shares and price need the same observation time, currency and explicit listed-share basis before they can be reconciled.",
     );
+  // Matching one another does not make an old snapshot current. Apply the
+  // same share-age limit as the independently reported-share bridge above.
+  if (now - stamps[0] > 120 * 86400000)
+    return missing(
+      "The matched market-cap/share/price snapshot is older than 120 days. Recent listed-share observations are required for current per-share scenarios.",
+    );
   const equity = shares * reference.value;
   if (!positive(equity))
     return missing(

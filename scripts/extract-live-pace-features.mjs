@@ -1,5 +1,8 @@
 import fs from "node:fs";
-import { researchAccumulation } from "../lib/accumulation-policy-v5.ts";
+import {
+  researchAccumulation,
+  adaptiveSettledBars,
+} from "../lib/accumulation-policy-v5.ts";
 import { paceFeatures } from "../lib/pace-classifier.ts";
 const base = process.argv[2];
 const report = JSON.parse(fs.readFileSync(base + "/analysis/replay.json"));
@@ -20,9 +23,17 @@ for (const r of report.rows.filter(
     })
     .filter((b) => b.time <= r.closeDate)
     .sort((a, b) => a.time.localeCompare(b.time));
-  const result = researchAccumulation(bars, r.closeDate + "T23:59:59Z");
+  const asOf = r.closeDate + "T23:59:59Z";
+  const settled = adaptiveSettledBars(bars, asOf, r.market);
+  const result = researchAccumulation(settled, asOf, r.market);
   const s = result.forming ?? result.confirmed;
-  const features = s && paceFeatures(bars, s.z, s.deviation / 100);
+  const features =
+    s &&
+    paceFeatures(
+      settled.filter((b) => b.time <= s.date),
+      s.z,
+      s.deviation / 100,
+    );
   rows.push({
     ...r,
     company: companies.get(r.symbol),

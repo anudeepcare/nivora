@@ -13,7 +13,20 @@ export async function GET(
     const symbol = researchSymbol((await params).symbol);
     const access = await requestAccess(request, user.id);
     await reserveAccess(user.id, access, "research", symbol);
-    const data = await research(symbol);
+    let data = await research(symbol);
+    if (
+      access.owner &&
+      process.env.AURYN_SENTISENSE_PREVIEW_ENABLED === "true"
+    ) {
+      try {
+        const { enrichSentiSenseTargets } = await import(
+          "@/lib/sentisense-provider"
+        );
+        data = await enrichSentiSenseTargets(data, access);
+      } catch {
+        // An optional preview source must never take existing research offline.
+      }
+    }
     return privateJson(
       projectResearch({ ...data, snapshot: canonical(data) }, access),
     );

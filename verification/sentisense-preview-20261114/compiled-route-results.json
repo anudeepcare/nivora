@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "disabled-no-provider-call",
+    "owner-preview-complete-independent-band",
+    "primary-price-evidence-preserved",
+    "server-guard-latch-released",
+    "cache-no-extra-request",
+    "nonowner-withheld",
+    "production-withheld",
+    "expired-key-withheld",
+    "credential-not-in-response"
+  ],
+  "providerCalls": 2,
+  "transport": "controlled fixtures; no network"
+}

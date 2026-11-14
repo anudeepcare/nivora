@@ -1,0 +1,76 @@
+{
+  "verifiedAt": "2026-11-14T02:34:13.577953+00:00",
+  "commands": {
+    "npm run verify": {
+      "exitCode": 0,
+      "lint": "passed",
+      "format": "passed",
+      "tests": 1458,
+      "passed": 1458,
+      "failed": 0,
+      "typecheck": "passed",
+      "build": "passed"
+    },
+    "npm run test:api": {
+      "exitCode": 0,
+      "transport": "controlled fixtures",
+      "productionTracesChecked": 56,
+      "fixtureIsolation": "passed",
+      "includesCompiledSentiSenseRoute": true
+    }
+  },
+  "review": {
+    "remainingBlockingFindings": 0,
+    "independentFocusedTestsPassed": 48,
+    "fourFindingsCorrected": [
+      "durable denial latch",
+      "atomic target provenance retention",
+      "selected target mean in unscored evidence metric",
+      "selected target source/date in Overview"
+    ]
+  },
+  "liveData": {
+    "directProbes": 17,
+    "stockBands": 8,
+    "listingProfiles": 8,
+    "etfNotApplicable": 1,
+    "earlierAdapterProbes": 6,
+    "finalAdapterProbes": 6,
+    "newKeyProvisionRequests": 1,
+    "finalAdapterStocksPassed": 3,
+    "finalAdapterCacheHitVerified": true,
+    "referenceParity": "Not established; numeric saved-reference agreement for two stocks is not same-date parity",
+    "authenticatedKeyDataRequests": 29
+  },
+  "activation": {
+    "defaultEnabled": false,
+    "ownerOnly": true,
+    "productionAllowed": false,
+    "deployed": false,
+    "liveDatabaseChanged": false,
+    "newMigration": false,
+    "purchases": false,
+    "providerSubscriptionsChanged": false
+  },
+  "verificationGaps": [
+    "No new hosted-preprod browser or live-database verification.",
+    "Selected eight-stock sample is not universe-wide validation.",
+    "No entitlement to commercial paid-app redistribution established.",
+    "Existing archived Pace discrepancies remain; model is unchanged."
+  ],
+  "paceReplay": {
+    "requested": 1000,
+    "compared": 999,
+    "matches": 971,
+    "disagreements": 28,
+    "inputErrors": 1,
+    "sameVerdictsAndStatusAsPreviousRelease": true,
+    "freshMarketValidation": false
+  },
+  "compiledRouteRegression": {
+    "baselineExit": 1,
+    "reason": "The prior build did not return an independent low/mean/high band.",
+    "newBuildExit": 0,
+    "checksPassed": 9
+  }
+}

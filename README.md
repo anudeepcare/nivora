@@ -2,7 +2,7 @@
 
 Extract this ZIP and deploy the extracted directory directly. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current release: [Decision-gate audit and correction](DECISION-AUDIT-20261113.md). The prior [portfolio comparison and target freshness release](RELEASE-PORTFOLIO-TARGETS-20261113.md) remains included. Earlier release notes are historical.
+Current release: [Private analyst-target preview](RELEASE-SENTISENSE-PREVIEW-20261114.md). The [scenario and Pace verification](RELEASE-SCENARIO-PACE-20261114.md) remains included. The prior [decision-gate audit](DECISION-AUDIT-20261113.md) and [portfolio comparison and target freshness release](RELEASE-PORTFOLIO-TARGETS-20261113.md) remain included. Earlier release notes are historical.
 
 ## Run and verify
 Use Node 24.x (`.nvmrc` and CI agree), then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.

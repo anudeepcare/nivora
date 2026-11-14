@@ -160,7 +160,7 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
           bear: analyst.low,
           base: analyst.target,
           bull: analyst.high,
-          source: "Analyst targets · low / consensus / high",
+          source: `Analyst targets · low / consensus / high${analyst.source ? ` · ${analyst.source}` : ""} · Dataset updated ${analyst.asOf.slice(0, 10)}`,
           kind: "analyst" as const,
         }
       : null;

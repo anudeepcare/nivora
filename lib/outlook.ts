@@ -1,3 +1,4 @@
+import { usableAnalystTargets } from "./sentisense-targets.ts";
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
 import { selectPriceReference, settledPriceBars } from "./price-reference.ts";
 import type { Research } from "./types";
@@ -50,6 +51,8 @@ export function consensusOutlook(r: Research): {
   rangeStatus: "complete" | "missing" | "invalid";
   source: string | null;
   sourceField: string | null;
+  analysts: number | null;
+  timestampBasis: "dataset-refresh";
   asOf: string;
   change: number | null;
   referenceStatus: "current" | "older" | "unavailable";
@@ -59,12 +62,22 @@ export function consensusOutlook(r: Research): {
 } | null {
   const e = r.evidence;
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
-  const at = Date.parse(e?.updatedAt ?? "");
-  const target = e?.consensus?.target;
+  const dedicated = usableAnalystTargets(
+    r.analystTargets,
+    r.company.symbol,
+    r.quote.currency,
+    now,
+  )
+    ? r.analystTargets
+    : null;
+  const updatedAt = dedicated?.updatedAt ?? e?.updatedAt;
+  const at = Date.parse(updatedAt ?? "");
+  const target = dedicated?.target ?? e?.consensus?.target;
   if (
     r.company.assetType !== "stock" ||
     r.company.currency !== r.quote.currency ||
-    (e?.consensus?.currency != null &&
+    (!dedicated &&
+      e?.consensus?.currency != null &&
       e.consensus.currency !== r.quote.currency) ||
     !Number.isFinite(now) ||
     !Number.isFinite(at) ||
@@ -90,8 +103,8 @@ export function consensusOutlook(r: Research): {
     Number.isFinite(stamp) &&
     stamp <= now + 60000 &&
     now - stamp <= 4 * 86400000;
-  const low = e?.consensus?.low,
-    high = e?.consensus?.high;
+  const low = dedicated?.low ?? e?.consensus?.low,
+    high = dedicated?.high ?? e?.consensus?.high;
   const rangeValid =
     low != null &&
     high != null &&
@@ -108,9 +121,12 @@ export function consensusOutlook(r: Research): {
       : low == null || high == null
         ? "missing"
         : "invalid",
-    source: e?.source || null,
-    sourceField: e?.consensus?.targetSourceField || null,
-    asOf: e!.updatedAt!,
+    source: dedicated?.source ?? (e?.source || null),
+    sourceField:
+      dedicated?.sourceField ?? (e?.consensus?.targetSourceField || null),
+    analysts: dedicated?.analysts ?? null,
+    timestampBasis: "dataset-refresh",
+    asOf: updatedAt!,
     change: comparable ? (target / price! - 1) * 100 : null,
     referencePrice: comparable ? price! : null,
     referenceAsOf: comparable ? (selected?.asOf ?? r.quote.asOf) : null,
