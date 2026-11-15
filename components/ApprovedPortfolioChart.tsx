@@ -3,7 +3,14 @@ import { historyBatch } from "@/lib/history-batch";
 import styles from "./PortfolioChart.module.css";
 import { customerText } from "@/lib/customer-language";
 
-import { useEffect, useId, useMemo, useState, useRef } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  useRef,
+  type ReactNode,
+} from "react";
 import type { Candle, Position, Research } from "@/lib/types";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
 import {
@@ -25,9 +32,12 @@ import PortfolioRange from "./PortfolioRange";
 export default function ApprovedPortfolioChart({
   positions,
   quotes,
+  children,
 }: {
   positions: Position[];
   quotes: QuoteRows;
+  /** Primary portfolio content precedes the secondary scenario analysis. */
+  children?: ReactNode;
 }) {
   const { cache, demo, owner } = useProduct();
   const [history, setHistory] = useState<WorkspaceHistory>({}),
@@ -262,7 +272,24 @@ export default function ApprovedPortfolioChart({
             </div>
           </header>
           <div className={styles.toolbar}>
-            <label className={styles.benchmark}>
+            <div
+              className={styles.benchmarkSwitch}
+              role="group"
+              aria-label="Choose comparison benchmark"
+            >
+              {(["SPY", "QQQ"] as const).map((symbol) => (
+                <button
+                  key={symbol}
+                  type="button"
+                  aria-pressed={benchmark === symbol}
+                  onClick={() => setBenchmark(symbol)}
+                >
+                  <strong>{symbol}</strong>
+                  <span>{symbol === "SPY" ? "S&P 500" : "Nasdaq-100"}</span>
+                </button>
+              ))}
+            </div>
+            <label className={`${styles.benchmark} ${styles.mobileBenchmark}`}>
               <span>Market</span>
               <select
                 aria-label="Market benchmark"
@@ -644,6 +671,7 @@ export default function ApprovedPortfolioChart({
             )}
         </div>
       </section>
+      {children}
       {!loading && (
         <section className="card portfolio-range-panel">
           <PortfolioRange range={range} />

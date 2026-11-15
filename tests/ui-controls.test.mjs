@@ -640,15 +640,19 @@ test("News earnings do not infer estimate currency from a stock listing or compa
       React,
       amount: format.amount,
       dateLabel: format.dateLabel,
-      NewsAndFilings: empty,
+      NewsAndFilings: ({children}) => React.createElement("div",null,children),
+      earningsCalendar, s: {},
     },
   );
   const html = renderToStaticMarkup(
     React.createElement(Component, {
+      preview: true,
       research: {
+        company: { assetType: "stock" },
         quote: { currency: "USD" },
         retrievedAt: "2026-10-18",
         evidence: {
+          updatedAt: "2026-10-18",
           reportingCurrency: "EUR",
           earnings: [{ date: "2026-10-25", estimate: 1.25 }],
         },
@@ -1683,17 +1687,19 @@ test("News leads with company coverage before earnings and transaction records",
     {
       React,
       dateLabel: format.dateLabel,
-      NewsAndFilings: () =>
+      earningsCalendar, s: {},
+      NewsAndFilings: ({children}) =>
         React.createElement(
           "section",
           { "data-news": "first" },
-          "Company headlines and filings",
+          "Company headlines and filings", children,
         ),
     },
   );
   const html = renderToStaticMarkup(
     React.createElement(View, {
-      research: { retrievedAt: "2026-10-22", evidence: { earnings: [] } },
+      preview: true,
+      research: { company: { assetType: "stock" }, retrievedAt: "2026-10-22", evidence: { earnings: [] } },
     }),
   );
   assert.ok(

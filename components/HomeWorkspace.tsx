@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import HomeDailyBriefing from "./HomeDailyBriefing";
 import ContributionCompare from "./ContributionCompare";
 import HomeMarketCards from "./HomeMarketCards";
 import { MarketRadar } from "./MarketRadar";
@@ -102,7 +103,7 @@ function EarningsNumbers({
 function HomeOverview() {
   const [radarOpen, setRadarOpen] = useState(false);
   const state = useWorkspaceData(),
-    { workspace, quotes, model, prefix, demo, displayName, pace } = state;
+    { workspace, quotes, model, prefix, demo, displayName } = state;
   const today = new Date(
     demo
       ? Object.values(demo.research)[0]?.retrievedAt || Date.now()
@@ -152,20 +153,6 @@ function HomeOverview() {
     newsReady: readiness.newsReady && !feed.error,
     hasHoldings: !!workspace?.positions.length,
   });
-  const largest = model.allocations[0];
-  const signals = symbols
-    .map((symbol) => ({ symbol, signal: pace(symbol) }))
-    .filter(
-      (x) =>
-        x.signal?.view.permitted &&
-        x.signal.view.rawLevel != null &&
-        x.signal.view.rawLevel >= 2,
-    )
-    .sort(
-      (a, b) => (b.signal!.multiplier ?? -1) - (a.signal!.multiplier ?? -1),
-    );
-  const best = signals[0];
-
   const pastPending = (feed.data?.events ?? []).filter(
     (event) =>
       symbols.includes(event.symbol) &&
@@ -241,6 +228,27 @@ function HomeOverview() {
         />
       </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
+      <HomeDailyBriefing
+        today={day}
+        symbols={symbols}
+        checkpoints={brief.checkpoints}
+        loading={feed.loading}
+        eventsReady={readiness.eventsReady}
+        newsReady={readiness.newsReady}
+        error={!!feed.error}
+        retrievedAt={feed.data?.retrievedAt}
+        prefix={prefix}
+        demo={!!demo}
+      >
+        {!!workspace?.positions.length && (
+          <PortfolioDay
+            positions={workspace.positions}
+            quotes={quotes.data}
+            prefix={prefix}
+            now={today.getTime()}
+          />
+        )}
+      </HomeDailyBriefing>
       <div className={homeStyles.quickLinks}>
         <Link href={`${prefix}/discover`}>
           Discover ideas <ArrowUpRight size={16} />
@@ -251,61 +259,12 @@ function HomeOverview() {
         <Link href={`${prefix}/research`}>
           Research a company <SearchIcon size={16} />
         </Link>
-      </div>
-      {!!workspace?.positions.length && (
-        <PortfolioDay
-          positions={workspace.positions}
-          quotes={quotes.data}
-          prefix={prefix}
-          now={today.getTime()}
-        />
-      )}
-      <HomeMarketCards
-        symbols={symbols}
-        quotes={quotes.data}
-        research={loadedResearch}
-        prefix={prefix}
-      />
-      <ContributionCompare symbols={symbols} prefix={prefix} />
-      <p className={homeStyles.planLink}>
-        <Link className="text-link" href={`${prefix}/monthly-plan`}>
-          Build this month’s research plan →
+        <Link href="#home-workbench">
+          Research tools <ArrowUpRight size={16} />
         </Link>
-      </p>
-      <ResearchInbox
-        today={day}
-        events={feed.data?.events ?? []}
-        coverageIssue={!!feed.error || !readiness.eventsReady}
-      />
-      {loadedResearch.length > 0 && (
-        <details
-          className={homeStyles.marketRadar}
-          open={radarOpen}
-          onToggle={(event) => setRadarOpen(event.currentTarget.open)}
-        >
-          <summary>
-            Market radar{" "}
-            <span>
-              {loadedResearch.length} loaded companies · historical breadth &
-              rotation
-            </span>
-          </summary>
-          {radarOpen && (
-            <>
-              <OpportunityMap
-                research={loadedResearch}
-                requested={symbols}
-                prefix={prefix}
-                demo={!!demo}
-              />
-              <MarketRadar research={loadedResearch} asOf={day} />
-            </>
-          )}
-        </details>
-      )}
+      </div>
       {symbols.length > 0 && (
         <>
-          <Coverage state={state} />
           <div className="home-evidence-layout">
             <section
               className="home-evidence-panel home-events-panel"
@@ -447,15 +406,16 @@ function HomeOverview() {
             </section>
             <section
               className="home-evidence-panel home-news-panel"
-              aria-label="What changed"
+              aria-label="Company news"
+              id="home-news"
             >
               <SectionHead
-                title="What changed"
-                subtitle="Recent company updates, with the source attached."
+                title="Company news"
+                subtitle="Source-linked headlines. Context, not a trading signal."
                 action={
                   <span className="home-section-count">
                     {headlines.length
-                      ? `${headlines.length} updates`
+                      ? `${headlines.length} headlines`
                       : "This week"}
                   </span>
                 }
@@ -513,9 +473,71 @@ function HomeOverview() {
               )}
             </section>
           </div>
-          <PaceBoard {...state.paceScan} prefix={prefix} />
         </>
       )}
+      <HomeMarketCards
+        symbols={symbols}
+        quotes={quotes.data}
+        research={loadedResearch}
+        prefix={prefix}
+      />
+      <section
+        className={homeStyles.workbench}
+        id="home-workbench"
+        aria-label="Research tools and saved reviews"
+      >
+        <div className={homeStyles.workbenchHeading}>
+          <span>GO DEEPER</span>
+          <h2>Turn your briefing into a plan.</h2>
+          <p>Your saved reviews, contribution tools and full Pace scan.</p>
+        </div>
+        <ContributionCompare symbols={symbols} prefix={prefix} />
+        <p className={homeStyles.planLink}>
+          <Link className="text-link" href={`${prefix}/monthly-plan`}>
+            Build this month’s research plan →
+          </Link>
+        </p>
+        <ResearchInbox
+          today={day}
+          events={feed.data?.events ?? []}
+          coverageIssue={!!feed.error || !readiness.eventsReady}
+        />
+        {loadedResearch.length > 0 && (
+          <details
+            className={homeStyles.marketRadar}
+            open={radarOpen}
+            onToggle={(event) => setRadarOpen(event.currentTarget.open)}
+          >
+            <summary>
+              Market radar{" "}
+              <span>
+                {loadedResearch.length} loaded companies · historical breadth &
+                rotation
+              </span>
+            </summary>
+            {radarOpen && (
+              <>
+                <OpportunityMap
+                  research={loadedResearch}
+                  requested={symbols}
+                  prefix={prefix}
+                  demo={!!demo}
+                />
+                <MarketRadar research={loadedResearch} asOf={day} />
+              </>
+            )}
+          </details>
+        )}
+        {symbols.length > 0 && (
+          <PaceBoard {...state.paceScan} prefix={prefix} />
+        )}
+        {symbols.length > 0 && (
+          <details className={homeStyles.coverageDetails} id="home-coverage">
+            <summary>Research coverage & data sources</summary>
+            <Coverage state={state} />
+          </details>
+        )}
+      </section>
     </section>
   );
 }

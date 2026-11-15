@@ -1,6 +1,7 @@
 "use client";
 import { customerText } from "@/lib/customer-language";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
+import NewsCoverage from "./NewsCoverage";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -387,7 +388,13 @@ function Ownership({ research: r }: { research: Research }) {
     </section>
   );
 }
-export function NewsAndFilings({ research: r }: { research: Research }) {
+export function NewsAndFilings({
+  research: r,
+  children,
+}: {
+  research: Research;
+  children?: ReactNode;
+}) {
   const { demo } = useProduct();
   const preview = useMemo(
     () =>
@@ -416,88 +423,26 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
     demoFilings,
     3600000,
   );
-  const filingLabel = (filing: Filing) => {
-    if (/^10-Q(?:\/A)?$/i.test(filing.form)) return "Quarterly report";
-    if (/^10-K(?:\/A)?$/i.test(filing.form)) return "Annual report";
-    if (/^8-K(?:\/A)?$/i.test(filing.form)) return "Current report";
-    return filing.title;
-  };
   return (
-    <div className="au-two coverage-grid">
-      <section className="au-panel">
-        <header className="au-panel-head">
-          <h2>Recent coverage</h2>
-          <small>
-            {news.data?.items.length
-              ? `${Math.min(6, news.data.items.length)} articles`
-              : ""}
-          </small>
-        </header>
-        {news.data?.items.length ? (
-          news.data.items.slice(0, 6).map((n, i) => (
-            <a
-              className="source-row"
-              key={n.url + i}
-              href={n.url}
-              title={n.title}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>
-                <small>{dateLabel(n.date)}</small>
-                <strong>{n.title}</strong>
-              </span>
-              <ArrowUpRight size={17} />
-            </a>
-          ))
-        ) : (
-          <p className="au-caption">
-            {news.loading
-              ? "Loading recent coverage…"
-              : news.error || "No recent articles returned."}
-          </p>
-        )}
-      </section>
-      {r.company.assetType === "stock" && (
-        <section className="au-panel">
-          <header className="au-panel-head">
-            <h2>Source filings</h2>
-            <FileText size={18} />
-          </header>
-          {filings.data?.filings.length ? (
-            filings.data.filings.slice(0, 6).map((f) => (
-              <a
-                className="source-row"
-                key={f.url}
-                href={f.url}
-                title={f.title}
-                aria-label={`${f.form} · ${dateLabel(f.date)} · ${f.title}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span>
-                  <small>
-                    {f.form} · {dateLabel(f.date)}
-                  </small>
-                  <strong>{filingLabel(f)}</strong>
-                </span>
-                <ArrowUpRight size={17} />
-              </a>
-            ))
-          ) : (
-            <p className="au-caption">
-              {filings.loading
-                ? "Loading disclosures…"
-                : filings.error ||
-                  filings.data?.issues.join(" ") ||
-                  "No source filings returned."}
-            </p>
-          )}
-        </section>
-      )}
-    </div>
+    <NewsCoverage
+      key={r.company.symbol}
+      symbol={r.company.symbol}
+      name={r.company.name}
+      now={demo ? Date.parse(r.retrievedAt) : Date.now()}
+      news={news.data ?? undefined}
+      loading={news.loading}
+      error={news.error}
+      refresh={news.refresh}
+      filings={filings.data?.filings}
+      filingsLoading={filings.loading}
+      filingsError={filings.error || filings.data?.issues.join(" ")}
+      stock={r.company.assetType === "stock"}
+    >
+      {children}
+    </NewsCoverage>
   );
 }
+
 function CorporateActions({ symbol }: { symbol: string }) {
   const dividends = useGrow(symbol, "dividends"),
     splits = useGrow(symbol, "splits");

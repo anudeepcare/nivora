@@ -1,6 +1,6 @@
 .overview {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   align-items: start;
   margin: 16px 0 24px;
@@ -102,10 +102,16 @@
   margin: 6px 0 0;
 }
 .brief {
-  grid-column: 1 / -1;
+  min-width: 0;
 }
 .pillars {
-  grid-column: 1 / -1;
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+.pillars > section {
+  margin: 0;
 }
 .overviewMetrics {
   grid-column: 1 / -1;
@@ -209,5 +215,90 @@
   .researchTools > summary span {
     display: block;
     margin: 6px 0 0;
+  }
+}
+
+.decisionStage {
+  display: grid;
+  grid-template-columns: minmax(310px, 0.85fr) minmax(0, 1.3fr);
+  gap: 16px 22px;
+  padding: 22px;
+  border-radius: 24px;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--green) 7%, var(--card)),
+    var(--card) 60%
+  );
+  box-shadow: var(--panel-shadow);
+}
+.stageHeading {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px 18px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.stageHeading > span,
+.sectionIndex {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.stageHeading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.decisionStage .context {
+  margin-bottom: 0;
+}
+.decisionStage .paceColumn {
+  min-width: 0;
+}
+.decisionStage .paceColumn > section {
+  margin: 0;
+  min-height: 0;
+}
+.decisionStage .chart {
+  padding: 14px 0 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.caseWorkspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+.sectionIndex {
+  display: block;
+  margin-bottom: 8px;
+}
+.overviewMetrics {
+  padding-top: 14px;
+}
+@media (max-width: 1100px) {
+  .caseWorkspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .decisionStage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .decisionStage {
+    padding: 16px 12px;
+    border-radius: 18px;
+  }
+  .stageHeading p {
+    font-size: 11px;
+  }
+  .caseWorkspace {
+    gap: 14px;
   }
 }

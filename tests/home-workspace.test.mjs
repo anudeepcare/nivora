@@ -26,6 +26,7 @@ function load(name, bindings) {
     ResearchInbox: () => null,
     ContributionCompare: () => React.createElement("section", {"aria-label":"Compare your next contribution"}, "Compare companies"),
     HomeMarketCards: () => null,
+    HomeDailyBriefing: () => null,
     OpportunityMap: () => null,
     MarketRadar: () => null,
     PortfolioDay: () => null,

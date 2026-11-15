@@ -10,6 +10,7 @@ import { useProduct } from "./Session";
 import ResearchChanges from "./ResearchChanges";
 import ScenarioLenses from "./ScenarioLenses";
 import StockPillars from "./StockPillars";
+import ResearchConclusion from "./ResearchConclusion";
 import PaceInstrument from "./PaceInstrument";
 import s from "./ResearchOverview.module.css";
 import CompanyMetrics from "./CompanyMetrics";
@@ -17,7 +18,7 @@ import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import EvidenceCrystal from "./EvidenceCrystal";
 import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
-import { OverviewBrief, DataFreshness } from "./ResearchBrief";
+import { DataFreshness } from "./ResearchBrief";
 export default function IntegratedResearch({
   research: r,
   onTab,
@@ -58,73 +59,68 @@ export default function IntegratedResearch({
     d = m.decision;
   return (
     <div className={s.overview}>
-      <div className={s.context} aria-label="Decision context">
-        <button
-          type="button"
-          aria-pressed={decisionOwns}
-          onClick={() => setContext(true)}
-        >
-          {owns ? "For your holding" : "For an existing holding"}
-        </button>
-        <button
-          type="button"
-          aria-pressed={!decisionOwns}
-          onClick={() => setContext(false)}
-        >
-          For a new purchase
-        </button>
-      </div>
-      <div className={s.paceColumn}>
-        <PaceInstrument
-          key={`${r.company.symbol}:${decisionOwns}`}
-          research={r}
-          decision={d}
-          ownsPosition={decisionOwns}
-          now={now}
-          view={m.edge.pacePresentation}
-          readings={m.edge.pacePeriods}
-          onHistory={() => onTab("Technicals")}
-          branded
-        />
-      </div>
-      <div className={s.chart}>{chart}</div>
-      <div className={s.brief}>
-        <OverviewBrief
-          research={r}
-          now={now}
-          owns={decisionOwns}
-          decision={d}
-        />
-      </div>
-      <div className={s.pillars}>
-        <StockPillars research={r} decision={d} />
+      <section
+        className={s.decisionStage}
+        aria-label="Decision and market context"
+      >
+        <div className={s.stageHeading}>
+          <span>01 / THE DECISION</span>
+          <p>Business evidence first. Price context second.</p>
+        </div>
+        <div className={s.context} aria-label="Decision context">
+          <button
+            type="button"
+            aria-pressed={decisionOwns}
+            onClick={() => setContext(true)}
+          >
+            {owns ? "For your holding" : "For an existing holding"}
+          </button>
+          <button
+            type="button"
+            aria-pressed={!decisionOwns}
+            onClick={() => setContext(false)}
+          >
+            For a new purchase
+          </button>
+        </div>
+        <div className={s.paceColumn}>
+          <PaceInstrument
+            key={`${r.company.symbol}:${decisionOwns}`}
+            research={r}
+            decision={d}
+            ownsPosition={decisionOwns}
+            now={now}
+            view={m.edge.pacePresentation}
+            readings={m.edge.pacePeriods}
+            onHistory={() => onTab("Technicals")}
+            branded
+          />
+        </div>
+        <div className={s.chart}>{chart}</div>
+      </section>
+      <div className={s.caseWorkspace}>
+        <div className={s.brief}>
+          <ResearchConclusion decision={d} asOf={r.retrievedAt} onTab={onTab} />
+        </div>
+        <div className={s.pillars}>
+          <StockPillars research={r} decision={d} />
+          {showConsensus && <AnalystTargets research={r} />}
+        </div>
       </div>
       <section
         className={s.overviewMetrics}
         aria-label="Company metrics and research sections"
       >
         <header className={s.sectionHeading}>
-          <h2>Company at a glance</h2>
+          <div>
+            <small className={s.sectionIndex}>02 / THE EVIDENCE</small>
+            <h2>Company at a glance</h2>
+          </div>
           <span>Dated metrics · open any label for its basis</span>
         </header>
         <CompanyMetrics research={r} />
         <ResearchEvidenceGrid research={r} onTab={onTab} />
       </section>
-      {showConsensus && (
-        <div className={s.consensusRow}>
-          <AnalystTargets research={r} />
-        </div>
-      )}
-      {d.risks.length > 0 && (
-        <section className={s.decisionNotes} aria-label="Risks to review">
-          <h2>What needs attention</h2>
-          <ul>
-            {d.risks.map((risk) => (
-              <li key={risk}>{risk}</li>
-            ))}
-          </ul>
-        </section>
-      )}
       <div className={s.changes}>
         <ResearchChanges
           research={r}

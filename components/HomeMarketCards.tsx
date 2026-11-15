@@ -333,10 +333,12 @@ export default function HomeMarketCards({
         <div>
           <span className={styles.eyebrow}>
             <ChartNoAxesCombined size={15} aria-hidden="true" />{" "}
-            {context === "research" ? "SAVED COMPANIES" : "THE BIG PICTURE"}
+            {context === "research" ? "SAVED COMPANIES" : "YOUR COMPANIES"}
           </span>
           <h2 id="home-market-pulse">
-            {context === "research" ? "Saved companies" : "Market pulse"}
+            {context === "research"
+              ? "Saved companies"
+              : "Companies you follow"}
           </h2>
           <p>
             {selected.length

@@ -939,3 +939,116 @@
     display: block;
   }
 }
+
+/* Daily briefing → evidence → optional workbench, rather than a stack of tools. */
+.workbench {
+  scroll-margin-top: 90px;
+  margin-top: 32px;
+  padding: 24px;
+  border-radius: 22px;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--workspace-violet) 7%, var(--card)),
+    var(--card) 65%
+  );
+}
+.workbenchHeading {
+  margin-bottom: 22px;
+}
+.workbenchHeading > span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--workspace-violet);
+}
+.workbenchHeading h2 {
+  font-size: 24px;
+  letter-spacing: -0.035em;
+  margin: 8px 0;
+}
+.workbenchHeading p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+.coverageDetails {
+  margin-top: 16px;
+  scroll-margin-top: 90px;
+}
+.coverageDetails summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 16px 0;
+  min-height: 44px;
+}
+.home.home.home.home :global(.home-evidence-layout) {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.15fr);
+  align-items: stretch;
+  gap: 18px;
+  margin: 22px 0;
+}
+.home.home.home.home :global(.home-evidence-panel) {
+  padding: 24px;
+  border-radius: 20px;
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--blue) 4%, var(--card)),
+    var(--card) 55%
+  );
+  box-shadow: var(--panel-shadow);
+  scroll-margin-top: 90px;
+}
+.home.home.home.home :global(.home-events-panel) {
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--workspace-violet) 7%, var(--card)),
+    var(--card) 65%
+  );
+}
+.home.home.home.home :global(.home-news-list article:first-child) {
+  border-top: 0;
+  padding-top: 0;
+}
+.home.home.home.home
+  :global(.home-news-list article:first-child .home-news-title) {
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+}
+.home.home.home.home
+  :global(.home-news-list article:not(:first-child) .home-news-title) {
+  font-size: 14px;
+}
+.home.home.home.home :global(.home-event-day:first-child) {
+  border-top: 0;
+  padding-top: 0;
+}
+.home.home.home.home :global(.home-event-day > time) {
+  font-weight: 650;
+  color: var(--workspace-violet);
+}
+@media (max-width: 900px) {
+  .home.home.home.home :global(.home-evidence-layout) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workbench {
+    scroll-margin-top: 90px;
+    padding: 18px;
+  }
+  .home.home.home.home :global(.home-evidence-panel) {
+    padding: 20px;
+  }
+}
+@media (max-width: 600px) {
+  .home.home.home.home :global(.home-evidence-panel) {
+    padding: 18px 16px;
+  }
+  .workbench {
+    scroll-margin-top: 90px;
+    padding: 16px 12px;
+  }
+  .workbenchHeading h2 {
+    font-size: 21px;
+  }
+}

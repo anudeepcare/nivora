@@ -1,0 +1,50 @@
+.events {
+  min-width: 0;
+}
+.eventLayout {
+  display: grid;
+  gap: 22px;
+}
+.eventLayout h3 {
+  font-size: 12px;
+  font-weight: 650;
+  margin: 0 0 8px;
+}
+.next {
+  padding: 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--green) 6%, var(--card));
+}
+.next > p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.next small {
+  display: block;
+  font-size: 11px;
+}
+.transactions :global(.stat-pair) {
+  display: grid;
+  gap: 5px;
+  padding: 12px 0;
+  min-width: 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.transactions :global(.stat-pair) > strong {
+  font-size: 12px;
+  text-align: left;
+}
+.transactions details {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.transactions summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}

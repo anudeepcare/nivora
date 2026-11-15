@@ -1,0 +1,39 @@
+{
+  "modified": [
+    "README.md",
+    "RELEASE-CURRENT.md",
+    "components/ApprovedPortfolioChart.tsx",
+    "components/CompanyUpdates.tsx",
+    "components/HomeMarketCards.tsx",
+    "components/HomeWorkspace.module.css",
+    "components/HomeWorkspace.tsx",
+    "components/IntegratedResearch.tsx",
+    "components/PortfolioChart.module.css",
+    "components/PortfolioPage.tsx",
+    "components/PortfolioWorkspace.module.css",
+    "components/ResearchEvidence.tsx",
+    "components/ResearchOverview.module.css",
+    "tests/active-overview-integration.test.mjs",
+    "tests/home-workspace.test.mjs",
+    "tests/ui-controls.test.mjs"
+  ],
+  "added": [
+    "EXPERIENCE-REDESIGN-20261115.md",
+    "components/CompanyUpdates.module.css",
+    "components/HomeDailyBriefing.module.css",
+    "components/HomeDailyBriefing.tsx",
+    "components/NewsCoverage.module.css",
+    "components/NewsCoverage.tsx",
+    "components/ResearchConclusion.module.css",
+    "components/ResearchConclusion.tsx",
+    "components/portfolio-read.ts",
+    "docs/superpowers/plans/2026-11-15-experience-recomposition.md",
+    "lib/home-briefing.ts",
+    "lib/news-desk.ts",
+    "tests/experience-recomposition.test.mjs",
+    "tests/home-briefing.test.mjs",
+    "tests/news-desk.test.mjs",
+    "tests/portfolio-command-center.test.mjs"
+  ],
+  "protected_changes": []
+}

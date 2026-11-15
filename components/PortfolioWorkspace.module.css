@@ -1140,3 +1140,335 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Portfolio command center: one chart/read row, one composition row, a broad ledger. */
+.balanceDeck {
+  display: grid;
+  grid-template-columns: minmax(250px, 1.05fr) minmax(0, 2.5fr);
+  gap: 0;
+  margin-bottom: 22px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: 0 10px 40px #142e2310;
+}
+.netBalance {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 13px;
+  padding: 27px;
+  background:
+    radial-gradient(ellipse at 100% 0, #7dd9c044, transparent 70%),
+    linear-gradient(135deg, #123a37, #1f3146);
+  color: #f4fff5;
+}
+.netBalance > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: #c9e8d8;
+}
+.netBalance > strong {
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+}
+.netBalance > small {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #bfdbd0;
+}
+.balanceMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 20px;
+  padding: 25px;
+}
+.balanceMetrics > div {
+  min-width: 0;
+}
+.balanceMetrics span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.balanceMetrics strong {
+  display: block;
+  margin: 10px 0;
+  font-size: clamp(18px, 1.8vw, 26px);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.balanceMetrics small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.portfolio.portfolio.portfolio :global(.portfolio-grid) {
+  gap: 20px;
+  align-items: stretch;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-grid .portfolio-trend-panel) {
+  grid-column: 1 / 9;
+  grid-row: 1;
+  border: 0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 30px #152e2207;
+}
+.portfolioRead {
+  grid-column: 9 / -1;
+  grid-row: 1;
+  padding: 27px;
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      ellipse at 100% 0,
+      color-mix(in srgb, #a3a1e6 19%, transparent),
+      transparent 75%
+    ),
+    var(--card);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.readEyebrow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.portfolioRead h2 {
+  font-size: clamp(24px, 2.3vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+  margin: 22px 0 14px;
+}
+.portfolioRead > p {
+  margin: 0 0 20px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.portfolioRead dl {
+  width: 100%;
+  margin: 0 0 20px;
+}
+.portfolioRead dl > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.portfolioRead dt {
+  color: var(--muted);
+}
+.portfolioRead dd {
+  margin: 0;
+  font-weight: 650;
+}
+.portfolioRead > small {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-top: 16px;
+}
+.readLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--card);
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  margin-top: auto;
+  width: 100%;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.portfolio.portfolio.portfolio
+  :global(.portfolio-grid .portfolio-sidebar .card) {
+  grid-column: auto;
+  grid-row: auto;
+  border: 0;
+  border-radius: 18px;
+  padding: 24px;
+}
+.portfolio.portfolio.portfolio
+  :global(.portfolio-grid > .portfolio-range-panel) {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  border: 0;
+  border-radius: 18px;
+}
+.portfolio.portfolio.portfolio
+  :global(.portfolio-grid > .portfolio-holdings-panel) {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  border: 0;
+  border-radius: 18px;
+  scroll-margin-top: 90px;
+}
+.portfolio.portfolio.portfolio :global(.allocation-track) {
+  height: 20px;
+  border-radius: 7px;
+  margin: 20px 0;
+}
+.portfolio.portfolio.portfolio :global(.allocation-row) {
+  min-height: 40px;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-exposure-rows) {
+  gap: 15px;
+  margin: 20px 0;
+}
+.portfolio.portfolio.portfolio :global(.portfolio-exposure-track) {
+  height: 10px;
+}
+.decisionDrawer {
+  margin-top: 20px;
+  border-radius: 16px;
+  background: var(--card);
+  padding: 20px 24px;
+}
+.decisionDrawer > summary {
+  cursor: pointer;
+  font-weight: 650;
+  font-size: 14px;
+}
+.decisionDrawer > summary small {
+  margin-left: 16px;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 12px;
+}
+.decisionDrawer[open] > summary {
+  margin-bottom: 20px;
+}
+@media (max-width: 1150px) {
+  .balanceMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
+  }
+  .portfolioRead {
+    padding: 22px;
+  }
+}
+@media (max-width: 900px) {
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-trend-panel) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .portfolioRead {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .portfolioRead h2 {
+    margin-top: 14px;
+  }
+  .portfolioRead dl {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .portfolioRead dl > div {
+    display: block;
+  }
+  .portfolioRead dd {
+    margin-top: 7px;
+  }
+  .readLink {
+    width: auto;
+  }
+  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
+    grid-row: 3;
+  }
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid > .portfolio-range-panel) {
+    grid-row: 5;
+  }
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid > .portfolio-holdings-panel) {
+    grid-row: 4;
+  }
+}
+@media (max-width: 600px) {
+  .balanceDeck {
+    grid-template-columns: minmax(0, 1fr);
+    margin-bottom: 16px;
+  }
+  .netBalance {
+    padding: 23px;
+    gap: 10px;
+  }
+  .netBalance > strong {
+    font-size: 38px;
+  }
+  .balanceMetrics {
+    padding: 20px;
+    gap: 22px;
+  }
+  .balanceMetrics strong {
+    font-size: 23px;
+    margin: 6px 0;
+  }
+  .portfolio.portfolio.portfolio :global(.portfolio-grid) {
+    gap: 16px;
+  }
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-trend-panel) {
+    padding: 20px 14px;
+  }
+  .portfolioRead {
+    padding: 22px;
+  }
+  .portfolioRead dl {
+    display: block;
+  }
+  .portfolioRead dl > div {
+    display: flex;
+  }
+  .portfolioRead dd {
+    margin-top: 0;
+  }
+  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-sidebar .card) {
+    padding: 22px;
+  }
+  .decisionDrawer {
+    padding: 20px;
+  }
+  .decisionDrawer > summary small {
+    display: block;
+    margin: 7px 0 0;
+  }
+}

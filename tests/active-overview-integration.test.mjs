@@ -54,6 +54,7 @@ function setup() {
     scenarioHeadline: () => null,
     StockPillars: marker("pillars"),
     OverviewBrief: marker("brief"),
+    ResearchConclusion: marker("conclusion"),
     PaceInstrument: marker("pace"),
     ResearchChanges: marker("changes"),
     EvidenceCrystal: marker("crystal"),
