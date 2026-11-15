@@ -1,0 +1,43 @@
+{
+  "candidate": "AURYN-opal-reliability-20261115",
+  "date": "2026-11-15",
+  "scope": "Cold-entry login CSS ownership, honest scenario missing/invalid-evidence reasons, shared opal/ink/iris palette and panel alignment across route families; screenshots are examples not scope limits.",
+  "checks": {
+    "finalLint": "passed; exit 0",
+    "finalFormat": "passed; exit 0",
+    "finalTests": {
+      "passed": 1627,
+      "failed": 0,
+      "skipped": 0
+    },
+    "finalTypecheck": "passed; exit 0",
+    "finalProductionBuild": "passed; exit 0",
+    "finalControlledApiSuite": "passed; exit 0; synthetic identity/database/provider transports",
+    "initialAggregate": "passed; subsequent final-stage reruns include all review corrections"
+  },
+  "integrity": {
+    "baselineArchiveFilesVerified": 1602,
+    "baselineSourceRemoved": false,
+    "financialTargetCalculationsChanged": false,
+    "financialDataFabricated": false,
+    "deployments": 0,
+    "realAccountMutations": 0
+  },
+  "browser": {
+    "status": "not verified; Chromium launch blocked by OS socket restriction",
+    "screenshotsInspected": 8,
+    "finalScreenshotsProduced": 0
+  },
+  "notVerified": [
+    "Final browser-rendered composition and interaction across all routes/states",
+    "Real sign-in, Back/Forward and refresh behavior in production",
+    "Physical-device/PWA acceptance",
+    "Exact production FPS payload or intermittent missing-data cause",
+    "Live market-provider/account/billing behavior"
+  ],
+  "warnings": [
+    "Existing Next ESLint plugin detection notice; explicit lint passes",
+    "npm http-proxy environment warning"
+  ],
+  "independentReview": "No remaining blocker in scoped source review. Invalid-vs-missing analyst reason, visible panel stretching and sampled remaining palette issues corrected; eight focused auth/scenario tests passed on recheck. Not rendered/device acceptance."
+}

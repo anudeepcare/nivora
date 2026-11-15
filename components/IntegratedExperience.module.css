@@ -1048,13 +1048,13 @@
   width: 8px;
   height: 8px;
   transform: rotate(45deg);
-  background: #accb38;
+  background: #9481d5;
 }
 .hero {
   position: relative;
   background:
-    radial-gradient(ellipse at 85% 22%, #76b6aa12, transparent 50%),
-    radial-gradient(ellipse at 10% 80%, #d6f35a14, transparent 45%);
+    radial-gradient(ellipse at 85% 22%, #9296e512, transparent 50%),
+    radial-gradient(ellipse at 10% 80%, #b9abff14, transparent 45%);
 }
 .heroVisual {
   position: relative;
@@ -1072,8 +1072,8 @@
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(ellipse at 2% 10%, #d6f35a30, transparent 48%),
-    radial-gradient(ellipse at 95% 90%, #76b6aa3a, transparent 48%);
+    radial-gradient(ellipse at 2% 10%, #b9abff30, transparent 48%),
+    radial-gradient(ellipse at 95% 90%, #9296e53a, transparent 48%);
   border-radius: 28px;
   overflow: visible;
 }
@@ -1091,7 +1091,7 @@
   margin-top: 24px;
 }
 .heroActions > a:first-child {
-  background: #d6f35a;
+  background: #b9abff;
   color: #24272b;
   border: 1px solid #c2db55;
   box-shadow: 0 6px 20px #71832418;
@@ -1111,15 +1111,15 @@
   font-weight: 600;
   padding: 15px 10px;
   border-radius: 12px;
-  background: #d6f35a45;
+  background: #b9abff45;
   color: #353b20;
 }
 .brandSpectrum span:nth-child(2) {
-  background: #76b6aa3d;
+  background: #9296e53d;
   color: #604280;
 }
 .brandSpectrum span:nth-child(3) {
-  background: #a8ddc04a;
+  background: #9fdbed4a;
   color: #27674c;
 }
 @media (max-width: 600px) {
@@ -1197,9 +1197,9 @@
   font-size: 12px;
 }
 .discoveryPreview :global(.signal-demo-tabs) button[aria-selected="true"] {
-  background: #d6f35a;
+  background: #b9abff;
   color: #24272b;
-  border-color: #d6f35a;
+  border-color: #b9abff;
 }
 .discoveryPreview :global(.signal-demo-content) {
   padding: 5px;
@@ -1221,7 +1221,7 @@
 .discoveryPreview :global(.signal-demo-number) {
   font-size: 10px;
   letter-spacing: 0.12em;
-  color: #76b6aa;
+  color: #9296e5;
 }
 .discoveryPreview :global(.signal-demo-evidence) {
   display: grid;
@@ -1243,11 +1243,11 @@
   font-weight: 500;
 }
 .discoveryPreview :global(.signal-demo-evidence) span {
-  color: #a8ddc0;
+  color: #9fdbed;
   font-size: 11px;
 }
 .discoveryPreview :global(.signal-demo-evidence) svg {
-  color: #d6f35a;
+  color: #b9abff;
 }
 .discoveryPreview :global(.signal-demo-footer) {
   display: flex;
@@ -1270,7 +1270,7 @@
   color: #f7f8f5;
 }
 .hero .discoveryPreview :global(.signal-demo-header) svg {
-  color: #d6f35a;
+  color: #b9abff;
 }
 
 /* Footer is a compact closing element. */

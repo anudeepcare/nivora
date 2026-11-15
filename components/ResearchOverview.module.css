@@ -107,7 +107,6 @@
 .pillars {
   min-width: 0;
   display: grid;
-  align-content: start;
   gap: 16px;
 }
 .pillars > section {
@@ -267,8 +266,8 @@
 }
 .caseWorkspace {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
   gap: var(--workspace-gap, 20px);
 }
 .sectionIndex {
@@ -340,11 +339,33 @@
 }
 
 .brief {
-  display: flex;
+  display: grid;
 }
 .brief > section {
   width: 100%;
+  margin: 0;
 }
-.pillars {
-  gap: var(--workspace-gap);
+/* Flatten only the layout wrapper: both lead panels occupy row one;
+   consensus gets its own row instead of stretching the 30-second read. */
+.caseWorkspace > .pillars {
+  display: contents;
+}
+.caseWorkspace > .brief {
+  grid-column: 1;
+  grid-row: 1;
+}
+.caseWorkspace > .pillars > section {
+  grid-column: 2;
+  grid-row: 1;
+}
+.caseWorkspace .consensusDetails {
+  grid-column: 2;
+}
+@media (max-width: 1100px) {
+  .caseWorkspace > .brief,
+  .caseWorkspace > .pillars > section,
+  .caseWorkspace .consensusDetails {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }

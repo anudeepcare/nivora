@@ -6,7 +6,7 @@
   border: 1px solid #454e48;
   border-radius: 20px;
   background:
-    radial-gradient(ellipse at 100% 0, #d6f35a0d, transparent 65%), #222a28;
+    radial-gradient(ellipse at 100% 0, #b9abff0d, transparent 65%), #20243b;
   color: #f7f8f5;
   font-family: var(--font-ui);
 }
@@ -58,7 +58,7 @@
   font-size: clamp(30px, 3vw, 42px);
   line-height: 1.15;
   letter-spacing: -0.04em;
-  color: #d6f35a;
+  color: #b9abff;
   overflow-wrap: anywhere;
 }
 .level {
@@ -67,9 +67,9 @@
   justify-content: center;
   margin-left: 12px;
   padding: 6px 10px;
-  border: 1px solid #d6f35a55;
+  border: 1px solid #b9abff55;
   border-radius: 10px;
-  background: #d6f35a0d;
+  background: #b9abff0d;
   font-size: 25px;
   letter-spacing: -0.03em;
   vertical-align: middle;
@@ -115,10 +115,10 @@
   order: 1;
   width: 17px;
   height: 17px;
-  background: #222a28;
+  background: #20243b;
 }
 .stage[aria-pressed="true"] {
-  color: #d6f35a;
+  color: #b9abff;
 }
 .stage[aria-pressed="true"] strong {
   font-weight: 750;
@@ -142,7 +142,7 @@
   gap: 6px;
 }
 .status svg {
-  color: #d6f35a;
+  color: #b9abff;
 }
 .status small {
   font-size: 11px;
@@ -212,7 +212,7 @@
 }
 .readingDetail summary::after {
   content: "+";
-  color: #d6f35a;
+  color: #b9abff;
   font-size: 20px;
   font-weight: 400;
 }
@@ -244,7 +244,7 @@
 }
 .instrument button:focus-visible,
 .instrument summary:focus-visible {
-  outline: 2px solid #d6f35a;
+  outline: 2px solid #b9abff;
   outline-offset: 3px;
 }
 .compact {
@@ -270,10 +270,10 @@
 .instrument.instrument {
   border: 0;
   box-shadow: none;
-  --decision-ink: #d6f35a;
+  --decision-ink: #b9abff;
 }
 .zoneContext {
-  color: #a9b9ae;
+  color: #b7c0da;
   font-size: 11px;
   margin: 10px 0 0;
   line-height: 1.4;
@@ -292,7 +292,7 @@
 }
 .reason {
   max-width: 48ch;
-  color: #e1e7e2;
+  color: #e0e5f7;
   font-size: 14px;
   line-height: 1.6;
   margin: 15px 0 0;
@@ -305,15 +305,15 @@
 .instrument.instrument {
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 100% 0%, #71c8ad44 0%, transparent 58%),
-    radial-gradient(ellipse at 82% 100%, #71845c30 0%, transparent 55%),
-    linear-gradient(130deg, #15282b 0%, #1c3836 48%, #293b32 100%);
+    radial-gradient(ellipse at 100% 0%, #9786e744 0%, transparent 58%),
+    radial-gradient(ellipse at 82% 100%, #639ab630 0%, transparent 55%),
+    linear-gradient(130deg, #161e36 0%, #2b2b50 48%, #343355 100%);
 }
 .instrument.instrument[data-tone="caution"] {
   background:
-    radial-gradient(ellipse at 100% 0%, #b0a65032, transparent 58%),
-    radial-gradient(ellipse at 100% 100%, #3eaa9d28, transparent 55%),
-    linear-gradient(130deg, #14282d, #223835 55%, #353d2d);
+    radial-gradient(ellipse at 100% 0%, #bba0e632, transparent 58%),
+    radial-gradient(ellipse at 100% 100%, #81a6da28, transparent 55%),
+    linear-gradient(130deg, #1b203b, #303052 55%, #423752);
 }
 .instrument.instrument[data-tone="risk"] {
   background:

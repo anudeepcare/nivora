@@ -3,7 +3,7 @@
 .content.content.content {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  align-items: start;
+  align-items: stretch;
   gap: var(--workspace-gap, 20px);
   margin-top: var(--workspace-gap, 20px);
 }

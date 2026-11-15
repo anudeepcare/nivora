@@ -43,7 +43,7 @@
   border-radius: 12px;
   background: linear-gradient(
     140deg,
-    color-mix(in srgb, #a8ddc0 24%, var(--card)),
+    color-mix(in srgb, #9fdbed 24%, var(--card)),
     var(--card)
   );
 }

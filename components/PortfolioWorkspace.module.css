@@ -357,10 +357,10 @@
   background:
     radial-gradient(ellipse at 100% 0%, #414c51, transparent 70%),
     linear-gradient(135deg, #293338, #192126);
-  color: #f3f7ee;
-  --ink: #f3f7ee;
-  --muted: #cbd8cd;
-  --line: #526b5a;
+  color: #f2f3ff;
+  --ink: #f2f3ff;
+  --muted: #c2cbe0;
+  --line: #505e80;
   --green: #83d8b3;
   --red: #ffb6af;
 }
@@ -368,7 +368,7 @@
   :global(.wealth-strip.four)
   > div:first-child
   svg {
-  color: #d8edab;
+  color: #c9beff;
 }
 .portfolio.portfolio.portfolio.portfolio
   :global(.wealth-strip.four)

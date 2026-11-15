@@ -7,13 +7,13 @@ const block=(s,selector)=>s.slice(s.indexOf(selector)).split('}')[0];
 const token=(s,key)=>s.match(new RegExp(`--${key}: (#[a-f0-9]{6});`))?.[1];
 const luminance=h=>h.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0);
 const contrast=(a,b)=>(Math.max(luminance(a),luminance(b))+.05)/(Math.min(luminance(a),luminance(b))+.05);
-test('Citron settings and rendered accent agree in both themes',()=>{
+test('Iris settings and rendered accent agree in both themes',()=>{
   const css=read('app/appearance.css');
   for(const [selector,value] of [[':root[data-accent="blue"]',accents.blue.light],[':root[data-theme="dark"][data-accent="blue"]',accents.blue.dark]]) assert.equal(token(block(css,selector),'blue'),value);
 });
-test('brand canvas uses bounded pearl and forest surfaces with readable semantic text',()=>{
+test('brand canvas uses bounded opal and ink surfaces with readable semantic text',()=>{
   const css=read('app/core/tokens.css');
-  for(const [selector,bg] of [[':root[data-theme="light"]','#f1f3ee'],[':root[data-theme="dark"]','#151e1b']]){
+  for(const [selector,bg] of [[':root[data-theme="light"]','#eef0f8'],[':root[data-theme="dark"]','#101527']]){
     const t=block(css,selector); assert.equal(token(t,'bg'),bg);
     for(const name of ['ink','muted','positive','negative','neutral','warning']) for(const surface of ['card','surface']) assert.ok(contrast(token(t,name),token(t,surface))>=4.5,`${selector}: ${name} on ${surface}`);
   }
@@ -37,8 +37,8 @@ test('primary navigation selection is a persistent filled surface and loading us
  assert.match(css,/a\[aria-current="page"\][^}]+color: var\(--nav-active-ink\)/);
 });
 test('changed offline palette is installed as a fresh shell version',()=>{
- assert.match(read('public/sw.js'), /const OFFLINE_CACHE = "auryn-offline-v7"/);
- assert.match(read('app/layout.tsx'), /manifest.webmanifest\?v=20261115-brand/);
+ assert.match(read('public/sw.js'), /const OFFLINE_CACHE = "auryn-offline-v8"/);
+ assert.match(read('app/layout.tsx'), /manifest.webmanifest\?v=20261115-opal/);
 });
 test('optional appearance accents continue to color navigation with readable selected text',()=>{
  const css=read('app/appearance.css');

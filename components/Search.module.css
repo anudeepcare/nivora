@@ -68,7 +68,7 @@
 .search > :global(form.search-box):focus-within {
   outline: none;
   border-color: #227f73;
-  box-shadow: 0 0 0 3px #76b6aa26;
+  box-shadow: 0 0 0 3px #9296e526;
 }
 .search > :global(form.search-box) input:focus {
   outline: none;

@@ -62,6 +62,6 @@
   display: none;
 }
 .sections.sections button:not([aria-current="page"]):hover {
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--interaction-hover);
+  color: var(--blue);
 }

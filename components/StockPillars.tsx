@@ -105,7 +105,7 @@ export default function StockPillars({
               <strong className={s.unavailable}>Not available</strong>
             </div>
           ))}
-          <p>More company evidence is needed for a supported scenario range.</p>
+          <p role="status">{view.casesUnavailableReason}</p>
         </div>
       )}
       {!casesOnly && (

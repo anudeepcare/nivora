@@ -72,7 +72,8 @@ test('foundation preserves geometry and font cascade while the shared palette ev
     '--line', '--border', '--positive', '--negative', '--neutral', '--warning',
     '--green', '--green-soft', '--red', '--red-soft', '--amber', '--amber-soft', '--cyan', '--cyan-soft',
     '--blue', '--blue-soft', '--accent-solid', '--business-icon', '--financial-icon', '--valuation-icon', '--ownership-icon',
-    '--business-fill', '--financial-fill', '--valuation-fill', '--ownership-fill'
+    '--business-fill', '--financial-fill', '--valuation-fill', '--ownership-fill',
+    '--citron', '--orchid', '--jade', '--brand-gradient', '--interaction-hover', '--pace-fill'
   ]);
   for (const root of [before, after]) {
     root.walkDecls(decl => {

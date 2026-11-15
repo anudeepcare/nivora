@@ -24,7 +24,7 @@
   margin: 7px 0;
 }
 .eyebrow {
-  color: var(--business-icon, #76b6aa);
+  color: var(--business-icon, #9296e5);
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -35,7 +35,7 @@
   border-radius: 20px;
   padding: 7px 11px;
   white-space: nowrap;
-  background: color-mix(in srgb, #76b6aa 9%, var(--card));
+  background: color-mix(in srgb, #9296e5 9%, var(--card));
 }
 .controls {
   display: flex;
@@ -45,9 +45,9 @@
   margin: 16px 0;
 }
 .controls button {
-  border: 1px solid #76b6aa;
+  border: 1px solid #9296e5;
   border-radius: 9px;
-  background: color-mix(in srgb, #76b6aa 14%, var(--card));
+  background: color-mix(in srgb, #9296e5 14%, var(--card));
   color: var(--ink);
   padding: 10px 16px;
   cursor: pointer;
@@ -124,7 +124,7 @@
 .scroll th {
   color: var(--muted);
   font-weight: 500;
-  background: color-mix(in srgb, #76b6aa 6%, var(--card));
+  background: color-mix(in srgb, #9296e5 6%, var(--card));
 }
 .scroll tr:last-child td {
   border-bottom: 0;
@@ -151,7 +151,7 @@
   border-top: 1px solid var(--line);
 }
 .ranking strong {
-  color: var(--business-icon, #76b6aa);
+  color: var(--business-icon, #9296e5);
 }
 .ranking li > span:last-child {
   color: var(--muted);
@@ -164,7 +164,7 @@
 }
 .tape :is(button, input, select, summary):focus-visible,
 .scroll:focus-visible {
-  outline: 2px solid #76b6aa;
+  outline: 2px solid #9296e5;
   outline-offset: 3px;
 }
 @media (max-width: 650px) {

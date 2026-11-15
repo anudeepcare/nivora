@@ -63,7 +63,7 @@ body .approved-research-page .funding-metrics > section {
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: color-mix(in srgb, #a8ddc0 12%, var(--card));
+  background: color-mix(in srgb, #9fdbed 12%, var(--card));
 }
 body .approved-research-page .funding-basis {
   display: flex;
@@ -93,7 +93,7 @@ body .approved-research-page .analyst-summary > div {
   padding: 18px;
   border: 0;
   border-radius: 12px;
-  background: color-mix(in srgb, #76b6aa 10%, var(--card));
+  background: color-mix(in srgb, #9296e5 10%, var(--card));
 }
 body .approved-research-page .chart-context {
   margin: 10px 0 0;
@@ -129,7 +129,7 @@ body .approved-research-page .ask-auryn {
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: color-mix(in srgb, #76b6aa 8%, var(--card));
+  background: color-mix(in srgb, #9296e5 8%, var(--card));
   margin: 18px 0;
 }
 body .approved-research-page .ask-auryn .prompt-row {
@@ -342,7 +342,7 @@ body
 }
 body .mp-auth-shell {
   background:
-    radial-gradient(ellipse at 15% 0, #a8ddc030, transparent 60%),
+    radial-gradient(ellipse at 15% 0, #9fdbed30, transparent 60%),
     var(--surface-2);
 }
 body :is(.settings-page, .approved-workspace, .approved-research-page) h3 {

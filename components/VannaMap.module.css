@@ -203,7 +203,7 @@
   min-height: 78px;
   margin: 16px 0;
   padding: 14px 16px;
-  background: color-mix(in srgb, #76b6aa 8%, var(--card));
+  background: color-mix(in srgb, #9296e5 8%, var(--card));
   border-radius: 10px;
 }
 .inspector strong {

@@ -47,8 +47,8 @@
   background: color-mix(in srgb, #d99839 16%, transparent);
 }
 [data-tone="pace"] .icon {
-  background: #19271f;
-  color: #d2f58b;
+  background: #20243b;
+  color: #c7baff;
 }
 .label {
   display: block;

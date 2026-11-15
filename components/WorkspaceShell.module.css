@@ -94,7 +94,7 @@
 }
 .shell .header .nav a:not([aria-current="page"]):hover {
   color: var(--blue);
-  background: var(--workspace-control);
+  background: var(--interaction-hover);
 }
 .shell .searchTrigger {
   margin-left: auto;
@@ -141,7 +141,7 @@
   text-decoration: none;
 }
 .shell .actions :is(button, a):hover {
-  background: var(--workspace-control);
+  background: var(--interaction-hover);
 }
 .shell .actions button:last-child {
   background: var(--workspace-control);
@@ -197,7 +197,7 @@
 }
 .shell .toolsDialog::backdrop,
 .shell .searchDialog::backdrop {
-  background: #14221b66;
+  background: #171d3466;
   backdrop-filter: blur(5px);
 }
 .shell :is(.toolsDialog, .searchDialog) > :global(.dialog-head) {

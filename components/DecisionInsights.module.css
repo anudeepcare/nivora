@@ -206,10 +206,10 @@
 .evidence > div {
   padding: 16px;
   border-radius: 12px;
-  background: color-mix(in srgb, #76b6aa 10%, var(--card));
+  background: color-mix(in srgb, #9296e5 10%, var(--card));
 }
 .evidence > div:nth-child(2) {
-  background: color-mix(in srgb, #a8ddc0 18%, var(--card));
+  background: color-mix(in srgb, #9fdbed 18%, var(--card));
 }
 .evidence > div:nth-child(3) {
   background: color-mix(in srgb, #e7b866 13%, var(--card));
@@ -238,11 +238,11 @@
 .root .comparison {
   padding: 16px;
   border-radius: 12px;
-  background: color-mix(in srgb, #76b6aa 10%, var(--card));
+  background: color-mix(in srgb, #9296e5 10%, var(--card));
   margin: 12px 0;
 }
 .answer {
-  background: color-mix(in srgb, #d6f35a 20%, var(--card));
+  background: color-mix(in srgb, #b9abff 20%, var(--card));
 }
 .links a {
   display: inline-flex;

@@ -25,15 +25,12 @@ export function extremeRevenueModel(
         o.cases[1].target > REVENUE_MODEL_LIMITS.priceRatio * price))
   );
 }
-/** The one bear / base / bull set for a stock, used wherever cases are shown so that
- * every panel agrees: a qualifying model first, then the named non-model headline. */
-export function scenarioCases(
+/** Use the same independently selected price for both targets and explanations. */
+function scenarioInput(
   r: Research,
   d: ReturnType<typeof aurynDecision>,
-  options: { fundamentalsOnly?: boolean } = {},
-): ScenarioCases | null {
-  if (r.company.assetType !== "stock") return null;
-  const input = d.reference
+): Research {
+  return d.reference
     ? {
         ...r,
         quote: {
@@ -45,6 +42,29 @@ export function scenarioCases(
         },
       }
     : r;
+}
+
+/** Explain why no fundamental range qualifies without filling in missing targets. */
+export function scenarioUnavailableReason(
+  r: Research,
+  d: ReturnType<typeof aurynDecision>,
+): string {
+  const outlook = researchOutlook(scenarioInput(r, d));
+  if (!outlook.available) return outlook.reason;
+  if (extremeRevenueModel(outlook, d.reference?.price))
+    return "The revenue model exceeds the supported multiple or price-range limits. Its targets are withheld pending a reconciled valuation basis.";
+  return "No supported fundamental valuation range is available.";
+}
+
+/** The one bear / base / bull set for a stock, used wherever cases are shown so that
+ * every panel agrees: a qualifying model first, then the named non-model headline. */
+export function scenarioCases(
+  r: Research,
+  d: ReturnType<typeof aurynDecision>,
+  options: { fundamentalsOnly?: boolean } = {},
+): ScenarioCases | null {
+  if (r.company.assetType !== "stock") return null;
+  const input = scenarioInput(r, d);
   // The decision engine has already qualified this model against business,
   // currency, consecutive cash-flow history and dilution safeguards. Keep the
   // headline on the same valuation rather than replacing it with market multiples.

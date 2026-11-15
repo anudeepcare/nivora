@@ -17,13 +17,13 @@ test('disclosure rows no longer receive an opaque surface when expanded', () => 
 });
 test('overview uses coordinated paired panels, not margins inside a gap grid', () => {
   const css = read('components/ResearchOverview.module.css');
-  assert.match(css, /\.caseWorkspace[^}]*grid-template-columns: minmax\(0, 0\.9fr\) minmax\(0, 1\.1fr\)/s);
+  assert.match(css, /\.caseWorkspace[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/s);
   assert.match(read('components/StockPillars.module.css'), /\.root \{\s*margin: 0;/);
 });
 test('semantic text colors meet AA on bounded light and dark glass surfaces', () => {
   const lum = h => { const a = h.slice(1).match(/../g).map(x => parseInt(x,16)/255).map(x => x <= .04045 ? x/12.92 : ((x+.055)/1.055)**2.4); return a[0]*.2126+a[1]*.7152+a[2]*.0722; };
   const tokens = read('app/core/tokens.css');
-  for (const [selector, background] of [[':root[data-theme="light"]','#eaf0e7'],[':root[data-theme="dark"]','#2a3b30']]) {
+  for (const [selector, background] of [[':root[data-theme="light"]','#e9ecf7'],[':root[data-theme="dark"]','#2b3652']]) {
     const block = tokens.slice(tokens.indexOf(selector)).split('}')[0];
     for (const name of ['ink','muted','positive','negative','neutral','warning']) {
       const color = block.match(new RegExp(`--${name}: (#[a-f0-9]{6});`))?.[1];

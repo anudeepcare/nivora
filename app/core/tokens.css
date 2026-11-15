@@ -12,7 +12,7 @@
   --workspace-gap: 20px;
   --workspace-radius: 22px;
   --workspace-inset: 24px;
-  --chrome-surface: #f1f3ee;
+  --chrome-surface: #eef0f8;
   --app-gutter: clamp(16px, 3vw, 40px);
   --font-ui:
     "Commissioner", "AURYN Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -21,125 +21,126 @@
   --radius-panel: 16px;
   --radius: 16px;
   --space-page: 28px;
-  --accent-solid: #284c3e;
-  --blue: #284c3e;
-  --blue-soft: #e5edda;
-  --business-fill: color-mix(in srgb, #70c7a9 7%, var(--card));
-  --financial-fill: color-mix(in srgb, #8fc7c1 6%, var(--card));
-  --valuation-fill: color-mix(in srgb, #d6f35a 8%, var(--card));
-  --ownership-fill: color-mix(in srgb, #a8ddc0 7%, var(--card));
-  --business-icon: #167b57;
-  --financial-icon: #237f75;
-  --valuation-icon: #956b0f;
-  --ownership-icon: #347d76;
-  --pace-fill: #24272b;
-  --citron: #d6f35a;
-  --orchid: #76b6aa;
-  --jade: #a8ddc0;
-  --brand-gradient: linear-gradient(125deg, #d6f35a, #a8ddc0);
+  --accent-solid: #5146ad;
+  --blue: #5146ad;
+  --blue-soft: #ebe8ff;
+  --business-fill: color-mix(in srgb, #8a85ef 7%, var(--card));
+  --financial-fill: color-mix(in srgb, #78b9df 6%, var(--card));
+  --valuation-fill: color-mix(in srgb, #b9abff 8%, var(--card));
+  --ownership-fill: color-mix(in srgb, #9fdbed 7%, var(--card));
+  --business-icon: #5146ad;
+  --financial-icon: #286f94;
+  --valuation-icon: #8c571c;
+  --ownership-icon: #7855a5;
+  --pace-fill: #20243b;
+  --citron: #b9abff;
+  --orchid: #9296e5;
+  --jade: #9fdbed;
+  --brand-gradient: linear-gradient(125deg, #b9abff, #9fdbed);
+  --interaction-hover: color-mix(in srgb, var(--blue) 11%, var(--card));
 }
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f1f3ee;
+  --bg: #eef0f8;
   --app-background: var(--workspace-canvas);
   --workspace-canvas:
-    radial-gradient(ellipse at 0% 0%, #cee3d14d, transparent 48%),
-    radial-gradient(ellipse at 100% 45%, #d7e9df40, transparent 46%),
-    radial-gradient(ellipse at 30% 100%, #e4eabc30, transparent 50%), #f1f3ee;
-  --workspace-glass: #fbfcf8ed;
+    radial-gradient(ellipse at 0% 0%, #c8c3ef4d, transparent 48%),
+    radial-gradient(ellipse at 100% 45%, #c4e4f140, transparent 46%),
+    radial-gradient(ellipse at 30% 100%, #e4d6f630, transparent 50%), #eef0f8;
+  --workspace-glass: #fbfcffed;
   --workspace-panel: linear-gradient(
     125deg,
-    #fdfefbef,
-    #f5f8f1ed 62%,
-    #edf5eee6
+    #ffffffef,
+    #f7f7ffed 62%,
+    #eef5fce6
   );
-  --workspace-tile: linear-gradient(130deg, #d9e6da55, #f8fbf5aa);
+  --workspace-tile: linear-gradient(130deg, #d4d4f055, #f8faffaa);
   --workspace-control: #ffffffc9;
   --workspace-edge: #ffffffc7;
-  --workspace-shadow: 0 10px 30px #243d2e0a, inset 0 1px 0 #ffffffb3;
-  --workspace-accent: #284c3e;
-  --nav-active: #284c3e;
-  --nav-active-ink: #f6faee;
-  --glass: #f7faf4ed;
+  --workspace-shadow: 0 10px 30px #2922520a, inset 0 1px 0 #ffffffb3;
+  --workspace-accent: #5146ad;
+  --nav-active: #5146ad;
+  --nav-active-ink: #ffffff;
+  --glass: #f7f8ffed;
   --panel-shadow: var(--workspace-shadow);
-  --paper: #f8faf5;
-  --card: #fbfcf9;
-  --control-ink: #24332e;
-  --control-muted: #53635b;
-  --control-card: #fbfcf9;
-  --control-surface: #edf1e8;
-  --control-line: #bbcbbc;
-  --surface: #eaf0e7;
-  --surface-2: #f1f5ed;
-  --ink: #24332e;
-  --text: #24332e;
-  --muted: #53635b;
-  --line: #d2ddd0;
-  --border: #d2ddd0;
-  --positive: #146b50;
-  --negative: #b1354d;
-  --neutral: #645597;
-  --warning: #825506;
+  --paper: #f8f9ff;
+  --card: #fcfcff;
+  --control-ink: #22263e;
+  --control-muted: #59617a;
+  --control-card: #fcfcff;
+  --control-surface: #e8ebf6;
+  --control-line: #b7bfd7;
+  --surface: #e9ecf7;
+  --surface-2: #f1f3fc;
+  --ink: #22263e;
+  --text: #22263e;
+  --muted: #59617a;
+  --line: #d6dbee;
+  --border: #d6dbee;
+  --positive: #087465;
+  --negative: #b53257;
+  --neutral: #65529d;
+  --warning: #855119;
   --green: var(--positive);
-  --green-soft: #dcf0e8;
+  --green-soft: #ddf3ee;
   --red: var(--negative);
-  --red-soft: #f7e2e9;
+  --red-soft: #fbe6ed;
   --amber: var(--warning);
-  --amber-soft: #f4ead7;
+  --amber-soft: #f7ebdf;
   --cyan: #086b83;
   --cyan-soft: #e0f0f8;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --chrome-surface: #1b2922;
-  --bg: #151e1b;
+  --chrome-surface: #181e33;
+  --bg: #101527;
   --app-background: var(--workspace-canvas);
   --workspace-canvas:
-    radial-gradient(ellipse at 0% 0%, #46634426, transparent 48%),
-    radial-gradient(ellipse at 100% 45%, #315d4e26, transparent 46%), #151e1b;
-  --workspace-glass: #202e28ed;
+    radial-gradient(ellipse at 0% 0%, #6e60af26, transparent 48%),
+    radial-gradient(ellipse at 100% 45%, #38749926, transparent 46%), #101527;
+  --workspace-glass: #1c2239ed;
   --workspace-panel: linear-gradient(
     125deg,
-    #26372fef,
-    #1f3028ed 62%,
-    #273429ed
+    #252b46ef,
+    #1c2540ed 62%,
+    #292643ed
   );
-  --workspace-tile: linear-gradient(130deg, #b1cfb214, #9fbbaa0d);
-  --workspace-control: #34473bcc;
-  --workspace-edge: #c4dec024;
-  --workspace-shadow: 0 10px 30px #0000001c, inset 0 1px 0 #d8edce18;
-  --workspace-accent: #d6f35a;
-  --nav-active: #d6f35a;
-  --nav-active-ink: #253522;
-  --glass: #1e2d25ed;
+  --workspace-tile: linear-gradient(130deg, #bcb6ed14, #9abbdc0d);
+  --workspace-control: #303a57cc;
+  --workspace-edge: #bfc7ef24;
+  --workspace-shadow: 0 10px 30px #0000001c, inset 0 1px 0 #dedbff18;
+  --workspace-accent: #b9abff;
+  --nav-active: #b9abff;
+  --nav-active-ink: #252240;
+  --glass: #1c243bed;
   --panel-shadow: var(--workspace-shadow);
-  --paper: #19291f;
-  --card: #223128;
-  --control-ink: #eff5ec;
-  --control-muted: #bdccbf;
-  --control-card: #223128;
-  --control-surface: #2c3e33;
-  --control-line: #5a7060;
-  --surface: #2a3b30;
-  --surface-2: #26372d;
-  --ink: #eff5ec;
-  --text: #eff5ec;
-  --muted: #bdccbf;
-  --line: #405748;
-  --border: #405748;
-  --blue: #d6f35a;
-  --blue-soft: #35442e;
-  --positive: #75dfbc;
-  --negative: #ffa7bd;
-  --neutral: #bdbeff;
-  --warning: #f0ca80;
+  --paper: #171f34;
+  --card: #202940;
+  --control-ink: #f1f3ff;
+  --control-muted: #c0c8df;
+  --control-card: #202940;
+  --control-surface: #303b57;
+  --control-line: #5c698c;
+  --surface: #2b3652;
+  --surface-2: #26314b;
+  --ink: #f1f3ff;
+  --text: #f1f3ff;
+  --muted: #c0c8df;
+  --line: #414f70;
+  --border: #414f70;
+  --blue: #b9abff;
+  --blue-soft: #353257;
+  --positive: #7de0cc;
+  --negative: #ffafc8;
+  --neutral: #c8baff;
+  --warning: #f6cd97;
   --green: var(--positive);
-  --green-soft: #1d443d;
+  --green-soft: #193e40;
   --red: var(--negative);
-  --red-soft: #482a3c;
+  --red-soft: #452b42;
   --amber: var(--warning);
-  --amber-soft: #493d27;
+  --amber-soft: #44374a;
   --cyan: #8bd8f0;
   --cyan-soft: #253f55;
   --business-icon: var(--positive);

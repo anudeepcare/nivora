@@ -11,11 +11,11 @@
   gap: 24px;
   padding: 36px;
   border-radius: 22px;
-  background: linear-gradient(120deg, #202c27, #29382d);
-  color: #f5f8ef;
+  background: linear-gradient(120deg, #20243b, #34304f);
+  color: #f4f4ff;
 }
 .kicker {
-  color: #d6f35a;
+  color: #b9abff;
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -30,7 +30,7 @@
 }
 .cover p {
   margin: 0;
-  color: #c5d0c5;
+  color: #c5cbe2;
   font-size: 14px;
   line-height: 1.6;
 }

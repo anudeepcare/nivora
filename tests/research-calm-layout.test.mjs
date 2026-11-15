@@ -33,10 +33,10 @@ test('the short read puts all risk and change detail behind one closed disclosur
  assert.equal((full.match(/<details/g)||[]).length,1);
 });
 test('missing scenario evidence keeps all three labelled cases visible with a reason',()=>{
- const View=load('StockPillars',{'@/lib/stock-pillars':{stockPillars:()=>({cases:null,pillars:[],summary:'Unavailable'})},'@/lib/outlook':{consensusOutlook:()=>null}});
+ const View=load('StockPillars',{'@/lib/stock-pillars':{stockPillars:()=>({cases:null,casesUnavailableReason:'A dated annual earnings forecast is needed.',pillars:[],summary:'Unavailable'})},'@/lib/outlook':{consensusOutlook:()=>null}});
  const html=renderToStaticMarkup(React.createElement(View,{research:{},decision:{}}));
  for(const name of ['bear','base','bull']) assert.match(html,new RegExp(`data-case="${name}"`));
- assert.match(html,/More company evidence is needed/);
+ assert.match(html,/A dated annual earnings forecast is needed/);
  assert.equal((html.match(/Not available/g)||[]).length,3);
 });
 test('expanded business checks keep each explanation independently collapsible',()=>{

@@ -68,15 +68,15 @@
   justify-self: start;
   border-radius: 6px;
   padding: 4px 8px;
-  background: #76b6aa25;
+  background: #9296e525;
   color: var(--ink);
 }
 .row[data-action="purchase"] .action {
-  background: #a8ddc03d;
+  background: #9fdbed3d;
   color: #18765c;
 }
 .row[data-action="sale"] .action {
-  background: #76b6aa30;
+  background: #9296e530;
   color: #227f73;
 }
 .panel > p {

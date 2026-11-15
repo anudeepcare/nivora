@@ -1,7 +1,7 @@
 import type { Research } from "./types";
 import type { aurynDecision } from "./auryn-decision.ts";
 import { researchBrief } from "./research-brief.ts";
-import { scenarioCases } from "./scenario-cases.ts";
+import { scenarioCases, scenarioUnavailableReason } from "./scenario-cases.ts";
 import { consensusOutlook } from "./outlook.ts";
 import { percent } from "./format.ts";
 import { evidenceOdds, type EvidenceOdds } from "./evidence-odds.ts";
@@ -25,6 +25,7 @@ export type StockPillars = {
   /** Sell-side prompt. Informational: it never changes the decision engine's call. */
   exitWatch: { level: "trim" | "thesis"; text: string } | null;
   /** Bear / base / bull beside the call, with their named source. */
+  casesUnavailableReason: string | null;
   cases: {
     kind: "model" | "analyst" | "history";
     bear: number;
@@ -348,6 +349,10 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
   return {
     odds,
     exitWatch,
+    casesUnavailableReason: range
+      ? null
+      : `${scenarioUnavailableReason(r, d)}${analyst ? (analyst.rangeStatus === "invalid" ? " Analyst consensus is available separately, but the supplied low/high bounds are inconsistent and cannot form a supported target range." : " Analyst consensus is available separately, but a complete low-to-high target range was not supplied.") : " A complete, current analyst target range is also unavailable."}`,
+
     cases: range
       ? {
           ...range,
