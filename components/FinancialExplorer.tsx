@@ -432,7 +432,12 @@ export default function FinancialExplorer({
           </div>
           <details className="explorer-table">
             <summary>Reported observations</summary>
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Financial history"
+            >
               <table>
                 <caption>
                   {series.definition?.label} · {series.currency ?? series.unit}

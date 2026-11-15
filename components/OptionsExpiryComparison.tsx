@@ -26,7 +26,12 @@ export default function OptionsExpiryComparison({
       <summary>
         Expirations <span>{rows.length} loaded</span>
       </summary>
-      <div className={s.scroll}>
+      <div
+        className={s.scroll}
+        tabIndex={0}
+        role="region"
+        aria-label="Options expiration comparison"
+      >
         <table>
           <caption>
             Loaded expirations · select a date to inspect contracts

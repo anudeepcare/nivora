@@ -1,25 +1,31 @@
 :root[data-accent="blue"] {
-  --blue: #3159bf;
-  --accent-solid: #3159bf;
-  --blue-soft: #e1e9fb;
+  --blue: #284c3e;
+  --accent-solid: #284c3e;
+  --blue-soft: #e5edda;
 }
 :root[data-theme="dark"][data-accent="blue"] {
-  --blue: #a6bbff;
-  --accent-solid: #3159bf;
-  --blue-soft: #304267;
+  --blue: #d6f35a;
+  --accent-solid: #284c3e;
+  --blue-soft: #35442e;
 }
 /* Appearance tokens: scoped to accents and spacing, never financial meaning or PWA geometry. */
 :root[data-accent="teal"] {
+  --nav-active: var(--accent-solid);
+  --nav-active-ink: #ffffff;
   --blue: #00777d;
   --accent-solid: #006d73;
   --blue-soft: color-mix(in srgb, #00777d 10%, var(--surface));
 }
 :root[data-accent="violet"] {
+  --nav-active: var(--accent-solid);
+  --nav-active-ink: #ffffff;
   --blue: #7046cf;
   --accent-solid: #7046cf;
   --blue-soft: color-mix(in srgb, #7046cf 10%, var(--surface));
 }
 :root[data-accent="rose"] {
+  --nav-active: var(--accent-solid);
+  --nav-active-ink: #ffffff;
   --blue: #ad2f62;
   --accent-solid: #ad2f62;
   --blue-soft: color-mix(in srgb, #ad2f62 10%, var(--surface));

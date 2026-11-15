@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import s from "./PublicFrame.module.css";
 export default function PublicFrame({
@@ -10,6 +12,7 @@ export default function PublicFrame({
   intro: string;
   children: ReactNode;
 }) {
+  const pathname = usePathname();
   return (
     <main className={s.page}>
       <header className={s.header}>
@@ -18,10 +21,21 @@ export default function PublicFrame({
           AURYN
         </Link>
         <nav aria-label="Public navigation">
-          <Link href="/about">How it works</Link>
-          <Link href="/track-record">Pace & evidence</Link>
-          <Link href="/portfolio-check">Portfolio check</Link>
-          <Link href="/login">Sign in</Link>
+          {[
+            ["/about", "How it works"],
+            ["/pace", "Pace"],
+            ["/track-record", "Evidence"],
+            ["/portfolio-check", "Portfolio check"],
+            ["/login", "Sign in"],
+          ].map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              aria-current={pathname === href ? "page" : undefined}
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
       </header>
       <div className={s.intro}>

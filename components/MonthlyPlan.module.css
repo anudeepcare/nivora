@@ -2,7 +2,7 @@
   max-width: 1000px;
   margin: 0 auto;
   padding: 28px 20px 48px;
-  color: var(--text, #18271e);
+  color: var(--ink);
   line-height: 1.6;
 }
 .page h1 {
@@ -37,11 +37,11 @@
 .page textarea {
   width: 100%;
   min-height: 48px;
-  border: 1px solid var(--border, #b5bdb7);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
   font: inherit;
-  background: var(--surface, #fff);
+  background: var(--card);
   color: inherit;
   box-sizing: border-box;
 }
@@ -55,8 +55,8 @@
   font: inherit;
   font-weight: 600;
   color: inherit;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #b5bdb7);
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 8px;
   cursor: pointer;
 }
@@ -65,7 +65,7 @@
   cursor: wait;
 }
 .page :focus-visible {
-  outline: 3px solid #4b9270;
+  outline: 3px solid var(--blue);
   outline-offset: 3px;
 }
 .candidates {
@@ -74,7 +74,7 @@
   gap: 8px 20px;
   margin: 24px 0 16px;
   padding: 12px 16px;
-  border: 1px solid var(--border, #b5bdb7);
+  border: 1px solid var(--line);
   border-radius: 10px;
 }
 .candidates label {
@@ -87,12 +87,12 @@
 .candidates input {
   width: 22px;
   height: 22px;
-  accent-color: #397754;
+  accent-color: var(--blue);
 }
 .notice {
   margin: 20px 0;
   padding: 18px;
-  border: 1px solid var(--border, #b5bdb7);
+  border: 1px solid var(--line);
   border-radius: 10px;
 }
 .summary {
@@ -100,7 +100,7 @@
   margin-top: 24px;
 }
 .summary div {
-  border: 1px solid var(--border, #b5bdb7);
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 16px;
 }
@@ -120,7 +120,7 @@
 }
 .rows li {
   padding: 20px;
-  border: 1px solid var(--border, #b5bdb7);
+  border: 1px solid var(--line);
   border-radius: 10px;
 }
 .rows dl {
@@ -153,5 +153,42 @@
   }
   .rows dl {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.page {
+  min-width: 0;
+  padding-inline: 0;
+}
+.page h1 {
+  max-width: 24ch;
+  letter-spacing: -0.035em;
+}
+.inputs,
+.candidates,
+.summary > div,
+.rows li {
+  min-width: 0;
+}
+.summary > div,
+.rows li,
+.notice {
+  background: var(--glass);
+  border-radius: 16px;
+}
+.candidates label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.candidates input {
+  flex: none;
+}
+@media (max-width: 600px) {
+  .page {
+    padding: 16px 0 28px;
+  }
+  .page input:not([type="checkbox"]),
+  .page textarea {
+    font-size: 16px;
   }
 }

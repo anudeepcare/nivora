@@ -2,7 +2,7 @@
 
 Extract this ZIP as a source candidate for local/preproduction verification. Do not deploy before the current acceptance gates are resolved. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current source candidate: [Coherent glass and mobile navigation](MOBILE-GLASS-20261115.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This source update unifies panel/disclosure surfaces, gives financial cues one theme-aware palette, pairs the overview composition, and rebuilds mobile/desktop navigation. Financial calculations, metrics, providers and APIs are unchanged. This ZIP is not deployed or production-accepted; actual browser/device visual acceptance remains required.
+Current source candidate: [Full-app audit and mobile refinement](FULL-APP-AUDIT-20261115.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This update inventories all routes and embedded tools, fixes confirmed mobile/control/loading/readability issues from public pages through Settings and Admin, and retains all metrics, financial calculations, providers and APIs. This ZIP is not deployed or production-accepted; actual browser/device visual acceptance remains required.
 
 ## Run and verify
 Use Node 24.x, then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.

@@ -2,8 +2,8 @@
 .page {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
-  grid-template-rows: auto auto auto 1fr;
-  grid-template-areas: "toolbar toolbar" "heading heading" "account preferences" "support preferences";
+  grid-template-rows: auto auto auto auto 1fr;
+  grid-template-areas: "toolbar toolbar" "heading heading" "feedback feedback" "account preferences" "support preferences";
   align-items: start;
   column-gap: 32px;
   row-gap: 16px;
@@ -55,6 +55,7 @@
   color: var(--muted);
 }
 .page :global(.settings-feedback) {
+  grid-area: feedback;
   grid-column: 1/-1;
 }
 .page :global(.workspace-account-row) {
@@ -132,7 +133,8 @@
 .page :global(.workspace-setting-group) > header::-webkit-details-marker {
   display: none;
 }
-.page header strong {
+.page header h2 {
+  margin: 0;
   display: block;
   font-size: 17px;
   font-weight: 500;
@@ -214,6 +216,9 @@
   background: var(--line);
 }
 .page :global(.motion-switch)[aria-checked="true"] {
+  background: transparent;
+}
+.page :global(.motion-switch)[aria-checked="true"]::before {
   background: var(--accent-solid);
 }
 .page :global(.appearance-controls) {
@@ -305,7 +310,7 @@
   .page {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
-    grid-template-areas: "toolbar" "heading" "account" "preferences" "support";
+    grid-template-areas: "toolbar" "heading" "feedback" "account" "preferences" "support";
     gap: 24px;
     padding-top: 0;
   }
@@ -393,7 +398,7 @@
   padding: 0 0 12px;
   border-bottom: 1px solid var(--line);
 }
-.page :global(.workspace-setting-group) > header strong {
+.page :global(.workspace-setting-group) > header h2 {
   font-size: 17px;
 }
 .page :global(.workspace-setting-group) > header small {
@@ -409,19 +414,24 @@
   display: block;
   flex: 0 0 46px;
   width: 46px;
-  height: 28px;
-  min-height: 28px;
+  height: 44px;
+  min-height: 44px;
   padding: 0;
   border: 0;
-  background: var(--line);
+  background: transparent;
   box-shadow: none;
 }
 .page :global(.motion-switch)::before {
-  display: none;
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 8px 0;
+  border-radius: 20px;
+  background: var(--line);
 }
 .page :global(.motion-switch) > span {
   position: absolute;
-  top: 4px;
+  top: 12px;
   left: 4px;
   width: 20px;
   height: 20px;
@@ -463,5 +473,56 @@
   }
   .page :global(.workspace-account-row) strong {
     font-size: 13px;
+  }
+}
+
+/* Keep nested preference controls usable at the narrowest supported widths. */
+.page :global(.research-preferences) select,
+.page :global(.password-form) input {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+}
+.page :global(.research-preferences) fieldset {
+  min-width: 0;
+}
+.page :global(.research-preferences) fieldset label {
+  min-height: 44px;
+}
+.page :global(.density-options) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.page :global(.density-options) button,
+.page :global(.appearance-controls) > button,
+.page :global(.settings-back),
+.page :global(.workspace-account-row) > a,
+.page :global(.workspace-settings-shortcuts) button {
+  min-height: 44px;
+}
+@media (max-width: 600px) {
+  .page {
+    gap: 16px;
+  }
+  .page :global(.workspace-setting-group) {
+    padding: 16px 14px;
+  }
+  .page :global(.page-heading) {
+    padding: 20px;
+  }
+  .page :global(.page-heading) h1 {
+    font-size: 28px;
+  }
+  .page :global(.research-preferences) select,
+  .page :global(.password-form) input {
+    font-size: 16px;
+  }
+  .page :global(.segments) {
+    width: 100%;
+  }
+  .page :global(.segments) button {
+    flex: 1 1 auto;
+    padding-inline: 10px;
   }
 }

@@ -733,6 +733,14 @@
     0 0 70px #bbd87008;
 }
 .demo {
+  /* This intentionally dark preview owns both text and nested card surfaces.
+     Never inherit a light app card underneath the preview's pale text. */
+  --ink: #f3f6ef;
+  --muted: #b5c3bb;
+  --card: #26362b;
+  --surface: #29382f;
+  --line: #ffffff26;
+  --green: #79e4bb;
   border-radius: 16px;
   border-color: #b7ceac30;
   background: #202b25;
@@ -1442,6 +1450,62 @@
 .scenarios article > small {
   margin-top: auto;
   padding-top: 10px;
+}
+/* Keep meaningful preview labels readable instead of shrinking them to fit. */
+.demo .demoHeader {
+  flex-wrap: wrap;
+}
+.demo .demoHeader > span:first-child {
+  flex-wrap: wrap;
+}
+.demo .demoHeader small,
+.demo .sampleBadge,
+.demo .chartHeading small,
+.demo .chartLegend,
+.demo .chartLegend small,
+.demo .chartAxis,
+.demo .evidenceMetrics small,
+.demo .evidenceMetrics span,
+.demo .scenarios small,
+.demo .demoFooter {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.demo .evidenceMetrics strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.demo .chartLegend,
+.demo .chartAxis,
+.demo .demoFooter {
+  flex-wrap: wrap;
+}
+.demo .demoFooter button {
+  min-height: 44px;
+  padding: 10px 4px;
+  font-size: 12px;
+}
+.demo .scenarios article {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.demo .demoTabs button {
+  min-width: 0;
+  min-height: 44px;
+}
+@media (max-width: 420px) {
+  .demo .demoTabs button {
+    padding-inline: 4px;
+    gap: 4px;
+  }
+  .demo .demoTabs button > span,
+  .demo .demoTabs button > svg {
+    display: none;
+  }
+  .demo .chartLegend small {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
 }
 @media (max-width: 650px) {
   .hero {

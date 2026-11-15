@@ -28,7 +28,7 @@ test('current shell reserves notch space and shares browser chrome colors in bot
  const foundation = postcss.parse(read('app/core/tokens.css'));
  const colors=[];
  foundation.walkDecls('--chrome-surface', d=>colors.push(d.value));
- assert.deepEqual(colors,['#edf2fc','#18243a']);
+ assert.deepEqual(colors,['#f1f3ee','#1b2922']);
  for(const file of ['app/layout.tsx','components/Pwa.tsx','components/Session.tsx']) {
   assert.ok(read(file).includes(colors[0]),`${file} must match light header`);
   assert.ok(read(file).includes(colors[1]),`${file} must match dark header`);

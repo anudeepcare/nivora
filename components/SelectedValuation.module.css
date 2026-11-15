@@ -390,13 +390,13 @@
   }
 }
 :global([data-theme="dark"]) .root.root .case[data-case="bear"] {
-  --case-color: #f28c8c;
+  --case-color: var(--negative);
 }
 :global([data-theme="dark"]) .root.root .case[data-case="base"] {
-  --case-color: #dfbb65;
+  --case-color: var(--neutral);
 }
 :global([data-theme="dark"]) .root.root .case[data-case="bull"] {
-  --case-color: #65d4b2;
+  --case-color: var(--positive);
 }
 :global([data-theme="dark"]) .status {
   color: #ecc775;
@@ -506,7 +506,7 @@
   border-radius: 14px;
   background: linear-gradient(
     145deg,
-    color-mix(in srgb, var(--case-color) 5%, var(--card)),
+    color-mix(in srgb, var(--case-color) 9%, var(--card)),
     var(--card)
   );
   box-shadow: 0 8px 28px #17342c08;
@@ -514,6 +514,7 @@
 }
 .root.root .case strong {
   font-size: clamp(22px, 2vw, 28px);
+  color: var(--case-color);
 }
 .root.root .case span,
 .root.root .case small {

@@ -76,7 +76,7 @@ test('foundation preserves geometry and font cascade while the shared palette ev
   ]);
   for (const root of [before, after]) {
     root.walkDecls(decl => {
-      if (neutral.has(decl.prop) || decl.prop.startsWith('--workspace-')) decl.remove();
+      if (neutral.has(decl.prop) || decl.prop.startsWith('--workspace-') || decl.prop.startsWith('--nav-')) decl.remove();
     });
     root.walkRules(rule => { if (!rule.nodes.length) rule.remove(); });
     root.walkAtRules(rule => { if (rule.nodes && !rule.nodes.length) rule.remove(); });

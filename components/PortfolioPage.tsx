@@ -204,7 +204,17 @@ export function Portfolio() {
                 : "Recorded balances"}
             </small>
           </div>
-          <div>
+          <div
+            data-return-tone={
+              !workspace || !quotes.ready || model.pnl == null
+                ? "neutral"
+                : model.pnl < 0
+                  ? "negative"
+                  : model.pnl > 0
+                    ? "positive"
+                    : "neutral"
+            }
+          >
             <span>Unrealized return</span>
             <strong>
               {workspace && quotes.ready ? amount(model.pnl) : "—"}

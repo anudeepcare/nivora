@@ -1,7 +1,10 @@
 /* Own the form geometry: text inputs and checkboxes have different sizing. */
 .page.page.page {
   max-width: 1080px;
-  padding: 24px;
+  padding: calc(24px + env(safe-area-inset-top, 0px))
+    calc(24px + env(safe-area-inset-right, 0px))
+    calc(24px + env(safe-area-inset-bottom, 0px))
+    calc(24px + env(safe-area-inset-left, 0px));
   margin: 24px auto;
   background: var(--card);
   border-radius: 20px;
@@ -87,7 +90,10 @@
 @media (max-width: 700px) {
   .page.page.page {
     width: calc(100% - 24px);
-    padding: 16px;
+    padding: calc(16px + env(safe-area-inset-top, 0px))
+      calc(16px + env(safe-area-inset-right, 0px))
+      calc(16px + env(safe-area-inset-bottom, 0px))
+      calc(16px + env(safe-area-inset-left, 0px));
     margin: 12px auto;
   }
   .page.page.page :global(.support-frame) {

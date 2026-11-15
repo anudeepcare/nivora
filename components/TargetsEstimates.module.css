@@ -435,7 +435,7 @@
   font-size: 12px;
 }
 .assumptionBar input {
-  min-height: 40px;
+  min-height: 44px;
   font-size: 14px;
 }
 .assumptionFacts {
@@ -454,7 +454,7 @@
   font-weight: 600;
 }
 .resetAssumption {
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 12px;
   font-size: 12px;
 }
@@ -464,6 +464,9 @@
   padding-top: 8px;
 }
 .assumptionHelp summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
   padding: 4px 0;
   background: transparent;
   font-size: 12px;
@@ -500,6 +503,18 @@
   text-align: left;
 }
 .modelLink:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+@media (max-width: 650px) {
+  .assumptionBar input {
+    font-size: 16px;
+  }
+}
+.tableWrap:focus-visible,
+.assumptionHelp summary:focus-visible,
+.resetAssumption:focus-visible {
   outline: 2px solid var(--green);
   outline-offset: 3px;
 }

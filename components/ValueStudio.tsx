@@ -21,13 +21,7 @@ const display = (m: DeskMetric) =>
     : m.unit === "ratio"
       ? `${m.value.toFixed(1)}×`
       : percent(m.value);
-export default function ValueStudio({
-  research: r,
-  onWorkbench,
-}: {
-  research: Research;
-  onWorkbench: () => void;
-}) {
+export default function ValueStudio({ research: r }: { research: Research }) {
   const d = useMemo(() => valueDesk(r), [r]);
   const consensus = useMemo(() => consensusOutlook(r), [r]);
   // A complete range is already shown by StockPillars. Keep a separate
@@ -65,9 +59,6 @@ export default function ValueStudio({
       </section>
       <div className={layout.scenarios}>
         <StockPillars research={r} decision={decision} casesOnly />
-        <button type="button" className="button" onClick={onWorkbench}>
-          Test assumptions →
-        </button>
         <details>
           <summary>Compare model ranges</summary>
           <ScenarioLenses research={r} decision={decision} />

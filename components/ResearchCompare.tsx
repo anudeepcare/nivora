@@ -119,7 +119,12 @@ export default function ResearchCompare({
           representative peer ranking.
         </small>
       </section>
-      <div className="table-scroll">
+      <div
+        className="table-scroll"
+        tabIndex={0}
+        role="region"
+        aria-label="Company comparison"
+      >
         <table>
           <caption>
             Reported values, not rankings. TTM preferred; annual fallback is

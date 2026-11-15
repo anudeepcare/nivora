@@ -204,7 +204,12 @@ export function Forecasts({ research: r }: { research: Research }) {
         </div>
       </header>
       {rows.length ? (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Research evidence comparison"
+        >
           <table>
             <thead>
               <tr>
@@ -354,7 +359,12 @@ function Ownership({ research: r }: { research: Research }) {
         <p className="au-caption">Holder-level positions were not returned.</p>
       )}
       {e.insiders.length > 0 && (
-        <div className="table-scroll support">
+        <div
+          className="table-scroll support"
+          tabIndex={0}
+          role="region"
+          aria-label="Research evidence history"
+        >
           <h3>Reported insider transactions</h3>
           <table>
             <thead>

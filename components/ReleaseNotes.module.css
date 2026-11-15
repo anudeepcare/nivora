@@ -1,7 +1,10 @@
 .page {
   max-width: 880px;
   margin: auto;
-  padding: 28px 24px 64px;
+  padding: calc(28px + env(safe-area-inset-top, 0px))
+    calc(24px + env(safe-area-inset-right, 0px))
+    calc(64px + env(safe-area-inset-bottom, 0px))
+    calc(24px + env(safe-area-inset-left, 0px));
   color: var(--ink);
 }
 .page header {
@@ -65,7 +68,10 @@
 }
 @media (max-width: 600px) {
   .page {
-    padding: 20px 16px 40px;
+    padding: calc(20px + env(safe-area-inset-top, 0px))
+      calc(16px + env(safe-area-inset-right, 0px))
+      calc(40px + env(safe-area-inset-bottom, 0px))
+      calc(16px + env(safe-area-inset-left, 0px));
   }
   .page article {
     padding: 20px;
@@ -76,7 +82,7 @@
 }
 
 .page > h1 {
-  background: linear-gradient(105deg, #244b34, #5b7f2c);
+  background: linear-gradient(105deg, var(--blue), var(--green));
   background-clip: text;
   color: transparent;
 }

@@ -132,7 +132,12 @@ export default function TargetsEstimates({
               </span>
             </div>
             {model.estimates.length ? (
-              <div className={styles.tableWrap}>
+              <div
+                className={styles.tableWrap}
+                tabIndex={0}
+                role="region"
+                aria-label="Annual earnings and revenue estimates"
+              >
                 <table>
                   <thead>
                     <tr>

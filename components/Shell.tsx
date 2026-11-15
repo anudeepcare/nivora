@@ -64,8 +64,10 @@ export default function Shell({
   const memory = useRef(new NavigationMemory());
   const pending = useRef<{ path: string; top: number } | null>(null);
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const activePage = pathname.slice(prefix.length).split("/")[1] || page;
   const search = useRef<HTMLDialogElement>(null);
   const tools = useRef<HTMLDialogElement>(null);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
   const signOut = async () => {
@@ -86,7 +88,7 @@ export default function Shell({
   const openSettings = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     tools.current?.close();
-    if (page === "settings") return;
+    if (activePage === "settings") return;
     router.push(
       settingsHref(
         `${window.location.pathname}${window.location.search}${window.location.hash}`,
@@ -155,6 +157,8 @@ export default function Shell({
         href={`${prefix}/${r.path}`}
         scroll={false}
         onNavigate={(event) => {
+          tools.current?.close();
+          search.current?.close();
           const destination = `${prefix}/${r.path}`;
           const top = memory.current.navigate(
             pathname,
@@ -167,10 +171,10 @@ export default function Shell({
           }
           pending.current = { path: destination, top };
         }}
-        className={page === r.path ? "active" : ""}
+        className={activePage === r.path ? "active" : ""}
         data-destination={r.path}
         aria-label={r.label}
-        aria-current={page === r.path ? "page" : undefined}
+        aria-current={activePage === r.path ? "page" : undefined}
       >
         <Icon size={22} />
         <span>{r.label}</span>
@@ -181,7 +185,7 @@ export default function Shell({
   return (
     <div
       className={`product approved-product ${experience.shell}`}
-      data-page={page}
+      data-page={activePage}
       data-shell="mobile-first"
     >
       <a className={experience.skip} href="#content">
@@ -221,14 +225,22 @@ export default function Shell({
           >
             {theme === "dark" ? <Moon size={19} /> : <Sun size={19} />}
           </button>
-          <Link href={`${prefix}/alerts`} aria-label="Price alerts">
+          <Link
+            href={`${prefix}/alerts`}
+            aria-label="Price alerts"
+            aria-current={activePage === "alerts" ? "page" : undefined}
+          >
             <Bell size={19} />
           </Link>
           <button
             aria-label="Account and workspace tools"
             aria-controls="workspace-tools"
             aria-haspopup="dialog"
-            onClick={() => tools.current?.showModal()}
+            aria-expanded={toolsOpen}
+            onClick={() => {
+              tools.current?.showModal();
+              setToolsOpen(true);
+            }}
           >
             <Menu size={20} />
           </button>
@@ -255,6 +267,18 @@ export default function Shell({
         id="workspace-tools"
         className={`search-dialog approved-tools-dialog ${experience.toolsDialog}`}
         aria-label="Account & workspace"
+        onClose={() => setToolsOpen(false)}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget) return;
+          const bounds = event.currentTarget.getBoundingClientRect();
+          if (
+            event.clientX < bounds.left ||
+            event.clientX > bounds.right ||
+            event.clientY < bounds.top ||
+            event.clientY > bounds.bottom
+          )
+            event.currentTarget.close();
+        }}
       >
         <header className="dialog-head">
           <div>
@@ -331,20 +355,24 @@ export default function Shell({
           ]
             .filter(
               (tool) =>
-                tool.path !== page &&
-                (tool.path !== "trading" ||
-                  !!demo ||
-                  access.capabilities?.paperTrading),
+                tool.path !== "trading" ||
+                !!demo ||
+                access.capabilities?.paperTrading,
             )
             .map(({ path, label, detail, icon: Icon }) => (
               <Link
                 key={path}
                 href={`${prefix}/${path}`}
+                aria-current={activePage === path ? "page" : undefined}
                 onNavigate={
                   path === "settings"
                     ? openSettings
                     : (event) => {
                         tools.current?.close();
+                        if (activePage === path) {
+                          event.preventDefault();
+                          return;
+                        }
                         if (["help", "changelog"].includes(path)) {
                           event.preventDefault();
                           try {

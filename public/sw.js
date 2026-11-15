@@ -1,5 +1,5 @@
 /* AURYN: network-first navigation, no account/API/market-response caching. */
-const OFFLINE_CACHE = "auryn-offline-v6";
+const OFFLINE_CACHE = "auryn-offline-v7";
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches

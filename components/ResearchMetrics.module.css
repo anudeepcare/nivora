@@ -750,7 +750,7 @@
   padding: 4px;
 }
 .panel.panel.panel > :global(.section-head) > :global(.segments button) {
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 12px;
   font-size: 13px;
   line-height: 1.4;
@@ -770,7 +770,7 @@
     max-width: 360px;
   }
   .panel.panel.panel > :global(.section-head) > :global(.segments button) {
-    min-height: 42px;
+    min-height: 44px;
     width: auto;
     margin: 0;
     padding: 8px 10px;

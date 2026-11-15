@@ -1,0 +1,171 @@
+{
+  "passed": true,
+  "mode": "local production build; no configured credentials; HTTP only, not browser UI",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/sample",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/about",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/pace",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/portfolio-check",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/track-record",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/pricing",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/contact",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/login",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/reset-password",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/terms",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/privacy",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/risk",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/methodology",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/reliability",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/help",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/changelog",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/overview",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/research",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/research/MSFT",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/portfolio",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/watchlist",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/settings",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/plans",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/compare",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/alerts",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/research-lab",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/trading",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/discover",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/monthly-plan",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/owner",
+      "status": 200,
+      "html": true
+    },
+    {
+      "route": "/preview/research/MSFT",
+      "status": 404,
+      "expectedNotFound": true
+    },
+    {
+      "route": "/not-a-route",
+      "status": 404,
+      "expectedNotFound": true
+    }
+  ]
+}

@@ -108,7 +108,7 @@ test("account menu retains Settings return context", () => {
   settings.props.onNavigate({preventDefault: empty});
   assert.deepEqual(pushes, ["/settings?from=%2Fresearch%2FMSFT%3Ftab%3Dfinancials%26q%3Dcloud%23income"]);
 });
-test("Explore has a distinct tools dialog and omits the destination already open", () => {
+test("Explore keeps permitted destinations stable and marks the destination already open", () => {
   for (const page of [
     "settings",
     "discover",
@@ -127,21 +127,21 @@ test("Explore has a distinct tools dialog and omits the destination already open
       (n) => n.type === "dialog" && n.props["aria-label"] === "Account & workspace",
     )[0];
     assert.ok(dialog, "Explore must clearly identify its tools surface");
-    assert.equal(
-      nodes(dialog, (n) => n.type === "Link" && n.props.href === `/${page}`)
-        .length,
-      0,
-    );
+    const current = nodes(dialog, (n) => n.type === "Link" && n.props.href === `/${page}`);
+    assert.equal(current.length, page === "trading" ? 0 : 1);
+    if (current.length) assert.equal(current[0].props["aria-current"], "page");
     assert.ok(
       nodes(dialog, (n) => n.type === "Link" && n.props.href === "/compare")
         .length || page === "compare",
     );
   }
 });
-test("Settings menu omits the current destination without changing return context", () => {
+test("Settings menu marks the current destination without changing return context", () => {
  const {tree,pushes}=shell("settings",{pathname:"/settings",search:"?from=%2Fwatchlist%3Fq%3Dchip",hash:""});
  const dialog=nodes(tree,n=>n.type === "dialog" && n.props["aria-label"] === "Account & workspace")[0];
- assert.equal(nodes(dialog,n=>n.type === "Link" && n.props.href === "/settings").length,0);
+ const current=nodes(dialog,n=>n.type === "Link" && n.props.href === "/settings")[0];
+ assert.equal(current.props["aria-current"],"page");
+ current.props.onNavigate({preventDefault:empty});
  assert.deepEqual(pushes,[]);
 });
 function settings(demo, overrides = {}) {

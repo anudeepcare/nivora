@@ -62,9 +62,9 @@ export default function MonthlyPlan() {
   const available = !!workspace && !workspaceError && result.complete;
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
-    <main className={s.page}>
-      <p>Your monthly research routine</p>
-      <h1>Plan a contribution around your holdings.</h1>
+    <section className={s.page} aria-labelledby="monthly-plan-title">
+      <p>Monthly plan</p>
+      <h1 id="monthly-plan-title">Plan your next contribution.</h1>
       <p>
         Choose companies and a position cap. This draft directs new money toward
         the smallest selected holdings, aiming for equal final dollar values
@@ -79,7 +79,7 @@ export default function MonthlyPlan() {
       )}
       <div className={s.inputs}>
         <label>
-          Deployable contribution · USD
+          New contribution · USD
           <input
             type="text"
             inputMode="decimal"
@@ -141,7 +141,7 @@ export default function MonthlyPlan() {
       </button>
       {!available ? (
         <section className={s.notice} role="status">
-          <h2>Draft is waiting for complete inputs</h2>
+          <h2>Complete the inputs to see your draft</h2>
           <p>
             {workspaceError ||
               (!workspace
@@ -162,13 +162,13 @@ export default function MonthlyPlan() {
               <strong>{money(result.totalCents!)}</strong>
             </div>
             <div>
-              <span>Draft contribution allocated</span>
+              <span>Draft additions</span>
               <strong>
                 {money((usdCents(budget) ?? 0) - result.retainedCents!)}
               </strong>
             </div>
             <div>
-              <span>Contribution retained as cash</span>
+              <span>New cash retained</span>
               <strong>{money(result.retainedCents!)}</strong>
             </div>
           </section>
@@ -258,6 +258,6 @@ export default function MonthlyPlan() {
           Download my draft
         </button>
       )}
-    </main>
+    </section>
   );
 }

@@ -198,7 +198,12 @@ function RevisionRecord({
             {baseline.source ?? "not supplied"}.
           </p>
           {!!comparisons.length && (
-            <div className={styles.table}>
+            <div
+              className={styles.table}
+              tabIndex={0}
+              role="region"
+              aria-label="Estimate revision history"
+            >
               <table>
                 <thead>
                   <tr>

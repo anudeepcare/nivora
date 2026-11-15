@@ -71,6 +71,7 @@ export default function HoldingsImport() {
               </tbody>
             </table>
           </div>
+          {demo && <p>Sign in to confirm this import.</p>}
           <button
             className="button primary"
             disabled={busy || !!demo}
@@ -101,7 +102,10 @@ export default function HoldingsImport() {
           <button
             className="button"
             disabled={busy}
-            onClick={() => setRows([])}
+            onClick={() => {
+              setRows([]);
+              setMessage("Import cancelled.");
+            }}
           >
             Cancel
           </button>

@@ -63,7 +63,12 @@ export default function FinancialDetailTable({
         ))}
       </div>
       {metrics.length ? (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Reported financial metrics"
+        >
           <table>
             <caption>
               {scope.toUpperCase()} · {periods[0]?.currency} ·{" "}

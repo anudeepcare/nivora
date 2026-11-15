@@ -13,7 +13,9 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
   const [query, setQuery] = useState(""),
     d = documents[id],
     sections = d.sections.filter((s) =>
-      (s.title + " " + s.text).toLowerCase().includes(query.toLowerCase()),
+      (s.title + " " + s.text)
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()),
     );
   return (
     <main className={`legal-document atlas-document ${styles.document}`}>
@@ -60,6 +62,17 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
                 placeholder="Try Pace, valuation or portfolio"
               />
             </label>
+          )}
+          {id === "help" && query && (
+            <div className={styles.searchFeedback}>
+              <p role="status">
+                {sections.length} matching{" "}
+                {sections.length === 1 ? "topic" : "topics"}
+              </p>
+              <button type="button" onClick={() => setQuery("")}>
+                Clear search
+              </button>
+            </div>
           )}
           <div className="document-sections">
             {sections.map((s, i) => (

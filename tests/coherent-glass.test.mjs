@@ -23,7 +23,7 @@ test('overview uses coordinated paired panels, not margins inside a gap grid', (
 test('semantic text colors meet AA on bounded light and dark glass surfaces', () => {
   const lum = h => { const a = h.slice(1).match(/../g).map(x => parseInt(x,16)/255).map(x => x <= .04045 ? x/12.92 : ((x+.055)/1.055)**2.4); return a[0]*.2126+a[1]*.7152+a[2]*.0722; };
   const tokens = read('app/core/tokens.css');
-  for (const [selector, background] of [[':root[data-theme="light"]','#e7edf8'],[':root[data-theme="dark"]','#26354a']]) {
+  for (const [selector, background] of [[':root[data-theme="light"]','#eaf0e7'],[':root[data-theme="dark"]','#2a3b30']]) {
     const block = tokens.slice(tokens.indexOf(selector)).split('}')[0];
     for (const name of ['ink','muted','positive','negative','neutral','warning']) {
       const color = block.match(new RegExp(`--${name}: (#[a-f0-9]{6});`))?.[1];

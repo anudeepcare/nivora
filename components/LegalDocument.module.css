@@ -1,3 +1,9 @@
+.document.document.document {
+  padding: calc(24px + env(safe-area-inset-top, 0px))
+    calc(24px + env(safe-area-inset-right, 0px))
+    calc(24px + env(safe-area-inset-bottom, 0px))
+    calc(24px + env(safe-area-inset-left, 0px));
+}
 .document :global(.document-reading .document-eyebrow) {
   color: var(--ink);
 }
@@ -22,7 +28,7 @@
   color: var(--muted);
   font: inherit;
   padding: 0;
-  min-height: 36px;
+  min-height: 44px;
 }
 .document :global(.document-layout) {
   display: block;
@@ -76,7 +82,7 @@
 }
 .document.document.document :global(.document-layout) > nav a {
   flex: 0 0 auto;
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 12px;
   font-size: 13px;
   margin: 0;
@@ -192,7 +198,10 @@
 }
 @media (max-width: 767px) {
   .document.document.document {
-    padding: 14px;
+    padding: calc(14px + env(safe-area-inset-top, 0px))
+      calc(14px + env(safe-area-inset-right, 0px))
+      calc(14px + env(safe-area-inset-bottom, 0px))
+      calc(14px + env(safe-area-inset-left, 0px));
     margin: 0 auto;
   }
   .document.document.document > header {
@@ -220,7 +229,7 @@
     flex-shrink: 0;
     white-space: nowrap;
     font-size: 12px;
-    min-height: 40px;
+    min-height: 44px;
     padding: 8px 10px;
   }
   .document.document.document :global(.document-sections) > section {
@@ -238,4 +247,28 @@
   .document.document.document :global(.help-search) {
     margin: 12px 0 18px;
   }
+}
+
+.searchFeedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+.searchFeedback p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.searchFeedback button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
 }

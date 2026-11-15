@@ -393,3 +393,25 @@ body .approved-research-page :is(.technical-group, .options-card) h3 {
     text-align: inherit;
   }
 }
+
+/* Recovery keeps its own existing theme and layout; only reserve device insets. */
+body .mp-auth.ap-auth[data-auth-mode="recovery"] > .mp-auth-story {
+  padding: calc(40px + env(safe-area-inset-top, 0px))
+    calc(clamp(24px, 5vw, 80px) + env(safe-area-inset-right, 0px))
+    calc(40px + env(safe-area-inset-bottom, 0px))
+    calc(clamp(24px, 5vw, 80px) + env(safe-area-inset-left, 0px));
+}
+body .mp-auth.ap-auth[data-auth-mode="recovery"] > .mp-auth-main {
+  padding: calc(48px + env(safe-area-inset-top, 0px))
+    calc(32px + env(safe-area-inset-right, 0px))
+    calc(48px + env(safe-area-inset-bottom, 0px))
+    calc(32px + env(safe-area-inset-left, 0px));
+}
+@media (max-width: 760px) {
+  body .mp-auth.ap-auth[data-auth-mode="recovery"] > .mp-auth-main {
+    padding: calc(24px + env(safe-area-inset-top, 0px))
+      calc(24px + env(safe-area-inset-right, 0px))
+      calc(24px + env(safe-area-inset-bottom, 0px))
+      calc(24px + env(safe-area-inset-left, 0px));
+  }
+}

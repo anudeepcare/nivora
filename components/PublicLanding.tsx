@@ -513,7 +513,15 @@ export default function PublicLanding({
         <header
           className={`ap-header ${landing.header}`}
           onKeyDown={(event) => {
-            if (event.key === "Escape") setMenu(false);
+            if (event.key === "Escape" && menu) {
+              event.preventDefault();
+              event.currentTarget
+                .querySelector<HTMLButtonElement>(
+                  '[aria-controls="ap-mobile-navigation"]',
+                )
+                ?.focus();
+              setMenu(false);
+            }
           }}
         >
           <div className="ap-header-inner ap-container">

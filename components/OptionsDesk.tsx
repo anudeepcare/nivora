@@ -704,7 +704,12 @@ export default function OptionsDesk({
                       Term structure · {volatility.term.length} loaded
                       expirations
                     </summary>
-                    <div className={deskStyles.options_scroll}>
+                    <div
+                      className={deskStyles.options_scroll}
+                      tabIndex={0}
+                      role="region"
+                      aria-label="Options volatility term structure"
+                    >
                       <table>
                         <thead>
                           <tr>
@@ -901,6 +906,9 @@ export default function OptionsDesk({
                 <>
                   <div
                     className={`${deskStyles.options_scroll} ${deskStyles.contractTable}`}
+                    tabIndex={0}
+                    role="region"
+                    aria-label="Options contracts"
                   >
                     <table>
                       <thead>
@@ -1024,7 +1032,12 @@ export default function OptionsDesk({
                   returns. Daily volume stays missing when the feed does not
                   supply it.
                 </p>
-                <div className={deskStyles.options_scroll}>
+                <div
+                  className={deskStyles.options_scroll}
+                  tabIndex={0}
+                  role="region"
+                  aria-label="Options Greeks and activity"
+                >
                   <table>
                     <thead>
                       <tr>

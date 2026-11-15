@@ -447,7 +447,7 @@
     gap: 8px;
   }
   .members :global(.button) {
-    min-height: 40px;
+    min-height: 44px;
     margin: 0;
   }
   .root :global(.owner-field-grid) {
@@ -492,4 +492,49 @@
 }
 .root :global(.admin-section-nav) button:nth-child(4) svg {
   color: #477fbd;
+}
+
+@media (max-width: 700px) {
+  .root input:not([type="checkbox"]),
+  .root select,
+  .root textarea {
+    font-size: 16px;
+    min-height: 44px;
+    max-width: 100%;
+  }
+  .root :global(.button) {
+    min-height: 44px;
+    white-space: normal;
+  }
+  .dialogHeading button {
+    width: 44px;
+    height: 44px;
+    flex: none;
+  }
+  .danger summary {
+    min-height: 44px;
+    align-content: center;
+  }
+}
+@media (max-width: 480px) {
+  .heading,
+  .sectionHeading {
+    flex-wrap: wrap;
+  }
+  .root :global(.owner-field-grid),
+  .root :global(.owner-feature-grid) > label {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root :global(.admin-member-tools) {
+    flex-wrap: wrap;
+  }
+  .root :global(.admin-member-tools) > label:first-child {
+    flex-basis: 100%;
+  }
+  .root :global(.admin-member-tools) > label:last-child {
+    width: 100%;
+  }
+  .members td:last-child {
+    flex-wrap: wrap;
+  }
 }

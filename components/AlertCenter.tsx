@@ -250,7 +250,13 @@ export default function AlertCenter() {
       <div className="two-col support">
         <section>
           <h2>Your rules</h2>
-          {rules.data?.documents.length ? (
+          {rules.loading && !rules.data ? (
+            <p role="status">Loading alert rules…</p>
+          ) : rules.error && !rules.data ? (
+            <button className="button" onClick={rules.refresh}>
+              Retry rules
+            </button>
+          ) : rules.data?.documents.length ? (
             rules.data.documents.map((r) => (
               <div className="compact-record" key={r.key}>
                 <div>
@@ -286,7 +292,13 @@ export default function AlertCenter() {
         </section>
         <section>
           <h2>Alert history</h2>
-          {events.data?.events.length ? (
+          {events.loading && !events.data ? (
+            <p role="status">Loading alert history…</p>
+          ) : events.error && !events.data ? (
+            <button className="button" onClick={events.refresh}>
+              Retry history
+            </button>
+          ) : events.data?.events.length ? (
             events.data.events.map((e) => (
               <article className="compact-record" key={e.id}>
                 <div>
@@ -305,6 +317,7 @@ export default function AlertCenter() {
                   <button
                     className="icon-button"
                     aria-label="Mark alert read"
+                    disabled={busy}
                     onClick={() =>
                       action(() => api("alerts", { op: "read", id: e.id }))
                     }

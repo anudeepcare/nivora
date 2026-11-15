@@ -63,7 +63,12 @@ export default function OwnershipPicture({
         </p>
       )}
       {e.holders.length > 0 && (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Ownership disclosures"
+        >
           <table>
             <caption>
               Reported positions are delayed disclosures, not live buying or

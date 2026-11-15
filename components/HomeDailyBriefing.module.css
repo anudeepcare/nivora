@@ -31,7 +31,7 @@
   right: -110px;
   bottom: -130px;
   transform: rotate(45deg);
-  background: linear-gradient(135deg, #879cf52b, #b5c2f21f 50%, #c9e6ec29 50%);
+  background: linear-gradient(135deg, #d6f35a32, #bed89d24 50%, #9cd9be32 50%);
   border-radius: 15px;
 }
 .eyebrow {
@@ -52,7 +52,7 @@
     from 45deg,
     #8ddbc5,
     #28685e,
-    #b6a1e5,
+    #d6f35a,
     #88cfbe,
     #8ddbc5
   );

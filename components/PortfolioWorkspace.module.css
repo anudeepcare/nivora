@@ -1163,7 +1163,7 @@
   background:
     radial-gradient(
       ellipse at 0 0,
-      color-mix(in srgb, #b8c4ed 18%, transparent),
+      color-mix(in srgb, var(--jade) 24%, transparent),
       transparent 75%
     ),
     var(--workspace-glass);
@@ -1213,6 +1213,12 @@
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
+.balanceMetrics [data-return-tone="negative"] strong {
+  color: var(--negative);
+}
+.balanceMetrics [data-return-tone="positive"] strong {
+  color: var(--positive);
+}
 .balanceMetrics small {
   display: block;
   font-size: 11px;
@@ -1242,7 +1248,7 @@
   background:
     radial-gradient(
       ellipse at 100% 0,
-      color-mix(in srgb, #a8b7ef 12%, transparent),
+      color-mix(in srgb, var(--jade) 20%, transparent),
       transparent 75%
     ),
     var(--workspace-glass);
@@ -1492,7 +1498,7 @@
   }
 }
 
-/* Cool frosted depth follows the shared canvas; color never replaces financial meaning. */
+/* Pearl and sage depth follows the shared canvas; color never replaces financial meaning. */
 .netBalance > span > svg {
   color: #a5b947;
 }
@@ -1500,8 +1506,8 @@
   color: #d2e887;
 }
 :global([data-theme="dark"]) .readLink {
-  background: #dce3ff;
-  color: #171d38;
+  background: var(--citron);
+  color: #253522;
 }
 .portfolio.portfolio.portfolio.portfolio
   :global(.portfolio-grid .portfolio-sidebar .card),

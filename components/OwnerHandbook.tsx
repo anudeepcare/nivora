@@ -339,7 +339,13 @@ export default function OwnerHandbook() {
                               </ul>
                             )
                           ) : block.kind === "table" ? (
-                            <div key={i} className={styles.table}>
+                            <div
+                              key={i}
+                              className={styles.table}
+                              role="region"
+                              aria-label="Handbook reference table"
+                              tabIndex={0}
+                            >
                               <table>
                                 <thead>
                                   <tr>

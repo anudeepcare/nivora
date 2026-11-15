@@ -507,3 +507,28 @@
 :global([data-theme="dark"]) .auth .storyContent h2 span {
   color: #b7d7a8;
 }
+
+/* Auth and password recovery sit outside the account shell. */
+.auth .story {
+  padding: calc(36px + env(safe-area-inset-top, 0px))
+    calc(10% + env(safe-area-inset-right, 0px))
+    calc(36px + env(safe-area-inset-bottom, 0px))
+    calc(10% + env(safe-area-inset-left, 0px));
+}
+.auth .main {
+  padding: calc(var(--auth-pad-block, 48px) + env(safe-area-inset-top, 0px))
+    calc(var(--auth-pad-inline, 8%) + env(safe-area-inset-right, 0px))
+    calc(var(--auth-pad-block, 48px) + env(safe-area-inset-bottom, 0px))
+    calc(var(--auth-pad-inline, 8%) + env(safe-area-inset-left, 0px));
+}
+@media (max-width: 760px) {
+  .auth .main {
+    --auth-pad-block: 28px;
+    --auth-pad-inline: 24px;
+  }
+}
+@media (max-width: 380px) {
+  .auth .main {
+    --auth-pad-inline: 18px;
+  }
+}

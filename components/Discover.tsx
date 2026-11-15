@@ -318,7 +318,9 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
           <MarketRadar research={rows} />
         </details>
       )}
-      {values.length ? (
+      {busy && !rows.length ? (
+        <p role="status">Reviewing company sources…</p>
+      ) : values.length ? (
         <div className="table-scroll">
           <table>
             <thead>
@@ -393,7 +395,9 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
           title={
             rows.length
               ? "No companies match this filter"
-              : "Choose companies to screen"
+              : coverage.requested
+                ? "No verified results yet"
+                : "Choose companies to screen"
           }
         >
           {rows.length

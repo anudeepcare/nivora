@@ -164,3 +164,17 @@
   background: #26392e;
   color: #e0fa7c;
 }
+
+/* In-app plans inherit the workspace insets; only the public route owns the viewport. */
+.page:global(.plans-public) {
+  padding: calc(24px + env(safe-area-inset-top, 0px))
+    calc(24px + env(safe-area-inset-right, 0px))
+    calc(24px + env(safe-area-inset-bottom, 0px))
+    calc(24px + env(safe-area-inset-left, 0px));
+}
+
+@media (max-width: 420px) {
+  .page .cards ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

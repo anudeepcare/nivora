@@ -336,7 +336,12 @@ export function ContextWorkbench({ research: r }: { research: Research }) {
               </article>
             ))}
           </div>
-          <div className="table-scroll">
+          <div
+            className="table-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label="Market benchmark comparison"
+          >
             <table>
               <caption>
                 Stock versus {requested} · {c.matched} matched dates through{" "}

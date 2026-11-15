@@ -122,10 +122,7 @@ export function Settings() {
           <ArrowLeft size={18} /> Back
         </Link>
       </div>
-      <PageHeading
-        title="Settings"
-        subtitle="Manage your account, display and research preferences."
-      />
+      <PageHeading title="Settings" subtitle="Your account, your workspace." />
       {message && (
         <div className="settings-feedback" role="status">
           <Notice>{message}</Notice>
@@ -175,7 +172,7 @@ export function Settings() {
         <section className="workspace-setting-group">
           <header>
             <span>
-              <strong>Display & reading</strong>
+              <h2>Display & reading</h2>
               <small>Theme, text and accessibility</small>
             </span>
           </header>
@@ -186,8 +183,8 @@ export function Settings() {
         <section className="workspace-setting-group">
           <header>
             <span>
-              <strong>Research preferences</strong>
-              <small>How you want evidence presented</small>
+              <h2>Research preferences</h2>
+              <small>Reading style and saved defaults</small>
             </span>
           </header>
           <div className="workspace-setting-body">
@@ -197,7 +194,7 @@ export function Settings() {
         <section className="workspace-setting-group">
           <header>
             <span>
-              <strong>Account & security</strong>
+              <h2>Account & security</h2>
               <small>Sign-in methods and password</small>
             </span>
           </header>
@@ -448,8 +445,15 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         <ComparisonCharts research={values.map(({ r }) => r)} />
       )}
       <PaceHelp trigger="Understand AURYN Pace" />
-      {values.length ? (
-        <div className="table-scroll">
+      {loading ? (
+        <p role="status">Loading comparison…</p>
+      ) : values.length ? (
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="Company comparison"
+          tabIndex={0}
+        >
           <table className="compare-table">
             <thead>
               <tr>
@@ -517,11 +521,11 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
             inferred.
           </p>
         </div>
-      ) : (
+      ) : !error ? (
         <Empty title="Compare growth, margins and valuation">
           Choose two to four companies to compare their reported economics.
         </Empty>
-      )}
+      ) : null}
       <ContributionCompare
         symbols={[
           ...new Set([

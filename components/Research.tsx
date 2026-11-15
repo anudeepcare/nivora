@@ -274,10 +274,12 @@ export default function Research({ symbol }: { symbol: string }) {
   const [retainedCharts, setRetainedCharts] = useState<string[]>(() =>
     tab === "Snapshot" || tab === "Technicals" ? [tab] : [],
   );
-  // Same-company links update the route without remounting this component.
+  const lastRequestedTab = useRef(requestedTab);
+  // Same-company links and browser history update without remounting.
   useEffect(() => {
-    const next = tabs.find((value) => value === requestedTab);
-    if (!next) return;
+    if (lastRequestedTab.current === requestedTab) return;
+    lastRequestedTab.current = requestedTab;
+    const next = tabs.find((value) => value === requestedTab) ?? "Snapshot";
     setTab(next);
     if (next === "Snapshot" || next === "Technicals")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
@@ -318,13 +320,19 @@ export default function Research({ symbol }: { symbol: string }) {
     };
   }, [tab, r?.company.symbol]);
   const switchTab = (next: (typeof tabs)[number]) => {
+    if (next === tab) return;
     if (next === "Technicals" || next === "Snapshot")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
     setTab(next);
     cache.set(`view:research:${symbol}:tab`, { at: Date.now(), value: next });
     const url = new URL(window.location.href);
+    // Give a cached initial section its own URL before creating the next entry.
+    if (!url.searchParams.has("tab")) {
+      url.searchParams.set("tab", tab);
+      window.history.replaceState(null, "", url);
+    }
     url.searchParams.set("tab", next);
-    window.history.replaceState(null, "", url);
+    window.history.pushState(null, "", url);
     requestAnimationFrame(() => {
       const navigation = researchNavigation.current;
       const top = navigation?.getBoundingClientRect().top;
@@ -797,15 +805,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 <FinancingContext research={r} />
               </>
             )}
-            {tab === "Valuation" && (
-              <ValueStudio
-                research={r}
-                onWorkbench={() => {
-                  setWorkbenchTarget("expectations");
-                  switchTab("Advanced");
-                }}
-              />
-            )}
+            {tab === "Valuation" && <ValueStudio research={r} />}
             {access.features.technicals &&
               retainedCharts.includes("Technicals") && (
                 <section

@@ -1013,3 +1013,13 @@
     font-size: 21px;
   }
 }
+
+/* The phone agenda is one column, including its explicitly placed children. */
+@media (max-width: 600px) {
+  .home.home.home.home :global(.home-event-row) {
+    grid-column: 1 / -1;
+  }
+  .home.home.home.home :global(.home-event-day) > time {
+    grid-row: auto;
+  }
+}

@@ -130,7 +130,12 @@ export default function ResearchWorkbench({
       </div>
       <details className="research-data-table">
         <summary>Reported values</summary>
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Reported business values"
+        >
           <table>
             <caption>
               {scope === "annual" ? "Annual" : "Quarterly"} periods; currencies

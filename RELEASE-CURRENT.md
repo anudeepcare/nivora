@@ -1,11 +1,11 @@
-# Current source candidate: Coherent glass and mobile navigation, November 15, 2026
+# Current source candidate: Full-app audit and mobile refinement, November 15, 2026
 
-Read [MOBILE-GLASS-20261115.md](MOBILE-GLASS-20261115.md) for the current changes and verification. Earlier release narratives are historical.
+Read [Full-app source audit and mobile refinement](FULL-APP-AUDIT-20261115.md) for current changes, coverage and acceptance requirements. Earlier release narratives are historical.
 
-The candidate addresses the seven owner screenshots: inconsistent nested white panels, differently inset disclosures, unreadable semantic colors and fragmented menu styling. Shared glass panels and inset metric tiles now use separate tokens. Positive, negative, neutral and caution cues are theme-aware. The overview has a coordinated desktop pair and single-column mobile flow. Menus use a touch-sized glass dock and shared sheets. PWA offline assets, update lifecycle, safe areas and theme chrome have focused regressions.
+This candidate continues the approved palette and layout rather than claiming a wholly new redesign. It addresses confirmed Home, Alerts, Discover, Compare, Settings, Monthly Plan, public Help/pricing, Research/Options and Admin gaps. Route and state inventories cover every declared page plus embedded tools. Useful grids, all metrics and financial qualifications remain.
 
-Financial calculations, scenario values, source selection, APIs, services and database code are unchanged. Metrics and boxed grids remain. No source was deployed, pushed or migrated.
+All 336 lib/service/API/database files are byte-identical to the input brand-aligned ZIP. No source files were removed. No production deployment, push, migration, purchase or real-account operation occurred.
 
-**This remains a source candidate, not visual or installed-PWA acceptance.** Local Chromium cannot launch in this execution environment (socket permission restriction even after escalation), and the separate cloud browser cannot reach its local dev server. No new browser screenshots or mobile-device results were obtained. Test passes, contrast calculations and code review do not establish actual screen quality. Before publication, inspect real populated, missing and expanded states at mobile/tablet/desktop widths, in both themes; test iOS/Android installed navigation, keyboard, offline recovery and updates.
+**Source and automated checks are not browser/device acceptance.** The final candidate has no new rendered screenshots, physical-device tests or real-account validation. Check each inventory at mobile/tablet/desktop widths in both themes and large text, then test keyboard/navigation, installed app and live data before publication. Existing inner Research state reset behavior is unchanged.
 
-Current machine-readable verification is `verification/mobile-glass-20261115/summary.json`. Existing inner Research view/input resets on outer-tab unmount are unchanged.
+Current machine-readable evidence: verification/full-app-20261115/summary.json. New and existing unit/component tests, full lint/format/type/build, controlled API fixtures and signed-out HTTP smoke have separate results. Do not interpret a passed stage as proof of an untested one.

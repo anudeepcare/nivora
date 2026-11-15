@@ -1,7 +1,10 @@
 .page {
   max-width: 1120px;
   margin: auto;
-  padding: 0 28px 28px;
+  padding: env(safe-area-inset-top, 0px)
+    max(28px, env(safe-area-inset-right, 0px))
+    max(28px, env(safe-area-inset-bottom, 0px))
+    max(28px, env(safe-area-inset-left, 0px));
   color: var(--ink);
   min-height: 100dvh;
   font-size: 15px;
@@ -41,6 +44,13 @@
 .header nav a:hover,
 .footer a:hover {
   color: var(--ink);
+}
+.header nav a[aria-current="page"] {
+  color: var(--nav-active-ink);
+  background: var(--nav-active);
+  padding-inline: 10px;
+  border-radius: 10px;
+  font-weight: 600;
 }
 .intro {
   padding: 32px 0 24px;
@@ -168,7 +178,7 @@
 }
 .weights li {
   display: grid;
-  grid-template-columns: 80px 1fr 50px;
+  grid-template-columns: minmax(0, 80px) minmax(0, 1fr) 50px;
   gap: 12px;
   align-items: center;
   min-height: 40px;
@@ -224,7 +234,10 @@
 }
 @media (max-width: 700px) {
   .page {
-    padding: 0 16px 20px;
+    padding: env(safe-area-inset-top, 0px)
+      max(16px, env(safe-area-inset-right, 0px))
+      max(20px, env(safe-area-inset-bottom, 0px))
+      max(16px, env(safe-area-inset-left, 0px));
   }
   .header {
     align-items: flex-start;
@@ -237,7 +250,7 @@
     font-size: 12px;
   }
   .header nav a {
-    min-height: 36px;
+    min-height: 44px;
   }
   .intro {
     padding: 24px 0 20px;
@@ -269,4 +282,9 @@
   .footer {
     gap: 8px 18px;
   }
+}
+
+.weights li strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }

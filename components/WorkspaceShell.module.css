@@ -30,7 +30,7 @@
   );
   border: 0;
   border-bottom: 1px solid var(--workspace-edge);
-  background: var(--workspace-glass);
+  background: var(--chrome-surface);
   backdrop-filter: blur(24px) saturate(125%);
   -webkit-backdrop-filter: blur(24px) saturate(125%);
 }
@@ -57,8 +57,8 @@
   gap: 3px;
   padding: 4px;
   min-width: 0;
-  border-radius: 18px;
-  background: var(--workspace-control);
+  border-radius: 16px;
+  background: var(--surface);
 }
 .shell .header .nav a {
   position: relative;
@@ -84,15 +84,15 @@
   height: 17px;
 }
 .shell .header .nav a[aria-current="page"] {
-  background: var(--workspace-control);
-  color: var(--blue);
+  background: var(--nav-active);
+  color: var(--nav-active-ink);
   box-shadow: 0 2px 8px #172b4210;
   font-weight: 650;
 }
 .shell .header .nav a::after {
   display: none;
 }
-.shell .header .nav a:hover {
+.shell .header .nav a:not([aria-current="page"]):hover {
   color: var(--blue);
   background: var(--workspace-control);
 }
@@ -187,17 +187,17 @@
   padding: 0;
   border: 1px solid var(--workspace-edge);
   border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
+  background: var(--card);
   color: var(--ink);
-  box-shadow: var(--workspace-shadow);
-  backdrop-filter: blur(32px) saturate(120%);
-  -webkit-backdrop-filter: blur(32px) saturate(120%);
+  box-shadow: 0 24px 80px #15271d30;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   overflow: auto;
   overscroll-behavior: contain;
 }
 .shell .toolsDialog::backdrop,
 .shell .searchDialog::backdrop {
-  background: #10192370;
+  background: #14221b66;
   backdrop-filter: blur(5px);
 }
 .shell :is(.toolsDialog, .searchDialog) > :global(.dialog-head) {
@@ -253,7 +253,7 @@
   box-shadow: none;
   text-decoration: none;
 }
-.shell .toolsDialog :global(.dialog-tools) a:hover {
+.shell .toolsDialog :global(.dialog-tools) a:not([aria-current="page"]):hover {
   background: var(--workspace-control);
 }
 .shell .toolsDialog :global(.dialog-tools) a > span:nth-child(2) {
@@ -314,10 +314,12 @@
 }
 .routePending {
   position: absolute;
-  inset: auto 10px 3px;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--blue);
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
   animation: routePulse 0.8s ease-in-out infinite alternate;
   pointer-events: none;
 }
@@ -429,15 +431,15 @@
     height: 20px;
   }
   .shell .dock a[aria-current="page"] {
-    color: var(--blue);
-    background: var(--workspace-control);
+    color: var(--nav-active-ink);
+    background: var(--nav-active);
     box-shadow: 0 2px 8px #172b4210;
     font-weight: 650;
   }
   .shell .dock a[aria-current="page"] svg {
     color: currentColor;
   }
-  .shell .dock a:active {
+  .shell .dock a:not([aria-current="page"]):active {
     background: var(--workspace-control);
   }
   .shell .content {
@@ -526,4 +528,21 @@
 }
 :global([data-motion="reduce"]) .routePending {
   animation: none;
+}
+
+/* Selection, hover and loading are separate states. Never erase selection on hover. */
+.shell .actions a[aria-current="page"],
+.shell .actions button[aria-expanded="true"] {
+  background: var(--nav-active);
+  color: var(--nav-active-ink);
+  box-shadow: none;
+}
+.shell .toolsDialog :global(.dialog-tools) a[aria-current="page"] {
+  background: var(--blue-soft);
+  color: var(--blue);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue) 18%, transparent);
+}
+.shell .toolsDialog :global(.dialog-tools) a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
 }

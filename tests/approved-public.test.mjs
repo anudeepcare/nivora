@@ -230,16 +230,39 @@ test("public navigation opens accessibly, closes on Escape, and closes after a d
     (n) => n.type === "nav" && n.props.id === "ap-mobile-navigation",
   )[0];
   assert(navigation);
+  let focusReturned = false;
   nodes(render(), (n) => n.type === "header")[0].props.onKeyDown({
     key: "Escape",
+    preventDefault() {},
+    currentTarget: {
+      querySelector(selector) {
+        assert.equal(selector, '[aria-controls="ap-mobile-navigation"]');
+        return { focus() { focusReturned = true; } };
+      },
+    },
   });
   assert.equal(toggle().props["aria-expanded"], false);
+  assert.equal(focusReturned, true, "Escape restores focus before removing the focused menu link");
   toggle().props.onClick();
   nodes(
     navigation,
     (n) => n.type === Link && n.props.href === "/pricing",
   )[0].props.onClick();
   assert.equal(toggle().props["aria-expanded"], false);
+});
+
+test("public utility navigation identifies its current page without marking a different destination", () => {
+  for (const path of ["/about", "/pace", "/track-record", "/portfolio-check"]) {
+    const PublicFrame = load("components/PublicFrame.tsx", "PublicFrame", {
+      ...common,
+      s: {},
+      usePathname: () => path,
+    });
+    const tree = PublicFrame({ title: "Test", intro: "", children: null });
+    const selected = nodes(tree, (node) => node.type === Link && node.props["aria-current"] === "page");
+    assert.equal(selected.length, 1, `${path} has one active navigation item`);
+    assert.equal(selected[0].props.href, path);
+  }
 });
 
 test("account modes keep labelled native fields, reachable submit and real legal/help routes", () => {
