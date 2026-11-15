@@ -457,10 +457,14 @@
 }
 .scenarios {
   display: grid;
+  align-items: stretch;
+  grid-auto-rows: auto;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 .scenarios article {
+  align-self: stretch;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -584,12 +588,16 @@
 }
 .workflowRows {
   display: grid;
+  align-items: stretch;
+  grid-auto-rows: auto;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 .workflowRows article {
   padding: 26px;
   min-width: 0;
+  align-self: stretch;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 28px;

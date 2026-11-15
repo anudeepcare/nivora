@@ -5,6 +5,7 @@ import type { EodNews } from "@/lib/eodhd";
 import type { Filing } from "@/lib/types";
 import { newsDesk, type DeskArticle } from "@/lib/news-desk";
 import { dateLabel } from "@/lib/format";
+import { Help } from "./Ui";
 import s from "./NewsCoverage.module.css";
 export default function NewsCoverage({
   symbol,
@@ -144,13 +145,13 @@ export default function NewsCoverage({
             {error} Available headlines remain visible.
           </p>
         )}
-        <p className={s.sourceNote}>
-          {news?.source || "News source not yet available"}
+        <Help label="News information">
           {news?.retrievedAt
-            ? ` · Fetched ${dateLabel(news.retrievedAt)}`
-            : ""}{" "}
-          · Headlines are not investment conclusions.
-        </p>
+            ? `Updated ${dateLabel(news.retrievedAt)}. `
+            : "Update date unavailable. "}
+          Headlines are reporting, not investment conclusions. Each article
+          links to its publisher.
+        </Help>
       </section>
       <aside className={s.rail} aria-label="Company source records">
         {children}

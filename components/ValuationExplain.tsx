@@ -1,4 +1,5 @@
 "use client";
+import { customerText } from "@/lib/customer-language";
 
 type Case = {
   value?: number | null;
@@ -157,7 +158,7 @@ export default function ValuationExplain({
                     <summary>Source detail</summary>
                     <code>{source.tag}</code>
                     {source.sourceRef ? (
-                      <span> · {source.sourceRef}</span>
+                      <span> · {customerText(source.sourceRef)}</span>
                     ) : null}
                   </details>
                 ) : null}

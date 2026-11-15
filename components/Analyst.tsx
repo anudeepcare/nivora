@@ -188,7 +188,7 @@ export default function Analyst({
               .map((source) => (
                 <div key={source.id}>
                   <Source href={source.url}>
-                    {source.id} · {source.label}
+                    {source.id} · {customerText(source.label)}
                   </Source>
                   {source.passage && (
                     <details>

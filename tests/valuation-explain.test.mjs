@@ -1,3 +1,4 @@
+import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import React from "react";
@@ -9,7 +10,7 @@ function component(file) {
   const source = fs.readFileSync(new URL(`../components/${file}`, import.meta.url), "utf8");
   const js = ts.transpileModule(source, { compilerOptions: { jsx: ts.JsxEmit.React, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const module = { exports: {} };
-  new Function("React", "exports", "module", js)(React, module.exports, module);
+  new Function("React", "exports", "module", "require", js)(React, module.exports, module, name => { if(name === "@/lib/customer-language") return {customerText}; throw Error(name); });
   return module.exports.default;
 }
 const ValuationExplain = component("ValuationExplain.tsx");

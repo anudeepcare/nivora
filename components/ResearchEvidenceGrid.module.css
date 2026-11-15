@@ -3,7 +3,7 @@
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
   margin: 0;
-  align-items: start;
+  align-items: stretch;
 }
 .panel {
   min-width: 0;

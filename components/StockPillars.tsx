@@ -5,6 +5,8 @@ import type { aurynDecision } from "@/lib/auryn-decision";
 import { stockPillars } from "@/lib/stock-pillars";
 import { priceAmount, percent, dateLabel } from "@/lib/format";
 import { consensusOutlook } from "@/lib/outlook";
+import { Help } from "./Ui";
+import { customerText } from "@/lib/customer-language";
 import s from "./StockPillars.module.css";
 
 const mark = {
@@ -67,32 +69,53 @@ export default function StockPillars({
             );
           })}
           <p>
-            {view.cases.source}
-            {view.cases.price != null
-              ? ` · ${view.cases.referenceBasis === "settled-close" ? "settled close" : "quote"} ${priceAmount(view.cases.price, view.cases.currency)}`
-              : ""}
-            {analystRange && consensus?.referenceAsOf
-              ? ` · ${dateLabel(consensus.referenceAsOf)}`
-              : ""}
-            {view.cases.position === "above-bull"
-              ? analystRange
-                ? " · the price is above the high analyst target."
-                : " · the price is above even the bull case."
-              : view.cases.position === "below-bear"
-                ? analystRange
-                  ? " · the price is below the low analyst target."
-                  : " · the price is below even the bear case."
-                : "."}
+            {analystRange ? "Analyst targets" : "AURYN model · conditional"}
+            <Help
+              label={
+                analystRange ? "Analyst target range" : "Scenario assumptions"
+              }
+            >
+              <p>{customerText(view.cases.source)}</p>
+              {view.cases.price != null && (
+                <p>
+                  Compared with{" "}
+                  {view.cases.referenceBasis === "settled-close"
+                    ? "completed close"
+                    : "quote"}{" "}
+                  {priceAmount(view.cases.price, view.cases.currency)}
+                  {analystRange && consensus?.referenceAsOf
+                    ? ` · ${dateLabel(consensus.referenceAsOf)}`
+                    : ""}
+                  .
+                </p>
+              )}
+              {analystRange && (
+                <>
+                  <p>
+                    {consensus?.analysts != null
+                      ? `${consensus.analysts} analysts. `
+                      : ""}
+                    Analyst opinion, not AURYN fair value or a promised return.
+                  </p>
+                  <p>
+                    Individual target revision dates and forecast horizon are
+                    not supplied. Conditional models and historical risk are
+                    separate views.
+                  </p>
+                </>
+              )}
+            </Help>
           </p>
-          {analystRange && (
+          {(view.cases.position === "above-bull" ||
+            view.cases.position === "below-bear") && (
             <p>
-              {consensus?.analysts != null
-                ? `${consensus.analysts} analysts · `
-                : ""}
-              Analyst opinion, not AURYN fair value or a promised return;
-              individual target revision dates and forecast horizon are not
-              supplied. Conditional models and historical price risk are
-              separate views.
+              {view.cases.position === "above-bull"
+                ? analystRange
+                  ? "Price above highest target"
+                  : "Price above bull case"
+                : analystRange
+                  ? "Price below lowest target"
+                  : "Price below bear case"}
             </p>
           )}
         </div>

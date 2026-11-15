@@ -11,3 +11,10 @@ test('customer copy hides vendor names, domains and endpoint queries without hid
   assert.match(customerText('Twelve Data quota exceeded'), /quota exceeded/);
   assert.equal(customerText('Reuters · 2026-10-26'), 'Reuters · 2026-10-26');
 });
+
+test('operational labels omit API vendor identities but preserve publishers and status', () => {
+ for (const name of ['SentiSense','Eulerpool','Financial Modeling Prep','Alpha Vantage','EOD Historical Data']) {
+  assert.equal(customerText(`${name} · delayed · 2026-11-15`), 'market data · delayed · 2026-11-15');
+ }
+ assert.equal(customerText('Reuters · SEC filing'), 'Reuters · SEC filing');
+});

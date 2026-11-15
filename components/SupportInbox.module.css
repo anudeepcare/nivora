@@ -49,10 +49,11 @@
 .ticket {
   margin: 4px 0;
   border-radius: 10px;
-  background: var(--card);
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
 }
 .ticket:nth-of-type(even) {
-  background: color-mix(in srgb, #64748b 5%, var(--card));
+  background: var(--workspace-glass);
 }
 .ticket > summary {
   display: flex;
@@ -232,23 +233,49 @@
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  margin: 12px 0;
+  margin: 0;
 }
 .assignment label {
   display: grid !important;
   flex: 1;
 }
-.inbox .body > label {
+.ticketControls {
   display: grid;
-  grid-template-columns: 80px minmax(0, 1fr);
-  align-items: center;
-  overflow-wrap: normal;
-  word-break: normal;
-  margin: 12px 0;
+  grid-template-columns: minmax(140px, 0.7fr) minmax(260px, 2fr) minmax(
+      150px,
+      0.8fr
+    );
+  align-items: end;
+  gap: 12px;
+  max-width: 1000px;
 }
-.inbox .body > label select {
-  min-width: 0;
+.inbox .ticketControls > label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: normal;
+}
+.inbox .ticketControls select {
   width: 100%;
+  min-width: 0;
+}
+.ticketControls .assignment label {
+  font-size: 13px;
+  font-weight: 500;
+  gap: 6px;
+}
+@media (max-width: 900px) {
+  .ticketControls {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 600px;
+  }
+  .inbox .ticketControls > label {
+    grid-template-columns: 80px minmax(0, 1fr);
+    align-items: center;
+  }
 }
 .body input {
   min-width: 0;

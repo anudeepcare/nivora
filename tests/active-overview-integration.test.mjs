@@ -36,6 +36,7 @@ function setup() {
   const marker = (name) => () => React.createElement("p", null, name);
   const scope = {
     React,
+    Help: ({ children }) => React.createElement("aside", null, children),
     useState: (value) => {
       const i = cursor++;
       if (!(i in states))

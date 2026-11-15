@@ -292,3 +292,13 @@
   color: var(--ink);
   background: #d8f279;
 }
+
+/* Complex ranges stay discoverable without adding a nested full-width tile. */
+.ladder.ladder button .stageAction .bandCount {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 9px;
+  white-space: nowrap;
+}

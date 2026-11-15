@@ -578,7 +578,7 @@ test("Analyst ratings preserve missing counts separately from reported zero", ()
   assert.match(html, /Reported recommendations/);
   assert.match(html, /<b>0<\/b>/);
   assert.match(html, /<b>—<\/b>/);
-  assert.match(html, /not necessarily unique analysts/i);
+  assert.match(html, /more than one view from the same analyst/i);
 });
 test("Analyst ratings do not invent a distribution when counts are absent", () => {
   const Component = loadComponent(

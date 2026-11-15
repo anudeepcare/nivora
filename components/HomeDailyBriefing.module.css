@@ -1,12 +1,16 @@
 .root {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  grid-auto-rows: auto;
   gap: var(--workspace-gap);
   margin: 6px 0 12px;
 
   color: var(--ink);
 }
 .focus {
+  align-self: stretch;
+  margin: 0;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -137,6 +141,7 @@
   color: var(--blue);
 }
 .root > section {
+  align-self: stretch;
   min-width: 0;
   margin: 0;
   grid-template-columns: minmax(0, 1fr);

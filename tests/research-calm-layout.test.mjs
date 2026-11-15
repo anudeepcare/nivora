@@ -6,13 +6,14 @@ import React from 'react';
 import * as jsx from 'react/jsx-runtime';
 import * as icons from 'lucide-react';
 import * as format from '../lib/format.ts';
+import {customerText} from '../lib/customer-language.ts';
 import {renderToStaticMarkup} from 'react-dom/server';
 function load(file, deps = {}) {
  const code = ts.transpileModule(fs.readFileSync(`components/${file}.tsx`, 'utf8'), {compilerOptions:{target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.CommonJS,esModuleInterop:true}}).outputText;
  const mod={exports:{}};
  new Function('require','module','exports',code)(name => {
   if(name.endsWith('.module.css')) return {__esModule:true,default:new Proxy({}, {get:(_,k)=>k})};
-  const modules={react:React,'react/jsx-runtime':jsx,'lucide-react':icons,'@/lib/format':format,...deps};
+  const modules={react:React,'react/jsx-runtime':jsx,'lucide-react':icons,'@/lib/format':format,'@/lib/customer-language':{customerText},'./Ui':{Help:({children})=>React.createElement('aside',null,children)},...deps};
   assert.ok(name in modules,name); return modules[name];
  },mod,mod.exports);
  return mod.exports.default;

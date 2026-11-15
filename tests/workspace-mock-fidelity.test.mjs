@@ -48,3 +48,23 @@ test('support and release decoration no longer uses the retired green interactio
 test('discovery results can be scrolled with a keyboard',()=>{
  assert.match(read('Discover.tsx'),/className="table-scroll"\s+role="region"\s+aria-label="Discovered companies"\s+tabIndex=\{0\}/);
 });
+
+test('primary workspace cards stretch within their row without equalizing unrelated rows',()=>{
+ const portfolio=read('PortfolioWorkspace.module.css');
+ assert.match(portfolio,/grid-column: 1 \/ 9;\s+grid-row: 1;\s+align-self: stretch;\s+margin-block: 0/);
+ assert.match(portfolio,/grid-column: 9 \/ -1;\s+grid-row: 1;\s+align-self: stretch;\s+margin-block: 0/);
+ assert.match(read('HomeDailyBriefing.module.css'),/align-items: stretch;\s+grid-auto-rows: auto/);
+ const publicCss=read('PublicLanding.module.css');
+ for(const selector of ['scenarios','workflowRows']) assert.match(publicCss,new RegExp(`\\.${selector} \\{\\s+display: grid;\\s+align-items: stretch;\\s+grid-auto-rows: auto`));
+ assert.match(read('SettingsPage.module.css'),/grid-template-rows: auto auto auto min-content minmax\(0, 1fr\)/);
+});
+
+test('ticket controls form a bounded responsive row and delivery status remains data driven',()=>{
+ const source=read('SupportInbox.tsx'), css=read('SupportInbox.module.css');
+ assert.match(source,/className=\{s.ticketControls\}/);
+ assert.match(css,/max-width: 1000px/);
+ assert.match(css,/@media \(max-width: 900px\)/);
+ assert.match(source,/r.owner_notified_at \? "Owner notified" : "Owner email pending"/);
+ assert.match(source,/r.receipt_sent_at/);
+ assert.match(source,/r.attempts >= 5/);
+});

@@ -6,6 +6,7 @@ import { latestFinancialEvidence } from "@/lib/analysis";
 import { consensusOutlook } from "@/lib/outlook";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
+import { Help } from "./Ui";
 import s from "./ResearchBrief.module.css";
 
 export function OverviewBrief({
@@ -149,7 +150,7 @@ export function DataFreshness({
           : `Quote${quoteTime}`,
     },
     {
-      label: "Analyst dataset",
+      label: "Analyst estimates",
       date: separateTargets
         ? targetDate
         : r.evidence?.consensus || r.evidence?.estimates?.length
@@ -159,10 +160,10 @@ export function DataFreshness({
         ? !!targetDate && now - Date.parse(targetDate) <= 7 * 86400000
         : analystCurrent,
       context: separateTargets
-        ? `SentiSense targets · ${r.evidence?.source ?? "Provider"} estimates/ratings ${datasetDate ? dateLabel(datasetDate) : "date unavailable"}${datasetDate && !analystCurrent ? " · older dataset" : ""}`
+        ? `Targets · estimates/ratings ${datasetDate ? dateLabel(datasetDate) : "undated"}${datasetDate && !analystCurrent ? " · older" : ""}`
         : analystCurrent
           ? ""
-          : "Older dataset · refresh",
+          : "Older estimates",
     },
     {
       label: "Financial period",
@@ -171,7 +172,7 @@ export function DataFreshness({
       context: `${financial.periodBasis}${financialDate && !financialCurrent ? " · Older report · refresh" : ""}`,
     },
     {
-      label: "Ownership dataset",
+      label: "Ownership",
       date:
         r.evidence &&
         (r.evidence.ownership?.institutions != null ||
@@ -180,7 +181,7 @@ export function DataFreshness({
           ? datasetDate
           : undefined,
       current: false,
-      context: "Dated disclosure · verify source",
+      context: "Reported holdings",
     },
   ];
   return (
@@ -190,7 +191,22 @@ export function DataFreshness({
       aria-label="Data freshness"
     >
       <header>
-        <h2>Data freshness</h2>
+        <h2>
+          Data dates{" "}
+          <Help label="Data dates">
+            <p>
+              Update dates may differ from filing or observation dates. A recent
+              update does not guarantee fresh observations.
+            </p>
+            {d.reference && (
+              <p>
+                Price reference:{" "}
+                {amount(d.reference.price, d.reference.currency)} ·{" "}
+                {dateLabel(d.reference.asOf)}.
+              </p>
+            )}
+          </Help>
+        </h2>
       </header>
       <dl>
         {rows.map((row) => (
@@ -208,11 +224,7 @@ export function DataFreshness({
           </div>
         ))}
       </dl>
-      <small>
-        {d.reference
-          ? `Price reference ${amount(d.reference.price, d.reference.currency)} · ${dateLabel(d.reference.asOf)}. Dataset dates are not individual filing dates. A dated observation is not proof of current coverage.`
-          : "A comparable price reference is not yet available."}
-      </small>
+      {!d.reference && <small>Price reference unavailable.</small>}
     </section>
   );
 }

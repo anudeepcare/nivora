@@ -21,6 +21,7 @@ function views({ target = true, rsi = 76 } = {}) {
   const mod = { exports: {} };
   const dependencies = {
     react: React,
+    "./Ui": { Help: ({children}) => React.createElement("aside", null, children) },
     "react/jsx-runtime": jsx,
     "lucide-react": icons,
     "@/lib/format": format,
@@ -121,8 +122,8 @@ test("freshness labels old and invalid datasets without a green availability ind
       now: Date.parse(research.retrievedAt),
     }),
   );
-  assert.match(html, /Older dataset · refresh/);
-  assert.match(html, /Dated disclosure · verify source/);
+  assert.match(html, /Older estimates/);
+  assert.match(html, /Reported holdings/);
   const invalid = renderToStaticMarkup(
     React.createElement(DataFreshness, {
       research: { ...r, evidence: { ...r.evidence, updatedAt: "2026-02-30" } },

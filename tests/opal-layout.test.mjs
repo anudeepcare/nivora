@@ -11,12 +11,21 @@ const declarations = (path, selector) => {
   });
   return values;
 };
-test("approved snapshots use four independent cards without stretched empty columns", () => {
+test("approved snapshots align four bounded summary cards to a shared row height", () => {
   const file = "components/ResearchOverview.module.css";
-  assert.equal(declarations(file, ".caseWorkspace")["align-items"], "start");
-  assert.equal(declarations(file, ".caseWorkspace")["grid-template-columns"], "repeat(4, minmax(0, 1fr))");
-  assert.match(read(file), /@media \(max-width: 1100px\)[\s\S]*repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(read(file), /@media \(max-width: 600px\)[\s\S]*\.caseWorkspace \{\s*grid-template-columns: minmax\(0, 1fr\)/);
+  assert.equal(declarations(file, ".caseWorkspace")["align-items"], "stretch");
+  assert.equal(
+    declarations(file, ".caseWorkspace")["grid-template-columns"],
+    "repeat(4, minmax(0, 1fr))",
+  );
+  assert.match(
+    read(file),
+    /@media \(max-width: 1100px\)[\s\S]*repeat\(2, minmax\(0, 1fr\)\)/,
+  );
+  assert.match(
+    read(file),
+    /@media \(max-width: 600px\)[\s\S]*\.caseWorkspace \{\s*grid-template-columns: minmax\(0, 1fr\)/,
+  );
 });
 test("studio research navigation uses an underline rail with clear hover and keyboard focus", () => {
   const file = "components/ResearchNavigation.module.css";
@@ -69,5 +78,8 @@ test("studio decision and chart are peer surfaces rather than nested cards", () 
     declarations(file, ".decisionStage .chart").background,
     "var(--workspace-glass)",
   );
-  assert.match(stage["grid-template-columns"], /minmax\(0, 1.8fr\) minmax\(320px, 1fr\)/);
+  assert.match(
+    stage["grid-template-columns"],
+    /minmax\(0, 1.8fr\) minmax\(320px, 1fr\)/,
+  );
 });

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import type { GrowData, GrowDataset } from "@/lib/grow-data";
 import { useProduct, useResource } from "./Session";
 import { amount, dateLabel, percent } from "@/lib/format";
-import { Notice, Source } from "./Ui";
+import { Notice, Source, Help } from "./Ui";
 import s from "./ResearchWorkspace.module.css";
 export function useGrow(symbol: string, dataset: GrowDataset) {
   const { demo } = useProduct();
@@ -63,8 +63,10 @@ export function CompanyProfile({ symbol }: { symbol: string }) {
       </div>
       <div className={s.source}>
         <span>
-          {customerText(resource.data?.source)} profile · retrieved{" "}
-          {dateLabel(resource.data?.retrievedAt)}
+          Updated {dateLabel(resource.data?.retrievedAt)}{" "}
+          <Help label="Profile data">
+            {customerText(resource.data?.source)}
+          </Help>
         </span>
         {p.website && <Source href={p.website}>Company website</Source>}
       </div>
@@ -233,7 +235,8 @@ export default function GrowCompanyEvents({ symbol }: { symbol: string }) {
             </>
           )}
           <p className={s.caption}>
-            {customerText(d.source)} · retrieved {dateLabel(d.retrievedAt)}
+            Updated {dateLabel(d.retrievedAt)}{" "}
+            <Help label="Event data">{customerText(d.source)}</Help>
           </p>
         </>
       )}

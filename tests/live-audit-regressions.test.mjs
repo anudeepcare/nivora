@@ -174,6 +174,7 @@ test("forecast table renders available estimates, including an unreported comple
   };
   const Forecasts = component("components/ResearchEvidence.tsx", "Forecasts", {
     React,
+    Help: ({ children, label }) => React.createElement("details", null, React.createElement("summary", null, label), children),
     useState: () => [false, () => {}],
     upcomingEstimates,
     estimateValue,

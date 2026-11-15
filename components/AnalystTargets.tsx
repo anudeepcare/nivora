@@ -1,4 +1,5 @@
 "use client";
+import { Help } from "./Ui";
 import styles from "./AnalystTargets.module.css";
 import type { Research } from "@/lib/types";
 import { consensusOutlook } from "@/lib/outlook";
@@ -21,13 +22,11 @@ export default function AnalystTargets({
         aria-label="Analyst price targets"
       >
         <span className="analyst-target-kicker">Wall Street consensus</span>
-        <p>
-          No current, usable analyst target is available in the supplied data.
-        </p>
-        <small>
-          AURYN scenarios below are a separate calculation; they do not fill
-          missing analyst coverage.
-        </small>
+        <p>Current target unavailable.</p>
+        <Help label="Missing analyst target">
+          AURYN scenarios are separate calculations, not substitutes for missing
+          analyst targets.
+        </Help>
       </section>
     ) : null;
   const reference = c.referencePrice;
@@ -112,7 +111,7 @@ export default function AnalystTargets({
                 : c.referenceStatus === "unavailable"
                   ? "Price comparison unavailable"
                   : c.referenceBasis === "settled-close"
-                    ? "Versus settled close"
+                    ? "Versus closing price"
                     : "Versus current quote"}
             </span>
             <strong
@@ -132,25 +131,24 @@ export default function AnalystTargets({
       {c.rangeStatus !== "complete" && (
         <p>
           {c.rangeStatus === "missing"
-            ? "Low and high targets are not supplied as a complete range."
-            : "The supplied low/high range is invalid and is withheld."}{" "}
-          AURYN models are separate calculations.
+            ? "Target range unavailable."
+            : "Target range invalid."}
         </p>
       )}
-      <p>
-        Analyst opinion, not AURYN fair value or a guaranteed return.{" "}
-        {c.source ? `${c.source} · ` : ""}
-        {c.analysts != null ? `${c.analysts} analysts · ` : ""}
-        Dataset updated {dateLabel(c.asOf)}; individual target revision dates
-        and forecast horizon are not supplied.
-      </p>
-      {c.referenceAsOf && (
-        <small>
-          Compared with {amount(c.referencePrice, r.quote.currency)} ·{" "}
-          {c.referenceBasis === "settled-close" ? "settled close" : "quote"} ·{" "}
-          {dateLabel(c.referenceAsOf)}
-        </small>
-      )}
+      <small>
+        Analyst opinion{c.analysts != null ? ` · ${c.analysts} analysts` : ""}
+      </small>
+      <Help label="Target dates and comparison">
+        Updated {dateLabel(c.asOf)}. Individual revisions and forecast horizon
+        are not supplied. This is not AURYN fair value or a guaranteed return.
+        {c.referenceAsOf && (
+          <p>
+            Compared with {amount(c.referencePrice, r.quote.currency)} ·{" "}
+            {c.referenceBasis === "settled-close" ? "closing price" : "quote"} ·{" "}
+            {dateLabel(c.referenceAsOf)}.
+          </p>
+        )}
+      </Help>
     </section>
   );
 }

@@ -1,4 +1,6 @@
 "use client";
+import { Help } from "./Ui";
+import { customerText } from "@/lib/customer-language";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "@/lib/client";
 import { rankFlowPremium, type FlowReply } from "@/lib/options-flow";
@@ -178,7 +180,7 @@ export default function OptionsTape({
           {reply ? " The last successful sample remains below." : ""}
         </p>
       ) : reply?.message ? (
-        <p>{reply.message}</p>
+        <p>{customerText(reply.message)}</p>
       ) : !active ? (
         <p>
           Load a bounded trade sample for up to 30 standard contracts, selected
@@ -188,29 +190,22 @@ export default function OptionsTape({
       {reply?.status === "available" && (
         <>
           <div className={styles.notes}>
-            <p>{reply.source}</p>
             <p>
-              Source fetched: {timestamp(reply.fetchedAt)} · Latest returned
-              print: {timestamp(reply.trades[0]?.time)} · Window starts:{" "}
-              {timestamp(reply.start)}
+              {reply.trades.length} trades · {reply.contracts.length} contracts
+              {reply.partial ? " · Partial sample" : ""}
+              {reply.chainComplete === false ? " · Incomplete chain" : ""}
             </p>
-            <p>
-              {reply.contracts.length} contracts requested ·{" "}
-              {reply.trades.length} valid prints returned · One page, at most
-              500 prints.{" "}
-              {reply.partial
-                ? "Partial page coverage: more provider results were available."
-                : "No next page reported for the selected scope."}{" "}
-              {reply.chainComplete === false
-                ? "The contract chain itself is incomplete."
-                : ""}
-            </p>
-            <p>
-              Provider results sort by contract first, then time. Busy contracts
-              can consume the page before others appear. This sample does not
-              measure total market activity or infer buyer/seller intent,
-              opening positions, or linked orders.
-            </p>
+            <Help label="Trade sample details">
+              {customerText(reply.source)}. Updated {timestamp(reply.fetchedAt)}
+              . Latest trade {timestamp(reply.trades[0]?.time)}; window starts{" "}
+              {timestamp(reply.start)}.
+              <p>
+                One page, up to 500 trades, ordered by contract then time. Busy
+                contracts can dominate this sample. It does not represent total
+                market activity or identify buyer/seller intent, opening
+                positions, or linked orders.
+              </p>
+            </Help>
           </div>
           <details className={styles.scope}>
             <summary>

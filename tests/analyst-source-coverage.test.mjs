@@ -7,6 +7,7 @@ import * as jsx from "react/jsx-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 import { normalizeEodFundamentals } from "../lib/eodhd-normalize.ts";
 import * as outlook from "../lib/outlook.ts";
+import { customerText } from "../lib/customer-language.ts";
 import * as format from "../lib/format.ts";
 import * as stockPillars from "../lib/stock-pillars.ts";
 import * as analysis from "../lib/analysis.ts";
@@ -100,6 +101,10 @@ function component(file, name = "default") {
   }).outputText;
   const dependencies = {
     "react/jsx-runtime": jsx,
+    "./Ui": {
+      Help: ({ children }) => React.createElement("aside", null, children),
+    },
+    "@/lib/customer-language": { customerText },
     react: React,
     "lucide-react": icons,
     "@/lib/stock-pillars": stockPillars,
@@ -128,9 +133,9 @@ const render = (view, r) =>
   renderToStaticMarkup(React.createElement(view, { research: r }));
 test("consensus-only targets name the settled-close denominator and explain missing bounds", () => {
   const html = render(Targets, input());
-  assert.match(html, /Versus settled close/);
-  assert.match(html, /Low and high targets are not supplied/);
-  assert.match(html, /EODHD/);
+  assert.match(html, /Versus closing price/);
+  assert.match(html, /Target range unavailable/);
+  assert.doesNotMatch(html, /EODHD/);
   assert.doesNotMatch(html, /Versus current price/);
 });
 test("rating panel does not deny a supplied target range or call a provider update a retrieval date", () => {
@@ -139,7 +144,7 @@ test("rating panel does not deny a supplied target range or call a provider upda
   const html = render(Ratings, r);
   assert.doesNotMatch(html, /target ranges are not/);
   assert.doesNotMatch(html, /Dataset retrieved/);
-  assert.match(html, /Dataset updated/);
+  assert.match(html, /updated/i);
 });
 
 test("private target ranges show their own count and refresh while recommendations stay EOD-sourced", () => {
@@ -160,12 +165,12 @@ test("private target ranges show their own count and refresh while recommendatio
   const targets = render(Targets, r),
     ratings = render(Ratings, r);
   assert.match(targets, /19 analysts/);
-  assert.match(targets, /SentiSense/);
+  assert.doesNotMatch(targets, /SentiSense/);
   assert.match(targets, /Nov 13, 2026/);
-  assert.match(targets, /individual target revision dates/);
+  assert.match(targets, /Individual revisions/);
   assert.match(ratings, /Reported recommendations<\/span><strong>8<\/strong>/);
-  assert.match(ratings, /Ratings: EODHD/);
-  assert.match(ratings, /SentiSense/);
+  assert.doesNotMatch(ratings, /EODHD/);
+  assert.doesNotMatch(ratings, /SentiSense/);
   assert.doesNotMatch(
     ratings,
     /Reported recommendations<\/span><strong>19<\/strong>/,
@@ -201,19 +206,20 @@ test("Overview range and freshness captions distinguish selected targets from EO
   const html = renderToStaticMarkup(
     React.createElement(Pillars, { research: r, decision, casesOnly: true }),
   );
-  assert.match(html, /SentiSense/);
+  assert.doesNotMatch(html, /SentiSense/);
   assert.match(html, /2026-11-13/);
-  assert.match(html, /Dataset updated/);
+  assert.match(html, /updated/i);
   assert.match(html, /19 analysts/);
-  assert.match(html, /individual target revision dates/);
+  assert.match(html, /individual target revision dates/i);
   assert.match(html, /forecast horizon are not supplied/);
   const Freshness = component("components/ResearchBrief.tsx", "DataFreshness");
   const fresh = renderToStaticMarkup(
     React.createElement(Freshness, { research: r, now, decision }),
   );
-  assert.match(fresh, /SentiSense targets/);
+  assert.doesNotMatch(fresh, /SentiSense|EODHD/);
+  assert.match(fresh, /Targets/);
   assert.match(fresh, /Nov 13, 2026/);
-  assert.match(fresh, /EODHD estimates\/ratings/);
+  assert.match(fresh, /estimates\/ratings/);
   assert.match(fresh, /Nov 12, 2026/);
 });
 
@@ -244,4 +250,14 @@ test("analyst low consensus high values are not labelled as model bear base bull
   );
   assert.doesNotMatch(full, /price is above the bull case/);
   assert.match(full, /above the high analyst target/);
+});
+
+test("analyst summary keeps figures and opinion label while method detail stays in help", () => {
+  const html = render(Targets, input());
+  const summary = html.replace(/<aside>[\s\S]*?<\/aside>/g, "");
+  assert.match(summary, /Analyst opinion/);
+  assert.match(summary, /Versus closing price/);
+  assert.match(summary, /Target range unavailable/);
+  assert.doesNotMatch(summary, /forecast horizon|Individual revisions|guaranteed return|EODHD|SentiSense/);
+  assert.match(html, /Individual revisions and forecast horizon/);
 });

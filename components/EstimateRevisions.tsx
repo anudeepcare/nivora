@@ -10,6 +10,7 @@ import {
 import { amount, dateLabel } from "@/lib/format";
 import { api, authClient } from "@/lib/client";
 import { useProduct } from "./Session";
+import { Help } from "./Ui";
 import styles from "./EstimateRevisions.module.css";
 export default function EstimateRevisions({
   research,
@@ -192,10 +193,12 @@ function RevisionRecord({
       {baseline && (
         <>
           <p>
-            Saved {dateLabel(baseline.savedAt)} · baseline dataset{" "}
-            {dateLabel(baseline.observedAt)} · current dataset{" "}
-            {dateLabel(current?.observedAt)} · source{" "}
-            {baseline.source ?? "not supplied"}.
+            Saved {dateLabel(baseline.savedAt)}{" "}
+            <Help label="Comparison dates">
+              Saved estimates: {dateLabel(baseline.observedAt)}. Current
+              estimates: {dateLabel(current?.observedAt)}. These are snapshot
+              dates, not individual analyst revision dates.
+            </Help>
           </p>
           {!!comparisons.length && (
             <div

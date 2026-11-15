@@ -62,7 +62,7 @@ export function stockFactRows(r: Research) {
       label: "Market cap",
       value: amount(cap, capCurrency, true),
       date: `${capObservation ? "Observed" : "Dataset updated"} ${dateLabel(capDate)}`,
-      help: "Reported equity market value. For example, 10 million shares at $20 would equal $200 million. A dataset update date is not necessarily the market-value observation date; this is not recalculated from the latest quote.",
+      help: "Reported equity market value, not recalculated from the latest quote. The update date may differ from the observation date.",
     });
   }
   if (latest) {
@@ -104,7 +104,7 @@ export function stockFactRows(r: Research) {
       },
       value: `${amount(Math.min(...prices), r.quote.currency)} – ${amount(Math.max(...prices), r.quote.currency)}`,
       date: `${dateLabel(range[0].time)} – ${dateLabel(latest.time)}`,
-      help: "Lowest and highest completed daily closing prices in the stated period, not intraday highs or lows. For example, $80–$120 means the supplied closes span those values. The 52-week label requires a year of coverage; shorter or sparse history uses its available dates.",
+      help: "Lowest and highest daily closes, not intraday extremes. The 52-week label requires complete coverage; otherwise the available period is shown.",
     });
     const preceding = bars.slice(-21, -1);
     if (
@@ -211,7 +211,6 @@ export default function StockFacts({
               </Help>
             </dt>
             <dd>{row.value}</dd>
-            <small>{row.date}</small>
           </div>
         ))}
       </dl>

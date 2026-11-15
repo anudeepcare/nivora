@@ -9,7 +9,7 @@ export default function ResearchCoverage({
 }) {
   return (
     <details className="research-coverage">
-      <summary>Data coverage & definitions</summary>
+      <summary>Data availability</summary>
       <div className="dataset-coverage-grid">
         {researchCoverage(r).map((row) => (
           <div key={row.key}>
@@ -25,11 +25,9 @@ export default function ResearchCoverage({
         ))}
       </div>
       <p className="small muted">
-        Returned data is not a verification of accuracy or current subscription
-        entitlement. Empty records may mean no activity or unavailable coverage.
-        Financial reporting currency can differ from the listing currency;
-        incompatible valuation inputs remain withheld. Prices, filings and
-        estimates have different update schedules.
+        Missing records may mean no activity or unavailable data. Prices,
+        filings and estimates update at different times. Incompatible currencies
+        are not combined.
       </p>
     </details>
   );

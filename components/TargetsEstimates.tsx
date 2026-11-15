@@ -8,6 +8,7 @@ import AnalystTargets from "./AnalystTargets";
 import EstimateRevisions from "./EstimateRevisions";
 import PriceRiskCases from "./PriceRiskCases";
 import SelectedValuation from "./SelectedValuation";
+import { Help } from "./Ui";
 import styles from "./TargetsEstimates.module.css";
 
 const tabs = [
@@ -126,10 +127,10 @@ export default function TargetsEstimates({
           <>
             <div className={styles.subhead}>
               <h3>Annual EPS & revenue consensus</h3>
-              <span>
-                {r.evidence?.source ?? "Estimate provider"} · updated{" "}
-                {dateLabel(model.asOf)}
-              </span>
+              <Help label="Estimate dates" trigger="About these estimates">
+                Updated {dateLabel(model.asOf)}. Consensus estimates, not
+                guaranteed results.
+              </Help>
             </div>
             {model.estimates.length ? (
               <div
@@ -283,8 +284,8 @@ export default function TargetsEstimates({
                     {forecast.multipleSource === "user-assumption"
                       ? "your assumption"
                       : `provider multiple checked against ${forecast.multipleReferencePeriod ?? "nearest annual EPS"}`}
-                    . Quote reference {dateLabel(r.quote.asOf)} ·{" "}
-                    {r.evidence?.source ?? "Estimate provider"} forecast data.
+                    . Quote reference {dateLabel(r.quote.asOf)} · estimate
+                    snapshot.
                   </p>
                 )}
                 <div className={styles.cases}>

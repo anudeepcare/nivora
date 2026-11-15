@@ -14,7 +14,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 .decisionStage .chart {
   grid-column: 1;
@@ -176,7 +176,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  align-items: start;
+  align-items: stretch;
 }
 .decisionExplanation,
 .pillars {

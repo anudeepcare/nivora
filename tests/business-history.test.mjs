@@ -87,6 +87,7 @@ test("business-history colors separate no observations, zero profitable years, m
   ).outputText;
   const bindings = {
     React,
+    Help: ({children}) => React.createElement("aside", null, children),
     useMemo: React.useMemo,
     businessHistory,
     ...format,

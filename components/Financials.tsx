@@ -342,9 +342,10 @@ export default function Financials({
                 </Source>
               ))}
             {scope === "ttm" && (
-              <span>
-                Four consecutive quarters; balance sheet at final period end.
-              </span>
+              <Help label="Trailing twelve months">
+                Four consecutive quarters; balance sheet at the final period
+                end.
+              </Help>
             )}
           </div>
         </>

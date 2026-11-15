@@ -1,4 +1,5 @@
 "use client";
+import { Help } from "./Ui";
 import type { Research } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
 import { consensusOutlook } from "@/lib/outlook";
@@ -27,11 +28,8 @@ export default function AnalystRatings({
         aria-label="Analyst rating coverage"
       >
         <h3>Rating coverage</h3>
-        <p>
-          No rating score or recommendation distribution was supplied for this
-          company.
-        </p>
-        <small>Dataset retrieved {dateLabel(r.retrievedAt)}.</small>
+        <p>Ratings unavailable.</p>
+        <small>Updated {dateLabel(r.retrievedAt)}</small>
       </aside>
     );
   return (
@@ -44,31 +42,35 @@ export default function AnalystRatings({
               {outlook ? amount(outlook.target, r.quote.currency) : "—"}
             </strong>
             <small>
-              Opinion, separate from model valuation
-              {outlook?.source ? ` · ${outlook.source}` : ""}
-              {outlook ? ` · ${dateLabel(outlook.asOf)}` : ""}
+              Analyst opinion{" "}
+              <Help label="Consensus details">
+                Separate from AURYN model valuation. Updated{" "}
+                {dateLabel(outlook?.asOf)}.
+              </Help>
             </small>
           </div>
         )}
         <div>
           <span>Published rating score</span>
           <strong>{c?.rating == null ? "—" : c.rating.toFixed(2)}</strong>
-          <small>Provider scale; no scale inferred</small>
+          <Help label="Rating scale">
+            Published score; the scale is not supplied and has not been
+            inferred.
+          </Help>
         </div>
         <div>
           <span>Reported recommendations</span>
           <strong>{known.length ? total : "—"}</strong>
-          <small>Not necessarily unique analysts</small>
+          <Help label="Recommendation count">
+            Recommendations may include more than one view from the same
+            analyst.
+          </Help>
         </div>
       </div>
       <div className="analyst-opinions">
         <header>
           <span className="eyebrow">THE SPREAD OF OPINION</span>
           <h3>Recommendation distribution</h3>
-          <p>
-            See how published views are distributed, rather than treating one
-            target as certainty.
-          </p>
         </header>
         {known.length ? (
           <div className="rating-distribution">
@@ -98,15 +100,11 @@ export default function AnalystRatings({
           </p>
         )}
       </div>
-      <p className="small muted">
-        {r.evidence?.source ? `Ratings: ${r.evidence.source} · ` : ""}
-        {r.evidence?.updatedAt
-          ? `Dataset updated ${dateLabel(r.evidence.updatedAt)}.`
-          : "Dataset update date is not supplied."}{" "}
-        Rating publication dates and revision history are not supplied by this
-        snapshot. They are not inferred. A consensus target is not intrinsic
-        fair value.
-      </p>
+      <Help label="Ratings dates and limitations">
+        Updated {dateLabel(r.evidence?.updatedAt)}. Individual publication dates
+        and revisions are not supplied. Analyst opinions are not intrinsic fair
+        value or guaranteed returns.
+      </Help>
     </section>
   );
 }

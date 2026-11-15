@@ -244,9 +244,17 @@ export default function ResearchEvidenceGrid({
         );
       })}
       <footer className={s.snapshot}>
-        Financials {dateLabel(evidence.period)} · Price history{" "}
-        {dateLabel(research.history.at(-1)?.time)} · Evidence{" "}
-        {dateLabel(research.evidence?.updatedAt || research.retrievedAt)}
+        <Help label="Evidence dates">
+          <p>Financial period: {dateLabel(evidence.period)}</p>
+          <p>Price history: {dateLabel(research.history.at(-1)?.time)}</p>
+          <p>
+            Updated:{" "}
+            {dateLabel(research.evidence?.updatedAt || research.retrievedAt)}
+          </p>
+          <p>
+            Individual metrics retain their own reporting periods and sources.
+          </p>
+        </Help>
       </footer>
     </section>
   );

@@ -1,4 +1,5 @@
 "use client";
+import { Help } from "./Ui";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { businessHistory } from "@/lib/business-history";
@@ -15,7 +16,7 @@ export default function BusinessHistory({
       <header className="section-head">
         <div>
           <span className="eyebrow">Business durability</span>
-          <h2>What the record actually shows</h2>
+          <h2>Business history</h2>
           <p>
             {dateLabel(h.start)} – {dateLabel(h.end)} · {h.periods} comparable
             annual periods
@@ -204,11 +205,10 @@ export default function BusinessHistory({
           </table>
         </div>
       </details>
-      <p className="context-note">
-        Profitability and cash generation are evidence of durability, not proof
-        of a moat. Competitive advantages need company-specific disclosures and
-        industry context.
-      </p>
+      <Help label="Business history limitations">
+        Profitability and cash generation do not establish a competitive moat.
+        Consider company disclosures and industry context.
+      </Help>
     </section>
   );
 }

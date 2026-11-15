@@ -2,7 +2,7 @@
 .page {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
-  grid-template-rows: auto auto auto auto 1fr;
+  grid-template-rows: auto auto auto min-content minmax(0, 1fr);
   grid-template-areas: "toolbar toolbar" "heading heading" "feedback feedback" "account preferences" "support preferences";
   align-items: start;
   gap: 16px 24px;
@@ -112,6 +112,8 @@
 .page :global(.workspace-settings-groups) {
   grid-area: preferences;
   display: grid;
+  align-content: start;
+  grid-auto-rows: auto;
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   min-width: 0;
@@ -325,9 +327,27 @@
   font-size: 13px;
 }
 .page :global(.password-form) {
+  max-width: 480px;
+  min-width: 0;
   display: grid;
   gap: 12px;
   margin-top: 12px;
+}
+.page :global(.password-form) > label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+}
+.page :global(.password-form) > p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.page :global(.password-form) > button {
+  justify-self: start;
+  min-height: 44px;
 }
 .page :global(.research-preferences) select,
 .page :global(.password-form) input {

@@ -96,6 +96,15 @@ export default function PacePriceZones({
               <strong>P{level}</strong>
               <small className={styles.stageAction}>
                 {labels[level]}
+                {step.bands > 1 && (
+                  <span
+                    className={styles.bandCount}
+                    title={`${step.bands} separate conditional price bands; select this stage to inspect all ranges`}
+                  >
+                    {" "}
+                    · {step.bands} bands
+                  </span>
+                )}
                 {current && <em className={styles.now}>Now</em>}
               </small>
               <span
@@ -111,9 +120,6 @@ export default function PacePriceZones({
                   ? "—"
                   : `${step.relation === "at-or-below" ? "≤ " : step.relation === "at-or-above" ? "≥ " : ""}${priceAmount(step.price, research.quote.currency)}`}
               </span>
-              {step.bands > 1 && (
-                <small className={styles.bandCount}>{step.bands} bands</small>
-              )}
             </button>
           );
         })}

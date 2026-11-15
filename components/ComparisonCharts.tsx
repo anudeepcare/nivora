@@ -1,4 +1,6 @@
 "use client";
+import { Help } from "./Ui";
+import { customerText } from "@/lib/customer-language";
 import { useId, useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { comparisonChart, type ComparisonRange } from "@/lib/comparison-charts";
@@ -171,11 +173,12 @@ export default function ComparisonCharts({
             </table>
           </div>
           <details className={styles.sources}>
-            <summary>Price history sources & coverage</summary>
+            <summary>History details</summary>
             {chart.series.map((s) => (
               <p key={s.symbol}>
-                {s.symbol}: {s.source} · retrieved {s.retrievedAt.slice(0, 10)}{" "}
-                · {s.currency || "Currency unspecified"}.
+                {s.symbol}: {customerText(s.source)} · updated{" "}
+                {s.retrievedAt.slice(0, 10)} ·{" "}
+                {s.currency || "Currency unspecified"}.
               </p>
             ))}
           </details>
@@ -185,13 +188,14 @@ export default function ComparisonCharts({
           {chart.reason}
         </p>
       )}
-      <p className={styles.note}>
-        Price-only change in each listing’s currency, not total return.
-        Dividends, fees and currency conversion are excluded. The supplied
-        closes do not independently establish split-adjustment completeness.
-        Only dates observed for every selected company are plotted; gaps are not
-        filled. Range ends at the latest shared observation.
-      </p>
+      <span className={styles.note}>
+        Price return · local currency{" "}
+        <Help label="Comparison method">
+          Excludes dividends, fees and currency conversion. Split-adjustment
+          completeness is not independently verified. Only shared dates are
+          plotted; gaps are not filled.
+        </Help>
+      </span>
     </section>
   );
 }

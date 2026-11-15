@@ -1228,10 +1228,13 @@
 .portfolio.portfolio.portfolio :global(.portfolio-grid) {
   gap: var(--workspace-gap);
   align-items: stretch;
+  grid-auto-rows: auto;
 }
 .portfolio.portfolio.portfolio :global(.portfolio-grid .portfolio-trend-panel) {
   grid-column: 1 / 9;
   grid-row: 1;
+  align-self: stretch;
+  margin-block: 0;
   border: 0;
   border-radius: var(--workspace-radius);
   padding: var(--workspace-inset);
@@ -1243,6 +1246,8 @@
 .portfolioRead {
   grid-column: 9 / -1;
   grid-row: 1;
+  align-self: stretch;
+  margin-block: 0;
   padding: var(--workspace-inset);
   border-radius: var(--workspace-radius);
   background:
@@ -1329,6 +1334,8 @@
   grid-column: 1 / -1;
   grid-row: 2;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  grid-auto-rows: auto;
   gap: var(--workspace-gap);
 }
 .portfolio.portfolio.portfolio

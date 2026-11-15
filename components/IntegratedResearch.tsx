@@ -19,6 +19,7 @@ import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
 import StockFacts, { stockFactRows } from "./StockFacts";
 import { amount, percent } from "@/lib/format";
+import { Help } from "./Ui";
 import { DataFreshness } from "./ResearchBrief";
 export default function IntegratedResearch({
   research: r,
@@ -108,7 +109,13 @@ export default function IntegratedResearch({
           <StockPillars research={r} decision={d} />
         </div>
         <section className={s.rangeSnapshot} aria-label="Closing price range">
-          <h2>{closingRange?.label ?? "Closing price range"}</h2>
+          <h2>
+            {closingRange?.label ?? "Closing price range"}{" "}
+            <Help label="Closing price range">
+              <p>{closingRange?.date ?? "Price history unavailable."}</p>
+              <p>{closingRange?.help ?? "No range has been inferred."}</p>
+            </Help>
+          </h2>
           {closingRange?.range &&
             closingRange.range.high > closingRange.range.low && (
               <div
@@ -124,19 +131,21 @@ export default function IntegratedResearch({
               </div>
             )}
           <strong>{closingRange?.value ?? "Not available"}</strong>
-          <p>
-            {closingRange?.date ?? "Completed price history is not available."}
-          </p>
-          <details className={s.rangeDetails}>
-            <summary>About this range</summary>
-            <p>{closingRange?.help ?? "No price range has been inferred."}</p>
-          </details>
         </section>
         <section
           className={s.consensusSnapshot}
           aria-label="Wall Street consensus"
         >
-          <h2>Wall Street consensus</h2>
+          <h2>
+            Analyst target{" "}
+            <Help label="Analyst target">
+              <p>
+                Analyst opinion, not a forecast or guarantee. The percentage
+                compares the target with the applicable price reference; it is
+                not an expected return.
+              </p>
+            </Help>
+          </h2>
           <strong>
             {analyst
               ? amount(analyst.target, r.quote.currency)
@@ -147,9 +156,9 @@ export default function IntegratedResearch({
               {percent(analyst.change, true)}
             </span>
           )}
-          <p>Analyst consensus, not guaranteed.</p>
+
           <details className={s.consensusDetails}>
-            <summary>Target details &amp; source dates</summary>
+            <summary>Target details</summary>
             <AnalystTargets research={r} embedded showUnavailable />
           </details>
         </section>
@@ -162,7 +171,6 @@ export default function IntegratedResearch({
           <div>
             <h2>The evidence</h2>
           </div>
-          <span>Dated metrics · open any label for its basis</span>
         </header>
         <ResearchEvidenceGrid research={r} onTab={onTab} />
         <div className={s.mobileFacts}>
@@ -191,9 +199,7 @@ export default function IntegratedResearch({
         open={evidenceOpen}
         onToggle={(event) => setEvidenceOpen(event.currentTarget.open)}
       >
-        <summary>
-          Sources &amp; methods <span>Dates, coverage and deeper research</span>
-        </summary>
+        <summary>Data &amp; methods</summary>
         {evidenceOpen && (
           <div className={s.supportingEvidence}>
             <DataFreshness research={r} now={now} wide decision={d} />

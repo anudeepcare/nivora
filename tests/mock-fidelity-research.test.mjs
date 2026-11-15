@@ -8,9 +8,9 @@ test("overview avoids duplicating evidence and tall summary cards", () => {
   assert.match(source, /summaryView/);
   assert.match(source, /className=\{s\.decisionExplanation\}/);
 });
-test("evidence groups have natural heights and all data remains mapped", () => {
+test("bounded evidence cards align rows and all data remains mapped", () => {
   const css = read("components/ResearchEvidenceGrid.module.css");
-  assert.match(css, /align-items: start/);
+  assert.match(css, /align-items: stretch/);
   assert.match(
     read("components/ResearchEvidenceGrid.tsx"),
     /ordered.slice\(limit\)/,
@@ -49,4 +49,10 @@ test("Pace labels honor dark theme and contrast", () => {
   const source = read("components/Charts.tsx");
   assert.match(source, /theme === "dark"\s*\? "#edf3ff"/);
   assert.match(source, /contrast\s*\? "#000000"/);
+});
+
+test("complex pace bands stay inline instead of creating nested rows", () => {
+  const source = read("components/PacePriceZones.tsx");
+  assert.match(source, /<span[\s\S]*?className=\{styles.bandCount\}/);
+  assert.doesNotMatch(source, /<small className=\{styles.bandCount\}/);
 });

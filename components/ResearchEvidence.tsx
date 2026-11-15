@@ -173,9 +173,7 @@ export function Consensus({ research: r }: { research: Research }) {
           </div>
         </>
       ) : (
-        <p className="au-caption">
-          No rating distribution returned for this company.
-        </p>
+        <p className="au-caption">Ratings unavailable.</p>
       )}
     </section>
   );
@@ -250,8 +248,10 @@ export function Forecasts({ research: r }: { research: Research }) {
       )}
       {rows.some((x) => !x.currency) && (
         <p className="footnote">
-          Figures without a currency use the provider’s stated numeric basis.
-          Currency was not supplied; these are not assumed to be USD.
+          Currency unspecified for some figures.{" "}
+          <Help label="Estimate currency">
+            Values are shown as reported, not assumed to be USD.
+          </Help>
         </p>
       )}
     </section>
@@ -283,7 +283,7 @@ function Earnings({ research: r }: { research: Research }) {
                 </small>
               </div>
               <div>
-                <small>Actual / estimate EPS · provider basis</small>
+                <small>Actual / estimate EPS</small>
                 <b>
                   {x.actual == null ? "Not reported" : x.actual.toFixed(2)} /{" "}
                   {x.estimate == null ? "—" : x.estimate.toFixed(2)}
@@ -482,10 +482,11 @@ function CorporateActions({ symbol }: { symbol: string }) {
           </p>
         )}
         <p className="au-caption">
-          {customerText(dividends.data?.source)}
-          {!dividends.data?.currency
-            ? " · Currency not supplied by this endpoint."
-            : ""}
+          {!dividends.data?.currency ? "Currency unspecified " : ""}
+          <Help label="Dividend data">
+            {customerText(dividends.data?.source)}. Currency is shown only when
+            supplied.
+          </Help>
         </p>
       </section>
       <section className="au-panel">

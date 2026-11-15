@@ -186,14 +186,17 @@ export default function PriceStudyChart({
         </div>
       )}
       {!overlay && bands.length > 0 && (
-        <p className="chart-note">
-          Blue bands: current conditional Pace zones as of{" "}
-          {dateLabel(zoneResult?.zones?.date)}. Deeper blue indicates a higher
-          accumulation zone, not historical signals or a recommendation.
-        </p>
+        <span className="chart-note">
+          Blue bands · Pace zones{" "}
+          <Help label="Pace zone details">
+            As of {dateLabel(zoneResult?.zones?.date)}. Deeper blue indicates a
+            higher conditional accumulation zone, not historical signals or a
+            recommendation.
+          </Help>
+        </span>
       )}
       <details className="chart-context">
-        <summary>Price range & completed volume</summary>
+        <summary>Price & volume details</summary>
         <StockFacts research={research} priceContext />
       </details>
       {overlay && (

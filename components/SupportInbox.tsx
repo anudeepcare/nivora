@@ -333,55 +333,59 @@ export default function SupportInbox() {
                     ? "Automatic delivery paused · use Retry pending emails"
                     : "Receipt pending"}
               </small>
-              <label>
-                <span>Priority</span>
-                <select
-                  aria-label={`Priority for ${r.id.slice(0, 8)}`}
-                  value={r.priority}
-                  disabled={busy}
-                  onChange={(e) =>
-                    change({ id: r.id, priority: e.target.value })
-                  }
-                >
-                  <option value="normal">Normal</option>
-                  <option value="high">High</option>
-                  <option value="urgent">Urgent</option>
-                </select>
-              </label>
-              <form
-                className={s.assignment}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const data = new FormData(e.currentTarget);
-                  void change({ id: r.id, assignee: data.get("assignee") });
-                }}
-              >
+              <div className={s.ticketControls}>
                 <label>
-                  Assigned to
-                  <input
-                    key={r.assignee}
-                    name="assignee"
-                    defaultValue={r.assignee}
-                    maxLength={120}
-                    placeholder="Name or team"
-                  />
+                  <span>Priority</span>
+                  <select
+                    aria-label={`Priority for ${r.id.slice(0, 8)}`}
+                    value={r.priority}
+                    disabled={busy}
+                    onChange={(e) =>
+                      change({ id: r.id, priority: e.target.value })
+                    }
+                  >
+                    <option value="normal">Normal</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
                 </label>
-                <button type="submit" disabled={busy}>
-                  Save assignment
-                </button>
-              </form>
-              <label>
-                <span>Status</span>
-                <select
-                  value={r.status}
-                  disabled={busy}
-                  onChange={(e) => change({ id: r.id, status: e.target.value })}
+                <form
+                  className={s.assignment}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const data = new FormData(e.currentTarget);
+                    void change({ id: r.id, assignee: data.get("assignee") });
+                  }}
                 >
-                  <option value="new">New</option>
-                  <option value="in_progress">In progress</option>
-                  <option value="resolved">Resolved</option>
-                </select>
-              </label>
+                  <label>
+                    Assigned to
+                    <input
+                      key={r.assignee}
+                      name="assignee"
+                      defaultValue={r.assignee}
+                      maxLength={120}
+                      placeholder="Name or team"
+                    />
+                  </label>
+                  <button type="submit" disabled={busy}>
+                    Save assignment
+                  </button>
+                </form>
+                <label>
+                  <span>Status</span>
+                  <select
+                    value={r.status}
+                    disabled={busy}
+                    onChange={(e) =>
+                      change({ id: r.id, status: e.target.value })
+                    }
+                  >
+                    <option value="new">New</option>
+                    <option value="in_progress">In progress</option>
+                    <option value="resolved">Resolved</option>
+                  </select>
+                </label>
+              </div>
             </div>
           </details>
         </div>

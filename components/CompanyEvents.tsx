@@ -5,7 +5,7 @@ import { CalendarDays } from "lucide-react";
 import { useProduct, useResource } from "./Session";
 import type { Enrichment } from "@/lib/enrichment";
 import { dateLabel } from "@/lib/format";
-import { Notice, Source } from "./Ui";
+import { Notice, Source, Help } from "./Ui";
 import GrowCompanyEvents from "./GrowCompany";
 export default function CompanyEvents({ symbol }: { symbol: string }) {
   const { demo } = useProduct();
@@ -152,7 +152,8 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
             </section>
           </div>
           <p className="source-line">
-            {customerText(r.data.source)} · {dateLabel(r.data.retrievedAt)}
+            Updated {dateLabel(r.data.retrievedAt)}{" "}
+            <Help label="Event data">{customerText(r.data.source)}</Help>
             {r.data.profile?.website && (
               <Source href={r.data.profile.website}>Company website</Source>
             )}
