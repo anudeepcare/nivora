@@ -1,5 +1,6 @@
 "use client";
 import ComparisonCharts from "./ComparisonCharts";
+import ContributionCompare from "./ContributionCompare";
 import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
@@ -521,6 +522,18 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           Choose two to four companies to compare their reported economics.
         </Empty>
       )}
+      <ContributionCompare
+        symbols={[
+          ...new Set([
+            ...rows.map((r) => r.company.symbol),
+            ...(workspace?.positions
+              .filter((p) => p.assetType !== "cash")
+              .map((p) => p.symbol) ?? []),
+            ...(workspace?.watchlist.map((w) => w.symbol) ?? []),
+          ]),
+        ]}
+        prefix={prefix}
+      />
     </section>
   );
 }

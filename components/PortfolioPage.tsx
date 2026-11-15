@@ -534,6 +534,7 @@ export function Portfolio() {
           <small>Business checks, Pace and concentration</small>
         </summary>
         <DecisionAttention
+          compact
           symbols={[
             ...new Set(
               positions

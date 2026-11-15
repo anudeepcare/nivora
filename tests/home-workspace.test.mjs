@@ -1,3 +1,4 @@
+import { loadHomeNews } from "./helpers/home-news-ui.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -21,6 +22,7 @@ const Link = ({ children, ...props }) =>
 function load(name, bindings) {
   bindings = {
     useState: React.useState,
+    HomeNewsFeed: loadHomeNews(),
     SectionIcon: () => null,
     PaceBoard: () => React.createElement("section", {"aria-label":"Accumulation opportunities"}),
     ResearchInbox: () => null,
@@ -163,7 +165,7 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   });
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
-  assert.match(html,/Compare your next contribution/);
+  assert.doesNotMatch(html,/Compare your next contribution/);
   assert.deepEqual(radarProps.research, [loaded]);
   assert.equal(radarProps.asOf, marketDay(new Date()));
   assert.match(radarProps.asOf, /^\d{4}-\d{2}-\d{2}$/);
@@ -367,7 +369,7 @@ test("Research chart pages keep every saved company reachable with four bounded 
   }
 });
 
-test("expanded Home headlines retain the same logo, timestamp and article layout", () => {
+test("Home headlines use a bounded pager with consistent metadata", () => {
   const news = Array.from({ length: 9 }, (_, i) => ({
     symbol: "MSFT", date: new Date(Date.now() - 3600000).toISOString(),
     title: `Company update ${i}`, url: `https://example.com/story/${i}`,
@@ -389,11 +391,9 @@ test("expanded Home headlines retain the same logo, timestamp and article layout
   });
   const html = renderToStaticMarkup(React.createElement(Home));
   if (process.env.AURYN_HOME_NEWS_FIXTURE) fs.writeFileSync(process.env.AURYN_HOME_NEWS_FIXTURE, html);
-  const expanded = html.slice(html.indexOf('class="home-more-updates"'));
-  assert.match(expanded, /class="home-news-list"/);
-  assert.equal((expanded.match(/class="home-news-meta"/g) || []).length, 3);
-  assert.equal((expanded.match(/class="home-news-title"/g) || []).length, 3);
-  assert.equal((expanded.match(/data-logo="MSFT"/g) || []).length, 3);
-  assert.equal((expanded.match(/<time /g) || []).length, 3);
-  assert.equal((html.match(/class="home-news-title"/g) || []).length, 9);
+  assert.equal((html.match(/data-logo="MSFT"/g) || []).length, 4);
+  assert.equal((html.match(/<time /g) || []).length, 4);
+  assert.match(html, /1–4 of 9/);
+  assert.match(html, /aria-label="Next headlines"/);
+  assert.doesNotMatch(html, /home-more-updates/);
 });

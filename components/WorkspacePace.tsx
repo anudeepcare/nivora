@@ -145,26 +145,75 @@ export function PaceBoard({
           {loading ? "Checking…" : "Refresh pace"}
         </button>
       </header>
-      <div className={s.list}>
-        {qualifying
-          .sort(
-            (a, b) =>
-              (b[1].signal!.view.rawLevel ?? 0) -
-              (a[1].signal!.view.rawLevel ?? 0),
-          )
-          .map(([symbol, r]) => (
-            <Link key={symbol} href={researchLink(symbol, prefix)}>
-              <strong>{symbol}</strong>
-              <PaceBadge signal={r.signal} />
-              <span className={s.inspect}>View evidence →</span>
-            </Link>
-          ))}
-        {!qualifying.length && (
-          <p>
-            {loading ? "Checking your companies…" : "No qualifying readings"}
-          </p>
-        )}
-      </div>
+      {qualifying.length > 0 ? (
+        <div className={s.tableScroll}>
+          <table className={s.table}>
+            <caption className={s.caption}>
+              Qualifying confirmed readings for your companies
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Company</th>
+                <th scope="col">Decision</th>
+                <th scope="col">Confirmed</th>
+                <th scope="col">
+                  <span className={s.caption}>Research</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {qualifying
+                .sort(
+                  (a, b) =>
+                    (b[1].signal!.view.rawLevel ?? 0) -
+                    (a[1].signal!.view.rawLevel ?? 0),
+                )
+                .map(([symbol, r]) => {
+                  const reading = r.signal!.periods.find(
+                    (period) => period.key === "confirmed",
+                  );
+                  return (
+                    <tr key={symbol}>
+                      <th scope="row">
+                        <Link href={researchLink(symbol, prefix)}>
+                          {symbol}
+                        </Link>
+                      </th>
+                      <td>
+                        <span className={s.decision}>
+                          {r.signal!.view.actionLabel.replace(/ · P[0-4]$/, "")}
+                        </span>
+                        <span className={s.level} data-level={reading?.level}>
+                          {r.signal!.view.code}
+                        </span>
+                      </td>
+                      <td>
+                        <time dateTime={reading?.date || undefined}>
+                          {reading?.date
+                            ? dateLabel(reading.date)
+                            : "Not supplied"}
+                        </time>
+                      </td>
+                      <td>
+                        <Link
+                          className={s.inspect}
+                          href={researchLink(symbol, prefix)}
+                          aria-label={`View ${symbol} evidence`}
+                        >
+                          Evidence <span aria-hidden="true">↗</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className={s.empty} role="status">
+          {loading ? "Checking your companies…" : "No qualifying readings"}
+        </p>
+      )}
       <small>
         {Object.keys(rows).length} checked ·{" "}
         {Object.values(rows).filter((r) => r.error).length} unavailable. Pace is

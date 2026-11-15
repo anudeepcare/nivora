@@ -25,61 +25,38 @@ export default function ResearchConclusion({
       </header>
       <h2>{d.explanation.label}</h2>
       <p className={s.explanation}>{d.explanation.detail}</p>
-      <div className={s.evidence}>
-        {risks.length > 0 && (
-          <div className={s.risks}>
-            <h3>
-              <ShieldAlert size={16} /> What needs attention
-            </h3>
-            <ul>
-              {risks.slice(0, 2).map((risk) => (
-                <li key={risk}>{risk}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {conditions.length > 0 && (
-          <div className={s.conditions}>
-            <h3>
-              <GitBranch size={16} /> What would change the view
-            </h3>
-            <ul>
-              {conditions.slice(0, 2).map((condition) => (
-                <li key={condition}>{condition}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-      {(risks.length > 2 || conditions.length > 2) && (
+      {(risks.length > 0 || conditions.length > 0) && (
         <details className={s.more}>
           <summary>
-            More research considerations{" "}
-            <span>
-              {Math.max(0, risks.length - 2) +
-                Math.max(0, conditions.length - 2)}
-            </span>
+            Risks &amp; what would change the view{" "}
+            <span>{risks.length + conditions.length} considerations</span>
           </summary>
-          {risks.length > 2 && (
-            <div>
-              <h3>Additional risks</h3>
-              <ul>
-                {risks.slice(2).map((risk) => (
-                  <li key={risk}>{risk}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {conditions.length > 2 && (
-            <div>
-              <h3>Other conditions to monitor</h3>
-              <ul>
-                {conditions.slice(2).map((condition) => (
-                  <li key={condition}>{condition}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div className={s.evidence}>
+            {risks.length > 0 && (
+              <div className={s.risks}>
+                <h3>
+                  <ShieldAlert size={16} /> What needs attention
+                </h3>
+                <ul>
+                  {risks.map((risk) => (
+                    <li key={risk}>{risk}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {conditions.length > 0 && (
+              <div className={s.conditions}>
+                <h3>
+                  <GitBranch size={16} /> What would change the view
+                </h3>
+                <ul>
+                  {conditions.map((condition) => (
+                    <li key={condition}>{condition}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </details>
       )}
       <button type="button" onClick={() => onTab("Thesis")}>

@@ -59,11 +59,22 @@ test('consolidated compatibility preserves the ordered cascade after exact dupli
     assert.match(match[1], /^(\/|data:|https?:|#)/, `Relative asset URL: ${match[1]}`);
   }
 });
-test('token extraction preserves the complete foundation cascade and font registration order', async () => {
-  assert.deepEqual(
-    semantic(await expanded('app/core/foundation.css')),
-    semantic(await expanded('docs/archive/styles/foundation.before.css')),
-  );
+test('foundation preserves structural and financial cascade while the neutral palette evolves', async () => {
+  const before = await expanded('docs/archive/styles/foundation.before.css');
+  const after = await expanded('app/core/foundation.css');
+  // The November 15 visual reference intentionally changes neutral surfaces/text
+  // and adds shared workspace geometry. Every other declaration, especially
+  // semantic gain/loss colors, safe areas and font registration, remains exact.
+  // The new palette and responsive workspace contract have separate contrast tests.
+  const neutral = new Set(['--bg', '--app-background', '--glass', '--ink', '--text', '--muted']);
+  for (const root of [before, after]) {
+    root.walkDecls(decl => {
+      if (neutral.has(decl.prop) || decl.prop.startsWith('--workspace-')) decl.remove();
+    });
+    root.walkRules(rule => { if (!rule.nodes.length) rule.remove(); });
+    root.walkAtRules(rule => { if (rule.nodes && !rule.nodes.length) rule.remove(); });
+  }
+  assert.deepEqual(semantic(after), semantic(before));
   const foundation = postcss.parse(fs.readFileSync('app/core/foundation.css', 'utf8'));
   assert.equal(foundation.nodes[0].name, 'import');
   assert.equal(foundation.nodes[0].params, '"./tokens.css"');

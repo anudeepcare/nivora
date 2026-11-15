@@ -944,13 +944,9 @@
 .workbench {
   scroll-margin-top: 90px;
   margin-top: 32px;
-  padding: 24px;
-  border-radius: 22px;
-  background: linear-gradient(
-    125deg,
-    color-mix(in srgb, var(--workspace-violet) 7%, var(--card)),
-    var(--card) 65%
-  );
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
 }
 .workbenchHeading {
   margin-bottom: 22px;
@@ -971,54 +967,19 @@
   color: var(--muted);
   margin: 0;
 }
-.coverageDetails {
-  margin-top: 16px;
-  scroll-margin-top: 90px;
-}
-.coverageDetails summary {
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--muted);
-  padding: 16px 0;
-  min-height: 44px;
-}
 .home.home.home.home :global(.home-evidence-layout) {
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: stretch;
-  gap: 18px;
+  gap: var(--workspace-gap);
   margin: 22px 0;
 }
 .home.home.home.home :global(.home-evidence-panel) {
-  padding: 24px;
-  border-radius: 20px;
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--blue) 4%, var(--card)),
-    var(--card) 55%
-  );
-  box-shadow: var(--panel-shadow);
+  padding: var(--workspace-inset);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  border: 1px solid var(--workspace-edge);
   scroll-margin-top: 90px;
-}
-.home.home.home.home :global(.home-events-panel) {
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--workspace-violet) 7%, var(--card)),
-    var(--card) 65%
-  );
-}
-.home.home.home.home :global(.home-news-list article:first-child) {
-  border-top: 0;
-  padding-top: 0;
-}
-.home.home.home.home
-  :global(.home-news-list article:first-child .home-news-title) {
-  font-size: 20px;
-  line-height: 1.35;
-  letter-spacing: -0.025em;
-}
-.home.home.home.home
-  :global(.home-news-list article:not(:first-child) .home-news-title) {
-  font-size: 14px;
 }
 .home.home.home.home :global(.home-event-day:first-child) {
   border-top: 0;
@@ -1034,19 +995,19 @@
   }
   .workbench {
     scroll-margin-top: 90px;
-    padding: 18px;
+    padding: 0;
   }
   .home.home.home.home :global(.home-evidence-panel) {
-    padding: 20px;
+    padding: var(--workspace-inset);
   }
 }
 @media (max-width: 600px) {
   .home.home.home.home :global(.home-evidence-panel) {
-    padding: 18px 16px;
+    padding: var(--workspace-inset);
   }
   .workbench {
     scroll-margin-top: 90px;
-    padding: 16px 12px;
+    padding: 0;
   }
   .workbenchHeading h2 {
     font-size: 21px;

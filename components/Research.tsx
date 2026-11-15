@@ -90,6 +90,7 @@ const DcaResearch = dynamic(() => import("./DcaResearch"), {
 });
 import DecisionOverview from "./IntegratedResearch";
 import experience from "./IntegratedExperience.module.css";
+import navigationStyle from "./ResearchNavigation.module.css";
 import tabVisuals from "./ResearchTabVisuals.module.css";
 import deskLayout from "./ResearchDeskLayout.module.css";
 import { selectPriceReference } from "@/lib/price-reference";
@@ -144,7 +145,7 @@ const tabPresentation = {
   Options: { label: "Options", icon: Layers },
   Thesis: { label: "Case & ownership", icon: BriefcaseBusiness },
   News: { label: "News & earnings", icon: Newspaper },
-  Advanced: { label: "Advanced", icon: SlidersHorizontal },
+  Advanced: { label: "Research tools", icon: SlidersHorizontal },
 };
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
@@ -639,10 +640,11 @@ export default function Research({ symbol }: { symbol: string }) {
         </select>
       </label>
       <nav
-        className={experience.researchNav}
+        className={`${experience.researchNav} ${navigationStyle.sections}`}
         aria-label="Research sections"
         ref={researchNavigation}
       >
+        <span className={navigationStyle.symbol}>{r.company.symbol}</span>
         {coreSections.map((key) => {
           const Icon = tabPresentation[key].icon;
           return (
@@ -740,7 +742,11 @@ export default function Research({ symbol }: { symbol: string }) {
           >
             {tab === "News" && (
               <>
-                <CompanyUpdates research={r} preview={!!demo}>
+                <CompanyUpdates
+                  research={r}
+                  preview={!!demo}
+                  onOwnership={() => switchTab("Thesis")}
+                >
                   <EarningsReview
                     research={r}
                     now={demo ? Date.parse(r.retrievedAt) : Date.now()}
@@ -754,15 +760,18 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Advanced" && (
               <>
-                <CongressDisclosures
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                />
                 <AdvancedResearch
                   key={r.company.symbol}
                   research={r}
                   initialSection={workbenchTarget}
                 />
+                <details className="research-reference">
+                  <summary>Reported congressional activity</summary>
+                  <CongressDisclosures
+                    symbol={r.company.symbol}
+                    preview={!!demo}
+                  />
+                </details>
               </>
             )}
             {tab === "Options" && (
@@ -777,6 +786,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 <TargetsEstimates
                   research={r}
                   ratings={<AnalystRatings research={r} hideConsensus />}
+                  onValuation={() => switchTab("Valuation")}
                 />
               </>
             )}

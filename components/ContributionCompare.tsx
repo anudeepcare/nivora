@@ -49,15 +49,15 @@ function Workbench({ choices, prefix }: { choices: string[]; prefix: string }) {
     <section className={s.root} aria-label="Compare your next contribution">
       <header>
         <div>
-          <h2>Compare companies</h2>
-          <p>Business strength, Pace and portfolio fit, side by side.</p>
+          <h2>Compare a planned addition</h2>
+          <p>Check how the same contribution would fit each position.</p>
         </div>
         <button
           className={s.open}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
         >
-          {open ? "Close comparison" : "Compare companies"}{" "}
+          {open ? "Close contribution check" : "Check portfolio fit"}{" "}
           <span aria-hidden="true">↗</span>
         </button>
       </header>

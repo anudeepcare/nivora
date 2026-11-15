@@ -328,41 +328,6 @@ export default function TechnicalDashboard({
       <div className={layout.technicalWorkbench}>
         {chart && <div className={layout.technicalChart}>{chart}</div>}
         <div className={layout.technicalCurrent}>
-          <div className="technical-summary-strip">
-            {[
-              [
-                "Trend",
-                last != null && pro.ma50 != null
-                  ? last >= pro.ma50
-                    ? "Above 50 average"
-                    : "Below 50 average"
-                  : "History needed",
-              ],
-              [
-                "Momentum",
-                p.tech.rsi == null
-                  ? "History needed"
-                  : `RSI ${p.tech.rsi.toFixed(1)}`,
-              ],
-              [
-                "Participation",
-                a.relativeVolume == null
-                  ? "Volume needed"
-                  : `${a.relativeVolume.toFixed(2)}× usual volume`,
-              ],
-              [
-                "Daily range",
-                x.atrPct == null
-                  ? "History needed"
-                  : `${percent(x.atrPct)} Wilder ATR`,
-              ],
-            ].map(([label, value]) => (
-              <div key={label}>
-                <span>{label}</span>
-                <strong>{value}</strong>
-              </div>
-            ))}
-          </div>
           <TechnicalLevelMap
             spot={r.quote.price}
             currency={currency}
@@ -397,14 +362,13 @@ export default function TechnicalDashboard({
       </div>
       <div className="technical-desk-groups">
         {groups.map((g) => (
-          <section key={g.title} data-tone={g.tone}>
-            <header>
-              <h3>
-                <SectionIcon name={g.title} />
-                {g.title}
-              </h3>
-              <p>{g.note}</p>
-            </header>
+          <details key={g.title} data-tone={g.tone}>
+            <summary>
+              <SectionIcon name={g.title} />
+              <strong>{g.title}</strong>
+              <span>{g.rows.length} indicators</span>
+            </summary>
+            <p>{g.note}</p>
             <dl>
               {g.rows.map(([label, value, definition]) => (
                 <div key={label}>
@@ -418,7 +382,7 @@ export default function TechnicalDashboard({
                 </div>
               ))}
             </dl>
-          </section>
+          </details>
         ))}
       </div>
       <section className={layout.priceMap} aria-label="Price reference map">

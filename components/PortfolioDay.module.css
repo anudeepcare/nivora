@@ -7,12 +7,9 @@
   margin: 0 0 20px;
   padding: 20px 22px;
   border-radius: 18px;
-  background: linear-gradient(
-    115deg,
-    color-mix(in srgb, #76b6aa 13%, var(--card)),
-    var(--card) 62%
-  );
-  box-shadow: var(--panel-shadow);
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
+  box-shadow: var(--workspace-shadow);
   color: var(--ink);
 }
 .eyebrow {

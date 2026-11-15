@@ -77,42 +77,43 @@ export function ThesisPicture({ research: r }: { research: Research }) {
             </section>
           ))}
         </div>
-        <header className="section-head">
-          <div>
-            <h2>Watch next</h2>
-            <p>Evidence to revisit, not predictions.</p>
+        <details className="research-reference thesis-next">
+          <summary>
+            Watch next ·{" "}
+            {next ? dateLabel(next.date) : "Earnings date unconfirmed"}
+          </summary>
+          <div className="timeline thesis-checkpoints">
+            <div className="step">
+              <b>Next earnings</b>
+              <strong>
+                {next ? dateLabel(next.date) : "Date not confirmed"}
+              </strong>
+              <p>Revenue, cash conversion and guidance.</p>
+            </div>
+            <div className="step">
+              <b>Revenue to revisit</b>
+              <strong>
+                {amount(e.latest?.revenue, e.latest?.currency, true)}
+              </strong>
+              <p>
+                Latest reported period · {dateLabel(e.latest?.end)}. Compare
+                demand in the next report.
+              </p>
+            </div>
+            <div className="step">
+              <b>Operating margin</b>
+              <strong>{percent(e.latest?.margin)}</strong>
+              <p>
+                Latest reported period · monitor pricing, costs and
+                reinvestment.
+              </p>
+            </div>
           </div>
-        </header>
-        <div className="timeline thesis-checkpoints">
-          <div className="step">
-            <b>Next earnings</b>
-            <strong>
-              {next ? dateLabel(next.date) : "Date not confirmed"}
-            </strong>
-            <p>Revenue, cash conversion and guidance.</p>
+          <div className="notice">
+            <strong>Revisit the case if</strong> growth and cash conversion
+            weaken persistently or the funding picture changes.
           </div>
-          <div className="step">
-            <b>Revenue to revisit</b>
-            <strong>
-              {amount(e.latest?.revenue, e.latest?.currency, true)}
-            </strong>
-            <p>
-              Latest reported period · {dateLabel(e.latest?.end)}. Compare
-              demand in the next report.
-            </p>
-          </div>
-          <div className="step">
-            <b>Operating margin</b>
-            <strong>{percent(e.latest?.margin)}</strong>
-            <p>
-              Latest reported period · monitor pricing, costs and reinvestment.
-            </p>
-          </div>
-        </div>
-        <div className="notice">
-          <strong>Revisit the case if</strong> growth and cash conversion weaken
-          persistently or the funding picture changes.
-        </div>
+        </details>
       </div>
       <div className="case-ownership-row">
         <OwnershipPicture research={r} />

@@ -56,7 +56,7 @@ test("Home puts briefing and editorial evidence before optional analysis tools",
   );
   assert.ok(
     source.indexOf("home-evidence-layout") <
-      source.indexOf("<ContributionCompare"),
+      source.indexOf("id=\"home-workbench\""),
   );
   assert.ok(
     source.indexOf("home-evidence-layout") < source.indexOf("<ResearchInbox"),

@@ -92,9 +92,6 @@ export default function HomeDailyBriefing({
                 {status(newsReady)}
               </strong>
             </a>
-            <a className={styles.evidenceLink} href="#home-coverage">
-              Research coverage <ArrowUpRight size={13} />
-            </a>
           </>
         ) : (
           <span>Follow a company to check events and news.</span>

@@ -9,6 +9,9 @@
    Brand accents live in appearance.css; financial colors never follow accents. */
 :root {
   --app-width: 1480px;
+  --workspace-gap: 20px;
+  --workspace-radius: 24px;
+  --workspace-inset: 24px;
   --chrome-surface: #f7f8f5;
   --app-gutter: clamp(16px, 3vw, 40px);
   --font-ui:
@@ -38,9 +41,16 @@
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f7f8fa;
-  --app-background: #f7f8fa;
-  --glass: #ffffff;
+  --bg: #edf1f8;
+  --app-background: #edf1f8;
+  --glass: #ffffffd9;
+  --workspace-canvas:
+    radial-gradient(ellipse at 2% 20%, #9faef42b, transparent 42%),
+    radial-gradient(ellipse at 100% 70%, #99d9ed21, transparent 48%), #edf1f8;
+  --workspace-glass: #ffffffcc;
+  --workspace-edge: #ffffffd9;
+  --workspace-shadow: 0 12px 38px #34466b08, inset 0 1px 0 #ffffffcc;
+  --workspace-accent: #596ac2;
   --panel-shadow: 0 8px 32px #25334208, 0 1px 3px #25334205;
   --paper: #ffffff;
   --card: #ffffff;
@@ -51,9 +61,9 @@
   --control-line: #c3cec5;
   --surface: #f1f3f5;
   --surface-2: #f7f8fa;
-  --ink: #24272b;
-  --text: #24272b;
-  --muted: #62686a;
+  --ink: #151c32;
+  --text: #151c32;
+  --muted: #576176;
   --line: #e5e8eb;
   --border: #e5e8eb;
   --green: #087e66;
@@ -68,8 +78,15 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --chrome-surface: #24272b;
-  --bg: #191c1e;
-  --app-background: #191c1e;
+  --bg: #141b29;
+  --app-background: #141b29;
+  --workspace-canvas:
+    radial-gradient(ellipse at 2% 20%, #6477c81c, transparent 42%),
+    radial-gradient(ellipse at 100% 70%, #4d839517, transparent 48%), #141b29;
+  --workspace-glass: #202c42ed;
+  --workspace-edge: #b3c5fa1a;
+  --workspace-shadow: 0 12px 38px #00000022, inset 0 1px 0 #b3c5fa14;
+  --workspace-accent: #aebcff;
   --glass: #24272bed;
   --panel-shadow: 0 8px 30px #00000020;
   --paper: #191c1e;
@@ -104,4 +121,18 @@
   --amber-soft: #3e3526;
   --cyan: #85d5ec;
   --cyan-soft: #1c3541;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --workspace-gap: 14px;
+    --workspace-radius: 18px;
+    --workspace-inset: 16px;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --workspace-glass: var(--card);
+    --glass: var(--card);
+  }
 }

@@ -1,39 +1,43 @@
-# AURYN UX and loading refinement, November 15, 2026
+# AURYN · focused workspace refinement
 
-## Status and scope
+Source candidate dated November 15, 2026. This is a complete source ZIP for local/preproduction review, not a deployed or visually accepted production release.
 
-This is a locally verified source candidate built on the November 14 system-audit handoff. It is not deployed and is not production-accepted. It addresses the eight supplied screenshots with focused composition and labeling changes, rather than replacing working research calculations.
+## What changed
 
-The earlier system-audit fixes remain included. Source selection, the restricted SentiSense preview integration, decision inputs, Pace policy/classifiers, valuation calculations, data budgets and production settings are unchanged. A close numerical match to another product does not identify a common upstream provider or establish broad parity.
+### Home
+- Company headlines share one type scale, logo size and row treatment. A four-story pager replaces the very long expanded news column; every returned headline remains reachable. Paging clamps when a refreshed feed shrinks.
+- Removed the duplicate bottom comparison banner and the requested “Research coverage & data sources” block, including its obsolete anchor. Source dates and missing-data warnings remain with the evidence they describe.
+- The distinct contribution-fit calculator is retained on Compare as an optional “Compare a planned addition” tool.
+- Accumulation Pace uses a full-width labelled table: company, existing decision, actual confirmed date and evidence link. Filtering, order and the underlying Pace result are unchanged.
 
-## Screen changes
+### Research, tab by tab
+- **Overview:** A concise full-width read and coordinated scenarios replace the uneven two-column explanatory stack. Risks and historical reasons open on demand. Bear/base/bull remain visible, including explicit unavailable states instead of invented targets.
+- **Case & ownership:** Dated checkpoints open in one compact “Watch next” disclosure. Drivers, risks, metrics, ownership and Ask AURYN remain available.
+- **Business:** The main financial explorer stays prominent. Repeated long-term charts and the annual table open within the durability section; the unique durability metrics remain visible. The detailed table explicitly identifies its independently selected reporting basis.
+- **Valuation:** Metric definitions move to their labelled help. The original editable estimate-based Exit P/E tool and detailed historical-price-risk percentiles are retained together in one model-tools disclosure. They still call the original calculation paths.
+- **Targets & estimates:** Two clear views for analyst targets and annual estimates. A direct Valuation link replaces duplicate model destinations. Estimate revisions and coverage explanations remain available on demand.
+- **Technicals:** Removed the duplicate chart-side RSI/volume strip. Four named study groups disclose all existing indicator values and help. Chart intervals and completed-daily indicator bases remain distinct.
+- **News & earnings:** Keeps earnings snapshot, next event and filing/news context as distinct evidence. Transaction history opens in a count-labelled disclosure, with a link to ownership context.
+- **Research tools:** Tools and their controls come first. Congressional disclosures and secondary recovery/volatility detail open deliberately rather than pushing the workbench down the page.
+- **Options:** Audited the existing task-separated views and advanced selector. Retained their calculations and controls; no unnecessary structural rewrite or claim of new live-chain coverage.
 
-- **Home:** Companies now precede the optional contribution comparison. The oversized comparison promotion becomes a compact tool row with the same controls. Earnings/events and news share one coordinated desktop grid and stack on smaller screens. Holdings, coverage, company cards, updates, comparison, plan link and Pace review remain available.
-- **Research Overview:** The eight-cell company metrics and four research-category grids are visible without opening a disclosure. Their individual metric help is untouched. Pace remains beside the real chart on desktop, with a logical one-column fallback. The concise read, complete range and risks stay visible. Secondary coverage, methodology and deeper evidence share one lazily rendered “Sources & methods” disclosure. Optional content no longer reserves empty named grid rows.
-- **Research Valuation:** A complete selected analyst low/consensus/high range is displayed once, not repeated beside itself under bear/base/bull names. It retains provider, dataset date, analyst count when supplied, comparison price/date/basis and the caveat that individual revision dates and forecast horizon are not supplied. A valid consensus-only observation still appears when bounds are missing. Modeled bear/base/bull cases and all methods/calculators remain separate and available.
-- **Research Targets:** Conditional valuation has source-specific headings. Controls no longer call every default output a three-year result; the scenario retains its actual dated end. Historical price risk remains available without a second redundant heading. Editable multiple and all three supported case values remain intact.
-- **Portfolio:** The snapshot is a lighter summary row with every value and explanation retained. The selected comparison benchmark is queued before uncached holding histories; existing partial charts, coverage, retry and auth/rate-limit stop behavior remain. This does not guarantee unavailable benchmark history.
-- **Public entry:** The illustrative Pace guide loads its existing interactive component when selected instead of pulling both frozen models into the shared entry bundle.
+### Portfolio and visual system
+- Preserved the liked balance/chart/read/holdings composition and full-width holdings.
+- Replaced expanded review-card walls with compact per-company disclosure rows, retaining the complete rationale, risks, position constraint, reassessment condition and dates.
+- Adopted the supplied reference’s cool blue-gray/periwinkle canvas, frosted white surfaces, navy text and restrained lime detail. Semantic gains/losses and scenario colors remain intact.
+- Shared panel gaps, radii, insets, edges and shadows coordinate the main Home, Research and Portfolio surfaces. Responsive tokens and reduced-transparency fallbacks are included. This is a source-level alignment implementation, not measured browser visual equivalence.
 
-## Verification performed
+## Integrity and checks
 
-- Final `NEXT_TELEMETRY_DISABLED=1 npm run verify`: exit 0. Lint, format check, **1,492/1,492 tests**, typecheck and production build passed on the combined candidate.
-- Final `NEXT_TELEMETRY_DISABLED=1 npm run test:api`: exit 0. Controlled fixture transport only, including private-target preview isolation and 56 production file traces. No live payment or provider purchase.
-- New regressions were demonstrated failing before the relevant correction. They cover metric visibility rather than hidden server markup, complete-range deduplication, analyst labels/provenance, retained consensus-only data, actual conditional headings, Home ordering, compact snapshot content, empty optional rows, public lazy import and benchmark scheduling.
-- Independent source review checked metrics, metadata, responsive rules, partial-data behavior and the source/type-only `stock-pillars` change. The review's provenance and empty-grid findings were corrected and rechecked.
-- The generated policy fingerprint is byte-identical to the preceding system-audit candidate. No API, provider adapter, classifier or migration file changed in this refinement.
-- Next retains its existing ESLint-plugin configuration warning. It did not fail lint or build.
+Current machine-readable results are in `verification/refinement-20261115/summary.json`. Independent source/function review found no unresolved code blocker. Byte comparison against the preceding ZIP found no changes in `lib/`, `services/` or `app/api/`; the financial engines, target selection, provider logic, access boundaries and API behavior were not rewritten.
 
-Measured final build payload and limitations are in `verification/loading-refinement-20261115/PERFORMANCE.md`. The common entry JavaScript is about 66% smaller after gzip. **This is not a 66% faster application or a 66% smaller complete route:** Home and Portfolio still load engine code in their later workspace chunks. Browser timing and actual user-perceived speed have not been measured.
+Regression checks cover bounded headlines and paging after refresh, retained comparison capability, Pace table inclusion/exclusion and dates, complete Portfolio disclosure content, collapsed Research explanations, explicit missing scenarios, model-tool reachability and keyboard index mapping, financial reporting labels, and light/dark token text contrast.
 
-## Open acceptance gates
+Controlled API checks use synthetic provider/authentication/database/billing transports. They are not live-account, live-market, payment or broker-execution tests.
 
-1. **After-change browser and device QA remains blocked.** An isolated copy of this candidate started a local development preview on port 3276. Cloud-browser navigation to `http://terminal.local:3276/preview/research/MSFT` returned `net::ERR_BLOCKED_BY_CLIENT`; a separate shell loopback request returned connection refused despite the server's ready output. No tunnel or deployment was used to bypass the restriction. Preproduction and supplied screenshots were inspected before these changes, not as proof of the candidate's rendering.
-2. Before deployment, inspect actual populated and missing-data Home, Overview, Valuation, Targets and Portfolio at desktop, tablet and phone sizes. Check chart/decision alignment, first-visit empty change history, expanded sources/methods, metric help, complete/equal/missing analyst bounds, conditional scenario controls, benchmark failure/retry and keyboard navigation. Review the other Research tabs for visual regressions from shared StockPillars/QuickRead components. Source and render tests do not certify aesthetics or overlap-free rendering.
-3. Current-company end-to-end financial/estimate/history validation, source/reference parity and forecast usefulness remain separate open gates inherited from `SYSTEM-AUDIT-20261114.md`. No missing financial inputs were fabricated and no investment performance claim is made.
+## Acceptance limits
 
-## Run locally
-
-Use Node 24.x and the lockfile: `npm ci`, then `NEXT_TELEMETRY_DISABLED=1 npm run verify` and `npm run test:api`. A local fixture preview uses `AURYN_ENABLE_PREVIEW=true npm run dev` and `/preview/research/MSFT`; it is development-only and restricted to loopback/terminal.local. Fixture data is not live evidence.
-
-The ZIP has `package.json` at its root and excludes dependencies, build outputs, environment/credential files, transient logs and browser captures. `MANIFEST.sha256` covers every packaged file except itself. No code was pushed or deployed and no service was purchased.
+- The supplied screenshots and visual reference were inspected, but the final application could not be rendered in a browser here. Local Chromium could not obtain required process/socket access; the cloud preview could not reach the local app. Actual desktop/tablet/mobile alignment, overflow, glass contrast, expanded states and keyboard focus still need browser/device acceptance.
+- Existing inner Research views may reset when their outer tab unmounts. This candidate does not claim persistent in-progress model inputs across all tab changes.
+- No production deployment, repository push, database migration, provider activation, subscription change or trade occurred.
+- Current-company end-to-end data validation, third-party source parity and forecast usefulness remain separate acceptance gates. Prior release reports are historical.

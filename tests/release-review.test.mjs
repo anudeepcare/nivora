@@ -266,6 +266,7 @@ function researchMarkup(issues = []) {
     "ArrowUpRight",
   ])
     bindings[name] = empty;
+  bindings.navigationStyle = { sections: "research-navigation", symbol: "research-symbol" };
   bindings.tabVisuals = { root: "research-tab-visuals" };
   bindings.deskLayout = { content: "research-desk-layout" };
   bindings.Help = ({ children }) => React.createElement("div", null, children);

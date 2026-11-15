@@ -41,9 +41,9 @@ test('Research composition retains visible metric grids and pairs conclusion wit
 
 test('Research keeps a short initial read and retains additional considerations in a disclosure',()=>{
  const source=fs.readFileSync('components/ResearchConclusion.tsx','utf8');
- assert.match(source,/risks.slice\(0, 2\)/);
- assert.match(source,/conditions.slice\(0, 2\)/);
- assert.match(source,/More research considerations/);
+ assert.match(source,/risks.map\(/);
+ assert.match(source,/conditions.map\(/);
+ assert.match(source,/Risks &amp; what would change the view/);
 });
 test('Home labels the followed-company sample rather than claiming broad market coverage',()=>{
  const source=fs.readFileSync('components/HomeMarketCards.tsx','utf8');

@@ -16,6 +16,7 @@ export default function DecisionAttention({
   concentrationLimit,
   prefix,
   loading = false,
+  compact = false,
 }: {
   symbols: string[];
   held: string[];
@@ -24,6 +25,7 @@ export default function DecisionAttention({
   concentrationLimit?: number | null;
   prefix: string;
   loading?: boolean;
+  compact?: boolean;
 }) {
   if (!symbols.length) return null;
   const items = decisionAttention({
@@ -59,11 +61,25 @@ export default function DecisionAttention({
             {item.symbol}
             <ArrowUpRight size={14} />
           </Link>
-          <span>{item.label}</span>
+          {!compact && <span>{item.label}</span>}
         </div>
-        <p>{item.reason}</p>
-        <details>
-          <summary>What to check next</summary>
+        {!compact && <p>{item.reason}</p>}
+        <details className={compact ? s.reviewDetails : undefined}>
+          <summary>
+            {compact ? (
+              <>
+                <span className={s.reviewLabel}>{item.label}</span>
+                <span className={s.preview}>{item.reason}</span>
+                <span className={s.reviewToggle} aria-hidden="true">
+                  +
+                </span>
+                <span className={s.srOnly}>Evidence for {item.symbol}</span>
+              </>
+            ) : (
+              "What to check next"
+            )}
+          </summary>
+          {compact && <p>{item.reason}</p>}
           {item.sizeReview && item.businessReason && (
             <p>
               <strong>Business assessment · {item.action}:</strong>{" "}
@@ -105,7 +121,10 @@ export default function DecisionAttention({
     );
   };
   return (
-    <section className={s.root} aria-label="Review first">
+    <section
+      className={[s.root, compact ? s.compact : ""].filter(Boolean).join(" ")}
+      aria-label="Review first"
+    >
       <header>
         <div>
           <h2>Review first</h2>
@@ -117,8 +136,10 @@ export default function DecisionAttention({
         </div>
         <span>{items.length} companies</span>
       </header>
-      <div className={s.rows}>{items.slice(0, 3).map(render)}</div>
-      {items.length > 3 && (
+      <div className={s.rows}>
+        {(compact ? items : items.slice(0, 3)).map(render)}
+      </div>
+      {!compact && items.length > 3 && (
         <details className={s.more}>
           <summary>Review all {items.length} companies</summary>
           <div className={s.rows}>{items.slice(3).map(render)}</div>

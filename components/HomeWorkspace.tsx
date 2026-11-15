@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import HomeDailyBriefing from "./HomeDailyBriefing";
-import ContributionCompare from "./ContributionCompare";
+import HomeNewsFeed from "./HomeNewsFeed";
 import HomeMarketCards from "./HomeMarketCards";
 import { MarketRadar } from "./MarketRadar";
 import OpportunityMap from "./OpportunityMap";
@@ -36,12 +36,7 @@ import homeStyles from "./HomeWorkspace.module.css";
 import PortfolioDay from "./PortfolioDay";
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
-import {
-  Coverage,
-  Heading,
-  SectionHead,
-  useWorkspaceData,
-} from "./WorkspaceShared";
+import { Heading, SectionHead, useWorkspaceData } from "./WorkspaceShared";
 export function Overview() {
   return (
     <FeatureGate
@@ -185,24 +180,6 @@ function HomeOverview() {
         : hour < 18
           ? "Good afternoon"
           : "Good evening";
-  const renderHeadline = (news: (typeof headlines)[number]) => (
-    <article key={`${news.symbol}:${news.url}`}>
-      <div className="home-news-meta">
-        <SecurityLogo symbol={news.symbol} />
-        <Link href={researchLink(news.symbol, prefix)}>{news.symbol}</Link>
-        <time dateTime={news.date}>{dateLabel(news.date)}</time>
-      </div>
-      <a
-        className="home-news-title"
-        href={news.url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {news.title}
-        <ArrowUpRight size={17} />
-      </a>
-    </article>
-  );
   return (
     <section
       className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
@@ -421,9 +398,7 @@ function HomeOverview() {
                 }
               />
               {headlines.length ? (
-                <div className="home-news-list">
-                  {headlines.slice(0, 6).map(renderHeadline)}
-                </div>
+                <HomeNewsFeed headlines={headlines} prefix={prefix} />
               ) : (
                 <div className="home-quiet-state">
                   <FileText size={24} />
@@ -447,14 +422,6 @@ function HomeOverview() {
                     Open research <ArrowUpRight size={15} />
                   </Link>
                 </div>
-              )}
-              {headlines.length > 6 && (
-                <details className="home-more-updates">
-                  <summary>Show {headlines.length - 6} more updates</summary>
-                  <div className="home-news-list">
-                    {headlines.slice(6).map(renderHeadline)}
-                  </div>
-                </details>
               )}
               {!feed.loading && symbols.length > 0 && (
                 <p className="home-source-note">
@@ -489,9 +456,8 @@ function HomeOverview() {
         <div className={homeStyles.workbenchHeading}>
           <span>GO DEEPER</span>
           <h2>Turn your briefing into a plan.</h2>
-          <p>Your saved reviews, contribution tools and full Pace scan.</p>
+          <p>Your saved reviews and confirmed Pace readings.</p>
         </div>
-        <ContributionCompare symbols={symbols} prefix={prefix} />
         <p className={homeStyles.planLink}>
           <Link className="text-link" href={`${prefix}/monthly-plan`}>
             Build this month’s research plan →
@@ -530,12 +496,6 @@ function HomeOverview() {
         )}
         {symbols.length > 0 && (
           <PaceBoard {...state.paceScan} prefix={prefix} />
-        )}
-        {symbols.length > 0 && (
-          <details className={homeStyles.coverageDetails} id="home-coverage">
-            <summary>Research coverage & data sources</summary>
-            <Coverage state={state} />
-          </details>
         )}
       </section>
     </section>

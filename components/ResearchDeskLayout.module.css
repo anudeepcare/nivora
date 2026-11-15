@@ -4,8 +4,8 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   align-items: start;
-  gap: 16px;
-  margin-top: 16px;
+  gap: var(--workspace-gap, 20px);
+  margin-top: var(--workspace-gap, 20px);
 }
 .content.content.content > * {
   grid-column: 1 / -1;
@@ -47,11 +47,13 @@
     :global(.analyst-workspace),
     :global(.company-updates)
   ) {
-  padding: 20px;
+  padding: var(--workspace-inset, 24px);
   border: 0;
-  border-radius: 18px;
-  background: var(--card);
-  box-shadow: 0 4px 24px #17342c06;
+  border-radius: var(--workspace-radius, 24px);
+  background: var(--workspace-glass, var(--card));
+  box-shadow:
+    var(--workspace-shadow, 0 4px 24px #17342c06),
+    inset 0 0 0 1px var(--workspace-edge, #ffffff50);
 }
 .content.content.content[data-desk="Financials"] > :global(.business-history) {
   grid-column: span 8;
@@ -153,7 +155,7 @@
 .content.content.content :global(.thesis-checkpoints .step) {
   padding: 14px;
   border: 0;
-  background: var(--card);
+  background: var(--workspace-glass, var(--card));
   border-radius: 12px;
 }
 .content.content.content :global(.depth-business .business-context-layout) {
@@ -247,11 +249,11 @@
   margin: 0;
 }
 .content.content.content :global(.coverage-grid > .au-panel) {
-  padding: 20px;
+  padding: var(--workspace-inset, 24px);
   margin: 0;
   border: 0;
-  border-radius: 18px;
-  background: var(--card);
+  border-radius: var(--workspace-radius, 24px);
+  background: var(--workspace-glass, var(--card));
 }
 .content.content.content :global(.au-panel-head) {
   margin: 0 0 12px;
@@ -338,7 +340,7 @@
   margin: 0;
   border: 0;
   border-radius: 14px;
-  background: var(--card);
+  background: var(--workspace-glass, var(--card));
 }
 .content.content.content :global(.technical-desk-groups) {
   display: grid;
@@ -352,7 +354,7 @@
   padding: 18px;
   border: 0;
   border-radius: 16px;
-  background: var(--card);
+  background: var(--workspace-glass, var(--card));
 }
 .content.content.content :global(.technical-desk-groups header p) {
   font-size: 12px;
@@ -433,7 +435,7 @@
   padding: 18px;
   border: 0;
   border-radius: 16px;
-  background: var(--card);
+  background: var(--workspace-glass, var(--card));
 }
 .content.content.content[data-desk="Advanced"] :global(.advanced-measurements) {
   padding: 18px;
@@ -486,7 +488,7 @@
 .content.content.content :global(.analyst-empty) {
   padding: 18px;
   border-radius: 16px;
-  background: var(--card);
+  background: var(--workspace-glass, var(--card));
 }
 .content.content.content :global(.analyst-empty h3) {
   font-size: 16px;
@@ -612,4 +614,109 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* One calm disclosure language across each stock's research desks. */
+.content.content.content :global(.research-reference),
+.content.content.content :global(.edge-method) {
+  padding: 0 18px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, #9aa9d9 5%, var(--card)),
+    var(--card)
+  );
+}
+.content.content.content :global(.research-reference > summary),
+.content.content.content :global(.edge-method > summary) {
+  min-height: 48px;
+  padding: 15px 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.content.content.content :global(.research-reference[open]),
+.content.content.content :global(.edge-method[open]) {
+  padding-bottom: 18px;
+}
+.content.content.content :global(.technical-desk-groups > details) {
+  min-width: 0;
+  padding: 0 18px;
+  border-radius: 16px;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--green) 5%, var(--card)),
+    var(--card)
+  );
+}
+.content.content.content :global(.technical-desk-groups > details > summary) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 54px;
+  cursor: pointer;
+  font-size: 13px;
+  list-style: none;
+}
+.content.content.content
+  :global(.technical-desk-groups > details > summary::-webkit-details-marker) {
+  display: none;
+}
+.content.content.content
+  :global(.technical-desk-groups > details > summary span) {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+.content.content.content
+  :global(.technical-desk-groups > details > summary::after) {
+  content: "+";
+  color: var(--green);
+}
+.content.content.content
+  :global(.technical-desk-groups > details[open] > summary::after) {
+  content: "−";
+}
+.content.content.content :global(.technical-desk-groups > details > p) {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.content.content.content :global(.technical-desk-groups) {
+  align-items: start;
+}
+.content.content.content :global(summary:focus-visible) {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.content.content.content :global(.thesis-next) {
+  margin-top: 14px;
+}
+.content.content.content
+  :global(.technical-desk-groups > details[data-tone="blue"]) {
+  --study-tint: #6b9ad1;
+}
+.content.content.content
+  :global(.technical-desk-groups > details[data-tone="violet"]) {
+  --study-tint: #a18bc8;
+}
+.content.content.content
+  :global(.technical-desk-groups > details[data-tone="amber"]) {
+  --study-tint: #c2a563;
+}
+.content.content.content
+  :global(.technical-desk-groups > details[data-tone="green"]) {
+  --study-tint: #69a891;
+}
+.content.content.content :global(.technical-desk-groups > details) {
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--study-tint, var(--green)) 12%, var(--card)),
+    var(--card)
+  );
+  box-shadow:
+    inset 0 1px 0 #ffffff25,
+    0 4px 20px #17342c04;
 }

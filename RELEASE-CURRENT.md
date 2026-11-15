@@ -1,9 +1,9 @@
-# Current source candidate: Experience redesign, November 15, 2026
+# Current source candidate: Focused workspace refinement, November 15, 2026
 
-Read [EXPERIENCE-REDESIGN-20261115.md](EXPERIENCE-REDESIGN-20261115.md) for screen changes and acceptance limits. Earlier release files are historical and do not override this status.
+Read [UX-REFINEMENT-20261115.md](UX-REFINEMENT-20261115.md) for the current screen-by-screen changes and acceptance limits. Earlier release notes and verification reports are historical and do not override this status.
 
-This is a structural redesign of Home, Research, News and Portfolio, not another spacing-only pass. Home now opens with the briefing and actual session; Research coordinates one decision stage with its explanation and preserved metric grids; News separates company mentions from broader returned stories and primary filings; Portfolio brings comparison and full-width holdings ahead of secondary scenarios.
+The latest candidate simplifies Home news, removes the requested duplicate banner/coverage section, cleans the Pace table, and reduces repeated information across Research. Distinct contribution-fit, estimate-based P/E and historical-price-risk tools remain reachable in their appropriate workspaces. Portfolio keeps its successful composition with compact review rows. Shared spacing, radii, insets and cool frosted surfaces follow the supplied visual reference.
 
-All existing financial calculation, Pace/classifier, provider, source-selection and account boundaries remain unchanged. Prior loading and system-audit corrections are included. Final lint, formatting, 1,515 tests, TypeScript, production build and controlled API checks passed. Evidence is recorded in `verification/experience-recomposition-20261115/summary.json`.
+Financial calculations, source selection, provider behavior and API/account boundaries are unchanged from the previous ZIP. Current verification results are recorded in `verification/refinement-20261115/summary.json`.
 
-This is **not a production-accepted release**. No source was deployed. Full candidate browser/device rendering could not be verified in this environment; responsive source and render checks are not visual signoff. Current-company end-to-end validation, third-party source parity and forecast usefulness remain separate open gates. No purchase, provider activation, subscription change or broker execution occurred.
+This is **not a production-accepted release**. No source was deployed. Final browser/device rendering could not be verified in this environment; source review, rendered-component tests, token contrast checks and a successful build are not visual signoff. Actual responsive alignment, expanded panels, focus behavior and current-company end-to-end validation remain open gates. Existing inner Research view/input reset behavior on outer-tab unmount is not changed or represented as persistent.

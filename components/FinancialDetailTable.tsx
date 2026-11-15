@@ -31,8 +31,8 @@ export default function FinancialDetailTable({
         <div>
           <h3>Reported metrics & formulas</h3>
           <p>
-            Only available, applicable metrics appear. Sector-specific
-            exclusions remain.
+            Table period is independent of the overview above. Only available,
+            applicable metrics appear.
           </p>
         </div>
         <div className="segments" aria-label="Financial detail period">

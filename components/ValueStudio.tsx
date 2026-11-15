@@ -7,11 +7,13 @@ import StockPillars from "./StockPillars";
 import { aurynDecision } from "@/lib/auryn-decision";
 import ScenarioLenses from "./ScenarioLenses";
 import SectionIcon from "./SectionIcon";
+import { Help } from "./Ui";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
 import { percent } from "@/lib/format";
 import PriceProjection from "./PriceProjection";
+import TargetsEstimates from "./TargetsEstimates";
 import { modelAssessment } from "@/lib/model-assessment";
 const display = (m: DeskMetric) =>
   m.value == null
@@ -67,7 +69,7 @@ export default function ValueStudio({
           Test assumptions →
         </button>
         <details>
-          <summary>Compare models &amp; historical price risk</summary>
+          <summary>Compare model ranges</summary>
           <ScenarioLenses research={r} decision={decision} />
         </details>
       </div>
@@ -93,7 +95,11 @@ export default function ValueStudio({
           <div className="valuation-board-grid">
             {available.map((m) => (
               <article key={m.key} data-tone="neutral">
-                <span>{m.label}</span>
+                <span>
+                  <Help label={m.label} trigger={m.label}>
+                    {m.note}
+                  </Help>
+                </span>
                 <strong>{display(m)}</strong>
                 {["pe", "forwardPe", "trailingPE", "forwardPE"].includes(
                   m.key,
@@ -110,7 +116,6 @@ export default function ValueStudio({
                       : ""}
                   </small>
                 )}
-                <p>{m.note}</p>
               </article>
             ))}
           </div>
@@ -166,6 +171,10 @@ export default function ValueStudio({
             </div>
           ))}
         </div>
+      </details>
+      <details className="research-reference">
+        <summary>Estimate scenarios &amp; historical price risk</summary>
+        <TargetsEstimates research={r} initialView={2} modelViewsOnly />
       </details>
       <div className={layout.manual}>
         <PriceProjection key={r.company.symbol} research={r} />

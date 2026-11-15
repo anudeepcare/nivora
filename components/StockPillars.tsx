@@ -98,7 +98,15 @@ export default function StockPillars({
         </div>
       )}
       {!view.cases && (
-        <p>More company evidence is needed for a supported scenario range.</p>
+        <div className={s.cases} aria-label="Scenario evidence unavailable">
+          {(["bear", "base", "bull"] as const).map((name) => (
+            <div key={name} data-case={name}>
+              <small>{name[0].toUpperCase() + name.slice(1)} case</small>
+              <strong className={s.unavailable}>Not available</strong>
+            </div>
+          ))}
+          <p>More company evidence is needed for a supported scenario range.</p>
+        </div>
       )}
       {!casesOnly && (
         <details className={s.details}>
@@ -119,11 +127,13 @@ export default function StockPillars({
             {view.pillars.map((p) => (
               <li key={p.id} data-status={p.status}>
                 <span className={s.badge}>{mark[p.status]}</span>
-                <div>
-                  <small>{p.question}</small>
-                  <strong>{p.answer}</strong>
+                <details className={s.pillarDetail}>
+                  <summary>
+                    <small>{p.question}</small>
+                    <strong>{p.answer}</strong>
+                  </summary>
                   <p>{p.why}</p>
-                </div>
+                </details>
               </li>
             ))}
           </ul>

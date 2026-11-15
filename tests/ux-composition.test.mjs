@@ -41,7 +41,9 @@ function valueStudio() {
     "./StockPillars": marker("selected-cases"),
     "./ScenarioLenses": marker("scenario-methods"),
     "./SectionIcon": marker("icon"),
+    "./Ui": { Help: ({trigger,children}) => React.createElement("span", null, trigger, children) },
     "./PriceProjection": marker("manual"),
+    "./TargetsEstimates": marker("estimate-scenarios"),
   };
   const mod = { exports: {} };
   new Function("require", "module", "exports", code)(
@@ -85,10 +87,10 @@ test("Valuation preserves a consensus-only observation when analyst bounds are m
   );
   assert.match(html, /data-view="analyst-targets"/);
 });
-test("Home companies precede the optional comparison workbench", () => {
+test("Home companies precede saved reviews without a duplicated comparison banner", () => {
   const source = fs.readFileSync("components/HomeWorkspace.tsx", "utf8");
   assert.ok(
-    source.indexOf("<HomeMarketCards") < source.indexOf("<ContributionCompare"),
+    source.indexOf("<HomeMarketCards") < source.indexOf("<ResearchInbox"),
   );
 });
 test("conditional scenario controls do not claim every default result has a three-year horizon", () => {

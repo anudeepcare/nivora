@@ -20,9 +20,9 @@ test('Pace board excludes blocked, pending and P1 readings from accumulation gro
  const file='components/WorkspacePace.tsx', ast=ts.createSourceFile(file,fs.readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
  const node=ast.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text==='PaceBoard');
  const code=ts.transpileModule(node.getText(ast).replace('export ',''),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022}}).outputText;
- const PaceBoard=new Function('React','s','Link','PaceBadge','researchLink',code+';return PaceBoard')(React,{},({children,href})=>React.createElement('a',{href},children),()=>null,s=>'/research/'+s);
- const rows=Object.fromEntries([['ALLOW',4,true],['BLOCKED',4,false],['PENDING',null,true],['WATCH',1,true]].map(([symbol,rawLevel,permitted])=>[symbol,{signal:{view:{rawLevel,permitted}}}]));
+ const PaceBoard=new Function('React','s','Link','PaceBadge','researchLink','dateLabel',code+';return PaceBoard')(React,{},({children,href,...props})=>React.createElement('a',{href,...props},children),()=>null,s=>'/research/'+s, date => date || 'Not supplied');
+ const rows=Object.fromEntries([['ALLOW',4,true],['BLOCKED',4,false],['PENDING',null,true],['WATCH',1,true]].map(([symbol,rawLevel,permitted])=>[symbol,{signal:{view:{rawLevel,permitted,actionLabel:'Add gradually · P4',code:'P4'},periods:[{key:'confirmed',date:'2026-10-30',level:4}]}}]));
  const html=renderToStaticMarkup(React.createElement(PaceBoard,{rows,loading:false,prefix:'',refresh:()=>{}}));
- assert.match(html,/href="\/research\/ALLOW"/); for(const symbol of ['BLOCKED','PENDING','WATCH'])assert(!html.includes('/research/'+symbol));
+ assert.match(html,/<table/); assert.match(html,/<th scope="col">Company<\/th>/); assert.match(html,/<th scope="col">Decision<\/th>/); assert.match(html,/2026-10-30/); assert.match(html,/Add gradually/); assert.match(html,/href="\/research\/ALLOW"/); for(const symbol of ['BLOCKED','PENDING','WATCH'])assert(!html.includes('/research/'+symbol));
 });
 test('repeat scans reuse summary work but recheck access on every request',async()=>{const r=route();for(let i=0;i<2;i++)await r.get(new Request('https://test/api?symbols=A'));assert.equal(r.calls.filter(x=>x==='research:A').length,1);assert.equal(r.calls.filter(x=>x==='access:A').length,2)});

@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   align-items: start;
-  gap: 16px;
+  gap: var(--workspace-gap, 20px);
 }
 .root.root.root > * {
   grid-column: 1 / -1;
@@ -29,11 +29,13 @@
 }
 .root.root.root :global(.valuation-board),
 .calculator.calculator {
-  padding: 20px;
+  padding: var(--workspace-inset, 24px);
   border: 0;
-  border-radius: 18px;
-  background: var(--card);
-  box-shadow: 0 4px 24px #17342c06;
+  border-radius: var(--workspace-radius, 24px);
+  background: var(--workspace-glass, var(--card));
+  box-shadow:
+    var(--workspace-shadow, 0 4px 24px #17342c06),
+    inset 0 0 0 1px var(--workspace-edge, #ffffff50);
 }
 .root.root.root :global(.valuation-board-grid) {
   display: grid;
@@ -46,7 +48,7 @@
   border-radius: 12px;
   background: linear-gradient(
     140deg,
-    color-mix(in srgb, var(--green) 6%, var(--card)),
+    color-mix(in srgb, #a5b0dc 7%, var(--card)),
     var(--card)
   );
 }
@@ -64,10 +66,10 @@
 }
 .root.root.root > .methods {
   grid-column: 1 / -1;
-  padding: 20px;
+  padding: var(--workspace-inset, 24px);
   margin: 0;
-  background: var(--card);
-  border-radius: 18px;
+  background: var(--workspace-glass, var(--card));
+  border-radius: var(--workspace-radius, 24px);
 }
 .methods > summary {
   font-size: 16px;

@@ -46,8 +46,8 @@ export default function AdvancedResearch({
     <div className="professional-studio depth-advanced">
       <header className="professional-studio-heading">
         <div>
-          <span className="eyebrow">Advanced research</span>
-          <h2>Risk & scenarios</h2>
+          <span className="eyebrow">Labs</span>
+          <h2>Research tools</h2>
           <p>
             {s.count.toLocaleString()} completed observations · through{" "}
             {dateLabel(s.asOf)}. Review historical risk measures and scenario

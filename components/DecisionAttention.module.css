@@ -113,3 +113,121 @@
     align-items: flex-start;
   }
 }
+
+/* Portfolio evidence is a scannable list. Each stock reveals its full rationale. */
+.compact.root {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+.compact .rows {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.compact .rows article {
+  display: grid;
+  grid-template-columns: 102px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  padding: 0 12px;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+}
+.compact .rows article:last-child {
+  border-bottom: 0;
+}
+.compact .rows article:has(details[open]) {
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, #a7b7ef 7%, var(--card)),
+    var(--card)
+  );
+  border-radius: 12px;
+}
+.compact .identity {
+  min-height: 56px;
+  flex-wrap: nowrap;
+}
+.reviewDetails {
+  min-width: 0;
+}
+.compact .reviewDetails > summary {
+  display: grid;
+  grid-template-columns: minmax(135px, 0.65fr) minmax(0, 2fr) 24px;
+  gap: 16px;
+  align-items: center;
+  min-height: 56px;
+  padding: 10px 0;
+  list-style: none;
+  background: transparent;
+}
+.reviewDetails > summary::-webkit-details-marker {
+  display: none;
+}
+.reviewLabel {
+  color: var(--ink);
+}
+.preview {
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.reviewToggle {
+  font-size: 20px;
+  color: var(--green);
+  text-align: center;
+}
+.reviewDetails[open] .reviewToggle {
+  transform: rotate(45deg);
+}
+.reviewDetails[open] .preview {
+  visibility: hidden;
+}
+.compact .reviewDetails > small {
+  display: block;
+  margin: 10px 0 18px;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .compact .rows article {
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 8px;
+    padding: 0;
+  }
+  .compact .reviewDetails > summary {
+    grid-template-columns: minmax(0, 1fr) 24px;
+    gap: 2px 8px;
+  }
+  .reviewLabel {
+    grid-column: 1;
+  }
+  .reviewToggle {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .preview {
+    grid-column: 1;
+    font-size: 11px;
+  }
+  .compact .identity {
+    font-size: 12px;
+    gap: 6px;
+  }
+  .compact .identity > svg {
+    width: 15px;
+  }
+  .compact.root .rows p {
+    font-size: 12px;
+  }
+}

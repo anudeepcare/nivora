@@ -104,7 +104,15 @@ export default function IntegratedResearch({
         </div>
         <div className={s.pillars}>
           <StockPillars research={r} decision={d} />
-          {showConsensus && <AnalystTargets research={r} />}
+          {showConsensus && (
+            <details className={s.consensusDetails}>
+              <summary>
+                Wall Street consensus{" "}
+                <span>Target, comparison &amp; source dates</span>
+              </summary>
+              <AnalystTargets research={r} />
+            </details>
+          )}
         </div>
       </div>
       <section

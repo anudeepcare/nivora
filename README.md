@@ -2,7 +2,7 @@
 
 Extract this ZIP as a source candidate for local/preproduction verification. Do not deploy before the current acceptance gates are resolved. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current source candidate: [Experience redesign](EXPERIENCE-REDESIGN-20261115.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This candidate restructures Home, Research, News and Portfolio, preserves the existing research metrics and financial calculations, and includes the prior system-audit/loading corrections. It is not deployed or production-accepted. Candidate browser/device visual acceptance and full current-company end-to-end checks remain open. Earlier release notes are historical.
+Current source candidate: [Focused workspace refinement](UX-REFINEMENT-20261115.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This candidate applies the latest Home, Research and Portfolio simplification and the supplied cool-glass visual direction, with shared panel geometry. Financial calculations, providers and APIs are unchanged. It is not deployed or production-accepted. Browser/device visual acceptance and current-company end-to-end checks remain open. Earlier release notes are historical.
 
 ## Run and verify
 Use Node 24.x (`.nvmrc` and CI agree), then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.

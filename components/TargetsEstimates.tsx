@@ -19,12 +19,23 @@ const tabs = [
 export default function TargetsEstimates({
   research: r,
   ratings,
+  onValuation,
+  initialView = 0,
+  modelViewsOnly = false,
 }: {
   research: Research;
   ratings?: ReactNode;
+  onValuation?: () => void;
+  initialView?: 0 | 1 | 2 | 3;
+  modelViewsOnly?: boolean;
 }) {
   const model = useMemo(() => targetsEstimates(r), [r]);
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState<number>(initialView);
+  const views = onValuation
+    ? tabs.slice(0, 2)
+    : modelViewsOnly
+      ? tabs.slice(2)
+      : tabs;
   const id = `auryn-targets-${encodeURIComponent(r.company.symbol)}`;
   const [multipleInput, setMultipleInput] = useState({
     symbol: r.company.symbol,
@@ -43,7 +54,9 @@ export default function TargetsEstimates({
     <section className={styles.root} aria-label="Targets and estimates">
       <header className={styles.header}>
         <div>
-          <h2>Targets & estimates</h2>
+          <h2>
+            {modelViewsOnly ? "Models & price risk" : "Targets & estimates"}
+          </h2>
         </div>
       </header>
       <div
@@ -51,38 +64,51 @@ export default function TargetsEstimates({
         role="tablist"
         aria-label="Target and estimate views"
       >
-        {tabs.map((label, index) => (
-          <button
-            key={label}
-            type="button"
-            role="tab"
-            id={`${id}-tab-${index}`}
-            aria-selected={active === index}
-            aria-controls={`${id}-panel-${index}`}
-            tabIndex={active === index ? 0 : -1}
-            onClick={() => setActive(index)}
-            onKeyDown={(event) => {
-              const next =
-                event.key === "ArrowRight"
-                  ? (index + 1) % tabs.length
-                  : event.key === "ArrowLeft"
-                    ? (index + tabs.length - 1) % tabs.length
-                    : event.key === "Home"
-                      ? 0
-                      : event.key === "End"
-                        ? tabs.length - 1
-                        : null;
-              if (next != null) {
-                event.preventDefault();
-                setActive(next);
-                document.getElementById(`${id}-tab-${next}`)?.focus();
-              }
-            }}
-          >
-            {label}
-          </button>
-        ))}
+        {views.map((label, viewIndex) => {
+          const index = tabs.indexOf(label);
+          return (
+            <button
+              key={label}
+              type="button"
+              role="tab"
+              id={`${id}-tab-${index}`}
+              aria-selected={active === index}
+              aria-controls={`${id}-panel-${index}`}
+              tabIndex={active === index ? 0 : -1}
+              onClick={() => setActive(index)}
+              onKeyDown={(event) => {
+                const next =
+                  event.key === "ArrowRight"
+                    ? (viewIndex + 1) % views.length
+                    : event.key === "ArrowLeft"
+                      ? (viewIndex + views.length - 1) % views.length
+                      : event.key === "Home"
+                        ? 0
+                        : event.key === "End"
+                          ? views.length - 1
+                          : null;
+                if (next != null) {
+                  event.preventDefault();
+                  const selected = tabs.indexOf(views[next]);
+                  setActive(selected);
+                  document.getElementById(`${id}-tab-${selected}`)?.focus();
+                }
+              }}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
+      {onValuation && (
+        <button
+          type="button"
+          className={styles.modelLink}
+          onClick={onValuation}
+        >
+          Models &amp; historical price risk → Valuation
+        </button>
+      )}
       <div
         className={`${styles.panel} ${active === 0 && ratings ? styles.consensusGrid : ""}`}
         role="tabpanel"
@@ -160,7 +186,10 @@ export default function TargetsEstimates({
                 are not independently verified.
               </p>
             </details>
-            <EstimateRevisions research={r} />
+            <details className={styles.assumptions}>
+              <summary>Estimate revisions</summary>
+              <EstimateRevisions research={r} />
+            </details>
           </>
         )}
         {active === 2 && (

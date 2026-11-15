@@ -1,13 +1,11 @@
 /* Mobile surface contract. Desktop keeps its existing presentation. */
 @media (max-width: 767px) {
   :root {
-    --mobile-glass: var(--card);
-    --mobile-edge: color-mix(in srgb, var(--line) 70%, transparent);
+    --mobile-glass: var(--workspace-glass);
+    --mobile-edge: var(--workspace-edge);
   }
   body {
-    background:
-      radial-gradient(ellipse at 5% 15%, #71c8b51a, transparent 55%),
-      radial-gradient(ellipse at 95% 60%, #b0a2da17, transparent 60%), var(--bg);
+    background: var(--workspace-canvas);
     background-attachment: scroll;
   }
   body .product.approved-product {

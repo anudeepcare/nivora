@@ -1146,29 +1146,36 @@
   display: grid;
   grid-template-columns: minmax(250px, 1.05fr) minmax(0, 2.5fr);
   gap: 0;
-  margin-bottom: 22px;
+  margin-bottom: var(--workspace-gap);
   overflow: hidden;
-  border-radius: 20px;
-  background: var(--card);
-  box-shadow: 0 10px 40px #142e2310;
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  border: 1px solid var(--workspace-edge);
+  backdrop-filter: blur(18px);
 }
 .netBalance {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 13px;
-  padding: 27px;
+  padding: var(--workspace-inset);
   background:
-    radial-gradient(ellipse at 100% 0, #7dd9c044, transparent 70%),
-    linear-gradient(135deg, #123a37, #1f3146);
-  color: #f4fff5;
+    radial-gradient(
+      ellipse at 0 0,
+      color-mix(in srgb, #b8c4ed 18%, transparent),
+      transparent 75%
+    ),
+    var(--workspace-glass);
+  color: var(--ink);
+  box-shadow: inset -1px 0 0 var(--workspace-edge);
 }
 .netBalance > span {
   display: flex;
   align-items: center;
   gap: 9px;
   font-size: 12px;
-  color: #c9e8d8;
+  color: var(--muted);
 }
 .netBalance > strong {
   font-size: clamp(30px, 3.2vw, 44px);
@@ -1179,14 +1186,14 @@
 .netBalance > small {
   font-size: 11px;
   line-height: 1.6;
-  color: #bfdbd0;
+  color: var(--muted);
 }
 .balanceMetrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
   gap: 20px;
-  padding: 25px;
+  padding: var(--workspace-inset);
 }
 .balanceMetrics > div {
   min-width: 0;
@@ -1213,29 +1220,35 @@
   color: var(--muted);
 }
 .portfolio.portfolio.portfolio :global(.portfolio-grid) {
-  gap: 20px;
+  gap: var(--workspace-gap);
   align-items: stretch;
 }
 .portfolio.portfolio.portfolio :global(.portfolio-grid .portfolio-trend-panel) {
   grid-column: 1 / 9;
   grid-row: 1;
   border: 0;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 8px 30px #152e2207;
+  border-radius: var(--workspace-radius);
+  padding: var(--workspace-inset);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  border: 1px solid var(--workspace-edge);
+  backdrop-filter: blur(18px);
 }
 .portfolioRead {
   grid-column: 9 / -1;
   grid-row: 1;
-  padding: 27px;
-  border-radius: 20px;
+  padding: var(--workspace-inset);
+  border-radius: var(--workspace-radius);
   background:
     radial-gradient(
       ellipse at 100% 0,
-      color-mix(in srgb, #a3a1e6 19%, transparent),
+      color-mix(in srgb, #a8b7ef 12%, transparent),
       transparent 75%
     ),
-    var(--card);
+    var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  border: 1px solid var(--workspace-edge);
+  backdrop-filter: blur(18px);
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -1296,8 +1309,9 @@
   gap: 16px;
   padding: 12px 16px;
   border-radius: 10px;
-  background: var(--ink);
-  color: var(--card);
+  background: #171d38;
+  color: #f5f7ff;
+  box-shadow: 0 5px 16px #202b4c16;
   font-size: 12px;
   font-weight: 650;
   text-decoration: none;
@@ -1309,29 +1323,31 @@
   grid-column: 1 / -1;
   grid-row: 2;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: var(--workspace-gap);
 }
 .portfolio.portfolio.portfolio
   :global(.portfolio-grid .portfolio-sidebar .card) {
   grid-column: auto;
   grid-row: auto;
   border: 0;
-  border-radius: 18px;
-  padding: 24px;
+  border-radius: var(--workspace-radius);
+  padding: var(--workspace-inset);
 }
 .portfolio.portfolio.portfolio
   :global(.portfolio-grid > .portfolio-range-panel) {
   grid-column: 1 / -1;
   grid-row: 4;
   border: 0;
-  border-radius: 18px;
+  border-radius: var(--workspace-radius);
+  padding: var(--workspace-inset);
 }
 .portfolio.portfolio.portfolio
   :global(.portfolio-grid > .portfolio-holdings-panel) {
   grid-column: 1 / -1;
   grid-row: 3;
   border: 0;
-  border-radius: 18px;
+  border-radius: var(--workspace-radius);
+  padding: var(--workspace-inset);
   scroll-margin-top: 90px;
 }
 .portfolio.portfolio.portfolio :global(.allocation-track) {
@@ -1350,10 +1366,13 @@
   height: 10px;
 }
 .decisionDrawer {
-  margin-top: 20px;
-  border-radius: 16px;
-  background: var(--card);
-  padding: 20px 24px;
+  margin-top: var(--workspace-gap);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  border: 1px solid var(--workspace-edge);
+  backdrop-filter: blur(18px);
+  padding: var(--workspace-inset);
 }
 .decisionDrawer > summary {
   cursor: pointer;
@@ -1375,7 +1394,7 @@
     gap: 20px 24px;
   }
   .portfolioRead {
-    padding: 22px;
+    padding: var(--workspace-inset);
   }
 }
 @media (max-width: 900px) {
@@ -1420,17 +1439,17 @@
 @media (max-width: 600px) {
   .balanceDeck {
     grid-template-columns: minmax(0, 1fr);
-    margin-bottom: 16px;
+    margin-bottom: var(--workspace-gap);
   }
   .netBalance {
-    padding: 23px;
+    padding: var(--workspace-inset);
     gap: 10px;
   }
   .netBalance > strong {
     font-size: 38px;
   }
   .balanceMetrics {
-    padding: 20px;
+    padding: var(--workspace-inset);
     gap: 22px;
   }
   .balanceMetrics strong {
@@ -1438,14 +1457,14 @@
     margin: 6px 0;
   }
   .portfolio.portfolio.portfolio :global(.portfolio-grid) {
-    gap: 16px;
+    gap: var(--workspace-gap);
   }
   .portfolio.portfolio.portfolio
     :global(.portfolio-grid .portfolio-trend-panel) {
-    padding: 20px 14px;
+    padding: var(--workspace-inset);
   }
   .portfolioRead {
-    padding: 22px;
+    padding: var(--workspace-inset);
   }
   .portfolioRead dl {
     display: block;
@@ -1458,17 +1477,55 @@
   }
   .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
     grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    gap: var(--workspace-gap);
   }
   .portfolio.portfolio.portfolio
     :global(.portfolio-grid .portfolio-sidebar .card) {
-    padding: 22px;
+    padding: var(--workspace-inset);
   }
   .decisionDrawer {
-    padding: 20px;
+    padding: var(--workspace-inset);
   }
   .decisionDrawer > summary small {
     display: block;
     margin: 7px 0 0;
+  }
+}
+
+/* Cool frosted depth follows the shared canvas; color never replaces financial meaning. */
+.netBalance > span > svg {
+  color: #a5b947;
+}
+:global([data-theme="dark"]) .netBalance > span > svg {
+  color: #d2e887;
+}
+:global([data-theme="dark"]) .readLink {
+  background: #dce3ff;
+  color: #171d38;
+}
+.portfolio.portfolio.portfolio.portfolio
+  :global(.portfolio-grid .portfolio-sidebar .card),
+.portfolio.portfolio.portfolio.portfolio
+  :global(.portfolio-grid > .card:not(.portfolio-trend-panel)) {
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
+  box-shadow: var(--workspace-shadow);
+  padding: var(--workspace-inset);
+  border-radius: var(--workspace-radius);
+  backdrop-filter: blur(18px);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .balanceDeck,
+  .netBalance,
+  .portfolioRead,
+  .decisionDrawer,
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-sidebar .card),
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.portfolio-grid > .card:not(.portfolio-trend-panel)),
+  .portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-trend-panel) {
+    background: var(--card);
+    backdrop-filter: none;
   }
 }
