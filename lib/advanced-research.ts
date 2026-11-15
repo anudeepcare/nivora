@@ -1,23 +1,14 @@
+import { settledStudyBars, type StudyMarket } from "./settled-study-bars.ts";
 import type { Candle } from "./types";
 const mean = (a: number[]) =>
   a.length ? a.reduce((s, n) => s + n, 0) / a.length : null;
-/** Uses completed calendar-date OHLC observations, not intraday or today's forming bar. */
-export function advancedStudies(input: Candle[], asOf: string) {
-  const bars = [
-    ...new Map(
-      input
-        .filter(
-          (b) =>
-            /^\d{4}-\d{2}-\d{2}$/.test(b.time) &&
-            b.time < asOf.slice(0, 10) &&
-            [b.open, b.high, b.low, b.close].every(Number.isFinite) &&
-            b.low > 0 &&
-            b.high >= Math.max(b.open, b.close, b.low) &&
-            b.low <= Math.min(b.open, b.close),
-        )
-        .map((b) => [b.time, b]),
-    ).values(),
-  ].sort((a, b) => a.time.localeCompare(b.time));
+/** Uses validated settled OHLC observations; never includes the forming session. */
+export function advancedStudies(
+  input: Candle[],
+  asOf: string,
+  market: StudyMarket = "crypto",
+) {
+  const bars = settledStudyBars(input, asOf, market);
   const n = bars.length,
     last = bars.at(-1),
     closes = bars.map((b) => b.close),

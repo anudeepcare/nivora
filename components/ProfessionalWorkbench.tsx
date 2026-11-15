@@ -1,4 +1,5 @@
 "use client";
+import { studyMarket } from "@/lib/settled-study-bars";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -22,8 +23,8 @@ export function PositionWorkbench({ research: r }: { research: Research }) {
     [target, setTarget] = useState(""),
     [slippage, setSlippage] = useState("0.1");
   const s = useMemo(
-    () => advancedStudies(r.history, r.retrievedAt),
-    [r.history, r.retrievedAt],
+    () => advancedStudies(r.history, r.retrievedAt, studyMarket(r)),
+    [r],
   );
   const p = tradePlan(+capital, +risk, +entry, +stop, +target, +slippage);
   const stress = p.valid

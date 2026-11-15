@@ -1,4 +1,5 @@
 "use client";
+import { studyMarket } from "@/lib/settled-study-bars";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { professionalStudies } from "@/lib/professional-studies";
@@ -17,6 +18,7 @@ export default function ProfessionalContext({
           r.history,
           r.retrievedAt,
           r.company.assetType === "crypto" ? 365 : 252,
+          studyMarket(r),
         ),
       [r],
     ),

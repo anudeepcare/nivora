@@ -141,7 +141,10 @@ export function financingContext(r: Research) {
     p.currency === prior.currency &&
     p.basis === prior.basis &&
     shares != null &&
+    Number.isFinite(shares) &&
+    shares > 0 &&
     old != null &&
+    Number.isFinite(old) &&
     old > 0
       ? (shares / old - 1) * 100
       : null;

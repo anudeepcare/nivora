@@ -1,3 +1,4 @@
+import { studyMarket } from "./settled-study-bars.ts";
 import type { Research, Metric } from "./types";
 import { latestFinancialEvidence, perspective } from "./analysis.ts";
 import { modelCoverage } from "./research-depth.ts";
@@ -393,7 +394,7 @@ export function overviewEvidence(
   }
   if (includeTechnical) {
     const tech = perspective(r).tech,
-      a = advancedStudies(r.history, r.retrievedAt);
+      a = advancedStudies(r.history, r.retrievedAt, studyMarket(r));
     add(
       technical,
       "rsi",

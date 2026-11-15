@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { Layers, ArrowRight, Info } from "lucide-react";
+import { studyMarket } from "@/lib/settled-study-bars";
 import { indicators } from "@/lib/analysis";
 import { consensusOutlook } from "@/lib/outlook";
 import s from "./ChartReferences.module.css";
@@ -31,7 +32,8 @@ export default function PriceStudyChart({
   const references = useMemo(() => {
     const tech = indicators(
       research.history,
-      research.priceObservedAt ?? research.retrievedAt,
+      research.retrievedAt,
+      studyMarket(research),
     );
     const target = consensusOutlook(research);
     return [
@@ -49,9 +51,13 @@ export default function PriceStudyChart({
   const fib = useMemo(
     () =>
       overlay
-        ? advancedStudies(research.history, research.retrievedAt).fib
+        ? advancedStudies(
+            research.history,
+            research.retrievedAt,
+            studyMarket(research),
+          ).fib
         : null,
-    [overlay, research.history, research.retrievedAt],
+    [overlay, research],
   );
   const levels = useMemo(
     () =>

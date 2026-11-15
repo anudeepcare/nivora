@@ -1,3 +1,4 @@
+import { settledStudyBars, type StudyMarket } from "./settled-study-bars.ts";
 import type { Candle } from "./types";
 const mean = (a: number[]) =>
   a.length ? a.reduce((s, v) => s + v, 0) / a.length : null;
@@ -17,22 +18,9 @@ export function professionalStudies(
   input: Candle[],
   asOf: string,
   annualSessions: number,
+  market: StudyMarket = "crypto",
 ) {
-  const b = [
-    ...new Map(
-      input
-        .filter(
-          (x) =>
-            /^\d{4}-\d{2}-\d{2}$/.test(x.time) &&
-            x.time < asOf.slice(0, 10) &&
-            [x.open, x.high, x.low, x.close].every(Number.isFinite) &&
-            x.low > 0 &&
-            x.high >= Math.max(x.open, x.close, x.low) &&
-            x.low <= Math.min(x.open, x.close),
-        )
-        .map((x) => [x.time, x]),
-    ).values(),
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  const b = settledStudyBars(input, asOf, market);
   const c = b.map((x) => x.close),
     n = c.length,
     last = c.at(-1),

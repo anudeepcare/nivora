@@ -36,8 +36,17 @@ export function OverviewBrief({
       icon: TrendingUp,
       tone: "neutral",
       text:
-        decision.brief?.business.reason ??
-        "Comparable business evidence is incomplete.",
+        decision.explanation &&
+        [
+          "financials",
+          "business",
+          "funding",
+          "insolvency",
+          "deterioration",
+        ].includes(decision.explanation.code)
+          ? decision.explanation.detail
+          : (decision.brief?.business.reason ??
+            "Comparable business evidence is incomplete."),
     });
     if (consensus?.referencePrice != null && consensus.target > 0)
       rows.push({

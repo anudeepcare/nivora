@@ -1,4 +1,5 @@
 "use client";
+import { studyMarket } from "@/lib/settled-study-bars";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import type { Research } from "@/lib/types";
@@ -29,8 +30,8 @@ export default function AdvancedResearch({
   initialSection?: string;
 }) {
   const s = useMemo(
-    () => advancedStudies(r.history, r.retrievedAt),
-    [r.history, r.retrievedAt],
+    () => advancedStudies(r.history, r.retrievedAt, studyMarket(r)),
+    [r],
   );
   const [active, setActive] = useState(initialSection),
     [visited, setVisited] = useState(["risk", initialSection]);

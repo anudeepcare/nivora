@@ -1,8 +1,8 @@
 # AURYN — clean deployment bundle
 
-Extract this ZIP and deploy the extracted directory directly. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
+Extract this ZIP as a source candidate for local/preproduction verification. Do not deploy before the current acceptance gates are resolved. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current release: [Private analyst-target preview](RELEASE-SENTISENSE-PREVIEW-20261114.md). The [scenario and Pace verification](RELEASE-SCENARIO-PACE-20261114.md) remains included. The prior [decision-gate audit](DECISION-AUDIT-20261113.md) and [portfolio comparison and target freshness release](RELEASE-PORTFOLIO-TARGETS-20261113.md) remain included. Earlier release notes are historical.
+Current source candidate: [System audit](SYSTEM-AUDIT-20261114.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This candidate fixes four reproduced decision/data/presentation defects. It is not deployed or production-accepted; new-code visual QA and full current-company end-to-end checks remain open. Earlier release notes are historical.
 
 ## Run and verify
 Use Node 24.x (`.nvmrc` and CI agree), then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.

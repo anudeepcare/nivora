@@ -173,3 +173,18 @@ test("overview leads with decision, business evidence and risk without repeating
   assert.match(html, /not fair value/);
   assert.doesNotMatch(html, /Evidence through|RSI|quoted session references/);
 });
+
+test('the business quick read keeps a failed business prerequisite ahead of an isolated growth strength',()=>{
+ const {OverviewBrief}=views({target:false});
+ const d={actionLabel:'Review business',headline:'Review funding and operations.',pace:{level:null},business:'developing',brief:{business:{reason:'Supports the growth case if demand remains durable.'}},explanation:{code:'business',detail:'Operating losses and cash use require review before the business qualifies.'},risks:['Verify runway.']};
+ const html=renderToStaticMarkup(React.createElement(OverviewBrief,{research,now:Date.parse(research.retrievedAt),decision:d}));
+ assert.match(html,/Operating losses and cash use require review before the business qualifies/);
+ assert.doesNotMatch(html,/Supports the growth case/);
+});
+
+test('a qualified quick read retains its supported business detail',()=>{
+ const {OverviewBrief}=views({target:false});
+ const d={actionLabel:'Buy small',headline:'Business supported.',pace:{level:2},business:'strong',brief:{business:{reason:'Profitable and cash-generating.'}},explanation:{code:'accumulation',detail:'Start small.'},risks:[]};
+ const html=renderToStaticMarkup(React.createElement(OverviewBrief,{research,now:Date.parse(research.retrievedAt),decision:d}));
+ assert.match(html,/Profitable and cash-generating/);
+});

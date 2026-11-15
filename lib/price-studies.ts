@@ -1,22 +1,13 @@
+import { settledStudyBars, type StudyMarket } from "./settled-study-bars.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
 import type { Candle } from "./types";
 /** Daily studies use completed dated observations only; no additional provider calls. */
-function computePriceStudies(bars: Candle[], asOf: string) {
-  const closes = [
-    ...new Map(
-      bars
-        .filter(
-          (b) =>
-            /^\d{4}-\d{2}-\d{2}$/.test(b.time) &&
-            b.time < asOf.slice(0, 10) &&
-            Number.isFinite(b.close) &&
-            b.close > 0,
-        )
-        .map((b) => [b.time, b]),
-    ).values(),
-  ]
-    .sort((a, b) => a.time.localeCompare(b.time))
-    .map((b) => b.close);
+function computePriceStudies(
+  bars: Candle[],
+  asOf: string,
+  market: StudyMarket,
+) {
+  const closes = settledStudyBars(bars, asOf, market).map((b) => b.close);
   const ema = (values: number[], length: number): (number | null)[] => {
     let previous: number | null = null;
     return values.map((value, i) => {
@@ -55,8 +46,12 @@ function computePriceStudies(bars: Candle[], asOf: string) {
 }
 
 const studiesMemo = evidenceMemo<ReturnType<typeof computePriceStudies>>();
-export function priceStudies(bars: Candle[], asOf: string) {
-  return studiesMemo(bars, `${bars.length}:${asOf}`, () =>
-    computePriceStudies(bars, asOf),
+export function priceStudies(
+  bars: Candle[],
+  asOf: string,
+  market: StudyMarket = "crypto",
+) {
+  return studiesMemo(bars, `${bars.length}:${asOf}:${market}`, () =>
+    computePriceStudies(bars, asOf, market),
   );
 }

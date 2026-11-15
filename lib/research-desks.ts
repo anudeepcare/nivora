@@ -1,3 +1,4 @@
+import { settledStudyBars, studyMarket } from "./settled-study-bars.ts";
 import type { Research } from "./types";
 import { professionalStudies } from "./professional-studies.ts";
 import { advancedStudies } from "./advanced-research.ts";
@@ -86,23 +87,14 @@ export function valueDesk(r: Research) {
 }
 export function advancedDesk(r: Research) {
   const annual = r.company.assetType === "crypto" ? 365 : 252;
-  const s = professionalStudies(r.history, r.retrievedAt, annual),
-    a = advancedStudies(r.history, r.retrievedAt);
-  const bars = [
-    ...new Map(
-      r.history
-        .filter(
-          (b) =>
-            /^\d{4}-\d{2}-\d{2}$/.test(b.time) &&
-            b.time < r.retrievedAt.slice(0, 10) &&
-            [b.open, b.high, b.low, b.close].every(Number.isFinite) &&
-            b.low > 0 &&
-            b.high >= Math.max(b.open, b.close, b.low) &&
-            b.low <= Math.min(b.open, b.close),
-        )
-        .map((b) => [b.time, b]),
-    ).values(),
-  ].sort((x, y) => x.time.localeCompare(y.time));
+  const s = professionalStudies(
+      r.history,
+      r.retrievedAt,
+      annual,
+      studyMarket(r),
+    ),
+    a = advancedStudies(r.history, r.retrievedAt, studyMarket(r));
+  const bars = settledStudyBars(r.history, r.retrievedAt, studyMarket(r));
   let peak = 0;
   const drawdown = bars
     .map((b) => {

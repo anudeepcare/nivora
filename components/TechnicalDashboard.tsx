@@ -1,4 +1,5 @@
 "use client";
+import { studyMarket } from "@/lib/settled-study-bars";
 import QuickRead from "./QuickRead";
 import SectionIcon from "./SectionIcon";
 import { Help } from "./Ui";
@@ -24,16 +25,16 @@ export default function TechnicalDashboard({
 }) {
   const p = useMemo(() => perspective(r), [r]),
     s = useMemo(
-      () => priceStudies(r.history, r.retrievedAt),
-      [r.history, r.retrievedAt],
+      () => priceStudies(r.history, r.retrievedAt, studyMarket(r)),
+      [r],
     ),
     x = useMemo(
-      () => expandedStudies(r.history, r.retrievedAt),
-      [r.history, r.retrievedAt],
+      () => expandedStudies(r.history, r.retrievedAt, [], studyMarket(r)),
+      [r],
     ),
     a = useMemo(
-      () => advancedStudies(r.history, r.retrievedAt),
-      [r.history, r.retrievedAt],
+      () => advancedStudies(r.history, r.retrievedAt, studyMarket(r)),
+      [r],
     ),
     pro = useMemo(
       () =>
@@ -41,8 +42,9 @@ export default function TechnicalDashboard({
           r.history,
           r.retrievedAt,
           r.company.assetType === "crypto" ? 365 : 252,
+          studyMarket(r),
         ),
-      [r.history, r.retrievedAt, r.company.assetType],
+      [r],
     ),
     dialog = useRef<HTMLDialogElement>(null),
     currency = r.quote.currency;
@@ -53,7 +55,7 @@ export default function TechnicalDashboard({
         r.retrievedAt,
         r.company.assetType === "crypto" ? "crypto" : "us-equity",
       ),
-    [r.history, r.retrievedAt, r.company.assetType],
+    [r],
   );
   const n = (v: number | null | undefined, suffix = "") =>
       v == null ? "Not established" : v.toFixed(2) + suffix,

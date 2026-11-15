@@ -102,7 +102,7 @@ export function fundedGrowthCase(x: {
       x.margin - x.priorMargin >= 5,
     netCash:
       finite(x.cash) && x.cash > 0 && finite(x.netDebt) && x.netDebt <= 0,
-    dilution: finite(x.dilution) && x.dilution <= 10,
+    dilution: finite(x.dilution) && x.dilution > -100 && x.dilution <= 10,
     operationsFunded:
       finite(x.operatingCashFlow) &&
       (x.operatingCashFlow >= 0 ||
@@ -697,10 +697,11 @@ export function aurynDecision(
         "A suitable valuation model is not established. Gradual accumulation is supported by the business screen and current eligible Pace, not a claim that this stock is cheap.",
       );
   }
+  // Pause the assessment only when its own required inputs are unavailable.
+  // A validated funding/solvency warning precedes the price gate: missing
+  // market data must not erase it from portfolio/watchlist review queues.
   const paused =
-    !reference ||
-    !financialsUsable ||
-    (pace.historicalLevel !== null && pace.level === null);
+    assessment.code === "financials" || assessment.code === "price";
   let headline = "The price needs a stronger margin of safety.";
   if (action === "Buy" || action === "Add")
     headline =

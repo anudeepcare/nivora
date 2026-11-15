@@ -1,3 +1,4 @@
+import { studyMarket } from "../lib/settled-study-bars.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -13,7 +14,7 @@ import { expandedStudies } from "../lib/technical-expanded.ts";
 import { priceStudies } from "../lib/price-studies.ts";
 import { perspective } from "../lib/analysis.ts";
 function component(file, name, bindings) {
-  bindings = { QuickRead: () => null, SectionIcon:()=>null, Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children), layout: {panel:"panel"}, ...bindings };
+  bindings = { studyMarket, QuickRead: () => null, SectionIcon:()=>null, Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children), layout: {panel:"panel"}, ...bindings };
   const ast = ts.createSourceFile(
       file,
       fs.readFileSync(file, "utf8"),

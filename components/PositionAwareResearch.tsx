@@ -1,4 +1,5 @@
 "use client";
+import { studyMarket } from "@/lib/settled-study-bars";
 import { useMemo } from "react";
 import Link from "next/link";
 import type { Research } from "@/lib/types";
@@ -39,8 +40,9 @@ function PositionEvidence({
     );
   q[r.company.symbol] = r.quote;
   const gap = useMemo(
-      () => advancedStudies(r.history, r.retrievedAt).largestGap,
-      [r.history, r.retrievedAt],
+      () =>
+        advancedStudies(r.history, r.retrievedAt, studyMarket(r)).largestGap,
+      [r],
     ),
     c = positionContext(workspace?.positions ?? [], q, r.company.symbol, gap);
   if (compact)

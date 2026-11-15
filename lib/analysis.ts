@@ -1,3 +1,8 @@
+import {
+  settledStudyBars,
+  studyMarket,
+  type StudyMarket,
+} from "./settled-study-bars.ts";
 import { researchAccumulation } from "./accumulation-policy-v7.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
@@ -31,17 +36,8 @@ function computeFinancialEvidence(r: Research) {
     : undefined;
   return { rows, latest, prior, periodBasis: useTtm ? "TTM" : "Annual" };
 }
-function computeIndicators(bars: Candle[], asOf: string) {
-  const day = asOf.slice(0, 10),
-    rows = bars
-      .filter(
-        (b) =>
-          b.time.length === 10 &&
-          b.time < day &&
-          Number.isFinite(b.close) &&
-          b.close > 0,
-      )
-      .sort((a, b) => a.time.localeCompare(b.time));
+function computeIndicators(bars: Candle[], asOf: string, market: StudyMarket) {
+  const rows = settledStudyBars(bars, asOf, market);
   const close = rows.at(-1)?.close ?? null,
     mean = (n: number) =>
       rows.length >= n
@@ -204,7 +200,7 @@ export function perspective(r: Research) {
     rows = evidence.rows,
     last = evidence.latest,
     previous = evidence.prior,
-    tech = indicators(r.history, r.retrievedAt),
+    tech = indicators(r.history, r.retrievedAt, studyMarket(r)),
     dca = researchAccumulation(
       r.history,
       r.retrievedAt,
@@ -291,8 +287,12 @@ export function latestFinancialEvidence(r: Research) {
   );
 }
 const indicatorMemo = evidenceMemo<ReturnType<typeof computeIndicators>>();
-export function indicators(bars: Candle[], asOf: string) {
-  return indicatorMemo(bars, `${bars.length}:${asOf}`, () =>
-    computeIndicators(bars, asOf),
+export function indicators(
+  bars: Candle[],
+  asOf: string,
+  market: StudyMarket = "crypto",
+) {
+  return indicatorMemo(bars, `${bars.length}:${asOf}:${market}`, () =>
+    computeIndicators(bars, asOf, market),
   );
 }

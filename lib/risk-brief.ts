@@ -1,3 +1,4 @@
+import { studyMarket } from "./settled-study-bars.ts";
 import type { Research } from "./types";
 import { professionalStudies } from "./professional-studies.ts";
 import { advancedStudies } from "./advanced-research.ts";
@@ -6,8 +7,9 @@ export function riskBrief(r: Research) {
       r.history,
       r.retrievedAt,
       r.company.assetType === "crypto" ? 365 : 252,
+      studyMarket(r),
     ),
-    a = advancedStudies(r.history, r.retrievedAt);
+    a = advancedStudies(r.history, r.retrievedAt, studyMarket(r));
   return {
     asOf: a.asOf,
     observations: a.count,

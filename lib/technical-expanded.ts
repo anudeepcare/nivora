@@ -1,26 +1,15 @@
+import { settledStudyBars, type StudyMarket } from "./settled-study-bars.ts";
 import type { Candle } from "./types";
 import { priceStudies } from "./price-studies.ts";
 export function expandedStudies(
   bars: Candle[],
   asOf: string,
   benchmark: Candle[] = [],
+  market: StudyMarket = "crypto",
 ) {
-  const rows = [
-    ...new Map(
-      bars
-        .filter(
-          (b) =>
-            b.time.length === 10 &&
-            b.time < asOf.slice(0, 10) &&
-            [b.open, b.high, b.low, b.close].every(
-              (x) => Number.isFinite(x) && x > 0,
-            ),
-        )
-        .map((b) => [b.time, b]),
-    ).values(),
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  const rows = settledStudyBars(bars, asOf, market);
   const last = rows.at(-1),
-    studies = priceStudies(rows, asOf),
+    studies = priceStudies(rows, asOf, market),
     n = 14;
   let tr = 0,
     plus = 0,
@@ -67,9 +56,7 @@ export function expandedStudies(
     width = bb ? bb.high - bb.low : 0,
     peak = rows.length ? Math.max(...rows.slice(-252).map((b) => b.close)) : 0;
   const benchmarkByDay = new Map(
-    benchmark
-      .filter((b) => b.time < asOf.slice(0, 10))
-      .map((b) => [b.time, b.close]),
+    settledStudyBars(benchmark, asOf, market).map((b) => [b.time, b.close]),
   );
   const shared = rows
     .filter((b) => (benchmarkByDay.get(b.time) ?? 0) > 0)

@@ -1,3 +1,4 @@
+import { studyMarket } from "../lib/settled-study-bars.ts";
 import { earningsCalendar } from "../lib/earnings-calendar.ts";
 import { modelCoverage } from "../lib/research-depth.ts";
 import {
@@ -39,7 +40,7 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = {
+  bindings = { studyMarket,
     revenueSensitivity: () => ({ available: false }),
     RevenueSensitivityCases: () => null,
     QuickRead: () => null,

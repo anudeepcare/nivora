@@ -1,3 +1,4 @@
+import { settledStudyBars, studyMarket } from "./settled-study-bars.ts";
 import { consensusOutlook } from "./outlook.ts";
 import { earningsCalendar } from "./earnings-calendar.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
@@ -684,21 +685,11 @@ function computeResearchDecision(
 }
 
 function computeDecisionHistory(r: Research) {
-  const studies = priceStudies(r.history, r.retrievedAt),
-    technical = indicators(r.history, r.retrievedAt);
-  const bars = [
-    ...new Map(
-      r.history
-        .filter(
-          (x) =>
-            /^\d{4}-\d{2}-\d{2}$/.test(x.time) &&
-            x.time < r.retrievedAt.slice(0, 10) &&
-            x.close > 0 &&
-            [x.close, x.high, x.low, x.volume].every(Number.isFinite),
-        )
-        .map((x) => [x.time, x]),
-    ).values(),
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  const asOf = r.retrievedAt,
+    market = studyMarket(r),
+    studies = priceStudies(r.history, asOf, market),
+    technical = indicators(r.history, asOf, market),
+    bars = settledStudyBars(r.history, asOf, market);
   const last252 = bars.slice(-252),
     last = bars.at(-1)?.close;
   const vol = bars
@@ -736,7 +727,7 @@ const historyMemo = evidenceMemo<ReturnType<typeof computeDecisionHistory>>();
 function decisionHistory(r: Research) {
   return historyMemo(
     r.history,
-    `${r.history.length}:${r.retrievedAt}:${r.company.assetType}`,
+    `${r.history.length}:${r.retrievedAt}:${studyMarket(r)}`,
     () => computeDecisionHistory(r),
   );
 }

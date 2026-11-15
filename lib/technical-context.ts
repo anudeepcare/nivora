@@ -7,9 +7,7 @@ function compute(
   asOf: string,
   market: "us-equity" | "crypto",
 ) {
-  const rows = adaptiveSettledBars(input, asOf, market).filter(
-      (b) => b.time < asOf.slice(0, 10),
-    ),
+  const rows = adaptiveSettledBars(input, asOf, market),
     last = rows.at(-1),
     typical = (b: Candle) => (b.high + b.low + b.close) / 3;
   const range = (n: number) => {

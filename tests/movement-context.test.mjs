@@ -132,6 +132,8 @@ test("news and earnings expire against the wall clock", () => {
 });
 test("a settled fallback has its own price and prior available close change", () => {
   const r = fixture();
+  // These completed bars were captured after the session, not premarket.
+  r.retrievedAt = "2026-10-26T22:05:00Z";
   r.history = [
     {
       time: "2026-10-23",
@@ -168,6 +170,8 @@ test("future-dated quotes and invalid clocks cannot appear as a dated move", () 
 });
 test("settled volume uses its actual date and ages independently from retrieval", () => {
   const r = fixture();
+  // These completed bars were captured after the session, not premarket.
+  r.retrievedAt = "2026-10-26T22:05:00Z";
   r.history = Array.from({ length: 30 }, (_, i) => {
     const time = new Date(Date.UTC(2026, 8, 20 + i)).toISOString().slice(0, 10);
     return { time, open: 100, high: 100, low: 100, close: 100, volume: 100 };
@@ -196,6 +200,8 @@ test("settled volume uses its actual date and ages independently from retrieval"
 
 test("selected settled-close freshness does not inherit a discarded stale quote", () => {
   const r = fixture();
+  // These completed bars were captured after the session, not premarket.
+  r.retrievedAt = "2026-10-26T22:05:00Z";
   r.history = ["2026-10-23", "2026-10-26"].map((time) => ({
     time,
     open: 100,

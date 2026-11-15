@@ -1,6 +1,6 @@
 import type { Research } from "./types";
 import { quoteHealth } from "./quote-health.ts";
-import { adaptiveSettledBars } from "./accumulation-policy-v3.ts";
+import { settledStudyBars, studyMarket } from "./settled-study-bars.ts";
 
 export type PriceReference = {
   price: number;
@@ -45,24 +45,15 @@ export function settledPriceBars(r: Research, now: number) {
     r.quote.currency !== r.company.currency
   )
     return [];
-  const crypto = r.company.assetType === "crypto";
-  // Issuer domicile (foreignListing in existing provider metadata) does not
-  // change the clock for an ADR actually listed on a US exchange.
-  const us = !crypto && usExchange.test(r.company.exchange);
-  const bars = adaptiveSettledBars(
+  // A price-only refresh cannot certify that an earlier captured daily bar
+  // reached its final close. History knowledge is bounded by its own snapshot.
+  const captured = Date.parse(r.retrievedAt);
+  const historyTime = Number.isFinite(captured) ? Math.min(now, captured) : now;
+  return settledStudyBars(
     r.history,
-    new Date(now).toISOString(),
-    us ? "us-equity" : "crypto",
+    new Date(historyTime).toISOString(),
+    studyMarket(r),
   );
-  // Unknown stock exchange calendars do not borrow the US session clock. By
-  // following UTC noon, the source calendar date has ended in every time zone.
-  return crypto || us
-    ? bars
-    : bars.filter(
-        (b) =>
-          now - Date.parse(b.time) >= 36 * 3600000 &&
-          ![0, 6].includes(new Date(`${b.time}T12:00:00Z`).getUTCDay()),
-      );
 }
 
 export function selectPriceReference(
