@@ -1,0 +1,47 @@
+{
+  "observedOn": "2026-11-13",
+  "source": "Authenticated DCA Optimizer Standard member UI, More > Fundamentals > Price targets",
+  "referenceCloseDate": "2026-11-12",
+  "targetObservationDate": null,
+  "rows": [
+    {
+      "symbol": "IREN",
+      "currency": "USD",
+      "closeDate": "2026-11-12",
+      "close": 19.48,
+      "low": 23,
+      "consensus": 56.69,
+      "high": 139,
+      "analysts": 19,
+      "displayedWholePercentGaps": [
+        18,
+        191,
+        614
+      ],
+      "url": "https://dcaoptimizer.com/app/charts?symbol=IREN"
+    },
+    {
+      "symbol": "NBIS",
+      "currency": "USD",
+      "closeDate": "2026-11-12",
+      "close": 128.64,
+      "low": 84,
+      "consensus": 271.2,
+      "high": 410,
+      "analysts": 20,
+      "displayedWholePercentGaps": [
+        -35,
+        111,
+        219
+      ],
+      "url": "https://dcaoptimizer.com/app/ticker/NBIS"
+    }
+  ],
+  "limitations": [
+    "These are independent reference UI captures, not observations from Auryn's live provider feed.",
+    "DCA labels these third-party Wall Street analyst targets and computes differences versus latest settled close.",
+    "The UI did not display a separate target revision/observation date.",
+    "IREN delayed headline price later changed intraday while the analyst panel kept the 19.48 settled close.",
+    "NBIS consensus differs from the saved Nov 11 snapshot's 278.05; do not compare the old snapshot as current truth."
+  ]
+}

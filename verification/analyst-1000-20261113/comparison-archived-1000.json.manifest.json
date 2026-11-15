@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T15:04:21.861Z",
+  "purpose": "Analyst target evidence comparison; no network calls or synthetic target substitution",
+  "expectedCount": 1000,
+  "inputs": {
+    "cohort": {
+      "path": "verification/analyst-1000-20261113/cohort-1000.json",
+      "sha256": "96e005aaf643cf758f3ede12338ce1be630be6f4535868c8d34dee0819a9e5ca",
+      "records": 1000
+    },
+    "reference": {
+      "path": "verification/analyst-1000-20261113/reference-archived.json",
+      "sha256": "2746612e521702f5a633e4313005697bddc9a673c584881c6d26102186c571f3",
+      "records": 5
+    },
+    "actual": {
+      "path": "verification/analyst-1000-20261113/actual-archived.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "records": 0
+    }
+  },
+  "output": {
+    "path": "verification/analyst-1000-20261113/comparison-archived-1000.json",
+    "sha256": "dc05523c373c37c70952f4e33e9958a909afae0fc73cb2d9df893b58604d3f4b",
+    "records": 1000
+  },
+  "strictPass": false,
+  "outcome": "incomplete",
+  "evidence": {
+    "requested": 1000,
+    "completeComparablePairs": 0,
+    "fullTriplePairs": 0,
+    "consensusPairs": 0,
+    "targetRevisionVerifiedTriplePairs": 0,
+    "statusCounts": {
+      "missing": 1000,
+      "partial": 0,
+      "invalid": 0,
+      "date-incomparable": 0,
+      "basis-incomparable": 0,
+      "compared": 0
+    }
+  },
+  "metricDefinitions": {
+    "agreement": "Legacy exact matches / entire cohort; not comparable-pair agreement",
+    "pairAgreement": "Exact matches including target analyst count / complete comparable pairs; null when no pairs",
+    "coverage": "Complete comparable pairs / requested cohort",
+    "fullTriples": "Low, consensus, high and same settled-close value; does not require an analyst count",
+    "consensus": "Consensus and same settled-close value only; cannot establish low/high parity",
+    "targetDates": "Same capture day permits observation-only comparisons; strictPass additionally requires equal explicit target revision dates on every pair"
+  }
+}

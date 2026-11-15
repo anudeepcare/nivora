@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-11-13T15:08:58.769222+00:00",
+  "focusedCommand": "node --experimental-strip-types --test tests/analyst-parity.test.mjs",
+  "focusedTests": {
+    "passed": 14,
+    "failed": 0
+  },
+  "fullCommand": "npm test",
+  "fullTests": {
+    "passed": 1395,
+    "failed": 0,
+    "exitCode": 0,
+    "durationMs": 107219.547209
+  },
+  "log": "npm-test.log",
+  "evidenceVerification": "Comparison CLI correctly returns exit 1 for incomplete evidence; that is not a software-test failure.",
+  "sourceFiles": {
+    "lib/analyst-parity.ts": "e9efd6a5980e8907b8a787709094fac5552d61b0490a8aa2849cadebac065f7c",
+    "tests/analyst-parity.test.mjs": "10150e593205411fe440d60a129949b5226d96cf0c3d2978d964d5d583932c9a",
+    "scripts/compare-analyst.mjs": "2ebd91304ad69c6eb45bdf013c1a23e998161d887cac34fda46ee9e5aa29b1a7",
+    "scripts/compare-analyst-500.mjs": "359ec3020e8c70fea57d9ea3c09711b6b7efe706f2810e4446c134967af99edf"
+  }
+}

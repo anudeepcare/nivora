@@ -1,0 +1,20 @@
+{
+  "release": "approved-glass-20261115",
+  "lint": "passed",
+  "format": "passed",
+  "unitAndRegressionTests": {
+    "passed": 1644,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "independentFocusedReview": {
+    "passed": 21,
+    "blockers": 0
+  },
+  "apiFixtureSuite": "passed; controlled fixtures, no live provider calls",
+  "visualBrowserAcceptance": "not completed: browser launch restricted",
+  "liveProviderParity": "not measured by this release",
+  "productionDeployed": false,
+  "productionIsolationTraces": 56
+}

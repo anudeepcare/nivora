@@ -256,3 +256,37 @@
     grid-column: 1;
   }
 }
+
+.root {
+  padding: 16px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 14px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+}
+.root h2 {
+  font-size: 14px;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+.eyebrow {
+  display: none;
+}
+.cases {
+  gap: 8px;
+}
+.cases > div {
+  min-width: 0;
+}
+.cases > div strong {
+  font-size: clamp(16px, 1.6vw, 24px);
+}
+.cases p {
+  font-size: 11px;
+  line-height: 1.5;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .root {
+    background: var(--card);
+  }
+}

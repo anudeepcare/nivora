@@ -24,10 +24,10 @@ test("Studio accent settings and rendered accent agree in both themes", () => {
   ])
     assert.equal(token(block(css, selector), "blue"), value);
 });
-test("brand canvas uses ivory and navy studio surfaces with readable semantic text", () => {
+test("brand canvas uses approved ice and navy glass surfaces with readable semantic text", () => {
   const css = read("app/core/tokens.css");
   for (const [selector, bg] of [
-    [':root[data-theme="light"]', "#f5f2eb"],
+    [':root[data-theme="light"]', "#f4f8ff"],
     [':root[data-theme="dark"]', "#10202a"],
   ]) {
     const t = block(css, selector);
@@ -75,28 +75,24 @@ test("valuation removes only the Test assumptions shortcut while keeping model t
   ])
     assert.match(source, new RegExp(`<${tag}`));
 });
-test("studio top navigation has an amber underline and loading keeps a separate status dot", () => {
+test("approved navigation uses a selected blue button and loading retains separate status", () => {
   const css = read("components/WorkspaceShell.module.css");
-  const effective = {};
-  postcss.parse(css).walkAtRules("media", rule => {
-    if(rule.params !== "(min-width: 1000px)") return;
-    rule.walkRules(r => { const values = effective[r.selector] ||= {}; r.walkDecls(d => values[d.prop] = d.value); });
-  });
-  assert.equal(effective[".shell .header"].position, "sticky");
-  assert.equal(effective[".shell .header"]["flex-direction"], "row");
-  const underline=effective['.shell .header .nav a[aria-current="page"]::after'];
-  assert.equal(underline.height,"2px");
-  assert.equal(underline.background,"#edc17c");
+  const root = postcss.parse(css);
+  let active;
+  root.walkRules('.shell .header .nav a[aria-current="page"]', r => r.walkDecls('background', d => active=d.value));
+  assert.match(active, /linear-gradient/);
+  assert.match(css, /position: sticky/);
+  assert.doesNotMatch(css, /width: 220px/);
   assert.match(css, /\.routePending[^}]+width: 6px/);
 });
 test("changed offline palette is installed as a fresh shell version", () => {
   assert.match(
     read("public/sw.js"),
-    /const OFFLINE_CACHE = "auryn-offline-v9"/,
+    /const OFFLINE_CACHE = "auryn-offline-v10"/,
   );
   assert.match(
     read("app/layout.tsx"),
-    /manifest.webmanifest\?v=20261115-studio/,
+    /manifest.webmanifest\?v=20261115-approved-glass/,
   );
 });
 test("optional appearance accents continue to color navigation with readable selected text", () => {

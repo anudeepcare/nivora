@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-11-13",
+  "quota": {
+    "timestamp": "2026-11-13 13:02:45",
+    "current_usage": 1,
+    "plan_limit": 0
+  },
+  "singleProbe": {
+    "symbol": "AAPL",
+    "data_type": "price_target",
+    "status": "ok",
+    "currency": "USD",
+    "low": 250,
+    "average": 344.6155,
+    "median": 352.5,
+    "high": 425,
+    "current": 354.89001
+  },
+  "limitations": [
+    "Quota interpretation is ambiguous; no bulk calls made.",
+    "Current price is not a verified dated settled close.",
+    "Response contains no analyst count.",
+    "Current provider data cannot be paired with Nov 11 screenshot fixtures as same-date evidence.",
+    "Historical saved entitlement denial is not current: the single probe succeeded."
+  ]
+}

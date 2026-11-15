@@ -1,0 +1,45 @@
+{
+  "observedOn": "2026-11-13",
+  "evidenceKind": "Transcribed authenticated UI observations; no screenshot artifact is included.",
+  "environment": "Preproduction, before the source/UI fixes in this package; not a verification of the fixed build.",
+  "rows": [
+    {
+      "symbol": "IREN",
+      "currency": "USD",
+      "closeDate": "2026-11-12",
+      "close": 19.48,
+      "low": null,
+      "consensus": 56.69,
+      "high": null,
+      "analysts": null,
+      "observedOn": "2026-11-13",
+      "targetAsOf": null,
+      "datasetAsOf": "2026-11-12",
+      "closeDateBasis": "observed",
+      "source": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/IREN",
+      "displayedRecommendationCount": 20
+    },
+    {
+      "symbol": "NBIS",
+      "currency": "USD",
+      "closeDate": "2026-11-12",
+      "close": 128.64,
+      "low": null,
+      "consensus": 278.05,
+      "high": null,
+      "analysts": null,
+      "observedOn": "2026-11-13",
+      "targetAsOf": null,
+      "datasetAsOf": "2026-11-12",
+      "closeDateBasis": "observed",
+      "source": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/NBIS?tab=Analysts",
+      "displayedRecommendationCount": 22
+    }
+  ],
+  "limitations": [
+    "Low and high analyst targets were absent.",
+    "Displayed recommendation totals 20 and 22 are not the number of unique contributors to target estimates and are not copied into analysts.",
+    "Dataset update date Nov 12 is not a supplied target revision date.",
+    "Both sources were observed Nov 13; a shared observation date does not establish the same target revision."
+  ]
+}

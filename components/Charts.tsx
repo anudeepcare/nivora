@@ -8,10 +8,13 @@ import {
   type IChartApi,
   type ISeriesApi,
   type Time,
+  type ISeriesPrimitive,
 } from "lightweight-charts";
+import type { PaceChartBand } from "@/lib/pace-chart-bands";
 import type { Candle } from "@/lib/types";
 import { useProduct } from "./Session";
 const EMPTY_COLORS: Record<string, string> = {};
+const EMPTY_BANDS: PaceChartBand[] = [];
 const EMPTY_LEVELS: { label: string; price: number }[] = [];
 export function PriceChart({
   bars,
@@ -20,6 +23,7 @@ export function PriceChart({
   levels = EMPTY_LEVELS,
   contrast = false,
   candleColors = EMPTY_COLORS,
+  paceBands = EMPTY_BANDS,
 }: {
   bars: Candle[];
   range: string;
@@ -27,6 +31,7 @@ export function PriceChart({
   levels?: { label: string; price: number; color?: string }[];
   contrast?: boolean;
   candleColors?: Record<string, string>;
+  paceBands?: PaceChartBand[];
 }) {
   const [hover, setHover] = useState<{ time: string; values: string } | null>(
     null,
@@ -237,6 +242,45 @@ export function PriceChart({
         } catch {}
     };
   }, [bars, range, theme, style, levels, contrast, candleColors]);
+  useEffect(() => {
+    const current = series.current;
+    if (!current || !paceBands.length) return;
+    const colors = [
+      "rgba(147,176,215,0.07)",
+      "rgba(92,164,243,0.10)",
+      "rgba(49,154,255,0.18)",
+      "rgba(20,132,250,0.26)",
+      "rgba(0,104,235,0.34)",
+    ];
+    const primitive: ISeriesPrimitive<Time> = {
+      paneViews: () => [
+        {
+          zOrder: () => "bottom",
+          renderer: () => ({
+            draw: (target) =>
+              target.useMediaCoordinateSpace(({ context, mediaSize }) => {
+                for (const band of paceBands) {
+                  const top = current.priceToCoordinate(band.high);
+                  const bottom = current.priceToCoordinate(band.low);
+                  if (top == null || bottom == null) continue;
+                  const y = Math.max(0, top);
+                  const end = Math.min(mediaSize.height, bottom);
+                  if (end <= y) continue;
+                  context.fillStyle = colors[band.level];
+                  context.fillRect(0, y, mediaSize.width, end - y);
+                }
+              }),
+          }),
+        },
+      ],
+    };
+    current.attachPrimitive(primitive);
+    return () => {
+      try {
+        current.detachPrimitive(primitive);
+      } catch {}
+    };
+  }, [paceBands, theme, style, contrast]);
   return (
     <div className="chart-wrap">
       <div className="chart-readout" aria-label="Chart inspection">

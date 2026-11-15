@@ -51,7 +51,7 @@ function resolve(value, tokens) {
   );
 }
 
-test("studio public scenarios keep AA text on all three actual surfaces in either app theme", () => {
+test("public scenarios keep AA text on all three theme-aware surfaces", () => {
   const css = parse("components/PublicLanding.module.css");
   const core = parse("app/core/tokens.css");
   for (const theme of ["light", "dark"]) {
@@ -73,7 +73,7 @@ test("studio public scenarios keep AA text on all three actual surfaces in eithe
       assert.match(
         surface,
         /^#[a-f\d]{6}$/,
-        "Each scenario has an explicit studio surface",
+        "Each scenario resolves to a theme-aware surface",
       );
       for (const foreground of [tokens["--ink"], tokens["--muted"]]) {
         assert.ok(

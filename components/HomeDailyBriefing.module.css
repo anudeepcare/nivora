@@ -11,12 +11,13 @@
   isolation: isolate;
   overflow: hidden;
   padding: var(--workspace-inset);
-  border-radius: 10px;
+  border-radius: var(--workspace-radius);
   box-shadow: none;
   border: 0;
-  background: linear-gradient(120deg, #172c36, #294c60);
-  --ink: #f5f2eb;
-  --muted: #c4d1d8;
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
+  box-shadow: var(--workspace-shadow);
+  backdrop-filter: blur(16px);
   color: var(--ink);
 }
 .focus::after {
@@ -38,7 +39,7 @@
   font-size: 10px;
   letter-spacing: 0.16em;
   font-weight: 750;
-  color: #efbc69;
+  color: var(--blue);
   margin-bottom: 16px;
 }
 .diamond {
@@ -93,8 +94,8 @@
   min-height: 44px;
   padding: 10px 15px;
   border-radius: 6px;
-  background: #f5f2eb;
-  color: #172c36;
+  background: var(--blue);
+  color: white;
   font-size: 12px;
   font-weight: 650;
 }
@@ -192,15 +193,15 @@
 }
 
 .root > section {
-  border: 0;
-  border-radius: 10px;
-  box-shadow: none;
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  box-shadow: var(--workspace-shadow);
 }
 .focus {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 28px;
+  padding: 20px;
 }
 .focus .action {
   margin-top: auto;
@@ -213,9 +214,21 @@
 }
 @media (max-width: 600px) {
   .focus {
-    padding: 22px;
+    padding: 16px;
   }
   .focus h2 {
-    font-size: 29px;
+    font-size: 23px;
+  }
+}
+
+@media (max-width: 600px) {
+  .root > section {
+    order: -1;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .focus {
+    background: var(--card);
+    backdrop-filter: none;
   }
 }

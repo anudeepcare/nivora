@@ -81,7 +81,7 @@ test("studio decision and chart are peer surfaces rather than nested cards", () 
   assert.equal(stage["box-shadow"], "none");
   assert.equal(
     declarations(file, ".decisionStage .chart").background,
-    "var(--workspace-panel)",
+    "var(--workspace-glass)",
   );
-  assert.match(stage["grid-template-columns"], /minmax\(280px, 0.8fr\)/);
+  assert.match(stage["grid-template-columns"], /minmax\(0, 1.8fr\) minmax\(320px, 1fr\)/);
 });

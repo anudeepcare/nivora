@@ -1,0 +1,36 @@
+{
+  "runAt": "2026-11-14T02:28:54.000Z",
+  "scope": "Final source client: actual provider transport and enrichment with a bounded local reservation ledger and denial latch. Existing preprod quote captures are preserved. Not a Vercel deployment or live database test.",
+  "passed": 3,
+  "failed": 0,
+  "upstreamCalls": 6,
+  "reservationCalls": 12,
+  "activeDenialLatches": 0,
+  "cacheHitCausedNoAdditionalRequest": true,
+  "results": [
+    {
+      "symbol": "IREN",
+      "orderedBand": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "updatedAt": "2026-11-13T23:37:41Z",
+      "originalQuoteAndEvidencePreserved": true
+    },
+    {
+      "symbol": "NBIS",
+      "orderedBand": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "updatedAt": "2026-11-13T23:37:41Z",
+      "originalQuoteAndEvidencePreserved": true
+    },
+    {
+      "symbol": "APP",
+      "orderedBand": true,
+      "currency": "USD",
+      "source": "SentiSense",
+      "updatedAt": "2026-11-13T14:12:52Z",
+      "originalQuoteAndEvidencePreserved": true
+    }
+  ]
+}

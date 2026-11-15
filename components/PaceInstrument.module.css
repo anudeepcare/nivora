@@ -651,3 +651,71 @@
     line-height: 1.5;
   }
 }
+
+/* Approved light glass decision: color communicates state, not a dark slab. */
+.instrument.instrument.branded {
+  --zone-muted: var(--muted);
+  --zone-line: var(--line);
+  --zone-node: var(--surface);
+  --zone-active: var(--blue);
+  --zone-highlight: var(--ink);
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  border-radius: 0;
+  box-shadow: none;
+}
+.instrument.instrument.branded .brandArt {
+  display: none;
+}
+.instrument.instrument.branded .header {
+  min-height: 32px;
+  color: var(--muted);
+}
+.instrument.instrument.branded .title h2 {
+  color: var(--ink);
+  font-size: clamp(30px, 3vw, 40px);
+}
+.instrument.instrument.branded .title > small,
+.instrument.instrument.branded .reason,
+.instrument.instrument.branded .zoneContext,
+.instrument.instrument.branded .status,
+.instrument.instrument.branded .description,
+.instrument.instrument.branded .readingDetail,
+.instrument.instrument.branded .boundary,
+.instrument.instrument.branded .boundary strong,
+.instrument.instrument.branded .boundary small {
+  color: var(--ink);
+}
+.instrument.instrument.branded .title > small {
+  margin-top: 8px;
+}
+.instrument.instrument.branded .readoutText {
+  gap: 12px;
+}
+.instrument.instrument.branded .reason {
+  max-width: none;
+  font-size: 13px;
+}
+.instrument.instrument.branded .zoneContext {
+  font-size: 12px;
+}
+.instrument.instrument.branded .status {
+  border-color: var(--line);
+}
+.instrument.instrument.branded .businessGate {
+  color: var(--amber);
+  background: var(--amber-soft);
+  border-radius: 8px;
+  padding: 10px;
+}
+.instrument.instrument.branded button:focus-visible {
+  outline: 2px solid var(--blue);
+}
+.instrument.instrument.branded .header > button,
+.instrument.instrument.branded .status small,
+.instrument.instrument.branded .status button,
+.instrument.instrument.branded .readingDetail summary,
+.instrument.instrument.branded .evidenceDetails {
+  color: var(--ink);
+}

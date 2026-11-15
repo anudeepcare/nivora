@@ -7,7 +7,6 @@ import { startQuotePolling } from "@/lib/quote-refresh";
 import { FeatureGate, useAccess } from "./Access";
 import FreeSnapshot from "./FreeSnapshot";
 import type { Feature } from "@/lib/access-policy";
-import StockFacts from "./StockFacts";
 import {
   ResearchModeSwitch,
   useResearchPreferences,
@@ -460,7 +459,8 @@ export default function Research({ symbol }: { symbol: string }) {
     <section className="plot-section">
       <header className="row between chart-head">
         <h3>
-          <LineChart size={18} aria-hidden="true" /> Price history
+          <LineChart size={18} aria-hidden="true" /> Price history &amp; Pace
+          zones
         </h3>
         <div className="chart-period-control">
           <span className="chart-period-label">Price history range</span>
@@ -600,7 +600,6 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       </header>
-      {tab === "Snapshot" && <StockFacts research={r} />}
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}

@@ -11,11 +11,11 @@
   gap: 24px;
   padding: 36px;
   border-radius: 22px;
-  background: linear-gradient(120deg, #20243b, #34304f);
-  color: #f4f4ff;
+  background: var(--workspace-panel);
+  color: var(--ink);
 }
 .kicker {
-  color: #edc17c;
+  color: var(--blue);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -30,7 +30,7 @@
 }
 .cover p {
   margin: 0;
-  color: #c5cbe2;
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -46,9 +46,9 @@
   cursor: pointer;
 }
 .cover button {
-  background: #ffffff0b;
-  border-color: #ffffff35;
-  color: #e6f4c5;
+  background: var(--workspace-control);
+  border-color: var(--workspace-edge);
+  color: var(--ink);
 }
 .root button:disabled {
   opacity: 0.4;
@@ -57,7 +57,7 @@
 .root button:focus-visible,
 .root input:focus-visible,
 .root select:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 .tools {
@@ -99,7 +99,7 @@
 .referenceToggle input {
   width: 18px;
   height: 18px;
-  accent-color: var(--green);
+  accent-color: var(--blue);
 }
 .layout {
   display: grid;
@@ -136,8 +136,8 @@
   color: var(--ink);
 }
 .topics button[aria-current="page"] {
-  background: color-mix(in srgb, var(--green) 9%, var(--card));
-  color: var(--green);
+  background: color-mix(in srgb, var(--blue) 9%, var(--card));
+  color: var(--blue);
   font-weight: 650;
 }
 .reader {
@@ -162,7 +162,7 @@
   font-size: 11px;
 }
 .readerMeta > span {
-  color: var(--green);
+  color: var(--blue);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 650;
@@ -201,7 +201,7 @@
   padding-left: 4px;
 }
 .body li::marker {
-  color: var(--green);
+  color: var(--blue);
 }
 .body pre {
   padding: 16px;
@@ -348,7 +348,7 @@
 }
 .intro li::before {
   content: "◆";
-  color: var(--green);
+  color: var(--blue);
   font-size: 10px;
   position: absolute;
   left: 0;
@@ -377,9 +377,9 @@
   position: relative;
   overflow: hidden;
   padding: 26px 30px;
-  background:
-    radial-gradient(ellipse at 100% 0, #b3da7a24, transparent 65%),
-    linear-gradient(125deg, #172c2a, #2d4434);
+  background: var(--workspace-panel);
+  border: 1px solid var(--workspace-edge);
+  box-shadow: var(--workspace-shadow);
   border-radius: 18px;
 }
 .cover:after {
@@ -424,8 +424,8 @@
   font-size: 12px;
 }
 .topics button[aria-current="page"] {
-  box-shadow: inset 2px 0 var(--green);
-  background: color-mix(in srgb, var(--green) 5%, transparent);
+  box-shadow: inset 2px 0 var(--blue);
+  background: color-mix(in srgb, var(--blue) 5%, transparent);
 }
 @media (max-width: 800px) {
   .layout {

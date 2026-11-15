@@ -66,7 +66,7 @@ test('foundation preserves geometry and font cascade while the shared palette ev
   // surfaces and chrome, never layout, font loading or financial calculations.
   // coherent-glass tests separately verify semantic mappings and contrast.
   const neutral = new Set([
-    '--bg', '--app-background', '--glass', '--ink', '--text', '--muted',
+    '--canvas-gradient', '--bg', '--app-background', '--glass', '--ink', '--text', '--muted',
     '--chrome-surface', '--panel-shadow', '--paper', '--card', '--surface', '--surface-2',
     '--control-ink', '--control-muted', '--control-card', '--control-surface', '--control-line',
     '--line', '--border', '--positive', '--negative', '--neutral', '--warning',

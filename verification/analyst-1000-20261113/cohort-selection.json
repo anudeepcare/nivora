@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-11-13",
+  "requested": 1000,
+  "uniqueSymbols": 1000,
+  "selection": "Retain all 500 symbols in the saved analyst cohort in their original order, then append the first 500 symbols from the archived alphabetical U.S.-stocks screener that are not already present. This is deterministic, not a random sample.",
+  "retainedPriorCohort": 500,
+  "addedFromArchivedScreener": 500,
+  "lastSymbol": "EFA",
+  "controlSymbols": [
+    "NFLX",
+    "IREN",
+    "NBIS",
+    "NOW"
+  ],
+  "sources": [
+    {
+      "path": "verification/bundled-v7-20261112/analyst-cohort-500.json",
+      "sha256": "e35495dff76bf468c507df56b34edb4e9e9fb7cdab780180ff7e20c0191c565e"
+    },
+    {
+      "path": "verification/live-reference-20261112/reference.json",
+      "sha256": "8fece858fdc85934ece486864c7286e469a2689e46064afe377a0cfa4a65c65b"
+    }
+  ],
+  "limitations": [
+    "The saved 1,000 screener rows are Pace labels plus settled closes, not analyst target observations.",
+    "The expanded cohort retains the four screenshot control tickers; it is not the exact original alphabetical 1,000-row screener cohort.",
+    "Listing a symbol in the cohort does not establish data availability or a successful comparison.",
+    "The archived U.S.-stocks filter includes ETF-labelled symbols such as ARKB, BTC and CHPY. Instrument types have not been independently revalidated; do not describe this as 1,000 verified eligible common stocks."
+  ],
+  "verifiedEligibleCommonStockCount": null
+}

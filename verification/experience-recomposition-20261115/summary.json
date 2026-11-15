@@ -1,0 +1,57 @@
+{
+  "candidate": "AURYN experience redesign 2026-11-15",
+  "baseline": "auryn-ux-refinement-20261115.zip",
+  "checks": {
+    "verify": {
+      "command": "NEXT_TELEMETRY_DISABLED=1 npm run verify",
+      "exit_code": 0,
+      "lint": "passed",
+      "format": "passed",
+      "tests": 1515,
+      "passed": 1515,
+      "failed": 0,
+      "typecheck": "passed",
+      "production_build": "passed",
+      "log_sha256": "41d4827669fed345ad4152108d994e2198dc0c3c8e21fb9c7002025844f29ee9"
+    },
+    "api": {
+      "command": "NEXT_TELEMETRY_DISABLED=1 npm run test:api",
+      "exit_code": 0,
+      "transport": "controlled fixtures, not live provider/payments",
+      "production_file_traces": 56,
+      "log_sha256": "94c0f544a0db49aa5ad18008a7e4efb96758f92e350b318cbfbbb5378d74b3f8"
+    },
+    "new_regressions": {
+      "tests": 23,
+      "passed": 23,
+      "failed": 0
+    }
+  },
+  "source_review": "Completed; corrected empty-workspace anchors, initial summary length, unique-company earnings counts, Unicode headline deduplication, partial filings errors and holdings-before-scenarios ordering.",
+  "visual_acceptance": {
+    "status": "blocked",
+    "baseline": "Live preproduction and supplied screenshots inspected before changes.",
+    "candidate_cloud_browser": "http://terminal.local:3285/preview/overview returned net::ERR_BLOCKED_BY_CLIENT.",
+    "isolated_local_render": "Installed headless browser could not start: process socket Operation not permitted. No screenshot generated.",
+    "mobile_tablet_desktop_after_change": "Not verified. Responsive source and render tests are not visual signoff."
+  },
+  "unchanged": [
+    "API routes",
+    "Provider adapters",
+    "Financial/scenario calculations",
+    "Pace classifier and generated policy fingerprint",
+    "Authentication and billing",
+    "Database migrations",
+    "Dependency lockfile"
+  ],
+  "not_performed": [
+    "Production or preproduction deployment",
+    "Git push",
+    "Service purchase",
+    "Live current-company full financial/history/estimate acceptance",
+    "Physical-device/PWA acceptance"
+  ],
+  "warnings": [
+    "Existing Next build warning: Next.js plugin not detected in ESLint configuration; lint/build passed."
+  ]
+}

@@ -1024,33 +1024,32 @@
   }
 }
 
-/* Editorial launchpad: four clear destinations instead of a row of pills. */
+/* Approved compact destination cards share the same glass surface as Research. */
 .home.home .quickLinks {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  margin: 24px 0;
+  gap: 12px;
+  margin: 16px 0;
   padding: 0;
   overflow: visible;
-  border-block: 1px solid var(--line);
+  border: 0;
 }
 .home.home .quickLinks a {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
-  min-height: 88px;
-  padding: 16px 18px;
-  border: 0;
-  border-right: 1px solid var(--line);
-  border-radius: 0;
-  background: transparent;
+  min-height: 96px;
+  padding: 16px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
   color: var(--ink);
   font-size: 14px;
   white-space: normal;
-}
-.home.home .quickLinks a:last-child {
-  border-right: 0;
+  backdrop-filter: blur(16px);
 }
 .home.home .quickLinks a:hover {
   background: var(--blue-soft);
@@ -1059,8 +1058,7 @@
   display: block;
   margin-bottom: 8px;
   color: var(--muted);
-  font-size: 9px;
-  letter-spacing: 0.14em;
+  font-size: 10px;
   font-weight: 600;
 }
 .home.home .quickLinks svg {
@@ -1068,21 +1066,18 @@
   flex: none;
 }
 .home.home.home.home :global(.home-evidence-panel) {
-  border: 0;
-  border-radius: 10px;
-  box-shadow: none;
-  background: var(--card);
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  box-shadow: var(--workspace-shadow);
+  background: var(--workspace-glass);
+  backdrop-filter: blur(16px);
 }
 .home.home.home.home :global(.home-evidence-layout) {
-  gap: 24px;
-  margin-block: 24px;
-}
-.home.home.home.home :global(.home-event-day > time) {
-  color: var(--blue);
+  gap: 16px;
+  margin-block: 16px;
 }
 .workbench {
-  border-top: 1px solid var(--line);
-  padding-top: 28px;
+  padding-top: 20px;
 }
 .workbenchHeading > span {
   color: var(--blue);
@@ -1090,20 +1085,24 @@
 @media (max-width: 700px) {
   .home.home .quickLinks {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin: 20px 0;
+    gap: 10px;
   }
   .home.home .quickLinks a {
-    min-height: 82px;
-    padding: 14px 10px;
+    min-height: 104px;
+    padding: 14px;
     font-size: 13px;
   }
-  .home.home .quickLinks a:nth-child(2) {
-    border-right: 0;
-  }
-  .home.home .quickLinks a:nth-child(-n + 2) {
-    border-bottom: 1px solid var(--line);
-  }
   .home.home.home.home :global(.home-evidence-layout) {
-    gap: 16px;
+    gap: 12px;
+  }
+  .home.home .greeting h1 {
+    font-size: 26px;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .home.home .quickLinks a,
+  .home.home.home.home :global(.home-evidence-panel) {
+    background: var(--card);
+    backdrop-filter: none;
   }
 }

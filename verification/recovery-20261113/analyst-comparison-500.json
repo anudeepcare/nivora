@@ -1,0 +1,3509 @@
+{
+  "requested": 500,
+  "compared": 0,
+  "matches": 0,
+  "agreement": 0,
+  "completeExactMatch": false,
+  "rows": [
+    {
+      "symbol": "NFLX",
+      "status": "missing",
+      "missingReference": false,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "IREN",
+      "status": "missing",
+      "missingReference": false,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "NBIS",
+      "status": "missing",
+      "missingReference": false,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "NOW",
+      "status": "missing",
+      "missingReference": false,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "A",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAMI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAOI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAON",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAPL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AARD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AAUC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABAT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABBV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABCB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABCL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABEO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABEV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABNB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABOS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABSI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABTC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABUS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABVX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ABX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACAD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACCO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACDC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACEL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACGL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACHC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACHR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACHV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACIC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACIU",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACIW",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACLS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACMR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACNB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACRE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACRS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACTG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ACU",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADAM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADBE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADCT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADEA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADMA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADNT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADPT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADSK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADTN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADUS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ADV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEBI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEFC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEHR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEIS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AER",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AES",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AESI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AEVA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AFG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AFL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AFRI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AFRM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGCO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGEN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGIO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGNC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGNT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGRO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AGYS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AHCO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AHR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AHRT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AII",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIOT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIRJ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIRO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIRS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIZ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AIZN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AJG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AKAM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AKBA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AKR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALAB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALCO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALEC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALGM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALGN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALGT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALHC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALKS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALKT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALLE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALLO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALLY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALMS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALMU",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALNT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALNY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALOY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALRM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALRS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALSN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALTG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALTI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALTO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALVO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ALXO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMAL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMAT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMBA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMBP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMBQ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMCR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMCX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AME",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMGN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMKR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMLX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMPH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMPL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMPX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMPY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMRC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMRX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMRZ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMSC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMSF",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMTB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMTM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMTX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AMZN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANAB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANDE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANET",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANF",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANGI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANGO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANIK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANIP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANNX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANRO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ANTX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AOMR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AON",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AORT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AOS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AOSL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APAM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APEI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APLD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APLE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APOG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APOS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APPF",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APPN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APPS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "APTV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AQN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AQNB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AQST",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARCB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARCC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARCT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARDT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARDX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AREC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARES",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARGX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARHS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARIS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARKB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARKK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARKO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARLO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARMK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARMP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AROC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AROW",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARQQ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARQT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARRY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARTV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARVN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARW",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARWR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ARX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASAN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASIC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASIX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASLE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASMB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASML",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASND",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASPI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASPN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASST",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASTE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASTH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASTS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASUR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ASYS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATAT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATEC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATEN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATEX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATHM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATHS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATLC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATLO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATMU",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATNI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATOM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATRC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "ATRO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AU",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AUB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AUGO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AUPH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AUR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AURA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AUTL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVAH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVAL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVAV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVBC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVBH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVBP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVGO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVIR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVNT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVNW",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVPT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVTR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVTX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVXL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AVY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AWI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AWK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AWR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AXGN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AXON",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AXP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AXS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AXSM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AXTA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AXTI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AYI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AZN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AZO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AZTA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "AZZ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "B",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BABA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BAC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BAH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BALL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BALY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BAM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BANC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BAND",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BANF",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BANR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BAP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BATRA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BATRK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BAX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBAI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBAR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBCP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBDO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBIO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBNX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBOT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBSI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBUC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBVA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBW",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBWI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BBY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCAL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCAX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCBP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCML",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCPC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCRX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BCYC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BDC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BDN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BDTX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BDX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BEAM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BEKE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BELFA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BELFB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BEN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BEP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BEPC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BEPH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BEPI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BETR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BF-B",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BFAM",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BFC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BFH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BFLY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BFS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BFST",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BGC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BGS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BH-A",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHF",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHRB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BHVN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIDU",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIIB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BILI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BILL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIOA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIPC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIPH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIPI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BIRK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BJ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BJRI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKKT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKNG",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKSY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKTI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKU",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BKV",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLBD",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLCO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLDR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLK",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLKB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLMN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLND",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLSH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLTE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BLZE",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMA",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMBL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMNR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMRC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMRN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BMY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNAI",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNED",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNJ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNTC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNTX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BNY",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BOC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BOH",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BOKF",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BOOT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BORR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BOTZ",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BOW",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BOX",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BPOP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BPRN",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BPYPO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRBR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRBS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRCB",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRCC",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRK-A",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRK-B",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRKR",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRO",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BROS",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRSL",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRSP",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    },
+    {
+      "symbol": "BRT",
+      "status": "missing",
+      "missingReference": true,
+      "missingActual": true,
+      "match": false
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "method": "Existing Next production build, static emitted bytes; gzip level 9 independently per file. Not live transferred bytes or page latency.",
+  "common": {
+    "js": {
+      "files": 10,
+      "rawBytes": 2433018,
+      "gzipBytes": 650564
+    },
+    "css": {
+      "files": 5,
+      "rawBytes": 932721,
+      "gzipBytes": 154168
+    }
+  },
+  "routes": {
+    "Home": {
+      "js": {
+        "files": 16,
+        "rawBytes": 2540229,
+        "gzipBytes": 689628
+      },
+      "css": {
+        "files": 7,
+        "rawBytes": 1008521,
+        "gzipBytes": 166671
+      }
+    },
+    "Research company": {
+      "js": {
+        "files": 14,
+        "rawBytes": 2819991,
+        "gzipBytes": 776244
+      },
+      "css": {
+        "files": 7,
+        "rawBytes": 1061010,
+        "gzipBytes": 169815
+      }
+    },
+    "Portfolio": {
+      "js": {
+        "files": 14,
+        "rawBytes": 2528912,
+        "gzipBytes": 683826
+      },
+      "css": {
+        "files": 8,
+        "rawBytes": 1044570,
+        "gzipBytes": 170058
+      }
+    }
+  },
+  "models": [
+    {
+      "webpackModule": "34400",
+      "rawBytes": 1279535,
+      "gzipBytes": 304455
+    },
+    {
+      "webpackModule": "74693",
+      "rawBytes": 273280,
+      "gzipBytes": 79045
+    }
+  ],
+  "catchAll": {
+    "path": ".next/static/chunks/app/[[...route]]/page-c230609576744da4.js",
+    "sha256": "eaeee6c3c48b4a4dfa876721a7a1bb6d18a425629f8dd33ffb2c770ea248010d",
+    "rawBytes": 1725971,
+    "gzipBytes": 443695
+  }
+}

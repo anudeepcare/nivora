@@ -19,6 +19,17 @@ export default function ResearchEvidenceGrid({
   const evidence = useMemo(() => overviewEvidence(research), [research]);
   const groups = [
     {
+      name: "Margins",
+      key: "margins",
+      icon: Activity,
+      rows: evidence.business.filter((x) =>
+        ["revenueGrowth", "operatingMargin", "fcfMargin", "netMargin"].includes(
+          x.key,
+        ),
+      ),
+      tab: "Financials" as const,
+    },
+    {
       name: "Business quality",
       key: "business",
       icon: Building2,
@@ -56,7 +67,9 @@ export default function ResearchEvidenceGrid({
     },
   ]
     .filter(({ key }) =>
-      preferences.visibleMetrics.includes(key === "technical" ? "price" : key),
+      preferences.visibleMetrics.includes(
+        key === "technical" ? "price" : key === "margins" ? "business" : key,
+      ),
     )
     .filter(({ rows }) => rows.length > 0)
     .filter(
@@ -83,7 +96,7 @@ export default function ResearchEvidenceGrid({
           </header>
           {rows.length ? (
             <dl>
-              {rows.slice(0, 3).map((row) => (
+              {rows.map((row) => (
                 <div key={row.key}>
                   <dt>
                     <Help label={row.label} trigger={row.label}>

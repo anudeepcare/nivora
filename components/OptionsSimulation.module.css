@@ -31,9 +31,9 @@
 .badge {
   font-size: 12px;
   padding: 5px 8px;
-  background: var(--citron);
-  color: #24272b;
-  border: 1px solid var(--citron);
+  background: var(--accent-solid);
+  color: #ffffff;
+  border: 1px solid var(--accent-solid);
   border-radius: 8px;
   font-weight: 700;
 }
@@ -132,9 +132,9 @@
   cursor: pointer;
 }
 .order button {
-  background: var(--citron);
-  color: #24272b;
-  border-color: var(--citron);
+  background: var(--accent-solid);
+  color: #ffffff;
+  border-color: var(--accent-solid);
   font-weight: 650;
 }
 .wallet button:disabled {
@@ -142,7 +142,7 @@
   cursor: default;
 }
 .wallet :is(button, select, input, textarea, summary):focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 .positions h4 {

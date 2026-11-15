@@ -31,7 +31,7 @@
   cursor: default;
 }
 .desk :is(button, select, input, summary, a):focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 .desk summary {
@@ -80,9 +80,9 @@
 .views button[aria-pressed="true"],
 .options_segment button[aria-pressed="true"],
 .options_strategies button[aria-pressed="true"] {
-  background: var(--citron);
-  color: #24272b;
-  border-color: var(--citron);
+  background: var(--accent-solid);
+  color: #ffffff;
+  border-color: var(--accent-solid);
   font-weight: 650;
 }
 .marketLine {
@@ -355,8 +355,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--citron);
-  color: #24272b;
+  background: var(--accent-solid);
+  color: #ffffff;
   font-size: 12px;
 }
 .options_learn_grid p {
@@ -629,6 +629,6 @@
 }
 
 .options_scroll:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: -2px;
 }

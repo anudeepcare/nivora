@@ -1,0 +1,41 @@
+{
+  "auditDate": "2026-11-13",
+  "cohortSize": 1000,
+  "scope": "Evidence availability audit over 1,000 named symbols, not a completed 1,000-stock numeric parity test; source cohort includes ETF-labelled instruments.",
+  "current": {
+    "referenceObservations": 2,
+    "actualObservations": 2,
+    "missingPairs": 998,
+    "partialPairs": 2,
+    "fullTriplePairs": 0,
+    "fullTripleAgreement": null,
+    "consensusPairs": 2,
+    "consensusMatches": 1,
+    "consensusAgreement": 0.5,
+    "consensusCohortCoverage": 0.002,
+    "verifiedTargetRevisionPairs": 0,
+    "strictPass": false
+  },
+  "archived": {
+    "uniqueReferenceTargetObservations": 5,
+    "actualFeedObservations": 0,
+    "comparablePairs": 0,
+    "pairAgreement": null,
+    "strictPass": false
+  },
+  "staleControlCheck": {
+    "symbols": [
+      "IREN",
+      "NBIS"
+    ],
+    "result": "Both rejected as date-incomparable: Nov 11 reference closes versus Nov 12 current Auryn closes."
+  },
+  "sourceLimits": [
+    "No new DCA bulk/systematic extraction: current terms prohibit it.",
+    "No new market-provider calls: available quota interpretation was ambiguous.",
+    "Archived Pace classifications are not target observations.",
+    "The direct AAPL provider probe is not an Auryn feed observation and has neither target analyst count nor a verified dated settled close."
+  ],
+  "observedBeforeFix": true,
+  "fixVerificationScope": "This audit does not claim that a deployed fixed build has acquired missing low/high targets. Source normalization and presentation fixes are verified separately by the package test/build checks."
+}

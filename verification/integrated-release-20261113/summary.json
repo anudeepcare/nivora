@@ -1,0 +1,64 @@
+{
+  "release": "Portfolio comparison and guarded target freshness",
+  "baselineArchiveSha256": "546d33a425c9e7d9107183b835ba35b550064b27893513c4b66b29ba153addd2",
+  "portfolioPatchSha256": "7e25d9ec39c2629484fc1bc3546c333f5ba11803d20befc8ca949bcb4dbd538d",
+  "integrationDryRun": "passed",
+  "portfolioFinalManifest": "13 of 13 file hashes match",
+  "npmRunVerify": {
+    "exitCode": 0,
+    "testsPassed": 1412,
+    "testsFailed": 0,
+    "lint": "passed",
+    "format": "passed",
+    "typecheck": "passed",
+    "build": "passed"
+  },
+  "npmRunTestApi": {
+    "exitCode": 0,
+    "productionTraceFiles": 56,
+    "transport": "controlled fixtures, no live provider calls"
+  },
+  "visualVerification": {
+    "status": "incomplete",
+    "reason": "Local Chromium socket creation unavailable; cloud browser could not reach local preview. No successful mobile, desktop or dark screenshot check."
+  },
+  "analystMatching": {
+    "status": "incomplete",
+    "requestedCohort": 1000,
+    "missingPairs": 998,
+    "partialPairs": 2,
+    "completePairs": 0,
+    "note": "Source freshness fix is not new live target evidence; no tolerance pass or invented bounds."
+  },
+  "providerCallsDuringTask": 0,
+  "purchases": 0,
+  "budgetChanges": 0,
+  "pushes": 0,
+  "deployments": 0,
+  "databaseChanges": 0,
+  "temporaryQaRoute": "absent",
+  "credentialScan": "No high-confidence private-key, live Stripe, GitHub/OpenAI key or credential-URL patterns found in retained text sources.",
+  "warnings": [
+    "Existing non-blocking Next ESLint-plugin warning",
+    "Visual verification still required before release",
+    "Freshness fix applies only when existing shared market guard is enabled"
+  ],
+  "baselinePreservation": {
+    "files": 1482,
+    "missing": [],
+    "modified": [
+      "README.md",
+      "RELEASE-CURRENT.md",
+      "RESUME-HERE.md",
+      "START_HERE_AURYN_WORK_INSTRUCTIONS.md",
+      "components/ApprovedPortfolioChart.tsx",
+      "components/PortfolioChart.module.css",
+      "components/PortfolioPage.tsx",
+      "components/PortfolioRange.module.css",
+      "components/PortfolioRange.tsx",
+      "components/PortfolioWorkspace.module.css",
+      "lib/approved-workspace.ts",
+      "lib/eodhd.ts"
+    ]
+  }
+}

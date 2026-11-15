@@ -18,6 +18,8 @@ import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import EvidenceCrystal from "./EvidenceCrystal";
 import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
+import StockFacts, { stockFactRows } from "./StockFacts";
+import { amount, percent } from "@/lib/format";
 import { DataFreshness } from "./ResearchBrief";
 export default function IntegratedResearch({
   research: r,
@@ -50,8 +52,9 @@ export default function IntegratedResearch({
   }, []);
   const now = demo ? Date.parse(r.retrievedAt) : clock;
   const analyst = useMemo(() => consensusOutlook(r), [r]);
-  const showConsensus =
-    !!analyst && (analyst.low == null || analyst.high == null);
+  const closingRange = stockFactRows(r).find((row) =>
+    row.label.includes("closing range"),
+  );
   const m = useMemo(
       () => approvedResearch(r, decisionOwns, now),
       [r, decisionOwns, now],
@@ -63,27 +66,26 @@ export default function IntegratedResearch({
         className={s.decisionStage}
         aria-label="Decision and market context"
       >
-        <div className={s.stageHeading}>
-          <span>01 / THE DECISION</span>
-          <p>Business evidence first. Price context second.</p>
-        </div>
-        <div className={s.context} aria-label="Decision context">
-          <button
-            type="button"
-            aria-pressed={decisionOwns}
-            onClick={() => setContext(true)}
-          >
-            {owns ? "For your holding" : "For an existing holding"}
-          </button>
-          <button
-            type="button"
-            aria-pressed={!decisionOwns}
-            onClick={() => setContext(false)}
-          >
-            For a new purchase
-          </button>
-        </div>
         <div className={s.paceColumn}>
+          <div className={s.stageHeading}>
+            <span>THE DECISION · AURYN PACE</span>
+          </div>
+          <div className={s.context} aria-label="Decision context">
+            <button
+              type="button"
+              aria-pressed={decisionOwns}
+              onClick={() => setContext(true)}
+            >
+              {owns ? "For your holding" : "For an existing holding"}
+            </button>
+            <button
+              type="button"
+              aria-pressed={!decisionOwns}
+              onClick={() => setContext(false)}
+            >
+              For a new purchase
+            </button>
+          </div>
           <PaceInstrument
             key={`${r.company.symbol}:${decisionOwns}`}
             research={r}
@@ -104,16 +106,38 @@ export default function IntegratedResearch({
         </div>
         <div className={s.pillars}>
           <StockPillars research={r} decision={d} />
-          {showConsensus && (
-            <details className={s.consensusDetails}>
-              <summary>
-                Wall Street consensus{" "}
-                <span>Target, comparison &amp; source dates</span>
-              </summary>
-              <AnalystTargets research={r} embedded />
-            </details>
-          )}
         </div>
+        <section className={s.rangeSnapshot} aria-label="Closing price range">
+          <h2>{closingRange?.label ?? "Closing price range"}</h2>
+          <strong>{closingRange?.value ?? "Not available"}</strong>
+          <p>
+            {closingRange?.date ?? "Completed price history is not available."}
+          </p>
+          <small>
+            {closingRange?.help ?? "No price range has been inferred."}
+          </small>
+        </section>
+        <section
+          className={s.consensusSnapshot}
+          aria-label="Wall Street consensus"
+        >
+          <h2>Wall Street consensus</h2>
+          <strong>
+            {analyst
+              ? amount(analyst.target, r.quote.currency)
+              : "Not available"}
+          </strong>
+          {analyst?.change != null && (
+            <span className={analyst.change < 0 ? "negative" : "positive"}>
+              {percent(analyst.change, true)}
+            </span>
+          )}
+          <p>Analyst consensus, not guaranteed.</p>
+          <details className={s.consensusDetails}>
+            <summary>Target details &amp; source dates</summary>
+            <AnalystTargets research={r} embedded showUnavailable />
+          </details>
+        </section>
       </div>
       <section
         className={s.overviewMetrics}
@@ -121,11 +145,11 @@ export default function IntegratedResearch({
       >
         <header className={s.sectionHeading}>
           <div>
-            <small className={s.sectionIndex}>02 / THE EVIDENCE</small>
-            <h2>Company at a glance</h2>
+            <h2>The evidence</h2>
           </div>
           <span>Dated metrics · open any label for its basis</span>
         </header>
+        <StockFacts research={r} />
         <CompanyMetrics research={r} />
         <ResearchEvidenceGrid research={r} onTab={onTab} />
       </section>

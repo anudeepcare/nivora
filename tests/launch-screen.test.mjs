@@ -106,9 +106,9 @@ test("launch covers safe areas and honors OS and saved reduced-motion settings",
   const css = fs.readFileSync("components/LaunchScreen.module.css", "utf8");
   assert.match(css, /100dvh/);
   assert.match(css, /safe-area-inset-top/);
-  assert.match(css, /prefers-reduced-motion: reduce/);
-  assert.match(css, /data-motion="reduce"/);
-  assert.match(css, /data-theme="dark"/);
+  assert.doesNotMatch(css, /animation:|@keyframes/);
+  assert.match(css, /background: var\(--workspace-canvas\)/);
+  assert.match(css, /color: var\(--ink\)/);
 });
 
 test("access and workspace gates share elapsed startup time instead of restarting the slow clock", () => {

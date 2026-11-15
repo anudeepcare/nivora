@@ -477,21 +477,21 @@
   border-bottom: 0;
 }
 .root :global(.admin-section-nav) button[aria-pressed="true"] {
-  background: color-mix(in srgb, #168e83 12%, var(--card));
+  background: color-mix(in srgb, var(--blue) 12%, var(--card));
   color: var(--ink);
   box-shadow: none;
 }
 .root :global(.admin-section-nav) button:nth-child(1) svg {
-  color: #168e83;
+  color: var(--positive);
 }
 .root :global(.admin-section-nav) button:nth-child(2) svg {
-  color: #8970cd;
+  color: var(--blue);
 }
 .root :global(.admin-section-nav) button:nth-child(3) svg {
-  color: #b78026;
+  color: var(--warning);
 }
 .root :global(.admin-section-nav) button:nth-child(4) svg {
-  color: #477fbd;
+  color: var(--blue);
 }
 
 @media (max-width: 700px) {

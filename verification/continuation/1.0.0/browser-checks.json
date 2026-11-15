@@ -1,0 +1,101 @@
+[
+  {
+    "check": "footer no overflow",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "footer privacy action",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "removed confusing banners",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "chart and Pace equal height",
+    "passed": true,
+    "chart": 461.390625,
+    "pace": 461.390625
+  },
+  {
+    "check": "uneven content keeps paired cards equal",
+    "passed": true,
+    "heights": [
+      376.6875,
+      376.6875
+    ]
+  },
+  {
+    "check": "metric help opens",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "metric help closes",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "actions separated",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "research no overflow",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "version 1.0.0",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "footer no overflow",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "footer privacy action",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "removed confusing banners",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "metric help opens",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "metric help closes",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "actions separated",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "research no overflow",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "version 1.0.0",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "no browser errors",
+    "passed": true,
+    "errors": []
+  }
+]

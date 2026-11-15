@@ -1,0 +1,24 @@
+{
+  "unit_tests": {
+    "passed": 1236,
+    "failed": 0
+  },
+  "browser_cases": {
+    "actual_routes": 48,
+    "mobile_active_tab_followup": 16,
+    "reference_components": 8,
+    "options_guide_public_components": 40
+  },
+  "expanded_states": [
+    "Home populated news",
+    "Business details",
+    "Valuation assumptions",
+    "Targets details",
+    "News details"
+  ],
+  "lint": "passed",
+  "typescript": "passed",
+  "production_build": "passed",
+  "deployment": "not performed",
+  "limits": "Fixture-based browser validation; live provider coverage and forecasting performance are not established by these checks."
+}

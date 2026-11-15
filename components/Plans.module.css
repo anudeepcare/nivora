@@ -37,20 +37,19 @@
 }
 .cards.cards > section {
   padding: 32px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
+  box-shadow: var(--workspace-shadow);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
 .cards.cards > section:global(.pricing-pro) {
-  background: linear-gradient(145deg, #19313d, #233f50);
-  --ink: #f5f2eb;
-  --muted: #bdced5;
-  --line: #ffffff28;
+  background: linear-gradient(145deg, var(--blue-soft), var(--workspace-glass));
   color: var(--ink);
-  border-color: transparent;
+  border-color: var(--blue);
 }
 .cards > section::before,
 .cards > section::after {
@@ -69,8 +68,8 @@
   margin: 0 0 10px;
 }
 .cards :global(.pricing-recommended) {
-  background: #e3b176;
-  color: #172c36;
+  background: var(--blue);
+  color: white;
   padding: 5px 8px;
   font-size: 10px;
   border-radius: 3px;
@@ -93,7 +92,7 @@
   margin: 0 0 24px;
 }
 .cards > section > :global(.button) {
-  border-radius: 4px;
+  border-radius: 10px;
   min-height: 48px;
   box-shadow: none;
 }
@@ -128,7 +127,7 @@
 .page :global(.plan-account-row) {
   padding: 18px;
   margin-bottom: 20px;
-  border-radius: 8px;
+  border-radius: 16px;
   background: var(--card);
 }
 .page:global(.plans-public) {
@@ -155,5 +154,12 @@
   .page:global(.plans-public) {
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .cards.cards > section {
+    background: var(--card);
+    backdrop-filter: none;
   }
 }

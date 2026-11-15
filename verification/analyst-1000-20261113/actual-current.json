@@ -1,0 +1,32 @@
+[
+  {
+    "symbol": "IREN",
+    "currency": "USD",
+    "closeDate": "2026-11-12",
+    "close": 19.48,
+    "low": null,
+    "consensus": 56.69,
+    "high": null,
+    "analysts": null,
+    "observedOn": "2026-11-13",
+    "targetAsOf": null,
+    "datasetAsOf": "2026-11-12",
+    "closeDateBasis": "observed",
+    "source": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/IREN"
+  },
+  {
+    "symbol": "NBIS",
+    "currency": "USD",
+    "closeDate": "2026-11-12",
+    "close": 128.64,
+    "low": null,
+    "consensus": 278.05,
+    "high": null,
+    "analysts": null,
+    "observedOn": "2026-11-13",
+    "targetAsOf": null,
+    "datasetAsOf": "2026-11-12",
+    "closeDateBasis": "observed",
+    "source": "https://nivora-git-preprod-anudeeppaleru.vercel.app/research/NBIS?tab=Analysts"
+  }
+]

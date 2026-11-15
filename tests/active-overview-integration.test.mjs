@@ -6,6 +6,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { demoData } from "./fixtures/demo.ts";
 import { approvedResearch } from "../lib/approved-research.ts";
+import { amount, percent } from "../lib/format.ts";
 import { sameProviderSymbol } from "../lib/provider-symbol.ts";
 function setup() {
   const source = fs.readFileSync("components/IntegratedResearch.tsx", "utf8");
@@ -51,6 +52,10 @@ function setup() {
     sameProviderSymbol,
     s: {},
     consensusOutlook: () => null,
+    stockFactRows: () => [],
+    StockFacts: marker("dated stock facts"),
+    amount,
+    percent,
     scenarioHeadline: () => null,
     StockPillars: marker("pillars"),
     OverviewBrief: marker("brief"),

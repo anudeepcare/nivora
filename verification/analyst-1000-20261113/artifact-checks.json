@@ -1,0 +1,25 @@
+{
+  "reports": [
+    {
+      "report": "comparison-current-1000.json",
+      "inputAndOutputHashes": "passed",
+      "uniqueRows": 1000,
+      "strictOutcome": "incomplete"
+    },
+    {
+      "report": "comparison-archived-1000.json",
+      "inputAndOutputHashes": "passed",
+      "uniqueRows": 1000,
+      "strictOutcome": "incomplete"
+    },
+    {
+      "report": "comparison-stale-controls.json",
+      "inputAndOutputHashes": "passed",
+      "uniqueRows": 2,
+      "strictOutcome": "incomplete"
+    }
+  ],
+  "csvRows": 1000,
+  "csvUniqueSymbols": 1000,
+  "csvCrossChecks": "passed"
+}

@@ -472,3 +472,159 @@
     margin-bottom: 4px;
   }
 }
+
+/* Approved composition: chart left on desktop, decision first on mobile. */
+.decisionStage {
+  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
+  gap: 16px;
+}
+.decisionStage .chart {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 18px;
+  border: 1px solid var(--workspace-edge);
+  background: var(--workspace-glass);
+  border-radius: 16px;
+}
+.decisionStage .paceColumn {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--blue) 38%, var(--workspace-edge));
+  border-radius: 16px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  backdrop-filter: blur(16px);
+}
+.decisionStage .context {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 10px 0 0;
+}
+.context button {
+  padding: 8px;
+  font-size: 12px;
+}
+.context button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--blue);
+  box-shadow: 0 2px 6px #18355a12;
+}
+.stageHeading > span {
+  font-size: 12px;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+.caseWorkspace {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.caseWorkspace > .brief,
+.caseWorkspace > .pillars,
+.caseWorkspace > .pillars > section {
+  display: block;
+  grid-column: auto;
+  grid-row: auto;
+  min-width: 0;
+  height: 100%;
+}
+.rangeSnapshot,
+.consensusSnapshot {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 14px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+}
+.rangeSnapshot h2,
+.consensusSnapshot h2 {
+  margin: 0 0 20px;
+  font-size: 12px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.rangeSnapshot > strong,
+.consensusSnapshot > strong {
+  display: block;
+  font-size: clamp(18px, 2vw, 26px);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.rangeSnapshot p,
+.consensusSnapshot p,
+.rangeSnapshot small {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.consensusSnapshot .consensusDetails {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.consensusSnapshot .consensusDetails summary {
+  font-size: 11px;
+}
+.overviewMetrics {
+  padding-top: 0;
+}
+.sectionHeading {
+  margin-bottom: 12px;
+}
+.sectionHeading h2 {
+  font-size: 22px;
+}
+.chart.chart :global(.price-chart) {
+  height: 350px;
+  min-height: 350px;
+}
+@media (max-width: 1100px) {
+  .caseWorkspace {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .decisionStage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .decisionStage .paceColumn {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .decisionStage .chart {
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+@media (max-width: 600px) {
+  .decisionStage .paceColumn,
+  .decisionStage .chart {
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .caseWorkspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .chart.chart :global(.price-chart) {
+    height: 260px;
+    min-height: 260px;
+  }
+  .rangeSnapshot,
+  .consensusSnapshot {
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .decisionStage .paceColumn,
+  .decisionStage .chart,
+  .rangeSnapshot,
+  .consensusSnapshot {
+    background: var(--card);
+    backdrop-filter: none;
+  }
+}

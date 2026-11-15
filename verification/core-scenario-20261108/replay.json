@@ -1,0 +1,251 @@
+{
+  "scope": "Local calculation replay of six real displayed, rounded forecast ranges; NOT deployed after-change verification",
+  "cases": [
+    {
+      "symbol": "IREN",
+      "result": {
+        "available": true,
+        "basis": "revenue-sensitivity",
+        "cases": [
+          {
+            "name": "Bear",
+            "revenue": 1700000000,
+            "relativePricingStress": 0.8,
+            "target": 11.772160000000001,
+            "change": -45.599999999999994
+          },
+          {
+            "name": "Base",
+            "revenue": 2500000000,
+            "relativePricingStress": 1,
+            "target": 21.64,
+            "change": 0
+          },
+          {
+            "name": "Bull",
+            "revenue": 2800000000,
+            "relativePricingStress": 1.2,
+            "target": 29.08416,
+            "change": 34.400000000000006
+          }
+        ],
+        "reference": {
+          "price": 21.64,
+          "asOf": "2026-11-06T21:29:00Z",
+          "basis": "quote",
+          "currency": "USD"
+        },
+        "estimateCurrency": "AUD",
+        "asOf": "2026-11-08",
+        "end": "2027-06-30",
+        "anchorRevenue": 2500000000,
+        "caveat": "Price-anchored revenue sensitivity: each supplied annual revenue case is divided by the mean for that same fiscal year, then multiplied by today's selected price and a relative pricing stress of 0.8× / 1× / 1.2×. Base is a neutral price anchor exactly equal to the reference, not the most likely outcome. Constant FX, share count and listing/ADR ratio are assumed. These are relative equity/revenue pricing stresses, not observed EV/revenue multiples. Financing proceeds, dilution, cash, debt, profitability and execution costs are not modeled. The dataset observation date does not establish when each analyst revised an estimate. These conditional sensitivities are not independent fair value, analyst price targets, probabilities or validated forecasts."
+      }
+    },
+    {
+      "symbol": "HIMS",
+      "result": {
+        "available": true,
+        "basis": "revenue-sensitivity",
+        "cases": [
+          {
+            "name": "Bear",
+            "revenue": 3700000000,
+            "relativePricingStress": 0.8,
+            "target": 19.240000000000002,
+            "change": -25.99999999999999
+          },
+          {
+            "name": "Base",
+            "revenue": 4000000000,
+            "relativePricingStress": 1,
+            "target": 26,
+            "change": 0
+          },
+          {
+            "name": "Bull",
+            "revenue": 4600000000,
+            "relativePricingStress": 1.2,
+            "target": 35.879999999999995,
+            "change": 37.999999999999986
+          }
+        ],
+        "reference": {
+          "price": 26,
+          "asOf": "2026-11-06T21:29:00Z",
+          "basis": "quote",
+          "currency": "USD"
+        },
+        "estimateCurrency": "USD",
+        "asOf": "2026-11-08",
+        "end": "2027-12-31",
+        "anchorRevenue": 4000000000,
+        "caveat": "Price-anchored revenue sensitivity: each supplied annual revenue case is divided by the mean for that same fiscal year, then multiplied by today's selected price and a relative pricing stress of 0.8× / 1× / 1.2×. Base is a neutral price anchor exactly equal to the reference, not the most likely outcome. Constant FX, share count and listing/ADR ratio are assumed. These are relative equity/revenue pricing stresses, not observed EV/revenue multiples. Financing proceeds, dilution, cash, debt, profitability and execution costs are not modeled. The dataset observation date does not establish when each analyst revised an estimate. These conditional sensitivities are not independent fair value, analyst price targets, probabilities or validated forecasts."
+      }
+    },
+    {
+      "symbol": "CIFR",
+      "result": {
+        "available": true,
+        "basis": "revenue-sensitivity",
+        "cases": [
+          {
+            "name": "Bear",
+            "revenue": 683400000,
+            "relativePricingStress": 0.8,
+            "target": 4.26463737048946,
+            "change": -34.8910325116113
+          },
+          {
+            "name": "Base",
+            "revenue": 839700000,
+            "relativePricingStress": 1,
+            "target": 6.55,
+            "change": 0
+          },
+          {
+            "name": "Bull",
+            "revenue": 1000000000,
+            "relativePricingStress": 1.2,
+            "target": 9.360485887817076,
+            "change": 42.908181493390465
+          }
+        ],
+        "reference": {
+          "price": 6.55,
+          "asOf": "2026-11-06T21:29:00Z",
+          "basis": "quote",
+          "currency": "USD"
+        },
+        "estimateCurrency": "USD",
+        "asOf": "2026-11-08",
+        "end": "2027-12-31",
+        "anchorRevenue": 839700000,
+        "caveat": "Price-anchored revenue sensitivity: each supplied annual revenue case is divided by the mean for that same fiscal year, then multiplied by today's selected price and a relative pricing stress of 0.8× / 1× / 1.2×. Base is a neutral price anchor exactly equal to the reference, not the most likely outcome. Constant FX, share count and listing/ADR ratio are assumed. These are relative equity/revenue pricing stresses, not observed EV/revenue multiples. Financing proceeds, dilution, cash, debt, profitability and execution costs are not modeled. The dataset observation date does not establish when each analyst revised an estimate. These conditional sensitivities are not independent fair value, analyst price targets, probabilities or validated forecasts."
+      }
+    },
+    {
+      "symbol": "NBIS",
+      "result": {
+        "available": true,
+        "basis": "revenue-sensitivity",
+        "cases": [
+          {
+            "name": "Bear",
+            "revenue": 8800000000,
+            "relativePricingStress": 0.8,
+            "target": 74.72209836065575,
+            "change": -42.29508196721311
+          },
+          {
+            "name": "Base",
+            "revenue": 12200000000,
+            "relativePricingStress": 1,
+            "target": 129.49,
+            "change": 0
+          },
+          {
+            "name": "Bull",
+            "revenue": 18000000000,
+            "relativePricingStress": 1.2,
+            "target": 229.2609836065574,
+            "change": 77.04918032786885
+          }
+        ],
+        "reference": {
+          "price": 129.49,
+          "asOf": "2026-11-06T21:29:00Z",
+          "basis": "quote",
+          "currency": "USD"
+        },
+        "estimateCurrency": "USD",
+        "asOf": "2026-11-08",
+        "end": "2027-12-31",
+        "anchorRevenue": 12200000000,
+        "caveat": "Price-anchored revenue sensitivity: each supplied annual revenue case is divided by the mean for that same fiscal year, then multiplied by today's selected price and a relative pricing stress of 0.8× / 1× / 1.2×. Base is a neutral price anchor exactly equal to the reference, not the most likely outcome. Constant FX, share count and listing/ADR ratio are assumed. These are relative equity/revenue pricing stresses, not observed EV/revenue multiples. Financing proceeds, dilution, cash, debt, profitability and execution costs are not modeled. The dataset observation date does not establish when each analyst revised an estimate. These conditional sensitivities are not independent fair value, analyst price targets, probabilities or validated forecasts."
+      }
+    },
+    {
+      "symbol": "ASTS",
+      "result": {
+        "available": true,
+        "basis": "revenue-sensitivity",
+        "cases": [
+          {
+            "name": "Bear",
+            "revenue": 345100000,
+            "relativePricingStress": 0.8,
+            "target": 14.653860449844032,
+            "change": -54.67410934165162
+          },
+          {
+            "name": "Base",
+            "revenue": 609100000,
+            "relativePricingStress": 1,
+            "target": 32.33,
+            "change": 0
+          },
+          {
+            "name": "Bull",
+            "revenue": 911000000,
+            "relativePricingStress": 1.2,
+            "target": 58.02521096700048,
+            "change": 79.47791824002626
+          }
+        ],
+        "reference": {
+          "price": 32.33,
+          "asOf": "2026-11-06T21:29:00Z",
+          "basis": "quote",
+          "currency": "USD"
+        },
+        "estimateCurrency": "USD",
+        "asOf": "2026-11-08",
+        "end": "2027-12-31",
+        "anchorRevenue": 609100000,
+        "caveat": "Price-anchored revenue sensitivity: each supplied annual revenue case is divided by the mean for that same fiscal year, then multiplied by today's selected price and a relative pricing stress of 0.8× / 1× / 1.2×. Base is a neutral price anchor exactly equal to the reference, not the most likely outcome. Constant FX, share count and listing/ADR ratio are assumed. These are relative equity/revenue pricing stresses, not observed EV/revenue multiples. Financing proceeds, dilution, cash, debt, profitability and execution costs are not modeled. The dataset observation date does not establish when each analyst revised an estimate. These conditional sensitivities are not independent fair value, analyst price targets, probabilities or validated forecasts."
+      }
+    },
+    {
+      "symbol": "NVO",
+      "result": {
+        "available": true,
+        "basis": "revenue-sensitivity",
+        "cases": [
+          {
+            "name": "Bear",
+            "revenue": 293400000000,
+            "relativePricingStress": 0.8,
+            "target": 30.41325361620058,
+            "change": -24.55159112825458
+          },
+          {
+            "name": "Base",
+            "revenue": 311100000000,
+            "relativePricingStress": 1,
+            "target": 40.31,
+            "change": 0
+          },
+          {
+            "name": "Bull",
+            "revenue": 332700000000,
+            "relativePricingStress": 1.2,
+            "target": 51.73051880424301,
+            "change": 28.331726133076174
+          }
+        ],
+        "reference": {
+          "price": 40.31,
+          "asOf": "2026-11-06T21:25:00Z",
+          "basis": "quote",
+          "currency": "USD"
+        },
+        "estimateCurrency": "DKK",
+        "asOf": "2026-11-08",
+        "end": "2027-12-31",
+        "anchorRevenue": 311100000000,
+        "caveat": "Price-anchored revenue sensitivity: each supplied annual revenue case is divided by the mean for that same fiscal year, then multiplied by today's selected price and a relative pricing stress of 0.8× / 1× / 1.2×. Base is a neutral price anchor exactly equal to the reference, not the most likely outcome. Constant FX, share count and listing/ADR ratio are assumed. These are relative equity/revenue pricing stresses, not observed EV/revenue multiples. Financing proceeds, dilution, cash, debt, profitability and execution costs are not modeled. The dataset observation date does not establish when each analyst revised an estimate. These conditional sensitivities are not independent fair value, analyst price targets, probabilities or validated forecasts."
+      }
+    }
+  ]
+}

@@ -154,11 +154,11 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Invest every month/);
+  assert.match(html, /Research\.<br\/><span>Decide\.<\/span><br\/>Review\./);
   assert.match(html, /id="how-it-works"/);
   assert.match(html, /href="\/#how-it-works"/);
   assert.doesNotMatch(html, /Our approach/);
-  assert.match(html, /Know your reasons\./);
+  assert.match(html, /Business evidence first\. Price context second\./);
   assert.match(html, /href="#how-it-works"[^>]*>Explore the product/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
@@ -237,12 +237,20 @@ test("public navigation opens accessibly, closes on Escape, and closes after a d
     currentTarget: {
       querySelector(selector) {
         assert.equal(selector, '[aria-controls="ap-mobile-navigation"]');
-        return { focus() { focusReturned = true; } };
+        return {
+          focus() {
+            focusReturned = true;
+          },
+        };
       },
     },
   });
   assert.equal(toggle().props["aria-expanded"], false);
-  assert.equal(focusReturned, true, "Escape restores focus before removing the focused menu link");
+  assert.equal(
+    focusReturned,
+    true,
+    "Escape restores focus before removing the focused menu link",
+  );
   toggle().props.onClick();
   nodes(
     navigation,
@@ -259,7 +267,10 @@ test("public utility navigation identifies its current page without marking a di
       usePathname: () => path,
     });
     const tree = PublicFrame({ title: "Test", intro: "", children: null });
-    const selected = nodes(tree, (node) => node.type === Link && node.props["aria-current"] === "page");
+    const selected = nodes(
+      tree,
+      (node) => node.type === Link && node.props["aria-current"] === "page",
+    );
     assert.equal(selected.length, 1, `${path} has one active navigation item`);
     assert.equal(selected[0].props.href, path);
   }
@@ -452,7 +463,7 @@ test("available OAuth choices call their provider and disabled choices do not se
 
 test("recovery keeps both password fields and blocks mismatched passwords before contacting auth", async () => {
   let index = 0;
-  const values = ["","",false,"",true,false,"person@example.com",false],
+  const values = ["", "", false, "", true, false, "person@example.com", false],
     calls = [];
   const useState = (initial) => {
     const i = index++;
@@ -559,23 +570,71 @@ test("confirmation resend preserves the callback and suppresses a second request
 });
 
 test("password recovery verifies its account, saves through the recovery endpoint and never auto-redirects", async () => {
- for(const expired of [false,true]){
-  let index=0;const states=[],effects=[],calls=[];
-  const Recovery=load("components/PasswordRecovery.tsx","PasswordRecovery",{...common,PublicSample,
-   useState:initial=>{const i=index++;if(!(i in states))states[i]=initial;return [states[i],next=>{states[i]=next}]},
-   useEffect:fn=>{if(!effects.length)effects.push(fn)},
-   fetch:async(path,options)=>{calls.push([path,options.method||'GET']);return {ok:!expired,json:async()=>expired?{error:'Expired'}:options.method==='POST'?{ok:true}:{email:'verified@example.com'}}}
-  });
-  const render=()=>{index=0;return Recovery()};
-  render();effects[0]();await new Promise(resolve=>setTimeout(resolve,0));
-  if(expired){assert.equal(nodes(render(),n=>n.type==='form').length,0);assert.match(renderToStaticMarkup(render()),/Request a new reset link/);assert.equal(calls.length,1);continue;}
-  assert.match(renderToStaticMarkup(render()),/verified@example.com/);
-  nodes(render(),n=>n.type==='input').forEach(n=>n.props.onChange({target:{value:'new passphrase'}}));
-  await nodes(render(),n=>n.type==='form')[0].props.onSubmit({preventDefault(){}});
-  assert.deepEqual(calls,[['/api/auth/recovery','GET'],['/api/auth/recovery','POST']]);
-  assert.match(renderToStaticMarkup(render()),/Your password was updated/);
-  assert.equal(nodes(render(),n=>n.type==='form').length,0);
- }
+  for (const expired of [false, true]) {
+    let index = 0;
+    const states = [],
+      effects = [],
+      calls = [];
+    const Recovery = load(
+      "components/PasswordRecovery.tsx",
+      "PasswordRecovery",
+      {
+        ...common,
+        PublicSample,
+        useState: (initial) => {
+          const i = index++;
+          if (!(i in states)) states[i] = initial;
+          return [
+            states[i],
+            (next) => {
+              states[i] = next;
+            },
+          ];
+        },
+        useEffect: (fn) => {
+          if (!effects.length) effects.push(fn);
+        },
+        fetch: async (path, options) => {
+          calls.push([path, options.method || "GET"]);
+          return {
+            ok: !expired,
+            json: async () =>
+              expired
+                ? { error: "Expired" }
+                : options.method === "POST"
+                  ? { ok: true }
+                  : { email: "verified@example.com" },
+          };
+        },
+      },
+    );
+    const render = () => {
+      index = 0;
+      return Recovery();
+    };
+    render();
+    effects[0]();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    if (expired) {
+      assert.equal(nodes(render(), (n) => n.type === "form").length, 0);
+      assert.match(renderToStaticMarkup(render()), /Request a new reset link/);
+      assert.equal(calls.length, 1);
+      continue;
+    }
+    assert.match(renderToStaticMarkup(render()), /verified@example.com/);
+    nodes(render(), (n) => n.type === "input").forEach((n) =>
+      n.props.onChange({ target: { value: "new passphrase" } }),
+    );
+    await nodes(render(), (n) => n.type === "form")[0].props.onSubmit({
+      preventDefault() {},
+    });
+    assert.deepEqual(calls, [
+      ["/api/auth/recovery", "GET"],
+      ["/api/auth/recovery", "POST"],
+    ]);
+    assert.match(renderToStaticMarkup(render()), /Your password was updated/);
+    assert.equal(nodes(render(), (n) => n.type === "form").length, 0);
+  }
 });
 
 function preferencesHarness() {

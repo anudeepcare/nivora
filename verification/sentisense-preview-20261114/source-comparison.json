@@ -1,0 +1,122 @@
+{
+  "baseline": "AURYN-scenario-pace-verified-20261114.zip",
+  "modifiedOrNewCodeFiles": [
+    {
+      "path": "README.md",
+      "kind": "modified"
+    },
+    {
+      "path": "package.json",
+      "kind": "modified"
+    },
+    {
+      "path": "RELEASE-SENTISENSE-PREVIEW-20261114.md",
+      "kind": "new"
+    },
+    {
+      "path": "components/ResearchChanges.tsx",
+      "kind": "modified"
+    },
+    {
+      "path": "components/AnalystRatings.tsx",
+      "kind": "modified"
+    },
+    {
+      "path": "components/ResearchBrief.tsx",
+      "kind": "modified"
+    },
+    {
+      "path": "components/AnalystTargets.tsx",
+      "kind": "modified"
+    },
+    {
+      "path": "lib/types.ts",
+      "kind": "modified"
+    },
+    {
+      "path": "lib/research-changes.ts",
+      "kind": "modified"
+    },
+    {
+      "path": "lib/decision-research.ts",
+      "kind": "modified"
+    },
+    {
+      "path": "lib/sentisense-provider.ts",
+      "kind": "new"
+    },
+    {
+      "path": "lib/outlook.ts",
+      "kind": "modified"
+    },
+    {
+      "path": "lib/pace-policy-fingerprint.ts",
+      "kind": "modified"
+    },
+    {
+      "path": "lib/access-policy.ts",
+      "kind": "modified"
+    },
+    {
+      "path": "lib/sentisense-targets.ts",
+      "kind": "new"
+    },
+    {
+      "path": "lib/stock-pillars.ts",
+      "kind": "modified"
+    },
+    {
+      "path": "tests/analyst-source-coverage.test.mjs",
+      "kind": "modified"
+    },
+    {
+      "path": "tests/decision-research.test.mjs",
+      "kind": "modified"
+    },
+    {
+      "path": "tests/sentisense-route.test.mjs",
+      "kind": "new"
+    },
+    {
+      "path": "tests/sentisense-targets.test.mjs",
+      "kind": "new"
+    },
+    {
+      "path": "tests/research-changes.test.mjs",
+      "kind": "modified"
+    },
+    {
+      "path": "tests/sentisense-provider.test.mjs",
+      "kind": "new"
+    },
+    {
+      "path": "scripts/test-sentisense-api.mjs",
+      "kind": "new"
+    },
+    {
+      "path": "app/api/research/[symbol]/route.ts",
+      "kind": "modified"
+    }
+  ],
+  "policyDependencyFileComparison": {
+    "lib/accumulation-policy-v3.ts": true,
+    "lib/accumulation-policy-v5.ts": true,
+    "lib/accumulation-policy-v6.ts": true,
+    "lib/accumulation-policy-v7.ts": true,
+    "lib/calendar.ts": true,
+    "lib/evidence-memo.ts": true,
+    "lib/pace-classifier-v7.ts": true,
+    "lib/pace-classifier.ts": true,
+    "lib/pace-model-v6.ts": true,
+    "lib/pace-model-v7.json": true,
+    "lib/pace-model-v7.ts": true,
+    "lib/pace-policy-fingerprint.ts": false,
+    "lib/pace-price-evaluator.ts": true,
+    "lib/types.ts": false
+  },
+  "paceAlgorithmsAndWeightsUnchanged": true,
+  "paceFingerprintNote": "The generated dependency fingerprint changes because lib/types.ts adds the optional analystTargets type. No active classifier, threshold, model weight or runtime policy helper changed.",
+  "cssFilesChecked": 85,
+  "cssUnchanged": true,
+  "existingProviderFilesUnchanged": true
+}

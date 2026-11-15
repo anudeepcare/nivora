@@ -1,0 +1,24 @@
+{
+  "baseline": "AURYN-decision-gates-fix-20261113.zip",
+  "modifiedExistingFiles": [
+    "README.md",
+    "lib/eodhd-normalize.ts",
+    "lib/listing-reconciliation.ts",
+    "scripts/extract-live-pace-features.mjs"
+  ],
+  "uiFilesChecked": 372,
+  "uiByteIdentical": true,
+  "activePolicyFilesChecked": 14,
+  "activePolicyByteIdentical": true,
+  "sourcePatchFiles": [
+    "lib/eodhd-normalize.ts",
+    "lib/listing-reconciliation.ts",
+    "scripts/extract-live-pace-features.mjs"
+  ],
+  "sourceHashes": {
+    "README.md": "27833afde31f7dfb2ea5f4d6719b41900070a03b018ebe204504dba435f00716",
+    "lib/eodhd-normalize.ts": "7a6b8caa5700e5894d40dda7dfa22f591acea6d1a9444b3672ecb5c39ae3154c",
+    "lib/listing-reconciliation.ts": "de943d64223bd6104ecd47fa192eb77593768dddb3b46492d49c2b9421bf46f6",
+    "scripts/extract-live-pace-features.mjs": "1d75691def9c3593afdb38ce1f75b746db1b04e52f4ab05880ac32565dce0ab9"
+  }
+}

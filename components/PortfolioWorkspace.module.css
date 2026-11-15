@@ -1536,45 +1536,39 @@
   }
 }
 
-/* A balance ledger, not another translucent rounded container. */
+/* Match the approved transparent cards without changing portfolio calculations. */
 .balanceDeck {
   grid-template-columns: minmax(240px, 1fr) minmax(0, 2.4fr);
-  gap: 24px;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-  margin-bottom: 24px;
+  gap: 0;
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  margin-bottom: 16px;
 }
 .netBalance {
-  position: relative;
-  padding: 26px;
-  border-radius: 10px;
-  background: linear-gradient(130deg, #172c36, #294c60);
-  color: #fff;
-  box-shadow: none;
+  padding: 24px;
+  border-radius: 0;
+  background: linear-gradient(130deg, var(--blue-soft), transparent);
+  color: var(--ink);
 }
 .netBalance > span,
 .netBalance > small {
-  color: #cedbe0;
+  color: var(--muted);
 }
 .netBalance > span > svg {
-  color: #efbc69;
+  color: var(--blue);
 }
 .netBalance > strong {
-  font-size: clamp(34px, 3.2vw, 48px);
+  font-size: clamp(32px, 3vw, 44px);
 }
 .balanceMetrics {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
   gap: 0;
-  padding: 0;
-  border-block: 1px solid var(--line);
+  padding: 8px;
 }
 .balanceMetrics > div {
-  padding: 18px 22px;
+  padding: 16px;
 }
 .balanceMetrics > div:nth-child(odd) {
   border-right: 1px solid var(--line);
@@ -1586,13 +1580,14 @@
   margin: 7px 0;
   font-size: 25px;
 }
-.portfolioRead {
-  border: 0;
-  border-radius: 10px;
-  background: var(--card);
-  box-shadow: none;
-  backdrop-filter: none;
-  padding: 24px;
+.portfolioRead,
+.decisionDrawer {
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  backdrop-filter: blur(16px);
+  padding: 20px;
 }
 .portfolioRead h2 {
   font-size: 26px;
@@ -1600,21 +1595,13 @@
 }
 .readLink {
   min-height: 44px;
-  border-radius: 6px;
-  box-shadow: none;
+  border-radius: 10px;
   background: var(--blue);
-  color: #fff;
+  color: white;
 }
 :global([data-theme="dark"]) .readLink {
   background: var(--blue);
-  color: #101c28;
-}
-.decisionDrawer {
-  border: 0;
-  border-radius: 10px;
-  background: var(--card);
-  box-shadow: none;
-  backdrop-filter: none;
+  color: var(--bg);
 }
 .portfolio.portfolio.portfolio.portfolio
   :global(.portfolio-grid .portfolio-trend-panel),
@@ -1622,27 +1609,42 @@
   :global(.portfolio-grid .portfolio-sidebar .card),
 .portfolio.portfolio.portfolio.portfolio
   :global(.portfolio-grid > .card:not(.portfolio-trend-panel)) {
-  border: 0;
-  border-radius: 10px;
-  box-shadow: none;
-  background: var(--card);
-  backdrop-filter: none;
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  box-shadow: var(--workspace-shadow);
+  background: var(--workspace-glass);
+  backdrop-filter: blur(16px);
 }
 @media (max-width: 700px) {
   .balanceDeck {
     grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
   }
   .netBalance {
-    padding: 22px;
+    padding: 20px;
+    box-shadow: inset 0 -1px 0 var(--line);
   }
   .balanceMetrics > div {
-    padding: 16px 12px;
+    padding: 14px 10px;
   }
   .balanceMetrics strong {
-    font-size: 24px;
+    font-size: 23px;
   }
   .portfolioRead {
-    padding: 20px;
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .balanceDeck,
+  .netBalance,
+  .portfolioRead,
+  .decisionDrawer,
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-trend-panel),
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.portfolio-grid .portfolio-sidebar .card),
+  .portfolio.portfolio.portfolio.portfolio
+    :global(.portfolio-grid > .card:not(.portfolio-trend-panel)) {
+    background: var(--card);
+    backdrop-filter: none;
   }
 }

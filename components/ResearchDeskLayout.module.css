@@ -838,3 +838,49 @@
     font-size: 24px;
   }
 }
+
+/* All research desks use the approved quiet glass surface and spacing. */
+.content.content.content {
+  gap: 16px;
+  margin-top: 16px;
+}
+.content.content.content :global(.section-head) {
+  margin-bottom: 14px;
+}
+.content.content.content
+  :is(
+    :global(.business-history),
+    :global(.financing-context),
+    :global(.depth-business),
+    :global(.earnings-review),
+    :global(.analyst-workspace),
+    :global(.company-updates),
+    :global(.case-ownership-row > *),
+    :global(.research-reference),
+    :global(.edge-method),
+    :global(.technical-desk-groups > details)
+  ) {
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  box-shadow: var(--workspace-shadow);
+  backdrop-filter: blur(14px);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .content.content.content
+    :is(
+      :global(.business-history),
+      :global(.financing-context),
+      :global(.depth-business),
+      :global(.earnings-review),
+      :global(.analyst-workspace),
+      :global(.company-updates),
+      :global(.case-ownership-row > *),
+      :global(.research-reference),
+      :global(.edge-method),
+      :global(.technical-desk-groups > details)
+    ) {
+    background: var(--card);
+    backdrop-filter: none;
+  }
+}

@@ -1,9 +1,13 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Layers, ArrowRight, Info } from "lucide-react";
 import { studyMarket } from "@/lib/settled-study-bars";
 import { indicators } from "@/lib/analysis";
 import { consensusOutlook } from "@/lib/outlook";
+import { useProduct } from "./Session";
+import { researchBrief } from "@/lib/research-brief";
+import { paceChartBands, currentPaceChartPeriod } from "@/lib/pace-chart-bands";
+import type { PacePriceZones } from "@/lib/pace-price-zones";
 import s from "./ChartReferences.module.css";
 import { advancedStudies } from "@/lib/advanced-research";
 import type { Research, Candle } from "@/lib/types";
@@ -27,6 +31,62 @@ export default function PriceStudyChart({
   contrast?: boolean;
   onOptions?: () => void;
 }) {
+  const { demo } = useProduct();
+  const [clock, setClock] = useState(() => Date.now());
+  useEffect(() => {
+    if (demo) return;
+    const timer = window.setInterval(() => setClock(Date.now()), 60000);
+    return () => window.clearInterval(timer);
+  }, [demo]);
+  const asOf = demo ? research.retrievedAt : new Date(clock).toISOString();
+  const selectedPeriod = useMemo(
+    () =>
+      currentPaceChartPeriod(
+        researchBrief(research).accumulation,
+        Date.parse(asOf),
+      ),
+    [research, asOf],
+  );
+  const [zoneResult, setZoneResult] = useState<{
+    history: Candle[];
+    asOf: string;
+    zones: PacePriceZones | null;
+  } | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    const market = studyMarket(research);
+    if (market === "unknown" || !selectedPeriod) return;
+    import("@/lib/pace-price-zones")
+      .then(({ pacePriceZones }) =>
+        pacePriceZones(
+          research.history,
+          research.priceObservedAt ?? research.retrievedAt,
+          selectedPeriod,
+          market,
+          controller.signal,
+        ),
+      )
+      .then((zones) => {
+        if (!controller.signal.aborted)
+          setZoneResult({ history: research.history, asOf, zones });
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setZoneResult(null);
+      });
+    return () => controller.abort();
+  }, [research, asOf, selectedPeriod]);
+  const bands = useMemo(
+    () =>
+      paceChartBands(
+        selectedPeriod &&
+          zoneResult?.history === research.history &&
+          zoneResult.asOf === asOf
+          ? zoneResult.zones
+          : null,
+        asOf,
+      ),
+    [zoneResult, research.history, asOf, selectedPeriod],
+  );
   const [overlay, setOverlay] = useState(false);
   const [showReferences, setShowReferences] = useState(true);
   const references = useMemo(() => {
@@ -117,12 +177,20 @@ export default function PriceStudyChart({
             ))}
         </div>
       )}
+      {!overlay && bands.length > 0 && (
+        <p className="chart-note">
+          Blue bands: current conditional Pace zones as of{" "}
+          {dateLabel(zoneResult?.zones?.date)}. Deeper blue indicates a higher
+          accumulation zone, not historical signals or a recommendation.
+        </p>
+      )}
       <PriceChart
         bars={bars}
         range={range}
         style={style}
         contrast={contrast}
         levels={overlay ? levels : showReferences ? references : []}
+        paceBands={overlay ? [] : bands}
       />
       <details className="chart-context" open>
         <summary>Price range & completed volume</summary>

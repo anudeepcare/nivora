@@ -1,0 +1,77 @@
+{
+  "candidate": "AURYN-full-app-audit-20261115",
+  "date": "2026-11-15",
+  "inputLibraryFileId": "libfile_4e3e44fe49c0819182a71872f9028483",
+  "inputSha256": "e1f52601bfa625619cc0473d80efe66e95d31d0d46ff0501c1f749a59117464b",
+  "scope": "Source audit of 31 declared route examples and nested Research/Options/Admin states; targeted confirmed corrections, not blanket visual acceptance",
+  "changes": {
+    "modifiedPresentationFiles": 32,
+    "newRegressionTests": 39,
+    "removedMetrics": false,
+    "changedFinancialCalculations": false
+  },
+  "checks": {
+    "npmRunVerify": "passed; exit 0",
+    "lint": "passed",
+    "format": "passed",
+    "unitAndComponentTests": {
+      "passed": 1616,
+      "failed": 0,
+      "skipped": 0
+    },
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "controlledApiSuite": "passed; synthetic identity/database/provider transports, no live account or payment",
+    "httpSmoke": {
+      "passed": 33,
+      "failed": 0,
+      "scope": "31 signed-out/unconfigured local production-build routes plus 2 expected 404 guards; not client interaction"
+    },
+    "independentReview": {
+      "status": "no confirmed new defects",
+      "focusedTestsPassed": 48
+    },
+    "archive": "validated by packaging script; see parent package manifest"
+  },
+  "integrity": {
+    "protectedSourceFilesIdentical": 336,
+    "baselineFilesRetained": true,
+    "deployment": "none",
+    "realAccountWrites": "none",
+    "newCredentials": "none"
+  },
+  "coverage": {
+    "sourceInventory": [
+      "public pages and auth",
+      "Home/Watchlist/Portfolio/Alerts/Discover",
+      "Research shell and all sections",
+      "Labs and Options views",
+      "Settings/Compare/Monthly Plan",
+      "all six Admin areas",
+      "search/help/access/loading/offline/404"
+    ],
+    "notVerified": [
+      "final browser-rendered responsive composition at 320/390/768/1440px",
+      "light/dark/large-text appearance",
+      "real browser focus/Back/Forward/dialog/keyboard/touch flows",
+      "physical iOS/Android PWA, keyboard, orientation and safe-area behavior",
+      "real account saves, auth, billing and support delivery",
+      "live market-provider output"
+    ]
+  },
+  "browserQA": {
+    "status": "blocked; no new attempt to bypass or retry prior denied access",
+    "availableEnvironments": "only existing cloud computer",
+    "screenshotsProduced": 0,
+    "priorLimits": [
+      "Chromium required socket unavailable",
+      "separate browser local-preview route inaccessible"
+    ]
+  },
+  "warnings": [
+    "Existing Next ESLint-plugin detection notice; explicit ESLint run passed",
+    "Runtime npm http-proxy configuration warning",
+    "Existing inner Research view/input resets on outer tab unmount remain unchanged"
+  ],
+  "acceptance": "Source candidate only. No zero-failure or complete visual redesign guarantee."
+}

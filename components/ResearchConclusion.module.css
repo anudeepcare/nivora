@@ -134,3 +134,29 @@
 .evidence > div:only-child {
   grid-column: 1 / -1;
 }
+
+.root {
+  padding: 16px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 14px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+}
+.root h2 {
+  font-size: 21px;
+  margin: 12px 0 8px;
+}
+.explanation {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.eyebrow {
+  font-size: 12px;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .root {
+    background: var(--card);
+  }
+}

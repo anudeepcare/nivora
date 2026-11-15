@@ -1,9 +1,9 @@
 .tape {
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 1px solid var(--workspace-edge);
   border-radius: 16px;
   padding: 22px;
-  background: var(--card);
+  background: var(--workspace-panel);
   margin: 18px 0;
   color: var(--ink);
 }
@@ -24,7 +24,7 @@
   margin: 7px 0;
 }
 .eyebrow {
-  color: var(--business-icon, #9296e5);
+  color: var(--business-icon, var(--blue));
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -35,7 +35,7 @@
   border-radius: 20px;
   padding: 7px 11px;
   white-space: nowrap;
-  background: color-mix(in srgb, #9296e5 9%, var(--card));
+  background: color-mix(in srgb, var(--blue) 9%, var(--card));
 }
 .controls {
   display: flex;
@@ -45,9 +45,9 @@
   margin: 16px 0;
 }
 .controls button {
-  border: 1px solid #9296e5;
+  border: 1px solid var(--blue);
   border-radius: 9px;
-  background: color-mix(in srgb, #9296e5 14%, var(--card));
+  background: color-mix(in srgb, var(--blue) 14%, var(--card));
   color: var(--ink);
   padding: 10px 16px;
   cursor: pointer;
@@ -124,7 +124,7 @@
 .scroll th {
   color: var(--muted);
   font-weight: 500;
-  background: color-mix(in srgb, #9296e5 6%, var(--card));
+  background: color-mix(in srgb, var(--blue) 6%, var(--card));
 }
 .scroll tr:last-child td {
   border-bottom: 0;
@@ -151,7 +151,7 @@
   border-top: 1px solid var(--line);
 }
 .ranking strong {
-  color: var(--business-icon, #9296e5);
+  color: var(--business-icon, var(--blue));
 }
 .ranking li > span:last-child {
   color: var(--muted);
@@ -159,12 +159,12 @@
 .tape .error {
   border-left: 1px solid var(--line);
   padding: 10px 12px;
-  background: color-mix(in srgb, #d6d88c 9%, var(--card));
+  background: color-mix(in srgb, var(--warning) 9%, var(--card));
   color: var(--ink);
 }
 .tape :is(button, input, select, summary):focus-visible,
 .scroll:focus-visible {
-  outline: 2px solid #9296e5;
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 @media (max-width: 650px) {
@@ -177,5 +177,19 @@
   }
   .filters label {
     flex-basis: calc(50% - 12px);
+  }
+}
+
+.controls button {
+  min-height: 44px;
+}
+.controls button:focus-visible,
+.scope summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .tape {
+    background: var(--card);
   }
 }

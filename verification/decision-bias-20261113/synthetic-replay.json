@@ -1,0 +1,1340 @@
+{
+  "kind": "Seeded synthetic regression coverage only, not actual stock recommendations or investment performance",
+  "before": {
+    "Watch": 152,
+    "Wait": 131,
+    "Buy": 55,
+    "Review": 46
+  },
+  "after": {
+    "Watch": 190,
+    "Buy": 126,
+    "Wait": 22,
+    "Review": 46
+  },
+  "changed": [
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1001",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1005",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1006",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1009",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1013",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "large-cap",
+      "symbol": "LARG1015",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "high-growth",
+      "symbol": "HIGH2001",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "high-growth",
+      "symbol": "HIGH2002",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "high-growth",
+      "symbol": "HIGH2009",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "high-growth",
+      "symbol": "HIGH2011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3001",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3002",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3004",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3005",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3008",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3010",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3011",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3014",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "penny",
+      "symbol": "PENN3015",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4000",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4001",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4002",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4003",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4004",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4007",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4009",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4010",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4013",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "sub-cent",
+      "symbol": "SUB-4015",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "mega-price",
+      "symbol": "MEGA5004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "mega-price",
+      "symbol": "MEGA5006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "mega-price",
+      "symbol": "MEGA5008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "mega-price",
+      "symbol": "MEGA5014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "mega-price",
+      "symbol": "MEGA5015",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "meme-volatile",
+      "symbol": "MEME8000",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "meme-volatile",
+      "symbol": "MEME8001",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "meme-volatile",
+      "symbol": "MEME8003",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "meme-volatile",
+      "symbol": "MEME8004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "meme-volatile",
+      "symbol": "MEME8009",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "meme-volatile",
+      "symbol": "MEME8013",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "meme-volatile",
+      "symbol": "MEME8015",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "flat-utility",
+      "symbol": "FLAT9002",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "flat-utility",
+      "symbol": "FLAT9003",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "flat-utility",
+      "symbol": "FLAT9004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10002",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10003",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10005",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10007",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10009",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10010",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10012",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10013",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "crashed",
+      "symbol": "CRAS10015",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "halted-gaps",
+      "symbol": "HALT11003",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "halted-gaps",
+      "symbol": "HALT11006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12001",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12002",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12003",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12009",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12010",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "split-unadjusted",
+      "symbol": "SPLI12015",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "bad-ticks",
+      "symbol": "BAD-13003",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "bad-ticks",
+      "symbol": "BAD-13006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "bad-ticks",
+      "symbol": "BAD-13007",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "bad-ticks",
+      "symbol": "BAD-13010",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14000",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14001",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14003",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14005",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14012",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "descending-order",
+      "symbol": "DESC14014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "duplicate-dates",
+      "symbol": "DUPL15000",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "duplicate-dates",
+      "symbol": "DUPL15001",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "duplicate-dates",
+      "symbol": "DUPL15002",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "duplicate-dates",
+      "symbol": "DUPL15012",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "duplicate-dates",
+      "symbol": "DUPL15014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17000",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17001",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17007",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17009",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17012",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "non-usd-listing",
+      "symbol": "NON-17014",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18000",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18001",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18013",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "stale-quote",
+      "symbol": "STAL18014",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "no-quote",
+      "symbol": "NO-Q19002",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "no-quote",
+      "symbol": "NO-Q19005",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "no-quote",
+      "symbol": "NO-Q19008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "no-quote",
+      "symbol": "NO-Q19011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "no-quote",
+      "symbol": "NO-Q19014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-full",
+      "symbol": "ANAL20000",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-full",
+      "symbol": "ANAL20001",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "analyst-full",
+      "symbol": "ANAL20002",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21000",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21003",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21005",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21007",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21008",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21009",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21010",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-consensus-only",
+      "symbol": "ANAL21014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-unordered",
+      "symbol": "ANAL22001",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-unordered",
+      "symbol": "ANAL22002",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "analyst-unordered",
+      "symbol": "ANAL22008",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "analyst-unordered",
+      "symbol": "ANAL22010",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-unordered",
+      "symbol": "ANAL22011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23002",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23004",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23005",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23006",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23007",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23013",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23014",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "analyst-stale",
+      "symbol": "ANAL23015",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 2,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "etf",
+      "symbol": "ETF24001",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "etf",
+      "symbol": "ETF24003",
+      "before": "Buy",
+      "after": "Watch",
+      "eligiblePace": 1,
+      "business": "strong",
+      "code": "zone"
+    },
+    {
+      "kind": "etf",
+      "symbol": "ETF24007",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "etf",
+      "symbol": "ETF24009",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "etf",
+      "symbol": "ETF24011",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 4,
+      "business": "strong",
+      "code": "accumulation"
+    },
+    {
+      "kind": "etf",
+      "symbol": "ETF24012",
+      "before": "Wait",
+      "after": "Buy",
+      "eligiblePace": 3,
+      "business": "strong",
+      "code": "accumulation"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "verify": {
+    "exitCode": 0,
+    "tests": 1361,
+    "passed": 1361,
+    "failed": 0,
+    "lint": "passed",
+    "format": "passed",
+    "typecheck": "passed",
+    "productionBuild": "passed"
+  },
+  "apiFixtures": {
+    "exitCode": 0,
+    "scope": "Controlled fixtures; no real payment, account or production database changes"
+  },
+  "deployed": false,
+  "meaning": "Software regression checks; separate from reference category agreement."
+}

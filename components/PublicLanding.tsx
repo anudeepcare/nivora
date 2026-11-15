@@ -596,16 +596,18 @@ export default function PublicLanding({
                 "Explore a more considered way to invest."
               ) : (
                 <>
-                  Invest every month.
+                  Research.
                   <br />
-                  <span>Know your reasons.</span>
+                  <span>Decide.</span>
+                  <br />
+                  Review.
                 </>
               )}
             </h1>
             <div className={landing.heroDetail}>
               <p>
-                A clear monthly research routine: understand your companies,
-                review what changed, and plan within your limits.
+                Business evidence first. Price context second. Research your
+                companies, understand the trade-offs, and decide with context.
               </p>
               <div className={landing.actions}>
                 <Link className={landing.primary} href="/login?mode=signup">

@@ -1,48 +1,57 @@
+/* Shared light-glass tool surface; all financial values retain their original semantics. */
 .root {
-  margin: 16px 0 24px;
-  padding: 0;
-  border-radius: 18px;
-  overflow: visible;
-  background: var(--card);
+  margin: 18px 0;
+  min-width: 0;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-panel);
   color: var(--ink);
+  box-shadow: var(--workspace-shadow);
 }
 .root header {
-  position: relative;
-  border-radius: 18px;
-  padding: 22px 26px;
-  background:
-    radial-gradient(ellipse at 80% 0, #edc17c18, transparent 60%), #24292a;
-  color: #f7f8f5;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--workspace-glass);
 }
 .root h2 {
-  font-size: clamp(25px, 2.5vw, 32px);
-  letter-spacing: -0.8px;
-  margin: 8px 0;
+  margin: 0 0 4px;
+  font-size: 18px;
+  letter-spacing: -0.025em;
+  color: var(--ink);
 }
 .root p {
-  font-size: 14px;
+  margin: 6px 0;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--muted);
-  margin: 8px 0;
 }
 .open {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  gap: 12px;
   flex-shrink: 0;
-  background: #edc17c;
-  color: #24272b;
+  min-height: 44px;
+  padding: 10px 16px;
   border: 0;
   border-radius: 10px;
-  min-height: 48px;
-  padding: 12px 20px;
+  background: var(--accent-solid);
+  color: #fff;
   font: inherit;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 650;
   cursor: pointer;
+}
+.open:hover {
+  filter: brightness(1.08);
+}
+.open:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 .content {
   padding: 24px;
@@ -127,249 +136,31 @@
   font-size: 12px !important;
   margin-top: 18px !important;
 }
+
 @media (max-width: 700px) {
   .root header {
-    padding: 22px;
-    display: block;
-  }
-  .root h2 {
-    font-size: 24px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
   }
   .open {
-    margin-top: 16px;
+    width: 100%;
+  }
+  .content {
+    padding: 16px;
   }
   .controls {
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
   .grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  .grid article {
-    padding-top: 16px;
-  }
-  .root {
-    margin: 18px 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
   }
 }
-
-.root header p {
-  color: #c4ccc5;
-  max-width: 55ch;
-}
-.root header :global(.eyebrow) {
-  color: #edc17c;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-}
-.root header h2 {
-  color: #f7f8f5;
-  line-height: 1.15;
-  margin: 10px 0;
-}
-.open:hover {
-  background: #e2fa85;
-}
-.open:focus-visible {
-  outline: 2px solid #f7f8f5;
-  outline-offset: 4px;
-}
-@media (max-width: 700px) {
-  .content {
-    padding: 18px;
-  }
-  .open {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
-.root header {
-  min-height: 200px;
-  isolation: isolate;
-  background:
-    radial-gradient(ellipse at 85% 0, #9fc5ed30, transparent 52%),
-    radial-gradient(ellipse at 25% 100%, #edc17c12, transparent 65%),
-    linear-gradient(125deg, #21292a, #2d2e50);
-  border: 1px solid #545b7e;
-  overflow: hidden;
-}
-.root header > div {
-  position: relative;
-  z-index: 1;
-  max-width: 640px;
-}
-.root header :global(.eyebrow) {
-  color: #edc17c;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-}
-.root header h2 {
-  color: #fff;
-  font-size: clamp(29px, 3vw, 42px);
-  margin: 12px 0;
-  line-height: 1.12;
-}
-.root header p {
-  color: #c8d6ce;
-  max-width: 56ch;
-  font-size: 14px;
-}
-.heroArt {
-  position: absolute;
-  width: 480px;
-  height: 200px;
-  right: 15%;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-.root .open {
-  position: relative;
-  z-index: 1;
-  background: linear-gradient(115deg, #def66b, #aee3b9);
-  box-shadow: 0 6px 25px #0002;
-  min-height: 50px;
-}
-@media (max-width: 700px) {
+@media (prefers-reduced-transparency: reduce) {
+  .root,
   .root header {
-    min-height: 0;
-    padding: 24px 20px;
-    gap: 22px;
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .heroArt {
-    right: -90px;
-    width: 400px;
-    opacity: 0.4;
-  }
-  .root .open {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
-.root header {
-  padding: 18px 22px;
-  min-height: 130px;
-  border-radius: 14px;
-}
-.root h2 {
-  font-size: 25px;
-  margin: 5px 0;
-  max-width: 32ch;
-}
-.root header p {
-  font-size: 12px;
-  max-width: 58ch;
-}
-.root .open {
-  min-height: 42px;
-  padding: 10px 16px;
-  font-size: 13px;
-}
-.root .heroArt {
-  opacity: 0.45;
-}
-@media (max-width: 600px) {
-  .root header {
-    padding: 18px;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .root h2 {
-    font-size: 22px;
-  }
-  .root .open {
-    min-height: 44px;
-  }
-}
-
-.root.root header {
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at 100% 0%, #7bbda14d, transparent 65%),
-    linear-gradient(125deg, #17292e, #27463f 62%, #3a4d35);
-}
-.root.root header :global(.eyebrow) {
-  color: #edc17c;
-}
-.root.root header p {
-  color: #d0ded4;
-}
-.root.root .heroArt {
-  opacity: 0.72;
-}
-.root {
-  margin: 14px 0 18px;
-}
-.root header {
-  min-height: 96px;
-  padding: 16px 22px;
-}
-.root header h2 {
-  font-size: 23px;
-  margin: 4px 0;
-}
-.root header p {
-  margin: 4px 0 0;
-  font-size: 12px;
-}
-@media (max-width: 600px) {
-  .root header {
-    min-height: 0;
-    padding: 18px;
-    gap: 14px;
-  }
-  .root header h2 {
-    font-size: 22px;
-  }
-}
-
-/* A compact tool row, not a second hero competing with the company grid. */
-.root {
-  margin: 18px 0 10px;
-  border-radius: 14px;
-}
-.root > header {
-  padding: 14px 18px;
-  border-radius: 14px;
-  gap: 16px;
-  color: var(--ink);
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--green) 7%, var(--card)),
-    var(--card)
-  );
-}
-.root > header h2 {
-  font-size: 17px;
-  letter-spacing: -0.02em;
-  margin: 0 0 4px;
-}
-.root > header p {
-  margin: 0;
-  font-size: 12px;
-  color: var(--muted);
-}
-.root > header .open {
-  min-height: 44px;
-  padding: 10px 16px;
-  font-size: 12px;
-}
-@media (max-width: 600px) {
-  .root > header {
-    align-items: start;
-    flex-direction: column;
-    padding: 14px;
-  }
-  .root > header .open {
-    align-self: stretch;
-    justify-content: center;
-  }
-  .content {
-    padding: 16px 14px;
+    background: var(--card);
   }
 }

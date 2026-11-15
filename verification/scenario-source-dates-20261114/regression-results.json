@@ -1,0 +1,25 @@
+{
+  "regressions": 4,
+  "before": {
+    "passed": 0,
+    "failed": 4,
+    "failures": [
+      "Old capitalization snapshot remained available",
+      "121-day snapshot remained available",
+      "February 30 established dataset age",
+      "February 30 fiscal period entered estimates"
+    ]
+  },
+  "after": {
+    "focusedTests": 29,
+    "passed": 29,
+    "failed": 0
+  },
+  "checks": [
+    "120-day boundary accepted, 121-day boundary rejected",
+    "Fresh synthetic revenue case arithmetic unchanged",
+    "Independent analyst consensus preserved when share snapshot rejected",
+    "Real leap day retained"
+  ],
+  "fixtureScope": "Synthetic source-validation tests, not fresh provider target validation"
+}

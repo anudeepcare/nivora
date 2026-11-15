@@ -1,0 +1,121 @@
+{
+  "noNetworkRequests": true,
+  "noFreshDcaComparison": true,
+  "archivedHistoryCases": [
+    {
+      "symbol": "IREN",
+      "scope": "Archived November 6 market history, replayed at that date after settlement. No financial evidence loaded; not a current company recommendation.",
+      "inputSha256": "396f8fa435869ffbf2da46aae4156bb6ae73cd3640413511b038e797df292d3c",
+      "asOf": "2026-11-06T22:05:00Z",
+      "expectedClose": 21.64,
+      "before": {
+        "technicalDate": "2026-11-05",
+        "technicalClose": 18.030001
+      },
+      "after": {
+        "technicalDate": "2026-11-06",
+        "technicalClose": 21.64,
+        "priceReference": 21.64,
+        "additionalTechnicalsDate": "2026-11-06",
+        "decision": "Review"
+      },
+      "passed": true
+    },
+    {
+      "symbol": "NBIS",
+      "scope": "Archived November 6 market history, replayed at that date after settlement. No financial evidence loaded; not a current company recommendation.",
+      "inputSha256": "db517577e231d55f97d502cd16a464923f29485dde9915288fdeca6512260efe",
+      "asOf": "2026-11-06T22:05:00Z",
+      "expectedClose": 129.49001,
+      "before": {
+        "technicalDate": "2026-11-05",
+        "technicalClose": 120.37
+      },
+      "after": {
+        "technicalDate": "2026-11-06",
+        "technicalClose": 129.49001,
+        "priceReference": 129.49001,
+        "additionalTechnicalsDate": "2026-11-06",
+        "decision": "Review"
+      },
+      "passed": true
+    },
+    {
+      "symbol": "HIMS",
+      "scope": "Archived November 6 market history, replayed at that date after settlement. No financial evidence loaded; not a current company recommendation.",
+      "inputSha256": "f0e05ebd83067f85483dbf483b4039f84955bb1ad9547825b4f5eed8744ecdb4",
+      "asOf": "2026-11-06T22:05:00Z",
+      "expectedClose": 26,
+      "before": {
+        "technicalDate": "2026-11-05",
+        "technicalClose": 24.059999
+      },
+      "after": {
+        "technicalDate": "2026-11-06",
+        "technicalClose": 26,
+        "priceReference": 26,
+        "additionalTechnicalsDate": "2026-11-06",
+        "decision": "Review"
+      },
+      "passed": true
+    },
+    {
+      "symbol": "CIFR",
+      "scope": "Archived November 6 market history, replayed at that date after settlement. No financial evidence loaded; not a current company recommendation.",
+      "inputSha256": "3a6f5e59ca8734064abd6c79c587bc82bac7e091e8421104d26dc8f8ec583b9e",
+      "asOf": "2026-11-06T22:05:00Z",
+      "expectedClose": 6.545,
+      "before": {
+        "technicalDate": "2026-11-05",
+        "technicalClose": 5.55
+      },
+      "after": {
+        "technicalDate": "2026-11-06",
+        "technicalClose": 6.545,
+        "priceReference": 6.545,
+        "additionalTechnicalsDate": "2026-11-06",
+        "decision": "Review"
+      },
+      "passed": true
+    }
+  ],
+  "capturedTargetCases": [
+    {
+      "symbol": "IREN",
+      "scope": "Nov14 captured provider target/profile normalization and consumption replay, with a minimal constructed Research wrapper; not full live E2E.",
+      "datasetAt": "2026-11-13T23:37:41Z",
+      "low": 23,
+      "consensus": 56.6874,
+      "high": 139,
+      "source": "SentiSense",
+      "noFinancialsDecision": "Review",
+      "staleTargetWithheld": true,
+      "passed": true
+    },
+    {
+      "symbol": "NBIS",
+      "scope": "Nov14 captured provider target/profile normalization and consumption replay, with a minimal constructed Research wrapper; not full live E2E.",
+      "datasetAt": "2026-11-13T23:37:41Z",
+      "low": 84,
+      "consensus": 271.2,
+      "high": 410,
+      "source": "SentiSense",
+      "noFinancialsDecision": "Review",
+      "staleTargetWithheld": true,
+      "passed": true
+    },
+    {
+      "symbol": "APP",
+      "scope": "Nov14 captured provider target/profile normalization and consumption replay, with a minimal constructed Research wrapper; not full live E2E.",
+      "datasetAt": "2026-11-13T14:12:52Z",
+      "low": 345,
+      "consensus": 449.6137,
+      "high": 600,
+      "source": "SentiSense",
+      "noFinancialsDecision": "Review",
+      "staleTargetWithheld": true,
+      "passed": true
+    }
+  ],
+  "auditDate": "2026-11-14"
+}
