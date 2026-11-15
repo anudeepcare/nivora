@@ -157,7 +157,8 @@ export function Portfolio() {
       <Coverage state={state} />
       {quotes.ready && positions.length > 0 && (
         <QuickRead
-          title="Your portfolio in 30 seconds"
+          title="Portfolio snapshot"
+          compact
           items={[
             ...(model.allocations[0]
               ? [

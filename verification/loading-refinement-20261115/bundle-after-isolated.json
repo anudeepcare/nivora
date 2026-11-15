@@ -1,0 +1,59 @@
+{
+  "method": "Production build of unmodified system-audit candidate plus only PublicLanding and ApprovedPortfolioChart loader edits. gzip level 9 per emitted file; not live transferred bytes or page timing.",
+  "common": {
+    "js": {
+      "files": 10,
+      "rawBytes": 755799,
+      "gzipBytes": 221686
+    },
+    "css": {
+      "files": 5,
+      "rawBytes": 913007,
+      "gzipBytes": 151292
+    }
+  },
+  "routes": {
+    "Home": {
+      "js": {
+        "files": 18,
+        "rawBytes": 2528130,
+        "gzipBytes": 683804
+      },
+      "css": {
+        "files": 8,
+        "rawBytes": 1026253,
+        "gzipBytes": 167722
+      }
+    },
+    "Research company": {
+      "js": {
+        "files": 17,
+        "rawBytes": 2820453,
+        "gzipBytes": 775034
+      },
+      "css": {
+        "files": 7,
+        "rawBytes": 1025709,
+        "gzipBytes": 166342
+      }
+    },
+    "Portfolio": {
+      "js": {
+        "files": 16,
+        "rawBytes": 2515936,
+        "gzipBytes": 677651
+      },
+      "css": {
+        "files": 7,
+        "rawBytes": 1057213,
+        "gzipBytes": 171347
+      }
+    }
+  },
+  "catchAll": {
+    "path": ".next/static/chunks/app/[[...route]]/page-f1261fc4241cdb0d.js",
+    "sha256": "73afed3c5d7a72d8b1278a579e9ea28bf13b5cd342ac6e21192a8b39b2e5bc72",
+    "rawBytes": 48661,
+    "gzipBytes": 14771
+  }
+}

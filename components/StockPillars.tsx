@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import type { aurynDecision } from "@/lib/auryn-decision";
 import { stockPillars } from "@/lib/stock-pillars";
-import { priceAmount, percent } from "@/lib/format";
+import { priceAmount, percent, dateLabel } from "@/lib/format";
+import { consensusOutlook } from "@/lib/outlook";
 import s from "./StockPillars.module.css";
 
 const mark = {
@@ -26,15 +27,22 @@ export default function StockPillars({
     () => stockPillars(research, decision),
     [research, decision],
   );
+  const consensus = useMemo(() => consensusOutlook(research), [research]);
   if (!view) return null;
+  const analystRange = view.cases?.kind === "analyst";
+  const rangeTitle = analystRange
+    ? "Analyst target range"
+    : "Bear, base & bull";
   return (
     <section
       className={s.root}
-      aria-label={casesOnly ? "Bear, base and bull" : "The case in plain words"}
+      aria-label={casesOnly ? rangeTitle : "The case in plain words"}
     >
       <header>
-        <span className={s.eyebrow}>Valuation scenarios</span>
-        <h2>Bear, base &amp; bull</h2>
+        <span className={s.eyebrow}>
+          {analystRange ? "Analyst opinion" : "Conditional valuation"}
+        </span>
+        <h2>{rangeTitle}</h2>
       </header>
       {view.cases && (
         <div className={s.cases}>
@@ -42,7 +50,15 @@ export default function StockPillars({
             const c = view.cases!;
             return (
               <div key={name} data-case={name}>
-                <small>{name[0].toUpperCase() + name.slice(1)} case</small>
+                <small>
+                  {analystRange
+                    ? {
+                        bear: "Low target",
+                        base: "Consensus",
+                        bull: "High target",
+                      }[name]
+                    : `${name[0].toUpperCase() + name.slice(1)} case`}
+                </small>
                 <strong>{priceAmount(c[name], c.currency)}</strong>
                 {c.price != null && (
                   <span>{percent((c[name] / c.price - 1) * 100, true)}</span>
@@ -55,12 +71,30 @@ export default function StockPillars({
             {view.cases.price != null
               ? ` · ${view.cases.referenceBasis === "settled-close" ? "settled close" : "quote"} ${priceAmount(view.cases.price, view.cases.currency)}`
               : ""}
+            {analystRange && consensus?.referenceAsOf
+              ? ` · ${dateLabel(consensus.referenceAsOf)}`
+              : ""}
             {view.cases.position === "above-bull"
-              ? " · the price is above even the bull case."
+              ? analystRange
+                ? " · the price is above the high analyst target."
+                : " · the price is above even the bull case."
               : view.cases.position === "below-bear"
-                ? " · the price is below even the bear case."
+                ? analystRange
+                  ? " · the price is below the low analyst target."
+                  : " · the price is below even the bear case."
                 : "."}
           </p>
+          {analystRange && (
+            <p>
+              {consensus?.analysts != null
+                ? `${consensus.analysts} analysts · `
+                : ""}
+              Analyst opinion, not AURYN fair value or a promised return;
+              individual target revision dates and forecast horizon are not
+              supplied. Conditional models and historical price risk are
+              separate views.
+            </p>
+          )}
         </div>
       )}
       {!view.cases && (

@@ -260,15 +260,15 @@ function HomeOverview() {
           now={today.getTime()}
         />
       )}
-      <ContributionCompare symbols={symbols} prefix={prefix} />
       <HomeMarketCards
         symbols={symbols}
         quotes={quotes.data}
         research={loadedResearch}
         prefix={prefix}
       />
-      <p>
-        <Link className="btn primary" href={`${prefix}/monthly-plan`}>
+      <ContributionCompare symbols={symbols} prefix={prefix} />
+      <p className={homeStyles.planLink}>
+        <Link className="text-link" href={`${prefix}/monthly-plan`}>
           Build this month’s research plan →
         </Link>
       </p>
@@ -445,8 +445,6 @@ function HomeOverview() {
                 </button>
               )}
             </section>
-          </div>
-          <div className="home-evidence-layout home-secondary-layout">
             <section
               className="home-evidence-panel home-news-panel"
               aria-label="What changed"
@@ -514,8 +512,8 @@ function HomeOverview() {
                 </button>
               )}
             </section>
-            <PaceBoard {...state.paceScan} prefix={prefix} />
           </div>
+          <PaceBoard {...state.paceScan} prefix={prefix} />
         </>
       )}
     </section>

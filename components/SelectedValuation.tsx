@@ -152,7 +152,7 @@ export default function SelectedValuation({
         <header className={s.heading}>
           <div>
             <span className={s.eyebrow}>AURYN valuation</span>
-            <h2>Bear, base &amp; bull</h2>
+            <h2>Conditional valuation</h2>
           </div>
           <span className={s.status}>Inputs needed</span>
           {actions}
@@ -232,9 +232,20 @@ export default function SelectedValuation({
       <header className={s.heading}>
         <div>
           <span className={s.eyebrow}>
-            {lead ? lead.eyebrow : "AURYN valuation"}
+            {lead ? lead.eyebrow : "Model assumptions"}
           </span>
-          <h2>Bear, base &amp; bull</h2>
+          <h2>
+            {lead
+              ? lead.eyebrow
+              : v.basis === "cash-flow"
+                ? "Cash-flow model values"
+                : projection.available &&
+                    projection.multipleSource === "price-implied"
+                  ? "Price-anchored earnings scenarios"
+                  : projection.available && projection.basis === "revenue"
+                    ? "Conditional revenue scenarios"
+                    : "Conditional earnings scenarios"}
+          </h2>
           {!lead && projection.available && ends.length > 1 && (
             <div
               className={s.years}

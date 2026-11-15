@@ -106,10 +106,15 @@ function find(tree, predicate) {
   ];
 }
 const turn = () => new Promise((resolve) => setImmediate(resolve));
-test("switching market references during a pending holding fetch retains shared history", async () => {
+function portfolioHarness() {
   const cache = new Map();
   const pending = [];
-  class ApiError extends Error {}
+  class ApiError extends Error {
+    constructor(message, status) {
+      super(message);
+      this.status = status;
+    }
+  }
   const app = harness({
     "@/lib/history-batch": batch,
     "@/lib/customer-language": language,
@@ -134,6 +139,10 @@ test("switching market references during a pending holding fetch retains shared 
         }),
     },
   });
+  return { app, cache, pending, ApiError };
+}
+test("switching market references during a pending holding fetch retains shared history", async () => {
+  const { app, pending } = portfolioHarness();
   const positions = [
     { symbol: "A", quantity: 2, cost: 50, currency: "USD", assetType: "stock" },
   ];
@@ -143,13 +152,27 @@ test("switching market references during a pending holding fetch retains shared 
   };
   let tree = app.render(props);
   await turn();
-  assert.equal(pending[0].path, "chart/A?range=6M");
+  assert.equal(
+    pending[0].path,
+    "chart/SPY?range=6M",
+    "the displayed benchmark must not wait behind every holding",
+  );
+  assert.equal(pending.length, 1, "history loading keeps one active request");
+  pending[0].resolve({
+    candles: [
+      { time: "2026-10-01", close: 200 },
+      { time: "2026-10-02", close: 210 },
+    ],
+    source: "Fixture benchmark",
+  });
+  await turn();
+  assert.equal(pending[1].path, "chart/A?range=6M");
   find(tree, (node) => node.type === "select")[0].props.onChange({
     target: { value: "QQQ" },
   });
   tree = app.render(props);
   await turn();
-  pending[0].resolve({
+  pending[1].resolve({
     candles: [
       { time: "2026-10-01", close: 100 },
       { time: "2026-10-02", close: 110 },
@@ -158,7 +181,7 @@ test("switching market references during a pending holding fetch retains shared 
   });
   await turn();
   await turn();
-  for (const request of pending.slice(1))
+  for (const request of pending.slice(2))
     request.resolve({
       candles: [
         { time: "2026-10-01", close: 200 },
@@ -176,4 +199,84 @@ test("switching market references during a pending holding fetch retains shared 
   const slider = find(tree, (node) => node.props?.role === "slider")[0];
   assert.ok(slider, "switching benchmark must not lose the holding history");
   assert.match(slider.props["aria-valuetext"], /QQQ/);
+});
+
+const holdingProps = (symbol = "A") => ({
+  positions: [
+    { symbol, quantity: 2, cost: 50, currency: "USD", assetType: "stock" },
+  ],
+  quotes: { [symbol]: { quote: { currency: "USD", price: 110 } } },
+});
+const historyReply = {
+  candles: [
+    { time: "2026-10-01", close: 100 },
+    { time: "2026-10-02", close: 110 },
+  ],
+  source: "Fixture",
+};
+test("an unavailable benchmark does not block or discard usable holdings history", async () => {
+  const { app, pending } = portfolioHarness();
+  const props = holdingProps();
+  app.render(props);
+  await turn();
+  assert.equal(pending[0].path, "chart/SPY?range=6M");
+  pending[0].reject(new Error("Source temporarily unavailable"));
+  await turn();
+  assert.equal(pending[1].path, "chart/A?range=6M");
+  pending[1].resolve(historyReply);
+  await turn();
+  const tree = app.render(props);
+  assert.ok(
+    find(tree, (node) => node.props?.role === "slider").length,
+    "the available holding series is still interactive",
+  );
+  assert.equal(
+    find(
+      tree,
+      (node) =>
+        node.type === "button" &&
+        node.props?.children === "Retry missing history",
+    ).length,
+    1,
+  );
+});
+for (const status of [401, 403, 429]) {
+  test(`history queue stops after ${status} without requesting additional holdings`, async () => {
+    const { app, pending, ApiError } = portfolioHarness();
+    app.render(holdingProps());
+    await turn();
+    pending[0].reject(new ApiError("Access or budget unavailable", status));
+    await turn();
+    assert.equal(pending.length, 1);
+  });
+}
+test("a held benchmark is loaded once and reused for both series", async () => {
+  const { app, pending } = portfolioHarness();
+  const props = holdingProps("SPY");
+  app.render(props);
+  await turn();
+  assert.equal(pending[0].path, "chart/SPY?range=6M");
+  pending[0].resolve(historyReply);
+  await turn();
+  const tree = app.render(props);
+  assert.equal(pending.length, 1);
+  const slider = find(tree, (node) => node.props?.role === "slider")[0];
+  assert.ok(slider);
+  assert.match(slider.props["aria-valuetext"], /SPY/);
+});
+test("cached benchmarks bypass network and an empty portfolio requests no histories", async () => {
+  const { app, pending, cache } = portfolioHarness();
+  cache.set("chart/SPY?range=6M", { at: Date.now(), value: historyReply });
+  app.render(holdingProps());
+  await turn();
+  assert.deepEqual(
+    pending.map((r) => r.path),
+    ["chart/A?range=6M"],
+  );
+  pending[0].resolve(historyReply);
+  await turn();
+  const empty = portfolioHarness();
+  empty.app.render({ positions: [], quotes: {} });
+  await turn();
+  assert.equal(empty.pending.length, 0);
 });

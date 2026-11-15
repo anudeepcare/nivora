@@ -204,6 +204,9 @@ test("Overview range and freshness captions distinguish selected targets from EO
   assert.match(html, /SentiSense/);
   assert.match(html, /2026-11-13/);
   assert.match(html, /Dataset updated/);
+  assert.match(html, /19 analysts/);
+  assert.match(html, /individual target revision dates/);
+  assert.match(html, /forecast horizon are not supplied/);
   const Freshness = component("components/ResearchBrief.tsx", "DataFreshness");
   const fresh = renderToStaticMarkup(
     React.createElement(Freshness, { research: r, now, decision }),
@@ -212,4 +215,33 @@ test("Overview range and freshness captions distinguish selected targets from EO
   assert.match(fresh, /Nov 13, 2026/);
   assert.match(fresh, /EODHD estimates\/ratings/);
   assert.match(fresh, /Nov 12, 2026/);
+});
+
+test("analyst low consensus high values are not labelled as model bear base bull cases", () => {
+  const r = structuredClone(demoData.research.MSFT);
+  r.evidence = {
+    ...r.evidence,
+    updatedAt: r.retrievedAt,
+    consensus: { low: 80, target: 120, high: 160, currency: "USD" },
+  };
+  const decision = decisions.aurynDecision(r, {
+    now: Date.parse(r.retrievedAt),
+  });
+  const Pillars = component("components/StockPillars.tsx");
+  const html = renderToStaticMarkup(
+    React.createElement(Pillars, { research: r, decision, casesOnly: true }),
+  );
+  assert.match(html, /Analyst target range/);
+  assert.match(html, />Low target</);
+  assert.match(html, />Consensus</);
+  assert.match(html, />High target</);
+  assert.doesNotMatch(html, /Bear case|Base case|Bull case/);
+  const c = outlook.consensusOutlook(r);
+  assert.ok(c.referenceAsOf);
+  assert.ok(html.includes(format.dateLabel(c.referenceAsOf)));
+  const full = renderToStaticMarkup(
+    React.createElement(Pillars, { research: r, decision }),
+  );
+  assert.doesNotMatch(full, /price is above the bull case/);
+  assert.match(full, /above the high analyst target/);
 });

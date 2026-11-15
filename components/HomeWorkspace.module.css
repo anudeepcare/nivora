@@ -907,3 +907,35 @@
     padding: 16px 14px;
   }
 }
+
+/* Keep the first viewport useful and give events and news one coordinated row. */
+.greeting :global(.page-heading),
+.greeting :global(.workspace-heading) {
+  margin-bottom: 14px;
+}
+.greeting h1 {
+  font-size: clamp(25px, 2.4vw, 34px);
+  line-height: 1.2;
+}
+.quickLinks {
+  margin-block: 14px 18px;
+}
+.planLink {
+  margin: 8px 0 18px;
+  font-size: 13px;
+}
+.home.home.home.home :global(.home-evidence-layout) {
+  align-items: start;
+}
+.home.home.home.home :global(.home-quiet-state) {
+  padding: 12px 0;
+  gap: 8px;
+}
+.home.home.home.home :global(.home-quiet-state) p {
+  font-size: 13px;
+}
+@media (min-width: 1100px) {
+  .home.home.home.home :global(.home-news-panel .home-news-list) {
+    display: block;
+  }
+}

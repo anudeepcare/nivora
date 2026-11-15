@@ -125,3 +125,39 @@
     width: 30px;
   }
 }
+
+/* Portfolio uses one quiet evidence row, with every value and explanation intact. */
+.root.compact {
+  margin: 12px 0 18px;
+}
+.root.compact h3 {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.root.compact .grid {
+  gap: 12px 24px;
+}
+.root.compact .grid article {
+  padding: 8px 0;
+  border-radius: 0;
+  background: transparent;
+  gap: 10px;
+}
+.root.compact .grid strong {
+  font-size: 15px;
+}
+.root.compact .grid p {
+  font-size: 12px;
+  line-height: 1.45;
+}
+.root.compact .icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+@media (max-width: 650px) {
+  .root.compact .grid {
+    gap: 6px;
+  }
+}

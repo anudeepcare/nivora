@@ -27,6 +27,11 @@ export default function ValueStudio({
   onWorkbench: () => void;
 }) {
   const d = useMemo(() => valueDesk(r), [r]);
+  const consensus = useMemo(() => consensusOutlook(r), [r]);
+  // A complete range is already shown by StockPillars. Keep a separate
+  // consensus card only when it adds an observation with missing bounds.
+  const showConsensus =
+    !!consensus && (consensus.low == null || consensus.high == null);
   const methods = useMemo(() => modelAssessment(r), [r]);
   const decision = useMemo(
     () =>
@@ -46,7 +51,7 @@ export default function ValueStudio({
   return (
     <div
       className={`${layout.root} value-studio depth-value`}
-      data-has-consensus={!!consensusOutlook(r)}
+      data-has-consensus={showConsensus}
     >
       <section className={layout.calculator} aria-label="What the price needs">
         <DecisionInsights
@@ -66,7 +71,7 @@ export default function ValueStudio({
           <ScenarioLenses research={r} decision={decision} />
         </details>
       </div>
-      {consensusOutlook(r) && (
+      {showConsensus && (
         <div className={layout.consensus}>
           <AnalystTargets research={r} />
         </div>

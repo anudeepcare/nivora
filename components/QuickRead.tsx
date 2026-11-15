@@ -10,13 +10,18 @@ export type QuickReadItem = {
 export default function QuickRead({
   title = "At a glance",
   items,
+  compact = false,
 }: {
   title?: string;
   items: QuickReadItem[];
+  compact?: boolean;
 }) {
   if (!items.length) return null;
   return (
-    <section className={s.root} aria-label={title}>
+    <section
+      className={`${s.root}${compact ? ` ${s.compact}` : ""}`}
+      aria-label={title}
+    >
       <h3>{title}</h3>
       <div className={s.grid}>
         {items.map(({ label, value, detail, tone = "neutral" }) => {

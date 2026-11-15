@@ -40,7 +40,8 @@ import { researchPeriods } from "../lib/financial-catalog.ts";
 import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
-  bindings = { studyMarket,
+  bindings = {
+    studyMarket,
     revenueSensitivity: () => ({ available: false }),
     RevenueSensitivityCases: () => null,
     QuickRead: () => null,
@@ -2073,10 +2074,12 @@ test("shared scenario surface keeps conditional horizons visible and all views u
   assert.match(html, /Base model value/);
   assert.match(html, /Bull model value/);
   assert.match(html, /ten-year cash-flow/);
+  assert.match(html, /Cash-flow model values/);
   assert.equal((html.match(/data-case=/g) || []).length, 3);
   d.valuation = { ...d.valuation, basis: "earnings", end: "2029-12-31" };
   html = render();
   assert.match(html, /Bear scenario/);
+  assert.match(html, /Conditional earnings scenarios/);
   assert.match(html, /2029/);
   assert.match(html, /not independent fair value/);
   d.valuation = null;

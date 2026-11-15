@@ -1,6 +1,10 @@
 "use client";
 import { ContextLink } from "./ContextLink";
-import PaceInstrument from "./PaceInstrument";
+import dynamic from "next/dynamic";
+// The illustrative Pace tab does not need the stock classifiers until opened.
+const PaceInstrument = dynamic(() => import("./PaceInstrument"), {
+  loading: () => <p role="status">Opening the Pace guide…</p>,
+});
 import experience from "./IntegratedExperience.module.css";
 import landing from "./PublicLanding.module.css";
 import { PrivacyChoices } from "./AnalyticsConsent";

@@ -69,7 +69,9 @@ export default function ApprovedPortfolioChart({
   useEffect(() => {
     let active = true;
     const saved: WorkspaceHistory = {};
-    const selected = key ? [...new Set([...key.split(","), benchmark])] : [];
+    // Fetch the comparison first rather than behind the entire holdings queue.
+    // Keep one request at a time and the same total budget and coverage rules.
+    const selected = key ? [...new Set([benchmark, ...key.split(",")])] : [];
     for (const symbol of selected) {
       const research =
         demo?.research[symbol] ??

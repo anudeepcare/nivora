@@ -196,18 +196,80 @@ test("company metrics show every selected available metric without an expand but
 
 test("restored lower grid renders real metric rows and category navigation without a disclosure", async () => {
   const source = fs.readFileSync("components/ResearchEvidenceGrid.tsx", "utf8");
-  const ast = ts.createSourceFile("grid.tsx",source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
-  const fn = ast.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text==='ResearchEvidenceGrid');
-  const code = ts.transpileModule(fn.getText(ast).replace('export default ',''),{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.CommonJS}}).outputText;
-  const {overviewEvidence}=await import('../lib/overview-evidence.ts');
-  const format=await import('../lib/format.ts');
-  const r=JSON.parse(fs.readFileSync('tests/fixtures/iren-observed-20261019.json','utf8'));
-  const scope={React,useMemo:f=>f(),useWorkspacePreferences:()=>({preferences:{visibleMetrics:['business','valuation','price','ownership']}}),overviewEvidence,...format,s:{},Help:({trigger})=>React.createElement('span',null,trigger),Building2:()=>null,Scale:()=>null,Activity:()=>null,Users:()=>null,ArrowUpRight:()=>null};
-  const Grid=new Function(...Object.keys(scope),code+';return ResearchEvidenceGrid;')(...Object.values(scope));
-  const html=renderToStaticMarkup(React.createElement(Grid,{research:r,onTab:()=>{}}));
-  const e=overviewEvidence(r);
-  assert.ok(e.valuation.length>0);
-  for(const row of e.valuation.slice(0,3))assert.ok(html.includes(row.label),row.label);
-  assert.match(html,/Open Valuation/);
-  assert.doesNotMatch(html,/<details|<summary/);
+  const ast = ts.createSourceFile(
+    "grid.tsx",
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const fn = ast.statements.find(
+    (n) =>
+      ts.isFunctionDeclaration(n) && n.name?.text === "ResearchEvidenceGrid",
+  );
+  const code = ts.transpileModule(
+    fn.getText(ast).replace("export default ", ""),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.React,
+        module: ts.ModuleKind.CommonJS,
+      },
+    },
+  ).outputText;
+  const { overviewEvidence } = await import("../lib/overview-evidence.ts");
+  const format = await import("../lib/format.ts");
+  const r = JSON.parse(
+    fs.readFileSync("tests/fixtures/iren-observed-20261019.json", "utf8"),
+  );
+  const scope = {
+    React,
+    useMemo: (f) => f(),
+    useWorkspacePreferences: () => ({
+      preferences: {
+        visibleMetrics: ["business", "valuation", "price", "ownership"],
+      },
+    }),
+    overviewEvidence,
+    ...format,
+    s: {},
+    Help: ({ trigger }) => React.createElement("span", null, trigger),
+    Building2: () => null,
+    Scale: () => null,
+    Activity: () => null,
+    Users: () => null,
+    ArrowUpRight: () => null,
+  };
+  const Grid = new Function(
+    ...Object.keys(scope),
+    code + ";return ResearchEvidenceGrid;",
+  )(...Object.values(scope));
+  const html = renderToStaticMarkup(
+    React.createElement(Grid, { research: r, onTab: () => {} }),
+  );
+  const e = overviewEvidence(r);
+  assert.ok(e.valuation.length > 0);
+  for (const row of e.valuation.slice(0, 3))
+    assert.ok(html.includes(row.label), row.label);
+  assert.match(html, /Open Valuation/);
+  assert.doesNotMatch(html, /<details|<summary/);
+});
+
+// Text inside a closed <details> is present in server HTML but not exposed to a user.
+function withoutCollapsedContents(tree) {
+  if (Array.isArray(tree)) return tree.map(withoutCollapsedContents);
+  if (!React.isValidElement(tree)) return tree;
+  const children = React.Children.toArray(tree.props.children);
+  const exposed =
+    tree.type === "details" && !tree.props.open
+      ? children.filter(
+          (child) => React.isValidElement(child) && child.type === "summary",
+        )
+      : children;
+  return React.cloneElement(tree, {}, ...exposed.map(withoutCollapsedContents));
+}
+test("overview metric grids have no closed disclosure ancestor", () => {
+  const { render } = setup();
+  const visible = renderToStaticMarkup(withoutCollapsedContents(render()));
+  assert.match(visible, /contextual company metrics/);
+  assert.match(visible, /all evidence/);
 });

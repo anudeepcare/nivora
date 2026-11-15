@@ -176,7 +176,7 @@ export default function TargetsEstimates({
                   min="0.1"
                   max="500"
                   step="0.1"
-                  placeholder="Use reported P/E"
+                  placeholder="Model default"
                   value={multipleValue}
                   onChange={(event) =>
                     setMultipleInput({
@@ -197,7 +197,11 @@ export default function TargetsEstimates({
                 </div>
                 <div>
                   <dt>Estimate horizon</dt>
-                  <dd>Nearest eligible 3-year</dd>
+                  <dd>
+                    {multipleValue && forecast.available
+                      ? dateLabel(forecast.end)
+                      : "Dated with the scenario below"}
+                  </dd>
                 </div>
                 <div>
                   <dt>Dataset updated</dt>
@@ -220,8 +224,9 @@ export default function TargetsEstimates({
                 <p className={styles.note}>
                   The earnings cases use 0.8× / 1.0× / 1.2× the selected
                   multiple. Changing this input does not change analyst
-                  consensus. The nearest eligible three-year estimate supplies
-                  the horizon; EPS period, accounting and split basis need
+                  consensus. Model defaults may use a price-implied multiple
+                  when the reported multiple is inconsistent. Each range names
+                  its fiscal end; EPS period, accounting and split basis need
                   verification.
                 </p>
               </details>
@@ -294,10 +299,6 @@ export default function TargetsEstimates({
         )}
         {active === 3 && (
           <>
-            <div className={styles.subhead}>
-              <h3>Historical price risk</h3>
-              <span>Empirical price outcomes · not valuation</span>
-            </div>
             <p className={styles.note}>
               These cases reuse past price movements. They do not substitute for
               missing analyst targets or AURYN earnings forecasts.

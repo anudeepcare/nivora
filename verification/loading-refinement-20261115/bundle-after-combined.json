@@ -1,0 +1,59 @@
+{
+  "method": "Final combined November 15 UX refinement production build. gzip level 9 per emitted file; not live transferred bytes or page timing.",
+  "common": {
+    "js": {
+      "files": 10,
+      "rawBytes": 755799,
+      "gzipBytes": 221688
+    },
+    "css": {
+      "files": 5,
+      "rawBytes": 913007,
+      "gzipBytes": 151292
+    }
+  },
+  "routes": {
+    "Home": {
+      "js": {
+        "files": 18,
+        "rawBytes": 2527306,
+        "gzipBytes": 683573
+      },
+      "css": {
+        "files": 8,
+        "rawBytes": 1028038,
+        "gzipBytes": 167894
+      }
+    },
+    "Research company": {
+      "js": {
+        "files": 17,
+        "rawBytes": 2821068,
+        "gzipBytes": 775219
+      },
+      "css": {
+        "files": 7,
+        "rawBytes": 1023820,
+        "gzipBytes": 165959
+      }
+    },
+    "Portfolio": {
+      "js": {
+        "files": 16,
+        "rawBytes": 2516033,
+        "gzipBytes": 677686
+      },
+      "css": {
+        "files": 7,
+        "rawBytes": 1055324,
+        "gzipBytes": 170964
+      }
+    }
+  },
+  "catchAll": {
+    "path": ".next/static/chunks/app/[[...route]]/page-33711de1e499b1fa.js",
+    "sha256": "2615d8c6667d5444e272f3c59706bf763f2f9fd909e5646380f72167e711e3cc",
+    "rawBytes": 48661,
+    "gzipBytes": 14771
+  }
+}

@@ -26,6 +26,7 @@ export type StockPillars = {
   exitWatch: { level: "trim" | "thesis"; text: string } | null;
   /** Bear / base / bull beside the call, with their named source. */
   cases: {
+    kind: "model" | "analyst" | "history";
     bear: number;
     base: number;
     bull: number;
@@ -341,7 +342,7 @@ export function stockPillars(r: Research, d: Decision): StockPillars | null {
         : stretched
           ? {
               level: "trim",
-              text: "Size check: the price is above the bull case. In the record, sound businesses that were stretched kept rising more often than not, so this is not a signal to sell. Check only whether the position has grown beyond the size you intended.",
+              text: `Size check: the price is above the ${range?.kind === "analyst" ? "high analyst target" : "bull case"}. In the record, sound businesses that were stretched kept rising more often than not, so this is not a signal to sell. Check only whether the position has grown beyond the size you intended.`,
             }
           : null;
   return {
