@@ -1,5 +1,5 @@
 .root :global(.analyst-target-range section) {
-  --target-color: #a38232;
+  --target-color: var(--neutral);
   padding: 16px;
   border: 1px solid color-mix(in srgb, var(--target-color) 28%, var(--line));
   border-top: 3px solid var(--target-color);
@@ -7,10 +7,10 @@
   background: color-mix(in srgb, var(--target-color) 6%, var(--surface));
 }
 .root :global(.analyst-target-range) [data-target="Low"] {
-  --target-color: #c65050;
+  --target-color: var(--negative);
 }
 .root :global(.analyst-target-range) [data-target="High"] {
-  --target-color: #00866b;
+  --target-color: var(--positive);
 }
 @media (max-width: 540px) {
   .root :global(.analyst-target-range > div) {
@@ -23,11 +23,7 @@
   padding: 20px;
   border: 0;
   border-radius: 18px;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--green) 7%, var(--card)),
-    var(--card)
-  );
+  background: var(--workspace-panel);
 }
 .root.root.root :global(.analyst-target-kicker) {
   display: block;
@@ -106,4 +102,13 @@
     font-size: 23px;
     margin-left: auto;
   }
+}
+
+.root.root.root[data-embedded="true"] {
+  margin: 0;
+  padding: 0 0 var(--workspace-inset);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }

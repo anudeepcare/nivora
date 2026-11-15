@@ -274,7 +274,7 @@ function StoreProvider({
       document
         .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
         .forEach((meta) => {
-          meta.content = value === "dark" ? "#24272b" : "#f7f8f5";
+          meta.content = value === "dark" ? "#18243a" : "#edf2fc";
           meta.removeAttribute("media");
         });
       setThemeState(value);

@@ -28,7 +28,7 @@ test('current shell reserves notch space and shares browser chrome colors in bot
  const foundation = postcss.parse(read('app/core/tokens.css'));
  const colors=[];
  foundation.walkDecls('--chrome-surface', d=>colors.push(d.value));
- assert.deepEqual(colors,['#f7f8f5','#24272b']);
+ assert.deepEqual(colors,['#edf2fc','#18243a']);
  for(const file of ['app/layout.tsx','components/Pwa.tsx','components/Session.tsx']) {
   assert.ok(read(file).includes(colors[0]),`${file} must match light header`);
   assert.ok(read(file).includes(colors[1]),`${file} must match dark header`);
@@ -37,7 +37,7 @@ test('current shell reserves notch space and shares browser chrome colors in bot
  assert.equal(JSON.parse(read('public/manifest.webmanifest')).theme_color,colors[0]);
  const shell=read('components/WorkspaceShell.module.css');
  assert.match(shell,/padding-top:\s*calc\(10px \+ env\(safe-area-inset-top/);
- assert.match(shell,/:global\(\.keyboard-open\) \.dock\s*\{\s*display:\s*none/);
- assert.match(shell,/padding-left:\s*max\(16px,\s*env\(safe-area-inset-left/);
+ assert.match(shell,/:global\(\.keyboard-open\) \.shell \.dock\s*\{\s*display:\s*none/);
+ assert.match(shell,/padding-left:\s*max\(14px,\s*env\(safe-area-inset-left/);
  assert.match(read('app/layout.tsx'),/viewportFit: "cover"/);
 });

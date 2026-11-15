@@ -50,7 +50,7 @@
   padding: var(--workspace-inset, 24px);
   border: 0;
   border-radius: var(--workspace-radius, 24px);
-  background: var(--workspace-glass, var(--card));
+  background: var(--workspace-panel);
   box-shadow:
     var(--workspace-shadow, 0 4px 24px #17342c06),
     inset 0 0 0 1px var(--workspace-edge, #ffffff50);
@@ -155,7 +155,7 @@
 .content.content.content :global(.thesis-checkpoints .step) {
   padding: 14px;
   border: 0;
-  background: var(--workspace-glass, var(--card));
+  background: var(--workspace-panel);
   border-radius: 12px;
 }
 .content.content.content :global(.depth-business .business-context-layout) {
@@ -253,7 +253,7 @@
   margin: 0;
   border: 0;
   border-radius: var(--workspace-radius, 24px);
-  background: var(--workspace-glass, var(--card));
+  background: var(--workspace-panel);
 }
 .content.content.content :global(.au-panel-head) {
   margin: 0 0 12px;
@@ -340,7 +340,7 @@
   margin: 0;
   border: 0;
   border-radius: 14px;
-  background: var(--workspace-glass, var(--card));
+  background: var(--workspace-panel);
 }
 .content.content.content :global(.technical-desk-groups) {
   display: grid;
@@ -354,7 +354,7 @@
   padding: 18px;
   border: 0;
   border-radius: 16px;
-  background: var(--workspace-glass, var(--card));
+  background: var(--workspace-panel);
 }
 .content.content.content :global(.technical-desk-groups header p) {
   font-size: 12px;
@@ -435,7 +435,7 @@
   padding: 18px;
   border: 0;
   border-radius: 16px;
-  background: var(--workspace-glass, var(--card));
+  background: var(--workspace-panel);
 }
 .content.content.content[data-desk="Advanced"] :global(.advanced-measurements) {
   padding: 18px;
@@ -488,7 +488,7 @@
 .content.content.content :global(.analyst-empty) {
   padding: 18px;
   border-radius: 16px;
-  background: var(--workspace-glass, var(--card));
+  background: var(--workspace-panel);
 }
 .content.content.content :global(.analyst-empty h3) {
   font-size: 16px;
@@ -719,4 +719,50 @@
   box-shadow:
     inset 0 1px 0 #ffffff25,
     0 4px 20px #17342c04;
+}
+
+/* The container supplies the glass. Nested tools keep its surface, not another card. */
+.content.content.content :global(.case-ownership-row > *) {
+  padding: var(--workspace-inset);
+  border: 0;
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-panel);
+  box-shadow: var(--workspace-shadow);
+}
+.content.content.content :global(.case-ownership-row) {
+  gap: var(--workspace-gap);
+  align-items: start;
+}
+.content.content.content :global(.ask-auryn .prompt-row) {
+  display: grid;
+  gap: 10px;
+}
+.content.content.content :global(.ask-auryn .prompt-row button) {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: var(--workspace-control);
+  color: var(--ink);
+  border-radius: 12px;
+}
+.content.content.content :global(.research-reference),
+.content.content.content :global(.edge-method) {
+  padding-inline: var(--workspace-inset);
+  background: var(--workspace-panel);
+  border-radius: var(--workspace-radius);
+}
+.content.content.content :global(.edge-method > section) {
+  padding: 12px 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.content.content.content :global(.earnings-kpis > div) {
+  border: 0;
+  background: var(--workspace-tile);
+  box-shadow: inset 0 0 0 1px var(--workspace-edge);
 }

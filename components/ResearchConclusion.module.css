@@ -3,19 +3,10 @@
   color: var(--ink);
   padding: var(--workspace-inset, 24px);
   border-radius: var(--workspace-radius, 24px);
-  background: linear-gradient(
-    115deg,
-    color-mix(
-      in srgb,
-      var(--workspace-accent, #a2afe4) 5%,
-      var(--workspace-glass, var(--card))
-    ),
-    color-mix(in srgb, var(--card) 95%, transparent) 70%
-  );
+  background: var(--workspace-panel);
   box-shadow:
     var(--workspace-shadow, var(--panel-shadow)),
     inset 0 0 0 1px var(--workspace-edge, #ffffff50);
-  backdrop-filter: blur(14px);
 }
 .root header {
   display: flex;
@@ -67,7 +58,7 @@
   font-weight: 650;
 }
 .risks h3 {
-  color: color-mix(in srgb, #ac7828 85%, var(--ink));
+  color: var(--warning);
 }
 .conditions h3 {
   color: var(--green);

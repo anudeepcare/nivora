@@ -1,0 +1,102 @@
+{
+  "date": "2026-11-15",
+  "status": "source-candidate-not-visual-accepted",
+  "baseline": "AURYN-refined-glass-workspace-20261115.zip",
+  "checks": {
+    "npm run verify": {
+      "status": "passed",
+      "unitTests": 1550,
+      "failures": 0,
+      "stages": [
+        "lint",
+        "format:check",
+        "test",
+        "typecheck",
+        "build"
+      ]
+    },
+    "npm run test:api": {
+      "status": "passed",
+      "scope": "controlled fixtures, no live provider or account writes",
+      "productionFileTraces": 56
+    },
+    "independentReview": {
+      "status": "passed after corrections",
+      "defectsCorrected": [
+        "invalid gradient stops",
+        "geometry token used as background",
+        "embedded consensus specificity",
+        "reduced-transparency specificity",
+        "expanded business-check width"
+      ]
+    },
+    "browserVisual": {
+      "status": "blocked",
+      "attempted": [
+        "local Chromium",
+        "escalated local Chromium",
+        "cloud browser localhost"
+      ],
+      "reason": "Chromium required socket blocked; separate cloud browser cannot reach local server",
+      "screenshotsProduced": 0
+    },
+    "installedPwa": {
+      "status": "not run",
+      "remaining": [
+        "iOS/Android install",
+        "physical keyboard and safe area",
+        "offline and real update lifecycle"
+      ]
+    }
+  },
+  "integrity": {
+    "missingBaselineFiles": 0,
+    "protectedFilesUnchanged": 336,
+    "protectedDirectories": [
+      "lib",
+      "app/api",
+      "services",
+      "supabase"
+    ],
+    "changedBaselineFiles": [
+      "README.md",
+      "RELEASE-CURRENT.md",
+      "app/appearance.css",
+      "app/core/readability.css",
+      "app/core/surfaces.css",
+      "app/core/tokens.css",
+      "app/layout.tsx",
+      "components/AnalystTargets.module.css",
+      "components/AnalystTargets.tsx",
+      "components/CompanyMetrics.module.css",
+      "components/IntegratedResearch.tsx",
+      "components/NewsCoverage.module.css",
+      "components/PaceInstrument.module.css",
+      "components/Pwa.tsx",
+      "components/ResearchConclusion.module.css",
+      "components/ResearchDeskLayout.module.css",
+      "components/ResearchNavigation.module.css",
+      "components/ResearchOverview.module.css",
+      "components/ResearchTabVisuals.module.css",
+      "components/ScenarioLenses.module.css",
+      "components/SelectedValuation.module.css",
+      "components/Session.tsx",
+      "components/Shell.tsx",
+      "components/StockPillars.module.css",
+      "components/WorkspaceShell.module.css",
+      "public/manifest.webmanifest",
+      "public/offline.html",
+      "public/sw.js",
+      "tests/css-consolidation.test.mjs",
+      "tests/pwa-status-surface.test.mjs",
+      "tests/settings-refinement.test.mjs",
+      "tests/ui-controls.test.mjs",
+      "tests/workspace-navigation.test.mjs"
+    ]
+  },
+  "deployment": "none",
+  "warnings": [
+    "Next build reports pre-existing Next.js ESLint plugin detection warning.",
+    "Initial API trace check overlapped the build and saw a transient development trace; rerun after build passed all 56 traces."
+  ]
+}

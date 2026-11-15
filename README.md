@@ -2,10 +2,10 @@
 
 Extract this ZIP as a source candidate for local/preproduction verification. Do not deploy before the current acceptance gates are resolved. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current source candidate: [Focused workspace refinement](UX-REFINEMENT-20261115.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This candidate applies the latest Home, Research and Portfolio simplification and the supplied cool-glass visual direction, with shared panel geometry. Financial calculations, providers and APIs are unchanged. It is not deployed or production-accepted. Browser/device visual acceptance and current-company end-to-end checks remain open. Earlier release notes are historical.
+Current source candidate: [Coherent glass and mobile navigation](MOBILE-GLASS-20261115.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This source update unifies panel/disclosure surfaces, gives financial cues one theme-aware palette, pairs the overview composition, and rebuilds mobile/desktop navigation. Financial calculations, metrics, providers and APIs are unchanged. This ZIP is not deployed or production-accepted; actual browser/device visual acceptance remains required.
 
 ## Run and verify
-Use Node 24.x (`.nvmrc` and CI agree), then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.
+Use Node 24.x, then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.
 
 ## Deploy
 This enhancement release is delivered as a source ZIP. Automatic push and deployment were stopped at the user’s request. Production requires later acceptance, including the outstanding browser/device checks in the current report. Before any future database migration, reconcile installed migrations against the recovered records; do not blindly reapply older numbered migrations. Keep the dedicated snapshot-signing secret and existing account/access configuration. See the current handoff for scheduler and database status.

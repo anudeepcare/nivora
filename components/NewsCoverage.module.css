@@ -1,7 +1,7 @@
 .desk {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
-  gap: 24px;
+  gap: var(--workspace-gap);
   align-items: start;
   color: var(--ink);
 }
@@ -9,9 +9,9 @@
   min-width: 0;
 }
 .coverage {
-  padding: 24px;
-  background: var(--card);
-  border-radius: 22px;
+  padding: var(--workspace-inset);
+  background: var(--workspace-panel);
+  border-radius: var(--workspace-radius);
   box-shadow: var(--panel-shadow);
 }
 .heading {
@@ -103,7 +103,7 @@
 }
 .lead {
   position: relative;
-  padding: 24px;
+  padding: var(--workspace-inset);
   border-radius: 18px;
   margin: 8px 0;
   background: linear-gradient(
@@ -176,7 +176,7 @@
   border: 0;
   padding: 20px;
   border-radius: 18px;
-  background: var(--card);
+  background: var(--workspace-panel);
   box-shadow: var(--panel-shadow);
 }
 .rail h2,

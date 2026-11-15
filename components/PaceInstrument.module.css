@@ -288,7 +288,7 @@
   --decision-ink: #f2d08a;
 }
 .instrument[data-tone="risk"] {
-  --decision-ink: #ffb3a7;
+  --decision-ink: var(--negative);
 }
 .reason {
   max-width: 48ch;
@@ -458,10 +458,10 @@
   }
 }
 :global([data-theme="dark"]) .instrument.editorial[data-tone="caution"] {
-  --decision-ink: #efc979;
+  --decision-ink: var(--warning);
 }
 :global([data-theme="dark"]) .instrument.editorial[data-tone="risk"] {
-  --decision-ink: #ffb3a7;
+  --decision-ink: var(--negative);
 }
 /* Decision and chart share the opening viewport. */
 .instrument.instrument.editorial .title h2 {

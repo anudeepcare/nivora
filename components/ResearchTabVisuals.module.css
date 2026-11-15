@@ -101,19 +101,15 @@
   padding: 18px;
   border: 0;
   border-radius: 15px;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--green) 4%, var(--card)),
-    var(--card)
-  );
-  box-shadow: 0 6px 22px #17342c06;
+  background: var(--workspace-tile);
+  box-shadow: inset 0 0 0 1px var(--workspace-edge);
 }
 .root.root.root[data-research-section="Financials"]
   :global(article[data-metric-group]) {
   padding: 20px;
   border: 0;
   border-radius: 18px;
-  background: var(--card);
+  background: var(--workspace-panel);
   box-shadow: 0 8px 28px #17342c08;
 }
 .root.root.root :global(.desk-heading) {

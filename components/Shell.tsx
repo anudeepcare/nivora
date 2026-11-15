@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   LogOut,
+  Menu,
   Home,
   ChartNoAxesCombined,
   Bookmark,
@@ -56,7 +57,7 @@ export default function Shell({
   page: string;
   children: React.ReactNode;
 }) {
-  const { demo, workspace, theme, setTheme } = useProduct();
+  const { demo, theme, setTheme } = useProduct();
   const { access } = useAccess();
   const pathname = usePathname();
   const router = useRouter();
@@ -225,10 +226,11 @@ export default function Shell({
           </Link>
           <button
             aria-label="Account and workspace tools"
+            aria-controls="workspace-tools"
             aria-haspopup="dialog"
             onClick={() => tools.current?.showModal()}
           >
-            {(workspace?.email?.[0] || "A").toUpperCase()}
+            <Menu size={20} />
           </button>
         </div>
       </header>
@@ -250,6 +252,7 @@ export default function Shell({
       </nav>
       <dialog
         ref={tools}
+        id="workspace-tools"
         className={`search-dialog approved-tools-dialog ${experience.toolsDialog}`}
         aria-label="Account & workspace"
       >

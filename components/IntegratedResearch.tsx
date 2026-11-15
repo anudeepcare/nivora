@@ -110,7 +110,7 @@ export default function IntegratedResearch({
                 Wall Street consensus{" "}
                 <span>Target, comparison &amp; source dates</span>
               </summary>
-              <AnalystTargets research={r} />
+              <AnalystTargets research={r} embedded />
             </details>
           )}
         </div>

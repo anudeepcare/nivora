@@ -95,6 +95,7 @@ test("switching workspace tabs restores their own position; tapping the active t
     settingsHref,
     useProduct: () => ({ theme: "dark" }),
     useState: (value) => [value, () => {}],
+    Menu: () => null,
     LogOut: () => null,
     useRef: (value) =>
       refs[cursor++] ?? (refs[cursor - 1] = { current: value }),

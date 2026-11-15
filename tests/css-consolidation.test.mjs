@@ -59,14 +59,21 @@ test('consolidated compatibility preserves the ordered cascade after exact dupli
     assert.match(match[1], /^(\/|data:|https?:|#)/, `Relative asset URL: ${match[1]}`);
   }
 });
-test('foundation preserves structural and financial cascade while the neutral palette evolves', async () => {
+test('foundation preserves geometry and font cascade while the shared palette evolves', async () => {
   const before = await expanded('docs/archive/styles/foundation.before.css');
   const after = await expanded('app/core/foundation.css');
-  // The November 15 visual reference intentionally changes neutral surfaces/text
-  // and adds shared workspace geometry. Every other declaration, especially
-  // semantic gain/loss colors, safe areas and font registration, remains exact.
-  // The new palette and responsive workspace contract have separate contrast tests.
-  const neutral = new Set(['--bg', '--app-background', '--glass', '--ink', '--text', '--muted']);
+  // The owner's new glass revision changes shared colors (including semantics),
+  // surfaces and chrome, never layout, font loading or financial calculations.
+  // coherent-glass tests separately verify semantic mappings and contrast.
+  const neutral = new Set([
+    '--bg', '--app-background', '--glass', '--ink', '--text', '--muted',
+    '--chrome-surface', '--panel-shadow', '--paper', '--card', '--surface', '--surface-2',
+    '--control-ink', '--control-muted', '--control-card', '--control-surface', '--control-line',
+    '--line', '--border', '--positive', '--negative', '--neutral', '--warning',
+    '--green', '--green-soft', '--red', '--red-soft', '--amber', '--amber-soft', '--cyan', '--cyan-soft',
+    '--blue', '--blue-soft', '--accent-solid', '--business-icon', '--financial-icon', '--valuation-icon', '--ownership-icon',
+    '--business-fill', '--financial-fill', '--valuation-fill', '--ownership-fill'
+  ]);
   for (const root of [before, after]) {
     root.walkDecls(decl => {
       if (neutral.has(decl.prop) || decl.prop.startsWith('--workspace-')) decl.remove();

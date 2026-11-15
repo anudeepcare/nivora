@@ -4,13 +4,10 @@
   "lang": "en-US",
   "start_url": "/overview",
   "display": "standalone",
-  "display_override": [
-    "window-controls-overlay",
-    "standalone"
-  ],
-  "orientation": "portrait-primary",
-  "background_color": "#f7f8f5",
-  "theme_color": "#f7f8f5",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#edf2fc",
+  "theme_color": "#edf2fc",
   "icons": [
     {
       "src": "/icon-192-v2.png",
@@ -33,10 +30,7 @@
   ],
   "scope": "/",
   "id": "/",
-  "categories": [
-    "finance",
-    "productivity"
-  ],
+  "categories": ["finance", "productivity"],
   "shortcuts": [
     {
       "name": "Research a company",

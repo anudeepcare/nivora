@@ -1,12 +1,4 @@
 /* Shared reading and control contract. Detailed financial layouts remain component-owned. */
-body :is(.approved-workspace, .approved-research-page) {
-  --muted: #525d5c;
-}
-:root[data-theme="dark"]
-  body
-  :is(.approved-workspace, .approved-research-page) {
-  --muted: #bbc6c2;
-}
 body :is(.approved-workspace, .approved-research-page) :is(p, li) {
   line-height: 1.6;
 }
@@ -41,12 +33,12 @@ body :is(.approved-workspace, .approved-research-page) summary {
   color: var(--ink);
   font-weight: 600;
   border-radius: 8px;
-  background: var(--surface);
+  background: transparent;
   list-style-position: inside;
 }
 body :is(.approved-workspace, .approved-research-page) details[open] > summary {
   margin-bottom: 12px;
-  background: color-mix(in srgb, #76b6aa 12%, var(--card));
+  background: transparent;
 }
 body .approved-research-page .signal-business-intro {
   padding: 12px 0;

@@ -6,15 +6,18 @@ import { amount, percent, dateLabel } from "@/lib/format";
 export default function AnalystTargets({
   research: r,
   showUnavailable = false,
+  embedded = false,
 }: {
   research: Research;
   showUnavailable?: boolean;
+  embedded?: boolean;
 }) {
   const c = consensusOutlook(r);
   if (!c)
     return showUnavailable ? (
       <section
         className={`analyst-target-fallback ${styles.root}`}
+        data-embedded={embedded || undefined}
         aria-label="Analyst price targets"
       >
         <span className="analyst-target-kicker">Wall Street consensus</span>
@@ -36,6 +39,7 @@ export default function AnalystTargets({
   return (
     <section
       className={`analyst-target-fallback ${styles.root}`}
+      data-embedded={embedded || undefined}
       aria-label="Analyst price targets"
     >
       <span className="analyst-target-kicker">Wall Street consensus</span>
@@ -69,11 +73,11 @@ export default function AnalystTargets({
             role="img"
             aria-label="Reported analyst low, consensus and high targets on one price scale"
           >
-            <line x1="10" x2="290" y1="20" y2="20" stroke="#e0e4e0" />
+            <line x1="10" x2="290" y1="20" y2="20" stroke="var(--line)" />
             {[
-              [c.low, "#bd4a5b"],
-              [c.target, "#a38232"],
-              [c.high, "#098770"],
+              [c.low, "var(--negative)"],
+              [c.target, "var(--neutral)"],
+              [c.high, "var(--positive)"],
             ].map(([value, color]) => (
               <circle
                 key={color}

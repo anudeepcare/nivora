@@ -42,7 +42,7 @@
   margin: 32px 0 16px;
 }
 .root.root .case {
-  --case-color: #a38232;
+  --case-color: var(--neutral);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -54,10 +54,10 @@
   box-shadow: none;
 }
 .root.root .case[data-case="bear"] {
-  --case-color: #c65050;
+  --case-color: var(--negative);
 }
 .root.root .case[data-case="bull"] {
-  --case-color: #00866b;
+  --case-color: var(--positive);
 }
 .case span {
   color: var(--case-color);
@@ -83,7 +83,12 @@
   position: relative;
   height: 5px;
   border-radius: 5px;
-  background: linear-gradient(90deg, #c6505055, #a3823244 50%, #00866b55);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--negative) 34%, transparent),
+    color-mix(in srgb, var(--neutral) 27%, transparent) 50%,
+    color-mix(in srgb, var(--positive) 34%, transparent)
+  );
 }
 .point {
   position: absolute;
@@ -91,15 +96,15 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #a38232;
+  background: var(--neutral);
   transform: translate(-50%, -50%);
   box-shadow: 0 0 0 3px var(--canvas, var(--card));
 }
 .point[data-side="bear"] {
-  background: #c65050;
+  background: var(--negative);
 }
 .point[data-side="bull"] {
-  background: #00866b;
+  background: var(--positive);
 }
 .now {
   position: absolute;

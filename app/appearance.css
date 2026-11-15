@@ -1,12 +1,12 @@
 :root[data-accent="blue"] {
-  --blue: #24272b;
-  --accent-solid: #24272b;
-  --blue-soft: #edf5c9;
+  --blue: #3159bf;
+  --accent-solid: #3159bf;
+  --blue-soft: #e1e9fb;
 }
 :root[data-theme="dark"][data-accent="blue"] {
-  --blue: #d6f35a;
-  --accent-solid: #52613a;
-  --blue-soft: #353d28;
+  --blue: #a6bbff;
+  --accent-solid: #3159bf;
+  --blue-soft: #304267;
 }
 /* Appearance tokens: scoped to accents and spacing, never financial meaning or PWA geometry. */
 :root[data-accent="teal"] {

@@ -878,6 +878,7 @@ test("the single settings page preserves account, membership and help", () => {
     ShieldCheck: empty,
     ChartNoAxesCombined: empty,
     Bell: empty,
+    Menu: () => null,
     LogOut: empty,
     PageHeading: empty,
     ResearchPreferenceControls: empty,

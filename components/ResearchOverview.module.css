@@ -224,19 +224,10 @@
   gap: var(--workspace-gap, 20px);
   padding: var(--workspace-inset, 24px);
   border-radius: var(--workspace-radius, 24px);
-  background: linear-gradient(
-    125deg,
-    color-mix(
-      in srgb,
-      var(--workspace-accent, #9baade) 5%,
-      var(--workspace-glass, var(--card))
-    ),
-    var(--card) 60%
-  );
+  background: var(--workspace-panel);
   box-shadow:
     var(--workspace-shadow, var(--panel-shadow)),
     inset 0 0 0 1px var(--workspace-edge, #ffffff50);
-  backdrop-filter: blur(14px);
 }
 .stageHeading {
   grid-column: 1/-1;
@@ -276,7 +267,7 @@
 }
 .caseWorkspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: start;
   gap: var(--workspace-gap, 20px);
 }
@@ -311,9 +302,10 @@
 }
 
 .consensusDetails {
-  padding: 0 22px;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--card) 90%, transparent);
+  padding: 0 var(--workspace-inset);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-panel);
+  box-shadow: var(--workspace-shadow);
 }
 .consensusDetails > summary {
   min-height: 48px;
@@ -328,8 +320,13 @@
   font-size: 12px;
   font-weight: 400;
 }
-.consensusDetails > section {
-  margin: 0 0 16px;
+.consensusDetails.consensusDetails > section {
+  margin: 0;
+  padding: 0 0 var(--workspace-inset);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .consensusDetails > summary:focus-visible {
   outline: 2px solid var(--green);
@@ -340,4 +337,14 @@
     display: block;
     margin: 5px 0 0;
   }
+}
+
+.brief {
+  display: flex;
+}
+.brief > section {
+  width: 100%;
+}
+.pillars {
+  gap: var(--workspace-gap);
 }

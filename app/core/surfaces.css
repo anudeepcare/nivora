@@ -595,9 +595,9 @@ body .wealth-strip.four {
   border-color: var(--control-line);
 }
 :root[data-theme="dark"] body :is(.btn.primary, .button.primary) {
-  background: #d6f35a;
-  color: #202821;
-  border-color: #d6f35a;
+  background: var(--blue);
+  color: var(--bg);
+  border-color: var(--blue);
 }
 :root[data-text-size="large"] body {
   font-size: 18px;

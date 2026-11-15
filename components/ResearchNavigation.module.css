@@ -3,14 +3,11 @@
   padding: 6px;
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(
-    110deg,
-    color-mix(in srgb, #9ca9df 8%, var(--card)),
-    color-mix(in srgb, var(--card) 92%, transparent) 65%
-  );
+  background: var(--workspace-glass);
   box-shadow:
-    0 4px 20px #17342c06,
-    inset 0 0 0 1px #ffffff65;
+    var(--workspace-shadow),
+    inset 0 0 0 1px var(--workspace-edge);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
 }
 .symbol {
@@ -23,9 +20,9 @@
 }
 .sections.sections button[aria-current="page"] {
   border-radius: 11px;
-  background: var(--card);
-  color: var(--ink);
-  box-shadow: 0 2px 9px #17342c0c;
+  background: var(--blue-soft);
+  color: var(--blue);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue) 18%, transparent);
 }
 .sections.sections button:focus-visible {
   outline: 2px solid var(--green);
@@ -34,5 +31,29 @@
 @media (max-width: 700px) {
   .symbol {
     display: none;
+  }
+}
+
+.sections.sections button {
+  min-height: 44px;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease;
+}
+@media (max-width: 700px) {
+  .sections.sections {
+    border-radius: 15px;
+    scroll-padding-inline: 6px;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .sections.sections button {
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sections.sections button {
+    transition: none;
   }
 }
