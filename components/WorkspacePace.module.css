@@ -77,8 +77,8 @@
   min-height: 44px;
   border: 0;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--green) 8%, var(--card));
-  color: var(--green);
+  background: var(--blue-soft);
+  color: var(--blue);
   padding: 10px 14px;
   font: inherit;
   font-size: 12px;
@@ -101,13 +101,17 @@
   text-align: left;
   font-size: 13px;
 }
-.table th,
-.table td {
-  padding: 14px 12px;
+.board .table th,
+.board .table td {
+  height: auto;
+  background: transparent;
+  text-align: left;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--line);
   vertical-align: middle;
 }
-.table thead th {
+.board .table thead th {
+  background: var(--surface);
   color: var(--muted);
   font-size: 10px;
   font-weight: 600;
@@ -132,8 +136,8 @@
 .table td:first-child {
   padding-left: 0;
 }
-.table th:last-child,
-.table td:last-child {
+.board .table th:last-child,
+.board .table td:last-child {
   padding-right: 0;
   text-align: right;
 }
@@ -160,13 +164,13 @@
   margin-left: 10px;
   padding: 3px 6px;
   border-radius: 6px;
-  background: color-mix(in srgb, var(--green) 12%, var(--card));
-  color: var(--green);
+  background: var(--blue-soft);
+  color: var(--blue);
   font-weight: 650;
   font-size: 11px;
 }
 .level[data-level="4"] {
-  background: color-mix(in srgb, #b7cb38 24%, var(--card));
+  background: color-mix(in srgb, var(--blue) 22%, var(--card));
   color: var(--ink);
 }
 .table time {
@@ -179,7 +183,7 @@
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  color: var(--green);
+  color: var(--blue);
   font-size: 12px;
   font-weight: 600;
 }
@@ -197,7 +201,7 @@
   padding: 16px 0;
 }
 .board :is(a, button):focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -211,9 +215,9 @@
   .table {
     font-size: 12px;
   }
-  .table th,
-  .table td {
-    padding: 12px 6px;
+  .board .table th,
+  .board .table td {
+    padding: 8px 6px;
   }
   .table thead th:nth-child(1) {
     width: 20%;

@@ -29,7 +29,7 @@
   right: -90px;
   bottom: -80px;
   transform: rotate(45deg);
-  background: linear-gradient(135deg, #efbc691a, #efbc6930 50%, #79abff24 50%);
+  background: linear-gradient(135deg, #76bdff12, #8f93ff18);
   border-radius: 0;
 }
 .eyebrow {
@@ -48,14 +48,14 @@
   transform: rotate(45deg);
   background: conic-gradient(
     from 45deg,
-    #efbc69,
-    #9b713b,
-    #fff0cb,
-    #c28f4d,
-    #efbc69
+    #76d5ff,
+    #3273ee,
+    #ecf8ff,
+    #6471e8,
+    #76d5ff
   );
   border-radius: 3px;
-  box-shadow: 2px 3px 8px #346c5e30;
+  box-shadow: 2px 3px 8px #346cee20;
 }
 .label {
   display: flex;
@@ -66,7 +66,7 @@
   font-weight: 600;
 }
 .focus h2 {
-  font-size: clamp(28px, 2.7vw, 38px);
+  font-size: clamp(23px, 2vw, 28px);
   line-height: 1.15;
   letter-spacing: -0.04em;
   margin: 10px 0;
@@ -207,7 +207,7 @@
   margin-top: auto;
 }
 .focus p {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 .sources {
   padding: 8px 0;

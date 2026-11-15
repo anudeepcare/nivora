@@ -131,7 +131,7 @@
   :global(.document-layout)
   > nav
   a[aria-current="page"] {
-  background: color-mix(in srgb, #438f86 12%, var(--card));
+  background: var(--blue-soft);
   color: var(--ink);
   font-weight: 550;
 }
@@ -163,7 +163,7 @@
 .document.document.document
   :global(.document-sections)
   > section:nth-child(3n + 1) {
-  background: color-mix(in srgb, #438f86 4%, var(--card));
+  background: var(--workspace-glass);
 }
 .document.document.document :global(.document-sections) h2 {
   font-size: 18px;

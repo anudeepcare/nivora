@@ -596,11 +596,9 @@ export default function PublicLanding({
                 "Explore a more considered way to invest."
               ) : (
                 <>
-                  Research.
+                  Your next move.
                   <br />
-                  <span>Decide.</span>
-                  <br />
-                  Review.
+                  <span>A clearer view.</span>
                 </>
               )}
             </h1>

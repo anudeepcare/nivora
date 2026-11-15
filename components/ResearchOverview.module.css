@@ -1,534 +1,190 @@
 .overview {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--workspace-gap, 20px);
+  gap: 16px;
   align-items: start;
-  margin: 16px 0 24px;
+  margin: 12px 0 24px;
 }
 .overview > * {
   min-width: 0;
 }
-.context {
-  grid-column: 1 / -1;
+.decisionStage {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.decisionStage .chart {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+}
+.decisionStage .paceColumn {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--blue) 36%, var(--workspace-edge));
+  border-radius: 16px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+}
+.stageHeading {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: -8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.stageHeading > span {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.context {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 10px 0 12px;
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 10px;
+  background: var(--workspace-tile);
 }
 .context button {
+  min-height: 40px;
+  padding: 8px;
   border: 0;
-  border-radius: 7px;
-  padding: 8px 14px;
-  min-height: 44px;
-  background: transparent;
-  color: var(--muted);
+  border-radius: 8px;
   font: inherit;
   font-size: 12px;
+  color: var(--muted);
+  background: transparent;
   cursor: pointer;
 }
 .context button[aria-pressed="true"] {
-  background: var(--nav-active);
-  color: var(--nav-active-ink);
+  background: var(--card);
+  color: var(--blue);
+  font-weight: 650;
+  box-shadow: 0 2px 6px #18355a12;
 }
 .context button:focus-visible,
-.researchTools > summary:focus-visible {
-  outline: 2px solid var(--green);
+.researchTools > summary:focus-visible,
+.consensusDetails > summary:focus-visible {
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
-.paceColumn {
-  grid-column: 1;
-}
-.chart {
-  grid-column: 2;
-  padding: 20px;
-  border: 0;
-  border-radius: 18px;
-  background: var(--card);
-  box-shadow: 0 4px 24px #17342c08;
-}
 .chart.chart :global(.plot-section) {
+  margin: 0;
+  padding: 0;
   border: 0;
   border-radius: 0;
-  box-shadow: none;
-  padding: 0;
   background: transparent;
-}
-.chart.chart :global(.price-chart) {
-  height: 250px;
-  min-height: 250px;
+  box-shadow: none;
 }
 .chart.chart :global(.chart-head) {
+  display: block;
   margin-bottom: 10px;
 }
-.chart.chart :global(.chart-head) h3 {
-  font-size: 17px;
+.chart.chart :global(.chart-head h3) {
+  margin: 0 0 10px;
+  font-size: 18px;
+  letter-spacing: -0.025em;
+}
+.chart.chart :global(.chart-period-control) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chart.chart :global(.chart-period-label) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+.chart.chart :global(.ranges) {
+  margin: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  background: var(--workspace-tile);
+  border: 1px solid var(--workspace-edge);
+  border-radius: 10px;
+  padding: 3px;
+}
+.chart.chart :global(.ranges button) {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 6px 10px;
+}
+.chart.chart :global(.price-chart) {
+  height: 330px;
+  min-height: 330px;
+}
+.chart.chart :global(.chart-wrap) {
+  position: relative;
+}
+.chart.chart :global(.chart-readout) {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 2;
+  min-height: 0;
+  font-size: 10px;
+  margin: 0;
+  pointer-events: none;
+  background: var(--workspace-glass);
+  border-radius: 6px;
+  padding: 3px 5px;
 }
 .chart.chart :global(.signal-chart-tools) {
-  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 4px;
 }
 .chart.chart :global(.signal-chart-tools .btn) {
-  min-height: 40px;
-  padding: 7px 10px;
-  font-size: 12px;
+  min-height: 32px;
+  padding: 5px 8px;
+  font-size: 11px;
+}
+.chart.chart :global(.chart-note) {
+  margin: 6px 0;
+  font-size: 11px;
+  line-height: 1.4;
 }
 .chart.chart :global(.chart-context) {
-  margin: 10px 0;
+  margin: 4px 0;
   padding: 0;
   border: 0;
   background: transparent;
 }
 .chart.chart :global(.chart-context > summary) {
   min-height: 36px;
-  padding: 6px 0;
+  padding: 8px 0;
+  font-size: 11px;
   background: transparent;
-  font-size: 12px;
+  cursor: pointer;
 }
-.chart.chart :global(.chart-context > div) {
-  padding: 6px 0;
-  margin: 0;
-  border: 0;
-  background: transparent;
-  border-radius: 0;
+.caseWorkspace {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
 }
-.chart.chart :global(.chart-context strong) {
-  font-size: 17px;
-}
-.chart.chart :global(.chart-readout) {
-  margin: 6px 0;
-  min-height: 20px;
-  font-size: 12px;
-}
-.chart.chart :global(.chart-note) {
-  margin: 6px 0 0;
-}
-.brief {
-  min-width: 0;
-}
+.decisionExplanation,
 .pillars {
   min-width: 0;
-  display: grid;
-  gap: 16px;
 }
+.decisionExplanation > section,
 .pillars > section {
   margin: 0;
-}
-.overviewMetrics {
-  grid-column: 1 / -1;
-}
-.sectionHeading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px 20px;
-  margin-bottom: 12px;
-}
-.sectionHeading h2,
-.decisionNotes h2 {
-  margin: 0;
-  font-size: 19px;
-  letter-spacing: -0.02em;
-}
-.sectionHeading span {
-  color: var(--muted);
-  font-size: 12px;
-}
-.consensusRow {
-  grid-column: 1 / -1;
-}
-.decisionNotes {
-  grid-column: 1 / -1;
-  padding: 18px;
-  border-radius: 16px;
-  background: color-mix(in srgb, #d7a14d 6%, var(--card));
-}
-.decisionNotes ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 12px 0 0;
-  padding-left: 18px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.6;
-}
-.changes {
-  grid-column: 1 / -1;
-}
-.changes:empty {
-  display: none;
-}
-.researchTools {
-  grid-column: 1 / -1;
-  border-top: 1px solid var(--line);
-  padding-top: 8px;
-}
-.researchTools > summary {
-  cursor: pointer;
-  min-height: 44px;
-  padding: 12px 0;
-  background: transparent;
-  font-size: 14px;
-  font-weight: 600;
-}
-.researchTools > summary span {
-  margin-left: 12px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
-}
-.supportingEvidence {
-  display: grid;
-  gap: 18px;
-  padding-top: 12px;
-}
-.supportingEvidence > * {
-  min-width: 0;
-  margin: 0;
-}
-@media (max-width: 900px) {
-  .paceColumn,
-  .chart {
-    grid-column: 1 / -1;
-  }
-  .decisionNotes ul {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .overview {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
-}
-@media (max-width: 600px) {
-  .overview {
-    margin-top: 12px;
-    gap: 14px;
-  }
-  .chart {
-    padding: 16px 14px;
-  }
-  .chart.chart :global(.price-chart) {
-    height: 220px;
-    min-height: 220px;
-  }
-  .researchTools > summary span {
-    display: block;
-    margin: 6px 0 0;
-  }
-}
-
-.decisionStage {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.35fr);
-  gap: var(--workspace-gap, 20px);
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  align-items: stretch;
-}
-.stageHeading {
-  grid-column: 1/-1;
-  display: flex;
-  justify-content: space-between;
-  gap: 8px 18px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.stageHeading > span,
-.sectionIndex {
-  color: var(--blue);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-.stageHeading p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 12px;
-}
-.decisionStage .context {
-  margin-bottom: 0;
-}
-.decisionStage .paceColumn {
-  min-width: 0;
-}
-.decisionStage .paceColumn > section {
-  margin: 0;
-  min-height: 0;
-}
-.decisionStage .chart {
-  padding: 24px;
-  border-radius: 16px;
-  background: var(--workspace-panel);
-  box-shadow: var(--workspace-shadow);
-}
-.caseWorkspace {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  gap: var(--workspace-gap, 20px);
-}
-.sectionIndex {
-  display: block;
-  margin-bottom: 8px;
-}
-.overviewMetrics {
-  padding-top: 14px;
-}
-@media (max-width: 1100px) {
-  .caseWorkspace {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .decisionStage {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-@media (max-width: 600px) {
-  .decisionStage {
-    padding: 0;
-    border-radius: 0;
-  }
-  .stageHeading p {
-    font-size: 11px;
-  }
-  .caseWorkspace {
-    gap: 14px;
-  }
-}
-
-.consensusDetails {
-  padding: 0 var(--workspace-inset);
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-panel);
-  box-shadow: var(--workspace-shadow);
-}
-.consensusDetails > summary {
-  min-height: 48px;
-  padding: 15px 0;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-}
-.consensusDetails > summary span {
-  margin-left: 12px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
-}
-.consensusDetails.consensusDetails > section {
-  margin: 0;
-  padding: 0 0 var(--workspace-inset);
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.consensusDetails > summary:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: 3px;
-}
-@media (max-width: 600px) {
-  .consensusDetails > summary span {
-    display: block;
-    margin: 5px 0 0;
-  }
-}
-
-.brief {
-  display: grid;
-}
-.brief > section {
-  width: 100%;
-  margin: 0;
-}
-/* Flatten only the layout wrapper: both lead panels occupy row one;
-   consensus gets its own row instead of stretching the 30-second read. */
-.caseWorkspace > .pillars {
-  display: contents;
-}
-.caseWorkspace > .brief {
-  grid-column: 1;
-  grid-row: 1;
-}
-.caseWorkspace > .pillars > section {
-  grid-column: 2;
-  grid-row: 1;
-}
-.caseWorkspace .consensusDetails {
-  grid-column: 2;
-}
-@media (max-width: 1100px) {
-  .caseWorkspace > .brief,
-  .caseWorkspace > .pillars > section,
-  .caseWorkspace .consensusDetails {
-    grid-column: 1;
-    grid-row: auto;
-  }
-}
-
-/* The decision is a peer of the chart. No enclosing card around both cards. */
-.decisionStage .context {
-  justify-self: start;
-  padding: 4px;
-  gap: 3px;
-  border-radius: 10px;
-  background: var(--surface);
-}
-.decisionStage .paceColumn {
-  display: flex;
-  align-items: stretch;
-}
-.decisionStage .paceColumn > section {
-  width: 100%;
-}
-.stageHeading {
-  padding: 4px 0;
-}
-.stageHeading > span,
-.sectionIndex {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-}
-.sectionHeading h2 {
-  font-size: 25px;
-  font-weight: 600;
-}
-.sectionHeading {
-  margin-bottom: 18px;
-}
-.overviewMetrics {
-  padding-top: 24px;
-}
-.chart.chart :global(.price-chart) {
-  height: 300px;
-  min-height: 300px;
-}
-.chart.chart :global(.chart-head) {
-  align-items: start;
-  gap: 12px;
-}
-.chart.chart :global(.chart-head h3) {
-  font-size: 20px;
-}
-@media (max-width: 600px) {
-  .decisionStage .chart {
-    padding: 18px 14px;
-  }
-  .stageHeading p {
-    max-width: 26ch;
-  }
-  .sectionHeading h2 {
-    font-size: 22px;
-  }
-  .chart.chart :global(.price-chart) {
-    height: 240px;
-    min-height: 240px;
-  }
-  .context button {
-    font-size: 11px;
-    padding-inline: 10px;
-  }
-}
-
-/* Keep the period control visually attached to the historical chart, not Pace. */
-.chart.chart :global(.chart-head) {
-  display: block;
-  margin-bottom: 12px;
-}
-.chart.chart :global(.chart-head h3) {
-  margin: 0 0 10px;
-}
-.chart.chart :global(.chart-period-control) {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.chart.chart :global(.chart-period-label) {
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-}
-.chart.chart :global(.ranges) {
-  margin: 0;
-  max-width: 100%;
-}
-@media (max-width: 600px) {
-  .overview {
-    margin-top: 10px;
-    gap: 14px;
-  }
-  .decisionStage {
-    gap: 12px;
-  }
-  .chart.chart :global(.chart-period-control) {
-    display: block;
-  }
-  .chart.chart :global(.chart-period-label) {
-    display: block;
-    margin-bottom: 4px;
-  }
-}
-
-/* Approved composition: chart left on desktop, decision first on mobile. */
-.decisionStage {
-  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
-  gap: 16px;
-}
-.decisionStage .chart {
-  grid-column: 1;
-  grid-row: 1;
-  padding: 18px;
-  border: 1px solid var(--workspace-edge);
-  background: var(--workspace-glass);
-  border-radius: 16px;
-}
-.decisionStage .paceColumn {
-  grid-column: 2;
-  grid-row: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  border: 1px solid color-mix(in srgb, var(--blue) 38%, var(--workspace-edge));
-  border-radius: 16px;
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  backdrop-filter: blur(16px);
-}
-.decisionStage .context {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin: 10px 0 0;
-}
-.context button {
-  padding: 8px;
-  font-size: 12px;
-}
-.context button[aria-pressed="true"] {
-  background: var(--card);
-  color: var(--blue);
-  box-shadow: 0 2px 6px #18355a12;
-}
-.stageHeading > span {
-  font-size: 12px;
-  letter-spacing: 0;
-  color: var(--ink);
-}
-.caseWorkspace {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-}
-.caseWorkspace > .brief,
-.caseWorkspace > .pillars,
-.caseWorkspace > .pillars > section {
-  display: block;
-  grid-column: auto;
-  grid-row: auto;
-  min-width: 0;
   height: 100%;
 }
 .rangeSnapshot,
@@ -542,11 +198,10 @@
 }
 .rangeSnapshot h2,
 .consensusSnapshot h2 {
-  margin: 0 0 20px;
+  margin: 0 0 14px;
   font-size: 12px;
   line-height: 1.4;
   text-transform: uppercase;
-  color: var(--ink);
 }
 .rangeSnapshot > strong,
 .consensusSnapshot > strong {
@@ -557,31 +212,80 @@
 }
 .rangeSnapshot p,
 .consensusSnapshot p,
-.rangeSnapshot small {
+.rangeDetails {
   font-size: 11px;
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--muted);
 }
-.consensusSnapshot .consensusDetails {
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
+.rangeDetails summary {
+  cursor: pointer;
+  min-height: 32px;
+  padding: 8px 0;
 }
-.consensusSnapshot .consensusDetails summary {
+.consensusDetails > summary {
+  cursor: pointer;
   font-size: 11px;
+  padding: 8px 0;
+  min-height: 32px;
+}
+.consensusDetails > section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
 }
 .overviewMetrics {
-  padding-top: 0;
+  min-width: 0;
 }
 .sectionHeading {
-  margin-bottom: 12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
 }
 .sectionHeading h2 {
+  margin: 0;
   font-size: 22px;
+  letter-spacing: -0.025em;
 }
-.chart.chart :global(.price-chart) {
-  height: 350px;
-  min-height: 350px;
+.sectionHeading span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.mobileFacts {
+  display: none;
+}
+.changes:empty {
+  display: none;
+}
+.researchTools {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.researchTools > summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.researchTools > summary span {
+  color: var(--muted);
+  margin-left: 12px;
+  font-weight: 400;
+  font-size: 11px;
+}
+.supportingEvidence {
+  display: grid;
+  gap: 16px;
+  padding-top: 12px;
+}
+.supportingEvidence > * {
+  min-width: 0;
+  margin: 0;
 }
 @media (max-width: 1100px) {
   .caseWorkspace {
@@ -602,21 +306,54 @@
   }
 }
 @media (max-width: 600px) {
-  .decisionStage .paceColumn,
-  .decisionStage .chart {
+  .overview {
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .decisionStage {
+    gap: 12px;
+  }
+  .decisionStage .chart,
+  .decisionStage .paceColumn {
     padding: 14px;
-    border-radius: 16px;
   }
   .caseWorkspace {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .decisionExplanation {
+    order: 2;
+  }
+  .rangeSnapshot {
+    display: none;
+  }
+  .mobileFacts {
+    display: block;
+    margin-bottom: 12px;
   }
   .chart.chart :global(.price-chart) {
     height: 260px;
     min-height: 260px;
   }
-  .rangeSnapshot,
-  .consensusSnapshot {
-    padding: 16px;
+  .chart.chart :global(.ranges) {
+    display: flex;
+    width: 100%;
+  }
+  .chart.chart :global(.ranges button) {
+    flex: 1;
+    padding: 6px;
+    min-width: 30px;
+    min-height: 40px;
+    font-size: 11px;
+  }
+  .context button {
+    min-height: 44px;
+  }
+  .sectionHeading span {
+    font-size: 10px;
+  }
+  .researchTools > summary span {
+    display: block;
+    margin: 5px 0 0;
   }
 }
 @media (prefers-reduced-transparency: reduce) {
@@ -627,4 +364,20 @@
     background: var(--card);
     backdrop-filter: none;
   }
+}
+.rangeMeter {
+  position: relative;
+  height: 6px;
+  margin: 24px 4px 22px;
+  background: color-mix(in srgb, var(--blue) 14%, transparent);
+  border-radius: 6px;
+}
+.rangeMeter i {
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  top: -7px;
+  transform: translateX(-2px);
+  border-radius: 3px;
+  background: var(--ink);
 }

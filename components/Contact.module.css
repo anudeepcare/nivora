@@ -6,7 +6,8 @@
     calc(24px + env(safe-area-inset-bottom, 0px))
     calc(24px + env(safe-area-inset-left, 0px));
   margin: 24px auto;
-  background: var(--card);
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
   border-radius: 20px;
 }
 .page.page.page :global(.support-frame) {
@@ -21,7 +22,7 @@
 .page.page.page :global(.support-introduction) {
   padding: 20px;
   border-radius: 14px;
-  background: color-mix(in srgb, #319688 8%, var(--card));
+  background: var(--blue-soft);
 }
 .page.page.page h1 {
   font-size: 36px;
@@ -61,7 +62,7 @@
   margin: 0;
   padding: 0;
   flex: 0 0 18px;
-  accent-color: var(--green);
+  accent-color: var(--blue);
 }
 .page.page.page input[type="file"] {
   font-size: 13px;
@@ -73,7 +74,7 @@
   border-radius: 6px;
   padding: 8px 12px;
   margin-right: 10px;
-  background: color-mix(in srgb, #319688 12%, var(--card));
+  background: var(--blue-soft);
   color: var(--ink);
   font: inherit;
   cursor: pointer;

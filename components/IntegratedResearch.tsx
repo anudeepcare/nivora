@@ -13,7 +13,6 @@ import StockPillars from "./StockPillars";
 import ResearchConclusion from "./ResearchConclusion";
 import PaceInstrument from "./PaceInstrument";
 import s from "./ResearchOverview.module.css";
-import CompanyMetrics from "./CompanyMetrics";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
 import EvidenceCrystal from "./EvidenceCrystal";
 import AnalystTargets from "./AnalystTargets";
@@ -96,12 +95,13 @@ export default function IntegratedResearch({
             readings={m.edge.pacePeriods}
             onHistory={() => onTab("Technicals")}
             branded
+            summaryView
           />
         </div>
         <div className={s.chart}>{chart}</div>
       </section>
       <div className={s.caseWorkspace}>
-        <div className={s.brief}>
+        <div className={s.decisionExplanation}>
           <ResearchConclusion decision={d} asOf={r.retrievedAt} onTab={onTab} />
         </div>
         <div className={s.pillars}>
@@ -109,13 +109,28 @@ export default function IntegratedResearch({
         </div>
         <section className={s.rangeSnapshot} aria-label="Closing price range">
           <h2>{closingRange?.label ?? "Closing price range"}</h2>
+          {closingRange?.range &&
+            closingRange.range.high > closingRange.range.low && (
+              <div
+                className={s.rangeMeter}
+                role="img"
+                aria-label={`Latest completed close ${amount(closingRange.range.close, r.quote.currency)} within the stated closing range`}
+              >
+                <i
+                  style={{
+                    left: `${Math.max(0, Math.min(100, (100 * (closingRange.range.close - closingRange.range.low)) / (closingRange.range.high - closingRange.range.low)))}%`,
+                  }}
+                />
+              </div>
+            )}
           <strong>{closingRange?.value ?? "Not available"}</strong>
           <p>
             {closingRange?.date ?? "Completed price history is not available."}
           </p>
-          <small>
-            {closingRange?.help ?? "No price range has been inferred."}
-          </small>
+          <details className={s.rangeDetails}>
+            <summary>About this range</summary>
+            <p>{closingRange?.help ?? "No price range has been inferred."}</p>
+          </details>
         </section>
         <section
           className={s.consensusSnapshot}
@@ -149,9 +164,10 @@ export default function IntegratedResearch({
           </div>
           <span>Dated metrics · open any label for its basis</span>
         </header>
-        <StockFacts research={r} />
-        <CompanyMetrics research={r} />
         <ResearchEvidenceGrid research={r} onTab={onTab} />
+        <div className={s.mobileFacts}>
+          <StockFacts research={r} />
+        </div>
       </section>
       <div className={s.changes}>
         <ResearchChanges

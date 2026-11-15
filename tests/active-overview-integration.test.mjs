@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { demoData } from "./fixtures/demo.ts";
 import { approvedResearch } from "../lib/approved-research.ts";
 import { amount, percent } from "../lib/format.ts";
+import { headerMarketContext } from "../lib/business-history.ts";
 import { sameProviderSymbol } from "../lib/provider-symbol.ts";
 function setup() {
   const source = fs.readFileSync("components/IntegratedResearch.tsx", "utf8");
@@ -25,6 +26,7 @@ function setup() {
     {
       compilerOptions: {
         jsx: ts.JsxEmit.React,
+        target: ts.ScriptTarget.ES2022,
         module: ts.ModuleKind.CommonJS,
       },
     },
@@ -90,13 +92,13 @@ function find(tree, predicate) {
   }
   return null;
 }
-test("active Research overview exposes contextual company metrics by default", () => {
+test("active Research overview exposes unified company evidence by default", () => {
   assert.match(
     fs.readFileSync("components/Research.tsx", "utf8"),
     /import DecisionOverview from "\.\/IntegratedResearch"/,
   );
   const { render } = setup();
-  assert.match(renderToStaticMarkup(render()), /contextual company metrics/);
+  assert.match(renderToStaticMarkup(render()), /all evidence/);
 });
 test("active overview omits the removed position size and cash tool", () => {
   const { render } = setup();
@@ -105,7 +107,7 @@ test("active overview omits the removed position size and cash tool", () => {
     html,
     /Review position size|funding and concentration review/,
   );
-  assert.match(html, /contextual company metrics/);
+  assert.match(html, /all evidence/);
   assert.match(html, /all evidence/);
   assert.doesNotMatch(html, /All research metrics/);
 });
@@ -127,6 +129,7 @@ test("company metrics show every selected available metric without an expand but
     {
       compilerOptions: {
         jsx: ts.JsxEmit.React,
+        target: ts.ScriptTarget.ES2022,
         module: ts.ModuleKind.CommonJS,
       },
     },
@@ -177,6 +180,7 @@ test("company metrics show every selected available metric without an expand but
     useMemo: (f) => f(),
     useState: () => [false, () => {}],
     overviewEvidence,
+    headerMarketContext,
     companyMetricSelection,
     headerMarketContext,
     ...format,
@@ -218,6 +222,7 @@ test("restored lower grid renders real metric rows and category navigation witho
     {
       compilerOptions: {
         jsx: ts.JsxEmit.React,
+        target: ts.ScriptTarget.ES2022,
         module: ts.ModuleKind.CommonJS,
       },
     },
@@ -236,9 +241,13 @@ test("restored lower grid renders real metric rows and category navigation witho
       },
     }),
     overviewEvidence,
+    headerMarketContext,
     ...format,
     s: {},
-    Help: ({ trigger }) => React.createElement("span", null, trigger),
+    Help: ({ trigger, children }) =>
+      React.createElement("span", null, trigger, children),
+    Source: ({ href, children }) =>
+      React.createElement("a", { href }, children),
     Building2: () => null,
     Scale: () => null,
     Activity: () => null,
@@ -254,8 +263,33 @@ test("restored lower grid renders real metric rows and category navigation witho
   );
   const e = overviewEvidence(r);
   assert.ok(e.valuation.length > 0);
-  for (const row of e.valuation.slice(0, 3))
+  for (const row of [
+    ...e.business,
+    ...e.valuation,
+    ...e.technical,
+    ...e.ownership,
+  ])
     assert.ok(html.includes(row.label), row.label);
+  const sourced = [
+    ...e.business,
+    ...e.valuation,
+    ...e.technical,
+    ...e.ownership,
+  ].filter((row) => row.sourceUrl);
+  assert.ok(sourced.length > 0, "fixture must exercise source evidence");
+  for (const row of sourced) {
+    assert.ok(
+      html.includes(`href="${row.sourceUrl.replaceAll("&", "&amp;")}"`),
+      row.label + " source link",
+    );
+    if (row.periodBasis)
+      assert.ok(html.includes(row.periodBasis), row.label + " period basis");
+    for (const url of row.sourceUrls ?? [])
+      assert.ok(
+        html.includes(`href="${url.replaceAll("&", "&amp;")}"`),
+        row.label + " supporting source",
+      );
+  }
   assert.match(html, /Open Valuation/);
   assert.doesNotMatch(html, /<details|<summary/);
 });
@@ -276,6 +310,6 @@ function withoutCollapsedContents(tree) {
 test("overview metric grids have no closed disclosure ancestor", () => {
   const { render } = setup();
   const visible = renderToStaticMarkup(withoutCollapsedContents(render()));
-  assert.match(visible, /contextual company metrics/);
+  assert.match(visible, /all evidence/);
   assert.match(visible, /all evidence/);
 });

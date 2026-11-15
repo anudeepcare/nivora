@@ -8,9 +8,11 @@ import { earningsCalendar } from "@/lib/earnings-calendar";
 export default function EarningsReview({
   research: r,
   now = Date.now(),
+  hideNextReport = false,
 }: {
   research: Research;
   now?: number;
+  hideNextReport?: boolean;
 }) {
   const review = earningsReview(
     r.evidence?.earnings ?? [],
@@ -93,7 +95,7 @@ export default function EarningsReview({
           </p>
         )}
       </details>
-      {nextReport && (
+      {nextReport && !hideNextReport && (
         <p className="small muted">Next report · {dateLabel(nextReport)}</p>
       )}
     </section>

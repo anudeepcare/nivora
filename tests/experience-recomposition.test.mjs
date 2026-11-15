@@ -33,7 +33,8 @@ test('Research explains one decision and retains every distinct risk and change 
 test('Research composition retains visible metric grids and pairs conclusion with scenario evidence',()=>{
   const source=fs.readFileSync('components/IntegratedResearch.tsx','utf8');
   assert.match(source,/<ResearchConclusion/);
-  assert.match(source,/<CompanyMetrics research=\{r\}/);
+  assert.match(source,/<StockFacts research=\{r\}/);
+  assert.doesNotMatch(source,/<CompanyMetrics research=\{r\}/);
   assert.match(source,/<ResearchEvidenceGrid research=\{r\}/);
   assert.doesNotMatch(source,/<OverviewBrief/);
   assert.doesNotMatch(source,/aria-label="Risks to review"/);

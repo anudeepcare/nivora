@@ -98,13 +98,13 @@ export default function PriceStudyChart({
     const target = consensusOutlook(research);
     return [
       ...(target
-        ? [{ label: "Analyst target", price: target.target, color: "#427bd7" }]
+        ? [{ label: "Analyst target", price: target.target, color: "#d56b13" }]
         : []),
       ...(tech.ma50 != null
-        ? [{ label: "50-session", price: tech.ma50, color: "#879b83" }]
+        ? [{ label: "50-session", price: tech.ma50, color: "#54698f" }]
         : []),
       ...(tech.ma200 != null
-        ? [{ label: "200-session", price: tech.ma200, color: "#b87b23" }]
+        ? [{ label: "200-session", price: tech.ma200, color: "#8290ad" }]
         : []),
     ];
   }, [research]);
@@ -129,6 +129,14 @@ export default function PriceStudyChart({
   );
   return (
     <>
+      <PriceChart
+        bars={bars}
+        range={range}
+        style={style}
+        contrast={contrast}
+        levels={overlay ? levels : showReferences ? references : []}
+        paceBands={overlay ? [] : bands}
+      />
       <div className="signal-chart-tools">
         <button
           className="btn"
@@ -184,15 +192,7 @@ export default function PriceStudyChart({
           accumulation zone, not historical signals or a recommendation.
         </p>
       )}
-      <PriceChart
-        bars={bars}
-        range={range}
-        style={style}
-        contrast={contrast}
-        levels={overlay ? levels : showReferences ? references : []}
-        paceBands={overlay ? [] : bands}
-      />
-      <details className="chart-context" open>
+      <details className="chart-context">
         <summary>Price range & completed volume</summary>
         <StockFacts research={research} priceContext />
       </details>

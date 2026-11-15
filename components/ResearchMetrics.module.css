@@ -95,7 +95,7 @@
   font-size: 13px;
 }
 .panel :global(.financial-detail-groups) > section {
-  align-self: stretch;
+  align-self: start;
   background: linear-gradient(
     130deg,
     var(--card) 75%,
@@ -133,11 +133,11 @@
 }
 
 .priceMap {
-  margin: 20px 0;
-  padding: 20px;
-  border: 1px solid var(--line);
+  margin: 16px 0;
+  padding: 16px;
+  border: 0;
   border-radius: 16px;
-  background: var(--card);
+  background: var(--workspace-glass, var(--card));
   min-width: 0;
 }
 .priceMapHeader {
@@ -167,7 +167,7 @@
 .referenceGroups {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 24px;
+  gap: 20px;
 }
 .referenceGroups > section {
   min-width: 0;
@@ -193,7 +193,7 @@
 .anchorSummary {
   margin: 0 0 12px;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 8px;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
@@ -218,8 +218,10 @@
   grid-template-columns: 70px minmax(0, 1fr) minmax(62px, auto);
   align-items: baseline;
   gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
 }
 .retracementList dt {
   color: var(--muted);
@@ -246,9 +248,9 @@
 }
 .channelGrid > div {
   min-width: 0;
-  padding: 12px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  padding: 10px 12px;
+  background: var(--workspace-tile);
+  border: 0;
   border-radius: 9px;
 }
 .channelGrid dt {
@@ -266,8 +268,10 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
 }
 .pivotList dt {
   font-size: 12px;
@@ -300,8 +304,12 @@
   max-width: 100ch;
 }
 .levelMethod summary:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 4px;
+}
+.retracementList > div:nth-child(odd),
+.pivotList > div:nth-child(odd) {
+  background: var(--workspace-tile);
 }
 @media (max-width: 700px) {
   .priceMap {
@@ -400,7 +408,7 @@
 .panel.panel.panel.panel :global(.financial-detail-groups) {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
-  align-items: stretch;
+  align-items: start;
 }
 .panel.panel.panel.panel :global(.financial-detail-groups) > section {
   padding: 16px;
@@ -554,11 +562,7 @@
   padding: 18px;
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(
-    140deg,
-    color-mix(in srgb, var(--green) 8%, var(--card)),
-    var(--card)
-  );
+  background: linear-gradient(140deg, var(--workspace-glass), var(--card));
 }
 .panel.panel.panel .financialCurrent :global(.financial-cash-bridge) {
   max-width: none;
@@ -719,7 +723,7 @@
 .panel.panel.panel :global(.financial-detail-groups) {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: stretch;
+  align-items: start;
   gap: 16px;
   margin: 16px 0 0;
 }

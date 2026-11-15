@@ -89,6 +89,7 @@ const DcaResearch = dynamic(() => import("./DcaResearch"), {
 });
 import DecisionOverview from "./IntegratedResearch";
 import experience from "./IntegratedExperience.module.css";
+import masthead from "./ResearchMasthead.module.css";
 import navigationStyle from "./ResearchNavigation.module.css";
 import tabVisuals from "./ResearchTabVisuals.module.css";
 import deskLayout from "./ResearchDeskLayout.module.css";
@@ -96,6 +97,7 @@ import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
 import { paceCode } from "@/lib/pace-presentation";
+import { currentPace } from "@/lib/current-pace";
 const EarningsWorkspace = dynamic(() => import("./EarningsWorkspace"), {
   loading: () => <p role="status">Loading…</p>,
 });
@@ -377,6 +379,19 @@ export default function Research({ symbol }: { symbol: string }) {
     [bars, frequency],
   );
   const p = useMemo(() => (r ? perspective(r) : null), [r]);
+  const [paceClock, setPaceClock] = useState(() => Date.now());
+  useEffect(() => {
+    if (demo) return;
+    const timer = window.setInterval(() => setPaceClock(Date.now()), 30000);
+    return () => window.clearInterval(timer);
+  }, [demo]);
+  const headerPace =
+    p && r
+      ? currentPace(
+          { ...p.dca.confirmed, forming: p.dca.forming },
+          demo ? Date.parse(r.retrievedAt) : paceClock,
+        )
+      : null;
   const quickDemo = useMemo(
     () =>
       demo?.research[symbol]
@@ -413,7 +428,7 @@ export default function Research({ symbol }: { symbol: string }) {
     const q = quick.data?.[symbol];
     return resource.loading ? (
       <section aria-busy="true" className="research-loading">
-        <header className={experience.stockHeader}>
+        <header className={masthead.header}>
           <div className="au-flex">
             <SecurityLogo symbol={symbol} />
             <div>
@@ -537,20 +552,27 @@ export default function Research({ symbol }: { symbol: string }) {
       className="research-page approved-research-page"
       data-research-mode={preferences.detail}
     >
-      <header className={experience.stockHeader}>
-        <div className={experience.stockIdentity}>
+      <header className={masthead.header}>
+        <div className={masthead.identity}>
           <SecurityLogo symbol={symbol} size={52} />
           <div>
             <h1>{r.company.name}</h1>
             <p className="muted small">
               {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
+              {headerContext.sector ? ` · ${headerContext.sector}` : ""}
             </p>
-            <div className="security-context">
-              {headerContext.sector && <span>{headerContext.sector}</span>}
-            </div>
           </div>
         </div>
-        <div className={experience.stockPrice}>
+        <div className={masthead.price}>
+          {headerPace?.level != null && (
+            <span
+              className={masthead.paceBadge}
+              title="Current price zone, not a buy recommendation. See the decision below."
+            >
+              {paceCode(headerPace.level)} ·{" "}
+              {headerPace.provisional ? "provisional" : "confirmed"}
+            </span>
+          )}
           <div className="quote">
             <strong className="num">
               {amount(
@@ -758,6 +780,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   onOwnership={() => switchTab("Thesis")}
                 >
                   <EarningsReview
+                    hideNextReport
                     research={r}
                     now={demo ? Date.parse(r.retrievedAt) : Date.now()}
                   />

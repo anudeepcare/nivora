@@ -93,11 +93,11 @@ export default function PacePriceZones({
               onClick={() => onInspect?.(level)}
             >
               <i className={styles.diamond} aria-hidden="true" />
-              <strong>
-                P{level}
-                {current ? " · now" : ""}
-              </strong>
-              <small className={styles.stageAction}>{labels[level]}</small>
+              <strong>P{level}</strong>
+              <small className={styles.stageAction}>
+                {labels[level]}
+                {current && <em className={styles.now}>Now</em>}
+              </small>
               <span
                 title={
                   step.relation === "at-or-below"

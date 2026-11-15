@@ -81,9 +81,10 @@ test("studio auth main and story protect their four screen edges", () => {
         );
     }
 });
-test("password recovery keeps its existing theme while adding only scoped safe-area padding", () => {
+test("password recovery shares login styling and retains scoped safe-area padding", () => {
   const src = read("components/PasswordRecovery.tsx");
-  assert.doesNotMatch(src, /Session.module.css/);
+  assert.match(src, /Session.module.css/);
+  for (const owner of ["auth", "story", "main"]) assert.ok(src.includes(`experience.${owner}`));
   const css = postcss.parse(read("app/core/readability.css"));
   let count = 0;
   css.walkRules((rule) => {
@@ -97,9 +98,9 @@ test("password recovery keeps its existing theme while adding only scoped safe-a
   assert.ok(count >= 3, "recovery story, main and mobile main reserve insets");
   assert.match(src, /fetch\("\/api\/auth\/recovery"/);
 });
-test("release heading uses theme-aware foreground gradient colors", () => {
+test("release heading uses readable theme-aware foreground", () => {
   assert.match(
     read("components/ReleaseNotes.module.css"),
-    /\.page > h1[^}]+linear-gradient\(105deg, var\(--blue\), var\(--green\)\)/,
+    /\.page > h1[^}]+color: var\(--ink\)/,
   );
 });

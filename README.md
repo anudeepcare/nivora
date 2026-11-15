@@ -2,7 +2,7 @@
 
 Extract this ZIP as a source candidate for local/preproduction verification. Do not deploy before the current acceptance gates are resolved. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current source candidate: [Login, scenario clarity and visual refinement](RELIABILITY-REFINEMENT-20261115.md). [Current status and open acceptance gates](RELEASE-CURRENT.md) are authoritative. This update corrects first-entry login CSS ownership, clarifies unavailable scenario evidence without changing financial targets, aligns the overview panels, and introduces the opal/ink/iris visual direction. All routes, useful metrics, providers and APIs are retained. This ZIP is not deployed or production-accepted; actual browser/device visual acceptance remains required.
+Current source candidate: [Mock-fidelity corrections and verification](RELEASE-CURRENT.md). This is a source candidate for preproduction review, not a production-approved release. All useful metrics, providers, and APIs are retained. Actual browser/device visual acceptance remains outstanding.
 
 ## Run and verify
 Use Node 24.x, then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.

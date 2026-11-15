@@ -19,19 +19,10 @@
   gap: 12px;
   padding: 16px;
   border-radius: 14px;
-  background: linear-gradient(
-    130deg,
-    color-mix(in srgb, var(--green) 7%, var(--card)),
-    var(--card)
-  );
+  background: var(--workspace-glass, var(--card));
+  border: 1px solid var(--workspace-edge, var(--line));
 }
-.grid article[data-tone="caution"] {
-  background: linear-gradient(
-    130deg,
-    color-mix(in srgb, #d99839 12%, var(--card)),
-    var(--card)
-  );
-}
+
 .icon {
   display: grid;
   place-items: center;
@@ -39,8 +30,12 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
+  color: var(--blue);
+  background: color-mix(in srgb, var(--blue) 9%, transparent);
+}
+[data-tone="positive"] .icon {
   color: var(--green);
-  background: color-mix(in srgb, var(--green) 12%, transparent);
+  background: color-mix(in srgb, var(--green) 10%, transparent);
 }
 [data-tone="caution"] .icon {
   color: #a66a18;

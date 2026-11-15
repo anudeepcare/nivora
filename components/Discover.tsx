@@ -321,7 +321,12 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
       {busy && !rows.length ? (
         <p role="status">Reviewing company sources…</p>
       ) : values.length ? (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="Discovered companies"
+          tabIndex={0}
+        >
           <table>
             <thead>
               <tr>

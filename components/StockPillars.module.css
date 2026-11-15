@@ -290,3 +290,62 @@
     background: var(--card);
   }
 }
+
+/* Three concise case markers share one surface, not three tinted panels. */
+.cases {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 8px 0 0;
+  gap: 6px;
+}
+.cases > div {
+  display: block;
+  padding: 4px 0;
+  text-align: center;
+  border-radius: 0;
+  background: transparent;
+}
+.cases > div::before {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--tone);
+  margin: 0 auto 6px;
+}
+.cases > div strong {
+  color: var(--ink);
+  font-size: clamp(16px, 1.55vw, 22px);
+}
+.cases > div small {
+  font-size: 10px;
+}
+.cases > div span {
+  font-size: 11px;
+}
+.cases .unavailable {
+  font-size: 12px;
+}
+.root h2 {
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.details > summary {
+  font-size: 11px;
+  min-height: 32px;
+  padding: 8px 0;
+}
+.unavailableReason {
+  grid-column: 1/-1;
+  font-size: 11px;
+  color: var(--muted);
+}
+.unavailableReason summary {
+  cursor: pointer;
+  min-height: 32px;
+  padding: 8px 0;
+}
+.unavailableReason summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}

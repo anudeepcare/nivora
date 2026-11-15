@@ -719,3 +719,85 @@
 .instrument.instrument.branded .evidenceDetails {
   color: var(--ink);
 }
+
+/* Overview is a compact decision summary, with detailed exploration retained. */
+.instrument.instrument.branded.summaryView .header {
+  display: none;
+}
+.instrument.instrument.branded.summaryView .title > small {
+  display: none;
+}
+.instrument.instrument.branded.summaryView .readout {
+  margin: 0;
+}
+.instrument.instrument.branded.summaryView .readoutText {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+.instrument.instrument.branded.summaryView .title h2 {
+  font-size: 32px;
+  line-height: 1.1;
+  margin: 0 0 6px;
+}
+.instrument.instrument.branded.summaryView .reason {
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+}
+.instrument.instrument.branded.summaryView .zoneContext {
+  margin: 6px 0 0;
+  font-size: 11px;
+}
+.instrument.instrument.branded.summaryView .provisional {
+  padding: 10px;
+  border: 1px solid var(--amber-line, var(--line));
+  border-radius: 8px;
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+.instrument.instrument.branded.summaryView .insight {
+  order: 3;
+  margin: 0;
+}
+.instrument.instrument.branded.summaryView .boundary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  margin: 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+.instrument.instrument.branded.summaryView .boundary > span {
+  color: var(--muted);
+}
+.instrument.instrument.branded.summaryView .status {
+  margin: 4px 0 0;
+  padding: 6px 0;
+  font-size: 10px;
+}
+.instrument.instrument.branded.summaryView .readingDetail {
+  margin: 0;
+}
+.instrument.instrument.branded.summaryView .readingDetail > summary {
+  min-height: 32px;
+  padding: 8px 0;
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .instrument.instrument.branded.summaryView .title h2 {
+    font-size: 30px;
+  }
+  .instrument.instrument.branded.summaryView
+    .readoutText
+    > :last-child:not(.title):not(.insight) {
+    display: none;
+  }
+  .instrument.instrument.branded.summaryView .insight {
+    display: none;
+  }
+  .instrument.instrument.branded.summaryView .status {
+    display: none;
+  }
+}

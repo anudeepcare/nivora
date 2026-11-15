@@ -334,7 +334,7 @@ export default function SupportInbox() {
                     : "Receipt pending"}
               </small>
               <label>
-                Priority
+                <span>Priority</span>
                 <select
                   aria-label={`Priority for ${r.id.slice(0, 8)}`}
                   value={r.priority}
@@ -371,7 +371,7 @@ export default function SupportInbox() {
                 </button>
               </form>
               <label>
-                Status
+                <span>Status</span>
                 <select
                   value={r.status}
                   disabled={busy}

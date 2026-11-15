@@ -11,26 +11,12 @@ const declarations = (path, selector) => {
   });
   return values;
 };
-test("paired overview panels occupy the same grid row; consensus sits below them", () => {
+test("approved snapshots use four independent cards without stretched empty columns", () => {
   const file = "components/ResearchOverview.module.css";
-  assert.equal(declarations(file, ".caseWorkspace")["align-items"], "stretch");
-  assert.equal(declarations(file, ".brief").display, "grid");
-  assert.equal(declarations(file, ".brief > section").margin, "0");
-  assert.equal(
-    declarations(file, ".caseWorkspace > .pillars").display,
-    "contents",
-  );
-  for (const selector of [
-    ".caseWorkspace > .brief",
-    ".caseWorkspace > .pillars > section",
-  ]) {
-    assert.equal(declarations(file, selector)["grid-row"], "1");
-  }
-  assert.equal(
-    declarations(file, ".caseWorkspace .consensusDetails")["grid-column"],
-    "2",
-  );
-  assert.match(read(file), /@media \(max-width: 1100px\)[\s\S]*grid-row: auto/);
+  assert.equal(declarations(file, ".caseWorkspace")["align-items"], "start");
+  assert.equal(declarations(file, ".caseWorkspace")["grid-template-columns"], "repeat(4, minmax(0, 1fr))");
+  assert.match(read(file), /@media \(max-width: 1100px\)[\s\S]*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(read(file), /@media \(max-width: 600px\)[\s\S]*\.caseWorkspace \{\s*grid-template-columns: minmax\(0, 1fr\)/);
 });
 test("studio research navigation uses an underline rail with clear hover and keyboard focus", () => {
   const file = "components/ResearchNavigation.module.css";

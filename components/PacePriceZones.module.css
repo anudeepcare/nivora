@@ -243,3 +243,52 @@
 .ladder.ladder button:focus-visible {
   outline: 2px solid var(--blue);
 }
+
+/* One compact row per stage, matching the approved desktop ladder. */
+.ladder.ladder {
+  gap: 2px;
+  margin: 2px 0;
+}
+.ladder.ladder button {
+  grid-template-columns: 12px 25px minmax(0, 1fr) auto;
+  min-height: 32px;
+  padding: 5px 7px;
+  gap: 7px;
+}
+.ladder.ladder button strong {
+  font-size: 11px;
+}
+.ladder.ladder button .stageAction {
+  grid-column: auto;
+  grid-row: auto;
+  font-size: 11px;
+}
+.ladder.ladder button > span:not(.diamond):not(.stageAction):not(.bandCount) {
+  grid-column: auto;
+  grid-row: auto;
+  font-size: 11px;
+}
+.ladder.ladder button .diamond {
+  width: 8px;
+  height: 8px;
+}
+.ladder.ladder .currentPrice {
+  font-size: 9px;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+@media (pointer: coarse) {
+  .ladder.ladder button {
+    min-height: 44px;
+  }
+}
+.now {
+  margin-left: 5px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
+  background: #d8f279;
+}

@@ -23,6 +23,7 @@ type Props = {
   compact?: boolean;
   editorial?: boolean;
   branded?: boolean;
+  summaryView?: boolean;
   onHistory?: () => void;
   research?: Research;
   ownsPosition?: boolean;
@@ -36,6 +37,7 @@ export default function PaceInstrument({
   compact = false,
   editorial = false,
   branded = false,
+  summaryView = false,
   onHistory,
   research,
   ownsPosition = false,
@@ -82,7 +84,7 @@ export default function PaceInstrument({
   const currency = research?.quote.currency ?? "USD";
   return (
     <section
-      className={`${s.instrument} ${compact ? s.compact : ""} ${editorial ? s.editorial : ""} ${branded ? s.branded : ""}`}
+      className={`${s.instrument} ${compact ? s.compact : ""} ${editorial ? s.editorial : ""} ${branded ? s.branded : ""} ${summaryView ? s.summaryView : ""}`}
       data-tone={decision?.tone ?? "neutral"}
       aria-label={
         publicGuide
@@ -143,7 +145,7 @@ export default function PaceInstrument({
               >{`${exploring ? "Explore" : "Price zone"} P${selected} · ${PACE_LEVELS[selected]}`}</p>
             )}
             {!exploring && current?.awaitingClose && (
-              <p className={s.zoneContext}>
+              <p className={`${s.zoneContext} ${s.provisional}`}>
                 P{current.level} is provisional. The decision{" "}
                 {current.eligibleLevel === null
                   ? "needs a completed qualifying zone"

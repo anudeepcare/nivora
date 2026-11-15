@@ -1,6 +1,36 @@
 import type { EodNews } from "./eodhd";
 import { relevantHoldingHeadlines } from "./home-feed.ts";
 export type DeskArticle = EodNews["items"][number] & { source: string };
+/** Decode publisher text only. React continues to escape it; never parse as markup. */
+export function newsHeadlineText(value: string): string {
+  const named: Record<string, string> = {
+    amp: "&",
+    quot: '"',
+    apos: "'",
+    lt: "<",
+    gt: ">",
+    nbsp: " ",
+    ndash: "–",
+    mdash: "—",
+    lsquo: "‘",
+    rsquo: "’",
+    ldquo: "“",
+    rdquo: "”",
+  };
+  return value.replace(
+    /&(#x[0-9a-f]+|#\d+|[a-z]+);/gi,
+    (entity, key: string) => {
+      if (!key.startsWith("#")) return named[key.toLowerCase()] ?? entity;
+      const hex = key[1]?.toLowerCase() === "x";
+      const code = Number.parseInt(key.slice(hex ? 2 : 1), hex ? 16 : 10);
+      return code >= 32 &&
+        code <= 0x10ffff &&
+        !(code >= 0xd800 && code <= 0xdfff)
+        ? String.fromCodePoint(code)
+        : entity;
+    },
+  );
+}
 /** Organizes supplied headlines, not their meaning or effect on a stock. */
 export function newsDesk(
   items: EodNews["items"],
@@ -12,6 +42,7 @@ export function newsDesk(
   const urls = new Set<string>();
   const titles = new Set<string>();
   const clean = items
+    .map((item) => ({ ...item, title: newsHeadlineText(item.title) }))
     .filter(
       (item) =>
         Number.isFinite(Date.parse(item.date)) &&

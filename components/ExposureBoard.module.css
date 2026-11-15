@@ -41,7 +41,7 @@
   cursor: default;
 }
 .board button[aria-pressed="true"] {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: -2px;
 }
 .tabs button {
@@ -51,14 +51,14 @@
   border-bottom: 2px solid transparent;
 }
 .tabs button[aria-pressed="true"] {
-  border-bottom-color: var(--green);
-  background: color-mix(in srgb, var(--green) 10%, var(--card));
-  color: var(--green);
+  border-bottom-color: var(--blue);
+  background: color-mix(in srgb, var(--blue) 10%, var(--card));
+  color: var(--blue);
   outline: 0;
 }
 .board :is(button, input, select, summary):focus-visible,
 .board:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 .reading {
@@ -248,10 +248,10 @@
   color: var(--muted);
 }
 .scroll tr[data-nearest="true"] > th {
-  box-shadow: inset 3px 0 var(--green);
+  box-shadow: inset 3px 0 var(--blue);
 }
 .scroll tr[data-nearest="true"] > td {
-  outline: 1px solid color-mix(in srgb, var(--green) 50%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--blue) 50%, transparent);
   outline-offset: -1px;
 }
 .priceMarker {
@@ -288,7 +288,7 @@
   justify-self: end;
 }
 .detail {
-  border-left: 2px solid var(--green);
+  border-left: 2px solid var(--blue);
   background: var(--surface);
   padding: 12px;
   margin: 10px 0;

@@ -1,7 +1,7 @@
 .root.root.root {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  align-items: stretch;
+  align-items: start;
   gap: var(--workspace-gap, 20px);
 }
 .root.root.root > * {

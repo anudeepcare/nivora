@@ -1,58 +1,53 @@
-/* A dedicated settings composition: account rail and a quiet preferences canvas. */
+/* Single settings owner: a compact account rail and glass preference groups. */
 .page {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: 220px minmax(0, 1fr);
   grid-template-rows: auto auto auto auto 1fr;
   grid-template-areas: "toolbar toolbar" "heading heading" "feedback feedback" "account preferences" "support preferences";
   align-items: start;
-  column-gap: 32px;
-  row-gap: 16px;
+  gap: 16px 24px;
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
-  padding: 12px 0 40px;
+  padding: 0 0 32px;
 }
 .page :global(.settings-page-toolbar) {
   grid-area: toolbar;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin: 0;
-  width: 100%;
 }
 .page :global(.settings-back),
 .page :global(.settings-signout) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   border: 0;
   background: transparent;
   box-shadow: none;
+  min-height: 44px;
   padding: 8px 0;
-  min-height: 40px;
   font-size: 13px;
 }
 .page :global(.page-heading) {
   grid-area: heading;
-  margin: 0 0 20px;
-  padding: 24px;
-  border-radius: 18px;
-  background: linear-gradient(
-    115deg,
-    color-mix(in srgb, var(--jade) 24%, var(--card)),
-    var(--card)
-  );
-  border-bottom: 0;
+  margin: 0 0 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 .page :global(.page-heading) h1 {
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: -1.5px;
+  margin: 0 0 6px;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 600;
+  letter-spacing: -1px;
   line-height: 1.15;
-  margin: 0 0 12px;
 }
 .page :global(.page-heading) p {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
   color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 .page :global(.settings-feedback) {
   grid-area: feedback;
@@ -63,24 +58,29 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
-  padding: 0 0 8px;
+  gap: 12px;
   margin: 0;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  background: transparent;
+}
+.page :global(.workspace-account-row),
+.page :global(.workspace-settings-shortcuts),
+.page :global(.workspace-setting-group) {
+  padding: 18px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  backdrop-filter: blur(16px);
 }
 .page :global(.settings-profile-avatar) {
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: var(--blue-soft);
   color: var(--blue);
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
 }
 .page :global(.workspace-account-row) > div {
   min-width: 0;
@@ -89,8 +89,8 @@
 .page :global(.workspace-account-row) strong {
   display: block;
   overflow-wrap: anywhere;
-  font-size: 14px;
-  font-weight: 550;
+  font-size: 13px;
+  font-weight: 600;
 }
 .page :global(.workspace-account-row) p {
   margin: 5px 0 0;
@@ -101,65 +101,56 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;
   font-size: 13px;
   color: var(--blue);
 }
+.page :global(.workspace-account-row) :global(.settings-signout) {
+  width: 100%;
+  color: var(--muted);
+}
 .page :global(.workspace-settings-groups) {
   grid-area: preferences;
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
   min-width: 0;
+  border: 0;
 }
 .page :global(.workspace-setting-group) {
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--glass);
+  margin: 0;
   overflow: visible;
-  margin: 0 0 12px;
-  padding: 18px;
 }
 .page :global(.workspace-setting-group) > header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  padding: 6px 0;
-  list-style: none;
+  gap: 12px;
+  padding: 0 0 12px;
+  border: 0;
   color: var(--ink);
 }
-.page :global(.workspace-setting-group):first-child > header {
-  padding-top: 0;
-}
-.page :global(.workspace-setting-group) > header::-webkit-details-marker {
-  display: none;
-}
 .page header h2 {
-  margin: 0;
   display: block;
+  margin: 0;
   font-size: 17px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.4px;
 }
 .page header small {
   display: block;
-  margin-top: 5px;
+  margin-top: 4px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
 }
-.page summary > svg {
-  flex: none;
-  color: var(--muted);
-  transition: transform 0.15s;
-}
-.page details[open] > header > svg {
-  transform: rotate(90deg);
-}
-.page details[open] > header {
-  border: 0;
-}
 .page :global(.workspace-setting-body) {
-  padding: 0 0 8px;
+  padding: 0;
+}
+.page :global(.display-preferences) {
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 .page :global(.display-preferences) > header {
   display: none;
@@ -169,12 +160,12 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  min-height: 60px;
-  padding: 12px 0;
+  gap: 8px 16px;
+  min-height: 52px;
+  padding: 4px 0;
   margin: 0;
   border: 0;
-  border-bottom: 1px solid var(--line);
+  background: transparent;
 }
 .page :global(.setting-row) > span {
   font-size: 14px;
@@ -182,98 +173,129 @@
 }
 .page :global(.segments) {
   display: flex;
-  max-width: 100%;
   flex-wrap: wrap;
+  max-width: 100%;
   gap: 3px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: var(--glass);
   padding: 3px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 10px;
+  background: transparent;
   box-shadow: none;
 }
 .page :global(.segments) button {
-  min-height: 36px;
-  padding: 8px 16px;
+  min-height: 44px;
+  padding: 8px 12px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 7px;
   background: transparent;
-  box-shadow: none;
   color: var(--muted);
   font-size: 13px;
-  font-weight: 450;
-}
-.page :global(.segments) button[aria-pressed="true"] {
-  color: white;
-  background: var(--accent-solid);
+  font-weight: 500;
   box-shadow: none;
 }
+.page :global(.segments) button[aria-pressed="true"] {
+  background: var(--blue-soft);
+  color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
+}
+/* Track and thumb geometry retain a 44px touch area. */
 .page :global(.motion-switch) {
-  width: 42px;
-  height: 25px;
-  min-height: 25px;
+  position: relative;
+  display: block;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
   border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.page :global(.motion-switch)::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 8px 0;
   border-radius: 20px;
   background: var(--line);
 }
-.page :global(.motion-switch)[aria-checked="true"] {
-  background: transparent;
-}
 .page :global(.motion-switch)[aria-checked="true"]::before {
-  background: var(--accent-solid);
+  background: var(--blue);
+}
+.page :global(.motion-switch) > span {
+  position: absolute;
+  top: 12px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border-radius: 50%;
+  background: #fff;
+  transform: none;
+}
+.page :global(.motion-switch)[aria-checked="true"] > span {
+  transform: translateX(18px);
 }
 .page :global(.appearance-controls) {
-  padding: 24px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 0 0;
   margin: 0;
   border: 0;
 }
 .page :global(.appearance-controls) h4 {
+  margin: 0;
+  margin-right: auto;
   font-size: 14px;
   font-weight: 450;
-  margin: 0 0 12px;
 }
-.page :global(.accent-options) {
+.page :global(.density-options) {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 24px;
-}
-.page :global(.accent-options) button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 12px;
-  min-height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--glass);
-  color: var(--ink);
-  font-size: 12px;
-}
-.page :global(.accent-options) button[aria-pressed="true"] {
-  border-color: var(--blue);
-  background: var(--blue-soft);
+  gap: 6px;
 }
 .page :global(.density-options) button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--workspace-edge);
   border-radius: 8px;
-  min-height: 40px;
-  background: var(--glass);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
 }
 .page :global(.density-options) button[aria-pressed="true"] {
   background: var(--blue-soft);
   border-color: var(--blue);
+  color: var(--blue);
+}
+.page :global(.appearance-controls) > small {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.page :global(.appearance-controls) > button {
+  min-height: 44px;
+  margin: 0;
+  padding: 4px 0;
+  font-size: 12px;
 }
 .page :global(.workspace-settings-shortcuts) {
   grid-area: support;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 2px;
   margin: 0;
+  padding: 10px 18px;
 }
 .page :global(.workspace-settings-shortcuts) > * {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 0;
+  padding: 10px 0;
+  min-height: 44px;
   min-width: 0;
   border: 0;
   border-radius: 0;
@@ -296,6 +318,7 @@
   gap: 10px;
   padding: 0;
   width: 100%;
+  min-height: 44px;
   color: var(--muted);
   text-align: left;
   background: transparent;
@@ -304,179 +327,8 @@
 .page :global(.password-form) {
   display: grid;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 12px;
 }
-@media (max-width: 800px) {
-  .page {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-template-areas: "toolbar" "heading" "feedback" "account" "preferences" "support";
-    gap: 24px;
-    padding-top: 0;
-  }
-  .page :global(.page-heading) {
-    margin: 0;
-    padding-bottom: 24px;
-  }
-  .page :global(.page-heading) h1 {
-    font-size: 32px;
-  }
-  .page :global(.workspace-account-row) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .page :global(.workspace-account-row) > div {
-    flex: 1;
-    width: auto;
-  }
-  .page :global(.workspace-account-row) > a {
-    margin-left: auto;
-  }
-  .page :global(.segments) button {
-    min-height: 44px;
-    padding: 8px 12px;
-  }
-  .page :global(.setting-row) {
-    align-items: center;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .page summary > svg {
-    transition: none;
-  }
-}
-
-.page :global(.workspace-account-row),
-.page :global(.workspace-settings-shortcuts) {
-  padding: 20px;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: var(--panel-shadow);
-}
-.page :global(.workspace-setting-group) {
-  padding: 18px 22px;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: var(--panel-shadow);
-  margin-bottom: 16px;
-}
-
-.page :global(.workspace-setting-group):not([open]) {
-  min-height: 0;
-}
-.page :global(.workspace-setting-group) > summary {
-  min-height: 48px;
-  margin: 0;
-}
-.page :global(.workspace-setting-group)[open] > .workspace-setting-body {
-  padding-bottom: 0;
-}
-.page :global(.setting-row) {
-  min-height: 56px;
-  padding: 10px 0;
-}
-.page :global(.workspace-setting-body) {
-  padding: 12px 0 0;
-}
-.page :global(.appearance-controls) {
-  padding-top: 16px;
-}
-
-.page :global(.workspace-settings-groups) {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-.page :global(.workspace-setting-group) {
-  margin: 0;
-  box-shadow: none;
-}
-.page :global(.workspace-setting-group) > header {
-  padding: 0 0 12px;
-  border-bottom: 1px solid var(--line);
-}
-.page :global(.workspace-setting-group) > header h2 {
-  font-size: 17px;
-}
-.page :global(.workspace-setting-group) > header small {
-  font-size: 12px;
-}
-
-/* Own the track and thumb geometry; legacy switches assumed a taller control. */
-.page :global(.workspace-settings-groups) {
-  border: 0;
-}
-.page :global(.motion-switch) {
-  position: relative;
-  display: block;
-  flex: 0 0 46px;
-  width: 46px;
-  height: 44px;
-  min-height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.page :global(.motion-switch)::before {
-  content: "";
-  display: block;
-  position: absolute;
-  inset: 8px 0;
-  border-radius: 20px;
-  background: var(--line);
-}
-.page :global(.motion-switch) > span {
-  position: absolute;
-  top: 12px;
-  left: 4px;
-  width: 20px;
-  height: 20px;
-  margin: 0;
-  border-radius: 50%;
-  background: #fff;
-  transform: none;
-}
-.page :global(.motion-switch)[aria-checked="true"] > span {
-  transform: translateX(18px);
-}
-.page :global(.workspace-account-row) :global(.settings-signout) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-top: 1px solid var(--line);
-  border-radius: 0;
-  width: 100%;
-  margin-top: 4px;
-  padding-top: 16px;
-  color: var(--muted);
-  font-size: 13px;
-}
-@media (max-width: 800px) {
-  .page :global(.workspace-account-row) {
-    display: grid;
-    grid-template-columns: 44px minmax(0, 1fr);
-    gap: 12px;
-  }
-  .page :global(.settings-profile-avatar) {
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
-  }
-  .page :global(.workspace-account-row) > a,
-  .page :global(.workspace-account-row) :global(.settings-signout) {
-    grid-column: 1/-1;
-    margin-left: 0;
-  }
-  .page :global(.workspace-account-row) strong {
-    font-size: 13px;
-  }
-}
-
-/* Keep nested preference controls usable at the narrowest supported widths. */
 .page :global(.research-preferences) select,
 .page :global(.password-form) input {
   min-width: 0;
@@ -489,30 +341,26 @@
 .page :global(.research-preferences) fieldset label {
   min-height: 44px;
 }
-.page :global(.density-options) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.page :global(.density-options) button,
-.page :global(.appearance-controls) > button,
-.page :global(.settings-back),
-.page :global(.workspace-account-row) > a,
-.page :global(.workspace-settings-shortcuts) button {
-  min-height: 44px;
-}
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .page {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas: "toolbar" "heading" "feedback" "account" "preferences" "support";
     gap: 16px;
   }
+  .page :global(.workspace-account-row) {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .page :global(.workspace-account-row) > a,
+  .page :global(.workspace-account-row) :global(.settings-signout) {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 600px) {
   .page :global(.workspace-setting-group) {
     padding: 16px 14px;
-  }
-  .page :global(.page-heading) {
-    padding: 20px;
-  }
-  .page :global(.page-heading) h1 {
-    font-size: 28px;
   }
   .page :global(.research-preferences) select,
   .page :global(.password-form) input {
@@ -525,94 +373,13 @@
     flex: 1 1 auto;
     padding-inline: 10px;
   }
-}
-
-/* Preferences use an editorial masthead and two quiet, aligned tracks. */
-.page {
-  max-width: 1200px;
-  grid-template-columns: 220px minmax(0, 1fr);
-  column-gap: 36px;
-  row-gap: 20px;
-  padding-top: 0;
-}
-.page :global(.page-heading) {
-  padding: 0 0 24px;
-  margin: 0;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  background: transparent;
-}
-.page :global(.page-heading) h1 {
-  font-size: clamp(32px, 3vw, 42px);
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.page :global(.workspace-account-row),
-.page :global(.workspace-settings-shortcuts) {
-  padding: 18px 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.page :global(.workspace-account-row) {
-  border-bottom: 1px solid var(--line);
-}
-.page :global(.settings-profile-avatar) {
-  border-radius: var(--workspace-radius);
-  background: var(--blue);
-  color: white;
-}
-.page :global(.workspace-setting-group) {
-  padding: 24px;
-  border: 0;
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  border: 1px solid var(--workspace-edge);
-  box-shadow: var(--workspace-shadow);
-  backdrop-filter: blur(16px);
-}
-.page :global(.workspace-setting-group) > header {
-  padding-bottom: 18px;
-}
-.page :global(.workspace-setting-group) > header h2 {
-  font-size: 19px;
-  font-weight: 600;
-}
-.page :global(.setting-row) {
-  min-height: 66px;
-}
-.page :global(.setting-row):last-child {
-  border-bottom: 0;
-}
-.page :global(.segments) {
-  padding: 3px;
-  border: 0;
-  background: var(--surface);
-  border-radius: 8px;
-}
-.page :global(.segments) button[aria-pressed="true"] {
-  background: var(--blue);
-  color: white;
-}
-@media (max-width: 800px) {
-  .page {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
-  }
-  .page :global(.workspace-account-row) {
-    padding: 8px 0 20px;
-  }
-  .page :global(.workspace-setting-group) {
-    padding: 20px 16px;
-  }
-  .page :global(.page-heading) {
-    padding: 0 0 20px;
+  .page :global(.setting-row) {
+    padding: 8px 0;
   }
 }
-
 @media (prefers-reduced-transparency: reduce) {
+  .page :global(.workspace-account-row),
+  .page :global(.workspace-settings-shortcuts),
   .page :global(.workspace-setting-group) {
     background: var(--card);
     backdrop-filter: none;

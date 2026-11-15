@@ -1,4 +1,5 @@
 "use client";
+import experience from "./Session.module.css";
 import { useEffect, useState } from "react";
 
 import { PublicSample } from "./PublicLanding";
@@ -61,15 +62,15 @@ export default function PasswordRecovery() {
     }
   }
   return (
-    <main className="mp-auth ap-auth" data-auth-mode="recovery">
-      <aside className="mp-auth-story" aria-label="About AURYN">
+    <main className={`mp-auth ${experience.auth}`} data-auth-mode="recovery">
+      <aside className={experience.story} aria-label="About AURYN">
         <a className="mp-brand" href="/" aria-label="Auryn home">
           <span className="mp-brand-mark" aria-hidden="true">
             <img src="/icon.svg" alt="" width="34" height="36" />
           </span>
           <span>AURYN</span>
         </a>
-        <div className="mp-auth-story-copy">
+        <div className={experience.storyContent}>
           <span className="mp-overline">INVEST WITH UNDERSTANDING</span>
           <h2>
             Know the stock.
@@ -79,12 +80,12 @@ export default function PasswordRecovery() {
           <p>Business first. A clear decision. Your pace for gradual buying.</p>
         </div>
         <PublicSample compact />
-        <div className="mp-auth-story-footer">
+        <div className={experience.storyFoot}>
           <span>A clearer case. A considered pace.</span>
           <span>Research supports your judgment. Investing involves risk.</span>
         </div>
       </aside>
-      <section className="mp-auth-main" aria-label="Account recovery">
+      <section className={experience.main} aria-label="Account recovery">
         <div className="mp-auth-mobile-brand">
           <a className="mp-brand" href="/" aria-label="Auryn home">
             <span className="mp-brand-mark" aria-hidden="true">

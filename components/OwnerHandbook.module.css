@@ -247,8 +247,8 @@
   flex-wrap: wrap;
   gap: 10px;
   border-top: 1px solid var(--line);
-  padding-top: 20px;
-  margin-top: 32px;
+  padding-top: 16px;
+  margin-top: 20px;
 }
 .chapterNav span {
   color: var(--muted);
@@ -323,12 +323,12 @@
   min-width: 0;
 }
 .root.root .reader h3 {
-  font-size: clamp(25px, 3vw, 36px);
+  font-size: clamp(24px, 2.4vw, 30px);
   line-height: 1.15;
   letter-spacing: -0.035em;
 }
 .intro > p {
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.6;
   color: var(--muted);
   max-width: 58ch;
@@ -338,11 +338,10 @@
   list-style: none;
   display: grid;
   gap: 0;
-  margin: 24px 0 30px;
+  margin: 16px 0;
 }
 .intro li {
-  padding: 16px 0 16px 26px;
-  border-bottom: 1px solid var(--line);
+  padding: 8px 0 8px 22px;
   position: relative;
   line-height: 1.6;
 }
@@ -352,7 +351,7 @@
   font-size: 10px;
   position: absolute;
   left: 0;
-  top: 21px;
+  top: 13px;
 }
 .root.root .fullDetail {
   margin: 20px 0;
@@ -400,16 +399,17 @@
 }
 .layout {
   grid-template-columns: 220px minmax(0, 1fr);
-  gap: 40px;
+  gap: 24px;
 }
 .reader {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  padding: 16px 0 24px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: var(--workspace-radius);
+  background: var(--workspace-glass);
+  padding: 22px;
 }
 .reader article {
-  max-width: 70ch;
+  max-width: 78ch;
+  margin: 0;
 }
 .reader h1,
 .reader h2 {

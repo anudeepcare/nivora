@@ -116,7 +116,7 @@ export function PriceChart({
             priceScaleId: contrast ? "left" : "right",
             lastValueVisible: !contrast,
             lineColor: accent,
-            topColor: rgba(accent, 0.2),
+            topColor: contrast ? "transparent" : rgba(accent, 0.2),
             bottomColor: rgba(accent, 0),
             lineWidth: 2,
             priceLineVisible: false,
@@ -246,11 +246,11 @@ export function PriceChart({
     const current = series.current;
     if (!current || !paceBands.length) return;
     const colors = [
-      "rgba(147,176,215,0.07)",
-      "rgba(92,164,243,0.10)",
-      "rgba(49,154,255,0.18)",
-      "rgba(20,132,250,0.26)",
-      "rgba(0,104,235,0.34)",
+      "rgba(147,176,215,0.10)",
+      "rgba(92,164,243,0.14)",
+      "rgba(49,154,255,0.28)",
+      "rgba(20,132,250,0.45)",
+      "rgba(0,104,235,0.68)",
     ];
     const primitive: ISeriesPrimitive<Time> = {
       paneViews: () => [
@@ -268,6 +268,23 @@ export function PriceChart({
                   if (end <= y) continue;
                   context.fillStyle = colors[band.level];
                   context.fillRect(0, y, mediaSize.width, end - y);
+                  // Label only bands tall enough to read, without changing their scale.
+                  if (end - y >= 22) {
+                    context.font = "600 11px system-ui, sans-serif";
+                    context.fillStyle =
+                      band.level === 4
+                        ? "#ffffff"
+                        : theme === "dark"
+                          ? "#edf3ff"
+                          : contrast
+                            ? "#000000"
+                            : "#10223e";
+                    context.fillText(
+                      `P${band.level} · ${["Pause", "Watch / hold", "Start small", "Build gradually", "Deep accumulation"][band.level]}`,
+                      8,
+                      y + 15,
+                    );
+                  }
                 }
               }),
           }),

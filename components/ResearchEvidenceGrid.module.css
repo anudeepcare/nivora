@@ -1,67 +1,43 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(var(--evidence-columns, 4), minmax(0, 1fr));
-  gap: 40px;
-  margin: 16px 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  align-items: start;
 }
 .panel {
-  --category: var(--financial-icon);
-  --category-bg: #eef0fa;
   min-width: 0;
-  border: 0;
-
-  border-radius: 0;
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.panel[data-category="business"] {
-  --category: var(--business-icon);
-  background: transparent;
-  --category-bg: #e9e5fa;
-}
-.panel[data-category="valuation"] {
-  --category: var(--valuation-icon);
-  background: transparent;
-  --category-bg: #ede7fa;
-}
-.panel[data-category="ownership"] {
-  --category: var(--ownership-icon);
-  background: transparent;
-  --category-bg: #eef0fa;
+  padding: 14px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 14px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
 }
 .panel header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 8px;
 }
-.icon {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: var(--category-bg);
-  color: var(--category);
-}
 .panel h3 {
-  font-size: 13px;
-  font-weight: 500;
   margin: 0;
-  line-height: 1.3;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.icon {
+  display: none;
 }
 .panel header > button {
   margin-left: auto;
   display: grid;
   place-items: center;
-  flex: none;
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  min-height: 32px;
   border: 0;
-  background: none;
-  color: var(--category);
+  background: transparent;
+  color: var(--blue);
+  cursor: pointer;
 }
 .panel dl {
   margin: 0;
@@ -74,10 +50,14 @@
   padding: 8px 0;
   border-bottom: 1px solid var(--line);
 }
+.panel dl > div:last-child {
+  border-bottom: 0;
+}
 .panel dt {
   min-width: 0;
-  font-size: 12px;
-  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ink);
 }
 .panel dt button {
   font-size: inherit;
@@ -85,230 +65,71 @@
 }
 .panel dd {
   margin: 0;
-  font-size: 16px;
-  font-weight: 500;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .panel dd[data-tone="risk"] {
-  color: var(--red);
+  color: var(--negative);
 }
-.panel dd[data-tone="positive"] {
-  color: var(--green);
+.more {
+  grid-column: 1/-1;
+  order: 1;
 }
-.panel footer {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 10px;
-  line-height: 1.5;
+.more dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 20px;
 }
-.empty {
-  font-size: 12px;
-  color: var(--muted);
-  min-height: 88px;
+.more dl > div {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
-@media (max-width: 1199px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.more h3 {
+  margin-bottom: 10px;
 }
-@media (max-width: 500px) {
-  .grid {
-    gap: 8px;
-  }
-  .panel {
-    padding: 10px;
-  }
-  .panel h3 {
-    font-size: 12px;
-  }
-  .panel header {
-    gap: 6px;
-  }
-  .icon {
-    width: 25px;
-    height: 25px;
-  }
-  .panel header > button {
-    width: 24px;
-  }
-  .panel dl > div {
-    flex-direction: column;
-    gap: 2px;
-    padding: 6px 0;
-  }
-  .panel dd {
-    font-size: 17px;
-  }
-  .panel dt {
-    font-size: 12px;
-  }
-  .panel footer {
-    font-size: 12px;
-  }
+.more summary {
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--blue);
+  min-height: 36px;
+  padding: 10px 0;
 }
-
-@media (max-width: 500px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  .panel {
-    padding: 0;
-  }
-  .panel dl > div {
-    flex-direction: row;
-    align-items: baseline;
-  }
-  .panel h3 {
-    font-size: 16px;
-  }
-}
-/* Preserve the user's metric grids and their category identity. */
-.grid {
-  gap: 16px;
-  margin: 0;
-}
-.panel {
-  padding: 20px;
-  border: 0;
-  border-radius: 18px;
-  box-shadow: 0 8px 28px #17342c08;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--category) 5%, var(--card)),
-    var(--card)
-  );
-}
-.panel[data-category] {
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--category) 5%, var(--card)),
-    var(--card)
-  );
-}
-.panel h3 {
-  font-size: 14px;
-  font-weight: 600;
-}
-.panel header {
-  margin-bottom: 16px;
-}
-.panel dd {
-  font-weight: 600;
-}
-.panel footer {
-  font-size: 12px;
-}
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-  .panel {
-    padding: 16px 12px;
-  }
-  .panel header {
-    gap: 6px;
-  }
-  .panel h3 {
-    font-size: 12px;
-  }
-  .panel dl > div {
-    flex-direction: column;
-    gap: 4px;
-  }
-  .panel dd {
-    font-size: 18px;
-  }
-  .panel dt {
-    font-size: 12px;
-  }
-  .panel footer {
-    font-size: 12px;
-  }
+.more summary:focus-visible,
+.panel button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 .snapshot {
+  order: 2;
   grid-column: 1/-1;
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 11px;
+  line-height: 1.5;
   color: var(--muted);
   padding: 0 4px;
-  margin-top: -4px;
 }
-@media (max-width: 600px) {
-  .panel:last-of-type:nth-child(odd) {
-    grid-column: 1/-1;
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-
-/* Keep the original category boxes; reduce only their whitespace. */
-.grid {
-  gap: 12px;
-}
-.panel {
-  padding: 14px;
-}
-.panel header {
-  margin-bottom: 8px;
-}
-.panel dl > div {
-  padding: 6px 0;
-}
-@media (max-width: 600px) {
-  .panel {
-    padding: 12px;
-  }
-}
-
-/* Approved evidence cards share one baseline, rhythm and quiet glass surface. */
-.grid {
-  gap: 12px;
-  margin: 14px 0 0;
-}
-.panel.panel {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  border: 1px solid var(--workspace-edge);
-  border-radius: 14px;
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  backdrop-filter: blur(14px);
-}
-.panel header {
-  min-height: 36px;
-  margin-bottom: 12px;
-}
-.panel h3 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 650;
-}
-.icon {
-  display: none;
-}
-.panel dl > div {
-  padding: 9px 0;
-}
-.panel dd {
-  font-size: 15px;
-  font-weight: 650;
-}
-.panel dt {
-  line-height: 1.45;
-}
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .panel.panel {
-    padding: 14px;
+  .more dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (max-width: 500px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .panel {
+    padding: 14px;
   }
   .panel dl {
     display: grid;
@@ -318,19 +139,78 @@
   .panel dl > div {
     flex-direction: column;
     align-items: flex-start;
+    gap: 3px;
   }
   .panel dd {
-    font-size: 22px;
+    font-size: 20px;
+  }
+  .panel h3 {
+    font-size: 12px;
+  }
+  .panel header > button,
+  .more summary {
+    min-height: 44px;
   }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .panel.panel {
+  .panel {
     background: var(--card);
-    backdrop-filter: none;
   }
 }
-@media (min-width: 1200px) {
+.panel .metric {
+  flex-wrap: wrap;
+}
+.meter {
+  flex: 0 0 100%;
+  height: 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--blue) 12%, transparent);
+  overflow: hidden;
+}
+.meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #0a2958, #0a80f8);
+}
+
+.mobileEvidence {
+  display: none;
+}
+@media (max-width: 600px) {
   .grid {
-    grid-template-columns: repeat(var(--evidence-columns, 5), minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .desktopEvidence {
+    display: none;
+  }
+  .mobileEvidence {
+    display: block;
+  }
+  .mobileEvidence dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+  }
+  .mobileEvidence dl > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+  .mobileEvidence dd {
+    font-size: 22px;
+  }
+  .mobileEvidence h3 {
+    margin-bottom: 8px;
+  }
+  .businessStrip dl {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .businessStrip dd {
+    font-size: 20px;
+  }
+  .businessStrip dl > div {
+    border-bottom: 0;
   }
 }

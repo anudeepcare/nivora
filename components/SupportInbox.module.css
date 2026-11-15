@@ -35,7 +35,7 @@
 .delivery {
   margin: 12px 0;
   padding: 12px;
-  background: color-mix(in srgb, #168e83 7%, var(--card));
+  background: var(--blue-soft);
   border-radius: 10px;
   font-size: 13px;
 }
@@ -126,7 +126,7 @@
   gap: 12px;
 }
 .ticket summary:focus-visible {
-  outline: 2px solid #168e83;
+  outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 @media (max-width: 600px) {
@@ -196,7 +196,7 @@
   width: 18px !important;
   min-height: 18px !important;
   height: 18px;
-  accent-color: var(--green);
+  accent-color: var(--blue);
 }
 .bulk button,
 .assignment button {
@@ -238,8 +238,17 @@
   display: grid !important;
   flex: 1;
 }
-.body > label {
+.inbox .body > label {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  align-items: center;
+  overflow-wrap: normal;
+  word-break: normal;
   margin: 12px 0;
+}
+.inbox .body > label select {
+  min-width: 0;
+  width: 100%;
 }
 .body input {
   min-width: 0;

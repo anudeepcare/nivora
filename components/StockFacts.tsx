@@ -37,8 +37,13 @@ export function stockFactRows(r: Research) {
     ).values(),
   ].sort((a, b) => a.time.localeCompare(b.time));
   const latest = bars.at(-1);
-  const rows: { label: string; value: string; date: string; help: string }[] =
-    [];
+  const rows: {
+    label: string;
+    value: string;
+    date: string;
+    help: string;
+    range?: { low: number; high: number; close: number };
+  }[] = [];
   const cap = r.evidence?.highlights?.MarketCapitalization;
   const capObservation = r.evidence?.listingObservations?.marketCap;
   const update = r.evidence?.updatedAt?.slice(0, 10);
@@ -92,6 +97,11 @@ export function stockFactRows(r: Research) {
     const prices = range.map((b) => b.close);
     rows.push({
       label: covered ? "52-week closing range" : "Available closing range",
+      range: {
+        low: Math.min(...prices),
+        high: Math.max(...prices),
+        close: latest.close,
+      },
       value: `${amount(Math.min(...prices), r.quote.currency)} – ${amount(Math.max(...prices), r.quote.currency)}`,
       date: `${dateLabel(range[0].time)} – ${dateLabel(latest.time)}`,
       help: "Lowest and highest completed daily closing prices in the stated period, not intraday highs or lows. For example, $80–$120 means the supplied closes span those values. The 52-week label requires a year of coverage; shorter or sparse history uses its available dates.",

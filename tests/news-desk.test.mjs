@@ -40,3 +40,13 @@ test('Filings retain partial-coverage warnings and an explicit expansion beyond 
  assert.match(source,/filingsError && .*filings.*length/s);
  assert.match(source,/All supplied filings/);
 });
+test('News decodes publisher entities before duplicate matching, retaining plain escaped text',async()=>{
+ const {newsDesk}=await load();
+ const make=(title,i)=>({title,date:'2026-11-14',url:`https://example.com/${i}`,sentiment:null});
+ const result=newsDesk([make('Hims &amp; Hers &#x2014; results',1),make('Hims & Hers — results',2),make('Hims &lt;script&gt;alert(1)&lt;/script&gt; &#99999999;',3)],'HIMS','Hims & Hers',now);
+ const all=[...result.company,...result.broader];
+ assert.equal(all.length,2);
+ assert.equal(all[0].title,'Hims & Hers — results');
+ assert.equal(all[1].title,'Hims <script>alert(1)</script> &#99999999;');
+ assert.doesNotMatch(fs.readFileSync('components/NewsCoverage.tsx','utf8'),/dangerouslySetInnerHTML/);
+});

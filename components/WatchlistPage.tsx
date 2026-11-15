@@ -152,26 +152,13 @@ export function Watchlist() {
       )}
       <div className="watch-summary">
         <div>
-          <span className="eyebrow">FOLLOWING</span>
           <strong>{all.length}</strong>
-          <span className="watch-count-label">followed</span>
-          <p>Companies in your watchlist</p>
+          <span className="watch-count-label">companies followed</span>
         </div>
         <Link className="btn" href={`${prefix}/alerts`}>
           Create a price alert <ArrowUpRight size={16} />
         </Link>
       </div>
-      <DecisionAttention
-        symbols={symbols}
-        held={(workspace?.positions ?? [])
-          .filter((p) => p.assetType !== "cash" && p.quantity > 0)
-          .map((p) => p.symbol)}
-        rows={state.paceScan.rows}
-        allocations={state.model.allocations}
-        concentrationLimit={accountPrefs.preferences.concentrationLimit}
-        prefix={prefix}
-        loading={state.paceScan.loading}
-      />
       <section className="card">
         <SectionHead
           title="Your watchlist"
@@ -355,6 +342,18 @@ export function Watchlist() {
           </Empty>
         )}
       </section>
+      <DecisionAttention
+        compact
+        symbols={symbols}
+        held={(workspace?.positions ?? [])
+          .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+          .map((p) => p.symbol)}
+        rows={state.paceScan.rows}
+        allocations={state.model.allocations}
+        concentrationLimit={accountPrefs.preferences.concentrationLimit}
+        prefix={prefix}
+        loading={state.paceScan.loading}
+      />
       <SearchDialog dialog={dialog} />
     </section>
   );

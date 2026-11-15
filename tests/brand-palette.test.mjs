@@ -28,7 +28,7 @@ test("brand canvas uses approved ice and navy glass surfaces with readable seman
   const css = read("app/core/tokens.css");
   for (const [selector, bg] of [
     [':root[data-theme="light"]', "#f4f8ff"],
-    [':root[data-theme="dark"]', "#10202a"],
+    [':root[data-theme="dark"]', "#0d1524"],
   ]) {
     const t = block(css, selector);
     assert.equal(token(t, "bg"), bg);

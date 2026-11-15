@@ -1,29 +1,20 @@
 .root.root {
   min-width: 0;
-  margin: 0 0 24px;
-  padding: 22px 4px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
   color: var(--ink);
 }
 .heading {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  align-items: flex-start;
 }
 .eyebrow {
-  color: var(--green);
+  color: var(--blue);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .heading h2 {
-  margin: 7px 0 10px;
-  font-size: clamp(26px, 3vw, 36px);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1.15;
@@ -38,20 +29,12 @@
 .reasons {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 32px 0 16px;
 }
 .root.root .case {
   --case-color: var(--neutral);
   display: flex;
   flex-direction: column;
-  gap: 10px;
   min-width: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
 }
 .root.root .case[data-case="bear"] {
   --case-color: var(--negative);
@@ -65,7 +48,6 @@
   font-weight: 650;
 }
 .case strong {
-  font-size: clamp(21px, 3.6vw, 36px);
   font-weight: 550;
   letter-spacing: -0.045em;
   line-height: 1.2;
@@ -75,9 +57,6 @@
 .case small {
   color: var(--muted);
   font-size: 12px;
-}
-.priceMap {
-  padding: 12px 36px 36px;
 }
 .rail {
   position: relative;
@@ -129,7 +108,6 @@
   color: var(--muted);
 }
 .root.root .assumptions {
-  padding: 14px 0 0;
   margin: 0;
   border: 0;
   font-size: 12px;
@@ -161,12 +139,12 @@
   cursor: pointer;
 }
 .root.root .years button[aria-pressed="true"] {
-  color: var(--green);
+  color: var(--blue);
   font-weight: 700;
 }
 .root.root button:focus-visible,
 .root.root summary:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 4px;
 }
 @media (max-width: 480px) {
@@ -181,22 +159,10 @@
   }
 }
 .root.root {
-  padding: 12px 0;
   margin-bottom: 12px;
 }
 .heading h2 {
-  font-size: 26px;
   margin: 6px 0;
-}
-.reasons {
-  gap: 24px;
-  margin: 22px 0 18px;
-}
-.root.root .case {
-  gap: 6px;
-}
-.case strong {
-  font-size: clamp(24px, 2.8vw, 34px);
 }
 .caseInput {
   font-size: 11px;
@@ -206,10 +172,6 @@
 }
 .caseInput > span {
   padding: 0 3px;
-}
-.priceMap {
-  padding: 8px 10px 32px;
-  max-width: 980px;
 }
 .root.root .assumptions {
   padding-top: 6px;
@@ -230,13 +192,6 @@
   }
 }
 /* Three deliberate scenario surfaces, with visible assumptions and shared price context. */
-.root.root {
-  padding: 24px;
-  border-radius: 22px;
-  background: var(--card);
-  box-shadow: 0 10px 36px #17342c09;
-  margin: 0;
-}
 .heading h2 {
   font-size: 25px;
 }
@@ -246,17 +201,6 @@
 .reasons {
   gap: 14px;
   margin: 20px 0 18px;
-}
-.root.root .case {
-  padding: 20px;
-  border-radius: 16px;
-  gap: 8px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--case-color) 9%, var(--card)),
-    var(--card)
-  );
-  box-shadow: none;
 }
 .caseLabel {
   display: flex;
@@ -422,42 +366,18 @@
     border-radius: 18px;
   }
 }
-.root.root {
-  padding: 20px;
-  border-radius: 18px;
-}
 .root.root .heading {
   gap: 12px;
   align-items: start;
 }
-.root.root .heading h2 {
-  font-size: 23px;
-  margin: 5px 0 7px;
-}
 .root.root .heading p {
-  font-size: 11px;
   line-height: 1.5;
-}
-.root.root .reasons {
-  margin: 16px 0 12px;
-  gap: 10px;
-}
-.root.root .case {
-  padding: 16px;
-  border-radius: 13px;
-  gap: 7px;
-}
-.root.root .case strong {
-  font-size: clamp(24px, 2.4vw, 33px);
 }
 .root.root .case span {
   font-size: 11px;
 }
 .root.root .case small {
   font-size: 11px;
-}
-.root.root .priceMap {
-  padding: 8px 18px 34px;
 }
 @media (max-width: 650px) {
   .root.root {

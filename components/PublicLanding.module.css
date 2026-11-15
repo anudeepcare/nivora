@@ -101,15 +101,15 @@
   width: min(1280px, calc(100% - 64px));
   max-width: 1280px;
   margin: auto;
-  padding: 36px 0 20px;
-  display: block;
+  padding: 44px 0 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 36px;
+  align-items: center;
   background: none;
 }
 .page.page .heroCopy {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
-  column-gap: 64px;
-  align-items: end;
+  display: block;
 }
 .eyebrow {
   display: block;
@@ -124,7 +124,7 @@
   margin-bottom: 18px;
 }
 .page.page .heroCopy h1 {
-  font-size: clamp(42px, 5vw, 72px);
+  font-size: clamp(36px, 3.5vw, 56px);
   line-height: 1.02;
   letter-spacing: -0.065em;
   font-weight: 650;
@@ -142,6 +142,7 @@
 .heroDetail {
   min-width: 0;
   padding-bottom: 3px;
+  margin-top: 24px;
 }
 .page.page .heroDetail > p {
   font-size: 15px;
@@ -201,7 +202,7 @@
   color: var(--blue);
 }
 .page.page .heroVisual {
-  margin-top: 38px;
+  margin-top: 0;
   padding: 0;
   max-width: none;
   background: none;
@@ -211,7 +212,7 @@
 }
 .page.page .demo {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   background: var(--workspace-glass);
   color: var(--ink);
   backdrop-filter: blur(16px);
@@ -251,12 +252,12 @@
   font-size: 11px;
 }
 .demoTabs {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
-  padding: 20px 12px;
-  gap: 8px;
-  border-right: 1px solid var(--line);
+  padding: 8px;
+  gap: 6px;
+  border-bottom: 1px solid var(--line);
   background: var(--surface);
 }
 .demoTabs button {
@@ -289,7 +290,7 @@
 .demoBody {
   min-width: 0;
   padding: 24px 28px;
-  min-height: 430px;
+  min-height: 360px;
 }
 .demoIntro h2 {
   font-size: clamp(24px, 2.4vw, 32px);
@@ -773,7 +774,8 @@
     place-items: center;
   }
   .page.page.page .hero {
-    padding: 32px 0 14px;
+    padding: 28px 0 14px;
+    display: block;
   }
   .page.page .heroCopy {
     display: block;

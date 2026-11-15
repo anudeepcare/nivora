@@ -60,12 +60,12 @@
 .tabs button[aria-selected="true"] {
   background: transparent;
   color: var(--ink);
-  border-bottom-color: var(--green, #087b60);
+  border-bottom-color: var(--blue);
   font-weight: 650;
 }
 .tabs button:focus-visible,
 .lab summary:focus-visible {
-  outline: 2px solid #087b60;
+  outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 .panel {
@@ -308,13 +308,10 @@
 }
 
 .root.root.root {
-  padding: 20px;
-  margin: 0;
   min-width: 0;
 }
 .root.root.root .header {
   align-items: center;
-  margin-bottom: 16px;
   gap: 20px;
 }
 .root.root.root .header h2 {
@@ -328,7 +325,7 @@
 .root.root.root .quote {
   padding: 12px 16px;
   border-radius: 12px;
-  background: color-mix(in srgb, #438f86 8%, var(--card));
+  background: var(--workspace-glass, var(--card));
   font-size: 12px;
 }
 .root.root.root .panel {
@@ -340,7 +337,7 @@
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: color-mix(in srgb, #8c6bcc 5%, var(--card));
+  background: var(--workspace-glass, var(--card));
   gap: 12px;
 }
 .root.root.root :global(.analyst-target-fallback) {
@@ -348,7 +345,7 @@
   margin: 0;
   border: 0;
   border-radius: 12px;
-  background: color-mix(in srgb, #438f86 6%, var(--card));
+  background: var(--workspace-glass, var(--card));
 }
 .root.root.root :global(.analyst-target-main) {
   margin: 12px 0;
@@ -361,7 +358,7 @@
 .root.root.root .cases article {
   padding: 16px;
   gap: 8px;
-  background: color-mix(in srgb, #438f86 6%, var(--card));
+  background: var(--workspace-glass, var(--card));
 }
 .root.root.root .cases article:first-child {
   background: color-mix(in srgb, #bd5a65 6%, var(--card));
@@ -427,7 +424,7 @@
   padding: 16px;
   margin-bottom: 16px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--green) 4%, var(--card));
+  background: var(--workspace-glass, var(--card));
 }
 .assumptionBar .control {
   max-width: none;
@@ -496,14 +493,14 @@
   padding: 8px 0;
   border: 0;
   background: transparent;
-  color: var(--green);
+  color: var(--blue);
   font: inherit;
   font-size: 12px;
   cursor: pointer;
   text-align: left;
 }
 .modelLink:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 
@@ -515,6 +512,6 @@
 .tableWrap:focus-visible,
 .assumptionHelp summary:focus-visible,
 .resetAssumption:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }

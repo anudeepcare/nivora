@@ -89,43 +89,43 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --chrome-surface: #142631;
-  --bg: #10202a;
+  --chrome-surface: #111b2c;
+  --bg: #0d1524;
   --app-background: var(--workspace-canvas);
   --canvas-gradient: var(--workspace-canvas);
   --workspace-canvas:
-    radial-gradient(ellipse at 0% 0%, #7b99ab18, transparent 48%),
-    radial-gradient(ellipse at 100% 45%, #5b7f9112, transparent 46%), #10202a;
-  --workspace-glass: #0c1b3ae8;
+    radial-gradient(ellipse at 0% 0%, #759dff14, transparent 48%),
+    radial-gradient(ellipse at 100% 45%, #798cff0c, transparent 46%), #0d1524;
+  --workspace-glass: #17243bd9;
   --workspace-panel: linear-gradient(
     125deg,
-    #213944ef,
-    #0c1b3aed 62%,
-    #20343ded
+    #1c2c44e6,
+    #17243be6 62%,
+    #192940e6
   );
   --workspace-tile: linear-gradient(130deg, #bcb6ed14, #9abbdc0d);
-  --workspace-control: #2d424bcc;
-  --workspace-edge: #b5ccd124;
+  --workspace-control: #22324ad9;
+  --workspace-edge: #b8d4ff1c;
   --workspace-shadow: 0 10px 30px #0000001c, inset 0 1px 0 #dedbff18;
   --workspace-accent: #8ac6ff;
   --nav-active: #245bdb;
   --nav-active-ink: #ffffff;
-  --glass: #0c1b3aed;
+  --glass: #17243be6;
   --panel-shadow: var(--workspace-shadow);
-  --paper: #142731;
-  --card: #1b303a;
-  --control-ink: #edf3f4;
-  --control-muted: #b4c5cc;
-  --control-card: #1b303a;
-  --control-surface: #2d424b;
+  --paper: #111b2c;
+  --card: #18263b;
+  --control-ink: #edf3ff;
+  --control-muted: #afbed3;
+  --control-card: #18263b;
+  --control-surface: #22324a;
   --control-line: #5c698c;
-  --surface: #2c424b;
-  --surface-2: #243b45;
-  --ink: #edf3f4;
-  --text: #edf3f4;
-  --muted: #b4c5cc;
-  --line: #38505b;
-  --border: #38505b;
+  --surface: #22324a;
+  --surface-2: #1d2b42;
+  --ink: #edf3ff;
+  --text: #edf3ff;
+  --muted: #afbed3;
+  --line: #2c3c54;
+  --border: #2c3c54;
   --blue: #8ac6ff;
   --blue-soft: #243c58;
   --positive: #7de0cc;

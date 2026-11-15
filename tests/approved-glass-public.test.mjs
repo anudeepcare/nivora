@@ -23,7 +23,7 @@ test("public design inherits the approved theme rather than isolating warm paper
   assert.match(css, /background-clip: text/);
   assert.match(
     read("components/PublicLanding.tsx"),
-    /Research\.[\s\S]*Decide\.[\s\S]*Review\./,
+    /Your next move\.[\s\S]*A clearer view\./,
   );
 });
 test("workspace destination grid remains two-up on mobile and retains four real destinations", () => {

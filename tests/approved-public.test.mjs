@@ -154,7 +154,7 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Research\.<br\/><span>Decide\.<\/span><br\/>Review\./);
+  assert.match(html, /Your next move\.<br\/><span>A clearer view\.<\/span>/);
   assert.match(html, /id="how-it-works"/);
   assert.match(html, /href="\/#how-it-works"/);
   assert.doesNotMatch(html, /Our approach/);

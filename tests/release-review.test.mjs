@@ -13,6 +13,8 @@ import { latestFinancialEvidence } from "../lib/analysis.ts";
 import { selectPriceReference } from "../lib/price-reference.ts";
 import { movementContext } from "../lib/movement-context.ts";
 import { headerMarketContext } from "../lib/business-history.ts";
+import { currentPace } from "../lib/current-pace.ts";
+import { paceCode } from "../lib/pace-presentation.ts";
 import { retainResearchQuote } from "../lib/research-quote.ts";
 import { normalizeBars } from "../lib/market.ts";
 import { normalizeEodBars } from "../lib/eodhd-normalize.ts";
@@ -119,6 +121,9 @@ function researchMarkup(issues = []) {
   const empty = () => null;
   const bindings = { cachedQuotes:()=>({}),publishQuotes:()=>{},subscribeQuotes:()=>()=>{}, experience,
     customerText,
+    currentPace,
+    paceCode,
+    masthead: new Proxy({}, {get: (_, key) => key}),
     useAccess: () => ({
       access: {
         features: Object.fromEntries(
@@ -163,6 +168,7 @@ function researchMarkup(issues = []) {
       data: path?.startsWith("research/") ? r : undefined,
     }),
     perspective: () => ({
+      dca: { confirmed: null, forming: null },
       heading: "Review the business",
       business: "Developing",
       valuation: "Review",

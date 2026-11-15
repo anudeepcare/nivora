@@ -468,12 +468,6 @@
     padding: 22px 18px;
   }
 }
-
-@media (max-width: 760px) {
-  .auth .main :global(.mp-auth-panel) {
-    padding: 22px 18px;
-  }
-}
 @media (prefers-reduced-transparency: reduce) {
   .story,
   .auth .main :global(.mp-auth-panel) {
