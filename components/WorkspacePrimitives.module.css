@@ -1,23 +1,24 @@
 .heading {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin: 0 0 20px;
-  padding: 4px 0;
+  margin: 0 0 28px;
+  padding: 8px 0 22px;
+  border-bottom: 1px solid var(--line);
   background: transparent;
 }
 .heading h1 {
   font-family: var(--font-ui);
   font-weight: 600;
-  font-size: 28px;
+  font-size: clamp(30px, 3vw, 42px);
   line-height: 1.2;
   letter-spacing: -0.035em;
   margin: 0 0 5px;
 }
 .heading p,
 .sectionHead p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   margin: 0;
   line-height: 1.5;
@@ -40,8 +41,8 @@
   flex-direction: column;
   gap: 8px;
   padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 0;
+  border-radius: 8px;
   background: var(--card);
   color: var(--ink);
 }
@@ -94,5 +95,38 @@
   }
   .sectionHead h2 {
     font-size: 16px;
+  }
+}
+
+.heading > div:first-child {
+  min-width: 0;
+}
+.heading :global(.heading-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+.sectionHead h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.sectionHead h2 svg {
+  color: var(--blue);
+  width: 18px;
+  height: 18px;
+}
+@media (max-width: 767px) {
+  .heading {
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+  }
+  .heading h1 {
+    font-size: 29px;
+  }
+  .heading :global(.heading-actions) {
+    justify-content: flex-start;
   }
 }

@@ -630,3 +630,32 @@ test("key expiry during a slow guard acquisition prevents transport", async () =
   assert.equal(calls, 0);
   assert.equal(releases, 1);
 });
+
+test("a known temporary server error does not hide recovered analyst targets for a full day", async () => {
+  const options = { status: 503 };
+  const f = setup(options),
+    r = research(),
+    env = configuration();
+  assert.equal(await f.client.enrich(r, { owner: true }, env), r);
+  assert.equal(f.calls.length, 1);
+  options.status = 0;
+  f.advance(4 * 60_000);
+  assert.equal(await f.client.enrich(r, { owner: true }, env), r);
+  assert.equal(f.calls.length, 1, "do not hot-loop on temporary failures");
+  f.advance(61_000);
+  const recovered = await f.client.enrich(r, { owner: true }, env);
+  assert.deepEqual(
+    [
+      recovered.analystTargets?.low,
+      recovered.analystTargets?.target,
+      recovered.analystTargets?.high,
+    ],
+    [23, 56.6874, 139],
+  );
+  assert.equal(f.calls.length, 3);
+  assert.equal(
+    f.reservations.filter((x) => x.max === 24).length,
+    3,
+    "recovery still consumes the existing daily budget",
+  );
+});

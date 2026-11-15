@@ -1,41 +1,105 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import postcss from 'postcss';
-const read=p=>fs.readFileSync(p,'utf8');
-const safe=value=>['top','right','bottom','left'].every(edge=>value.includes(`safe-area-inset-${edge}`));
-for(const [file,selector] of [['Contact','.page.page.page'],['ReleaseNotes','.page'],['LegalDocument','.document.document.document']]) {
- test(`${file} standalone padding protects all screen edges at every breakpoint`,()=>{
-  const root=postcss.parse(read(`components/${file}.module.css`));let count=0;
-  root.walkRules(selector,rule=>rule.walkDecls('padding',d=>{count++;assert.ok(safe(d.value),`${file}: ${d.value}`);}));
-  assert.ok(count>0);
- });
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import postcss from "postcss";
+const read = (p) => fs.readFileSync(p, "utf8");
+const safe = (value) =>
+  ["top", "right", "bottom", "left"].every((edge) =>
+    value.includes(`safe-area-inset-${edge}`),
+  );
+for (const [file, selector] of [
+  ["Contact", ".page.page.page"],
+  ["ReleaseNotes", ".page"],
+  ["LegalDocument", ".document.document.document"],
+]) {
+  test(`${file} standalone padding protects all screen edges at every breakpoint`, () => {
+    const root = postcss.parse(read(`components/${file}.module.css`));
+    let count = 0;
+    root.walkRules(selector, (rule) =>
+      rule.walkDecls("padding", (d) => {
+        count++;
+        assert.ok(safe(d.value), `${file}: ${d.value}`);
+      }),
+    );
+    assert.ok(count > 0);
+  });
 }
-test('only public Plans receives viewport safe-area padding',()=>{
- const css=read('components/Plans.module.css');
- const root=postcss.parse(css);let rule;
- root.walkRules('.page:global(.plans-public)',r=>rule=r);
- assert.ok(rule,'public-only guard');
- assert.ok(safe(rule.nodes.find(d=>d.prop==='padding')?.value || ''));
+function effectivePadding(file, selector, width) {
+  const result = {};
+  postcss.parse(read(file)).walkRules((rule) => {
+    if (!rule.selectors.includes(selector)) return;
+    for (let parent = rule.parent; parent; parent = parent.parent) {
+      if (parent.type !== "atrule" || parent.name !== "media") continue;
+      const max = parent.params.match(/max-width:\s*(\d+)px/),
+        min = parent.params.match(/min-width:\s*(\d+)px/);
+      if ((max && width > +max[1]) || (min && width < +min[1])) return;
+    }
+    rule.walkDecls((d) => {
+      if (d.prop === "padding") {
+        const p = postcss.list.space(d.value);
+        [result.top, result.right, result.bottom, result.left] = [
+          p[0],
+          p[1] ?? p[0],
+          p[2] ?? p[0],
+          p[3] ?? p[1] ?? p[0],
+        ];
+      } else if (d.prop === "padding-inline") {
+        result.left = d.value;
+        result.right = d.value;
+      } else if (d.prop.startsWith("padding-"))
+        result[d.prop.slice(8)] = d.value;
+    });
+  });
+  return result;
+}
+test("studio public Plans preserves each device safe area at every breakpoint", () => {
+  for (const width of [320, 390, 700, 768, 1440]) {
+    const padding = effectivePadding(
+      "components/Plans.module.css",
+      ".page:global(.plans-public)",
+      width,
+    );
+    for (const side of ["top", "right", "bottom", "left"])
+      assert.ok(
+        padding[side]?.includes(`safe-area-inset-${side}`),
+        `${width}px Plans ${side}`,
+      );
+  }
 });
-test('auth padding protects all screen edges after responsive overrides',()=>{
- const css=read('components/Session.module.css');
- for(const selector of ['.auth .main','.auth .story']) {
-   let rule; postcss.parse(css).walkRules(selector,r=>{if(r.nodes.some(d=>d.prop==='padding'))rule=r;});
-   assert.ok(safe(rule.nodes.find(d=>d.prop==='padding').value),selector);
- }
+test("studio auth main and story protect their four screen edges", () => {
+  for (const selector of [".main", ".story"])
+    for (const width of [320, 390, 768, 1024, 1440]) {
+      const padding = effectivePadding(
+        "components/Session.module.css",
+        selector,
+        width,
+      );
+      for (const side of ["top", "right", "bottom", "left"])
+        assert.ok(
+          padding[side]?.includes(`safe-area-inset-${side}`),
+          `${width}px auth ${selector} ${side}`,
+        );
+    }
 });
-test('password recovery keeps its existing theme while adding only scoped safe-area padding',()=>{
- const src=read('components/PasswordRecovery.tsx');
- assert.doesNotMatch(src,/Session.module.css/);
- const css=postcss.parse(read('app/core/readability.css')); let count=0;
- css.walkRules(rule=>{
-   if(!rule.selector.includes('[data-auth-mode="recovery"]')) return;
-   rule.walkDecls(d=>{assert.equal(d.prop,'padding');assert.ok(safe(d.value));count++;});
- });
- assert.ok(count>=3,'recovery story, main and mobile main reserve insets');
- assert.match(src,/fetch\("\/api\/auth\/recovery"/);
+test("password recovery keeps its existing theme while adding only scoped safe-area padding", () => {
+  const src = read("components/PasswordRecovery.tsx");
+  assert.doesNotMatch(src, /Session.module.css/);
+  const css = postcss.parse(read("app/core/readability.css"));
+  let count = 0;
+  css.walkRules((rule) => {
+    if (!rule.selector.includes('[data-auth-mode="recovery"]')) return;
+    rule.walkDecls((d) => {
+      assert.equal(d.prop, "padding");
+      assert.ok(safe(d.value));
+      count++;
+    });
+  });
+  assert.ok(count >= 3, "recovery story, main and mobile main reserve insets");
+  assert.match(src, /fetch\("\/api\/auth\/recovery"/);
 });
-test('release heading uses theme-aware foreground gradient colors',()=>{
- assert.match(read('components/ReleaseNotes.module.css'),/\.page > h1[^}]+linear-gradient\(105deg, var\(--blue\), var\(--green\)\)/);
+test("release heading uses theme-aware foreground gradient colors", () => {
+  assert.match(
+    read("components/ReleaseNotes.module.css"),
+    /\.page > h1[^}]+linear-gradient\(105deg, var\(--blue\), var\(--green\)\)/,
+  );
 });

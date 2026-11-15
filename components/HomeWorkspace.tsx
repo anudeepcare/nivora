@@ -226,20 +226,32 @@ function HomeOverview() {
           />
         )}
       </HomeDailyBriefing>
-      <div className={homeStyles.quickLinks}>
+      <nav className={homeStyles.quickLinks} aria-label="Research shortcuts">
         <Link href={`${prefix}/discover`}>
-          Discover ideas <ArrowUpRight size={16} />
+          <span>
+            <small>01 / EXPLORE</small>Discover ideas
+          </span>
+          <ArrowUpRight size={18} />
         </Link>
         <Link href={`${prefix}/watchlist`}>
-          Your watchlist <Bookmark size={16} />
+          <span>
+            <small>02 / FOLLOW</small>Your watchlist
+          </span>
+          <Bookmark size={18} />
         </Link>
         <Link href={`${prefix}/research`}>
-          Research a company <SearchIcon size={16} />
+          <span>
+            <small>03 / UNDERSTAND</small>Research a company
+          </span>
+          <SearchIcon size={18} />
         </Link>
         <Link href="#home-workbench">
-          Research tools <ArrowUpRight size={16} />
+          <span>
+            <small>04 / TEST</small>Research tools
+          </span>
+          <ArrowUpRight size={18} />
         </Link>
-      </div>
+      </nav>
       {symbols.length > 0 && (
         <>
           <div className="home-evidence-layout">

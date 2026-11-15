@@ -171,6 +171,7 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
     const pending = current.pending.get(symbol);
     if (pending) return pending;
 
+    let temporaryServerFailure = false;
     const request = (path: string): Promise<unknown> => {
       const operation = current.tail.then(async () => {
         if (
@@ -225,6 +226,7 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
         // process exits and denial responses leave the durable latch armed.
         if (!response.ok) {
           await release();
+          temporaryServerFailure = response.status >= 500;
           throw Error("Optional target source unavailable");
         }
         const text = await response.text();
@@ -250,7 +252,14 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
       for (const [symbol, entry] of current.cached)
         if (entry.until <= now()) current.cached.delete(symbol);
       if (current.cached.size < 256 || current.cached.has(symbol))
-        current.cached.set(symbol, { until: now() + day, value });
+        current.cached.set(symbol, {
+          // A confirmed 5xx is not evidence that the ticker has no targets.
+          // Allow a later user request to recover after a bounded cooldown.
+          // Denials/uncertain outcomes keep their existing durable guard and
+          // every later request still passes the same expiry and quota gates.
+          until: now() + (temporaryServerFailure ? 5 * 60_000 : day),
+          value,
+        });
       return value;
     })();
     current.pending.set(symbol, work);

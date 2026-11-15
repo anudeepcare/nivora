@@ -11,16 +11,13 @@
   isolation: isolate;
   overflow: hidden;
   padding: var(--workspace-inset);
-  border-radius: var(--workspace-radius);
-  box-shadow: var(--workspace-shadow);
-  border: 1px solid var(--workspace-edge);
-  background:
-    radial-gradient(
-      ellipse at 0 100%,
-      color-mix(in srgb, var(--workspace-accent) 10%, transparent),
-      transparent 65%
-    ),
-    var(--workspace-glass);
+  border-radius: 10px;
+  box-shadow: none;
+  border: 0;
+  background: linear-gradient(120deg, #172c36, #294c60);
+  --ink: #f5f2eb;
+  --muted: #c4d1d8;
+  color: var(--ink);
 }
 .focus::after {
   content: "";
@@ -28,11 +25,11 @@
   z-index: -1;
   width: 220px;
   height: 220px;
-  right: -110px;
-  bottom: -130px;
+  right: -90px;
+  bottom: -80px;
   transform: rotate(45deg);
-  background: linear-gradient(135deg, #b9abff32, #bbb1ed24 50%, #a1d1e932 50%);
-  border-radius: 15px;
+  background: linear-gradient(135deg, #efbc691a, #efbc6930 50%, #79abff24 50%);
+  border-radius: 0;
 }
 .eyebrow {
   display: flex;
@@ -41,7 +38,7 @@
   font-size: 10px;
   letter-spacing: 0.16em;
   font-weight: 750;
-  color: var(--workspace-accent);
+  color: #efbc69;
   margin-bottom: 16px;
 }
 .diamond {
@@ -50,11 +47,11 @@
   transform: rotate(45deg);
   background: conic-gradient(
     from 45deg,
-    #8ddbc5,
-    #28685e,
-    #b9abff,
-    #88cfbe,
-    #8ddbc5
+    #efbc69,
+    #9b713b,
+    #fff0cb,
+    #c28f4d,
+    #efbc69
   );
   border-radius: 3px;
   box-shadow: 2px 3px 8px #346c5e30;
@@ -68,7 +65,7 @@
   font-weight: 600;
 }
 .focus h2 {
-  font-size: clamp(24px, 2.2vw, 30px);
+  font-size: clamp(28px, 2.7vw, 38px);
   line-height: 1.15;
   letter-spacing: -0.04em;
   margin: 10px 0;
@@ -95,9 +92,9 @@
   gap: 12px;
   min-height: 44px;
   padding: 10px 15px;
-  border-radius: 11px;
-  background: var(--ink);
-  color: var(--card);
+  border-radius: 6px;
+  background: #f5f2eb;
+  color: #172c36;
   font-size: 12px;
   font-weight: 650;
 }
@@ -191,5 +188,34 @@
   }
   .action:hover {
     transform: translateY(-2px);
+  }
+}
+
+.root > section {
+  border: 0;
+  border-radius: 10px;
+  box-shadow: none;
+}
+.focus {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 28px;
+}
+.focus .action {
+  margin-top: auto;
+}
+.focus p {
+  margin-bottom: 24px;
+}
+.sources {
+  padding: 8px 0;
+}
+@media (max-width: 600px) {
+  .focus {
+    padding: 22px;
+  }
+  .focus h2 {
+    font-size: 29px;
   }
 }

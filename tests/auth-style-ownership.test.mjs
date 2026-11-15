@@ -39,7 +39,7 @@ test("cold auth entry owns form control layout without Product CSS", () => {
   assert.equal(declarations(".mp-social-x-label").overflow, "hidden");
 });
 
-test("auth surfaces and submit controls inherit the shared light and dark palette", () => {
+test("studio auth keeps theme-aware fields and a readable blue primary action", () => {
   const scopedPalette = [];
   css.walkDecls((decl) => {
     if (
@@ -52,9 +52,9 @@ test("auth surfaces and submit controls inherit the shared light and dark palett
   assert.deepEqual(
     scopedPalette,
     [],
-    "Auth must not freeze shared theme tokens to light green values",
+    "Auth fields must inherit the shared theme without redefining its tokens",
   );
-  assert.equal(declarations(".mp-form-submit").background, "var(--nav-active)");
-  assert.equal(declarations(".mp-form-submit").color, "var(--nav-active-ink)");
+  assert.equal(declarations(".mp-form-submit").background, "#245bdb");
+  assert.equal(declarations(".mp-form-submit").color, "white");
   assert.equal(declarations(".mp-social-button").background, "var(--card)");
 });

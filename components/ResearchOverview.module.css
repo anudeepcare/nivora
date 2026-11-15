@@ -17,8 +17,8 @@
 }
 .context button {
   border: 0;
-  border-radius: 999px;
-  padding: 8px 12px;
+  border-radius: 7px;
+  padding: 8px 14px;
   min-height: 44px;
   background: transparent;
   color: var(--muted);
@@ -27,8 +27,8 @@
   cursor: pointer;
 }
 .context button[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--nav-active);
+  color: var(--nav-active-ink);
 }
 .context button:focus-visible,
 .researchTools > summary:focus-visible {
@@ -219,14 +219,13 @@
 
 .decisionStage {
   display: grid;
-  grid-template-columns: minmax(310px, 0.85fr) minmax(0, 1.3fr);
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.35fr);
   gap: var(--workspace-gap, 20px);
-  padding: var(--workspace-inset, 24px);
-  border-radius: var(--workspace-radius, 24px);
-  background: var(--workspace-panel);
-  box-shadow:
-    var(--workspace-shadow, var(--panel-shadow)),
-    inset 0 0 0 1px var(--workspace-edge, #ffffff50);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  align-items: stretch;
 }
 .stageHeading {
   grid-column: 1/-1;
@@ -259,10 +258,10 @@
   min-height: 0;
 }
 .decisionStage .chart {
-  padding: 14px 0 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--workspace-panel);
+  box-shadow: var(--workspace-shadow);
 }
 .caseWorkspace {
   display: grid;
@@ -289,8 +288,8 @@
 }
 @media (max-width: 600px) {
   .decisionStage {
-    padding: 16px 12px;
-    border-radius: 18px;
+    padding: 0;
+    border-radius: 0;
   }
   .stageHeading p {
     font-size: 11px;
@@ -367,5 +366,109 @@
   .caseWorkspace .consensusDetails {
     grid-column: 1;
     grid-row: auto;
+  }
+}
+
+/* The decision is a peer of the chart. No enclosing card around both cards. */
+.decisionStage .context {
+  justify-self: start;
+  padding: 4px;
+  gap: 3px;
+  border-radius: 10px;
+  background: var(--surface);
+}
+.decisionStage .paceColumn {
+  display: flex;
+  align-items: stretch;
+}
+.decisionStage .paceColumn > section {
+  width: 100%;
+}
+.stageHeading {
+  padding: 4px 0;
+}
+.stageHeading > span,
+.sectionIndex {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.sectionHeading h2 {
+  font-size: 25px;
+  font-weight: 600;
+}
+.sectionHeading {
+  margin-bottom: 18px;
+}
+.overviewMetrics {
+  padding-top: 24px;
+}
+.chart.chart :global(.price-chart) {
+  height: 300px;
+  min-height: 300px;
+}
+.chart.chart :global(.chart-head) {
+  align-items: start;
+  gap: 12px;
+}
+.chart.chart :global(.chart-head h3) {
+  font-size: 20px;
+}
+@media (max-width: 600px) {
+  .decisionStage .chart {
+    padding: 18px 14px;
+  }
+  .stageHeading p {
+    max-width: 26ch;
+  }
+  .sectionHeading h2 {
+    font-size: 22px;
+  }
+  .chart.chart :global(.price-chart) {
+    height: 240px;
+    min-height: 240px;
+  }
+  .context button {
+    font-size: 11px;
+    padding-inline: 10px;
+  }
+}
+
+/* Keep the period control visually attached to the historical chart, not Pace. */
+.chart.chart :global(.chart-head) {
+  display: block;
+  margin-bottom: 12px;
+}
+.chart.chart :global(.chart-head h3) {
+  margin: 0 0 10px;
+}
+.chart.chart :global(.chart-period-control) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.chart.chart :global(.chart-period-label) {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.chart.chart :global(.ranges) {
+  margin: 0;
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  .overview {
+    margin-top: 10px;
+    gap: 14px;
+  }
+  .decisionStage {
+    gap: 12px;
+  }
+  .chart.chart :global(.chart-period-control) {
+    display: block;
+  }
+  .chart.chart :global(.chart-period-label) {
+    display: block;
+    margin-bottom: 4px;
   }
 }

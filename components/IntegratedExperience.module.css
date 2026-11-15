@@ -1054,7 +1054,7 @@
   position: relative;
   background:
     radial-gradient(ellipse at 85% 22%, #9296e512, transparent 50%),
-    radial-gradient(ellipse at 10% 80%, #b9abff14, transparent 45%);
+    radial-gradient(ellipse at 10% 80%, #edc17c14, transparent 45%);
 }
 .heroVisual {
   position: relative;
@@ -1072,7 +1072,7 @@
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(ellipse at 2% 10%, #b9abff30, transparent 48%),
+    radial-gradient(ellipse at 2% 10%, #edc17c30, transparent 48%),
     radial-gradient(ellipse at 95% 90%, #9296e53a, transparent 48%);
   border-radius: 28px;
   overflow: visible;
@@ -1091,7 +1091,7 @@
   margin-top: 24px;
 }
 .heroActions > a:first-child {
-  background: #b9abff;
+  background: #edc17c;
   color: #24272b;
   border: 1px solid #c2db55;
   box-shadow: 0 6px 20px #71832418;
@@ -1111,7 +1111,7 @@
   font-weight: 600;
   padding: 15px 10px;
   border-radius: 12px;
-  background: #b9abff45;
+  background: #edc17c45;
   color: #353b20;
 }
 .brandSpectrum span:nth-child(2) {
@@ -1197,9 +1197,9 @@
   font-size: 12px;
 }
 .discoveryPreview :global(.signal-demo-tabs) button[aria-selected="true"] {
-  background: #b9abff;
+  background: #edc17c;
   color: #24272b;
-  border-color: #b9abff;
+  border-color: #edc17c;
 }
 .discoveryPreview :global(.signal-demo-content) {
   padding: 5px;
@@ -1247,7 +1247,7 @@
   font-size: 11px;
 }
 .discoveryPreview :global(.signal-demo-evidence) svg {
-  color: #b9abff;
+  color: #edc17c;
 }
 .discoveryPreview :global(.signal-demo-footer) {
   display: flex;
@@ -1270,7 +1270,7 @@
   color: #f7f8f5;
 }
 .hero .discoveryPreview :global(.signal-demo-header) svg {
-  color: #b9abff;
+  color: #edc17c;
 }
 
 /* Footer is a compact closing element. */
@@ -1522,4 +1522,70 @@
   min-width: 0;
   display: grid;
   gap: 14px;
+}
+
+/* Research masthead: a compact security identity opposite a clear quote block. */
+.stockHeader {
+  gap: 20px 32px;
+  padding: 10px 0 24px;
+  align-items: center;
+}
+.stockIdentity {
+  min-width: 0;
+  gap: 16px;
+}
+.stockIdentity h1 {
+  font-size: clamp(25px, 2.4vw, 36px);
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.stockIdentity :global(.security-context) {
+  font-size: 12px;
+  margin-top: 6px;
+}
+.stockPrice {
+  flex: none;
+  gap: 16px;
+}
+.stockPrice strong {
+  font-size: 36px;
+  letter-spacing: -0.045em;
+  font-weight: 550;
+}
+@media (max-width: 900px) {
+  .stockHeader {
+    flex-wrap: wrap;
+  }
+  .stockIdentity {
+    flex: 1 1 320px;
+  }
+  .stockPrice strong {
+    font-size: 30px;
+  }
+}
+@media (max-width: 650px) {
+  .stockHeader {
+    padding: 4px 0 18px;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .stockIdentity {
+    flex: auto;
+  }
+  .stockIdentity h1 {
+    font-size: 24px;
+  }
+  .stockIdentity :global(.security-context) {
+    display: block;
+  }
+  .stockPrice {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--workspace-panel);
+  }
+  .stockPrice :global(.data-stamp) {
+    font-size: 11px;
+  }
 }

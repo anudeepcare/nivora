@@ -771,3 +771,70 @@
   outline: 2px solid var(--green);
   outline-offset: -2px;
 }
+
+/* Shared editorial rhythm across Business, Case, Technicals, News and Labs. */
+.content.content.content {
+  gap: 24px;
+  margin-top: 24px;
+}
+.content.content.content :global(.section-head) {
+  align-items: start;
+  margin-bottom: 20px;
+}
+.content.content.content
+  :is(:global(.section-head h2), :global(.depth-heading h2)) {
+  font-size: 24px;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+}
+.content.content.content :global(.section-head p) {
+  font-size: 13px;
+  max-width: 64ch;
+}
+.content.content.content :global(.business-history .durability-grid > article),
+.content.content.content :global(.funding-metrics > div),
+.content.content.content :global(.desk-secondary-metrics > article),
+.content.content.content :global(.earnings-kpis > div) {
+  padding: 18px 14px;
+  background: var(--surface);
+  border: 0;
+  border-radius: 10px;
+  box-shadow: none;
+}
+.content.content.content :global(.business-history .durability-grid strong) {
+  font-size: 27px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+.content.content.content :global(.technical-desk-groups > details) {
+  border-radius: 12px;
+  background: var(--workspace-panel);
+  box-shadow: none;
+}
+.content.content.content :global(.technical-desk-groups > details > summary) {
+  min-height: 64px;
+  font-size: 14px;
+}
+.content.content.content
+  :global(.technical-desk-groups > details > summary > svg) {
+  color: var(--study-tint, var(--blue));
+}
+.content.content.content :global(.source-row) {
+  padding: 18px 0;
+}
+.content.content.content :global(.source-row strong) {
+  font-size: 14px;
+}
+@media (max-width: 650px) {
+  .content.content.content {
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .content.content.content
+    :is(:global(.section-head h2), :global(.depth-heading h2)) {
+    font-size: 22px;
+  }
+  .content.content.content :global(.business-history .durability-grid strong) {
+    font-size: 24px;
+  }
+}

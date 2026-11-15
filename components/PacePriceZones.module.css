@@ -128,15 +128,15 @@
   white-space: nowrap;
 }
 .ladder.ladder button[data-current="true"] {
-  color: var(--zone-active, #b9abff);
+  color: var(--zone-active, #edc17c);
 }
 .ladder.ladder button[data-current="true"] .diamond {
-  background: var(--zone-active, #b9abff);
-  border-color: var(--zone-active, #b9abff);
-  box-shadow: 0 0 0 6px #b9abff12;
+  background: var(--zone-active, #edc17c);
+  border-color: var(--zone-active, #edc17c);
+  box-shadow: 0 0 0 6px #edc17c12;
 }
 .ladder.ladder button:focus-visible {
-  outline: 2px solid #b9abff;
+  outline: 2px solid #edc17c;
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -157,11 +157,11 @@
   color: inherit;
 }
 .zones.zones.zones tbody tr[data-current="true"] > :is(th, td) {
-  background: #b9abff16;
+  background: #edc17c16;
   color: var(--zone-highlight, #f1f7e9);
 }
 .zones.zones.zones tbody tr[data-current="true"] th strong {
-  color: var(--zone-active, #b9abff);
+  color: var(--zone-active, #edc17c);
 }
 .pending.pending {
   color: inherit;

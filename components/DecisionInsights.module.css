@@ -242,7 +242,7 @@
   margin: 12px 0;
 }
 .answer {
-  background: color-mix(in srgb, #b9abff 20%, var(--card));
+  background: color-mix(in srgb, #edc17c 20%, var(--card));
 }
 .links a {
   display: inline-flex;

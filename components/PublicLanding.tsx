@@ -278,8 +278,8 @@ export function InvestmentDemo() {
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="0%" stopColor="#d6f35a" stopOpacity=".23" />
-                    <stop offset="100%" stopColor="#d6f35a" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#5088ff" stopOpacity=".23" />
+                    <stop offset="100%" stopColor="#5088ff" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 <g
@@ -297,14 +297,14 @@ export function InvestmentDemo() {
                 <path
                   d="M12 108C40 108 44 88 70 91S126 66 155 77S204 106 240 84S295 48 325 59S378 82 410 48S449 46 468 28"
                   fill="none"
-                  stroke="#d6f35a"
+                  stroke="#5088ff"
                   strokeWidth="3"
                   strokeLinecap="round"
                 />
                 <path
                   d="M12 129C47 129 46 116 70 119S124 105 155 112S205 87 240 101S289 119 325 97S378 75 410 89S451 75 468 70"
                   fill="none"
-                  stroke="#6ee7bf"
+                  stroke="#cf9654"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                 />
@@ -312,11 +312,11 @@ export function InvestmentDemo() {
                   cx="468"
                   cy="28"
                   r="5"
-                  fill="#d6f35a"
-                  stroke="#233631"
+                  fill="#5088ff"
+                  stroke="#f5f2eb"
                   strokeWidth="4"
                 />
-                <circle cx="468" cy="70" r="4" fill="#6ee7bf" />
+                <circle cx="468" cy="70" r="4" fill="#cf9654" />
               </svg>
               <div className={landing.chartAxis}>
                 <span>Operating evidence over time</span>
@@ -602,29 +602,32 @@ export default function PublicLanding({
                 </>
               )}
             </h1>
-            <p>
-              A clear monthly research routine: understand your companies,
-              review what changed, and plan within your limits.
-            </p>
-            <div className={landing.actions}>
-              <Link className={landing.primary} href="/login?mode=signup">
-                Get started <ArrowRight size={18} aria-hidden="true" />
-              </Link>
-              <a className={landing.secondary} href="#how-it-works">
-                Explore the product <ArrowRight size={17} aria-hidden="true" />
-              </a>
-            </div>
-            <p>
-              <Link href="/track-record">Evidence & track record →</Link> ·{" "}
-              <Link href="/portfolio-check">Check your portfolio</Link>
-            </p>
-            <div className={landing.heroPrinciples}>
-              <span>
-                <Check size={15} /> Evidence before conviction
-              </span>
-              <span>
-                <Check size={15} /> Your judgment, always
-              </span>
+            <div className={landing.heroDetail}>
+              <p>
+                A clear monthly research routine: understand your companies,
+                review what changed, and plan within your limits.
+              </p>
+              <div className={landing.actions}>
+                <Link className={landing.primary} href="/login?mode=signup">
+                  Get started <ArrowRight size={18} aria-hidden="true" />
+                </Link>
+                <a className={landing.secondary} href="#how-it-works">
+                  Explore the product{" "}
+                  <ArrowRight size={17} aria-hidden="true" />
+                </a>
+              </div>
+              <p>
+                <Link href="/track-record">Evidence & track record →</Link> ·{" "}
+                <Link href="/portfolio-check">Check your portfolio</Link>
+              </p>
+              <div className={landing.heroPrinciples}>
+                <span>
+                  <Check size={15} /> Evidence before conviction
+                </span>
+                <span>
+                  <Check size={15} /> Your judgment, always
+                </span>
+              </div>
             </div>
           </div>
           <div className={landing.heroVisual}>

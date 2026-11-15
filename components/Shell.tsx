@@ -247,6 +247,10 @@ export default function Shell({
         </div>
       </header>
       <div className={experience.workspace}>
+        <div className={experience.contextBar}>
+          <span>INVESTMENT WORKSPACE</span>
+          <span>Research · Decide · Review</span>
+        </div>
         <main id="content" className={experience.content} tabIndex={-1}>
           <AccessNotice />
           <ReleaseNotice />
@@ -283,7 +287,7 @@ export default function Shell({
         <header className="dialog-head">
           <div>
             <span className="eyebrow">Your workspace</span>
-            <h2>Account & workspace</h2>
+            <h2>Your workspace</h2>
           </div>
           <button
             className="icon-button"

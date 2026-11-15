@@ -36,15 +36,35 @@ export default function LaunchScreen({
   }, [startedAt]);
   return (
     <section className={styles.launch} aria-label="Workspace launch">
+      <div className={styles.launchRail} aria-hidden="true">
+        <img src="/icon.svg" width="28" height="32" alt="" />
+        <strong>AURYN</strong>
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
       <div className={styles.content}>
+        {!error && (
+          <div className={styles.preview} aria-hidden="true">
+            <span />
+            <span />
+            <div>
+              <i />
+              <i />
+              <i />
+            </div>
+            <b />
+          </div>
+        )}
         <div className={styles.mark} aria-hidden="true">
           <img src="/icon.svg" width="44" height="47" alt="" />
         </div>
         <div role={error ? "alert" : "status"} aria-busy={!error}>
-          <h1>
+          <h1 className={!error && !slow ? styles.visuallyHidden : undefined}>
             {error
               ? "Your workspace could not be opened"
-              : "Opening your workspace"}
+              : "Loading your saved data"}
           </h1>
         </div>
         <div className={styles.recovery}>
@@ -94,7 +114,7 @@ export function PageSkeleton({ page = "workspace" }: { page?: string }) {
           <span key={i} />
         ))}
       </div>
-      <p>Opening {page}…</p>
+      <p className={styles.visuallyHidden}>Loading {page}</p>
     </section>
   );
 }

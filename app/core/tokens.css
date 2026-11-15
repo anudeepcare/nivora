@@ -10,9 +10,9 @@
 :root {
   --app-width: 1480px;
   --workspace-gap: 20px;
-  --workspace-radius: 22px;
+  --workspace-radius: 14px;
   --workspace-inset: 24px;
-  --chrome-surface: #eef0f8;
+  --chrome-surface: #f5f2eb;
   --app-gutter: clamp(16px, 3vw, 40px);
   --font-ui:
     "Commissioner", "AURYN Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -21,66 +21,66 @@
   --radius-panel: 16px;
   --radius: 16px;
   --space-page: 28px;
-  --accent-solid: #5146ad;
-  --blue: #5146ad;
-  --blue-soft: #ebe8ff;
-  --business-fill: color-mix(in srgb, #8a85ef 7%, var(--card));
+  --accent-solid: #245bdb;
+  --blue: #245bdb;
+  --blue-soft: #e8efff;
+  --business-fill: color-mix(in srgb, #245bdb 7%, var(--card));
   --financial-fill: color-mix(in srgb, #78b9df 6%, var(--card));
-  --valuation-fill: color-mix(in srgb, #b9abff 8%, var(--card));
-  --ownership-fill: color-mix(in srgb, #9fdbed 7%, var(--card));
-  --business-icon: #5146ad;
+  --valuation-fill: color-mix(in srgb, #edc17c 8%, var(--card));
+  --ownership-fill: color-mix(in srgb, #9dc9d3 7%, var(--card));
+  --business-icon: #245bdb;
   --financial-icon: #286f94;
   --valuation-icon: #8c571c;
-  --ownership-icon: #7855a5;
-  --pace-fill: #20243b;
-  --citron: #b9abff;
-  --orchid: #9296e5;
-  --jade: #9fdbed;
-  --brand-gradient: linear-gradient(125deg, #b9abff, #9fdbed);
+  --ownership-icon: #596f83;
+  --pace-fill: #172c36;
+  --citron: #edc17c;
+  --orchid: #79a9cf;
+  --jade: #9dc9d3;
+  --brand-gradient: linear-gradient(125deg, #edc17c, #9dc9d3);
   --interaction-hover: color-mix(in srgb, var(--blue) 11%, var(--card));
 }
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #eef0f8;
+  --bg: #f5f2eb;
   --app-background: var(--workspace-canvas);
   --workspace-canvas:
-    radial-gradient(ellipse at 0% 0%, #c8c3ef4d, transparent 48%),
-    radial-gradient(ellipse at 100% 45%, #c4e4f140, transparent 46%),
-    radial-gradient(ellipse at 30% 100%, #e4d6f630, transparent 50%), #eef0f8;
-  --workspace-glass: #fbfcffed;
+    radial-gradient(ellipse at 0% 0%, #eadbb94d, transparent 48%),
+    radial-gradient(ellipse at 100% 45%, #b5d7ee40, transparent 46%),
+    radial-gradient(ellipse at 30% 100%, #f0e3c924, transparent 50%), #f5f2eb;
+  --workspace-glass: #fffefae8;
   --workspace-panel: linear-gradient(
     125deg,
     #ffffffef,
-    #f7f7ffed 62%,
-    #eef5fce6
+    #faf8f2ed 62%,
+    #f5f3ece6
   );
-  --workspace-tile: linear-gradient(130deg, #d4d4f055, #f8faffaa);
+  --workspace-tile: linear-gradient(130deg, #ddd9cc55, #fffefaaa);
   --workspace-control: #ffffffc9;
-  --workspace-edge: #ffffffc7;
-  --workspace-shadow: 0 10px 30px #2922520a, inset 0 1px 0 #ffffffb3;
-  --workspace-accent: #5146ad;
-  --nav-active: #5146ad;
+  --workspace-edge: #dce0dd;
+  --workspace-shadow: 0 10px 30px #172c3608, inset 0 1px 0 #ffffffb3;
+  --workspace-accent: #245bdb;
+  --nav-active: #245bdb;
   --nav-active-ink: #ffffff;
-  --glass: #f7f8ffed;
+  --glass: #fffefaed;
   --panel-shadow: var(--workspace-shadow);
-  --paper: #f8f9ff;
-  --card: #fcfcff;
-  --control-ink: #22263e;
-  --control-muted: #59617a;
-  --control-card: #fcfcff;
+  --paper: #f7f5ef;
+  --card: #fffefa;
+  --control-ink: #172c36;
+  --control-muted: #596974;
+  --control-card: #fffefa;
   --control-surface: #e8ebf6;
   --control-line: #b7bfd7;
-  --surface: #e9ecf7;
-  --surface-2: #f1f3fc;
-  --ink: #22263e;
-  --text: #22263e;
-  --muted: #59617a;
-  --line: #d6dbee;
-  --border: #d6dbee;
+  --surface: #e9edea;
+  --surface-2: #f1f2ed;
+  --ink: #172c36;
+  --text: #172c36;
+  --muted: #596974;
+  --line: #dce0dd;
+  --border: #dce0dd;
   --positive: #087465;
   --negative: #b53257;
-  --neutral: #65529d;
+  --neutral: #596974;
   --warning: #855119;
   --green: var(--positive);
   --green-soft: #ddf3ee;
@@ -93,47 +93,47 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --chrome-surface: #181e33;
-  --bg: #101527;
+  --chrome-surface: #142631;
+  --bg: #10202a;
   --app-background: var(--workspace-canvas);
   --workspace-canvas:
-    radial-gradient(ellipse at 0% 0%, #6e60af26, transparent 48%),
-    radial-gradient(ellipse at 100% 45%, #38749926, transparent 46%), #101527;
-  --workspace-glass: #1c2239ed;
+    radial-gradient(ellipse at 0% 0%, #7b99ab18, transparent 48%),
+    radial-gradient(ellipse at 100% 45%, #5b7f9112, transparent 46%), #10202a;
+  --workspace-glass: #172c36e8;
   --workspace-panel: linear-gradient(
     125deg,
-    #252b46ef,
-    #1c2540ed 62%,
-    #292643ed
+    #213944ef,
+    #172c36ed 62%,
+    #20343ded
   );
   --workspace-tile: linear-gradient(130deg, #bcb6ed14, #9abbdc0d);
-  --workspace-control: #303a57cc;
-  --workspace-edge: #bfc7ef24;
+  --workspace-control: #2d424bcc;
+  --workspace-edge: #b5ccd124;
   --workspace-shadow: 0 10px 30px #0000001c, inset 0 1px 0 #dedbff18;
-  --workspace-accent: #b9abff;
-  --nav-active: #b9abff;
+  --workspace-accent: #edc17c;
+  --nav-active: #edc17c;
   --nav-active-ink: #252240;
-  --glass: #1c243bed;
+  --glass: #172c36ed;
   --panel-shadow: var(--workspace-shadow);
-  --paper: #171f34;
-  --card: #202940;
-  --control-ink: #f1f3ff;
-  --control-muted: #c0c8df;
-  --control-card: #202940;
-  --control-surface: #303b57;
+  --paper: #142731;
+  --card: #1b303a;
+  --control-ink: #edf3f4;
+  --control-muted: #b4c5cc;
+  --control-card: #1b303a;
+  --control-surface: #2d424b;
   --control-line: #5c698c;
-  --surface: #2b3652;
-  --surface-2: #26314b;
-  --ink: #f1f3ff;
-  --text: #f1f3ff;
-  --muted: #c0c8df;
-  --line: #414f70;
-  --border: #414f70;
-  --blue: #b9abff;
-  --blue-soft: #353257;
+  --surface: #2c424b;
+  --surface-2: #243b45;
+  --ink: #edf3f4;
+  --text: #edf3f4;
+  --muted: #b4c5cc;
+  --line: #38505b;
+  --border: #38505b;
+  --blue: #edc17c;
+  --blue-soft: #243c58;
   --positive: #7de0cc;
   --negative: #ffafc8;
-  --neutral: #c8baff;
+  --neutral: #bdc8cf;
   --warning: #f6cd97;
   --green: var(--positive);
   --green-soft: #193e40;
@@ -152,7 +152,7 @@
 @media (max-width: 600px) {
   :root {
     --workspace-gap: 14px;
-    --workspace-radius: 18px;
+    --workspace-radius: 12px;
     --workspace-inset: 16px;
   }
 }

@@ -11,7 +11,7 @@
   border-radius: 18px;
   padding: 22px 26px;
   background:
-    radial-gradient(ellipse at 80% 0, #b9abff18, transparent 60%), #24292a;
+    radial-gradient(ellipse at 80% 0, #edc17c18, transparent 60%), #24292a;
   color: #f7f8f5;
   display: flex;
   align-items: center;
@@ -34,7 +34,7 @@
   align-items: center;
   gap: 16px;
   flex-shrink: 0;
-  background: #b9abff;
+  background: #edc17c;
   color: #24272b;
   border: 0;
   border-radius: 10px;
@@ -159,7 +159,7 @@
   max-width: 55ch;
 }
 .root header :global(.eyebrow) {
-  color: #b9abff;
+  color: #edc17c;
   font-size: 10px;
   letter-spacing: 0.15em;
 }
@@ -190,7 +190,7 @@
   isolation: isolate;
   background:
     radial-gradient(ellipse at 85% 0, #9fc5ed30, transparent 52%),
-    radial-gradient(ellipse at 25% 100%, #b9abff12, transparent 65%),
+    radial-gradient(ellipse at 25% 100%, #edc17c12, transparent 65%),
     linear-gradient(125deg, #21292a, #2d2e50);
   border: 1px solid #545b7e;
   overflow: hidden;
@@ -201,7 +201,7 @@
   max-width: 640px;
 }
 .root header :global(.eyebrow) {
-  color: #b9abff;
+  color: #edc17c;
   font-size: 10px;
   letter-spacing: 0.16em;
 }
@@ -294,7 +294,7 @@
     linear-gradient(125deg, #17292e, #27463f 62%, #3a4d35);
 }
 .root.root header :global(.eyebrow) {
-  color: #b9abff;
+  color: #edc17c;
 }
 .root.root header p {
   color: #d0ded4;

@@ -526,3 +526,86 @@
     padding-inline: 10px;
   }
 }
+
+/* Preferences use an editorial masthead and two quiet, aligned tracks. */
+.page {
+  max-width: 1200px;
+  grid-template-columns: 220px minmax(0, 1fr);
+  column-gap: 36px;
+  row-gap: 20px;
+  padding-top: 0;
+}
+.page :global(.page-heading) {
+  padding: 0 0 24px;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.page :global(.page-heading) h1 {
+  font-size: clamp(32px, 3vw, 42px);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.page :global(.workspace-account-row),
+.page :global(.workspace-settings-shortcuts) {
+  padding: 18px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.page :global(.workspace-account-row) {
+  border-bottom: 1px solid var(--line);
+}
+.page :global(.settings-profile-avatar) {
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--card);
+}
+.page :global(.workspace-setting-group) {
+  padding: 24px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: none;
+}
+.page :global(.workspace-setting-group) > header {
+  padding-bottom: 18px;
+}
+.page :global(.workspace-setting-group) > header h2 {
+  font-size: 19px;
+  font-weight: 600;
+}
+.page :global(.setting-row) {
+  min-height: 66px;
+}
+.page :global(.setting-row):last-child {
+  border-bottom: 0;
+}
+.page :global(.segments) {
+  padding: 3px;
+  border: 0;
+  background: var(--surface);
+  border-radius: 8px;
+}
+.page :global(.segments) button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--card);
+}
+@media (max-width: 800px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .page :global(.workspace-account-row) {
+    padding: 8px 0 20px;
+  }
+  .page :global(.workspace-setting-group) {
+    padding: 20px 16px;
+  }
+  .page :global(.page-heading) {
+    padding: 0 0 20px;
+  }
+}

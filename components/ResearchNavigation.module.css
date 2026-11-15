@@ -1,54 +1,73 @@
+/* A continuous reading rail, not a second row of application pills. */
 .sections.sections {
-  gap: 4px;
-  padding: 6px;
+  gap: 18px;
+  padding: 0;
+  margin: 22px 0 20px;
+  min-height: 54px;
   border: 0;
-  border-radius: 16px;
-  background: var(--chrome-surface);
-  box-shadow:
-    var(--workspace-shadow),
-    inset 0 0 0 1px var(--workspace-edge);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  scroll-padding-inline: 12px;
 }
 .symbol {
   flex: none;
-  margin: 0 8px;
+  padding: 7px 10px;
+  margin-right: 4px;
   color: var(--ink);
-  font-size: 12px;
+  background: var(--surface);
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 750;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+}
+.sections.sections button {
+  position: relative;
+  min-height: 54px;
+  padding: 12px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+  font-size: 13px;
+  transition: color 140ms ease;
+}
+.sections.sections button svg {
+  color: currentColor;
+  width: 16px;
+  height: 16px;
 }
 .sections.sections button[aria-current="page"] {
-  border-radius: 11px;
-  background: var(--nav-active);
-  color: var(--nav-active-ink);
-  box-shadow: 0 2px 8px #172b4210;
+  border-radius: 0;
+  background: transparent;
+  color: var(--blue);
+  box-shadow: inset 0 -3px 0 var(--blue);
+  font-weight: 650;
+}
+.sections.sections button::after {
+  display: none;
+}
+.sections.sections button:not([aria-current="page"]):hover {
+  color: var(--ink);
+  background: transparent;
 }
 .sections.sections button:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: -2px;
+  outline: 2px solid var(--blue);
+  outline-offset: -3px;
 }
 @media (max-width: 700px) {
   .symbol {
     display: none;
   }
-}
-
-.sections.sections button {
-  min-height: 44px;
-  transition:
-    color 140ms ease,
-    background-color 140ms ease;
-}
-@media (max-width: 700px) {
   .sections.sections {
-    border-radius: 15px;
-    scroll-padding-inline: 6px;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+    gap: 20px;
+    margin: 16px 0;
+    min-height: 48px;
   }
   .sections.sections button {
-    padding-inline: 12px;
+    min-height: 48px;
     font-size: 13px;
   }
 }
@@ -56,12 +75,4 @@
   .sections.sections button {
     transition: none;
   }
-}
-
-.sections.sections button::after {
-  display: none;
-}
-.sections.sections button:not([aria-current="page"]):hover {
-  background: var(--interaction-hover);
-  color: var(--blue);
 }

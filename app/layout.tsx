@@ -9,6 +9,7 @@ import "./appearance.css";
 import "./core/surfaces.css";
 import "./core/readability.css";
 import "./core/mobile-glass.css";
+import "./core/studio-glass.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {
@@ -17,14 +18,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   title: "AURYN · Investment Intelligence",
   description: "Understand the business. Put the price in perspective.",
-  manifest: "/manifest.webmanifest?v=20261115-opal",
+  manifest: "/manifest.webmanifest?v=20261115-studio",
   appleWebApp: {
     capable: true,
     title: "AURYN",
     statusBarStyle: "default",
   },
   icons: {
-    icon: "/icon.svg?v=citron-20261104",
+    icon: "/icon.svg?v=studio-20261115",
     apple: "/apple-touch-icon-v2.png",
   },
 };
@@ -33,11 +34,11 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#181e33" },
-    { media: "(prefers-color-scheme: light)", color: "#eef0f8" },
+    { media: "(prefers-color-scheme: dark)", color: "#142631" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f2eb" },
   ],
 };
-const boot = `try{const x=JSON.parse(localStorage.getItem('auryn-appearance-v4')||JSON.stringify({accent:'blue',density:JSON.parse(localStorage.getItem('auryn-appearance-v1')||'{}').density}));document.documentElement.dataset.accent=['blue','teal','violet','rose'].includes(x.accent)?x.accent:'blue';document.documentElement.dataset.density=x.density==='compact'?'compact':'comfortable'}catch(e){};try{document.documentElement.dataset.pwa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true?'true':'false'}catch(e){};try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=s==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='dark'?'dark':'light';r.style.colorScheme=r.dataset.theme;document.querySelectorAll('meta[name="theme-color"]').forEach(m=>{m.content=r.dataset.theme==='dark'?'#181e33':'#eef0f8';m.removeAttribute('media')});r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
+const boot = `try{const x=JSON.parse(localStorage.getItem('auryn-appearance-v4')||JSON.stringify({accent:'blue',density:JSON.parse(localStorage.getItem('auryn-appearance-v1')||'{}').density}));document.documentElement.dataset.accent=['blue','teal','violet','rose'].includes(x.accent)?x.accent:'blue';document.documentElement.dataset.density=x.density==='compact'?'compact':'comfortable'}catch(e){};try{document.documentElement.dataset.pwa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true?'true':'false'}catch(e){};try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=s==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='dark'?'dark':'light';r.style.colorScheme=r.dataset.theme;document.querySelectorAll('meta[name="theme-color"]').forEach(m=>{m.content=r.dataset.theme==='dark'?'#142631':'#f5f2eb';m.removeAttribute('media')});r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html

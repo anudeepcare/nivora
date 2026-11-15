@@ -3,10 +3,10 @@
   isolation: isolate;
   min-width: 0;
   padding: 24px;
-  border: 1px solid #454e48;
-  border-radius: 20px;
+  border: 0;
+  border-radius: 12px;
   background:
-    radial-gradient(ellipse at 100% 0, #b9abff0d, transparent 65%), #20243b;
+    radial-gradient(ellipse at 100% 0, #edc17c0d, transparent 65%), #172c36;
   color: #f7f8f5;
   font-family: var(--font-ui);
 }
@@ -58,7 +58,7 @@
   font-size: clamp(30px, 3vw, 42px);
   line-height: 1.15;
   letter-spacing: -0.04em;
-  color: #b9abff;
+  color: #edc17c;
   overflow-wrap: anywhere;
 }
 .level {
@@ -67,9 +67,9 @@
   justify-content: center;
   margin-left: 12px;
   padding: 6px 10px;
-  border: 1px solid #b9abff55;
+  border: 1px solid #edc17c55;
   border-radius: 10px;
-  background: #b9abff0d;
+  background: #edc17c0d;
   font-size: 25px;
   letter-spacing: -0.03em;
   vertical-align: middle;
@@ -115,10 +115,10 @@
   order: 1;
   width: 17px;
   height: 17px;
-  background: #20243b;
+  background: #172c36;
 }
 .stage[aria-pressed="true"] {
-  color: #b9abff;
+  color: #edc17c;
 }
 .stage[aria-pressed="true"] strong {
   font-weight: 750;
@@ -142,7 +142,7 @@
   gap: 6px;
 }
 .status svg {
-  color: #b9abff;
+  color: #edc17c;
 }
 .status small {
   font-size: 11px;
@@ -212,7 +212,7 @@
 }
 .readingDetail summary::after {
   content: "+";
-  color: #b9abff;
+  color: #edc17c;
   font-size: 20px;
   font-weight: 400;
 }
@@ -244,7 +244,7 @@
 }
 .instrument button:focus-visible,
 .instrument summary:focus-visible {
-  outline: 2px solid #b9abff;
+  outline: 2px solid #edc17c;
   outline-offset: 3px;
 }
 .compact {
@@ -270,7 +270,7 @@
 .instrument.instrument {
   border: 0;
   box-shadow: none;
-  --decision-ink: #b9abff;
+  --decision-ink: #edc17c;
 }
 .zoneContext {
   color: #b7c0da;
@@ -600,4 +600,54 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 16px;
+}
+
+/* Decision semantics remain independent from the selected UI accent. */
+.instrument.instrument:not(.editorial) {
+  --decision-ink: #c6d3da;
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 100% 0, #8ab2c826, transparent 65%),
+    linear-gradient(135deg, #142a35, #253f4a);
+  box-shadow: none;
+}
+.instrument.instrument:not(.editorial)[data-tone="positive"] {
+  --decision-ink: #8ee2c4;
+}
+.instrument.instrument:not(.editorial)[data-tone="caution"] {
+  --decision-ink: #f0c478;
+}
+.instrument.instrument:not(.editorial)[data-tone="risk"] {
+  --decision-ink: #ffb0b0;
+}
+.instrument.instrument:not(.editorial) .title h2 {
+  color: var(--decision-ink);
+}
+.instrument.instrument.branded .brandArt {
+  opacity: 0.14;
+  right: -16px;
+  width: 150px;
+}
+.instrument.instrument.branded .title > small {
+  display: block;
+  color: #b9cbd4;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 600px) {
+  .instrument.instrument.branded {
+    padding: 16px;
+  }
+  .instrument.instrument.branded .title h2 {
+    font-size: 32px;
+    line-height: 1.12;
+  }
+  .instrument.instrument.branded .readoutText {
+    gap: 8px;
+  }
+  .instrument.instrument.branded .reason {
+    font-size: 13px;
+    line-height: 1.5;
+  }
 }

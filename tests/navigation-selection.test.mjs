@@ -221,8 +221,12 @@ test("main selection follows the actual nested route rather than a stale page pr
 });
 test("menu keeps the current destination selected and closes without navigating again", () => {
   const h = shellHarness("/discover", "discover");
-  const current = h.all(
+  const menu = h.all(
     h.render(),
+    (n) => n.type === "dialog" && n.props.id === "workspace-tools",
+  )[0];
+  const current = h.all(
+    menu,
     (n) => n.type === "a" && n.props.href === "/discover",
   )[0];
   assert.ok(current, "current menu destination must not disappear");

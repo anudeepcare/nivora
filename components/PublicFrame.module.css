@@ -1,5 +1,5 @@
 .page {
-  max-width: 1120px;
+  max-width: 1280px;
   margin: auto;
   padding: env(safe-area-inset-top, 0px)
     max(28px, env(safe-area-inset-right, 0px))
@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  min-height: 76px;
+  min-height: 88px;
   border-bottom: 1px solid var(--line);
 }
 .brand {
@@ -49,15 +49,22 @@
   color: var(--nav-active-ink);
   background: var(--nav-active);
   padding-inline: 10px;
-  border-radius: 10px;
+  border-radius: 4px;
   font-weight: 600;
 }
 .intro {
-  padding: 32px 0 24px;
-  max-width: 760px;
+  padding: 48px 0 36px;
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: end;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--line);
 }
 .intro h1 {
-  font-size: clamp(26px, 3.5vw, 40px);
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 550;
   line-height: 1.15;
   letter-spacing: -0.035em;
   margin: 0 0 12px;
@@ -253,7 +260,9 @@
     min-height: 44px;
   }
   .intro {
-    padding: 24px 0 20px;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 28px 0 24px;
   }
   .layout {
     grid-template-columns: 1fr;
@@ -287,4 +296,23 @@
 .weights li strong {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+/* Shared document rhythm: concise headings, continuous reading surfaces. */
+.page > section {
+  padding: 24px;
+  background: var(--card);
+  border-radius: 8px;
+}
+.page > section > h2 {
+  max-width: 44ch;
+}
+.page :is(a, button, textarea, summary):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .page > section {
+    padding: 20px 16px;
+  }
 }

@@ -1,0 +1,26 @@
+✔ Studio accent settings and rendered accent agree in both themes (1.206729ms)
+✔ brand canvas uses ivory and navy studio surfaces with readable semantic text (1.151532ms)
+✔ portfolio return has an explicit sign-based tone and missing values remain neutral (2.204536ms)
+✔ valuation removes only the Test assumptions shortcut while keeping model tools (0.255732ms)
+✔ studio top navigation has an amber underline and loading keeps a separate status dot (8.920975ms)
+✔ changed offline palette is installed as a fresh shell version (0.252523ms)
+✔ optional appearance accents continue to color navigation with readable selected text (0.347293ms)
+✔ financial semantics share theme-aware colors, independent of accent (2.063535ms)
+✔ disclosure rows no longer receive an opaque surface when expanded (0.350238ms)
+✔ overview uses coordinated paired panels, not margins inside a gap grid (0.411287ms)
+✔ studio semantic text colors meet AA on actual light and dark surface tokens (0.976048ms)
+✔ surface colors never use geometry tokens or invalid unitless gradient stops (0.787061ms)
+✔ embedded consensus owns a higher-specificity transparent surface (0.300967ms)
+✔ expanded business checks size to their panel rather than the viewport (0.197735ms)
+✔ reduced-transparency fallback has equal theme specificity (0.319997ms)
+✔ always-dark desktop and mobile chrome retain a high-contrast keyboard focus indicator (17.661697ms)
+✔ historical periods are explicitly grouped with the chart and keep all nine ranges (0.492265ms)
+✔ reduced transparency makes only the always-dark chrome opaque (4.825769ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 165.208054

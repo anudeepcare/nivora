@@ -462,20 +462,23 @@ export default function Research({ symbol }: { symbol: string }) {
         <h3>
           <LineChart size={18} aria-hidden="true" /> Price history
         </h3>
-        <div className="ranges" aria-label="Chart period">
-          {ranges.map((x) => (
-            <button
-              key={x}
-              aria-pressed={range === x}
-              onClick={() => {
-                rangeTouched.current = true;
-                setRange(x);
-                if (x === "1D" || x === "1W") setFrequency("Daily");
-              }}
-            >
-              {x}
-            </button>
-          ))}
+        <div className="chart-period-control">
+          <span className="chart-period-label">Price history range</span>
+          <div className="ranges" role="group" aria-label="Price history range">
+            {ranges.map((x) => (
+              <button
+                key={x}
+                aria-pressed={range === x}
+                onClick={() => {
+                  rangeTouched.current = true;
+                  setRange(x);
+                  if (x === "1D" || x === "1W") setFrequency("Daily");
+                }}
+              >
+                {x}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
       {bars.length ? (
