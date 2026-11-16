@@ -41,9 +41,11 @@ function component(file, name, bindings = {}) {
   )(React, ...Object.values(bindings));
 }
 const Readings = component("components/PaceReadings.tsx", "PaceReadings", {
+  s: new Proxy({}, {get:(_,key)=>String(key)}),
   dateLabel: (x) => x,
 });
 const Guidance = component("components/PaceGuidance.tsx", "PaceGuidance", {
+  styles: {root:"pace-guidance"},
   dateLabel: (x) => x,
   PaceReadings: Readings,
   contributionGuide,

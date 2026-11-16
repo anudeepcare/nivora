@@ -1,3 +1,4 @@
+import { isSentiSenseMarket } from "@/lib/market-source-mode";
 import { account, failure, limit, privateJson, HttpError } from "@/lib/server";
 import { symbolInput } from "@/lib/format";
 import { eodEnabled, eodFilings } from "@/lib/eodhd";
@@ -11,6 +12,13 @@ export async function GET(request: Request) {
     );
     if (symbol.includes("/"))
       throw new HttpError("Company filings do not apply to crypto.");
+    if (isSentiSenseMarket())
+      return privateJson({
+        filings: [],
+        issues: [
+          "Filing documents are not supplied by the current data connection.",
+        ],
+      });
     const result = eodEnabled()
       ? await eodFilings(symbol)
       : await fundamentals(symbol);

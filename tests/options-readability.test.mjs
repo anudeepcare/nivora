@@ -79,6 +79,7 @@ function render(chain, view = "positioning") {
         };
       if (
         [
+          "./OptionsAggregatePanel",
           "./VannaMap",
           "./OptionsTape",
           "./OptionsSimulation",

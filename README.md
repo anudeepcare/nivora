@@ -2,7 +2,7 @@
 
 Extract this ZIP as a source candidate for local/preproduction verification. Do not deploy before the current acceptance gates are resolved. `package.json` is at the ZIP root; do not select an inner folder. All Pace and scenario code is included together.
 
-Current source candidate: [Clean presentation rebuild and verification](RELEASE-CURRENT.md). This is a source candidate for preproduction review, not a production-approved release. All useful metrics, providers, and APIs are retained. Actual browser/device visual acceptance remains outstanding.
+Current source candidate: [SentiSense migration scope and verification](docs/SENTISENSE_MIGRATION_RELEASE.md). This is an integration candidate for preproduction review, not a production-approved release. Research moves to SentiSense with explicitly selected EODHD prices. Material coverage differences remain, especially Pace daily-history warm-up and options chains. See the current report; historical test counts do not verify this release. Actual browser/device and paid-data acceptance remain outstanding.
 
 ## Run and verify
 Use Node 24.x, then `npm ci`, `npm test`, `npm run typecheck`, `npm run build`. `npm run test:api` exercises controlled API fixtures. Live-provider, production-account and physical-device checks remain separate.

@@ -1,3 +1,4 @@
+import { isSentiSenseMarket } from "./market-source-mode";
 import { loadOptionChain } from "./options-source";
 import { reserveProvider } from "./provider-budget";
 import { HttpError } from "./server";
@@ -37,6 +38,16 @@ export async function loadOptionsFlow(
       new Date(expiry).toISOString().slice(0, 10) !== expiry)
   )
     throw new HttpError("Choose a valid expiry.");
+  if (isSentiSenseMarket())
+    return {
+      status: "unavailable",
+      message:
+        "Intraday option trade tape is not supplied by this connection. Aggregate volume is not trade flow.",
+      trades: [],
+      contracts: [],
+      partial: true,
+      source: "End-of-day options analytics only",
+    };
   const key = process.env.ALPACA_PAPER_API_KEY,
     secret = process.env.ALPACA_PAPER_API_SECRET;
   if (!key || !secret)

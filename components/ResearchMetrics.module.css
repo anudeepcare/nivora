@@ -68,6 +68,8 @@
   margin: 4px 0;
 }
 .panel :global(.financial-cash-bridge) {
+  width: 100%;
+  min-width: 0;
   margin: 0;
   padding: 16px;
   border: 1px solid var(--line);
@@ -97,6 +99,7 @@
   font-size: 10px;
 }
 .panel :global(.financial-detail-groups) {
+  align-items: start;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
@@ -401,4 +404,17 @@
 .panel :global(.segments[aria-label="Financial period"] button) {
   min-height: 44px;
   white-space: nowrap;
+}
+
+.panel :global(.financial-cash-bridge rect) {
+  fill: var(--blue);
+}
+.panel :global(.financial-cash-bridge [data-tone="green"] rect) {
+  fill: var(--positive);
+}
+.panel :global(.financial-cash-bridge [data-tone="red"] rect) {
+  fill: var(--negative);
+}
+.panel :global(.financial-cash-bridge [data-tone="neutral"] rect) {
+  fill: var(--muted);
 }

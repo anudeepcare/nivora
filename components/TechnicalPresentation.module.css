@@ -1,0 +1,147 @@
+.chart {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.chart > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.chart > header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+}
+.rangeControls {
+  display: grid;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+}
+.rangeControls > span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.rangeButtons {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--surface);
+  max-width: 100%;
+}
+.rangeButtons button {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px;
+  border: 0;
+  border-radius: 9px;
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.rangeButtons button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--blue);
+  box-shadow: 0 2px 6px #102b5020;
+}
+.chartFooter {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.chartFooter :global(.segments) {
+  width: fit-content;
+  margin: 0;
+}
+.pace {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.7fr) minmax(0, 1.3fr);
+  gap: 20px;
+  align-items: center;
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #0b2142, #173c6c);
+  color: #fff;
+}
+.pace > div:first-child {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+.pace > div:first-child strong {
+  line-height: 1.4;
+  font-size: 15px;
+}
+.pace :global(.eyebrow) {
+  color: #b9d5ff;
+}
+.pace :global(.help-trigger) {
+  color: #cfdef5;
+}
+.indicatorGroups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.indicatorGroups > .indicatorTrigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.indicatorTrigger > svg {
+  color: var(--blue);
+}
+.indicatorLabel {
+  display: grid;
+  gap: 5px;
+  margin-right: auto;
+  min-width: 0;
+}
+.indicatorLabel strong {
+  font-size: 13px;
+}
+.indicatorLabel small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+@media (max-width: 900px) {
+  .indicatorGroups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 540px) {
+  .chart > header,
+  .rangeControls {
+    width: 100%;
+  }
+  .pace {
+    padding: 16px;
+    gap: 14px;
+  }
+  .indicatorGroups > .indicatorTrigger {
+    padding: 12px;
+    gap: 8px;
+  }
+}

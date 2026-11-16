@@ -14,7 +14,7 @@ import { expandedStudies } from "../lib/technical-expanded.ts";
 import { priceStudies } from "../lib/price-studies.ts";
 import { perspective } from "../lib/analysis.ts";
 function component(file, name, bindings) {
-  bindings = { DetailDialog: ({title,children}) => React.createElement("section", {"data-dialog-title":title}, children), detailStyle: {content:"detail-content"},  studyMarket, QuickRead: () => null, SectionIcon:()=>null, Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children), layout: {panel:"panel"}, ...bindings };
+  bindings = { technical: new Proxy({}, {get:(_,key)=>String(key)}), DetailDialog: ({title,children}) => React.createElement("section", {"data-dialog-title":title}, children), detailStyle: {content:"detail-content"},  studyMarket, QuickRead: () => null, SectionIcon:()=>null, Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children), layout: {panel:"panel"}, ...bindings };
   const ast = ts.createSourceFile(
       file,
       fs.readFileSync(file, "utf8"),

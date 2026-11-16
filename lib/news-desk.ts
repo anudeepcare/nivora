@@ -62,7 +62,12 @@ export function newsDesk(
           .toLowerCase()
           .replace(/[^\p{L}\p{N}]+/gu, " ")
           .trim();
-        if (urls.has(url.href) || titles.has(title)) return [];
+        if (
+          urls.has(url.href) ||
+          (!("titleKind" in item && item.titleKind === "publisher-link") &&
+            titles.has(title))
+        )
+          return [];
         urls.add(url.href);
         titles.add(title);
         return [{ ...item, source: url.hostname.replace(/^www\./, "") }];

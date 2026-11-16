@@ -1,3 +1,5 @@
+import { sentiSenseNews } from "@/lib/sentisense-supporting";
+import { isSentiSenseMarket } from "@/lib/market-source-mode";
 import { account, failure, limit, privateJson } from "@/lib/server";
 import { symbolInput } from "@/lib/format";
 import { eodNews } from "@/lib/eodhd";
@@ -8,7 +10,9 @@ export async function GET(request: Request) {
     const symbol = symbolInput(
       new URL(request.url).searchParams.get("symbol") ?? "",
     );
-    return privateJson(await eodNews(symbol));
+    return privateJson(
+      await (isSentiSenseMarket() ? sentiSenseNews(symbol) : eodNews(symbol)),
+    );
   } catch (e) {
     return failure(e);
   }

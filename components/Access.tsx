@@ -1,4 +1,5 @@
 "use client";
+import controls from "./SupportingControls.module.css";
 import {
   createContext,
   useContext,
@@ -122,7 +123,7 @@ export function FeatureGate({
   ) : fallback !== undefined ? (
     fallback
   ) : (
-    <section className="feature-lock">
+    <section className={`feature-lock ${controls.lock}`}>
       <span className="eyebrow">Included with Pro</span>
       <h3>{featureNames[feature]}</h3>
       <p>

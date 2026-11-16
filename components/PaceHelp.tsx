@@ -1,4 +1,5 @@
 "use client";
+import controls from "./SupportingControls.module.css";
 import { useState } from "react";
 import type { Research } from "@/lib/types";
 import {
@@ -43,7 +44,7 @@ export default function PaceHelp({
       <details>
         <summary>Framework rules</summary>
         <p>{PACE_EXPLANATION}</p>
-        <dl className="pace-help-levels">
+        <dl className={`pace-help-levels ${controls.levels}`}>
           {PACE_LEVELS.map((label, level) => (
             <div key={level}>
               <dt>

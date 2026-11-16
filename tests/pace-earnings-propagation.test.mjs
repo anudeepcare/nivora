@@ -36,7 +36,7 @@ function loadFunction(file, name, bindings) {
   );
 }
 
-async function runMonitor({ asOf, knownActual, calendarActual }) {
+async function runMonitor({ asOf, knownActual, calendarActual, sentisense = false }) {
   const requests = [];
   const writes = [];
   const rule = {
@@ -92,9 +92,17 @@ async function runMonitor({ asOf, knownActual, calendarActual }) {
       };
     },
     canonical: () => ({ id: "snapshot-1", monthly: null }),
-    eodEnabled: () => true,
+    isSentiSenseMarket: () => sentisense,
+    sentiSenseCalendar: async (symbols, from, to) => {
+      assert.equal(sentisense, true, "Legacy mode must not request SentiSense calendar.");
+      assert.deepEqual(symbols, ["SOFI"]);
+      requests.push({path:"calendar/earnings",params:{symbols:"SOFI",from,to}});
+      return [{symbol:"SOFI",date:"2026-10-27",kind:"earnings",detail:"",actual:calendarActual,estimate:null}];
+    },
+    eodEnabled: () => { assert.equal(sentisense, false, "SentiSense mode must not check legacy providers."); return true; },
     eodTicker: (symbol) => `${symbol}.US`,
     eodRequest: async (path, params, ttl) => {
+      assert.equal(sentisense, false, "SentiSense mode must not request legacy calendar.");
       requests.push({ path, params, ttl });
       return {
         earnings: [
@@ -118,7 +126,7 @@ async function runMonitor({ asOf, knownActual, calendarActual }) {
   assert.equal(result.checked, 1);
   assert.equal(requests.length, 1);
   assert.equal(requests[0].path, "calendar/earnings");
-  assert.equal(requests[0].params.symbols, "SOFI.US");
+  assert.equal(requests[0].params.symbols, sentisense ? "SOFI" : "SOFI.US");
   return { result, requests, writes };
 }
 
@@ -147,6 +155,20 @@ test("monitor keeps a pending exchange-day report after UTC midnight", async () 
   assert.equal(result.created, 1);
   assert.equal(writes[0].event_key, "earnings:2026-10-27");
   assert.equal(writes[0].title, "SOFI: earnings approaching");
+});
+
+test("SentiSense monitor preserves reported zero without touching legacy providers", async () => {
+  const {result,writes}=await runMonitor({sentisense:true,asOf:"2026-10-27T19:00:00Z",knownActual:0,calendarActual:null});
+  assert.equal(result.created,0);
+  assert.deepEqual(writes,[]);
+});
+
+test("SentiSense monitor preserves exchange-day pending earnings after UTC midnight", async () => {
+  const {result,requests,writes}=await runMonitor({sentisense:true,asOf:"2026-10-28T01:00:00Z",knownActual:null,calendarActual:null});
+  assert.equal(requests[0].params.from,"2026-10-27");
+  assert.equal(requests[0].params.to,"2026-11-26");
+  assert.equal(result.created,1);
+  assert.equal(writes[0].event_key,"earnings:2026-10-27");
 });
 
 function mountedHooks() {

@@ -857,3 +857,270 @@ test("warm targets cannot bypass a shared denial or unavailable cache", async ()
     "no network retry from a warm but blocked observation",
   );
 });
+
+test("explicit Pro mode supports authenticated preview and production without trial expiry", async () => {
+  for (const environment of ["preview", "production"]) {
+    const f = setup();
+    const env = {
+      ...configuration(),
+      VERCEL_ENV: environment,
+      AURYN_SENTISENSE_MODE: "pro",
+      SENTISENSE_KEY_EXPIRES_AT: "2020-01-01T00:00:00Z",
+      AURYN_SENTISENSE_PREVIEW_ENABLED: "false",
+    };
+    assert.equal(
+      await f.client.getTargets("IREN", { owner: false }, env),
+      null,
+    );
+    assert.equal(f.calls.length, 0);
+    const result = await f.client.getTargets(
+      "IREN",
+      { owner: false, authenticated: true },
+      env,
+    );
+    assert.equal(result?.target, 56.6874);
+    assert.equal(f.calls.length, 2);
+    assert.ok(
+      !f.reservations.some((r) => r.max === 24),
+      "paid mode has no trial daily cap",
+    );
+    assert.ok(
+      f.reservations.some((r) => r.max === 240 && r.windowMs === 60000),
+    );
+    assert.ok(f.calls[1].at - f.calls[0].at >= 250);
+  }
+});
+test("unknown Pro mode and nonhosted paid access fail closed", async () => {
+  for (const override of [
+    { AURYN_SENTISENSE_MODE: "unknown" },
+    { AURYN_SENTISENSE_MODE: "pro", VERCEL_ENV: undefined },
+    { AURYN_SENTISENSE_MODE: "pro", SENTISENSE_API_KEY: "" },
+  ]) {
+    const f = setup();
+    assert.equal(
+      await f.client.getTargets(
+        "IREN",
+        { owner: true, authenticated: true },
+        { ...configuration(), ...override },
+      ),
+      null,
+    );
+    assert.equal(f.calls.length, 0);
+  }
+});
+test("Pro targets never share trial cache identity and expire within an hour", async () => {
+  const rows = new Map();
+  const cache = {
+    read: async (k) => rows.get(k) ?? null,
+    write: async (k, value, until) => rows.set(k, { value, until }),
+  };
+  const trial = setup({ cache });
+  await trial.client.getTargets("IREN", { owner: true }, configuration());
+  const paid = setup({ cache });
+  await paid.client.getTargets(
+    "IREN",
+    { owner: false, authenticated: true },
+    { ...configuration(), AURYN_SENTISENSE_MODE: "pro" },
+  );
+  assert.equal(paid.calls.length, 2);
+  assert.equal(rows.size, 2);
+  assert.ok([...rows.values()].some((r) => r.until <= now + 3600000 + 1000));
+});
+
+test("Pro rate denial honors a longer Retry-After through shared latch extension", async () => {
+  const api = load();
+  let time = now,
+    calls = 0,
+    extended = 0;
+  const store = denialStore();
+  store.extend = async (key, ticket, until) => {
+    const row = store.values.get(key);
+    assert.equal(row.ticket, ticket);
+    row.expiresAt = until;
+    extended = until;
+  };
+  const deps = {
+    cache: emptyCache,
+    now: () => time,
+    reserve: async () => {},
+    guard: api.createSentiSenseDenialGuard(store),
+    transport: async () => {
+      calls++;
+      return new Response("", {
+        status: 429,
+        headers: { "Retry-After": "3600" },
+      });
+    },
+  };
+  const env = { ...configuration(), AURYN_SENTISENSE_MODE: "pro" },
+    access = { owner: false, authenticated: true };
+  await api.createSentiSenseClient(deps).getTargets("IREN", access, env);
+  assert.equal(extended, now + 3600000);
+  time += 30 * 60000;
+  await api.createSentiSenseClient(deps).getTargets("APP", access, env);
+  assert.equal(calls, 1, "cold instance respects extended shared latch");
+  time += 31 * 60000;
+  await api.createSentiSenseClient(deps).getTargets("APP", access, env);
+  assert.equal(calls, 2);
+});
+test("Pro denials leave a bounded shared cooldown instead of trial key-expiry lock", async () => {
+  const api = load();
+  const store = denialStore();
+  let time = now,
+    calls = 0;
+  const deps = {
+    cache: emptyCache,
+    now: () => time,
+    reserve: async () => {},
+    guard: api.createSentiSenseDenialGuard(store),
+    transport: async () => {
+      calls++;
+      return new Response("", { status: 403 });
+    },
+  };
+  const env = {
+      ...configuration(),
+      AURYN_SENTISENSE_MODE: "pro",
+      SENTISENSE_KEY_EXPIRES_AT: "2020-01-01T00:00:00Z",
+    },
+    access = { owner: false, authenticated: true };
+  await api.createSentiSenseClient(deps).getTargets("IREN", access, env);
+  time += 14 * 60000;
+  await api.createSentiSenseClient(deps).getTargets("APP", access, env);
+  assert.equal(calls, 1);
+  time += 2 * 60000;
+  await api.createSentiSenseClient(deps).getTargets("APP", access, env);
+  assert.equal(calls, 2);
+});
+
+test("failed Pro enrichment cannot leak an attached owner-trial target", async () => {
+  const source = setup();
+  const trial = await source.client.enrich(
+    research(),
+    { owner: true },
+    configuration(),
+  );
+  const paid = setup({ deny: () => true });
+  const result = await paid.client.enrich(
+    trial,
+    { owner: false, authenticated: true },
+    { ...configuration(), AURYN_SENTISENSE_MODE: "pro" },
+  );
+  assert.equal(result.analystTargets, undefined);
+  assert.equal(result.evidence, trial.evidence);
+  assert.ok(trial.analystTargets, "do not mutate caller input");
+});
+
+test("Pro paid isolation strips inherited trial targets even on unsupported assets", async () => {
+  const f = setup();
+  const trial = await f.client.enrich(
+    research(),
+    { owner: true },
+    configuration(),
+  );
+  trial.company.currency = "EUR";
+  assert.equal(
+    (
+      await f.client.enrich(
+        trial,
+        { owner: false, authenticated: true },
+        { ...configuration(), AURYN_SENTISENSE_MODE: "pro" },
+      )
+    ).analystTargets,
+    undefined,
+  );
+});
+test("Pro optional deadline includes slow queue work and starts no deferred network", async () => {
+  const api = load();
+  let time = now,
+    calls = 0,
+    reserves = 0;
+  const client = api.createSentiSenseClient({
+    cache: emptyCache,
+    now: () => time,
+    reserve: async () => {
+      reserves++;
+      time += 3100;
+    },
+    guard: async () => async () => {},
+    transport: async () => {
+      calls++;
+      return Response.json({});
+    },
+  });
+  const env = { ...configuration(), AURYN_SENTISENSE_MODE: "pro" };
+  assert.equal(
+    await client.getTargets("IREN", { owner: false, authenticated: true }, env),
+    null,
+  );
+  assert.equal(calls, 0);
+  assert.equal(reserves, 1);
+});
+test("Pro optional deadline aborts in-flight transport and does not start consensus", async () => {
+  const api = load();
+  let calls = 0,
+    aborted = false;
+  const client = api.createSentiSenseClient({
+    cache: emptyCache,
+    now: () => now,
+    reserve: async () => {},
+    guard: async () => async () => {},
+    transport: async (_url, { signal }) => {
+      calls++;
+      return new Promise((_resolve, reject) =>
+        signal.addEventListener(
+          "abort",
+          () => {
+            aborted = true;
+            reject(Error("aborted"));
+          },
+          { once: true },
+        ),
+      );
+    },
+  });
+  const start = Date.now();
+  assert.equal(
+    await client.getTargets(
+      "IREN",
+      { owner: false, authenticated: true },
+      { ...configuration(), AURYN_SENTISENSE_MODE: "pro" },
+    ),
+    null,
+  );
+  assert.ok(Date.now() - start < 4000);
+  assert.equal(calls, 1);
+  assert.equal(aborted, true);
+});
+
+test("coalesced Pro callers share the bounded deadline when cache read stalls", async () => {
+  const api = load();
+  let complete,
+    calls = 0;
+  const cache = {
+    read: () =>
+      new Promise((resolve) => {
+        complete = resolve;
+      }),
+    write: async () => {},
+  };
+  const client = api.createSentiSenseClient({
+    cache,
+    now: () => now,
+    reserve: async () => {},
+    transport: async () => {
+      calls++;
+      return Response.json({});
+    },
+  });
+  const access = { owner: false, authenticated: true },
+    env = { ...configuration(), AURYN_SENTISENSE_MODE: "pro" };
+  const start = Date.now();
+  const a = client.getTargets("IREN", access, env),
+    b = client.getTargets("IREN", access, env);
+  assert.deepEqual(await Promise.all([a, b]), [null, null]);
+  assert.ok(Date.now() - start < 4000);
+  complete(null);
+  await new Promise((resolve) => setTimeout(resolve, 25));
+  assert.equal(calls, 0, "late cache completion cannot start upstream");
+});

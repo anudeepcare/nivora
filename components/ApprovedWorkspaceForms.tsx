@@ -1,4 +1,5 @@
 "use client";
+import editor from "./PositionEditor.module.css";
 
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
@@ -73,7 +74,7 @@ export function PositionEditor({
   return (
     <dialog
       ref={dialog}
-      className="dialog approved-workspace-dialog portfolio-editor"
+      className={`dialog approved-workspace-dialog portfolio-editor ${editor.root}`}
       aria-labelledby="approved-position-title"
       onClose={onClose}
     >

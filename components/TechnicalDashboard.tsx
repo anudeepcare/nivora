@@ -1,4 +1,5 @@
 "use client";
+import technical from "./TechnicalPresentation.module.css";
 import DetailDialog from "./DetailDialog";
 import detailStyle from "./ResearchDetailContent.module.css";
 import { studyMarket } from "@/lib/settled-study-bars";
@@ -362,16 +363,19 @@ export default function TechnicalDashboard({
           />
         </div>
       </div>
-      <div className="technical-desk-groups">
+      <div className={technical.indicatorGroups}>
         {groups.map((g) => (
           <DetailDialog
             key={g.title}
             title={g.title}
+            className={technical.indicatorTrigger}
             trigger={
               <>
                 <SectionIcon name={g.title} />
-                <strong>{g.title}</strong>
-                <span>{g.rows.length} indicators</span>
+                <span className={technical.indicatorLabel}>
+                  <strong>{g.title}</strong>
+                  <small>{g.rows.length} indicators</small>
+                </span>
               </>
             }
             wide

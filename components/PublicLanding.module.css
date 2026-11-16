@@ -23,7 +23,7 @@
   padding: 12px 0;
   display: flex;
   gap: 40px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--workspace-edge);
 }
 .page :global(.ap-brand) {
   display: inline-flex;

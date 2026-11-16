@@ -1,5 +1,12 @@
 "use client";
+import technical from "./TechnicalPresentation.module.css";
 import DetailDialog from "./DetailDialog";
+import { PriceChart } from "./Charts";
+import {
+  canReadAnalystTargets,
+  mergeIndependentTargets,
+  type AnalystTargetResponse,
+} from "@/lib/independent-analyst-targets";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
 import { pacePeriods, PACE_LEVELS } from "@/lib/pace-presentation";
@@ -168,7 +175,32 @@ export default function Research({ symbol }: { symbol: string }) {
       demo?.research[symbol],
       300000,
     ),
-    baseResearch = resource.data;
+    rawResearch = resource.data;
+  const analystResource = useResource<AnalystTargetResponse>(
+    !demo && canReadAnalystTargets(access) && !symbol.includes("/")
+      ? `analyst-targets/${encodeURIComponent(symbol)}`
+      : null,
+    undefined,
+    300000,
+  );
+  const baseResearch = useMemo(
+    () =>
+      mergeIndependentTargets(rawResearch, analystResource.data, Date.now()),
+    [rawResearch, analystResource.data],
+  );
+  const refreshResearch = () => {
+    resource.refresh();
+    analystResource.refresh();
+  };
+  // Price history is independently authorized and can paint while statements load.
+  // Same 5Y history key as the base research service, so provider cache shares work.
+  const earlyHistory = useResource<{ candles: Candle[]; source?: string }>(
+    !demo && !baseResearch
+      ? `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=5Y`
+      : null,
+    undefined,
+    900000,
+  );
   const latestQuote = useResource<
     Record<string, { company: Company; quote: Quote }>
   >(
@@ -441,13 +473,35 @@ export default function Research({ symbol }: { symbol: string }) {
           </div>
         </header>
         <div className={frame.skeleton} />
-        <div className={`${frame.skeleton} ${frame.chartSkeleton}`} />
+        {earlyHistory.data?.candles.length ? (
+          <section
+            className={frame.earlyChart}
+            aria-label="Price history while research loads"
+          >
+            <header>
+              <h2>Price history</h2>
+              <span>Company research &amp; Pace are still loading</span>
+            </header>
+            <PriceChart
+              bars={earlyHistory.data.candles}
+              range="5Y"
+              style="line"
+            />
+            <small>
+              Through {dateLabel(earlyHistory.data.candles.at(-1)?.time ?? "")}{" "}
+              · Available price observations. Financial estimates are not loaded
+              yet.
+            </small>
+          </section>
+        ) : (
+          <div className={`${frame.skeleton} ${frame.chartSkeleton}`} />
+        )}
       </section>
     ) : (
       <Empty
         title={`Open ${symbol} research`}
         action={
-          <button className="button" onClick={resource.refresh}>
+          <button className="button" onClick={refreshResearch}>
             Try again
           </button>
         }
@@ -471,15 +525,19 @@ export default function Research({ symbol }: { symbol: string }) {
     (key) => key === "Options" || key === "Advanced",
   );
   const chart = (
-    <section className="plot-section">
+    <section className={`plot-section ${technical.chart}`}>
       <header className="row between chart-head">
         <h3>
           <LineChart size={18} aria-hidden="true" /> Price history &amp; Pace
           zones
         </h3>
-        <div className="chart-period-control">
+        <div className={technical.rangeControls}>
           <span className="chart-period-label">Price history range</span>
-          <div className="ranges" role="group" aria-label="Price history range">
+          <div
+            className={technical.rangeButtons}
+            role="group"
+            aria-label="Price history range"
+          >
             {ranges.map((x) => (
               <button
                 key={x}
@@ -512,7 +570,7 @@ export default function Research({ symbol }: { symbol: string }) {
             : short.error || "No observations in this period."}
         </div>
       )}
-      <div className="chart-note">
+      <div className={technical.chartFooter}>
         <DataStamp
           source={
             intraday
@@ -622,6 +680,18 @@ export default function Research({ symbol }: { symbol: string }) {
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
+      {analystResource.loading && !baseResearch?.analystTargets && (
+        <p className="small muted" role="status">
+          Checking additional analyst targets… Price history and company
+          research remain available.
+        </p>
+      )}
+      {analystResource.error && (
+        <p className="small muted" role="status">
+          Additional analyst targets could not refresh. Existing dated research
+          remains available.
+        </p>
+      )}
       {r.issues.length > 0 && (
         <div className="coverage-note">
           <span>
@@ -636,7 +706,7 @@ export default function Research({ symbol }: { symbol: string }) {
             className="icon-button"
             aria-label="Retry data sources"
             disabled={resource.loading}
-            onClick={resource.refresh}
+            onClick={refreshResearch}
           >
             <RefreshCw size={17} />
           </button>
@@ -838,7 +908,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   </header>
                   {p && (
                     <section
-                      className="technical-pace"
+                      className={`technical-pace ${technical.pace}`}
                       aria-label="AURYN Pace price evidence"
                     >
                       <div>

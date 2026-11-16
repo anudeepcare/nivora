@@ -153,3 +153,8 @@
     padding: 16px;
   }
 }
+
+.document :global(.document-reading[data-guide]) {
+  max-width: none;
+  width: 100%;
+}

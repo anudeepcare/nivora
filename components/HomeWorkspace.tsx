@@ -271,7 +271,7 @@ function HomeOverview() {
                 subtitle="Recent results and the next 7 days."
                 action={
                   <button
-                    className="icon-btn"
+                    className="icon-button"
                     onClick={feed.refresh}
                     disabled={feed.loading}
                     aria-label="Refresh company events"

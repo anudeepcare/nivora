@@ -20,7 +20,7 @@ export function sourceModule(relative) {
       },
     }).outputText;
     const localRequire = (name) =>
-      name.startsWith("@/")
+      name === "server-only" ? {} : name.startsWith("@/")
         ? load(path.resolve(name.slice(2)))
         : name.startsWith(".")
           ? load(path.resolve(path.dirname(filename), name))

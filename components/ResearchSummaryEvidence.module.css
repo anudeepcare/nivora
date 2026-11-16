@@ -1,0 +1,84 @@
+/* Small overview evidence components own their layout in every Research host. */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+.metrics :global(.metric) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--workspace-tile);
+}
+.metrics :global(.metric-number) {
+  font-size: clamp(22px, 2.5vw, 30px);
+  line-height: 1.2;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.metrics :global(.metric-sub) {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.metrics :global(.metric-sub.positive) {
+  color: var(--positive);
+}
+.metrics :global(.metric-sub.negative) {
+  color: var(--negative);
+}
+.metrics :global(.metric-meter) {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--line);
+  margin-top: auto;
+}
+.metrics :global(.metric-meter) i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--blue);
+}
+.cases {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  min-width: 0;
+}
+.cases > div {
+  min-width: 0;
+  padding: 16px;
+  background: var(--workspace-tile);
+  border-radius: 12px;
+}
+.cases h3 {
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+.cases [data-tone="supports"] h3 {
+  color: var(--positive);
+}
+.cases [data-tone="risks"] h3 {
+  color: var(--warning);
+}
+.cases :global(.case-points) {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.cases :global(.case-points) > span {
+  display: block;
+}
+@media (max-width: 600px) {
+  .cases {
+    grid-template-columns: 1fr;
+  }
+}

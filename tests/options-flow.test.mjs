@@ -121,7 +121,7 @@ function adapter(
   const counts = { chain: 0, budget: 0, fetch: 0 };
   const exports = {};
   const require = (name) =>
-    name === "./options-source"
+    name === "./market-source-mode" ? { isSentiSenseMarket: () => false } : name === "./options-source"
       ? {
           loadOptionChain: async () => {
             counts.chain++;

@@ -1,3 +1,5 @@
+import { sentiSensePeers } from "@/lib/sentisense-supporting";
+import { isSentiSenseMarket } from "@/lib/market-source-mode";
 import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
 import { fundamentals } from "@/lib/providers";
 import { eodEnabled, eodRequest } from "@/lib/eodhd";
@@ -19,6 +21,30 @@ export async function GET(
       throw new HttpError(
         "Corporate peer and segment data do not apply to crypto.",
       );
+    if (isSentiSenseMarket()) {
+      const observedAt = new Date().toISOString();
+      if (kind === "segments")
+        return privateJson({
+          symbol,
+          kind,
+          rows: [],
+          conflicts: 0,
+          issues: [
+            "Revenue segment breakdowns are not supplied by this connection.",
+          ],
+          observedAt,
+        });
+      return privateJson({
+        symbol,
+        kind,
+        field: "curated",
+        classification: "Curated peers",
+        candidates: await sentiSensePeers(symbol),
+        observedAt,
+        method:
+          "Curated related companies, not a market-cap ranking or validated competitor universe.",
+      });
+    }
     if (!eodEnabled())
       throw new HttpError(
         "This dataset requires the configured fundamentals connection. Existing research remains available.",

@@ -1,4 +1,5 @@
 "use client";
+import toolStyle from "./ResearchTools.module.css";
 import { studyMarket } from "@/lib/settled-study-bars";
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -42,7 +43,7 @@ export function PositionWorkbench({ research: r }: { research: Research }) {
       })
     : null;
   return (
-    <div className="position-workbench">
+    <div className={`position-workbench ${toolStyle.root}`}>
       <header className="desk-heading">
         <div>
           <span className="eyebrow">Design a hypothetical long position</span>
@@ -261,7 +262,7 @@ export function ContextWorkbench({ research: r }: { research: Research }) {
     [r, series.data],
   );
   return (
-    <section className="context-workbench">
+    <section className={`context-workbench ${toolStyle.root}`}>
       <header className="desk-heading">
         <div>
           <span className="eyebrow">
@@ -420,7 +421,7 @@ export function HistoryWorkbench({ research: r }: { research: Research }) {
     ),
     [error, setError] = useState("");
   return (
-    <section className="history-workbench">
+    <section className={`history-workbench ${toolStyle.root}`}>
       <header className="desk-heading">
         <div>
           <span className="eyebrow">

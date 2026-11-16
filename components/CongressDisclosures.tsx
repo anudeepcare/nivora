@@ -115,13 +115,17 @@ export default function CongressDisclosures({
                       later
                     </small>
                   </div>
-                  <a
-                    href={r.filingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Original filing ↗
-                  </a>
+                  {r.filingUrl ? (
+                    <a
+                      href={r.filingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Original filing ↗
+                    </a>
+                  ) : (
+                    <small>Filing link unavailable</small>
+                  )}
                 </article>
               ))}
             </div>

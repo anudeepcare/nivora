@@ -1,0 +1,246 @@
+/* Owned by the rendered account and portfolio evidence components. */
+.account,
+.context {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.account :global(.account-equity-primary) {
+  display: grid;
+  gap: 8px;
+}
+.account :global(.balance) {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.account :global(.account-equity-breakdown) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+.account :global(.account-equity-breakdown) > div {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--workspace-tile);
+}
+.account dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.account dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.account :global(.balance-caption),
+.account :global(.account-balance-date) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.account :global(.account-balance-form) {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  background: var(--workspace-tile);
+  border-radius: 12px;
+}
+.account :global(.account-balance-form-head) h3 {
+  margin: 0 0 8px;
+}
+.account :global(.account-balance-fields) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.account :global(.account-money-input) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.account :global(.account-money-input) input {
+  width: 100%;
+}
+.account :global(.account-balance-confirm) {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.account :global(.account-balance-confirm) input {
+  flex-shrink: 0;
+}
+.account :global(.account-balance-error) {
+  color: var(--negative);
+}
+.account :global(.account-balance-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.context :global(.context-highlights),
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.context :global(.context-highlights) > div,
+.summary > div {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  background: var(--workspace-tile);
+  border-radius: 12px;
+}
+.context :global(.context-highlights) strong,
+.summary strong {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.context small,
+.summary small {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.context :global(.portfolio-evidence-health) {
+  padding: 16px;
+  background: var(--workspace-tile);
+  border-radius: 12px;
+}
+.context :global(.exposure-list) {
+  display: grid;
+  gap: 12px;
+}
+.context :global(.exposure-list) > div {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(60px, 2fr) auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.context :global(.exposure-track) {
+  height: 8px;
+  background: var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.context :global(.exposure-track) i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+@media (max-width: 600px) {
+  .account :global(.account-balance-fields) {
+    grid-template-columns: 1fr;
+  }
+  .context :global(.context-highlights),
+  .summary {
+    grid-template-columns: 1fr;
+  }
+}
+.sectors,
+.exposure {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.sectors :global(.section-heading) {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sectors :global(.sector-performance-rows),
+.exposure :global(.exposure-groups) {
+  display: grid;
+  gap: 12px;
+}
+.sectors :global(.sector-performance-row) {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(60px, 2fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+.sectors :global(.sector-performance-row) small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+.sectors :global(.sector-performance-axis) {
+  height: 14px;
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    transparent 49.5%,
+    var(--line) 49.5%,
+    var(--line) 50.5%,
+    transparent 50.5%
+  );
+}
+.sectors :global(.sector-performance-axis) i {
+  position: absolute;
+  height: 8px;
+  top: 3px;
+  border-radius: 4px;
+  background: var(--positive);
+}
+.sectors :global(.sector-performance-axis) i:global(.loss) {
+  background: var(--negative);
+}
+.exposure :global(.exposure-groups) > div {
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) minmax(50px, 2fr) auto;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+.exposure :global(.exposure-groups) i {
+  height: 8px;
+  border-radius: 8px;
+  background: var(--line);
+  overflow: hidden;
+}
+.exposure :global(.exposure-groups) b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--blue);
+}
+.exposure :global(.exposure-stress) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--workspace-tile);
+}
+.exposure :global(.exposure-stress) > div {
+  display: grid;
+  gap: 8px;
+  align-content: center;
+}
+.exposure :global(.exposure-stress) > p {
+  grid-column: 1/-1;
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .sectors :global(.sector-performance-row) {
+    grid-template-columns: minmax(85px, 1fr) minmax(45px, 1fr) auto;
+  }
+  .sectors :global(.sector-performance-row) > small {
+    grid-column: 1/-1;
+  }
+  .exposure :global(.exposure-stress) {
+    grid-template-columns: 1fr;
+  }
+}

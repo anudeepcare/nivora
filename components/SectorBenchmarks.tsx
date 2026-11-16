@@ -1,4 +1,5 @@
 "use client";
+import evidence from "./PortfolioEvidence.module.css";
 import { useState } from "react";
 import { useProduct, useResource } from "./Session";
 import { percent, dateLabel } from "@/lib/format";
@@ -28,7 +29,7 @@ export default function SectorBenchmarks() {
     ...rows.map((r) => Math.abs(r.periods[period]?.change ?? 0)),
   );
   return (
-    <section className="panel sector-benchmarks">
+    <section className={`panel sector-benchmarks ${evidence.sectors}`}>
       <header className="section-heading">
         <div>
           <span className="eyebrow">Market context</span>

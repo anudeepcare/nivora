@@ -1,4 +1,5 @@
 "use client";
+import style from "./Analyst.module.css";
 import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
 import { Sparkles, Download } from "lucide-react";
@@ -144,7 +145,7 @@ export default function Analyst({
       );
     };
     return (
-      <section className="ask-auryn">
+      <section className={`ask-auryn ${style.root}`}>
         <p className="analyst-context">
           <strong>{research.company.symbol}</strong> · Evidence through{" "}
           {dateLabel(research.retrievedAt)} · Answers use this company’s
@@ -207,7 +208,7 @@ export default function Analyst({
     );
   }
   return (
-    <section>
+    <section className={style.root}>
       <header className="section-heading">
         <div>
           <span className="eyebrow">AURYN ANALYST</span>

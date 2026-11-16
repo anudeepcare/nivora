@@ -22,6 +22,7 @@ const helpModuleCode = ts.transpileModule(fs.readFileSync("components/PaceHelp.t
 const jsx = await import("react/jsx-runtime");
 new Function("require", "module", "exports", helpModuleCode)((name) => {
   if (name === "react") return React;
+  if (name === "./SupportingControls.module.css") return {__esModule:true,default:experience};
   if (name === "./PacePriceZones") return {__esModule:true,default:()=>null};
   if (name === "react/jsx-runtime") return jsx;
   if (name === "@/lib/pace-presentation") return pace;

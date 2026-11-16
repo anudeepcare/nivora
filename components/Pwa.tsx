@@ -1,4 +1,5 @@
 "use client";
+import controls from "./SupportingControls.module.css";
 import { recordExperience } from "@/lib/experience-metrics";
 import { useEffect, useState } from "react";
 import {
@@ -131,7 +132,7 @@ export default function Pwa() {
   }, []);
   if (!waiting) return null;
   return (
-    <aside className="app-update-notice" role="status">
+    <aside className={`app-update-notice ${controls.update}`} role="status">
       <span>An AURYN update is ready. Save your work before reloading.</span>
       <button
         type="button"

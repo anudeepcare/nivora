@@ -1,3 +1,4 @@
+import { loadGuide } from './helpers/product-guide.mjs';
 import { studyMarket } from "../lib/settled-study-bars.ts";
 import { earningsCalendar } from "../lib/earnings-calendar.ts";
 import { modelCoverage } from "../lib/research-depth.ts";
@@ -41,6 +42,10 @@ import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
   bindings = {
+    toolStyle: new Proxy({}, {get:(_,key)=>String(key)}),
+    summaryEvidence: new Proxy({}, {get:(_,key)=>String(key)}),
+    evidence: new Proxy({}, {get:(_,key)=>String(key)}),
+    technical: new Proxy({}, {get:(_,key)=>String(key)}),
     DetailDialog: ({ title, children }) =>
       React.createElement("section", { "data-dialog-title": title }, children),
     detailStyle: { content: "detail-content" },
@@ -680,6 +685,7 @@ test("public legal and help documents render all cross-links and readable sectio
     "LegalDocument",
     {
       React,
+      ProductGuide: loadGuide(),
       styles: { document: "document-owned" },
       useState: React.useState,
       ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {
@@ -716,7 +722,7 @@ test("public legal and help documents render all cross-links and readable sectio
     for (const path of ["terms", "privacy", "risk", "methodology", "help"])
       assert.ok(html.includes(`href="/${path}"`));
     assert.ok(html.includes("<h1>"));
-    assert.ok(html.includes("document-sections"));
+    assert.ok(html.includes(id === "help" ? "Find your next step" : "document-sections"));
     assert.doesNotMatch(html, /mobile-dock|desktop-nav/);
   }
 });

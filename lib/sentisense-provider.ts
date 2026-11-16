@@ -9,7 +9,7 @@ import {
 import type { Research } from "./types";
 
 type Environment = Record<string, string | undefined>;
-type OwnerAccess = { owner: boolean };
+type OwnerAccess = { owner: boolean; authenticated?: boolean };
 type Dependencies = {
   transport?: typeof fetch;
   now?: () => number;
@@ -55,12 +55,15 @@ type DenialStore = {
     at: number,
   ) => Promise<boolean>;
   release: (key: string, ticket: number) => Promise<void>;
+  extend?: (key: string, ticket: number, until: number) => Promise<void>;
 };
 type DenialGuard = (
   hash: string,
   expiresAt: number,
   at: number,
-) => Promise<() => Promise<void>>;
+) => Promise<
+  (() => Promise<void>) & { blockUntil?: (until: number) => Promise<void> }
+>;
 /** Arm before transport: a denial or uncertain outcome leaves the latch in place. */
 export function createSentiSenseDenialGuard(store: DenialStore): DenialGuard {
   return async (hash, expiresAt, at) => {
@@ -70,7 +73,12 @@ export function createSentiSenseDenialGuard(store: DenialStore): DenialGuard {
     const ticket = randomInt(1, 2_147_483_647);
     if (!(await store.claim(key, ticket, expiresAt, at)))
       throw Error("Optional source paused");
-    return () => store.release(key, ticket);
+    const release: (() => Promise<void>) & {
+      blockUntil?: (until: number) => Promise<void>;
+    } = () => store.release(key, ticket);
+    if (store.extend)
+      release.blockUntil = (until) => store.extend!(key, ticket, until);
+    return release;
   };
 }
 // Reuse the existing service-role-only table. No migration or credential storage.
@@ -92,6 +100,15 @@ const sharedGuard = createSentiSenseDenialGuard({
     if (inserted.error?.code === "23505") return false;
     if (inserted.error) throw Error("Optional source protection unavailable");
     return true;
+  },
+  async extend(key, ticket, until) {
+    const { accessDb } = await import("./access-server");
+    const result = await accessDb()
+      .from("auryn_request_limits")
+      .update({ expires_at: new Date(until).toISOString() })
+      .eq("key", key)
+      .eq("count", ticket);
+    if (result.error) throw Error("Optional source protection unavailable");
   },
   async release(key, ticket) {
     const { accessDb } = await import("./access-server");
@@ -142,6 +159,29 @@ export function sentiSensePreviewEnabled(
   );
 }
 
+/** Paid mode is explicit and retains the caller's existing authenticated access gate. */
+export function sentiSenseProEnabled(
+  access: OwnerAccess,
+  env: Environment,
+  at: number,
+): boolean {
+  return (
+    env.AURYN_SENTISENSE_MODE === "pro" &&
+    access.authenticated === true &&
+    (env.VERCEL_ENV === "preview" || env.VERCEL_ENV === "production") &&
+    !!env.SENTISENSE_API_KEY?.trim() &&
+    Number.isFinite(at)
+  );
+}
+function sentiSenseEnabled(
+  access: OwnerAccess,
+  env: Environment,
+  at: number,
+): boolean {
+  if (env.AURYN_SENTISENSE_MODE) return sentiSenseProEnabled(access, env, at);
+  return sentiSensePreviewEnabled(access, env, at);
+}
+
 type KeyState = {
   tail: Promise<unknown>;
   lastStarted: number;
@@ -168,14 +208,21 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
     symbol: string,
     access: OwnerAccess,
     env: Environment,
+    options: { budgetMs?: number } = {},
   ): Promise<AnalystTargets | null> {
     if (
-      !sentiSensePreviewEnabled(access, env, now()) ||
+      !sentiSenseEnabled(access, env, now()) ||
       !/^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol)
     )
       return null;
+    const paid = env.AURYN_SENTISENSE_MODE === "pro";
+    const ttl = paid ? 3_600_000 : day;
+    const keyExpiry = () =>
+      paid ? Infinity : strictUtcTimestamp(env.SENTISENSE_KEY_EXPIRES_AT)!;
     const key = env.SENTISENSE_API_KEY!;
-    const hash = createHash("sha256").update(key).digest("hex");
+    const hash = createHash("sha256")
+      .update(paid ? `pro:${key}` : key)
+      .digest("hex");
     let state = keys.get(hash);
     if (!state) {
       // Fail closed on unexpected configuration churn rather than evict active queues.
@@ -192,8 +239,7 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
     const current = state;
     if (current.deniedUntil > now()) return null;
     const targetCache =
-      dependencies.cache ??
-      (env.VERCEL_ENV === "preview" ? sharedTargetCache : undefined);
+      dependencies.cache ?? (env.VERCEL_ENV ? sharedTargetCache : undefined);
     const cached = current.cached.get(symbol);
     if (
       !targetCache &&
@@ -205,7 +251,20 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
       return cached.value;
     const pending = current.pending.get(symbol);
     if (pending) return pending;
+    if (current.pending.size >= 256) return null;
 
+    const budgetMs = Number.isFinite(options.budgetMs)
+      ? Math.min(20_000, Math.max(1, options.budgetMs!))
+      : 3000;
+    const deadline = paid ? now() + budgetMs : Infinity;
+    const controller = new AbortController();
+    const timer = paid
+      ? setTimeout(() => controller.abort(), budgetMs)
+      : undefined;
+    const available = () =>
+      !controller.signal.aborted &&
+      now() < deadline &&
+      sentiSenseEnabled(access, env, now());
     const cacheKey = `sentisense:preview:v1:${hash}:${symbol}`;
     const denialKey = createHash("sha256")
       .update(`sentisense:denial:${hash}`)
@@ -214,32 +273,32 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
     let temporaryServerFailure = false;
     const request = (path: string): Promise<unknown> => {
       const operation = current.tail.then(async () => {
-        if (
-          !sentiSensePreviewEnabled(access, env, now()) ||
-          current.deniedUntil > now()
-        )
+        if (!available() || current.deniedUntil > now())
           throw Error("Preview unavailable");
-        const wait = current.lastStarted + 7200 - now();
+        const wait = current.lastStarted + (paid ? 250 : 7200) - now();
+        if (now() + Math.max(wait, 0) >= deadline)
+          throw Error("Optional source budget exhausted");
         if (wait > 0) await sleep(wait);
-        if (
-          !sentiSensePreviewEnabled(access, env, now()) ||
-          current.deniedUntil > now()
-        )
+        if (!available() || current.deniedUntil > now())
           throw Error("Preview unavailable");
         // Independent namespaces, with one reservation for EVERY upstream request.
-        await reserve(`sentisense:${hash}:burst`, 1, 7100);
-        await reserve(`sentisense:${hash}:day`, 24, day);
-        if (!sentiSensePreviewEnabled(access, env, now()))
-          throw Error("Preview expired");
+        await reserve(
+          `sentisense:${hash}:burst`,
+          paid ? 4 : 1,
+          paid ? 1000 : 7100,
+        );
+        if (!available()) throw Error("Optional source budget exhausted");
+        if (paid) await reserve(`sentisense:${hash}:minute`, 240, 60_000);
+        else await reserve(`sentisense:${hash}:day`, 24, day);
+        if (!available()) throw Error("Preview expired");
         const guard =
-          dependencies.guard ??
-          (env.VERCEL_ENV === "preview" ? sharedGuard : localGuard);
+          dependencies.guard ?? (env.VERCEL_ENV ? sharedGuard : localGuard);
         const release = await guard(
           hash,
-          strictUtcTimestamp(env.SENTISENSE_KEY_EXPIRES_AT)!,
+          paid ? now() + 15 * 60_000 : keyExpiry(),
           now(),
         );
-        if (!sentiSensePreviewEnabled(access, env, now())) {
+        if (!available()) {
           await release();
           throw Error("Preview expired");
         }
@@ -253,13 +312,26 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
             },
             redirect: "error",
             cache: "no-store",
-            signal: AbortSignal.timeout(15_000),
+            signal: paid ? controller.signal : AbortSignal.timeout(15_000),
           },
         );
         if ([401, 403, 429].includes(response.status)) {
-          current.deniedUntil = strictUtcTimestamp(
-            env.SENTISENSE_KEY_EXPIRES_AT,
-          )!;
+          current.deniedUntil = paid ? now() + 15 * 60_000 : keyExpiry();
+          if (paid && response.status === 429) {
+            const retryAfter = response.headers.get("retry-after");
+            const seconds =
+              retryAfter && /^\d+$/.test(retryAfter)
+                ? Number(retryAfter)
+                : null;
+            const retryAt =
+              seconds !== null
+                ? now() + seconds * 1000
+                : Date.parse(retryAfter ?? "");
+            if (Number.isFinite(retryAt) && retryAt > current.deniedUntil) {
+              current.deniedUntil = retryAt;
+              await release.blockUntil?.(retryAt);
+            }
+          }
           throw Error("Optional target source unavailable");
         }
         // A known non-denial may release only its own nonce. Transport failures,
@@ -287,9 +359,9 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
             saved &&
             Number.isFinite(saved.until) &&
             saved.until > now() &&
-            saved.until <= strictUtcTimestamp(env.SENTISENSE_KEY_EXPIRES_AT)! &&
-            saved.until <= now() + day &&
-            sentiSensePreviewEnabled(access, env, now()) &&
+            saved.until <= keyExpiry() &&
+            saved.until <= now() + ttl &&
+            available() &&
             current.deniedUntil <= now() &&
             usableAnalystTargets(saved.value, symbol, "USD", now())
           ) {
@@ -307,30 +379,23 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
         const ticker = encodeURIComponent(symbol);
         const profile = await request(`stocks/${ticker}/profile`);
         const consensus = await request(`analyst/${ticker}/consensus`);
-        if (sentiSensePreviewEnabled(access, env, now()))
+        if (available())
           value = normalizeSentiSenseTargets(consensus, profile, symbol, now());
       } catch {
         // Optional source failures, denial details and secrets never enter research.
       }
-      if (
-        value &&
-        targetCache &&
-        sentiSensePreviewEnabled(access, env, now())
-      ) {
+      if (value && targetCache && available()) {
         try {
           await targetCache.write(
             cacheKey,
             value,
-            Math.min(
-              now() + day,
-              strictUtcTimestamp(env.SENTISENSE_KEY_EXPIRES_AT)!,
-            ),
+            Math.min(now() + ttl, keyExpiry()),
           );
         } catch {
           /* Preserve a successfully fetched observation if caching fails. */
         }
       }
-      if (!sentiSensePreviewEnabled(access, env, now())) return null;
+      if (!available()) return null;
       for (const [symbol, entry] of current.cached)
         if (entry.until <= now()) current.cached.delete(symbol);
       if (current.cached.size < 256 || current.cached.has(symbol))
@@ -339,15 +404,33 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
           // Allow a later user request to recover after a bounded cooldown.
           // Denials/uncertain outcomes keep their existing durable guard and
           // every later request still passes the same expiry and quota gates.
-          until: now() + (temporaryServerFailure ? 5 * 60_000 : day),
+          until: Math.min(
+            now() +
+              (temporaryServerFailure || (paid && !value) ? 5 * 60_000 : ttl),
+            keyExpiry(),
+          ),
           value,
         });
       return value;
     })();
-    current.pending.set(symbol, work);
+    const bounded = !paid
+      ? work
+      : new Promise<AnalystTargets | null>((resolve, reject) => {
+          const abort = () => resolve(null);
+          controller.signal.addEventListener("abort", abort, { once: true });
+          if (controller.signal.aborted) abort();
+          work
+            .then(resolve, reject)
+            .finally(() =>
+              controller.signal.removeEventListener("abort", abort),
+            );
+        });
+    current.pending.set(symbol, bounded);
     try {
-      return await work;
+      return await bounded;
     } finally {
+      if (timer) clearTimeout(timer);
+      controller.abort();
       current.pending.delete(symbol);
     }
   }
@@ -359,16 +442,29 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
       access: OwnerAccess,
       env: Environment = process.env,
     ): Promise<Research> {
+      // Paid output cannot inherit a previously attached owner-trial observation.
+      const base =
+        env.AURYN_SENTISENSE_MODE === "pro" &&
+        r.analystTargets?.source === "SentiSense"
+          ? { ...r, analystTargets: undefined }
+          : r;
       if (
         r.company.assetType !== "stock" ||
         r.company.currency !== "USD" ||
         r.quote.currency !== "USD"
       )
-        return r;
+        return base;
       const targets = await getTargets(r.company.symbol, access, env);
-      return targets ? { ...r, analystTargets: targets } : r;
+      return targets ? { ...base, analystTargets: targets } : base;
     },
   };
 }
 const client = createSentiSenseClient();
 export const enrichSentiSenseTargets = client.enrich;
+
+/** Dedicated authenticated endpoint: does not hold the base research response. */
+export const getSentiSenseTargets = (
+  symbol: string,
+  access: OwnerAccess,
+  env: Environment = process.env,
+) => client.getTargets(symbol, access, env, { budgetMs: 20_000 });

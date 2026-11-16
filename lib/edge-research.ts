@@ -135,6 +135,7 @@ export function workspaceGuidance(
   return {
     ...edge.brief.accumulation,
     view: edge.pacePresentation,
+    currentPace: edge.decision.pace,
     action: edge.assessment,
     actions: edge.decision.actionLabels,
     contextLabel: edge.decision.contextLabel,

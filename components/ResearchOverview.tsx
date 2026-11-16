@@ -1,4 +1,5 @@
 "use client";
+import summaryEvidence from "./ResearchSummaryEvidence.module.css";
 import CaseRange from "./CaseRange";
 import AnalystTargets from "./AnalystTargets";
 import MetricProvenance from "./MetricProvenance";
@@ -275,7 +276,7 @@ export function KeyFinancialMetrics({
         ];
   return (
     <section
-      className={`metric-band ${omitRepeated && r.company.assetType !== "crypto" ? "overview-additional-metrics" : ""}`}
+      className={`${summaryEvidence.metrics} metric-band ${omitRepeated && r.company.assetType !== "crypto" ? "overview-additional-metrics" : ""}`}
       aria-label="Key metrics"
     >
       {metrics
@@ -365,7 +366,7 @@ export function CaseHighlights({ research: r }: { research: Research }) {
   );
   if (r.company.assetType === "crypto") return null;
   return (
-    <section className="case-columns">
+    <section className={`case-columns ${summaryEvidence.cases}`}>
       <div data-tone="supports">
         <h3>Supports the case</h3>
         <div className="case-points">

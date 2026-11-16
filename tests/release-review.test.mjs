@@ -1,3 +1,7 @@
+import {
+  canReadAnalystTargets,
+  mergeIndependentTargets,
+} from "../lib/independent-analyst-targets.ts";
 import { experience } from "./helpers/integrated-ui.mjs";
 import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
@@ -118,6 +122,8 @@ function researchMarkup(issues = []) {
   };
   const empty = () => null;
   const bindings = {
+    canReadAnalystTargets,
+    mergeIndependentTargets,
     cachedQuotes: () => ({}),
     publishQuotes: () => {},
     subscribeQuotes: () => () => {},
@@ -289,6 +295,8 @@ function researchMarkup(issues = []) {
     "ArrowUpRight",
   ])
     bindings[name] = empty;
+  bindings.technical = new Proxy({}, { get: (_, key) => String(key) });
+  bindings.PriceChart = () => null;
   bindings.navigationStyle = {
     sections: "research-navigation",
     symbol: "research-symbol",

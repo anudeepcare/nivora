@@ -599,7 +599,9 @@ export default function PublicLanding({
               Review.
             </h1>
             <div className={landing.heroDetail}>
-              <p>Business evidence first. Price context second.</p>
+              <p>
+                One place to connect the business, the price and your portfolio.
+              </p>
               <div className={landing.actions}>
                 <Link className={landing.primary} href="/login?mode=signup">
                   Open your workspace <ArrowRight size={17} />
@@ -684,27 +686,27 @@ export default function PublicLanding({
         {[
           [
             "/discover",
-            "01 · EXPLORE",
-            "Discover ideas",
-            "Filter companies by sector, business results and confirmed Pace.",
+            "01 · DISCOVER",
+            "Find your next question",
+            "Explore companies, then follow the evidence behind an idea.",
           ],
           [
             "/watchlist",
             "02 · FOLLOW",
-            "Your watchlist",
-            "Your saved companies, prices and upcoming events.",
+            "Keep ideas in view",
+            "Save companies and return to their prices, reports and changing context.",
           ],
           [
-            "/research",
-            "03 · UNDERSTAND",
-            "Research a company",
-            "Explore companies. Compare the evidence.",
+            "/portfolio",
+            "03 · REVIEW",
+            "See your whole portfolio",
+            "Bring holdings, cash and concentration into the same conversation.",
           ],
           [
-            "/research-lab",
-            "04 · TEST",
-            "Research tools",
-            "Compare contribution rules with the same cash, dates and modeled costs.",
+            "/help",
+            "04 · UNDERSTAND",
+            "Make the most of Auryn",
+            "A practical guide to Pace, scenarios and the evidence behind them.",
           ],
         ].map(([href, kicker, title, detail]) => (
           <Link href={href} key={href}>
@@ -736,11 +738,14 @@ export default function PublicLanding({
           </small>
         </article>
         <article>
-          <small>WHAT WE WILL NOT PRETEND</small>
-          <h3>Headlines are not investment conclusions.</h3>
-          <h3>A low multiple alone does not establish value.</h3>
-          <h3>Ownership is not proof of a moat or a return forecast.</h3>
-          <p>Check each figure’s date, source and coverage.</p>
+          <small>YOUR JUDGMENT, BETTER INFORMED</small>
+          <h3>Read the business. Not just the headline.</h3>
+          <h3>Test the price against the assumptions.</h3>
+          <h3>Keep the opportunity and the risk together.</h3>
+          <p>
+            Scenarios are conditional. Ownership is not a recommendation. Check
+            the date and coverage before acting.
+          </p>
         </article>
       </section>
       {sampleOnly && (

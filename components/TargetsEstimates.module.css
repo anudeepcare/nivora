@@ -132,7 +132,7 @@
 .assumptionBar {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: flex-end;
   gap: 16px;
   margin-bottom: 20px;
   padding: 16px;

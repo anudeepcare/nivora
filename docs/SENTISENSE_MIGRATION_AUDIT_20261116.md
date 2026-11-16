@@ -2,6 +2,8 @@
 
 Checked November 16, 2026. This is an implementation inventory, not a claim that all datasets are licensed, working in Auryn, or complete for every stock.
 
+> Historical discovery snapshot. The subsequent implementation candidate is described in `SENTISENSE_MIGRATION_RELEASE.md`; statements about then-current owner-preview configuration below are not current rollout instructions. The113-endpoint catalog remains an inventory, not a claim that every endpoint has been implemented.
+
 ## Result
 
 The official reference enumerates **113 endpoints**, all cataloged in `sentisense-endpoint-inventory-20261116.json`. Current Auryn uses only stock profile and analyst consensus, for owner-only preview enrichment. Calling all endpoints on each screen would add latency and noise rather than coverage. Each endpoint has a proposed destination; provisioning is operational, not a customer feature.

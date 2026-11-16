@@ -1,4 +1,5 @@
 "use client";
+import evidence from "./PortfolioEvidence.module.css";
 import { useEffect, useState } from "react";
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
@@ -58,7 +59,7 @@ export default function AccountBalances({
     }
   }
   return (
-    <div className="account-equity">
+    <div className={`account-equity ${evidence.account}`}>
       <div className="account-equity-primary">
         <span className="eyebrow">
           {b ? "Net equity · USD" : "Priced assets & cash · USD"}

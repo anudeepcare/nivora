@@ -95,3 +95,37 @@ test("durable preview cache is service-role-only, expiring, bounded and denial-a
     await db.close();
   }
 });
+
+test("Pro shared burst contract is supported by deployed SQL minimum window", async () => {
+  const db = new PGlite();
+  try {
+    await db.exec(
+      "create role anon;create role authenticated;create role service_role bypassrls;",
+    );
+    await db.exec(
+      await readFile(
+        new URL(
+          "../supabase/migrations/20261107140000_auryn_shared_request_limits.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+    await db.exec("set role service_role");
+    const reserve = async (max, window) =>
+      (
+        await db.query(
+          "select public.auryn_request_allow($1,$2,$3) as allowed",
+          ["c".repeat(64), max, window],
+        )
+      ).rows[0].allowed;
+    assert.equal(await reserve(4, 1000), true);
+    assert.equal(await reserve(4, 1000), true);
+    assert.equal(await reserve(4, 1000), true);
+    assert.equal(await reserve(4, 1000), true);
+    assert.equal(await reserve(4, 1000), false);
+    await assert.rejects(reserve(1, 250), /invalid/i);
+  } finally {
+    await db.close();
+  }
+});

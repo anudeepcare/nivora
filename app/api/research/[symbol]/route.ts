@@ -15,6 +15,7 @@ export async function GET(
     await reserveAccess(user.id, access, "research", symbol);
     let data = await research(symbol);
     if (
+      !process.env.AURYN_SENTISENSE_MODE &&
       access.owner &&
       process.env.AURYN_SENTISENSE_PREVIEW_ENABLED === "true"
     ) {
@@ -22,9 +23,12 @@ export async function GET(
         const { enrichSentiSenseTargets } = await import(
           "@/lib/sentisense-provider"
         );
-        data = await enrichSentiSenseTargets(data, access);
+        data = await enrichSentiSenseTargets(data, {
+          ...access,
+          authenticated: true,
+        });
       } catch {
-        // An optional preview source must never take existing research offline.
+        // An optional enrichment source must never take existing research offline.
       }
     }
     return privateJson(

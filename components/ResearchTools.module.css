@@ -1,0 +1,158 @@
+.root {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  align-content: start;
+}
+.root :global(.desk-heading) p,
+.root :global(.desk-footnote) {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.root fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.root legend {
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.root fieldset > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.root label {
+  min-width: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.root input:not([type="checkbox"]),
+.root select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+}
+.root :global(.position-risk-pair article),
+.root :global(.historical-outcome-cards article) {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.root :global(.position-risk-pair strong),
+.root :global(.historical-outcome-cards strong) {
+  display: block;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.root :global(.position-risk-rail) > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--negative);
+}
+.root :global(.position-result dl),
+.root :global(.historical-outcome-cards dl) {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+}
+.root :global(.position-result dl) > div,
+.root :global(.historical-outcome-cards dl) > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.root dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.root dd {
+  margin: 0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.root :global(.peer-candidate-board) {
+  align-items: flex-start;
+}
+.root :global(.peer-candidate-board h3),
+.root :global(.peer-candidate-board p) {
+  flex-basis: 100%;
+  margin: 0;
+}
+.root :global(.expectation-assumptions) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.root :global(.expectation-assumptions label) {
+  display: grid;
+  gap: 6px;
+}
+.root :global(.expectation-confirm) {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  line-height: 1.6;
+  cursor: pointer;
+}
+.root :global(.expectation-confirm input) {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+.root :global(.expectation-result) {
+  padding: 20px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-glass);
+}
+.root :global(.expectation-result h3) {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+.root :global(.sensitivity-table) {
+  min-width: 0;
+}
+.root :global(.sensitivity-table table) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.root :global(.sensitivity-table th),
+.root :global(.sensitivity-table td) {
+  text-align: right;
+  padding: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.root :global(.sensitivity-table tbody tr:nth-child(even)) {
+  background: var(--surface);
+}
+@media (max-width: 800px) {
+  .root :global(.expectation-assumptions) {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 650px) {
+  .root input:not([type="checkbox"]),
+  .root select {
+    font-size: 16px;
+  }
+  .root fieldset > div {
+    grid-template-columns: 1fr;
+  }
+  .root :global(.expectation-result) {
+    padding: 16px;
+  }
+}

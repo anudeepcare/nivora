@@ -1,9 +1,30 @@
+import { isSentiSenseMarket } from "./market-source-mode";
+import { sentiSenseRequest } from "./sentisense-api";
 import { eodEnabled, eodProfile } from "./eodhd";
+import { sameProviderSymbol } from "./provider-symbol";
 import { safeLogoUrl } from "./logo-policy";
 import { twelve } from "./providers";
 export type LogoProfile = { symbol: string; logoUrl: string | null };
 const cache = new Map<string, { until: number; value: Promise<LogoProfile> }>();
 export async function companyLogo(symbol: string): Promise<LogoProfile> {
+  if (isSentiSenseMarket()) {
+    const raw = await sentiSenseRequest(
+      `stocks/${encodeURIComponent(symbol)}/profile`,
+      {},
+      3600,
+    );
+    const body =
+      raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+    return {
+      symbol,
+      logoUrl: safeLogoUrl(
+        sameProviderSymbol(body.ticker, symbol) &&
+          typeof body.logoUrl === "string"
+          ? body.logoUrl
+          : null,
+      ),
+    };
+  }
   const old = cache.get(symbol);
   if (old && old.until > Date.now()) return old.value;
   const key = process.env.FINNHUB_API_KEY;

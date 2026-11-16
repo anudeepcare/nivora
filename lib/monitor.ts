@@ -1,3 +1,5 @@
+import { isSentiSenseMarket } from "./market-source-mode";
+import { sentiSenseCalendar } from "./sentisense-supporting";
 import { checkExposureAlert } from "./exposure-monitor";
 import type { MarketCapture } from "./market-workspace-server";
 import { createHash } from "node:crypto";
@@ -98,26 +100,35 @@ export async function checkAlerts(
       let earnings =
         r.evidence?.earnings.map((e) => ({ date: e.date, actual: e.actual })) ??
         [];
-      if (rule.type === "earnings-soon" && eodEnabled()) {
+      if (
+        rule.type === "earnings-soon" &&
+        (isSentiSenseMarket() || eodEnabled())
+      ) {
         const from = marketDay(r.retrievedAt),
           to = new Date(Date.parse(from) + 30 * 86400000)
             .toISOString()
             .slice(0, 10);
         try {
-          const raw = await eodRequest(
-            "calendar/earnings",
-            { symbols: eodTicker(rule.symbol), from, to },
-            300000,
-          );
-          earnings = calendarHighlights(raw, null, [rule.symbol], from, to).map(
-            (e) => ({
-              date: e.date,
-              actual:
-                e.actual ??
-                earnings.find((known) => known.date === e.date)?.actual ??
+          const events = isSentiSenseMarket()
+            ? await sentiSenseCalendar([rule.symbol], from, to)
+            : calendarHighlights(
+                await eodRequest(
+                  "calendar/earnings",
+                  { symbols: eodTicker(rule.symbol), from, to },
+                  300000,
+                ),
                 null,
-            }),
-          );
+                [rule.symbol],
+                from,
+                to,
+              );
+          earnings = events.map((e) => ({
+            date: e.date,
+            actual:
+              e.actual ??
+              earnings.find((known) => known.date === e.date)?.actual ??
+              null,
+          }));
         } catch {
           errors.push(
             `${rule.symbol}: scheduled earnings could not be refreshed; existing report dates were used.`,

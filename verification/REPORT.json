@@ -64,6 +64,6 @@
     "deployed": false,
     "report": "docs/approved-build/ALGORITHM_AUDIT_20261026.md"
   },
-  "latestVerification": "COMPLETE-UX-PASS-20261106.md",
+  "latestVerification": "SENTISENSE-MIGRATION-20261116.json",
   "historicalReport": true
 }

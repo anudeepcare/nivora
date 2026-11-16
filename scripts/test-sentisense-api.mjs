@@ -15,12 +15,13 @@ process.env.VERCEL_ENV='preview';
 process.env.SENTISENSE_API_KEY='fixture-sentisense-not-real';
 process.env.SENTISENSE_KEY_EXPIRES_AT=new Date(Date.now()+2*86400000).toISOString();
 process.env.AURYN_SENTISENSE_PREVIEW_ENABLED='false';
-let user=process.env.AURYN_OWNER_USER_ID;
+let user=process.env.AURYN_OWNER_USER_ID, denyFeatures=false;
 const now=new Date().toISOString(),today=now.slice(0,10),sourceCalls=[],guards=new Map();
 const targetCache=new Map();let cacheUnavailable=false,cacheDenied=false,cacheReads=0;
 const target={ticker:'TEST',targetLow:80,targetMean:120,targetHigh:160,numberOfAnalysts:12,updatedAt:now,updatedAtEpoch:Math.floor(Date.parse(now)/1000),currentPrice:1,upsidePercent:999,strongBuy:0,buy:0,hold:0,sell:0,strongSell:0};
 globalThis.fetch=async(input,options={})=>{
  const u=new URL(String(input));
+ if(denyFeatures && u.pathname.endsWith('/auryn_access_config'))return Response.json({body:{mode:'beta',rules:{analysts:'off',overview:'off',value:'off',advanced:'off'}},enforced:true,owner_id:process.env.AURYN_OWNER_USER_ID});
  const access=fixtureAccessResponse(input);if(access)return access;
  if(u.pathname==='/rest/v1/rpc/auryn_preview_targets_read'){
   cacheReads++;const body=JSON.parse(options.body);assert.match(body.p_key,/^sentisense:preview:v1:[a-f0-9]{64}:TEST$/);assert.match(body.p_denial_key,/^[a-f0-9]{64}$/);
@@ -28,7 +29,7 @@ globalThis.fetch=async(input,options={})=>{
   return Response.json(cacheDenied?null:targetCache.get(body.p_key)??null);
  }
  if(u.pathname==='/rest/v1/rpc/auryn_preview_targets_write'){
-  const body=JSON.parse(options.body);assert.match(body.p_key,/^sentisense:preview:v1:[a-f0-9]{64}:TEST$/);assert.equal(body.p_value.source,'SentiSense');assert.ok(Date.parse(body.p_expires_at)<=Date.parse(process.env.SENTISENSE_KEY_EXPIRES_AT));
+  const body=JSON.parse(options.body);assert.match(body.p_key,/^sentisense:preview:v1:[a-f0-9]{64}:TEST$/);assert.equal(body.p_value.source,'SentiSense');assert.ok(Date.parse(body.p_expires_at)<= (process.env.AURYN_SENTISENSE_MODE==='pro'?Date.now()+3600000:Date.parse(process.env.SENTISENSE_KEY_EXPIRES_AT)));
   targetCache.set(body.p_key,{value:body.p_value,expiresAt:body.p_expires_at});return Response.json(null);
  }
  if(u.pathname==='/auth/v1/user')return Response.json({id:user,email_confirmed_at:'2026-01-01'});
@@ -74,6 +75,24 @@ cacheUnavailable=true;assert.equal((await get()).analystTargets,undefined);asser
 user='00000000-0000-4000-8000-000000000001';assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);
 user=process.env.AURYN_OWNER_USER_ID;process.env.VERCEL_ENV='production';assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);
 process.env.VERCEL_ENV='preview';process.env.SENTISENSE_KEY_EXPIRES_AT=new Date(Date.now()-1000).toISOString();assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);
-const result={passed:true,checks:['disabled-no-provider-call','owner-preview-complete-independent-band','primary-price-evidence-preserved','server-guard-latch-released','cache-no-extra-request','missing-cache-fails-closed','warm-shared-denial-withheld','nonowner-withheld','production-withheld','expired-key-withheld','credential-not-in-response'],providerCalls:sourceCalls.length,transport:'controlled fixtures; no network'};
+// Explicit paid rollout supports the same authorized beta users in both hosted environments.
+process.env.AURYN_SENTISENSE_MODE='pro';
+user='00000000-0000-4000-8000-000000000001';
+process.env.AURYN_SENTISENSE_PREVIEW_ENABLED='false';
+const targetRoute=require(path.join(build,'server/app/api/analyst-targets/[symbol]/route.js')).routeModule.userland;
+const getTargets=async({authenticated=true,status=200}={})=>{
+ const response=await targetRoute.GET(new Request('https://preview.example.invalid/api/analyst-targets/TEST',{headers:authenticated?{authorization:'Bearer fixture'}:{}}),{params:Promise.resolve({symbol:'TEST'})});
+ const data=await response.json();assert.equal(response.status,status,JSON.stringify(data));return data;
+};
+const paidBase=await get();assert.equal(paidBase.analystTargets,undefined);assert.equal(paidBase.evidence.consensus.target,90);assert.equal(sourceCalls.length,2,'base paid research must not start optional provider work');
+await getTargets({authenticated:false,status:401});assert.equal(sourceCalls.length,2);
+denyFeatures=true;await getTargets({status:403});assert.equal(sourceCalls.length,2);denyFeatures=false;
+const paid=await getTargets();assert.equal(paid.targets?.target,120);assert.equal(paid.enabled,true);assert.equal(sourceCalls.length,4);assert.equal(targetCache.size,2,'trial and Pro cache identities are separate');assert.ok(!JSON.stringify(paid).includes('fixture-sentisense'));
+process.env.VERCEL_ENV='production';assert.equal((await getTargets()).targets?.target,120);assert.equal(sourceCalls.length,4);
+cacheDenied=true;assert.equal((await getTargets()).targets,null);assert.equal(sourceCalls.length,4);cacheDenied=false;
+cacheUnavailable=true;assert.equal((await getTargets()).targets,null);assert.equal(sourceCalls.length,4);assert.equal((await get()).evidence.consensus.target,90);cacheUnavailable=false;
+assert.equal(guards.size,0);delete process.env.AURYN_SENTISENSE_MODE;
+assert.equal((await getTargets()).enabled,false);assert.equal(sourceCalls.length,4);
+const result={passed:true,checks:['disabled-no-provider-call','owner-preview-complete-independent-band','primary-price-evidence-preserved','server-guard-latch-released','cache-no-extra-request','missing-cache-fails-closed','warm-shared-denial-withheld','nonowner-withheld','production-withheld','expired-key-withheld','credential-not-in-response','paid-base-no-optional-work','standalone-auth-required','standalone-feature-required','standalone-disabled-without-pro-mode','pro-authenticated-beta-preview','pro-production-capable','pro-trial-cache-isolation','pro-warm-denial-and-missing-cache-withheld'],providerCalls:sourceCalls.length,transport:'controlled fixtures; no network'};
 if(!process.argv[2])fs.writeFileSync('verification/sentisense-preview-20261114/compiled-route-results.json',JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify(result));

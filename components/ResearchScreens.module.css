@@ -194,6 +194,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
+  align-items: start;
 }
 .surface :global(.business-context-layout) {
   display: grid;
@@ -204,6 +205,30 @@
   min-width: 0;
   line-height: 1.7;
   font-size: 13px;
+}
+.surface :global(.business-profile summary) {
+  min-height: 44px;
+  cursor: pointer;
+}
+.surface :global(.business-profile summary span) {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.surface :global(.business-driver-map article) {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.surface :global(.business-driver-map article b) {
+  color: var(--blue);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 .surface :global(.business-profile p) {
   margin: 0 0 12px;

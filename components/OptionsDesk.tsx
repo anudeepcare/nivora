@@ -1,5 +1,6 @@
 "use client";
 import QuickRead from "./QuickRead";
+import OptionsAggregatePanel from "./OptionsAggregatePanel";
 import { optionsLiquidity } from "@/lib/options-liquidity";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
 import OptionsSnapshot from "./OptionsSnapshot";
@@ -36,6 +37,7 @@ import {
 } from "lucide-react";
 import { amount, dateLabel } from "@/lib/format";
 type Chain = {
+  coverage?: string;
   status: string;
   message?: string;
   contracts: OptionContract[];
@@ -388,6 +390,12 @@ export default function OptionsDesk({
   const example = summary.rows.find(
     (c) => c.delta !== null && c.type === "call",
   );
+  if (
+    chain?.symbol === research.company.symbol &&
+    chain.coverage === "aggregate-only"
+  ) {
+    return <OptionsAggregatePanel symbol={research.company.symbol} />;
+  }
   return (
     <div className={deskStyles.desk}>
       <div className={deskStyles.orientation}>

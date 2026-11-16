@@ -1,3 +1,4 @@
+import styles from "./PaceGuidance.module.css";
 import type { pacePeriods, pacePresentation } from "@/lib/pace-presentation";
 import PaceReadings from "./PaceReadings";
 import { contributionGuide } from "@/lib/pace-presentation";
@@ -33,7 +34,9 @@ export default function PaceGuidance({
                 : "Wait";
   const guide = contributionGuide(contributionAction, view.eligibleLevel);
   return (
-    <div className={`pace-guidance${compact ? " pace-guidance-compact" : ""}`}>
+    <div
+      className={`${styles.root} pace-guidance${compact ? " pace-guidance-compact" : ""}`}
+    >
       <div className="pace-action">
         <span className="pace-assessment-label">Your next step</span>
         <strong>{view.actionLabel.replace(/ · P[0-4]$/, "")}</strong>

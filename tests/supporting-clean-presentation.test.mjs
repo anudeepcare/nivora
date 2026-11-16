@@ -6,6 +6,20 @@ import crypto from 'node:crypto';
 const contracts=JSON.parse(fs.readFileSync('tests/fixtures/supporting-controls.json','utf8'));
 for(const [name, expected] of Object.entries(contracts)) test(`${name} preserves pre-rebuild actions, validation and accessibility controls`,()=>{
  const src=fs.readFileSync(`components/${name}.tsx`,'utf8');
+ // Help search moved into ProductGuide; check the retained controls and the
+ // extracted search contract rather than treating relocation as deletion.
+ if(name==='LegalDocument'){
+  assert.match(src, /<PrivacyChoices/);
+  assert.match(src, /<DocumentBack/);
+  assert.match(src, /aria-label="Help and legal documents"/);
+  assert.match(src, /<ProductGuide topics=\{d.sections\}/);
+  const guide=fs.readFileSync('components/ProductGuide.tsx','utf8');
+  assert.match(guide, /type="search"/);
+  assert.match(guide, /onChange=\{\(event\) => setQuery\(event.target.value\)\}/);
+  assert.match(guide, /role="status"/);
+  assert.match(guide, /<DetailDialog/);
+  return;
+ }
  const ast=ts.createSourceFile(name+'.tsx',src,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX),arr=[];
  function walk(n){if(ts.isJsxAttribute(n)&& /^(on[A-Z]|disabled$|required$|min$|max$|minLength$|maxLength$|type$|accept$|aria-|role$)/.test(n.name.getText(ast)))arr.push(n.getText(ast).replace(/\s+/g,' '));ts.forEachChild(n,walk)}walk(ast);
  assert.equal(crypto.createHash('sha256').update(arr.join('\n')).digest('hex'),expected);

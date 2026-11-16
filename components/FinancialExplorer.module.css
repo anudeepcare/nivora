@@ -1,5 +1,9 @@
 .explorer {
   padding: 20px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
   min-width: 0;
 }
 .explorer > header {
@@ -99,5 +103,39 @@
   }
   .explorer :global(.explorer-mobile-picker) {
     max-width: none;
+  }
+}
+
+.explorer :global(.explorer-statistics) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.explorer :global(.explorer-statistics) > div {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+.explorer :global(.explorer-statistics span) {
+  color: var(--muted);
+  font-size: 11px;
+}
+.explorer :global(.explorer-statistics b) {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.explorer :global(.explorer-table summary) {
+  min-height: 44px;
+  align-content: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+@media (max-width: 450px) {
+  .explorer :global(.explorer-statistics) {
+    grid-template-columns: 1fr;
+  }
+  .explorer :global(.explorer-statistics) > div {
+    grid-template-columns: 1fr auto;
   }
 }

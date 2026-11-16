@@ -1,4 +1,5 @@
 "use client";
+import evidence from "./PortfolioEvidence.module.css";
 import { researchDecision } from "@/lib/decision-research";
 import { useProduct } from "./Session";
 import { holdingsContext } from "@/lib/holdings-brief";
@@ -40,7 +41,7 @@ export default function PortfolioContext({
   const flagged = covered.filter((x) => x.flags.length > 0);
   return (
     <section
-      className={`portfolio-context${compact ? " portfolio-context-compact" : ""}`}
+      className={`${evidence.context} portfolio-context${compact ? " portfolio-context-compact" : ""}`}
     >
       <header className="section-head">
         <div>

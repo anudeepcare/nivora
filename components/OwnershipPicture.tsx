@@ -1,4 +1,5 @@
 "use client";
+import style from "./OwnershipPicture.module.css";
 import { Help } from "./Ui";
 import type { Research } from "@/lib/types";
 import { percent, dateLabel } from "@/lib/format";
@@ -24,7 +25,7 @@ export default function OwnershipPicture({
     null,
   );
   return (
-    <section className="ownership-picture">
+    <section className={`ownership-picture ${style.root}`}>
       <header className="section-head">
         <div>
           <span className="eyebrow">Reported ownership</span>

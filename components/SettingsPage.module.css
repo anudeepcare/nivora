@@ -405,3 +405,29 @@
     backdrop-filter: none;
   }
 }
+.page :global(.account-identities) {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.page :global(.account-identities) > * {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+.page :global(.settings-analytics-shortcut) {
+  display: grid;
+  gap: 8px;
+}
+.page :global(.device-diagnostics) {
+  margin-top: 16px;
+}
+.page :global(.device-diagnostics) > summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding: 12px 0;
+}

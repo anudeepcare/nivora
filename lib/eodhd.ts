@@ -1,3 +1,4 @@
+import { isSentiSenseMarket, isEodLiveQuotes } from "./market-source-mode";
 import {
   sharedEodRead,
   MarketGuardError,
@@ -28,12 +29,18 @@ class EodBackoffError extends HttpError {
 }
 const cache = new Map<string, { expires: number; value: Promise<any> }>();
 export const eodEnabled = () =>
+  !isSentiSenseMarket() &&
   Boolean(process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN);
 export async function eodRequest(
   path: string,
   params: Record<string, string> = {},
   ttl = 300000,
 ): Promise<any> {
+  if (
+    isSentiSenseMarket() &&
+    !(isEodLiveQuotes() && /^real-time\/[A-Za-z0-9.-]+$/.test(path))
+  )
+    throw new HttpError("Legacy data sources are disabled.", 503);
   const token = process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN;
   if (!token)
     throw new HttpError(
@@ -205,7 +212,9 @@ export async function eodProfile(symbol: string): Promise<Company> {
 export async function eodQuote(symbol: string) {
   const [q, profile] = await Promise.all([
     eodRequest(`real-time/${eodTicker(symbol)}`, {}, 60000),
-    eodProfile(symbol).catch(() => null),
+    isSentiSenseMarket()
+      ? Promise.resolve(null)
+      : eodProfile(symbol).catch(() => null),
   ]);
   return {
     quote: normalizeEodQuote(symbol, q),

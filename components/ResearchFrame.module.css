@@ -66,3 +66,32 @@
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
+.earlyChart {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-glass);
+}
+.earlyChart header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.earlyChart h2 {
+  margin: 0;
+  font-size: 16px;
+}
+.earlyChart span,
+.earlyChart small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 650px) {
+  .earlyChart {
+    padding: 16px;
+  }
+}

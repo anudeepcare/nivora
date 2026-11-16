@@ -1,3 +1,4 @@
+import { loadGuide } from './helpers/product-guide.mjs';
 import { experience, PaceInstrument } from "./helpers/integrated-ui.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -163,7 +164,7 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /<main[^>]*class="mp-public/);
   assert.match(html, /Research\.<br\/>Decide\.<br\/>Review\./);
   assert.match(html, /id="how-it-works"/);
-  assert.match(html, /Business evidence first\. Price context second\./);
+  assert.match(html, /One place to connect the business, the price and your portfolio\./);
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Open your workspace/);
   assert.match(html, /Illustrative Pace zone chart/);
   assert.match(html, /not market data/);
@@ -172,14 +173,14 @@ test("public home leads with the benefit and an account action without fabricate
   for (const route of [
     "discover",
     "watchlist",
-    "research",
-    "research-lab",
+    "portfolio",
+    "help",
     "research/NOW",
     "sample",
     "pricing",
   ])
     assert.ok(html.includes(`href="/${route}"`));
-  assert.match(html, /Headlines are not investment conclusions/);
+  assert.match(html, /Scenarios are conditional\. Ownership is not a recommendation/);
   assert.doesNotMatch(
     html,
     /Northstar|Microsoft|Apple Inc|Tesla|NVIDIA|NVDA|MSFT|AAPL|\+\d+(?:\.\d+)?%|\$124|data-demo-form|#\/research/,
@@ -837,6 +838,7 @@ test("help and methodology show their publication date without internal release 
   );
   const LegalDocument = load("components/LegalDocument.tsx", "LegalDocument", {
     ...common,
+      ProductGuide: loadGuide(),
     documents,
     legalConfiguration,
     styles: { document: "legal-document-owned" },

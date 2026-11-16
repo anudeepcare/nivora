@@ -1,3 +1,5 @@
+import { isSentiSenseMarket } from "./market-source-mode";
+import { sentiSenseEnrichment } from "./sentisense-supporting";
 import { eodEnabled, eodEnrichment } from "./eodhd";
 import { HttpError } from "./server";
 const cache = new Map<string, { until: number; value: Enrichment }>();
@@ -31,6 +33,7 @@ export type Enrichment = {
   source: string;
 };
 export async function enrich(symbol: string): Promise<Enrichment> {
+  if (isSentiSenseMarket()) return sentiSenseEnrichment(symbol);
   if (eodEnabled()) return eodEnrichment(symbol);
   const prior = cache.get(symbol);
   if (prior && prior.until > Date.now()) return prior.value;

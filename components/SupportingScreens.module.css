@@ -213,3 +213,16 @@
   overflow-wrap: anywhere;
   font-size: 12px;
 }
+/* Supplied row dates and provenance remain separate lines, not concatenated inline text. */
+.discover :global(.block) {
+  display: block;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 4px;
+  color: var(--muted);
+}
+:is(.discover, .alerts, .lab, .trading, .compare) :global(.footnote) {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}

@@ -1,27 +1,35 @@
-# AURYN clean presentation rebuild
+# AURYN: Pro data integration and presentation reliability
 
-16 November 2026. Source candidate for preproduction, not a production-approved release. This supersedes older release narratives.
+16 November 2026. Source ZIP candidate, not a production-deployed or visually accepted release. Supersedes the earlier clean-rebuild package.
 
 ## What changed
-- Replaced the global patch stack with one token/foundation/preferences/primitive contract. Removed twelve unused style/test files, including the 43,294-line compatibility cascade. The active global styles total 848 lines; each screen owns its own geometry.
-- Rebuilt public navigation/product story, first-load authentication/recovery, loading, search and the authenticated desktop/mobile shell. Public chart is explicitly illustrative, not a fabricated live quote.
-- Rebuilt Home around a concise briefing, holdings and coverage, then dated company rows/events. Watchlist and Portfolio have scoped table/chart/form owners; account, accounting and benchmark functions are retained.
-- Research has one masthead/tab owner and distinct Investment case, Financials, Valuation, Technicals, Analysts, News & earnings, Research tools and entitled Options views. Internal route IDs remain stable. Redundant selectors/navigation were removed, not features.
-- The reference-led Overview uses chart plus navy decision, compact cases/summaries and evidence. Pace, chart, scenario and conclusion styles no longer have repeated override chains. Secondary read-only research evidence opens in dialogs; stateful policy/alert forms stay persistent.
-- Supporting discover/compare/alerts/labs/trading/plans/contact/help/legal/owner and public education screens have explicit scoped layouts. Settings retains its independent form owner. Safe areas, keyboard focus, reduced motion/transparency, large text and density preferences remain supported.
 
-## Data corrections
-The chart zone cache now survives minute refresh and uses the same completed-day clock as the ladder, with market/history/period/day guards. Short or stale history never acquires a fabricated Pace level.
+- Kept the clean presentation architecture and repaired actual missing style ownership revealed by the latest screenshots. Native-looking buttons, concatenated labels, black cash-flow bars and ungrouped metrics were caused by raw classes whose old global styles had been removed.
+- Added scoped owners across investment case/ownership/Ask AURYN, Financials, Technicals, Pace readouts, overview metrics, personal valuation models, Research tools, portfolio balances/exposure/benchmarks/position editor, Settings metadata, Home agenda, feature-access notices and PWA update controls. Existing handlers and financial calculations are preserved.
+- Added a reproducible active import/raw-class inventory. This is substantially broader than the earlier module-export audit, but is not proof of rendered layout or contrast.
+- Price history can display independently while slower fundamentals and Pace finish. Controlled tests hold fundamentals unresolved and verify that the chart path still completes. Existing history access limits are enforced; no invented partial financial model is displayed.
+- Paid SentiSense profile/consensus targets now use a separate authenticated request, so they cannot delay the base research response. Matching fresh observations merge without changing quote, history or financial timestamps. Existing authenticated users may receive targets according to current feature access; no new owner-only gate in paid mode.
 
-A separate optional owner-preview target cache preserves future valid observations across cold starts. It does not invent target ranges, fix exhausted allowance, restore already-lost observations or grant a commercial license. It requires the included migration `20261116001606_auryn_preview_target_cache.sql`; that migration has NOT been applied. Missing cache RPC fails closed for optional enrichment. Production/nonowner access remains excluded. Read verification/preview-target-cache.md before deployment.
+## Pro mode setup
 
-## Verification and limits
-The complete source suite passes 1,744 tests with zero failures. ESLint, formatting, TypeScript, production build and controlled API fixture checks also pass. Logs are stored in verification/clean-rebuild-20261116. Tests include financial safeguards, retained UI control contracts, missing/stale states, responsive source rules and an audit that every direct JSX CSS-module class resolves.
+The Pro key has been securely configured in Vercel. It is not in this ZIP.
 
-These are source, fixture and server-rendered checks. They do not prove pixel-perfect desktop/mobile appearance or live data completeness. Actual browser rendering remains blocked in this environment: local Chromium could not launch and the cloud preview was explicitly denied. No bypass was attempted. No production push, migration, purchase, subscription or live trade was performed. Do not treat this ZIP as proof of exact DCA Optimizer parity or all-stock accuracy.
+1. Apply the included private cache migration `20261116001606_auryn_preview_target_cache.sql` to the intended database after review. It has NOT been applied by this work. Missing cache RPC deliberately prevents optional upstream requests.
+2. Deploy the source through the agreed preprod workflow. Set `AURYN_SENTISENSE_MODE=pro` in the intended hosted environment when rolling out this code. This work has not set that flag or deployed.
+3. Paid mode supports Preview and Production-capable code, without automatically promoting production. It ignores old temporary-key expiry configuration and has distinct cache/rate/denial identities. Existing temporary owner-preview behavior remains when Pro mode is absent.
 
-## Use
-Extract at the repository root. Preserve your environment configuration. Run npm ci, npm test, npm run typecheck and npm run build. Apply only reviewed, unapplied migrations to the intended preproduction database. Check rendered pages and real account/provider states before production promotion. The archive excludes dependencies, build outputs and credentials.
+Dedicated target requests have a 20-second end-to-end budget, cancel queued operations and abort started transport. Successful observations cache for one hour. Shared limits are 4 requests/second and 240/minute, below documented 300/minute; there is no trial 24/day cap in paid mode. Denials/uncertain outcomes have a conservative shared cooldown. No uncontrolled retry loop.
 
-## Build identity
-After deployment, /build-info.json identifies this source release. Local built CSS assets total 387,289 bytes versus 1,375,253 bytes in the prior candidate (about 72% less); this is asset size, not a measured page-speed claim.
+## What this does not claim
+
+- Not all 113 documented SentiSense endpoints are active. Paid runtime integration currently covers profile and analyst consensus. An estimates normalizer is contract-tested but not fetched/merged because documented estimates omit an observation timestamp. No fake freshness is assigned.
+- Existing price/history/fundamental/news/options providers remain. Long SentiSense histories differ in granularity and adjustment basis; options analytics are not a full contract chain. No EODHD/Twelve subscription has been canceled.
+- Pro key/account provisioning was observed, but this code has not fetched live paid payloads: the key remains securely held in Vercel and no new code was deployed. Fixtures do not establish universal stock coverage, exact DCA parity or commercial redistribution rights.
+- The chart-first change removes a specific dependency, not every source of delay. Full Pace still requires complete research; no live mobile loading-time benchmark is claimed.
+- Fresh browser/device rendering remains unavailable after explicit environment denials. No bypass attempted. No pixel-perfect, zero-bug, iPhone/PWA-device acceptance or production-ready claim is made.
+
+## Verification
+
+Final commands and counts are recorded in `verification/pro-reliability-20261116/INDEX.md` and accompanying logs. Independent review and exact raw-style scope are included under verification. Read these before production promotion.
+
+Extract at repository root, preserve environment configuration, install dependencies and review deployment settings/migrations. `/build-info.json` identifies the packaged source after deployment.

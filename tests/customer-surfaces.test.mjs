@@ -54,6 +54,7 @@ test("financial empty state preserves source failure details without customer-fa
 });
 test("shared Pace help explains confirmation for both monthly and weekly periods", () => {
   const View = load("components/PaceHelp.tsx", "PaceHelp", {
+    controls: {levels:"levels"},
     React,
     useState:React.useState,
     PACE_EXPLANATION,

@@ -18,11 +18,11 @@ function styles(file, selector, width = 320) {
   return found;
 }
 test("help search announces result count and offers a clear action without trimming document text", () => {
-  const source = read("LegalDocument.tsx");
+  const source = read("ProductGuide.tsx");
   assert.match(source, /query\.trim\(\)/);
-  assert.match(source, /role="status"[\s\S]*sections.length/);
+  assert.match(source, /role="status"[\s\S]*filtered.length/);
   assert.match(source, /onClick=\{\(\) => setQuery\(""\)\}[\s\S]*Clear search/);
-  assert.match(source, /<p>\{s.text\}<\/p>/);
+  assert.match(source, /<p>\{topic.text\}<\/p>/);
 });
 test("public concentration labels wrap without displacing their meters", () => {
   const row = styles("PublicFrame.module.css", ".weights li");

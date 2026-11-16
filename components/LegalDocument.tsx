@@ -1,7 +1,7 @@
 "use client";
 import { ContextLink, DocumentBack } from "./ContextLink";
 import { PrivacyChoices } from "./AnalyticsConsent";
-import { useState } from "react";
+import ProductGuide from "./ProductGuide";
 import Link from "next/link";
 import styles from "./LegalDocument.module.css";
 import {
@@ -10,13 +10,7 @@ import {
   type DocumentId,
 } from "@/lib/legal-content";
 export default function LegalDocument({ id }: { id: DocumentId }) {
-  const [query, setQuery] = useState(""),
-    d = documents[id],
-    sections = d.sections.filter((s) =>
-      (s.title + " " + s.text)
-        .toLowerCase()
-        .includes(query.trim().toLowerCase()),
-    );
+  const d = documents[id];
   return (
     <main className={`legal-document atlas-document ${styles.document}`}>
       <header>
@@ -44,47 +38,27 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
         </nav>
         <article
           className="document-reading"
+          data-guide={id === "help" || undefined}
           data-document-version={legalConfiguration.version}
         >
           <span className="document-eyebrow">AURYN · HELP & TRUST</span>
-          <h1>{d.title}</h1>
+          <h1>{id === "help" ? "Your Auryn field guide" : d.title}</h1>
           <p className="legal-intro">{d.intro}</p>
           <p className="document-updated">
             Updated {legalConfiguration.updated}
           </p>
-          {id === "help" && (
-            <label className="help-search">
-              Find a topic
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Try Pace, valuation or portfolio"
-              />
-            </label>
-          )}
-          {id === "help" && query && (
-            <div className={styles.searchFeedback}>
-              <p role="status">
-                {sections.length} matching{" "}
-                {sections.length === 1 ? "topic" : "topics"}
-              </p>
-              <button type="button" onClick={() => setQuery("")}>
-                Clear search
-              </button>
+          {id === "help" ? (
+            <ProductGuide topics={d.sections} />
+          ) : (
+            <div className="document-sections">
+              {d.sections.map((section) => (
+                <section key={section.title}>
+                  <h2>{section.title}</h2>
+                  <p>{section.text}</p>
+                </section>
+              ))}
             </div>
           )}
-          <div className="document-sections">
-            {sections.map((s, i) => (
-              <section key={s.title}>
-                <h2>{s.title}</h2>
-                <p>{s.text}</p>
-              </section>
-            ))}
-            {!sections.length && (
-              <p>No matching topic. Try a shorter search.</p>
-            )}
-          </div>
         </article>
       </div>
       <footer>

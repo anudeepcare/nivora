@@ -1,4 +1,5 @@
 "use client";
+import s from "./TimingContext.module.css";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { researchDecision } from "@/lib/decision-research";
@@ -39,7 +40,7 @@ export default function TimingContext({ research: r }: { research: Research }) {
     },
   ];
   return (
-    <section className="timing-context">
+    <section className={`timing-context ${s.section}`}>
       <header className="section-head">
         <div>
           <span className="eyebrow">PRICE RISK</span>
@@ -47,7 +48,7 @@ export default function TimingContext({ research: r }: { research: Research }) {
           <p>{t.observations} completed daily observations.</p>
         </div>
       </header>
-      <div className="timing-metrics">
+      <div className={s.metrics}>
         {metrics.map((m) => (
           <div key={m.label}>
             <span>

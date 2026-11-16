@@ -1,3 +1,4 @@
+import s from "./PaceReadings.module.css";
 import { dateLabel } from "@/lib/format";
 import type { pacePeriods } from "@/lib/pace-presentation";
 
@@ -9,14 +10,16 @@ export default function PaceReadings({
   compact?: boolean;
 }) {
   return (
-    <div className={`pace-readings${compact ? " pace-readings-compact" : ""}`}>
+    <div
+      className={`${s.readings} pace-readings${compact ? " pace-readings-compact" : ""}`}
+    >
       {readings
         .filter((row) => row.level != null)
         .map((row) => (
           <div
             key={row.key}
             data-pace-level={row.level}
-            className={`pace-period pace-period-${row.key}`}
+            className={`${s.period} pace-period pace-period-${row.key}`}
           >
             <span>{row.label}</span>
             <strong>{row.code}</strong>

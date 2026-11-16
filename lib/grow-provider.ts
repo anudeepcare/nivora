@@ -1,3 +1,7 @@
+import { isSentiSenseMarket } from "./market-source-mode";
+import { sentiSenseRequest } from "./sentisense-api";
+import { normalizeSentiSenseGrow } from "./sentisense-grow";
+import { HttpError } from "./server";
 import { eodEnabled, eodCompanyData } from "./eodhd";
 import { twelve } from "./providers";
 import {
@@ -11,6 +15,34 @@ export async function growData(
   symbol: string,
   dataset: GrowDataset,
 ): Promise<GrowData> {
+  if (isSentiSenseMarket()) {
+    if (!/^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol))
+      throw new HttpError("Choose a supported stock or ETF.");
+    if (dataset !== "profile" && dataset !== "earnings")
+      throw new HttpError(
+        `${dataset === "announcements" ? "Company press releases" : dataset === "splits" ? "Stock split history" : "Dividend history"} are not supplied by the current data connection.`,
+        503,
+      );
+    const now = new Date(),
+      asOf = now.toISOString(),
+      from = new Date(now.getTime() - 365 * 86400000)
+        .toISOString()
+        .slice(0, 10),
+      to = new Date(now.getTime() + 90 * 86400000).toISOString().slice(0, 10);
+    const raw =
+      dataset === "profile"
+        ? await sentiSenseRequest(
+            `stocks/${encodeURIComponent(symbol)}/profile`,
+            {},
+            3600,
+          )
+        : await sentiSenseRequest(
+            "calendar/earnings",
+            { ticker: symbol, from, to },
+            300,
+          );
+    return normalizeSentiSenseGrow(symbol, dataset, raw, asOf, from, to);
+  }
   if (eodEnabled()) {
     try {
       return await eodCompanyData(symbol, dataset);

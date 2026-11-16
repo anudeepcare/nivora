@@ -33,9 +33,11 @@
   grid-template-columns: minmax(0, 1fr);
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--card);
+  background: var(--workspace-panel);
   padding: 24px;
   gap: 24px;
+  box-shadow: var(--workspace-shadow);
+  backdrop-filter: blur(16px);
 }
 .netBalance {
   min-width: 0;
@@ -99,7 +101,7 @@
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--card);
+  background: var(--workspace-panel);
   margin: 0;
 }
 .portfolio :global(.portfolio-range-panel),
@@ -512,5 +514,13 @@
   .ledger td,
   .watchLedger td {
     padding: 10px 8px;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .balanceDeck,
+  .portfolio :global(.card) {
+    background: var(--card);
+    backdrop-filter: none;
   }
 }

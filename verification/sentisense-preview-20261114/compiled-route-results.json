@@ -11,8 +11,16 @@
     "nonowner-withheld",
     "production-withheld",
     "expired-key-withheld",
-    "credential-not-in-response"
+    "credential-not-in-response",
+    "paid-base-no-optional-work",
+    "standalone-auth-required",
+    "standalone-feature-required",
+    "standalone-disabled-without-pro-mode",
+    "pro-authenticated-beta-preview",
+    "pro-production-capable",
+    "pro-trial-cache-isolation",
+    "pro-warm-denial-and-missing-cache-withheld"
   ],
-  "providerCalls": 2,
+  "providerCalls": 4,
   "transport": "controlled fixtures; no network"
 }

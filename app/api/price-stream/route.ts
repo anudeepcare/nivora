@@ -1,3 +1,4 @@
+import { isSentiSenseMarket, isEodLiveQuotes } from "@/lib/market-source-mode";
 import { account, failure, HttpError, limit } from "@/lib/server";
 import { symbolInput } from "@/lib/format";
 import type { PriceTick } from "@/lib/live-price";
@@ -10,6 +11,11 @@ export async function GET(request: Request) {
   try {
     const { user } = await account(request, { market: true });
     await limit(`price-stream:${user.id}`, 6);
+    if (isSentiSenseMarket() && !isEodLiveQuotes())
+      throw new HttpError(
+        "Streaming unavailable; regular price updates continue.",
+        503,
+      );
     const token = process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN;
     if (!token || process.env.EODHD_STREAM_ENABLED === "false")
       throw new HttpError(

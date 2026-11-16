@@ -4,7 +4,7 @@ import { supportedListing } from "./market.ts";
 import { cryptoSearchSymbol } from "./search-selection.ts";
 import { fundamentalCoverage } from "./fundamental-coverage.ts";
 export type DirectoryStatus = {
-  provider: "eodhd" | "twelve";
+  provider: "eodhd" | "twelve" | "sentisense";
   market: string;
   status: "available" | "unavailable";
   total: number | null;

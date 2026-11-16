@@ -1,0 +1,65 @@
+.root {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+  align-self: start;
+}
+.root :global(.context-highlights) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.root :global(.context-highlights) > div {
+  display: grid;
+  gap: 8px;
+}
+.root :global(.context-highlights) span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.root :global(.context-highlights) strong {
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+.root :global(.ownership-leading) {
+  display: grid;
+  gap: 5px;
+  margin: 16px 0;
+  font-size: 13px;
+}
+.root :global(.ownership-leading) span {
+  color: var(--muted);
+}
+.root table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.root th,
+.root td {
+  text-align: left;
+  padding: 12px 8px;
+  font-variant-numeric: tabular-nums;
+}
+.root caption {
+  text-align: left;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  padding-bottom: 12px;
+}
+.root tbody tr:nth-child(even) {
+  background: var(--surface);
+}
+@media (max-width: 650px) {
+  .root {
+    padding: 16px;
+  }
+  .root table {
+    min-width: 460px;
+  }
+}

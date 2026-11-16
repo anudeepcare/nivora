@@ -1,4 +1,5 @@
 "use client";
+import evidence from "./PortfolioEvidence.module.css";
 import { useEffect, useMemo, useRef } from "react";
 import type { Position, Quote } from "@/lib/types";
 import type { HomeFeed } from "@/lib/home-feed";
@@ -91,7 +92,7 @@ export default function PortfolioRiskSummary({
     !!events.data?.issues.some((i) => /events|connected/i.test(i));
   return (
     <section
-      className="portfolio-risk-summary"
+      className={`portfolio-risk-summary ${evidence.summary}`}
       aria-label="Portfolio risk summary"
     >
       <div>

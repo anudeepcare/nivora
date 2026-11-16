@@ -1,3 +1,8 @@
+import {
+  sentiSenseNews,
+  sentiSenseCalendar,
+} from "@/lib/sentisense-supporting";
+import { isSentiSenseMarket } from "@/lib/market-source-mode";
 import { account, failure, limit, privateJson, HttpError } from "@/lib/server";
 import { eodEnabled, eodNews, eodRequest } from "@/lib/eodhd";
 import { eodTicker } from "@/lib/eodhd-normalize";
@@ -39,6 +44,40 @@ export async function GET(request: Request) {
       newsReady: kind !== "events",
     };
     if (!symbols.length) return privateJson(result);
+    if (isSentiSenseMarket()) {
+      const [calendar, news] = await Promise.all([
+        Promise.allSettled(
+          kind !== "news" ? [sentiSenseCalendar(symbols, from, to)] : [],
+        ),
+        settledFeedMap(kind !== "events" ? symbols : [], sentiSenseNews),
+      ]);
+      result.events =
+        calendar[0]?.status === "fulfilled" ? calendar[0].value : [];
+      result.eventsReady =
+        kind !== "news" && calendar[0]?.status === "fulfilled";
+      result.newsReady =
+        kind !== "events" && news.every((r) => r.status === "fulfilled");
+      result.newsFollowed = news.filter((r) => r.status === "fulfilled").length;
+      result.news = newsHighlights(
+        news.flatMap((r, i) =>
+          r.status === "fulfilled"
+            ? [{ symbol: symbols[i], items: r.value.items }]
+            : [],
+        ),
+        retrievedAt,
+      );
+      if (kind !== "news")
+        result.issues.push(
+          "Earnings events only; split announcements are not supplied by this connection.",
+        );
+      if (calendar.some((r) => r.status === "rejected"))
+        result.issues.push("Earnings events could not be checked.");
+      if (news.some((r) => r.status === "rejected"))
+        result.issues.push(
+          "Some company news links are temporarily unavailable.",
+        );
+      return privateJson(result);
+    }
     if (!eodEnabled())
       return privateJson({
         ...result,

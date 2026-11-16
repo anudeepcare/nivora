@@ -26,7 +26,7 @@ test("approved glass chrome has a theme-aware visible keyboard focus indicator",
 test("historical periods are explicitly grouped with the chart and keep all nine ranges", () => {
   const source = read("components/Research.tsx");
   assert.match(source, /className="chart-period-label">Price history range/);
-  assert.match(source, /role="group" aria-label="Price history range"/);
+  assert.match(source, /role="group"\s+aria-label="Price history range"/);
   for (const range of ["1D", "1W", "1M", "3M", "6M", "YTD", "1Y", "5Y", "ALL"])
     assert.ok(source.includes(`"${range}"`));
   assert.match(source, /setRange\(x\)/);

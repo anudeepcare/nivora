@@ -1,4 +1,5 @@
 "use client";
+import evidence from "./PortfolioEvidence.module.css";
 import { useState } from "react";
 import type { Company, Position, Quote, Research } from "@/lib/types";
 import { portfolioExposure } from "@/lib/connected-product";
@@ -37,7 +38,7 @@ export default function PortfolioExposure({
   const [open, setOpen] = useState(false);
   if (!positions.some((p) => p.assetType !== "cash")) return null;
   return (
-    <section className="portfolio-exposure">
+    <section className={`portfolio-exposure ${evidence.exposure}`}>
       <header className="section-head">
         <div>
           <span className="eyebrow">Shared exposure</span>

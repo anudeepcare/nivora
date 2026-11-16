@@ -1,3 +1,4 @@
+import { isSentiSenseMarket } from "./market-source-mode";
 import { alpacaOptions } from "./alpaca-options";
 import { eodRequest } from "./eodhd";
 import { normalizeOptions, type OptionContract } from "./options-analysis";
@@ -50,6 +51,15 @@ export async function loadOptionChain(
       new Date(expiry).toISOString().slice(0, 10) !== expiry)
   )
     throw new HttpError("Choose a valid expiry.");
+  if (isSentiSenseMarket())
+    return {
+      status: "unavailable",
+      coverage: "aggregate-only",
+      message:
+        "Contract-level option chains are not supplied by this connection. End-of-day aggregate analytics are available separately.",
+      contracts: [],
+      complete: false,
+    };
   if (process.env.AURYN_OPTIONS_PROVIDER !== "eodhd") {
     try {
       const chain = await alpacaOptions(ticker, expiry);

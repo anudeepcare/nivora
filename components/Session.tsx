@@ -40,7 +40,13 @@ type Store = {
   demo?: DemoData;
   owner: string;
   displayName?: string;
-  marketProvider: "hybrid" | "eodhd" | "twelve" | "none" | "unknown";
+  marketProvider:
+    | "hybrid"
+    | "eodhd"
+    | "twelve"
+    | "sentisense"
+    | "none"
+    | "unknown";
   workspace: Workspace | null;
   workspaceError: string;
   reloadWorkspace: () => Promise<void>;
@@ -186,7 +192,7 @@ function StoreProvider({
     [owner, demo],
   );
   const [marketProvider, setMarketProvider] = useState<
-    "hybrid" | "eodhd" | "twelve" | "none" | "unknown"
+    "hybrid" | "eodhd" | "twelve" | "sentisense" | "none" | "unknown"
   >(
     () =>
       (
@@ -199,9 +205,9 @@ function StoreProvider({
     if (demo) return;
     let active = true;
     readResource(cache, "provider-status", 300000, () =>
-      api<{ marketProvider: "hybrid" | "eodhd" | "twelve" | "none" }>(
-        "provider-status",
-      ),
+      api<{
+        marketProvider: "hybrid" | "eodhd" | "twelve" | "sentisense" | "none";
+      }>("provider-status"),
     )
       .then((x) => {
         if (active) setMarketProvider(x.marketProvider);

@@ -1,4 +1,5 @@
 "use client";
+import toolStyle from "./ResearchTools.module.css";
 import { useState } from "react";
 import type { Research } from "@/lib/types";
 import { latestFinancialEvidence } from "@/lib/analysis";
@@ -68,7 +69,7 @@ export default function ExpectationMap({
     setDraft((old) => ({ ...old, [key]: value }));
   if (!operatingScenarioSupported(r.company.assetType, coverage.family))
     return (
-      <section className="workbench-empty">
+      <section className={`workbench-empty ${toolStyle.root}`}>
         <h3>This business needs its own capital model.</h3>
         <p>
           Operating-company enterprise cash flow does not fit crypto, banks,
@@ -78,7 +79,7 @@ export default function ExpectationMap({
       </section>
     );
   return (
-    <div className="expectation-workbench">
+    <div className={`expectation-workbench ${toolStyle.root}`}>
       <header className="desk-heading">
         <div>
           <span className="eyebrow">Operating expectations · new model v1</span>
@@ -201,7 +202,12 @@ export default function ExpectationMap({
         <>
           <section className="sensitivity-table">
             <h4>How much does the conclusion depend on the margin?</h4>
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Operating expectations sensitivity"
+            >
               <table>
                 <caption>
                   Operating-margin sensitivity · same funding and capital
@@ -244,7 +250,12 @@ export default function ExpectationMap({
           </section>
           <section className="sensitivity-table">
             <h4>Follow the operating cash.</h4>
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Operating expectations sensitivity"
+            >
               <table>
                 <caption>
                   Assumed operating path · amounts in {r.quote.currency}

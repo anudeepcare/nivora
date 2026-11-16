@@ -1,3 +1,5 @@
+import { sentiSenseCongress } from "@/lib/sentisense-supporting";
+import { isSentiSenseMarket } from "@/lib/market-source-mode";
 import { account, failure, HttpError, limit, privateJson } from "@/lib/server";
 import { eodRequest } from "@/lib/eodhd";
 import { congressDisclosures } from "@/lib/congress-disclosures";
@@ -8,6 +10,8 @@ export async function GET(request: Request) {
     const symbol = new URL(request.url).searchParams.get("symbol") ?? "";
     if (!/^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol))
       throw new HttpError("Choose a stock symbol.");
+    if (isSentiSenseMarket())
+      return privateJson(await sentiSenseCongress(symbol));
     const now = new Date().toISOString(),
       today = now.slice(0, 10),
       from = new Date(Date.parse(today) - 180 * 86400000)

@@ -113,14 +113,25 @@ export function PaceBadge({
   signal?: PaceSignal | null;
   loading?: boolean;
 }) {
-  const reading = signal?.periods.find((p) => p.key === "confirmed");
+  const pace = signal?.currentPace;
+  const reading = signal?.periods.find(
+    (p) => p.key === (pace?.provisional ? "forming" : "confirmed"),
+  );
+  const level = pace?.level ?? null;
+  const period = pace?.provisional ? "Provisional" : "Confirmed";
   return (
     <span
       className={s.badge}
-      title={reading?.date ? `Confirmed ${dateLabel(reading.date)}` : undefined}
-      data-level={signal?.view.permitted ? reading?.level : undefined}
+      title={reading?.date ? `${period} ${dateLabel(reading.date)}` : undefined}
+      data-level={level ?? undefined}
     >
-      <b>{signal?.view.code ?? (loading ? "Checking…" : "Unavailable")}</b>
+      <b>
+        {level !== null
+          ? `P${level}${pace?.provisional ? " · provisional" : ""}`
+          : loading
+            ? "Checking…"
+            : "No current zone"}
+      </b>
       <span>{signal?.view.actionLabel.replace(/ · P[0-4]$/, "") ?? ""}</span>
     </span>
   );
@@ -211,13 +222,20 @@ export function PaceBoard({
         </div>
       ) : (
         <p className={s.empty} role="status">
-          {loading ? "Checking your companies…" : "No qualifying readings"}
+          {loading
+            ? "Checking your companies…"
+            : "No confirmed accumulation opportunities"}
         </p>
       )}
       <small>
         {Object.keys(rows).length} checked ·{" "}
-        {Object.values(rows).filter((r) => r.error).length} unavailable. Pace is
-        a price zone; follow business checks and position limits.
+        {
+          Object.values(rows).filter((r) => r.signal?.currentPace?.provisional)
+            .length
+        }{" "}
+        provisional · {Object.values(rows).filter((r) => r.error).length}{" "}
+        unavailable. Pace is a price zone; follow business checks and position
+        limits.
       </small>
     </section>
   );

@@ -1,4 +1,5 @@
 "use client";
+import styles from "./PriceProjection.module.css";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { financialPeriods } from "@/lib/engine";
@@ -83,7 +84,7 @@ export default function PriceProjection({
   const spot = r.quote.price;
   if (!supported) return null;
   return (
-    <details className="value-personal-model">
+    <details className={`value-personal-model ${styles.model}`}>
       <summary>Adjust scenarios</summary>
       <section className="options-card price-projection">
         <header className="options-heading">

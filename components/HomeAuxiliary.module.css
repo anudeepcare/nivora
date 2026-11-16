@@ -262,3 +262,26 @@
     font-size: 26px;
   }
 }
+/* Agenda lead owns its metadata spacing independently of legacy stream rules. */
+.updates :global(.agenda-lead-date),
+.updates :global(.agenda-lead-company) {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.updates :global(.agenda-lead-action) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.updates :global(.home-feed-batch) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.updates :global(.agenda-context) > summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+}

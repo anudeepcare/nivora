@@ -1,3 +1,8 @@
+import { isSentiSenseMarket, isEodLiveQuotes } from "./market-source-mode";
+import { sentiSenseRequest } from "./sentisense-api";
+import { createSentiSenseMarket } from "./sentisense-market";
+import { fetchSentiSenseFundamentals } from "./sentisense-research";
+const sentiMarket = createSentiSenseMarket(sentiSenseRequest);
 import {
   preferredMarketSources,
   readPreferred,
@@ -92,6 +97,8 @@ export async function twelve(
   params: Record<string, string>,
   cost = 1,
 ) {
+  if (isSentiSenseMarket())
+    throw new HttpError("Legacy research and Twelve Data are disabled.", 503);
   const key = process.env.TWELVE_DATA_API_KEY;
   if (!key) throw new HttpError("Market data is not configured.", 503);
   await reserveProvider(cost);
@@ -143,6 +150,56 @@ export async function quote(
   symbol: string,
 ): Promise<{ company: Company; quote: Quote }> {
   symbol = researchSymbol(symbol);
+  if (isSentiSenseMarket()) {
+    let backup: { company: Company; quote: Quote } | null = null;
+    if (
+      isEodLiveQuotes() &&
+      (process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN)
+    ) {
+      try {
+        backup = await eodQuote(symbol);
+        const at = Date.parse(backup.quote.asOf || "");
+        if (
+          !Number.isFinite(at) ||
+          at > Date.now() + 60000 ||
+          backup.quote.price == null ||
+          !Number.isFinite(backup.quote.price) ||
+          backup.quote.price <= 0
+        ) {
+          backup = null;
+          throw new HttpError(
+            "Quote price or observation time is invalid.",
+            502,
+          );
+        }
+        if (
+          !backup.quote.stale &&
+          Number.isFinite(at) &&
+          at <= Date.now() + 60000 &&
+          Date.now() - at <= quoteRefreshMaxAge(symbol)
+        )
+          return backup;
+      } catch {
+        /* Fall back only to accurately labeled SentiSense delayed data. */
+      }
+    }
+    try {
+      const primary = await sentiMarket.quote(symbol);
+      const oldAt = Date.parse(backup?.quote.asOf || "");
+      const primaryAt = Date.parse(primary.quote.asOf || "");
+      if (
+        backup &&
+        Number.isFinite(oldAt) &&
+        oldAt <= Date.now() + 60000 &&
+        (!Number.isFinite(primaryAt) || oldAt > primaryAt)
+      )
+        return backup;
+      return primary;
+    } catch (error) {
+      if (backup) return backup;
+      throw error;
+    }
+  }
   const sources = preferredMarketSources("quote", configuredSources());
   return cached(
     `selected-quote:${sources.join(",")}:${symbol}`,
@@ -302,6 +359,7 @@ async function twelveQuote(
 export type ChartRange = "1D" | "1W" | "1M" | "6M" | "1Y" | "5Y";
 export async function marketHistory(symbol: string, range: ChartRange = "5Y") {
   symbol = researchSymbol(symbol);
+  if (isSentiSenseMarket()) return sentiMarket.history(symbol, range);
   const sources = preferredMarketSources(
     range === "1D" || range === "1W" ? "intraday" : "daily",
     configuredSources(),
@@ -484,6 +542,8 @@ export async function fundamentals(
   symbol: string,
 ): Promise<Awaited<ReturnType<typeof secFundamentals>>> {
   symbol = researchSymbol(symbol);
+  if (isSentiSenseMarket())
+    return fetchSentiSenseFundamentals(symbol, sentiSenseRequest);
   try {
     if (!eodEnabled()) return await secFundamentals(symbol);
     const primary = await eodFundamentals(symbol);
@@ -725,7 +785,9 @@ export async function research(symbol: string): Promise<Research> {
   symbol = researchSymbol(symbol);
   const results = await Promise.allSettled([
     quote(symbol),
-    marketHistory(symbol),
+    isSentiSenseMarket()
+      ? sentiMarket.dailyResearchHistory(symbol)
+      : marketHistory(symbol),
     symbol.includes("/")
       ? Promise.resolve({
           facts: [],
@@ -792,11 +854,13 @@ export async function research(symbol: string): Promise<Research> {
       currency: "USD",
       asOf: null,
       session: "Unavailable",
-      source: eodEnabled()
-        ? "EODHD"
-        : process.env.TWELVE_DATA_API_KEY
-          ? "Twelve Data"
-          : "Unconfigured",
+      source: isSentiSenseMarket()
+        ? "SentiSense"
+        : eodEnabled()
+          ? "EODHD"
+          : process.env.TWELVE_DATA_API_KEY
+            ? "Twelve Data"
+            : "Unconfigured",
       stale: true,
     },
     history: h.candles,
@@ -807,6 +871,11 @@ export async function research(symbol: string): Promise<Research> {
     retrievedAt: new Date().toISOString(),
     issues: [
       ...issues,
+      ...(isSentiSenseMarket()
+        ? [
+            "Daily history is limited to the source’s one-year window. Longer chart ranges have a different sampling basis and are not substituted into daily indicators or monthly Pace.",
+          ]
+        : []),
       ...(f?.issues ?? []),
       ...(q?.quote.source.includes("cached observation")
         ? ["Quote refresh unavailable; the dated cached observation is shown."]
@@ -881,6 +950,23 @@ async function remoteSearch(query: string) {
 let readyDirectory: { key: string; value: MarketDirectory; at: number } | null =
   null;
 export async function marketDirectory(): Promise<MarketDirectory> {
+  if (isSentiSenseMarket()) {
+    const listings = await sentiMarket.directory();
+    return {
+      listings,
+      directories: [
+        {
+          provider: "sentisense",
+          market: "US tracked universe",
+          status: "available",
+          total: listings.length,
+          eligible: listings.length,
+        },
+      ],
+      complete: true,
+      retrievedAt: new Date().toISOString(),
+    };
+  }
   const sources = configuredSources();
   const tasks: {
     provider: "eodhd" | "twelve";
@@ -976,6 +1062,7 @@ export async function marketDirectory(): Promise<MarketDirectory> {
   return result;
 }
 export async function search(query: string) {
+  if (isSentiSenseMarket()) return sentiMarket.search(query);
   query = query.trim().toUpperCase();
   if (!query) return [];
   if (/^[A-Z0-9]+\.[A-Z]+$|^[A-Z ]+:/.test(query)) researchSymbol(query);
