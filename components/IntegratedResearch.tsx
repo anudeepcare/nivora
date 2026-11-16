@@ -19,6 +19,7 @@ import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
 import StockFacts, { stockFactRows } from "./StockFacts";
 import { amount, percent } from "@/lib/format";
+import DetailDialog from "./DetailDialog";
 import { Help } from "./Ui";
 import { DataFreshness } from "./ResearchBrief";
 export default function IntegratedResearch({
@@ -35,7 +36,6 @@ export default function IntegratedResearch({
   const owns = !!workspace?.positions.some(
     (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
   );
-  const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [context, setContext] = useState<boolean | null>(null);
   const decisionOwns = context ?? owns;
   const [clock, setClock] = useState(() => Date.now());
@@ -157,10 +157,13 @@ export default function IntegratedResearch({
             </span>
           )}
 
-          <details className={s.consensusDetails}>
-            <summary>Target details</summary>
+          <DetailDialog
+            title="Analyst target details"
+            trigger="Target details"
+            className={s.consensusDetails}
+          >
             <AnalystTargets research={r} embedded showUnavailable />
-          </details>
+          </DetailDialog>
         </section>
       </div>
       <section
@@ -194,24 +197,22 @@ export default function IntegratedResearch({
           onOpen={onTab}
         />
       </div>
-      <details
+      <DetailDialog
+        title="Data & methods"
+        trigger="Data & methods"
         className={s.researchTools}
-        open={evidenceOpen}
-        onToggle={(event) => setEvidenceOpen(event.currentTarget.open)}
+        wide
       >
-        <summary>Data &amp; methods</summary>
-        {evidenceOpen && (
-          <div className={s.supportingEvidence}>
-            <DataFreshness research={r} now={now} wide decision={d} />
-            <ScenarioLenses research={r} decision={d} hideSingle />
-            <EvidenceCrystal
-              key={r.company.symbol}
-              research={r}
-              onOpen={() => onTab("Thesis")}
-            />
-          </div>
-        )}
-      </details>
+        <div className={s.supportingEvidence}>
+          <DataFreshness research={r} now={now} wide decision={d} />
+          <ScenarioLenses research={r} decision={d} hideSingle />
+          <EvidenceCrystal
+            key={r.company.symbol}
+            research={r}
+            onOpen={() => onTab("Thesis")}
+          />
+        </div>
+      </DetailDialog>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import support from "./SupportingScreens.module.css";
 import ComparisonCharts from "./ComparisonCharts";
 import ContributionCompare from "./ContributionCompare";
 import { APP_VERSION } from "@/lib/releases";
@@ -390,7 +391,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     })),
   );
   return (
-    <section>
+    <section className={support.compare}>
       <PageHeading
         title="Compare companies"
         subtitle="Compare reported financials with their periods and currencies."
@@ -543,7 +544,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
 }
 export function HelpPage() {
   return (
-    <article className="help-article">
+    <article className={support.help}>
       <PageHeading
         title="Methodology & data"
         subtitle="How calculations work and where data is limited."

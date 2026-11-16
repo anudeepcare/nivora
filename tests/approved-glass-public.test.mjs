@@ -18,12 +18,12 @@ function final(css, selector, property) {
 }
 test("public design inherits the approved theme rather than isolating warm paper colors", () => {
   const css = read("components/PublicLanding.module.css");
-  assert.equal(final(css, ".page.page.page", "color"), "var(--ink)");
-  assert.equal(final(css, ".page.page.page", "--ink"), undefined);
+  assert.equal(final(css, ".page", "color"), "var(--ink)");
+  assert.equal(final(css, ".page", "--ink"), undefined);
   assert.match(css, /background-clip: text/);
   assert.match(
     read("components/PublicLanding.tsx"),
-    /Your next move\.[\s\S]*A clearer view\./,
+    /Research\.[\s\S]*Decide\.[\s\S]*Review\./,
   );
 });
 test("workspace destination grid remains two-up on mobile and retains four real destinations", () => {
@@ -32,16 +32,13 @@ test("workspace destination grid remains two-up on mobile and retains four real 
   const source = read("components/HomeWorkspace.tsx");
   for (const route of ["discover", "watchlist", "research", "#home-workbench"])
     assert.ok(source.includes(route));
-  assert.equal(
-    final(css, ".home.home .quickLinks a", "background"),
-    "var(--workspace-glass)",
-  );
+  assert.equal(final(css, ".quickLinks a", "background"), "var(--card)");
 });
 test("auth form owns its glass and respects reduced transparency without losing controls", () => {
   const css = read("components/Session.module.css");
   assert.equal(
     final(css, ".auth .main :global(.mp-auth-panel)", "border-radius"),
-    "20px",
+    "16px",
   );
   assert.match(css, /prefers-reduced-transparency: reduce/);
   assert.ok(read("components/Session.tsx").includes("#f4f8ff"));

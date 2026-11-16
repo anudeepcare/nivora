@@ -1,4 +1,5 @@
 "use client";
+import aux from "./PortfolioChartsView.module.css";
 import { useMemo, useState } from "react";
 import type { Position, Quote } from "@/lib/types";
 import { portfolioChartData } from "@/lib/portfolio-ledger";
@@ -31,7 +32,10 @@ export default function PortfolioCharts({
   const movers = data.returns.slice(0, 6),
     scale = Math.max(1, ...movers.map((r) => Math.abs(r.pnl)));
   return (
-    <section className="portfolio-charts" aria-label="Portfolio charts">
+    <section
+      className={`portfolio-charts ${aux.root}`}
+      aria-label="Portfolio charts"
+    >
       <header>
         <div>
           <span className="eyebrow">Your money, in perspective</span>

@@ -20,6 +20,13 @@ function load(file, name, bindings) {
     landing: experience,
     PaceInstrument,
     SUPPORT_EMAIL: "support@auryninvest.com",
+    PACE_LEVELS: [
+      "Pause",
+      "Watch / hold",
+      "Start small",
+      "Build gradually",
+      "Deep accumulation",
+    ],
     PrivacyChoices: () => null,
     PaceHelp: () => null,
     ...bindings,
@@ -154,32 +161,25 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Your next move\.<br\/><span>A clearer view\.<\/span>/);
+  assert.match(html, /Research\.<br\/>Decide\.<br\/>Review\./);
   assert.match(html, /id="how-it-works"/);
-  assert.match(html, /href="\/#how-it-works"/);
-  assert.doesNotMatch(html, /Our approach/);
   assert.match(html, /Business evidence first\. Price context second\./);
-  assert.match(html, /href="#how-it-works"[^>]*>Explore the product/);
-
-  assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
-  assert.match(html, /AURYN Accumulation Pace/);
-  assert.match(html, /Product walkthrough/);
-  assert.match(html, /Compare your next contribution/);
-  assert.match(html, /Question the price/);
-  assert.match(html, /Know when to revisit/);
-  assert.match(html, /Turn the price into the earnings it would require/);
-  assert.match(html, /horizon and/);
-  assert.match(html, /future multiple/);
-  assert.match(html, /Is this a sensible time to add/);
-  assert.match(html, /Turn earnings into questions/);
-  assert.match(html, /alerts for supported conditions/);
-  assert.match(html, /updates from the companies you follow/);
-  assert.match(html, /Discover/);
-  assert.match(html, /Understand/);
-  assert.match(html, /Plan/);
-  assert.match(html, /no live recommendation/);
-  assert.match(html, /href="\/sample"/);
-  assert.match(html, /href="\/pricing"/);
+  assert.match(html, /href="\/login\?mode=signup"[^>]*>Open your workspace/);
+  assert.match(html, /Illustrative Pace zone chart/);
+  assert.match(html, /not market data/);
+  assert.match(html, /No live quote or recommendation/);
+  assert.match(html, /AURYN PACE · ONE READING PER COMPANY/);
+  for (const route of [
+    "discover",
+    "watchlist",
+    "research",
+    "research-lab",
+    "research/NOW",
+    "sample",
+    "pricing",
+  ])
+    assert.ok(html.includes(`href="/${route}"`));
+  assert.match(html, /Headlines are not investment conclusions/);
   assert.doesNotMatch(
     html,
     /Northstar|Microsoft|Apple Inc|Tesla|NVIDIA|NVDA|MSFT|AAPL|\+\d+(?:\.\d+)?%|\$124|data-demo-form|#\/research/,

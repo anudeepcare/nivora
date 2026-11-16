@@ -41,6 +41,11 @@ import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
   bindings = {
+    DetailDialog: ({ title, children }) =>
+      React.createElement("section", { "data-dialog-title": title }, children),
+    detailStyle: { content: "detail-content" },
+    aux: new Proxy({}, { get: (_, key) => String(key) }),
+    landing: new Proxy({}, { get: (_, key) => String(key) }),
     studyMarket,
     revenueSensitivity: () => ({ available: false }),
     RevenueSensitivityCases: () => null,
@@ -640,8 +645,10 @@ test("News earnings do not infer estimate currency from a stock listing or compa
       React,
       amount: format.amount,
       dateLabel: format.dateLabel,
-      NewsAndFilings: ({children}) => React.createElement("div",null,children),
-      earningsCalendar, s: {},
+      NewsAndFilings: ({ children }) =>
+        React.createElement("div", null, children),
+      earningsCalendar,
+      s: {},
     },
   );
   const html = renderToStaticMarkup(
@@ -1688,19 +1695,25 @@ test("News leads with company coverage before earnings and transaction records",
     {
       React,
       dateLabel: format.dateLabel,
-      earningsCalendar, s: {},
-      NewsAndFilings: ({children}) =>
+      earningsCalendar,
+      s: {},
+      NewsAndFilings: ({ children }) =>
         React.createElement(
           "section",
           { "data-news": "first" },
-          "Company headlines and filings", children,
+          "Company headlines and filings",
+          children,
         ),
     },
   );
   const html = renderToStaticMarkup(
     React.createElement(View, {
       preview: true,
-      research: { company: { assetType: "stock" }, retrievedAt: "2026-10-22", evidence: { earnings: [] } },
+      research: {
+        company: { assetType: "stock" },
+        retrievedAt: "2026-10-22",
+        evidence: { earnings: [] },
+      },
     }),
   );
   assert.ok(

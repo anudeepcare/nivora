@@ -255,6 +255,12 @@ function HomeOverview() {
       {symbols.length > 0 && (
         <>
           <div className="home-evidence-layout">
+            <HomeMarketCards
+              symbols={symbols}
+              quotes={quotes.data}
+              research={loadedResearch}
+              prefix={prefix}
+            />
             <section
               className="home-evidence-panel home-events-panel"
               id="home-earnings"
@@ -454,12 +460,7 @@ function HomeOverview() {
           </div>
         </>
       )}
-      <HomeMarketCards
-        symbols={symbols}
-        quotes={quotes.data}
-        research={loadedResearch}
-        prefix={prefix}
-      />
+
       <section
         className={homeStyles.workbench}
         id="home-workbench"

@@ -1,4 +1,5 @@
 "use client";
+import DetailDialog from "./DetailDialog";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
 import { pacePeriods, PACE_LEVELS } from "@/lib/pace-presentation";
@@ -88,11 +89,10 @@ const DcaResearch = dynamic(() => import("./DcaResearch"), {
   loading: () => <p role="status">Loading…</p>,
 });
 import DecisionOverview from "./IntegratedResearch";
-import experience from "./IntegratedExperience.module.css";
+import frame from "./ResearchFrame.module.css";
 import masthead from "./ResearchMasthead.module.css";
 import navigationStyle from "./ResearchNavigation.module.css";
-import tabVisuals from "./ResearchTabVisuals.module.css";
-import deskLayout from "./ResearchDeskLayout.module.css";
+import screens from "./ResearchScreens.module.css";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
@@ -139,12 +139,12 @@ const ranges = [
 ] as const;
 const tabPresentation = {
   Snapshot: { label: "Overview", icon: LayoutDashboard },
-  Financials: { label: "Business", icon: Building2 },
+  Financials: { label: "Financials", icon: Building2 },
   Valuation: { label: "Valuation", icon: Scale },
   Technicals: { label: "Technicals", icon: ChartCandlestick },
-  Analysts: { label: "Targets & estimates", icon: Users },
+  Analysts: { label: "Analysts", icon: Users },
   Options: { label: "Options", icon: Layers },
-  Thesis: { label: "Case & ownership", icon: BriefcaseBusiness },
+  Thesis: { label: "Investment case", icon: BriefcaseBusiness },
   News: { label: "News & earnings", icon: Newspaper },
   Advanced: { label: "Research tools", icon: SlidersHorizontal },
 };
@@ -427,21 +427,21 @@ export default function Research({ symbol }: { symbol: string }) {
   if (!r || !p) {
     const q = quick.data?.[symbol];
     return resource.loading ? (
-      <section aria-busy="true" className="research-loading">
+      <section aria-busy="true" className={frame.loading}>
         <header className={masthead.header}>
-          <div className="au-flex">
+          <div className={frame.loadingIdentity}>
             <SecurityLogo symbol={symbol} />
             <div>
               <h1>{q?.company.name ?? symbol}</h1>
               <small>Loading research</small>
             </div>
           </div>
-          <div className="au-price">
+          <div className={frame.loadingPrice}>
             {q ? amount(q.quote.price, q.quote.currency) : "—"}
           </div>
         </header>
-        <div className="skeleton insights" />
-        <div className="skeleton plot" />
+        <div className={frame.skeleton} />
+        <div className={`${frame.skeleton} ${frame.chartSkeleton}`} />
       </section>
     ) : (
       <Empty
@@ -548,10 +548,7 @@ export default function Research({ symbol }: { symbol: string }) {
   });
   const headerContext = headerMarketContext(r);
   return (
-    <article
-      className="research-page approved-research-page"
-      data-research-mode={preferences.detail}
-    >
+    <article className={frame.page} data-research-mode={preferences.detail}>
       <header className={masthead.header}>
         <div className={masthead.identity}>
           <SecurityLogo symbol={symbol} size={52} />
@@ -645,34 +642,8 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       )}
-      <label className={experience.researchPicker}>
-        Research section
-        <select
-          value={tab}
-          onChange={(e) => switchTab(e.target.value as (typeof tabs)[number])}
-        >
-          {coreSections.map((key) => (
-            <option key={key} value={key}>
-              {tabPresentation[key].label}
-            </option>
-          ))}
-          {labSections.length > 0 && (
-            <option
-              value={
-                labSections.includes(tab)
-                  ? tab
-                  : labSections.includes("Options")
-                    ? "Options"
-                    : labSections[0]
-              }
-            >
-              Labs
-            </option>
-          )}
-        </select>
-      </label>
       <nav
-        className={`${experience.researchNav} ${navigationStyle.sections}`}
+        className={navigationStyle.sections}
         aria-label="Research sections"
         ref={researchNavigation}
       >
@@ -729,18 +700,14 @@ export default function Research({ symbol }: { symbol: string }) {
         )}
       </div>
       <section
-        className={`signal-research-panel ${tabVisuals.root}`}
+        className={screens.surface}
         data-research-section={tab}
         hidden={tab === "Snapshot"}
         aria-label={tabPresentation[tab].label}
       >
-        <div
-          id="research-content"
-          className={`approved-evidence-body au-stack ${deskLayout.content}`}
-          data-desk={tab}
-        >
+        <div id="research-content" className={screens.layout} data-desk={tab}>
           {labSections.includes(tab) && (
-            <nav className={experience.labViews} aria-label="Labs views">
+            <nav className={frame.labViews} aria-label="Labs views">
               {labSections.map((key) => (
                 <button
                   key={key}
@@ -785,10 +752,13 @@ export default function Research({ symbol }: { symbol: string }) {
                     now={demo ? Date.parse(r.retrievedAt) : Date.now()}
                   />
                 </CompanyUpdates>
-                <details className="research-reference">
-                  <summary>Earnings history &amp; estimates</summary>
+                <DetailDialog
+                  title="Earnings history & estimates"
+                  trigger="Earnings history & estimates"
+                  wide
+                >
                   <EarningsWorkspace research={r} />
-                </details>
+                </DetailDialog>
               </>
             )}
             {tab === "Advanced" && (
@@ -798,13 +768,16 @@ export default function Research({ symbol }: { symbol: string }) {
                   research={r}
                   initialSection={workbenchTarget}
                 />
-                <details className="research-reference">
-                  <summary>Reported congressional activity</summary>
+                <DetailDialog
+                  title="Reported congressional activity"
+                  trigger="Reported congressional activity"
+                  wide
+                >
                   <CongressDisclosures
                     symbol={r.company.symbol}
                     preview={!!demo}
                   />
-                </details>
+                </DetailDialog>
               </>
             )}
             {tab === "Options" && (

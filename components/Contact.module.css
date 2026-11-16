@@ -1,5 +1,5 @@
 /* Own the form geometry: text inputs and checkboxes have different sizing. */
-.page.page.page {
+.page {
   max-width: 1080px;
   padding: calc(24px + env(safe-area-inset-top, 0px))
     calc(24px + env(safe-area-inset-right, 0px))
@@ -10,52 +10,51 @@
   border: 1px solid var(--workspace-edge);
   border-radius: 20px;
 }
-.page.page.page :global(.support-frame) {
+.page :global(.support-frame) {
+  display: grid;
   grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.3fr);
   gap: 32px;
   align-items: start;
 }
-.page.page.page > header {
-  margin-bottom: 24px;
-  padding-bottom: 18px;
-}
-.page.page.page :global(.support-introduction) {
+.page :global(.support-introduction) {
   padding: 20px;
   border-radius: 14px;
   background: var(--blue-soft);
 }
-.page.page.page h1 {
+.page h1 {
   font-size: 36px;
   line-height: 1.15;
   margin: 12px 0 16px;
 }
-.page.page.page form {
+.page form {
+  display: grid;
   gap: 14px;
   align-content: start;
 }
-.page.page.page form label {
+.page form label {
+  display: grid;
   font-size: 13px;
   font-weight: 500;
   gap: 6px;
 }
-.page.page.page input:not([type="checkbox"]),
-.page.page.page select,
-.page.page.page textarea {
+.page input:not([type="checkbox"]),
+.page select,
+.page textarea {
   background: var(--card);
   font-size: 16px;
   min-height: 44px;
   padding: 10px 12px;
 }
-.page.page.page textarea {
+.page textarea {
   min-height: 144px;
 }
-.page.page.page .diagnostics {
+.page .diagnostics {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 44px;
 }
-.page.page.page .diagnostics input {
+.page .diagnostics input {
   width: 18px;
   height: 18px;
   min-height: 18px;
@@ -64,12 +63,12 @@
   flex: 0 0 18px;
   accent-color: var(--blue);
 }
-.page.page.page input[type="file"] {
+.page input[type="file"] {
   font-size: 13px;
   min-height: 44px;
   padding: 6px;
 }
-.page.page.page input::file-selector-button {
+.page input::file-selector-button {
   border: 0;
   border-radius: 6px;
   padding: 8px 12px;
@@ -79,17 +78,17 @@
   font: inherit;
   cursor: pointer;
 }
-.page.page.page form > button {
+.page form > button {
   justify-self: start;
   min-height: 44px;
   margin: 0;
 }
-.page.page.page :global(.small) {
+.page :global(.small) {
   font-size: 12px;
   line-height: 1.5;
 }
 @media (max-width: 700px) {
-  .page.page.page {
+  .page {
     width: calc(100% - 24px);
     padding: calc(16px + env(safe-area-inset-top, 0px))
       calc(16px + env(safe-area-inset-right, 0px))
@@ -97,17 +96,34 @@
       calc(16px + env(safe-area-inset-left, 0px));
     margin: 12px auto;
   }
-  .page.page.page :global(.support-frame) {
+  .page :global(.support-frame) {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .page.page.page h1 {
+  .page h1 {
     font-size: 28px;
   }
-  .page.page.page :global(.support-promise) {
+  .page :global(.support-promise) {
     margin-top: 16px;
   }
-  .page.page.page form > button {
+  .page form > button {
     width: 100%;
   }
+}
+
+.page :global(.contact-honeypot) {
+  display: none;
+}
+.page > header {
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.page :global(.legal-brand) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }

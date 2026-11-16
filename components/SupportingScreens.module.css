@@ -1,0 +1,215 @@
+/* Supporting routes own their composition; canonical controls remain shared. */
+.discover,
+.alerts,
+.lab,
+.trading,
+.compare,
+.help,
+.owner {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+  color: var(--ink);
+}
+:is(.discover, .alerts, .lab, .trading, .compare, .help, .owner) > p {
+  margin: 0;
+  max-width: 84ch;
+}
+:is(.discover, .alerts, .lab, .trading, .compare) :global(.page-heading) {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+:is(.discover, .alerts, .lab, .trading, .compare) :global(.page-heading) h1 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.035em;
+}
+:is(.discover, .alerts, .lab, .trading, .compare) :global(.page-heading) p {
+  margin: 0;
+  color: var(--muted);
+}
+:is(.discover, .compare) :global(.compare-search) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+}
+:is(.discover, .compare) :global(.source-line) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.compare :global(.compare-picker) {
+  max-width: 600px;
+}
+.discover :global(.discover-controls) {
+  display: grid;
+  gap: 16px;
+}
+:is(.discover, .compare) :global(.table-scroll) {
+  max-width: 100%;
+  overflow: auto;
+  background: var(--workspace-glass);
+  border-radius: 16px;
+}
+:is(.discover, .compare) table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+:is(.discover, .compare) :is(th, td) {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+:is(.discover, .compare) th {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.discover :global(.investment-identity) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+:is(.alerts, .lab) :global(.alert-builder) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+:is(.alerts, .lab, .owner, .trading) label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  min-width: 0;
+}
+:is(.alerts, .lab, .owner, .trading) label:has(input[type="checkbox"]) {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+:is(.alerts, .lab, .trading) :global(.two-col) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+.alerts :global(.compact-record) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.alerts :global(.compact-record) p {
+  margin: 4px 0;
+}
+.alerts :global(.compact-record) > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+:is(.alerts, .lab, .trading) :global(.section-heading) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.lab :global(.metric-value),
+.trading :global(.metric-value) {
+  display: block;
+  font-size: 32px;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.lab :global(.data-list) {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.lab :global(.data-list) > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.owner {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--workspace-glass);
+}
+.owner form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.owner form > :is(button, textarea, p),
+.owner form label:has(textarea) {
+  grid-column: 1 / -1;
+}
+.owner form button {
+  justify-self: start;
+}
+.help {
+  max-width: 880px;
+}
+.help > section {
+  padding: 24px;
+  background: var(--workspace-glass);
+  border-radius: 16px;
+}
+.help h2 {
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+.help p {
+  line-height: 1.65;
+}
+@media (max-width: 700px) {
+  :is(.discover, .alerts, .lab, .trading, .compare, .help, .owner) {
+    gap: 16px;
+  }
+  :is(.alerts, .lab, .trading) :global(.two-col),
+  :is(.alerts, .lab) :global(.alert-builder),
+  .owner form {
+    grid-template-columns: 1fr;
+  }
+  :is(.discover, .compare) :global(.compare-search) {
+    grid-template-columns: 1fr;
+  }
+  :is(.discover, .alerts, .lab, .trading, .compare) :global(.page-heading) {
+    flex-wrap: wrap;
+  }
+  .owner,
+  .help > section {
+    padding: 16px;
+  }
+}
+.trading :global(.compact-records) {
+  display: grid;
+  gap: 12px;
+}
+.trading :global(.compact-records) > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  background: var(--workspace-glass);
+  border-radius: 12px;
+  padding: 16px;
+}
+.trading :global(.compact-records) > div > div {
+  flex: 1;
+  min-width: min(200px, 100%);
+}
+.trading :global(.compact-records) small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.trading code {
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}

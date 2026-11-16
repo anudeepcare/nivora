@@ -18,6 +18,8 @@ import { amount, dateLabel, percent } from "@/lib/format";
 import { useProduct } from "./Session";
 import { SecurityLogo } from "./Ui";
 import styles from "./HomeMarketCards.module.css";
+import savedStyles from "./HomeSavedCompanies.module.css";
+import DetailDialog from "./DetailDialog";
 
 type HistoryReply = { candles: Candle[]; source?: string };
 type HistoryState = {
@@ -324,6 +326,110 @@ export default function HomeMarketCards({
       Date.parse(quote.asOf) <= Date.now()
     );
   }).length;
+  if (context === "home")
+    return (
+      <section className={savedStyles.panel} aria-label="Saved companies">
+        <h2>Saved companies</h2>
+        {selected.length ? (
+          <div
+            className={savedStyles.scroll}
+            role="region"
+            aria-label="Saved company prices"
+            tabIndex={0}
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Price</th>
+                  <th>Daily change</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selected.map((symbol) => {
+                  const supplied =
+                    research.find((r) => r.company.symbol === symbol) ??
+                    demo?.research[symbol];
+                  const company = quotes[symbol]?.company ?? supplied?.company;
+                  const quote = quotes[symbol]?.quote ?? supplied?.quote;
+                  const current =
+                    quote?.price != null &&
+                    Number.isFinite(quote.price) &&
+                    quote.price > 0 &&
+                    quote.asOf &&
+                    Number.isFinite(Date.parse(quote.asOf)) &&
+                    Date.parse(quote.asOf) <= Date.now();
+                  const points =
+                    state.scope === scope ? (state.rows[symbol] ?? []) : [];
+                  const href = `${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`;
+                  return (
+                    <tr key={symbol}>
+                      <td>
+                        <Link href={href}>
+                          <strong>{symbol}</strong>
+                          <span>{company?.name || symbol}</span>
+                        </Link>
+                        <DetailDialog
+                          title={`${symbol} price history`}
+                          trigger="History"
+                        >
+                          {points.length > 1 ? (
+                            <PriceArea
+                              symbol={symbol}
+                              points={points}
+                              currency={
+                                quote?.currency || company?.currency || "USD"
+                              }
+                            />
+                          ) : (
+                            <p>
+                              {state.pending.includes(symbol)
+                                ? "Loading price history…"
+                                : "Price history unavailable"}
+                            </p>
+                          )}
+                        </DetailDialog>
+                      </td>
+                      <td>
+                        {current ? amount(quote?.price, quote?.currency) : "—"}
+                        <small>
+                          {current
+                            ? `${quote?.stale ? "Last available · " : ""}${dateLabel(quote?.asOf)}`
+                            : "Quote unavailable"}
+                        </small>
+                      </td>
+                      <td>
+                        {current &&
+                        quote?.changePct != null &&
+                        Number.isFinite(quote.changePct) ? (
+                          <span
+                            className={savedStyles.change}
+                            data-direction={quote.changePct < 0 ? "down" : "up"}
+                          >
+                            {percent(quote.changePct, true)}
+                          </span>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>Follow a company to see its latest available price here.</p>
+        )}
+        <footer>
+          <Link href={`${prefix}/research`}>Open research</Link>
+          <small>
+            {selected.length} of {total ?? allSymbols.length} saved companies ·{" "}
+            {ready} quotes available
+          </small>
+        </footer>
+      </section>
+    );
   return (
     <section
       className={`${styles.section} ${context === "research" ? styles.research : ""}`}

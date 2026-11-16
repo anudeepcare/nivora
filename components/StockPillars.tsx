@@ -5,6 +5,7 @@ import type { aurynDecision } from "@/lib/auryn-decision";
 import { stockPillars } from "@/lib/stock-pillars";
 import { priceAmount, percent, dateLabel } from "@/lib/format";
 import { consensusOutlook } from "@/lib/outlook";
+import DetailDialog from "./DetailDialog";
 import { Help } from "./Ui";
 import { customerText } from "@/lib/customer-language";
 import s from "./StockPillars.module.css";
@@ -128,15 +129,22 @@ export default function StockPillars({
               <strong className={s.unavailable}>Not available</strong>
             </div>
           ))}
-          <details className={s.unavailableReason}>
-            <summary>Why scenarios are unavailable</summary>
+          <DetailDialog
+            title="Scenario availability"
+            trigger="Why unavailable?"
+            className={s.unavailableReason}
+          >
             <p role="status">{view.casesUnavailableReason}</p>
-          </details>
+          </DetailDialog>
         </div>
       )}
       {!casesOnly && (
-        <details className={s.details}>
-          <summary>Business checks &amp; historical context</summary>
+        <DetailDialog
+          title="Business checks & historical context"
+          trigger="Business checks"
+          className={s.details}
+          wide
+        >
           <p>{view.summary}</p>
           {view.odds && (
             <div className={s.odds} data-grade={view.odds.grade}>
@@ -153,13 +161,13 @@ export default function StockPillars({
             {view.pillars.map((p) => (
               <li key={p.id} data-status={p.status}>
                 <span className={s.badge}>{mark[p.status]}</span>
-                <details className={s.pillarDetail}>
-                  <summary>
+                <section className={s.pillarDetail}>
+                  <header>
                     <small>{p.question}</small>
                     <strong>{p.answer}</strong>
-                  </summary>
+                  </header>
                   <p>{p.why}</p>
-                </details>
+                </section>
               </li>
             ))}
           </ul>
@@ -170,7 +178,7 @@ export default function StockPillars({
             this stock. They are not added into a score: one weak answer can
             outweigh several good ones. Not a recommendation.
           </p>
-        </details>
+        </DetailDialog>
       )}
     </section>
   );

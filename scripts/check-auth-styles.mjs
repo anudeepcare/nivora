@@ -10,7 +10,7 @@ await fs.mkdir(out, { recursive: true });
 // Product's route stylesheet deliberately is not loaded: auth lives above it.
 await build({
   stdin: {
-    contents: `import React from 'react';import{createRoot}from'react-dom/client';import{Login}from'./components/Session';import './app/core/foundation.css';createRoot(document.getElementById('root')).render(<Login initialError=""/>);`,
+    contents: `import React from 'react';import{createRoot}from'react-dom/client';import{Login}from'./components/Session';import './app/core/foundation.css';import './app/core/preferences.css';import './app/core/primitives.css';createRoot(document.getElementById('root')).render(<Login initialError=""/>);`,
     resolveDir: process.cwd(),
     loader: "tsx",
   },

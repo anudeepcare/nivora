@@ -1,803 +1,423 @@
+/* One owner for the Pace decision, framework and interaction surfaces. */
 .instrument {
+  --zone-muted: #b9c6d8;
+  --zone-line: #ffffff30;
+  --zone-node: #d3e6f8;
+  --zone-active: #c8f43d;
+  --zone-highlight: #f8fafc;
   position: relative;
-  isolation: isolate;
   min-width: 0;
   padding: 24px;
-  border: 0;
-  border-radius: 12px;
-  background:
-    radial-gradient(ellipse at 100% 0, #edc17c0d, transparent 65%), #172c36;
-  color: #f7f8f5;
+  border-radius: 16px;
+  background: #0f1b2d;
+  color: #f8fafc;
   font-family: var(--font-ui);
 }
 .instrument button {
   font: inherit;
   cursor: pointer;
-  color: inherit;
+}
+.brandArt {
+  display: none;
 }
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-bottom: 16px;
 }
 .header > span {
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #b9c6d8;
   font-size: 12px;
   font-weight: 650;
-  letter-spacing: 0.12em;
-}
-.header img {
-  flex: none;
+  letter-spacing: 0.05em;
 }
 .header > button {
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 50%;
+  color: #d8e9ff;
   background: transparent;
-  color: #c7ceca;
+  border: 0;
+  width: 44px;
+  min-height: 44px;
 }
-.readout {
-  margin: 18px 0 12px;
-}
+.readout,
 .readoutText,
 .title {
   min-width: 0;
 }
+.readoutText {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 .title > small {
   display: block;
-  color: #bdc8c1;
-  font-size: 12px;
-  margin-bottom: 8px;
+  color: #b9c6d8;
+  font-size: 11px;
+  margin: 0 0 8px;
 }
 .title h2 {
   margin: 0;
+  color: #fff;
   font-size: clamp(30px, 3vw, 42px);
-  line-height: 1.15;
+  line-height: 1.1;
   letter-spacing: -0.04em;
-  color: #edc17c;
   overflow-wrap: anywhere;
 }
-.level {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 12px;
-  padding: 6px 10px;
-  border: 1px solid #edc17c55;
-  border-radius: 10px;
-  background: #edc17c0d;
-  font-size: 25px;
-  letter-spacing: -0.03em;
-  vertical-align: middle;
+.reason {
+  color: #c9d4e3;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 10px 0 0;
 }
-.terraces {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  max-width: 420px;
-  margin-top: 18px;
+.zoneContext {
+  color: #b9c6d8;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 8px 0 0;
 }
-.terraces::before {
-  content: "";
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 16px;
-  height: 1px;
-  background: #ffffff25;
-}
-.stage {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-width: 0;
-  min-height: 48px;
-  border: 0;
+.businessGate,
+.provisional {
+  color: #ffd17b;
+  background: #ffc64b0c;
   border-radius: 8px;
-  background: transparent;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.5;
 }
-.stage strong {
-  order: 2;
+.insight {
+  order: 3;
+}
+.boundary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 10px;
+  margin: 8px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #ffffff26;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #b9c6d8;
+}
+.boundary > span {
+  grid-column: 1/-1;
+  color: #b9c6d8;
+  font-size: 12px;
+}
+.boundary strong {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+.boundary small {
+  color: #b9c6d8;
   font-size: 11px;
-  font-weight: 500;
-}
-.stage span {
-  display: none;
-}
-.stage svg {
-  order: 1;
-  width: 17px;
-  height: 17px;
-  background: #172c36;
-}
-.stage[aria-pressed="true"] {
-  color: #edc17c;
-}
-.stage[aria-pressed="true"] strong {
-  font-weight: 750;
-}
-.stage:hover,
-.instrument button:hover {
-  background: #ffffff0b;
+  align-self: center;
 }
 .status {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  color: #bdc8c1;
-  font-size: 11px;
+  margin-top: 14px;
+  color: #b9c6d8;
+  font-size: 10px;
+  line-height: 1.5;
 }
-.status > span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.status svg {
-  color: #edc17c;
-}
-.status small {
-  font-size: 11px;
-}
-.status button,
-.evidenceDetails button {
+.status > span,
+.status button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 44px;
-  padding: 6px 0;
+}
+.status button {
   border: 0;
   background: transparent;
-  font-size: 12px;
+  color: #badcff;
+  min-height: 36px;
+  padding: 4px 0;
 }
-.insight {
-  margin-top: 20px;
-}
-.action {
-  margin: 0 0 12px;
-  font-size: 17px;
-  font-weight: 600;
-  color: #f2f5f0;
-}
-.boundary {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  margin: 0;
-  font-size: 13px;
-}
-.boundary > span {
-  color: #bdc8c1;
-}
-.instrument .boundary > strong {
-  color: #edf3e5;
-  font-size: 15px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.boundary small {
-  color: #bdc8c1;
-  font-size: 11px;
+.status small {
+  font-size: 10px;
 }
 .readingDetail {
-  margin-top: 20px;
-  border-top: 1px solid #ffffff20;
-  font-size: 12px;
+  margin-top: 8px;
 }
-.instrument.instrument .readingDetail > summary {
+.readingDetail > button {
+  color: #badcff;
+  font-size: 11px;
+  min-height: 36px;
+  padding: 4px 0;
   background: transparent;
-  border-radius: 0;
-  padding: 10px 0;
-  margin: 0;
   border: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 48px;
-  cursor: pointer;
-  color: #dce5dc;
-  list-style: none;
 }
-.readingDetail summary::-webkit-details-marker {
-  display: none;
-}
-.readingDetail summary::after {
-  content: "+";
-  color: #edc17c;
-  font-size: 20px;
-  font-weight: 400;
-}
-.readingDetail[open] summary::after {
-  content: "−";
-}
-.description {
-  margin: 8px 0 14px;
-  color: #c7d0c9;
-  font-size: 13px;
-  line-height: 1.65;
-}
+.description,
 .evidenceDetails {
-  display: grid;
-  gap: 14px;
-  padding-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.6;
 }
 .evidenceDetails p {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #c7d0c9;
+  margin: 12px 0;
 }
 .evidenceDetails strong {
   display: block;
   margin-bottom: 4px;
-  font-weight: 600;
-  color: #f0f4eb;
 }
-.instrument button:focus-visible,
-.instrument summary:focus-visible {
-  outline: 2px solid #edc17c;
-  outline-offset: 3px;
-}
-.compact {
-  padding: 18px;
-}
-@media (max-width: 600px) {
-  .instrument {
-    padding: 20px;
-    border-radius: 18px;
-  }
-  .title h2 {
-    font-size: 30px;
-  }
-  .level {
-    font-size: 22px;
-    margin-left: 8px;
-  }
-  .boundary small {
-    width: 100%;
-  }
-}
-
-.instrument.instrument {
+.evidenceDetails button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
   border: 0;
-  box-shadow: none;
-  --decision-ink: #edc17c;
+  background: transparent;
+  color: var(--blue);
+  min-height: 44px;
 }
-.zoneContext {
-  color: #b7c0da;
-  font-size: 11px;
-  margin: 10px 0 0;
+.unavailableTiming {
+  margin-top: 12px;
+  padding: 14px;
+  border-left: 3px solid #80bdff;
+  border-radius: 8px;
+  background: #ffffff08;
+  color: #fff;
+}
+.unavailableTiming strong {
+  font-size: 14px;
+}
+.unavailableTiming p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #bdc9db;
+  margin: 6px 0;
+}
+.unavailableTiming > button {
+  color: #badcff;
+}
+.terraces {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 16px;
+}
+.stage {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  min-height: 94px;
+  padding: 10px;
+  border: 1px solid #ffffff26;
+  border-radius: 10px;
+  background: #ffffff08;
+  color: #dce9f8;
+  text-align: left;
+}
+.stage strong {
+  font-size: 13px;
+}
+.stage span {
+  font-size: 10px;
   line-height: 1.4;
 }
-.instrument.instrument .title h2 {
-  color: var(--decision-ink);
-  font-size: clamp(32px, 3.2vw, 46px);
-  font-weight: 600;
-  line-height: 1.12;
+.stage > svg {
+  display: none;
 }
-.instrument[data-tone="caution"] {
-  --decision-ink: #f2d08a;
+.stage[aria-pressed="true"] {
+  background: #263344;
+  border-color: #c8f43d;
+  color: #fff;
 }
-.instrument[data-tone="risk"] {
-  --decision-ink: var(--negative);
+.instrument button:focus-visible {
+  outline: 2px solid #a9d5ff;
+  outline-offset: 3px;
 }
-.reason {
-  max-width: 48ch;
-  color: #e0e5f7;
-  font-size: 14px;
-  line-height: 1.6;
-  margin: 15px 0 0;
-}
-.instrument.instrument .insight {
-  margin: 18px 0 0;
-  padding: 0;
-}
-
-.instrument.instrument {
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at 100% 0%, #9786e744 0%, transparent 58%),
-    radial-gradient(ellipse at 82% 100%, #639ab630 0%, transparent 55%),
-    linear-gradient(130deg, #161e36 0%, #2b2b50 48%, #343355 100%);
-}
-.instrument.instrument[data-tone="caution"] {
-  background:
-    radial-gradient(ellipse at 100% 0%, #bba0e632, transparent 58%),
-    radial-gradient(ellipse at 100% 100%, #81a6da28, transparent 55%),
-    linear-gradient(130deg, #1b203b, #303052 55%, #423752);
-}
-.instrument.instrument[data-tone="risk"] {
-  background:
-    radial-gradient(ellipse at 100% 0%, #ba716c30, transparent 60%),
-    linear-gradient(130deg, #202b32, #343432);
-}
-.brandArt {
-  position: absolute;
-  z-index: -1;
-  top: 54px;
-  right: -26px;
-  width: clamp(150px, 26%, 250px);
-  pointer-events: none;
-  opacity: 0.3;
-  transform: rotate(-8deg);
-  filter: drop-shadow(0 18px 35px #bbf38318);
-}
-.brandArt img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.instrument.instrument .title {
-  position: relative;
-}
-.instrument.instrument .reason {
-  max-width: 42ch;
-}
-.instrument.instrument .terraces {
-  margin-top: 30px;
-  max-width: none;
-}
-.instrument.instrument .stage {
-  border: 0;
+.branded {
   background: transparent;
-  box-shadow: none;
-}
-.instrument.instrument .stage svg {
-  width: 15px;
-  height: 15px;
-}
-@media (max-width: 500px) {
-  .brandArt {
-    top: 72px;
-    right: -34px;
-    width: 160px;
-    opacity: 0.18;
-  }
-}
-
-/* The research Overview uses the open editorial presentation. Public guides keep the branded instrument. */
-.instrument.instrument.editorial {
   padding: 0;
-  border: 0;
   border-radius: 0;
-  background: transparent;
-  color: var(--ink);
-  overflow: visible;
-  --decision-ink: var(--green);
-  --zone-muted: var(--muted);
-  --zone-line: var(--line);
-  --zone-node: var(--bg);
-  --zone-active: var(--green);
-  --zone-highlight: var(--ink);
 }
-.editorial .brandArt {
+.summaryView .header,
+.summaryView .title > small {
   display: none;
 }
-.editorial .header {
-  color: var(--muted);
+.summaryView .reason {
+  font-size: 13px;
 }
-.editorial .header > span {
-  font-size: 11px;
+.compact {
+  padding: 20px;
 }
-.editorial .header > button {
-  color: var(--muted);
+.compact.branded {
+  padding: 0;
 }
-.instrument.instrument.editorial .title h2 {
-  font-size: clamp(48px, 5.6vw, 76px);
-  letter-spacing: -0.055em;
-  font-weight: 600;
+.editorial .title h2 {
+  font-size: clamp(28px, 3vw, 38px);
 }
-.instrument.editorial[data-tone="caution"] {
-  --decision-ink: var(--valuation-icon);
+/* Price-zone rows stay compact and factual. Detail dialogs retain their own palette. */
+.instrument [aria-label="Five Pace stages with price levels"] {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 8px 0 0;
+  padding: 0;
 }
-.instrument.editorial[data-tone="risk"] {
-  --decision-ink: var(--red);
-}
-.editorial .title > small,
-.editorial .zoneContext,
-.editorial .boundary > span,
-.editorial .boundary small,
-.editorial .status {
-  color: var(--muted);
-}
-.instrument.instrument.editorial .reason {
-  color: var(--ink);
-  font-size: 17px;
-  line-height: 1.6;
-  max-width: 42ch;
-}
-.instrument.editorial .boundary > strong {
-  color: var(--ink);
-  font-size: 21px;
-}
-.editorial .readingDetail {
-  border-color: var(--line);
-}
-.instrument.instrument.editorial .readingDetail > summary {
-  color: var(--ink);
-}
-.editorial .description,
-.editorial .evidenceDetails p {
-  color: var(--muted);
-}
-.editorial .evidenceDetails strong {
-  color: var(--ink);
-}
-.editorial .stage,
-.editorial .stage svg {
-  background: transparent;
-  color: var(--muted);
-}
-.editorial .terraces::before {
-  background: var(--line);
-}
-.editorial .stage[aria-pressed="true"],
-.editorial .status svg,
-.editorial .readingDetail summary::after {
-  color: var(--green);
-}
-.editorial button:focus-visible,
-.editorial summary:focus-visible {
-  outline-color: var(--green);
-}
-@media (max-width: 600px) {
-  .instrument.instrument.editorial .title h2 {
-    font-size: 52px;
-  }
-  .instrument.instrument.editorial .reason {
-    font-size: 16px;
-  }
-}
-:global([data-theme="dark"]) .instrument.editorial[data-tone="caution"] {
-  --decision-ink: var(--warning);
-}
-:global([data-theme="dark"]) .instrument.editorial[data-tone="risk"] {
-  --decision-ink: var(--negative);
-}
-/* Decision and chart share the opening viewport. */
-.instrument.instrument.editorial .title h2 {
-  font-size: clamp(34px, 3.4vw, 48px);
-  line-height: 1.08;
-}
-.instrument.instrument.editorial .reason {
-  font-size: 14px;
-  line-height: 1.55;
-  margin-top: 10px;
-  max-width: 46ch;
-}
-.editorial .readout {
-  margin-top: 10px;
-  margin-bottom: 8px;
-}
-.editorial .title > small {
+.instrument [aria-label="Five Pace stages with price levels"]::before {
   display: none;
 }
-.instrument.instrument.editorial .insight {
-  margin-top: 12px;
+.instrument [aria-label="Five Pace stages with price levels"] > button {
+  display: grid;
+  grid-template-columns: 12px 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #f1f5fb;
+  text-align: left;
 }
-.instrument.editorial .boundary > strong {
-  font-size: 17px;
+.instrument [aria-label="Five Pace stages with price levels"] > button > i {
+  width: 12px;
+  height: 12px;
+  position: static;
+  transform: none;
+  border: 0;
+  border-radius: 3px;
+  background: #e8eef6;
 }
-.editorial .readingDetail {
-  margin-top: 10px;
+.instrument
+  [aria-label="Five Pace stages with price levels"]
+  > button:nth-child(2)
+  > i {
+  background: #d3e6f8;
 }
-.editorial .header > span {
+.instrument
+  [aria-label="Five Pace stages with price levels"]
+  > button:nth-child(3)
+  > i {
+  background: #a9cee9;
+}
+.instrument
+  [aria-label="Five Pace stages with price levels"]
+  > button:nth-child(4)
+  > i {
+  background: #579de0;
+}
+.instrument
+  [aria-label="Five Pace stages with price levels"]
+  > button:nth-child(5)
+  > i {
+  background: #2260b6;
+}
+.instrument
+  [aria-label="Five Pace stages with price levels"]
+  > button
+  > strong {
   font-size: 10px;
-  letter-spacing: 0.12em;
 }
-.editorial .header > button {
-  width: 36px;
-  height: 36px;
+.instrument [aria-label="Five Pace stages with price levels"] > button > small {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.4;
 }
-.editorial .zoneContext {
-  margin-top: 6px;
-}
-@media (max-width: 600px) {
-  .instrument.instrument.editorial .title h2 {
-    font-size: 40px;
-  }
-  .instrument.instrument.editorial .reason {
-    font-size: 14px;
-  }
-}
-.instrument.editorial .brandArt {
-  display: block;
-  top: 48px;
-  right: 8px;
-  width: 90px;
-  opacity: 0.09;
-  transform: rotate(8deg);
-  filter: none;
-}
-/* Branded compact instrument: useful grouping without a heavy outline. */
-.instrument.instrument.branded {
-  padding: 24px;
-  border-radius: 22px;
-  box-shadow: 0 16px 42px #17342c18;
-}
-.instrument.instrument.branded .title h2 {
-  font-size: clamp(36px, 3.5vw, 50px);
-}
-.branded .readout {
-  margin: 14px 0 10px;
-}
-.branded .title > small {
-  display: none;
-}
-.instrument.instrument.branded .reason {
-  font-size: 14px;
-  line-height: 1.55;
-  margin-top: 10px;
-  max-width: 38ch;
-}
-.branded .brandArt {
-  width: 150px;
-  top: 48px;
-  right: -22px;
-  opacity: 0.2;
-}
-.branded .insight {
-  margin-top: 14px;
-}
-.branded .readingDetail {
-  margin-top: 12px;
-}
-.businessGate {
+.instrument [aria-label="Five Pace stages with price levels"] > button > span {
   font-size: 11px;
-  line-height: 1.5;
-  color: #ffd1ae;
-  margin: 10px 0 0;
+  color: #b9c6d8;
+  white-space: nowrap;
 }
-.instrument.instrument.branded .businessGate {
-  color: #ffd1ae;
+.instrument
+  [aria-label="Five Pace stages with price levels"]
+  > button[data-current="true"] {
+  background: #263344;
+  box-shadow: inset 0 0 0 1px #c8f43d;
 }
-@media (max-width: 600px) {
-  .instrument.instrument.branded {
-    padding: 20px 16px;
-    border-radius: 18px;
-  }
-  .instrument.instrument.branded .title h2 {
-    font-size: 38px;
-  }
+.instrument [aria-label="Five Pace stages with price levels"] > button em {
+  font-size: 8px;
+  padding: 2px 5px;
+  border-radius: 6px;
+  background: #c8f43d;
+  color: #102038;
+  font-style: normal;
+  text-transform: uppercase;
 }
-.instrument.instrument.branded {
-  --pace-ladder-top: 18px;
+.instrument [aria-label="Five Pace stages with price levels"] > small {
+  font-size: 10px;
+  color: #b9c6d8;
+  margin: 5px 0 0;
 }
-.instrument.instrument.branded .insight {
-  margin-top: 12px;
+.stageDialog {
+  width: min(760px, calc(100vw - 24px));
+  max-height: calc(100dvh - 40px);
+  margin: auto;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 24px 80px #001b4140;
+  overflow: auto;
 }
-.branded .zoneContext {
-  margin-top: 6px;
+.stageDialog::backdrop {
+  background: #07142e77;
+  backdrop-filter: blur(6px);
 }
-.branded .readout {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-.branded .readingDetail {
-  margin-top: 8px;
-}
-/* Distribute the branded readout within its paired chart height. */
-.instrument.instrument.branded {
+.stageDialog header {
   display: flex;
-  flex-direction: column;
-}
-.instrument.instrument.branded .readout {
-  display: flex;
-  flex: 1;
-}
-.instrument.instrument.branded .readoutText {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
-
-/* Decision semantics remain independent from the selected UI accent. */
-.instrument.instrument:not(.editorial) {
-  --decision-ink: #c6d3da;
-  border-radius: 12px;
-  background:
-    radial-gradient(ellipse at 100% 0, #8ab2c826, transparent 65%),
-    linear-gradient(135deg, #142a35, #253f4a);
-  box-shadow: none;
+.stageDialog h3 {
+  margin: 0;
+  font-size: 18px;
 }
-.instrument.instrument:not(.editorial)[data-tone="positive"] {
-  --decision-ink: #8ee2c4;
+.stageDialog header button {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--blue);
 }
-.instrument.instrument:not(.editorial)[data-tone="caution"] {
-  --decision-ink: #f0c478;
+.stageDialog p {
+  font-size: 13px;
+  line-height: 1.6;
 }
-.instrument.instrument:not(.editorial)[data-tone="risk"] {
-  --decision-ink: #ffb0b0;
-}
-.instrument.instrument:not(.editorial) .title h2 {
-  color: var(--decision-ink);
-}
-.instrument.instrument.branded .brandArt {
-  opacity: 0.14;
-  right: -16px;
-  width: 150px;
-}
-.instrument.instrument.branded .title > small {
-  display: block;
-  color: #b9cbd4;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-}
-
 @media (max-width: 600px) {
-  .instrument.instrument.branded {
+  .instrument {
+    padding: 18px;
+  }
+  .branded,
+  .compact.branded {
+    padding: 0;
+  }
+  .title h2 {
+    font-size: 32px;
+  }
+  .boundary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .boundary small {
+    grid-column: 1;
+  }
+  .stage {
+    padding: 8px;
+    min-height: 84px;
+  }
+  .stage span {
+    font-size: 9px;
+  }
+  .stageDialog {
     padding: 16px;
   }
-  .instrument.instrument.branded .title h2 {
-    font-size: 32px;
-    line-height: 1.12;
-  }
-  .instrument.instrument.branded .readoutText {
-    gap: 8px;
-  }
-  .instrument.instrument.branded .reason {
-    font-size: 13px;
-    line-height: 1.5;
-  }
 }
-
-/* Approved light glass decision: color communicates state, not a dark slab. */
-.instrument.instrument.branded {
-  --zone-muted: var(--muted);
-  --zone-line: var(--line);
-  --zone-node: var(--surface);
-  --zone-active: var(--blue);
-  --zone-highlight: var(--ink);
-  padding: 0;
-  background: transparent;
-  color: var(--ink);
-  border-radius: 0;
-  box-shadow: none;
-}
-.instrument.instrument.branded .brandArt {
-  display: none;
-}
-.instrument.instrument.branded .header {
-  min-height: 32px;
-  color: var(--muted);
-}
-.instrument.instrument.branded .title h2 {
-  color: var(--ink);
-  font-size: clamp(30px, 3vw, 40px);
-}
-.instrument.instrument.branded .title > small,
-.instrument.instrument.branded .reason,
-.instrument.instrument.branded .zoneContext,
-.instrument.instrument.branded .status,
-.instrument.instrument.branded .description,
-.instrument.instrument.branded .readingDetail,
-.instrument.instrument.branded .boundary,
-.instrument.instrument.branded .boundary strong,
-.instrument.instrument.branded .boundary small {
-  color: var(--ink);
-}
-.instrument.instrument.branded .title > small {
-  margin-top: 8px;
-}
-.instrument.instrument.branded .readoutText {
-  gap: 12px;
-}
-.instrument.instrument.branded .reason {
-  max-width: none;
-  font-size: 13px;
-}
-.instrument.instrument.branded .zoneContext {
-  font-size: 12px;
-}
-.instrument.instrument.branded .status {
-  border-color: var(--line);
-}
-.instrument.instrument.branded .businessGate {
-  color: var(--amber);
-  background: var(--amber-soft);
-  border-radius: 8px;
-  padding: 10px;
-}
-.instrument.instrument.branded button:focus-visible {
-  outline: 2px solid var(--blue);
-}
-.instrument.instrument.branded .header > button,
-.instrument.instrument.branded .status small,
-.instrument.instrument.branded .status button,
-.instrument.instrument.branded .readingDetail summary,
-.instrument.instrument.branded .evidenceDetails {
-  color: var(--ink);
-}
-
-/* Overview is a compact decision summary, with detailed exploration retained. */
-.instrument.instrument.branded.summaryView .header {
-  display: none;
-}
-.instrument.instrument.branded.summaryView .title > small {
-  display: none;
-}
-.instrument.instrument.branded.summaryView .readout {
-  margin: 0;
-}
-.instrument.instrument.branded.summaryView .readoutText {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-start;
-}
-.instrument.instrument.branded.summaryView .title h2 {
-  font-size: 32px;
-  line-height: 1.1;
-  margin: 0 0 6px;
-}
-.instrument.instrument.branded.summaryView .reason {
-  font-size: 12px;
-  line-height: 1.45;
-  margin: 0;
-}
-.instrument.instrument.branded.summaryView .zoneContext {
-  margin: 6px 0 0;
-  font-size: 11px;
-}
-.instrument.instrument.branded.summaryView .provisional {
-  padding: 10px;
-  border: 1px solid var(--amber-line, var(--line));
-  border-radius: 8px;
-  background: var(--amber-soft);
-  color: var(--amber);
-}
-.instrument.instrument.branded.summaryView .insight {
-  order: 3;
-  margin: 0;
-}
-.instrument.instrument.branded.summaryView .boundary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px 8px;
-  margin: 0;
-  padding: 8px 0;
-  border-top: 1px solid var(--line);
-  font-size: 11px;
-}
-.instrument.instrument.branded.summaryView .boundary > span {
-  color: var(--muted);
-}
-.instrument.instrument.branded.summaryView .status {
-  margin: 4px 0 0;
-  padding: 6px 0;
-  font-size: 10px;
-}
-.instrument.instrument.branded.summaryView .readingDetail {
-  margin: 0;
-}
-.instrument.instrument.branded.summaryView .readingDetail > summary {
-  min-height: 32px;
-  padding: 8px 0;
-  font-size: 11px;
-}
-@media (max-width: 600px) {
-  .instrument.instrument.branded.summaryView .title h2 {
-    font-size: 30px;
-  }
-  .instrument.instrument.branded.summaryView
-    .readoutText
-    > :last-child:not(.title):not(.insight) {
-    display: none;
-  }
-  .instrument.instrument.branded.summaryView .insight {
-    display: none;
-  }
-  .instrument.instrument.branded.summaryView .status {
-    display: none;
+@media (prefers-reduced-transparency: reduce) {
+  .stageDialog::backdrop {
+    backdrop-filter: none;
   }
 }

@@ -6,8 +6,8 @@ function luminance(hex){const rgb=hex.match(/\w\w/g).map(x=>parseInt(x,16)/255).
 function contrast(a,b){const x=luminance(a.slice(1)),y=luminance(b.slice(1));return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
 test('workspace uses shared responsive geometry and a single reference-aligned glass surface',()=>{
  for(const token of ['workspace-gap','workspace-radius','workspace-inset','workspace-glass','workspace-canvas','workspace-edge','workspace-shadow']) assert.match(tokens,new RegExp(`--${token}:`));
- assert.match(fs.readFileSync('components/IntegratedExperience.module.css','utf8'),/background: var\(--workspace-canvas\)/);
- assert.match(fs.readFileSync('components/HomeDailyBriefing.module.css','utf8'),/gap: var\(--workspace-gap\)/);
+ assert.match(fs.readFileSync('app/core/foundation.css','utf8'),/background: var\(--app-background\)/);
+ assert.match(fs.readFileSync('app/core/primitives.css','utf8'),/padding: var\(--workspace-inset\)/);
 });
 test('neutral text maintains readable contrast in light and dark workspace themes',()=>{
  for(const selector of [':root[data-theme="light"]',':root[data-theme="dark"]']){

@@ -128,15 +128,15 @@
   white-space: nowrap;
 }
 .ladder.ladder button[data-current="true"] {
-  color: var(--zone-active, #edc17c);
+  color: var(--zone-active, var(--blue));
 }
 .ladder.ladder button[data-current="true"] .diamond {
-  background: var(--zone-active, #edc17c);
-  border-color: var(--zone-active, #edc17c);
-  box-shadow: 0 0 0 6px #edc17c12;
+  background: var(--zone-active, var(--blue));
+  border-color: var(--zone-active, var(--blue));
+  box-shadow: 0 0 0 4px var(--blue-soft);
 }
 .ladder.ladder button:focus-visible {
-  outline: 2px solid #edc17c;
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -157,11 +157,11 @@
   color: inherit;
 }
 .zones.zones.zones tbody tr[data-current="true"] > :is(th, td) {
-  background: #edc17c16;
+  background: var(--blue-soft);
   color: var(--zone-highlight, #f1f7e9);
 }
 .zones.zones.zones tbody tr[data-current="true"] th strong {
-  color: var(--zone-active, #edc17c);
+  color: var(--zone-active, var(--blue));
 }
 .pending.pending {
   color: inherit;
@@ -301,4 +301,19 @@
   background: transparent;
   font-size: 9px;
   white-space: nowrap;
+}
+
+.ladder.ladder button[data-current="true"] {
+  background: linear-gradient(
+    105deg,
+    color-mix(in srgb, #00a8f5 18%, var(--card)),
+    color-mix(in srgb, #2955f3 14%, var(--card))
+  );
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #1689ff 65%, transparent);
+  font-weight: 700;
+}
+.ladder.ladder button[data-current="true"] .stageAction {
+  opacity: 1;
+  font-weight: 650;
 }

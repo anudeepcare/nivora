@@ -1,5 +1,4 @@
-import { readCompatCss } from './read-compat-css.mjs';
-import {experience} from './helpers/integrated-ui.mjs';
+import { experience } from "./helpers/integrated-ui.mjs";
 import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -33,8 +32,7 @@ test("both providers reject same-day future intraday candles at the timestamp bo
 });
 test("financial selected-control styles outrank global button resets", () => {
   const base = postcss.parse(
-    readCompatCss('app/studio-foundation.css') +
-      readCompatCss('app/globals.css'),
+    fs.readFileSync("app/core/primitives.css", "utf8"),
   );
   const module = postcss.parse(
     fs.readFileSync("components/ResearchWorkspace.module.css", "utf8"),
@@ -119,11 +117,15 @@ function researchMarkup(issues = []) {
     },
   };
   const empty = () => null;
-  const bindings = { cachedQuotes:()=>({}),publishQuotes:()=>{},subscribeQuotes:()=>()=>{}, experience,
+  const bindings = {
+    cachedQuotes: () => ({}),
+    publishQuotes: () => {},
+    subscribeQuotes: () => () => {},
+    experience,
     customerText,
     currentPace,
     paceCode,
-    masthead: new Proxy({}, {get: (_, key) => key}),
+    masthead: new Proxy({}, { get: (_, key) => key }),
     useAccess: () => ({
       access: {
         features: Object.fromEntries(
@@ -148,7 +150,19 @@ function researchMarkup(issues = []) {
     FreeSnapshot: () => null,
     React,
     ...format,
-    tabPresentation: Object.fromEntries(["Snapshot", "Financials", "Valuation", "Technicals", "Thesis", "Analysts", "Options", "News", "Advanced"].map(key => [key, {label:key, icon:empty}])),
+    tabPresentation: Object.fromEntries(
+      [
+        "Snapshot",
+        "Financials",
+        "Valuation",
+        "Technicals",
+        "Thesis",
+        "Analysts",
+        "Options",
+        "News",
+        "Advanced",
+      ].map((key) => [key, { label: key, icon: empty }]),
+    ),
     tabs: ["Snapshot", "Financials", "Valuation", "Technicals", "Thesis"],
     ranges: ["1D", "1W", "1M", "6M", "1Y", "5Y"],
     useState: (v) => [typeof v === "function" ? v() : v, empty],
@@ -158,7 +172,10 @@ function researchMarkup(issues = []) {
     useLayoutEffect: () => {},
     useEffect: () => {},
     useLivePrices: () => ({ ticks: {}, connected: false }),
-    useWorkspacePreferences:()=>({preferences:{chartRange:"1Y"},ready:true}),
+    useWorkspacePreferences: () => ({
+      preferences: { chartRange: "1Y" },
+      ready: true,
+    }),
     useResearchPreferences: () => ({ preferences: { detail: "essential" } }),
     ResearchModeSwitch: () => null,
     mergePriceTick: (base) => base,
@@ -218,7 +235,7 @@ function researchMarkup(issues = []) {
     format.quoteTime,
     ({ children }) => React.createElement("dialog", {}, children),
     customerText,
-    {backupBadge:"backupBadge"},
+    { backupBadge: "backupBadge" },
   );
   for (const name of [
     "StockFacts",
@@ -272,9 +289,12 @@ function researchMarkup(issues = []) {
     "ArrowUpRight",
   ])
     bindings[name] = empty;
-  bindings.navigationStyle = { sections: "research-navigation", symbol: "research-symbol" };
-  bindings.tabVisuals = { root: "research-tab-visuals" };
-  bindings.deskLayout = { content: "research-desk-layout" };
+  bindings.navigationStyle = {
+    sections: "research-navigation",
+    symbol: "research-symbol",
+  };
+  bindings.frame = new Proxy({}, { get: (_, key) => String(key) });
+  bindings.screens = { surface: "research-surface", layout: "research-layout" };
   bindings.Help = ({ children }) => React.createElement("div", null, children);
   bindings.DecisionOverview = () =>
     React.createElement("section", { "data-overview-evidence": "edge" });

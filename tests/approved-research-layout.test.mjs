@@ -13,10 +13,10 @@ test('approved Research preserves live decision and range sources', () => {
 });
 test('approved Research switches desktop chart first to mobile decision first', () => {
  const css = read('components/ResearchOverview.module.css');
- assert.match(css, /\.decisionStage \.chart\s*\{[^}]*grid-column: 1;[^}]*grid-row: 1;/);
- assert.match(css, /\.decisionStage \.paceColumn\s*\{[^}]*grid-column: 2;[^}]*grid-row: 1;/);
- assert.match(css, /@media \(max-width: 900px\)\s*\{[^]*?\.decisionStage \.paceColumn\s*\{[^}]*grid-column: 1;[^}]*grid-row: 1;/);
- assert.match(css, /prefers-reduced-transparency: reduce/);
+ assert.match(css, /\.chart\s*\{[^}]*grid-column: 1;[^}]*grid-row: 1;/);
+ assert.match(css, /\.paceColumn\s*\{[^}]*grid-column: 2;[^}]*grid-row: 1;/);
+ assert.match(css, /@media \(max-width: 900px\)\s*\{[^]*?\.paceColumn\s*\{[^}]*grid-column: 1;[^}]*grid-row: 1;/);
+ assert.match(read("app/core/tokens.css"), /prefers-reduced-transparency: reduce/);
 });
 test('evidence rows remain available and margin panel respects preferences', () => {
  const source = read('components/ResearchEvidenceGrid.tsx');

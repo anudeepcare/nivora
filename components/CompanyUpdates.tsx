@@ -4,6 +4,7 @@ import type { Research } from "@/lib/types";
 import { dateLabel } from "@/lib/format";
 import { earningsCalendar } from "@/lib/earnings-calendar";
 import s from "./CompanyUpdates.module.css";
+import DetailDialog from "./DetailDialog";
 
 import { NewsAndFilings } from "./ResearchEvidence";
 export default function CompanyUpdates({
@@ -51,16 +52,17 @@ export default function CompanyUpdates({
             <h3>
               {onOwnership ? "Reported activity" : "Reported transactions"}
             </h3>
-            <details className="transaction-note">
-              <summary>
-                {r.evidence?.insiders?.length
+            <DetailDialog
+              title="Reported transactions"
+              trigger={
+                r.evidence?.insiders?.length
                   ? `${r.evidence.insiders.length} supplied transactions`
-                  : "Transaction availability"}
-              </summary>
-              {r.evidence?.insiders?.length ? (
-                r.evidence.insiders
-                  .slice(0, onOwnership ? 1 : 4)
-                  .map((item, i) => (
+                  : "Transaction availability"
+              }
+            >
+              <div className={s.transactions}>
+                {r.evidence?.insiders?.length ? (
+                  r.evidence.insiders.map((item, i) => (
                     <div className="stat-pair" key={i}>
                       <span>
                         {item.name}
@@ -82,10 +84,13 @@ export default function CompanyUpdates({
                       </strong>
                     </div>
                   ))
-              ) : (
-                <p className="context-note">No transaction records supplied.</p>
-              )}
-            </details>
+                ) : (
+                  <p className="context-note">
+                    No transaction records supplied.
+                  </p>
+                )}
+              </div>
+            </DetailDialog>
             {onOwnership && (
               <button
                 type="button"
@@ -95,15 +100,17 @@ export default function CompanyUpdates({
                 Ownership context →
               </button>
             )}
-            <details className="transaction-note">
-              <summary>About reported activity</summary>
+            <DetailDialog
+              title="About reported activity"
+              trigger="About reported activity"
+            >
               <p>
                 Sales can reflect tax, diversification or trading plans. Roles,
                 transaction codes and filing dates need verification; this
                 snapshot does not establish that every named person is a company
                 insider.
               </p>
-            </details>
+            </DetailDialog>
           </div>
         </div>
       </section>

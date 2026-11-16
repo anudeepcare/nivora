@@ -101,6 +101,7 @@ function component(file, name = "default") {
   }).outputText;
   const dependencies = {
     "react/jsx-runtime": jsx,
+    "./DetailDialog": {__esModule:true,default: ({trigger,children}) => React.createElement("section", {"data-modal":"test-open"}, trigger, children)},
     "./Ui": {
       Help: ({ children }) => React.createElement("aside", null, children),
     },

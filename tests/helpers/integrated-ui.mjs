@@ -42,6 +42,7 @@ const code = ts.transpileModule(
 const mod = { exports: {} };
 new Function("require", "module", "exports", code)(
   (name) => {
+    if (name === "./Ui") return { Help };
     if (name === "./PaceHelp") return { __esModule: true, default: PaceHelp };
     if (name === "react") return React;
     if (name === "react") return React;

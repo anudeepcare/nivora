@@ -6,17 +6,18 @@ const read = (name) => fs.readFileSync(`components/${name}`, "utf8");
 
 test("phone agenda resets event row placement inside its single column", () => {
   const root = postcss.parse(read("HomeWorkspace.module.css"));
-  let reset = false;
-  root.walkAtRules("media", (media) => {
-    if (media.params !== "(max-width: 600px)") return;
-    media.walkRules((rule) => {
-      if (!rule.selector.endsWith(":global(.home-event-row)")) return;
-      rule.walkDecls("grid-column", (declaration) => {
-        if (declaration.value === "1 / -1") reset = true;
+  let rowIsFlex = false;
+  root.walkRules((rule) => {
+    if (rule.selector === ".home :global(.home-event-row)") {
+      rule.walkDecls("display", (declaration) => {
+        if (declaration.value === "flex") rowIsFlex = true;
       });
-    });
+    }
   });
-  assert.ok(reset, "phone agenda rows must not create implicit column 2");
+  assert.ok(
+    rowIsFlex,
+    "event rows use contained flex layout, with no implicit grid columns",
+  );
 });
 
 test("alerts distinguish initial loading and failed retrieval from empty lists", () => {
@@ -30,7 +31,10 @@ test("alerts distinguish initial loading and failed retrieval from empty lists",
 });
 
 test("mark-read controls cannot repeat a pending mutation", () => {
-  assert.match(read("AlertCenter.tsx"), /aria-label="Mark alert read"\s+disabled=\{busy\}/);
+  assert.match(
+    read("AlertCenter.tsx"),
+    /aria-label="Mark alert read"\s+disabled=\{busy\}/,
+  );
 });
 
 test("discovery distinguishes an active scan and no verified results", () => {
@@ -54,44 +58,66 @@ import { renderToStaticMarkup } from "react-dom/server";
 function alertMarkup(resource) {
   const module = { exports: {} };
   const modules = {
+    "./SupportingScreens.module.css": { alerts: "alerts" },
     react: React,
     "react/jsx-runtime": jsx,
     "lucide-react": icons,
-    "next/link": ({children, ...props}) => React.createElement("a", props, children),
+    "next/link": ({ children, ...props }) =>
+      React.createElement("a", props, children),
     "next/navigation": { useSearchParams: () => new URLSearchParams() },
     "@/lib/client-id": { newRequestId: () => "test" },
-    "@/lib/client": { api: () => { throw Error("No requests during render"); } },
+    "@/lib/client": {
+      api: () => {
+        throw Error("No requests during render");
+      },
+    },
     "@/lib/format": { dateLabel: (date) => date },
-    "./Session": { useProduct: () => ({}), useResource: () => ({...resource, refresh: () => {}}) },
+    "./Session": {
+      useProduct: () => ({}),
+      useResource: () => ({ ...resource, refresh: () => {} }),
+    },
     "./Ui": {
-      PageHeading: ({title, subtitle, action}) => React.createElement("header", null, title, subtitle, action),
-      Notice: ({children}) => React.createElement("p", null, children),
-      Empty: ({title, children}) => React.createElement("section", null, title, children),
+      PageHeading: ({ title, subtitle, action }) =>
+        React.createElement("header", null, title, subtitle, action),
+      Notice: ({ children }) => React.createElement("p", null, children),
+      Empty: ({ title, children }) =>
+        React.createElement("section", null, title, children),
     },
   };
   const code = ts.transpileModule(read("AlertCenter.tsx"), {
-    compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
+    compilerOptions: {
+      jsx: ts.JsxEmit.ReactJSX,
+      module: ts.ModuleKind.CommonJS,
+      esModuleInterop: true,
+    },
   }).outputText;
-  new Function("require", "module", "exports", code)((name) => {
-    assert.ok(name in modules, name);
-    return modules[name];
-  }, module, module.exports);
+  new Function("require", "module", "exports", code)(
+    (name) => {
+      assert.ok(name in modules, name);
+      return modules[name];
+    },
+    module,
+    module.exports,
+  );
   return renderToStaticMarkup(React.createElement(module.exports.default));
 }
 test("rendered alerts announce loading without claiming zero saved rules", () => {
-  const html = alertMarkup({loading: true});
+  const html = alertMarkup({ loading: true });
   assert.match(html, /Loading alert rules/);
   assert.match(html, /Loading alert history/);
   assert.doesNotMatch(html, /No alert rules yet|Nothing triggered yet/);
 });
 test("rendered alerts expose independent retries when retrieval fails", () => {
-  const html = alertMarkup({loading: false, error: "Offline"});
+  const html = alertMarkup({ loading: false, error: "Offline" });
   assert.match(html, /Retry rules/);
   assert.match(html, /Retry history/);
   assert.doesNotMatch(html, /No alert rules yet|Nothing triggered yet/);
 });
 test("rendered loaded empty alerts keep the onboarding guidance", () => {
-  const html = alertMarkup({loading: false, data: {documents: [], events: []}});
+  const html = alertMarkup({
+    loading: false,
+    data: { documents: [], events: [] },
+  });
   assert.match(html, /No alert rules yet/);
   assert.match(html, /Nothing triggered yet/);
 });

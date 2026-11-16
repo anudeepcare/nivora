@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 const PaceInstrument = dynamic(() => import("./PaceInstrument"), {
   loading: () => <p role="status">Opening the Pace guide…</p>,
 });
-import experience from "./IntegratedExperience.module.css";
 import landing from "./PublicLanding.module.css";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
@@ -23,6 +22,7 @@ import {
   Scale,
 } from "lucide-react";
 import { authClient } from "@/lib/client";
+import { PACE_LEVELS } from "@/lib/pace-presentation";
 
 function PublicBrand() {
   return (
@@ -73,7 +73,7 @@ export function PublicSample({ compact = false }: { compact?: boolean } = {}) {
   ];
   return (
     <section
-      className={`ap-product signal-public-demo ${compact ? "ap-product-compact" : ""}`}
+      className={`${landing.guide} ap-product signal-public-demo ${compact ? "ap-product-compact" : ""}`}
       aria-label="Illustrative product guide, not a live investment recommendation"
     >
       <header className="signal-demo-header">
@@ -504,7 +504,7 @@ export default function PublicLanding({
 
   return (
     <main
-      className={`mp-public ap-public ${experience.public} ${landing.page} ${sampleOnly ? "ap-sample-page" : ""}`}
+      className={`mp-public ap-public ${landing.page} ${sampleOnly ? "ap-sample-page" : ""}`}
     >
       <a className="ap-skip-link" href="#ap-main">
         Skip to content
@@ -590,199 +590,167 @@ export default function PublicLanding({
           aria-labelledby="ap-hero-heading"
         >
           <div className={landing.heroCopy}>
-            <span className={landing.eyebrow}>BUSINESS. VALUE. YOUR PACE.</span>
+            <span className={landing.eyebrow}>INVESTMENT WORKSPACE</span>
             <h1 id="ap-hero-heading">
-              {sampleOnly ? (
-                "Explore a more considered way to invest."
-              ) : (
-                <>
-                  Your next move.
-                  <br />
-                  <span>A clearer view.</span>
-                </>
-              )}
+              Research.
+              <br />
+              Decide.
+              <br />
+              Review.
             </h1>
             <div className={landing.heroDetail}>
-              <p>
-                Business evidence first. Price context second. Research your
-                companies, understand the trade-offs, and decide with context.
-              </p>
+              <p>Business evidence first. Price context second.</p>
               <div className={landing.actions}>
                 <Link className={landing.primary} href="/login?mode=signup">
-                  Get started <ArrowRight size={18} aria-hidden="true" />
+                  Open your workspace <ArrowRight size={17} />
                 </Link>
-                <a className={landing.secondary} href="#how-it-works">
-                  Explore the product{" "}
-                  <ArrowRight size={17} aria-hidden="true" />
-                </a>
-              </div>
-              <p>
-                <Link href="/track-record">Evidence & track record →</Link> ·{" "}
-                <Link href="/portfolio-check">Check your portfolio</Link>
-              </p>
-              <div className={landing.heroPrinciples}>
-                <span>
-                  <Check size={15} /> Evidence before conviction
-                </span>
-                <span>
-                  <Check size={15} /> Your judgment, always
-                </span>
+                <Link className={landing.secondary} href="/research/NOW">
+                  See the NOW research page
+                </Link>
               </div>
             </div>
           </div>
           <div className={landing.heroVisual}>
-            <InvestmentDemo />
-            <div className={landing.previewCaption}>
-              <span>Product preview</span> Illustrative research
-            </div>
+            <section
+              className={landing.pacePreview}
+              aria-label="Illustrative Pace zone chart"
+            >
+              <header>
+                <h2>Price through the Pace zones</h2>
+                <p>
+                  Deeper blue = deeper accumulation zone · illustrative guide,
+                  not market data
+                </p>
+              </header>
+              <svg
+                viewBox="0 0 660 360"
+                role="img"
+                aria-label="Schematic price path across four blue Pace zones. No company prices or forecast are shown."
+              >
+                <rect width="660" height="360" rx="12" fill="#d3e6f8" />
+                <path d="M0 230H660V270H0Z" fill="#a4caec" />
+                <path d="M0 270H660V310H0Z" fill="#5e9dde" />
+                <path d="M0 310H660V360H0Z" fill="#245fb8" />
+                <path
+                  d="M20 80L40 58L62 100L86 87L110 160L135 145L160 228L180 198L205 274L230 245L260 280L285 220L310 195L335 210L360 178L385 140L410 155L440 100L465 132L490 95L515 118L540 75L560 105L580 240L610 256L640 234"
+                  fill="none"
+                  stroke="#17243b"
+                  strokeWidth="2.5"
+                />
+                <g fontSize="12" fontFamily="inherit" fontWeight="600">
+                  <text x="16" y="215" fill="#17243b">
+                    P1 · Watch / hold
+                  </text>
+                  <text x="16" y="254" fill="#17243b">
+                    P2 · Start small
+                  </text>
+                  <text x="16" y="295" fill="#17243b">
+                    P3 · Build gradually
+                  </text>
+                  <text x="16" y="340" fill="white">
+                    P4 · Deep accumulation
+                  </text>
+                </g>
+              </svg>
+              <footer>
+                No live quote or recommendation.{" "}
+                <Link href="/research/NOW">Open dated company evidence →</Link>
+              </footer>
+            </section>
           </div>
         </section>
-        <div
-          className="ap-benefits ap-container"
-          aria-label="What AURYN brings together"
-        >
-          <span>
-            <Layers3 size={19} aria-hidden="true" />
-            <strong>Compare your next contribution</strong>
-            <small>Business, value and Pace in context.</small>
-          </span>
-          <span>
-            <Scale size={19} aria-hidden="true" />
-            <strong>Question the price</strong>
-            <small>Make the earnings expectations explicit.</small>
-          </span>
-          <span>
-            <ChartNoAxesCombined size={19} aria-hidden="true" />
-            <strong>Know when to revisit</strong>
-            <small>Evidence and conditions worth following.</small>
-          </span>
-        </div>
       </div>
 
-      {sampleOnly && <ProductWalkthrough />}
-
       <section
-        className={`${landing.workflow} ap-container`}
+        className={`${landing.paceRibbon} ap-container`}
         id="how-it-works"
-        aria-labelledby="ap-workflow-heading"
+        aria-label="AURYN Pace guide"
       >
-        <div className={landing.workflowHeading}>
-          <span className={landing.eyebrow}>PUT YOUR RESEARCH TO WORK</span>
-          <h2 id="ap-workflow-heading">
-            Three questions before every contribution.
-          </h2>
-          <p>Move from an interesting company to a decision you can explain.</p>
-        </div>
-        <div className={landing.workflowRows}>
-          <article>
-            <span>
-              <Layers3 size={21} aria-hidden="true" />
-              01 / COMPARE
-            </span>
-            <div>
-              <h3>Is the business strong?</h3>
-              <p>
-                Read revenue, margins and cash generation together. Check
-                funding and risks in the same report.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>
-              <Scale size={21} aria-hidden="true" />
-              02 / CHALLENGE
-            </span>
-            <div>
-              <h3>What does the price assume?</h3>
-              <p>
-                Turn the price into the earnings it would require. Adjust the
-                horizon and future multiple to test your assumptions.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>
-              <ChartNoAxesCombined size={21} aria-hidden="true" />
-              03 / SEPARATE
-            </span>
-            <div>
-              <h3>Is this a sensible time to add?</h3>
-              <p>
-                Use five price zones after business checks. Plan contributions
-                within your budget and position limits.
-              </p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section
-        className={`${landing.evidence} ap-container`}
-        aria-labelledby="evidence-heading"
-      >
+        <h2>AURYN PACE · ONE READING PER COMPANY</h2>
         <div>
-          <span className={landing.eyebrow}>STAY WITH THE CASE</span>
-          <h2 id="evidence-heading">
-            A decision is a starting point.
-            <br />
-            Keep the reasons in view.
-          </h2>
-          <p>Follow the companies and changes that matter to you.</p>
-          <ContextLink page="methodology">
-            Explore our methodology <ArrowRight size={17} aria-hidden="true" />
-          </ContextLink>
+          {PACE_LEVELS.map((label, i) => (
+            <Link href="/pace" key={label} data-level={i}>
+              <small>P{i}</small>
+              <strong>{label}</strong>
+            </Link>
+          ))}
         </div>
-        <div className={landing.evidenceList}>
-          <article>
-            <span>01</span>
-            <div>
-              <h3>Turn earnings into questions</h3>
-              <p>
-                Review the results, their dates and what could change your case.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>02</span>
-            <div>
-              <h3>Make waiting deliberate</h3>
-              <p>
-                Use alerts for supported conditions. Keep other checks in your
-                research notes.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>03</span>
-            <div>
-              <h3>Return to what matters to you</h3>
-              <p>Return to dated updates from the companies you follow.</p>
-            </div>
-          </article>
-        </div>
+        <p>A filter match is a research lead, not a recommendation.</p>
       </section>
+      <nav
+        className={`${landing.destinationGrid} ap-container`}
+        aria-label="Workspace destinations"
+      >
+        {[
+          [
+            "/discover",
+            "01 · EXPLORE",
+            "Discover ideas",
+            "Filter companies by sector, business results and confirmed Pace.",
+          ],
+          [
+            "/watchlist",
+            "02 · FOLLOW",
+            "Your watchlist",
+            "Your saved companies, prices and upcoming events.",
+          ],
+          [
+            "/research",
+            "03 · UNDERSTAND",
+            "Research a company",
+            "Explore companies. Compare the evidence.",
+          ],
+          [
+            "/research-lab",
+            "04 · TEST",
+            "Research tools",
+            "Compare contribution rules with the same cash, dates and modeled costs.",
+          ],
+        ].map(([href, kicker, title, detail]) => (
+          <Link href={href} key={href}>
+            <small>{kicker}</small>
+            <h2>
+              {title} <ArrowRight size={18} />
+            </h2>
+            <p>{detail}</p>
+          </Link>
+        ))}
+      </nav>
       <section
-        className={`${landing.closing} ap-container`}
-        aria-labelledby="ap-closing-heading"
+        className={`${landing.decisionPair} ap-container`}
+        aria-label="Decisions and evidence"
       >
-        <div>
-          <span className={landing.eyebrow}>YOUR RESEARCH. YOUR PACE.</span>
-          <h2 id="ap-closing-heading">A clearer view starts here.</h2>
-          <p>Start with Free. Go deeper with Pro when you’re ready.</p>
-        </div>
-        <div className={landing.actions}>
-          <Link className={landing.primary} href="/login?mode=signup">
-            Get started <ArrowRight size={18} aria-hidden="true" />
+        <article>
+          <small>WHAT A DECISION LOOKS LIKE</small>
+          <h2>Evidence before action.</h2>
+          <p>
+            Business strength, price conditions and your limits. Read the
+            reasons behind the decision.
+          </p>
+          <Link className={landing.secondary} href="/research/NOW">
+            Open the NOW research page
           </Link>
-          <Link className={landing.secondary} href="/pricing">
-            Compare plans <ArrowRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
+          <small>
+            Live research may require sign-in. No result is implied by this
+            preview.
+          </small>
+        </article>
+        <article>
+          <small>WHAT WE WILL NOT PRETEND</small>
+          <h3>Headlines are not investment conclusions.</h3>
+          <h3>A low multiple alone does not establish value.</h3>
+          <h3>Ownership is not proof of a moat or a return forecast.</h3>
+          <p>Check each figure’s date, source and coverage.</p>
+        </article>
       </section>
-      <footer
-        className={`${experience.publicFooter} ${landing.footer} ap-container`}
-      >
-        <div className={experience.footerMain}>
+      {sampleOnly && (
+        <>
+          <InvestmentDemo />
+          <ProductWalkthrough />
+        </>
+      )}
+      <footer className={`${landing.footer} ap-container`}>
+        <div className={landing.footerMain}>
           <PublicBrand />
           <nav aria-label="Footer navigation">
             <Link href="/#how-it-works">Product</Link>
@@ -795,7 +763,7 @@ export default function PublicLanding({
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </nav>
         </div>
-        <div className={experience.footerLegal}>
+        <div className={landing.footerLegal}>
           <span>© {new Date().getFullYear()} AURYN</span>
           <nav aria-label="Legal and methodology">
             <ContextLink page="methodology">Methodology</ContextLink>

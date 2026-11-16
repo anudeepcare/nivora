@@ -17,7 +17,7 @@ const contrast = (a, b) =>
   (Math.max(luminance(a), luminance(b)) + 0.05) /
   (Math.min(luminance(a), luminance(b)) + 0.05);
 test("Studio accent settings and rendered accent agree in both themes", () => {
-  const css = read("app/appearance.css");
+  const css = read("app/core/preferences.css");
   for (const [selector, value] of [
     [':root[data-accent="blue"]', accents.blue.light],
     [':root[data-theme="dark"][data-accent="blue"]', accents.blue.dark],
@@ -79,11 +79,14 @@ test("approved navigation uses a selected blue button and loading retains separa
   const css = read("components/WorkspaceShell.module.css");
   const root = postcss.parse(css);
   let active;
-  root.walkRules('.shell .header .nav a[aria-current="page"]', r => r.walkDecls('background', d => active=d.value));
-  assert.match(active, /linear-gradient/);
+  root.walkRules((r) => {
+    if (r.selectors.includes('.nav a[aria-current="page"]'))
+      r.walkDecls("background", (d) => (active = d.value));
+  });
+  assert.equal(active, "var(--blue-soft)");
   assert.match(css, /position: sticky/);
   assert.doesNotMatch(css, /width: 220px/);
-  assert.match(css, /\.routePending[^}]+width: 6px/);
+  assert.match(css, /\.routePending[^}]+height: 2px/);
 });
 test("changed offline palette is installed as a fresh shell version", () => {
   assert.match(
@@ -96,7 +99,7 @@ test("changed offline palette is installed as a fresh shell version", () => {
   );
 });
 test("optional appearance accents continue to color navigation with readable selected text", () => {
-  const css = read("app/appearance.css");
+  const css = read("app/core/preferences.css");
   for (const name of ["teal", "violet", "rose"]) {
     const t = block(css, `:root[data-accent="${name}"]`);
     assert.match(t, /--nav-active: var\(--accent-solid\)/);

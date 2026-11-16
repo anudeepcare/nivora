@@ -1,5 +1,4 @@
 "use client";
-import "@/app/core/compatibility.css";
 import type { DocumentId } from "@/lib/legal-content";
 import { ProductSession, useProduct, type DemoData } from "./Session";
 import Shell from "./Shell";

@@ -37,6 +37,7 @@ function setup() {
   const scope = {
     React,
     Help: ({ children }) => React.createElement("aside", null, children),
+    DetailDialog: ({trigger}) => React.createElement("button", {"aria-haspopup":"dialog"}, trigger),
     useState: (value) => {
       const i = cursor++;
       if (!(i in states))
@@ -205,7 +206,7 @@ test("company metrics show every selected available metric without an expand but
     );
 });
 
-test("restored lower grid renders real metric rows and category navigation without a disclosure", async () => {
+test("primary evidence grid and open detail dialogs retain every metric and provenance", async () => {
   const source = fs.readFileSync("components/ResearchEvidenceGrid.tsx", "utf8");
   const ast = ts.createSourceFile(
     "grid.tsx",
@@ -247,6 +248,7 @@ test("restored lower grid renders real metric rows and category navigation witho
     s: {},
     Help: ({ trigger, children }) =>
       React.createElement("span", null, trigger, children),
+    DetailDialog: ({ title, children }) => React.createElement("section", {"data-open-dialog": title}, children),
     Source: ({ href, children }) =>
       React.createElement("a", { href }, children),
     Building2: () => null,

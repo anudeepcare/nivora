@@ -86,6 +86,7 @@ test("business-history colors separate no observations, zero profitable years, m
     },
   ).outputText;
   const bindings = {
+    DetailDialog: ({title,children}) => React.createElement("section", {"data-dialog-title":title}, children), detailStyle: {content:"detail-content"}, 
     React,
     Help: ({children}) => React.createElement("aside", null, children),
     useMemo: React.useMemo,

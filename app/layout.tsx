@@ -5,11 +5,8 @@ import Pwa from "@/components/Pwa";
 import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
 import "./core/foundation.css";
-import "./appearance.css";
-import "./core/surfaces.css";
-import "./core/readability.css";
-import "./core/mobile-glass.css";
-import "./core/studio-glass.css";
+import "./core/preferences.css";
+import "./core/primitives.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

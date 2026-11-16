@@ -1,4 +1,5 @@
 "use client";
+import aux from "./HomeAuxiliary.module.css";
 import Link from "next/link";
 import { CalendarDays, ArrowUpRight, Newspaper } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -99,7 +100,10 @@ export default function HomeUpdates({
   const next = agenda[0];
   if (!key) return null;
   return (
-    <section className="home-updates home-desk" aria-label="Company updates">
+    <section
+      className={`home-updates home-desk ${aux.updates}`}
+      aria-label="Company updates"
+    >
       <header className="section-head">
         <div>
           <span className="eyebrow">Your companies</span>

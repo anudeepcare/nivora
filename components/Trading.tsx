@@ -1,4 +1,5 @@
 "use client";
+import support from "./SupportingScreens.module.css";
 import { useMemo, useState } from "react";
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
@@ -105,7 +106,7 @@ function PaperTradingWorkspace() {
     }
   }
   return (
-    <article>
+    <article className={support.trading}>
       <header className="page-heading">
         <div>
           <span className="eyebrow">ADMINISTRATOR WORKSPACE</span>

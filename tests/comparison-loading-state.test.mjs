@@ -11,7 +11,7 @@ function render({loading = false,error = ''} = {}) {
   const state = ['MSFT,AAPL','MSFT,AAPL',[],'',error,loading];
   let index = 0;
   const empty = () => null;
-  const bindings = {React,useState:()=>[state[index++],empty],useEffect:empty,useMemo:f=>f(),useProduct:()=>({}),useResource:()=>({}),comparisonCompatibility:()=>[],PageHeading:empty,Search:empty,PaceHelp:empty,ContributionCompare:empty,Notice:({children})=>React.createElement('p',{role:'alert'},children),Empty:({title,children})=>React.createElement('section',{},title,children)};
+  const bindings = {support: new Proxy({}, {get: (_, key) => String(key)}),React,useState:()=>[state[index++],empty],useEffect:empty,useMemo:f=>f(),useProduct:()=>({}),useResource:()=>({}),comparisonCompatibility:()=>[],PageHeading:empty,Search:empty,PaceHelp:empty,ContributionCompare:empty,Notice:({children})=>React.createElement('p',{role:'alert'},children),Empty:({title,children})=>React.createElement('section',{},title,children)};
   const Component = new Function(...Object.keys(bindings),code+';return Compare;')(...Object.values(bindings));
   return renderToStaticMarkup(React.createElement(Component));
 }

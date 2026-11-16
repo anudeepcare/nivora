@@ -1,552 +1,13 @@
-.panel :global(.financial-detail-groups) {
+/* Financial and Technical screen composition. Canonical module, not overrides. */
+.panel {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-.panel :global(.detail-metric) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 6px 12px;
-  padding: 12px 0;
-  background: transparent;
-  border-radius: 0;
-  border-bottom: 1px solid var(--line);
-}
-.panel :global(.detail-metric) strong {
-  white-space: nowrap;
-  font-size: 22px;
-  font-variant-numeric: tabular-nums;
-}
-.panel :global(.detail-metric) small {
-  grid-column: 1/-1;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
-}
-.panel :global(.technical-level-grid) {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px;
-}
-.panel :global(.technical-level-grid) > div {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  min-width: 0;
-  padding: 14px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 9px;
-}
-.panel :global(.technical-level-grid) strong {
-  white-space: nowrap;
-  word-break: normal;
-  overflow-wrap: normal;
-  font-size: 20px;
-  font-variant-numeric: tabular-nums;
-}
-.panel :global(.technical-level-grid) span,
-.panel :global(.technical-level-grid) small {
-  font-size: 12px;
-  color: var(--muted);
-}
-@media (max-width: 900px) {
-  .panel :global(.financial-detail-groups) {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 400px) {
-  .panel :global(.technical-level-grid) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.panel :global(.technical-desk-groups) > section {
-  padding: 18px;
-  border-radius: 12px;
-  background: var(--card);
-  border: 1px solid var(--line);
-}
-.panel :global(.technical-desk-groups) > section > header {
-  padding: 0 0 12px;
-  border-bottom: 1px solid var(--line);
-}
-.panel :global(.technical-desk-groups) h3 {
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.panel :global(.technical-desk-groups) dl > div {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  padding: 12px 8px;
-  align-items: baseline;
-}
-.panel :global(.technical-desk-groups) dd {
-  margin: 0;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.panel :global(.technical-desk-groups) summary {
-  font-size: 13px;
-}
-.panel :global(.financial-detail-groups) > section {
-  align-self: start;
-  background: linear-gradient(
-    130deg,
-    var(--card) 75%,
-    color-mix(in srgb, var(--jade) 12%, var(--card))
-  );
-}
-.panel :global(.financial-detail-groups) > section:nth-child(2) {
-  background: linear-gradient(
-    130deg,
-    var(--card) 75%,
-    color-mix(in srgb, var(--orchid) 12%, var(--card))
-  );
-}
-
-.ratioTrack {
-  grid-column: 1/-1;
-  display: block;
-  height: 4px;
-  border-radius: 4px;
-  background: var(--line);
-  overflow: hidden;
-}
-.ratioTrack > span {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, #7fae98, #9fdbed);
-  border-radius: 4px;
-}
-.panel
-  :global(.financial-detail-groups)
-  > section:nth-child(2)
-  .ratioTrack
-  > span {
-  background: linear-gradient(90deg, #447f7b, #9296e5);
-}
-
-.priceMap {
-  margin: 16px 0;
-  padding: 16px;
-  border: 0;
-  border-radius: 16px;
-  background: var(--workspace-glass, var(--card));
-  min-width: 0;
-}
-.priceMapHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   gap: 20px;
-  margin-bottom: 18px;
-}
-.priceMapHeader h3 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 7px 0;
-  font-size: 20px;
-}
-.priceMapHeader p {
-  max-width: 650px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
-.priceMapHeader button {
-  flex-shrink: 0;
-}
-.referenceGroups {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 20px;
-}
-.referenceGroups > section {
   min-width: 0;
 }
-.referenceHeading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 0 0 10px;
-}
-.referenceHeading h4 {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-}
-.referenceHeading span {
-  font-size: 12px;
-  color: var(--muted);
-}
-.anchorSummary {
-  margin: 0 0 12px;
-  padding: 10px 12px;
-  border: 0;
-  border-radius: 8px;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-}
-.anchorSummary > span {
-  margin: 0 6px;
-  color: var(--muted);
-}
-.anchorSummary small {
-  display: block;
-  margin-top: 5px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.4;
-}
-.retracementList,
-.pivotList {
-  margin: 0;
-}
-.retracementList > div {
-  display: grid;
-  grid-template-columns: 70px minmax(0, 1fr) minmax(62px, auto);
-  align-items: baseline;
-  gap: 10px;
-  min-height: 40px;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 8px;
-}
-.retracementList dt {
-  color: var(--muted);
-  font-size: 12px;
-}
-.retracementList dd {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 550;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.retracementList .levelDistance {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--muted);
-}
-.channelGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0 0 18px;
-}
-.channelGrid > div {
-  min-width: 0;
-  padding: 10px 12px;
-  background: var(--workspace-tile);
-  border: 0;
-  border-radius: 9px;
-}
-.channelGrid dt {
-  font-size: 12px;
-  color: var(--muted);
-}
-.channelGrid dd {
-  margin: 6px 0 0;
-  font-size: 18px;
-  font-weight: 550;
-  font-variant-numeric: tabular-nums;
-}
-.pivotList > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 40px;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 8px;
-}
-.pivotList dt {
-  font-size: 12px;
-  color: var(--muted);
-}
-.pivotList dd {
-  margin: 0;
-  text-align: right;
-  font-size: 15px;
-  font-weight: 550;
-  font-variant-numeric: tabular-nums;
-}
-.levelMethod {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.6;
-}
-.levelMethod summary {
-  width: fit-content;
-  cursor: pointer;
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 550;
-}
-.levelMethod p {
-  margin: 10px 0 0;
-  max-width: 100ch;
-}
-.levelMethod summary:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 4px;
-}
-.retracementList > div:nth-child(odd),
-.pivotList > div:nth-child(odd) {
-  background: var(--workspace-tile);
-}
-@media (max-width: 700px) {
-  .priceMap {
-    padding: 16px;
-  }
-  .priceMapHeader {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .priceMapHeader h3 {
-    font-size: 18px;
-  }
-  .referenceGroups {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-  .priceMapHeader button {
-    min-height: 40px;
-  }
-}
-
-/* Shared research rhythm: a compact ledger, with color on surfaces not edges. */
-.panel.panel.panel.panel :global(.technical-desk-groups) {
-  gap: 16px;
-  align-items: start;
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) > section {
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, #438f86 7%, var(--card)),
-    var(--card) 65%
-  );
-}
-.panel.panel.panel.panel
-  :global(.technical-desk-groups)
-  > section[data-tone="violet"] {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, #8c6bcc 8%, var(--card)),
-    var(--card) 65%
-  );
-}
-.panel.panel.panel.panel
-  :global(.technical-desk-groups)
-  > section[data-tone="amber"] {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, #bb7a31 8%, var(--card)),
-    var(--card) 65%
-  );
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) header {
-  margin: 0 0 8px;
-  padding: 0 0 8px;
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) h3 {
-  font-size: 18px;
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) header p {
-  font-size: 12px;
-  line-height: 1.5;
-  margin: 6px 0 0;
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) dl {
-  display: block;
-  margin: 0;
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) dl > div {
-  min-height: 42px;
-  padding: 9px 0;
-  margin: 0;
-  gap: 12px;
-  align-items: center;
-  border-top: 0;
-  border-bottom: 1px solid var(--line);
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) dt {
-  font-size: 13px;
-}
-.panel.panel.panel.panel :global(.technical-desk-groups) dd {
-  font-size: 16px;
-  line-height: 1.4;
-  max-width: none;
-}
-.panel.panel.panel.panel :global(.statement-snapshot) {
-  margin: 12px 0 18px;
-  gap: 10px;
-}
-.panel.panel.panel.panel :global(.statement-snapshot) > div {
-  padding: 12px 14px;
-  min-height: 52px;
-}
-.panel.panel.panel.panel :global(.financial-detail-groups) {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  align-items: start;
-}
-.panel.panel.panel.panel :global(.financial-detail-groups) > section {
-  padding: 16px;
-  margin: 0;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-}
-.panel.panel.panel.panel
-  :global(.financial-detail-groups)
-  > section:first-child {
-  grid-row: span 2;
-}
-.panel.panel.panel.panel :global(.financial-detail-groups) h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-.panel.panel.panel.panel :global(.detail-metric) {
-  padding: 10px 0;
-  gap: 5px 12px;
-}
-.panel.panel.panel.panel :global(.detail-metric) strong {
-  font-size: 20px;
-}
-@media (max-width: 700px) {
-  .panel.panel.panel.panel :global(.financial-detail-groups) {
-    grid-template-columns: 1fr;
-  }
-  .panel.panel.panel.panel
-    :global(.financial-detail-groups)
-    > section:first-child {
-    grid-row: auto;
-  }
-  .panel.panel.panel.panel :global(.technical-desk-groups) dd {
-    font-size: 15px;
-  }
-}
-.panel.panel.panel.panel:global(.financial-picture) {
-  gap: 12px;
-}
-.panel.panel.panel.panel :global(.statement-snapshot) {
-  margin: 0;
-}
-.panel.panel.panel.panel :global(.financial-detail-groups) {
-  margin: 4px 0 0;
-}
-.panel.panel.panel.panel
-  :global(.financial-detail-groups)
-  > section:first-child:has(+ section:last-child) {
-  grid-row: auto;
-}
-
-.panel :global(.business-kpis) {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin: 0;
-}
-.panel :global(.business-kpis) div {
-  min-width: 0;
-}
-.panel :global(.business-kpis) dt {
-  font-size: 12px;
-  color: var(--muted);
-}
-.panel :global(.business-kpis) dd {
-  font-size: clamp(20px, 2.2vw, 30px);
-  font-weight: 650;
-  margin: 8px 0 0;
-  font-variant-numeric: tabular-nums;
-}
-.panel :global(.financial-answer) {
-  padding: 20px;
-  gap: 24px;
-  margin: 16px 0;
-}
-.panel :global(.financial-answer) > div {
-  min-width: 0;
-}
-.panel :global(.financial-cash-bridge) {
-  margin: 0;
-}
-@media (max-width: 700px) {
-  .panel :global(.financial-answer) {
-    display: grid;
-    grid-template-columns: 1fr;
-    padding: 16px;
-  }
-  .panel :global(.business-kpis) {
-    gap: 10px;
-  }
-  .panel :global(.business-kpis) dd {
-    font-size: 20px;
-  }
-}
-
-.panel.panel :global(.financial-answer) {
-  display: block;
-}
-.panel.panel :global(.financial-cash-bridge) {
-  width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0;
-  border: 0;
-}
-.panel.panel :global(.financial-cash-bridge svg) {
-  width: 100%;
-  height: auto;
-  display: block;
-  aspect-ratio: 480/155;
-}
-.panel.panel :global(.financial-cash-bridge svg text) {
-  font-family: inherit;
-  font-size: 12px;
-}
-
-.panel.panel :global(.financial-answer[hidden]) {
-  display: none;
-}
-.panel.panel :global(.financial-cash-bridge figcaption) {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 6px 16px;
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-.panel.panel :global(.financial-cash-bridge figcaption small) {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
-}
-
-/* The financial desk is a workbench, not three stacked page-width heroes. */
 .financialWorkbench {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
+  gap: 20px;
   align-items: start;
 }
 .financialWorkbench > * {
@@ -554,124 +15,353 @@
 }
 .financialCurrent {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   min-width: 0;
 }
-.panel.panel.panel .financialCurrent :global(.financial-answer) {
-  margin: 0;
-  padding: 18px;
-  border: 0;
-  border-radius: 16px;
-  background: linear-gradient(140deg, var(--workspace-glass), var(--card));
-}
-.panel.panel.panel .financialCurrent :global(.financial-cash-bridge) {
-  max-width: none;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-.panel.panel.panel .financialCurrent :global(.financial-cash-bridge svg) {
-  max-height: 165px;
-}
-.panel.panel.panel
-  .financialCurrent
-  :global(.financial-cash-bridge figcaption) {
-  font-size: 14px;
-  color: var(--ink);
-}
-.panel.panel.panel
-  .financialCurrent
-  :global(.financial-cash-bridge figcaption small) {
-  font-size: 12px;
-  line-height: 1.5;
-}
 .statementCard {
-  padding: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  min-width: 0;
+}
+.statementCard :global(.section-head) {
+  margin-bottom: 12px;
+}
+.statementCard :global(.section-head h3) {
+  font-size: 17px;
+  margin: 0;
+}
+.panel :global(.statement-snapshot) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0 0;
+}
+.panel :global(.statement-snapshot > div) {
+  min-width: 0;
+}
+.panel :global(.statement-snapshot dt) {
+  font-size: 12px;
+  color: var(--muted);
+}
+.panel :global(.statement-snapshot dd) {
+  font-size: 22px;
+  margin: 6px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.panel :global(.financial-answer) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: baseline;
+  margin: 0;
+}
+.panel :global(.financial-answer strong) {
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+.panel :global(.financial-answer p) {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 4px 0;
+}
+.panel :global(.financial-cash-bridge) {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--card);
 }
-.panel.panel.panel .statementCard :global(.section-head) {
+.panel :global(.financial-cash-bridge figcaption) {
   display: grid;
-  gap: 12px;
-  margin: 0 0 12px;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
 }
-.panel.panel.panel .statementCard :global(.section-head h2) {
-  font-size: 17px;
+.panel :global(.financial-cash-bridge figcaption small) {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+  font-weight: 400;
 }
-.panel.panel.panel .statementCard :global(.segments) {
-  display: flex;
-  width: 100%;
-}
-.panel.panel.panel .statementCard :global(.segments button) {
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-  padding: 8px 6px;
-}
-.panel.panel.panel .statementCard :global(.statement-snapshot) {
+.panel :global(.financial-cash-bridge svg) {
   display: block;
+  width: 100%;
+  height: auto;
+  max-height: 210px;
 }
-.panel.panel.panel .statementCard :global(.statement-snapshot > div) {
+.panel :global(.financial-cash-bridge svg text) {
+  fill: var(--ink);
+  font-size: 10px;
+}
+.panel :global(.financial-detail-groups) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.panel :global(.financial-detail-groups > section) {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+}
+.panel :global(.financial-detail-groups h3) {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+.panel :global(.detail-metric-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.panel :global(.detail-metric) {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+.panel :global(.detail-metric strong) {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.panel :global(.detail-metric small) {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.ratioTrack {
+  height: 5px;
+  display: block;
+  background: var(--surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ratioTrack > span {
+  height: 100%;
+  display: block;
+  background: var(--blue);
+  border-radius: inherit;
+}
+.technicalWorkbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(250px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.technicalChart {
+  min-width: 0;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.technicalCurrent {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.panel :global(.technical-level-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.panel :global(.technical-level-grid > div) {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+.panel :global(.technical-level-grid strong) {
+  display: block;
+  margin: 4px 0;
+  font-size: 21px;
+}
+.panel :global(.technical-level-grid small),
+.panel :global(.technical-level-grid span) {
+  font-size: 11px;
+  color: var(--muted);
+}
+.panel :global(.technical-desk-groups) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.panel :global(.technical-desk-groups > section) {
+  min-width: 0;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.panel :global(.technical-desk-groups h3) {
+  margin: 0;
+  font-size: 16px;
+}
+.panel :global(.technical-desk-groups header p) {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 6px 0 12px;
+}
+.panel :global(.technical-desk-groups dl) {
+  margin: 0;
+}
+.panel :global(.technical-desk-groups dl > div) {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
-  border: 0;
-  border-radius: 0;
+  padding: 10px 0;
   border-bottom: 1px solid var(--line);
-  background: transparent;
-  padding: 12px 0;
 }
-.panel.panel.panel .statementCard :global(.statement-snapshot dd) {
-  font-size: 21px;
-  margin: 0;
-}
-.panel.panel.panel .statementCard :global(.statement-snapshot dt) {
+.panel :global(.technical-desk-groups dt) {
   font-size: 12px;
 }
-.technicalWorkbench {
-  display: grid;
-  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
-  margin: 0 0 16px;
+.panel :global(.technical-desk-groups dd) {
+  font-size: 17px;
+  font-weight: 650;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
 }
-.technicalChart,
-.technicalCurrent {
+.priceMap {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
   min-width: 0;
 }
-.technicalChart {
-  display: grid;
-  gap: 14px;
+.priceMapHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
 }
-.panel.panel.panel .technicalChart :global(.plot-section) {
-  padding: 20px;
-  border: 0;
-  border-radius: 18px;
-  background: var(--card);
+.priceMapHeader h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
   margin: 0;
 }
-.panel.panel.panel .technicalCurrent :global(.technical-summary-strip) {
+.priceMapHeader p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+.priceMapHeader button {
+  min-height: 44px;
+}
+.referenceGroups {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0 0 14px;
+  gap: 24px;
 }
-.panel.panel.panel .technicalCurrent :global(.technical-summary-strip > *) {
-  padding: 14px;
+.retracements,
+.observedLevels {
+  min-width: 0;
 }
-.panel.panel.panel .technicalCurrent :global(.technical-level-grid) {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.referenceHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
 }
-.panel.panel.panel .technicalCurrent :global(.technical-level-grid > div) {
+.referenceHeading h4 {
+  font-size: 13px;
+  margin: 0;
+}
+.referenceHeading span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.anchorSummary {
+  display: grid;
+  gap: 4px;
+  background: var(--surface);
   padding: 12px;
-  border: 0;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.anchorSummary > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.anchorSummary small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.retracementList,
+.pivotList {
+  margin: 0;
+}
+.retracementList > div {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 8px;
+}
+.retracementList > div:nth-child(odd),
+.pivotList > div:nth-child(odd) {
+  background: var(--surface);
+}
+.retracementList dt,
+.pivotList dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+.retracementList dd,
+.pivotList dd {
+  font-size: 17px;
+  font-weight: 650;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.retracementList .levelDistance {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.channelGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 20px;
+}
+.channelGrid > div {
+  padding: 12px;
+  background: var(--surface);
   border-radius: 12px;
 }
-.panel.panel.panel .technicalCurrent :global(.technical-level-grid strong) {
-  font-size: 19px;
+.channelGrid dt {
+  font-size: 11px;
+  color: var(--muted);
 }
-@media (max-width: 1100px) {
+.channelGrid dd {
+  margin: 6px 0 0;
+  font-size: 20px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.pivotList > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 8px;
+}
+.levelMethod {
+  margin-top: 12px;
+}
+@media (max-width: 1000px) {
   .financialWorkbench,
   .technicalWorkbench {
     grid-template-columns: minmax(0, 1fr);
@@ -679,104 +369,36 @@
   .financialCurrent {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .panel :global(.technical-desk-groups) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 @media (max-width: 650px) {
-  .financialCurrent {
-    grid-template-columns: minmax(0, 1fr);
+  .panel {
+    gap: 16px;
   }
-  .panel.panel.panel .financialCurrent :global(.financial-cash-bridge svg) {
-    max-height: 145px;
+  .financialCurrent,
+  .referenceGroups,
+  .panel :global(.financial-detail-groups),
+  .panel :global(.technical-desk-groups) {
+    grid-template-columns: 1fr;
   }
-  .panel.panel.panel .statementCard :global(.statement-snapshot) {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+  .priceMap {
+    padding: 16px;
   }
-  .panel.panel.panel .statementCard :global(.statement-snapshot > div) {
-    display: grid;
-    gap: 8px;
-    padding: 10px 0;
+  .priceMapHeader h3 {
+    font-size: 18px;
   }
-  .panel.panel.panel .technicalChart :global(.plot-section) {
-    padding: 16px 14px;
+  .panel :global(.financial-answer strong) {
+    font-size: 26px;
   }
 }
-
-.panel.panel.panel :global(.financial-detail-groups) {
-  align-items: start;
-}
-.panel.panel.panel .statementCard :global(.section-head h3) {
-  font-size: 17px;
-  margin: 0;
-}
-
-.panel.panel.panel:global(.technical-dashboard) {
-  display: block;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-.panel.panel.panel :global(.technical-desk-heading) {
-  margin: 0 0 14px;
-}
-/* Financial categories use one row rather than inherited masonry placement. */
-.panel.panel.panel :global(.financial-detail-groups) {
+.panel :global(.segments[aria-label="Financial period"]) {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: start;
-  gap: 16px;
-  margin: 16px 0 0;
+  gap: 4px;
 }
-.panel.panel.panel :global(.financial-detail-groups > section) {
-  grid-column: auto;
-  grid-row: auto;
-  padding: 18px;
-  margin: 0;
-  border: 0;
-  border-radius: 16px;
-  min-width: 0;
-}
-.panel.panel.panel :global(.financial-detail-groups h3) {
-  font-size: 15px;
-  margin: 0 0 12px;
-}
-@media (max-width: 900px) {
-  .panel.panel.panel :global(.financial-detail-groups) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-/* Period controls stay a single compact, touch-sized row on a phone. */
-.panel.panel.panel > :global(.section-head) > :global(.segments) {
-  display: inline-flex;
-  width: auto;
-  flex: none;
-  gap: 3px;
-  padding: 4px;
-}
-.panel.panel.panel > :global(.section-head) > :global(.segments button) {
+.panel :global(.segments[aria-label="Financial period"] button) {
   min-height: 44px;
-  padding: 8px 12px;
-  font-size: 13px;
-  line-height: 1.4;
   white-space: nowrap;
-}
-@media (max-width: 650px) {
-  .panel.panel.panel > :global(.section-head) {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-  }
-  .panel.panel.panel > :global(.section-head) > :global(.segments) {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    width: 100%;
-    max-width: 360px;
-  }
-  .panel.panel.panel > :global(.section-head) > :global(.segments button) {
-    min-height: 44px;
-    width: auto;
-    margin: 0;
-    padding: 8px 10px;
-  }
 }

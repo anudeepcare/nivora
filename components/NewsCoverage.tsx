@@ -6,6 +6,7 @@ import type { Filing } from "@/lib/types";
 import { newsDesk, type DeskArticle } from "@/lib/news-desk";
 import { dateLabel } from "@/lib/format";
 import { Help } from "./Ui";
+import DetailDialog from "./DetailDialog";
 import s from "./NewsCoverage.module.css";
 export default function NewsCoverage({
   symbol,
@@ -35,29 +36,21 @@ export default function NewsCoverage({
   children?: ReactNode;
 }) {
   const [scope, setScope] = useState<"company" | "broader">("company");
-  const [expanded, setExpanded] = useState(false);
   const feed = useMemo(
     () => newsDesk(news?.items ?? [], symbol, name, now),
     [news, symbol, name, now],
   );
   const rows = feed[scope];
-  const visible = expanded ? rows : rows.slice(0, 6);
-  const renderArticle = (n: DeskArticle, index: number) => (
-    <article className={index === 0 ? s.lead : s.story} key={n.url}>
+  const visible = rows.slice(0, 6);
+  const renderArticle = (n: DeskArticle) => (
+    <article className={s.story} key={n.url}>
       <div className={s.meta}>
         <span>{n.source}</span>
         <time dateTime={n.date}>{dateLabel(n.date)}</time>
       </div>
       <a href={n.url} target="_blank" rel="noopener noreferrer">
-        {index === 0 && (
-          <span className={s.leadLabel}>
-            {scope === "company"
-              ? "Latest company mention"
-              : "Latest broader coverage"}
-          </span>
-        )}
         <h3>{n.title}</h3>
-        <ArrowUpRight size={index === 0 ? 23 : 18} aria-hidden="true" />
+        <ArrowUpRight size={18} aria-hidden="true" />
       </a>
     </article>
   );
@@ -66,8 +59,7 @@ export default function NewsCoverage({
       <section className={s.coverage} aria-label="Company news">
         <header className={s.heading}>
           <div>
-            <span className={s.eyebrow}>THE NEWS DESK</span>
-            <h2>{symbol}, in the news</h2>
+            <h2>{symbol} news</h2>
             <p>Read the source. Separate reporting from the investment case.</p>
           </div>
           <button
@@ -85,7 +77,6 @@ export default function NewsCoverage({
             aria-pressed={scope === "company"}
             onClick={() => {
               setScope("company");
-              setExpanded(false);
             }}
           >
             Company mentions <span>{feed.company.length}</span>
@@ -95,7 +86,6 @@ export default function NewsCoverage({
             aria-pressed={scope === "broader"}
             onClick={() => {
               setScope("broader");
-              setExpanded(false);
             }}
           >
             Broader coverage <span>{feed.broader.length}</span>
@@ -129,16 +119,14 @@ export default function NewsCoverage({
           </div>
         )}
         {rows.length > 6 && (
-          <button
-            type="button"
+          <DetailDialog
+            title={`${symbol} · ${scope === "company" ? "Company mentions" : "Broader coverage"}`}
+            trigger={`Read all ${rows.length} headlines`}
             className={s.more}
-            aria-expanded={expanded}
-            onClick={() => setExpanded(!expanded)}
+            wide
           >
-            {expanded
-              ? "Show six headlines"
-              : `Read all ${rows.length} headlines`}
-          </button>
+            <div className={s.stories}>{rows.map(renderArticle)}</div>
+          </DetailDialog>
         )}
         {error && visible.length > 0 && (
           <p role="status" className={s.basis}>
@@ -203,25 +191,30 @@ export default function NewsCoverage({
               </p>
             )}
             {!!filings && filings.length > 6 && (
-              <details className={s.moreFilings}>
-                <summary>All supplied filings · {filings.length}</summary>
-                {filings.slice(6).map((f) => (
-                  <a
-                    key={f.url}
-                    href={f.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span>
-                      <small>
-                        {f.form} · {dateLabel(f.date)}
-                      </small>
-                      <strong>{f.title}</strong>
-                    </span>
-                    <ArrowUpRight size={16} />
-                  </a>
-                ))}
-              </details>
+              <DetailDialog
+                title={`${symbol} · Source filings`}
+                trigger={`All supplied filings · ${filings.length}`}
+                wide
+              >
+                <div className={s.moreFilings}>
+                  {filings.map((f) => (
+                    <a
+                      key={f.url}
+                      href={f.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span>
+                        <small>
+                          {f.form} · {dateLabel(f.date)}
+                        </small>
+                        <strong>{f.title}</strong>
+                      </span>
+                      <ArrowUpRight size={16} />
+                    </a>
+                  ))}
+                </div>
+              </DetailDialog>
             )}
           </section>
         )}

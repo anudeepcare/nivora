@@ -1,0 +1,5 @@
+{
+  "baselineBuiltCssBytes": 1375253,
+  "cleanBuiltCssBytes": 387289,
+  "scope": "Sum of local built CSS assets, not per-route transferred size or measured runtime speed"
+}

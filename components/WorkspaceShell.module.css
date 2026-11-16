@@ -1,511 +1,370 @@
-/* A single glass chrome system, shared by desktop and touch navigation. */
+/* Sole owner of the authenticated frame, navigation and shell dialogs. */
 .shell {
-  display: block;
-  width: 100%;
-  min-width: 0;
   min-height: 100dvh;
-  padding: 0;
   color: var(--ink);
-  background: var(--app-background);
+  background: var(--workspace-canvas);
 }
-.shell .header {
+.skip {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 200;
+  transform: translateY(-160%);
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--blue);
+}
+.skip:focus {
+  transform: none;
+}
+.header {
   position: sticky;
   top: 0;
   z-index: 40;
   display: flex;
   align-items: center;
-  gap: 18px;
-  min-height: 76px;
-  padding: 10px max(24px, calc((100vw - 1392px) / 2));
-  padding-top: calc(10px + env(safe-area-inset-top, 0px));
-  padding-left: max(
-    24px,
-    env(safe-area-inset-left, 0px),
-    calc((100vw - 1392px) / 2)
-  );
-  padding-right: max(
-    24px,
-    env(safe-area-inset-right, 0px),
-    calc((100vw - 1392px) / 2)
-  );
-  border: 0;
+  gap: 24px;
+  min-height: 72px;
+  padding: 8px max(24px, calc((100% - 1440px) / 2), env(safe-area-inset-right))
+    8px max(24px, calc((100% - 1440px) / 2), env(safe-area-inset-left));
+  padding-top: max(8px, env(safe-area-inset-top));
+  background: var(--workspace-glass);
   border-bottom: 1px solid var(--workspace-edge);
-  background: var(--chrome-surface);
-  backdrop-filter: blur(24px) saturate(125%);
-  -webkit-backdrop-filter: blur(24px) saturate(125%);
+  backdrop-filter: blur(16px);
 }
-.shell .brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink);
-  font-size: 18px;
-  font-weight: 650;
-  letter-spacing: 0.1em;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.shell .brand img {
-  flex: none;
-  width: 30px;
-  height: 34px;
-  object-fit: contain;
-}
-.shell .header .nav {
+.brand {
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 4px;
-  min-width: 0;
-  border-radius: 16px;
-  background: var(--surface);
+  gap: 8px;
+  flex: none;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
-.shell .header .nav a {
+.brand img {
+  display: block;
+}
+.nav {
+  display: flex;
+  gap: 4px;
+}
+.nav a,
+.dock a {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 10px 12px;
+  gap: 8px;
   min-height: 44px;
-  border: 0;
-  border-radius: 14px;
-  background: transparent;
-  box-shadow: none;
+  padding: 10px 14px;
+  border-radius: 10px;
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 550;
   text-decoration: none;
-  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 550;
 }
-.shell .header .nav a > svg {
-  display: block;
-  width: 17px;
-  height: 17px;
-}
-.shell .header .nav a[aria-current="page"] {
-  background: var(--nav-active);
-  color: var(--nav-active-ink);
-  box-shadow: 0 2px 8px #172b4210;
-  font-weight: 650;
-}
-.shell .header .nav a::after {
+.nav svg {
   display: none;
 }
-.shell .header .nav a:not([aria-current="page"]):hover {
+.nav a[aria-current="page"],
+.dock a[aria-current="page"] {
+  background: var(--blue-soft);
   color: var(--blue);
-  background: var(--interaction-hover);
 }
-.shell .searchTrigger {
-  margin-left: auto;
+.nav a:hover,
+.dock a:hover {
+  background: var(--surface);
+}
+.searchTrigger {
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: min(260px, 21vw);
-  min-width: 44px;
+  gap: 10px;
   min-height: 44px;
+  min-width: 0;
+  width: 280px;
+  margin-left: auto;
   padding: 10px 12px;
-  border: 1px solid var(--workspace-edge);
-  border-radius: 14px;
-  background: var(--workspace-control);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--glass);
   color: var(--muted);
   font: inherit;
   font-size: 13px;
   text-align: left;
 }
-.shell .searchTrigger svg {
+.searchTrigger svg {
   flex: none;
 }
-.shell .searchTrigger kbd {
+.searchTrigger kbd {
   margin-left: auto;
   font-size: 11px;
   white-space: nowrap;
 }
-.shell .actions {
+.actions {
   display: flex;
   align-items: center;
   gap: 4px;
 }
-.shell .actions :is(button, a) {
+.actions > :is(a, button) {
   display: grid;
   place-items: center;
   width: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0;
+  height: 44px;
   border: 0;
-  border-radius: 14px;
+  border-radius: 10px;
   background: transparent;
-  color: var(--ink);
-  font-size: 14px;
-  text-decoration: none;
-}
-.shell .actions :is(button, a):hover {
-  background: var(--interaction-hover);
-}
-.shell .actions button:last-child {
-  background: var(--workspace-control);
-  box-shadow: inset 0 0 0 1px var(--workspace-edge);
-}
-.shell .workspace {
-  width: 100%;
-  max-width: 1440px;
-  margin-inline: auto;
-  min-width: 0;
-}
-.shell .content {
-  padding: 24px 24px 48px;
-  min-width: 0;
-  max-width: 100%;
-}
-.shell .dock {
-  display: none;
-}
-.shell .skip {
-  position: fixed;
-  top: -100px;
-  left: 16px;
-  z-index: 100;
-  padding: 12px;
-  border-radius: 12px;
-  background: var(--workspace-control);
-  color: var(--ink);
-}
-.shell .skip:focus {
-  top: 10px;
-}
-.shell :is(.nav, .dock, .actions) :is(a, button):focus-visible,
-.shell .searchTrigger:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
-}
-.shell .toolsDialog,
-.shell .searchDialog {
-  width: min(600px, calc(100vw - 32px));
-  max-width: calc(100vw - 32px);
-  max-height: calc(var(--visual-height, 100dvh) - 32px);
-  padding: 0;
-  border: 1px solid var(--workspace-edge);
-  border-radius: var(--workspace-radius);
-  background: var(--card);
-  color: var(--ink);
-  box-shadow: 0 24px 80px #15271d30;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  overflow: auto;
-  overscroll-behavior: contain;
-}
-.shell .toolsDialog::backdrop,
-.shell .searchDialog::backdrop {
-  background: #171d3466;
-  backdrop-filter: blur(5px);
-}
-.shell :is(.toolsDialog, .searchDialog) > :global(.dialog-head) {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 18px 20px 14px;
-  margin: 0;
-  background: var(--workspace-glass);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--workspace-edge);
-}
-.shell :is(.toolsDialog, .searchDialog) :global(.dialog-head) h2 {
-  margin: 4px 0 0;
-  font-size: 21px;
-  line-height: 1.25;
-}
-.shell :is(.toolsDialog, .searchDialog) :global(.dialog-head) button {
-  flex: 0 0 44px;
-  width: 44px;
-  min-height: 44px;
-  border: 0;
-  border-radius: 14px;
-  background: var(--workspace-control);
-}
-.shell .toolsDialog :global(.tools-intro) {
-  padding: 14px 20px 0;
-  margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  cursor: pointer;
 }
-.shell .toolsDialog :global(.dialog-tools) {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  padding: 12px;
-}
-.shell .toolsDialog :global(.dialog-tools) a {
-  display: flex;
-  align-items: center;
-  color: var(--ink);
-  min-width: 0;
-  min-height: 72px;
-  padding: 12px;
-  gap: 12px;
-  border: 0;
-  border-radius: 14px;
-  background: transparent;
-  box-shadow: none;
-  text-decoration: none;
-}
-.shell .toolsDialog :global(.dialog-tools) a:not([aria-current="page"]):hover {
-  background: var(--workspace-control);
-}
-.shell .toolsDialog :global(.dialog-tools) a > span:nth-child(2) {
-  flex: 1;
-  min-width: 0;
-}
-.shell .toolsDialog :global(.dialog-tools) strong {
-  display: block;
-  font-size: 14px;
-  line-height: 1.4;
-}
-.shell .toolsDialog :global(.dialog-tools) small {
-  display: block;
-  color: var(--muted);
-  opacity: 1;
-  font-size: 12px;
-  line-height: 1.4;
-}
-.shell .toolsDialog :global(.tool-icon) {
-  display: grid;
-  place-items: center;
-  flex: 0 0 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--workspace-control);
+.actions > :is(a, button):hover {
+  background: var(--blue-soft);
   color: var(--blue);
 }
-.shell .toolsDialog :global(.tool-arrow) {
-  flex: none;
-  color: var(--muted);
+.workspace {
+  width: min(1440px, 100%);
+  margin: auto;
+  padding: 24px max(24px, env(safe-area-inset-right)) 32px
+    max(24px, env(safe-area-inset-left));
 }
-.shell .toolsDialog > :global(.account-menu-footer) {
+.contextBar {
+  display: none;
+}
+.content {
+  min-width: 0;
+  outline: none;
+}
+.dock {
+  display: none;
+}
+.toolsDialog,
+.searchDialog {
+  width: min(680px, calc(100% - 32px));
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  padding: 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 24px 80px #07152d33;
+}
+.toolsDialog::backdrop,
+.searchDialog::backdrop {
+  background: #101a3066;
+  backdrop-filter: blur(4px);
+}
+.toolsDialog :global(.dialog-head),
+.searchDialog :global(.dialog-head) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 12px 20px;
-  margin: 0;
-  border-top: 1px solid var(--workspace-edge);
+  gap: 12px;
+  margin-bottom: 16px;
 }
-.shell :global(.account-menu-footer) button {
-  display: inline-flex;
+.toolsDialog h2,
+.searchDialog h2 {
+  font-size: 21px;
+  margin: 0;
+}
+.toolsDialog :global(.eyebrow) {
+  display: none;
+}
+.toolsDialog :global(.icon-button),
+.searchDialog :global(.icon-button) {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.toolsDialog :global(.tools-intro) {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.toolsDialog :global(.dialog-tools) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.toolsDialog :global(.dialog-tools) > a {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 16px;
+  gap: 12px;
+  align-items: center;
+  min-height: 80px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--glass);
+}
+.toolsDialog :global(.dialog-tools) > a:hover {
+  border-color: var(--blue);
+}
+.toolsDialog strong {
+  font-size: 14px;
+}
+.toolsDialog small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.toolsDialog :global(.tool-icon),
+.toolsDialog :global(.tool-arrow) {
+  color: var(--blue);
+}
+.toolsDialog :global(.account-menu-footer) {
+  margin-top: 20px;
+}
+.toolsDialog :global(.account-menu-footer) button {
+  display: flex;
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  border: 0;
-  border-radius: 12px;
-  background: var(--workspace-control);
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
   color: var(--ink);
-  font-size: 13px;
+  font: inherit;
+  cursor: pointer;
 }
-.shell :global(.account-menu-footer) [role="alert"] {
-  color: var(--negative);
-}
-.shell .searchDialog > :global(.search) {
-  padding: 16px 20px 20px;
+.shell :global(.preview-label) {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 12px;
+  margin-bottom: 16px;
 }
 .routePending {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: routePulse 0.8s ease-in-out infinite alternate;
-  pointer-events: none;
+  bottom: 3px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--blue);
+  animation: pulse 1s ease-in-out infinite;
 }
-@keyframes routePulse {
-  from {
-    opacity: 0.35;
-  }
-  to {
-    opacity: 1;
+.shell :is(a, button, input):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.shell button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
   }
 }
-@media (max-width: 767px) {
-  .shell {
-    --mobile-dock-height: 64px;
+@media (max-width: 1100px) {
+  .header {
+    gap: 12px;
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
   }
-  .shell .header {
-    min-height: calc(64px + env(safe-area-inset-top, 0px));
-    padding-top: calc(8px + env(safe-area-inset-top, 0px));
-    padding-bottom: 8px;
-    padding-left: max(14px, env(safe-area-inset-left, 0px));
-    padding-right: max(14px, env(safe-area-inset-right, 0px));
-    gap: 2px;
-    flex-wrap: nowrap;
-  }
-  .shell .brand {
-    font-size: 15px;
-    letter-spacing: 0.08em;
-    gap: 6px;
-  }
-  .shell .brand img {
-    width: 26px;
-    height: 30px;
-  }
-  .shell .header .nav {
-    display: none;
-  }
-  .shell .searchTrigger {
-    flex: 0 0 44px;
+  .searchTrigger {
     width: 44px;
-    padding: 0;
-    justify-content: center;
-    background: transparent;
-    border: 0;
-    color: var(--ink);
+    padding: 10px;
   }
-  .shell .searchTrigger span,
-  .shell .searchTrigger kbd {
+  .searchTrigger span,
+  .searchTrigger kbd {
     display: none;
   }
-  .shell .actions {
-    gap: 0;
+  .nav a {
+    padding-inline: 10px;
   }
-  .shell .dock {
+}
+@media (max-width: 700px) {
+  .header {
+    min-height: 64px;
+    gap: 8px;
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+  .brand {
+    font-size: 17px;
+  }
+  .brand img {
+    width: 28px;
+    height: 28px;
+  }
+  .nav {
+    display: none;
+  }
+  .workspace {
+    padding: 20px max(16px, env(safe-area-inset-right))
+      calc(88px + env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
+  }
+  .dock {
     position: fixed;
-    inset: auto max(12px, env(safe-area-inset-right, 0px))
-      calc(8px + env(safe-area-inset-bottom, 0px))
-      max(12px, env(safe-area-inset-left, 0px));
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 45;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
-    min-height: var(--mobile-dock-height);
-    padding: 5px;
-    margin: 0 auto;
-    width: auto;
-    max-width: 480px;
-    border: 1px solid var(--workspace-edge);
-    border-radius: 22px;
+    padding: 6px 8px max(6px, env(safe-area-inset-bottom));
     background: var(--workspace-glass);
-    box-shadow: var(--workspace-shadow);
-    backdrop-filter: blur(28px) saturate(130%);
-    -webkit-backdrop-filter: blur(28px) saturate(130%);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--workspace-edge);
   }
-  .shell .dock a {
-    position: relative;
-    display: flex;
+  .dock a {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-    min-height: 52px;
     gap: 4px;
-    padding: 4px 2px;
-    border: 0;
-    border-radius: 16px;
-    background: transparent;
-    color: var(--muted);
-    font: inherit;
-    font-size: 11px;
-    font-weight: 550;
-    text-decoration: none;
-    -webkit-tap-highlight-color: transparent;
+    padding: 6px 4px;
+    font-size: 10px;
+    min-height: 52px;
   }
-  .shell .dock svg {
+  .dock svg {
     width: 20px;
     height: 20px;
   }
-  .shell .dock a[aria-current="page"] {
-    color: var(--nav-active-ink);
-    background: var(--nav-active);
-    box-shadow: 0 2px 8px #172b4210;
-    font-weight: 650;
+  .actions {
+    gap: 0;
   }
-  .shell .dock a[aria-current="page"] svg {
-    color: currentColor;
+  .actions > :is(a, button) {
+    width: 40px;
   }
-  .shell .dock a:not([aria-current="page"]):active {
-    background: var(--workspace-control);
+  .searchTrigger {
+    width: 40px;
   }
-  .shell .content {
-    padding: 16px max(14px, env(safe-area-inset-right, 0px))
-      calc(104px + env(safe-area-inset-bottom, 0px))
-      max(14px, env(safe-area-inset-left, 0px));
+  .toolsDialog,
+  .searchDialog {
+    padding: 18px;
+    max-height: calc(100dvh - 24px);
   }
-  .shell .content :is(button, a, input, select, summary, [tabindex]) {
-    scroll-margin-top: calc(80px + env(safe-area-inset-top, 0px));
-    scroll-margin-bottom: calc(104px + env(safe-area-inset-bottom, 0px));
-  }
-  :global([data-keyboard-open="true"]) .shell .dock,
-  :global(.keyboard-open) .shell .dock {
-    display: none;
-  }
-  .shell:has(dialog[open]) .dock {
-    visibility: hidden;
-  }
-  .shell .toolsDialog,
-  .shell .searchDialog {
-    position: fixed;
-    inset: calc(
-        var(--visual-top, 0px) + max(12px, env(safe-area-inset-top, 0px))
-      )
-      max(12px, env(safe-area-inset-right, 0px)) auto
-      max(12px, env(safe-area-inset-left, 0px));
-    margin: 0 auto;
-    width: auto;
-    max-width: 540px;
-    max-height: calc(
-      var(--visual-height, 100dvh) - max(12px, env(safe-area-inset-top, 0px)) -
-        max(12px, env(safe-area-inset-bottom, 0px))
-    );
-  }
-  .shell .toolsDialog :global(.dialog-tools) {
+  .toolsDialog :global(.dialog-tools) {
     grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
-    padding: 8px;
   }
-  .shell .toolsDialog :global(.dialog-tools) a {
+  .toolsDialog :global(.dialog-tools) > a {
     min-height: 64px;
-    padding: 10px 12px;
-  }
-  .shell .toolsDialog :global(.tools-intro) {
-    display: none;
-  }
-  .shell :global(.product-footer) {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    margin-top: 20px;
-    padding: 16px 0;
-    font-size: 11px;
-    text-align: left;
-  }
-  .shell :global(.product-footer) nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px 14px;
-    margin: 0;
-  }
-  .shell :global(.product-footer) nav a {
-    min-height: 32px;
-    font-size: 11px;
-  }
-  .shell :global(.product-footer) nav:global(.footer-desktop),
-  .shell :global(.product-footer) details:not([open]) nav {
-    display: none !important;
   }
 }
-@media (prefers-reduced-transparency: reduce) {
-  .shell .header,
-  .shell .dock,
-  .shell .toolsDialog,
-  .shell .searchDialog {
-    background: var(--chrome-surface);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+@media (max-width: 360px) {
+  .brand span {
+    display: none;
+  }
+  .workspace {
+    padding-inline: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -513,122 +372,18 @@
     animation: none;
   }
 }
-:global([data-motion="reduce"]) .routePending {
-  animation: none;
-}
-
-/* Selection, hover and loading are separate states. Never erase selection on hover. */
-.shell .actions a[aria-current="page"],
-.shell .actions button[aria-expanded="true"] {
-  background: var(--nav-active);
-  color: var(--nav-active-ink);
-  box-shadow: none;
-}
-.shell .toolsDialog :global(.dialog-tools) a[aria-current="page"] {
-  background: var(--blue-soft);
-  color: var(--blue);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue) 18%, transparent);
-}
-.shell .toolsDialog :global(.dialog-tools) a:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: -2px;
-}
-
-/* Approved light-glass navigation. Desktop top menu; mobile bottom dock. */
-.shell .railLabel,
-.shell .secondaryNav,
-.shell .railNote,
-.shell .contextBar {
-  display: none;
-}
-.shell .header {
-  min-height: 64px;
-  background: color-mix(in srgb, var(--chrome-surface) 84%, transparent);
-}
-.shell .header .nav {
-  background: transparent;
-  border-radius: 0;
-}
-.shell .header .nav a {
-  border-radius: 10px;
-  font-size: 14px;
-}
-.shell .header .nav a > svg {
-  display: none;
-}
-.shell .header .nav a[aria-current="page"] {
-  background: linear-gradient(155deg, #0069e8, var(--accent-solid));
-  color: #fff;
-  box-shadow: 0 3px 8px #1261dc22;
-}
-.shell .searchTrigger {
-  border-radius: 12px;
-}
-.shell .content {
-  padding-top: 18px;
-}
-@media (min-width: 768px) and (max-width: 1100px) {
-  .shell .header {
-    gap: 8px;
-    padding-inline: max(14px, env(safe-area-inset-left, 0px));
-  }
-  .shell .header .nav a {
-    padding-inline: 9px;
-  }
-  .shell .searchTrigger {
-    width: 44px;
-    padding: 0;
-    justify-content: center;
-  }
-  .shell .searchTrigger span,
-  .shell .searchTrigger kbd {
-    display: none;
-  }
-}
-@media (max-width: 767px) {
-  .shell .header {
-    min-height: calc(64px + env(safe-area-inset-top, 0px));
-  }
-  .shell .brand {
-    font-size: 18px;
-    letter-spacing: 0.045em;
-  }
-  .shell .actions > :first-child {
-    display: none;
-  }
-  .shell .dock {
-    inset: auto 0 0;
-    max-width: none;
-    border-radius: 24px 24px 0 0;
-    border-bottom: 0;
-    padding: 6px max(12px, env(safe-area-inset-right, 0px))
-      calc(6px + env(safe-area-inset-bottom, 0px))
-      max(12px, env(safe-area-inset-left, 0px));
-    background: color-mix(in srgb, var(--chrome-surface) 85%, transparent);
-  }
-  .shell .dock a[aria-current="page"] {
-    background: linear-gradient(
-      145deg,
-      color-mix(in srgb, var(--blue) 12%, var(--card)),
-      color-mix(in srgb, var(--blue) 22%, var(--card))
-    );
-    color: var(--blue);
-    box-shadow: none;
-  }
-  .shell .dock a {
-    min-height: 56px;
-    font-size: 12px;
-  }
-  .shell .dock svg {
-    width: 23px;
-    height: 23px;
-  }
-}
 @media (prefers-reduced-transparency: reduce) {
-  .shell .header,
-  .shell .dock {
-    background: var(--chrome-surface);
+  .header,
+  .dock {
+    background: var(--card);
     backdrop-filter: none;
-    -webkit-backdrop-filter: none;
   }
+  .toolsDialog::backdrop,
+  .searchDialog::backdrop {
+    backdrop-filter: none;
+  }
+}
+
+:global(.keyboard-open) .dock {
+  display: none;
 }

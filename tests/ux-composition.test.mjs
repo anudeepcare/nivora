@@ -35,7 +35,8 @@ function valueStudio() {
     "@/lib/research-desks": desks,
     "@/lib/model-assessment": assessment,
     "@/lib/format": format,
-    "./ValueStudio.module.css": {},
+    "./ValueStudio.module.css": {scenarios:"scenarios",consensus:"consensus",calculator:"calculator",market:"market",multipleRows:"multipleRows",multipleTrack:"multipleTrack"},
+    "./DetailDialog": {__esModule:true,default:({title,trigger,children})=>React.createElement("section",{"data-detail-title":title}, React.createElement("button",{"aria-haspopup":"dialog"},trigger),children)},
     "./DecisionInsights": marker("calculator"),
     "./AnalystTargets": marker("analyst-targets"),
     "./StockPillars": marker("selected-cases"),
@@ -153,4 +154,17 @@ test("optional Overview sections do not reserve empty named grid rows", () => {
   const css = fs.readFileSync("components/ResearchOverview.module.css", "utf8");
   assert.doesNotMatch(css, /grid-template-areas/);
   assert.match(css, /\.changes:empty\s*\{\s*display:\s*none/);
+});
+
+
+test("Valuation groups cases and consensus at right and uses truthful compact multiple bars", () => {
+ const View=valueStudio(), r=research({target:120});
+ r.evidence.multiples={TrailingPE:40,ForwardPE:20,PriceBookMRQ:5};
+ const html=renderToStaticMarkup(React.createElement(View,{research:r}));
+ assert.match(html, /class="scenarios"[\s\S]*?selected-cases[\s\S]*?class="consensus"[\s\S]*?analyst-targets/);
+ assert.match(html, /data-metric="trailingPE"/);assert.match(html,/40.0×/);assert.match(html,/20.0×/);
+ assert.match(html,/width:92.59259259259258%/);
+ assert.match(html,/not investment quality/);
+ const source=fs.readFileSync("components/ValueStudio.tsx","utf8");assert.doesNotMatch(source,/<details|<summary/);
+ assert.match(source,/<DetailDialog[\s\S]*?title="Model fit &amp; evidence"|title="Model fit & evidence"/);
 });

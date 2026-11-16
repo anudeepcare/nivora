@@ -1,4 +1,5 @@
 "use client";
+import support from "./SupportingScreens.module.css";
 import { providerSymbol, sameProviderSymbol } from "@/lib/provider-symbol";
 import { verifiedResearch } from "@/lib/comparison";
 import PaceHelp from "./PaceHelp";
@@ -81,7 +82,7 @@ export default function ResearchLab() {
     URL.revokeObjectURL(u);
   }
   return (
-    <section>
+    <section className={support.lab}>
       <PaceHelp trigger="Understand AURYN Pace" />
       <PageHeading
         title="Strategy lab"

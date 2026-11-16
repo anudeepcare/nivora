@@ -1,4 +1,6 @@
 "use client";
+import DetailDialog from "./DetailDialog";
+import detailStyle from "./ResearchDetailContent.module.css";
 import { studyMarket } from "@/lib/settled-study-bars";
 import QuickRead from "./QuickRead";
 import SectionIcon from "./SectionIcon";
@@ -362,27 +364,37 @@ export default function TechnicalDashboard({
       </div>
       <div className="technical-desk-groups">
         {groups.map((g) => (
-          <details key={g.title} data-tone={g.tone}>
-            <summary>
-              <SectionIcon name={g.title} />
-              <strong>{g.title}</strong>
-              <span>{g.rows.length} indicators</span>
-            </summary>
-            <p>{g.note}</p>
-            <dl>
-              {g.rows.map(([label, value, definition]) => (
-                <div key={label}>
-                  <dt>
-                    <span>{label}</span>
-                    <Help label={label}>
-                      <p>{definition}</p>
-                    </Help>
-                  </dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </details>
+          <DetailDialog
+            key={g.title}
+            title={g.title}
+            trigger={
+              <>
+                <SectionIcon name={g.title} />
+                <strong>{g.title}</strong>
+                <span>{g.rows.length} indicators</span>
+              </>
+            }
+            wide
+          >
+            <div className={detailStyle.content}>
+              <section data-tone={g.tone}>
+                <p>{g.note}</p>
+                <dl>
+                  {g.rows.map(([label, value, definition]) => (
+                    <div key={label}>
+                      <dt>
+                        <span>{label}</span>
+                        <Help label={label}>
+                          <p>{definition}</p>
+                        </Help>
+                      </dt>
+                      <dd>{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            </div>
+          </DetailDialog>
         ))}
       </div>
       <section className={layout.priceMap} aria-label="Price reference map">
@@ -489,8 +501,11 @@ export default function TechnicalDashboard({
             </dl>
           </section>
         </div>
-        <details className={layout.levelMethod}>
-          <summary>Anchor dates, methods &amp; limits</summary>
+        <DetailDialog
+          title="Anchor dates, methods & limits"
+          trigger="Anchor dates & methods"
+          className={layout.levelMethod}
+        >
           {a.fib && (
             <p>
               Automatic anchors: low {m(a.fib.low)} on{" "}
@@ -510,7 +525,7 @@ export default function TechnicalDashboard({
             Contribution context is in Overview; deeper tail-risk and trade
             planning are in Advanced.
           </p>
-        </details>
+        </DetailDialog>
       </section>
       <dialog
         ref={dialog}

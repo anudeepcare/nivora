@@ -9,6 +9,7 @@ import type { OverviewMetric } from "@/lib/overview-evidence";
 import { overviewEvidence } from "@/lib/overview-evidence";
 import { amount, percent, dateLabel } from "@/lib/format";
 import { Help, Source } from "./Ui";
+import DetailDialog from "./DetailDialog";
 import s from "./ResearchEvidenceGrid.module.css";
 export default function ResearchEvidenceGrid({
   research,
@@ -94,30 +95,46 @@ export default function ResearchEvidenceGrid({
       ({ tab }) =>
         !evidence.crypto || (tab !== "Financials" && tab !== "Valuation"),
     );
-  const renderRows = (rows: OverviewMetric[], key: string) => (
+  const metricBasis = (row: OverviewMetric) => (
+    <>
+      {row.help}
+      {row.period && (
+        <p>
+          {row.periodBasis ?? "Reported"} · {dateLabel(row.period)}
+        </p>
+      )}
+      {[
+        ...new Set(
+          [row.sourceUrl, ...(row.sourceUrls ?? [])].filter(
+            (url): url is string => Boolean(url),
+          ),
+        ),
+      ].map((url, index) => (
+        <Source key={url} href={url}>
+          Source evidence{index ? ` ${index + 1}` : ""}
+        </Source>
+      ))}
+    </>
+  );
+  const renderRows = (
+    rows: OverviewMetric[],
+    key: string,
+    inDialog = false,
+  ) => (
     <dl>
       {rows.map((row) => (
         <div key={row.key} className={s.metric}>
           <dt>
-            <Help label={row.label} trigger={row.label}>
-              {row.help}
-              {row.period && (
-                <p>
-                  {row.periodBasis ?? "Reported"} · {dateLabel(row.period)}
-                </p>
-              )}
-              {[
-                ...new Set(
-                  [row.sourceUrl, ...(row.sourceUrls ?? [])].filter(
-                    (url): url is string => Boolean(url),
-                  ),
-                ),
-              ].map((url, index) => (
-                <Source key={url} href={url}>
-                  Source evidence{index ? ` ${index + 1}` : ""}
-                </Source>
-              ))}
-            </Help>
+            {inDialog ? (
+              <>
+                <strong>{row.label}</strong>
+                <div className={s.metricBasis}>{metricBasis(row)}</div>
+              </>
+            ) : (
+              <Help label={row.label} trigger={row.label}>
+                {metricBasis(row)}
+              </Help>
+            )}
           </dt>
           <dd data-tone={row.tone}>
             {row.unit === "money"
@@ -184,18 +201,23 @@ export default function ResearchEvidenceGrid({
               : [];
           return (
             <React.Fragment key={`mobile-${key}`}>
-              {core.length > 0 && (
+              {(core.length > 0 || extra.length > 0) && (
                 <article
                   className={`${s.panel} ${s.mobileEvidence} ${key === "business" ? s.businessStrip : ""}`}
                 >
                   <h3>{name}</h3>
                   {renderRows(core, key)}
-                </article>
-              )}
-              {extra.length > 0 && (
-                <article className={`${s.panel} ${s.mobileEvidence} ${s.more}`}>
-                  <h3>{name} · additional metrics</h3>
-                  {renderRows(extra, key)}
+                  {extra.length > 0 && (
+                    <DetailDialog
+                      title={`${name} · all metrics`}
+                      trigger={`View ${rows.length} metrics`}
+                      wide
+                    >
+                      <div className={s.detailMetrics}>
+                        {renderRows(rows, key, true)}
+                      </div>
+                    </DetailDialog>
+                  )}
                 </article>
               )}
             </React.Fragment>
@@ -206,7 +228,14 @@ export default function ResearchEvidenceGrid({
         const priorities =
           key === "business"
             ? ["revenue", "operatingCashFlow", "cash", "roe", "roa"]
-            : [];
+            : key === "valuation"
+              ? [
+                  "TrailingPE",
+                  "ForwardPE",
+                  "EnterpriseValueRevenue",
+                  "marketCap",
+                ]
+              : [];
         const ordered = [...rows].sort((a, b) => {
           const rank = (key: string) => {
             const i = priorities.indexOf(key);
@@ -230,16 +259,18 @@ export default function ResearchEvidenceGrid({
                 </button>
               </header>
               {renderRows(ordered.slice(0, limit), key)}
+              {ordered.length > limit && (
+                <DetailDialog
+                  title={`${name} · all metrics`}
+                  trigger={`View ${ordered.length} metrics`}
+                  wide
+                >
+                  <div className={s.detailMetrics}>
+                    {renderRows(ordered, key, true)}
+                  </div>
+                </DetailDialog>
+              )}
             </article>
-            {ordered.length > limit && (
-              <article
-                className={`${s.panel} ${s.more} ${s.desktopEvidence}`}
-                aria-label={`More ${name.toLowerCase()} metrics`}
-              >
-                <h3>{name} · additional metrics</h3>
-                {renderRows(ordered.slice(limit), key)}
-              </article>
-            )}
           </React.Fragment>
         );
       })}

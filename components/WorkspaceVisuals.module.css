@@ -1,121 +1,143 @@
-/* One composition contract for watchlist and portfolio. No layered theme patches. */
 .workspaceVisuals {
+  display: grid;
+  gap: 16px;
   min-width: 0;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.page-heading) {
-  margin-bottom: 16px;
-  padding-bottom: 16px;
+.workspaceVisuals :global(.page-heading) {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.page-heading) h1 {
-  font-size: clamp(26px, 2.4vw, 34px);
+.workspaceVisuals :global(.page-heading h1) {
+  margin: 0 0 6px;
+  font-size: 30px;
   letter-spacing: -0.04em;
-  line-height: 1.15;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
-  border: 1px solid var(--workspace-edge);
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  backdrop-filter: blur(16px);
+.workspaceVisuals :global(.page-heading p) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.workspaceVisuals :global(.card) {
+  min-width: 0;
   padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.workspaceVisuals :global(.section-head) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 16px;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.section-head) {
-  margin-bottom: 14px;
-}
-.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.section-head h2) {
+.workspaceVisuals :global(.section-head h2) {
   margin: 0;
-  font-size: 19px;
-  letter-spacing: -0.025em;
+  font-size: 18px;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.watch-summary) {
+.workspaceVisuals :global(.watch-summary) {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  min-height: 48px;
-  padding: 0;
-  margin: 0 0 12px;
-  background: transparent;
-  color: var(--ink);
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.watch-summary)
-  > div {
+.workspaceVisuals :global(.watch-summary > div) {
   display: flex;
   align-items: baseline;
   gap: 8px;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.watch-summary strong) {
-  font-size: 22px;
-  line-height: 1.2;
-  color: var(--ink);
+.workspaceVisuals :global(.watch-summary strong) {
+  font-size: 24px;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.watch-count-label) {
-  display: inline;
+.workspaceVisuals :global(.watch-count-label) {
+  font-size: 12px;
   color: var(--muted);
-  font-size: 13px;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.watch-summary .btn) {
-  min-height: 44px;
-  background: var(--workspace-glass);
-  border: 1px solid var(--workspace-edge);
-  color: var(--blue);
+.workspaceVisuals :global(.approved-table-toolbar) {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.approved-table-toolbar) {
+.workspaceVisuals :global(.segment) {
   display: flex;
   flex-wrap: wrap;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 8px;
+  background: var(--surface);
+}
+.workspaceVisuals :global(.segment button) {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 12px;
+  background: transparent;
+  color: var(--muted);
+}
+.workspaceVisuals :global(.segment button[aria-pressed="true"]) {
+  background: var(--card);
+  color: var(--blue);
+}
+.workspaceVisuals :global(.approved-data-note),
+.workspaceVisuals :global(.watch-checkpoint) {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.workspaceVisuals :global(.watchlist-toolbar),
+.workspaceVisuals :global(.watchlist-search) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.workspaceVisuals :global(.filter-input) {
+  width: min(300px, 100%);
+  min-height: 44px;
+  font-size: 14px;
+}
+.workspaceVisuals dialog {
+  width: min(620px, calc(100vw - 24px));
+  max-height: calc(100dvh - 40px);
+  padding: 20px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+}
+.workspaceVisuals dialog::backdrop {
+  background: #08132288;
+}
+.workspaceVisuals :global(.dialog-head) {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  margin-bottom: 16px;
+}
+.workspaceVisuals :global(.dialog-head h2) {
   margin: 0;
-  padding: 0 0 14px;
+  font-size: 20px;
 }
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.holdings-table)
-  :is(td, th) {
-  padding-block: 12px;
-}
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.holdings-table)
-  thead
-  th {
-  background: var(--surface);
-  font-size: 11px;
-  font-weight: 600;
-}
-.workspaceVisuals.workspaceVisuals.workspaceVisuals
-  :global(.holdings-table)
-  tbody
-  tr:hover {
-  background: var(--blue-soft);
-}
-@media (max-width: 700px) {
-  .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
-    padding: 16px 12px;
+@media (max-width: 600px) {
+  .workspaceVisuals :global(.card) {
+    padding: 16px;
   }
-  .workspaceVisuals.workspaceVisuals.workspaceVisuals
-    :global(.holdings-table)
-    td {
-    padding-block: 0;
+  .workspaceVisuals :global(.filter-input) {
+    width: 100%;
+    font-size: 16px;
   }
-  .workspaceVisuals.workspaceVisuals.workspaceVisuals
-    :global(.approved-table-toolbar) {
+  .workspaceVisuals :global(.approved-table-toolbar) {
     align-items: stretch;
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
-    background: var(--card);
-    backdrop-filter: none;
   }
 }

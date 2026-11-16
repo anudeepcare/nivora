@@ -1,28 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import path from 'node:path';
 import postcss from 'postcss';
-
-// Prevent historical feature styles from silently returning to the global cascade.
-test('every compatibility dependency keeps all declarations inside the named layer',()=>{
- const visited=new Set();
- function inspect(file){
-  file=path.resolve(file); if(visited.has(file))return; visited.add(file);
-  const root=postcss.parse(fs.readFileSync(file,'utf8'));
-  for(const node of root.nodes){
-   if(node.type==='comment')continue;
-   if(node.type==='atrule'&&node.name==='import'){
-    assert.doesNotMatch(node.params,/layer\(/,'Next CSS loader treats import layer() as a media query');
-    inspect(path.resolve(path.dirname(file),node.params.match(/["']([^"']+)["']/)[1]));
-   }else assert.ok(node.type==='atrule'&&node.name==='layer'&&node.params==='compatibility',`${file}: unisolated ${node.type}`);
-  }
+const read = file => fs.readFileSync(file,'utf8');
+const parsed = file => postcss.parse(read(file));
+function props(file, selector) {
+ const rule = parsed(file).nodes.find(n=>n.type==='rule' && n.selectors.includes(selector));
+ assert.ok(rule,`${file}: missing ${selector}`);
+ return Object.fromEntries(rule.nodes.filter(n=>n.type==='decl').map(n=>[n.prop,n.value]));
+}
+test('canonical cascade separates tokens, low-specificity shared controls and scoped geometry',()=>{
+ const layout=read('app/layout.tsx');
+ const imports=[...layout.matchAll(/import "(\.\/[^" ]+\.css)"/g)].map(m=>m[1]);
+ assert.deepEqual(imports,['./core/foundation.css','./core/preferences.css','./core/primitives.css']);
+ assert.match(read('app/core/foundation.css'),/@import "\.\/tokens.css"/);
+ for(const file of ['app/core/foundation.css','app/core/preferences.css','app/core/primitives.css']) {
+  const root=parsed(file);
+  root.walkDecls(d=>assert.ok(!d.important,`${file}: shared declarations must not override screen owners`));
+  root.walkRules(r=>assert.doesNotMatch(r.selector,/approved-product.*(?:input|button)|\.research-detail.*\.card/));
  }
- inspect('app/core/compatibility.css');assert.equal(visited.size,2,'Compatibility must load only its entry and consolidated source');
+ const controls=props('app/core/primitives.css',':where(input, select, textarea)');
+ assert.equal(controls['min-width'],'0');
+ assert.equal(controls['max-width'],'100%');
+ assert.equal(controls['font-size'],'16px');
+ assert.equal(controls['min-height'],'44px');
+ assert.equal(controls.color,'var(--control-ink)');
+ assert.equal(controls.background,'var(--control-card)');
 });
-test('shared workspace dimensions do not depend on the active research tab',()=>{
- const css=postcss.parse(fs.readFileSync('components/IntegratedExperience.module.css','utf8'));
- const workspace=css.nodes.find(n=>n.type==='rule'&&n.selector==='.workspace');
- const props=Object.fromEntries(workspace.nodes.map(n=>[n.prop,n.value]));
- assert.equal(props.width,'100%');assert.equal(props['max-width'],'var(--app-width)');assert.equal(props['min-width'],'0');
+test('shared workspace dimensions are owned by the shell, independent of research tabs',()=>{
+ assert.match(read('components/Shell.tsx'),/import experience from "\.\/WorkspaceShell.module.css"/);
+ const workspace=props('components/WorkspaceShell.module.css','.workspace');
+ assert.equal(workspace.width,'min(1440px, 100%)');
+ assert.equal(workspace.margin,'auto');
+ assert.equal(props('components/WorkspaceShell.module.css','.content')['min-width'],'0');
+ assert.match(read('components/Shell.tsx'),/id="content" className=\{experience.content\}/);
 });

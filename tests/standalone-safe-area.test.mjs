@@ -8,9 +8,9 @@ const safe = (value) =>
     value.includes(`safe-area-inset-${edge}`),
   );
 for (const [file, selector] of [
-  ["Contact", ".page.page.page"],
+  ["Contact", ".page"],
   ["ReleaseNotes", ".page"],
-  ["LegalDocument", ".document.document.document"],
+  ["LegalDocument", ".document"],
 ]) {
   test(`${file} standalone padding protects all screen edges at every breakpoint`, () => {
     const root = postcss.parse(read(`components/${file}.module.css`));
@@ -84,18 +84,17 @@ test("studio auth main and story protect their four screen edges", () => {
 test("password recovery shares login styling and retains scoped safe-area padding", () => {
   const src = read("components/PasswordRecovery.tsx");
   assert.match(src, /Session.module.css/);
-  for (const owner of ["auth", "story", "main"]) assert.ok(src.includes(`experience.${owner}`));
-  const css = postcss.parse(read("app/core/readability.css"));
-  let count = 0;
-  css.walkRules((rule) => {
-    if (!rule.selector.includes('[data-auth-mode="recovery"]')) return;
-    rule.walkDecls((d) => {
-      assert.equal(d.prop, "padding");
-      assert.ok(safe(d.value));
-      count++;
-    });
-  });
-  assert.ok(count >= 3, "recovery story, main and mobile main reserve insets");
+  for (const owner of ["auth", "story", "main"])
+    assert.ok(src.includes(`experience.${owner}`));
+  for (const selector of [".story", ".main"]) {
+    const padding = effectivePadding(
+      "components/Session.module.css",
+      selector,
+      390,
+    );
+    for (const side of ["top", "right", "bottom", "left"])
+      assert.ok(padding[side]?.includes(`safe-area-inset-${side}`));
+  }
   assert.match(src, /fetch\("\/api\/auth\/recovery"/);
 });
 test("release heading uses readable theme-aware foreground", () => {

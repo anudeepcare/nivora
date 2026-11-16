@@ -29,19 +29,23 @@ test("financial semantics share theme-aware colors, independent of accent", () =
   }
 });
 test("disclosure rows no longer receive an opaque surface when expanded", () => {
-  const css = read("app/core/readability.css");
-  const rule = css.match(/details\[open\] > summary \{([^}]+)\}/)?.[1];
-  assert.match(rule, /background: transparent/);
+  const source = read("components/DetailDialog.tsx");
+  assert.match(source, /createPortal/);
+  assert.match(source, /element.showModal\(\)/);
+  assert.doesNotMatch(
+    read("components/DetailDialog.module.css"),
+    /details\[open\]/,
+  );
 });
 test("overview uses coordinated paired panels, not margins inside a gap grid", () => {
   const css = read("components/ResearchOverview.module.css");
   assert.match(
     css,
-    /\.caseWorkspace[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/s,
+    /\.caseWorkspace[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/s,
   );
   assert.match(
     read("components/StockPillars.module.css"),
-    /\.root \{\s*margin: 0;/,
+    /\.root \{[^}]*margin: 0;/,
   );
 });
 test("studio semantic text colors meet AA on actual light and dark surface tokens", () => {

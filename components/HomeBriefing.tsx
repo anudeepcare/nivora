@@ -1,4 +1,5 @@
 "use client";
+import aux from "./HomeAuxiliary.module.css";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
@@ -228,7 +229,10 @@ export default function HomeBriefing({
   const maxImpact = Math.max(1, ...day.moves.map((m) => Math.abs(m.impact)));
   const attention = [...exposure].sort((a, b) => b[1] - a[1]).slice(0, 3);
   return (
-    <section className="briefing-home" data-composition={composition}>
+    <section
+      className={`briefing-home ${aux.home}`}
+      data-composition={composition}
+    >
       <header className="briefing-greeting experience-greeting">
         <div>
           <span className="briefing-kicker">YOUR INVESTMENT WORKSPACE</span>

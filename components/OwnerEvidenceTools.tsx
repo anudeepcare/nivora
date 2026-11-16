@@ -1,4 +1,5 @@
 "use client";
+import support from "./SupportingScreens.module.css";
 import OwnerValidation from "./OwnerValidation";
 import { useState } from "react";
 import { api } from "@/lib/client";
@@ -9,7 +10,7 @@ export default function OwnerEvidenceTools() {
   return (
     <>
       <OwnerValidation />
-      <section className="support">
+      <section className={support.owner}>
         <h2>Public Pace record</h2>
         <p>
           Publish the latest completed signal with a fresh reference quote. This

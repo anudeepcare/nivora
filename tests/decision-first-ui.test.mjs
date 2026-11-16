@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import React from 'react';
+import {readFileSync} from 'node:fs';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {PaceInstrument} from './helpers/integrated-ui.mjs';
 import {aurynDecision} from '../lib/auryn-decision.ts';
@@ -21,11 +22,16 @@ test('Pace presents every supported decision in its headline rather than substit
  }
 });
 
-test('short history retains the diamond framework and decision without repeated missing-data messages',()=>{
+test('short history retains decision with truthful unavailable timing and no fabricated active zone',()=>{
  const short={...research,history:research.history.slice(-80)};
  const html=renderToStaticMarkup(React.createElement(PaceInstrument,{research:short,now}));
  assert.match(html,/<h2>Review<\/h2>/);
- assert.equal((html.match(/Explore P[0-4]:/g)||[]).length,5);
+ assert.match(html,/Building monthly history/);
+ assert.match(html,/aria-label="About Pace timing and stages" aria-haspopup="dialog"/);
+ assert.match(readFileSync('components/PaceInstrument.tsx','utf8'),/12 consecutive prior completed months/);
+ assert.match(html,/business decision above is separate from Pace timing/);
+ assert.doesNotMatch(html,/Explore P[0-4]:|Price zone P[0-4]|Five Pace stages with price levels/);
+ assert.match(html,/Monthly framework · no active zone/);
  assert.doesNotMatch(html,/Date unavailable|Current history unavailable|More settled history|Price history needed/);
  assert.match(html,/What to review/);
 });

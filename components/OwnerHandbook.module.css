@@ -3,30 +3,12 @@
   margin: 20px 0;
   color: var(--ink);
 }
-.cover {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 24px;
-  padding: 36px;
-  border-radius: 22px;
-  background: var(--workspace-panel);
-  color: var(--ink);
-}
 .kicker {
   color: var(--blue);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 650;
-}
-.cover h2 {
-  margin: 14px 0 12px;
-  font-size: clamp(30px, 4vw, 46px);
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-  font-weight: 600;
 }
 .cover p {
   margin: 0;
@@ -101,12 +83,6 @@
   height: 18px;
   accent-color: var(--blue);
 }
-.layout {
-  display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: 28px;
-  align-items: start;
-}
 .topics {
   position: sticky;
   top: 100px;
@@ -124,32 +100,9 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-.topics button {
-  text-align: left;
-  border: 0;
-  background: transparent;
-  line-height: 1.45;
-  color: var(--muted);
-}
 .topics button:hover {
   background: var(--card);
   color: var(--ink);
-}
-.topics button[aria-current="page"] {
-  background: color-mix(in srgb, var(--blue) 9%, var(--card));
-  color: var(--blue);
-  font-weight: 650;
-}
-.reader {
-  padding: 30px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--card);
-  min-width: 0;
-}
-.reader article {
-  max-width: 82ch;
-  margin: auto;
 }
 .readerMeta {
   display: flex;
@@ -303,26 +256,26 @@
   }
 }
 
-.root.root .mobileTopics {
+.root .mobileTopics {
   display: none;
 }
-.root.root .referenceToggle {
+.root .referenceToggle {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
 }
-.root.root .referenceToggle input {
+.root .referenceToggle input {
   flex: none;
   display: inline-block;
   width: 18px;
   height: 18px;
   margin: 0;
 }
-.root.root .reader {
+.root .reader {
   min-width: 0;
 }
-.root.root .reader h3 {
+.root .reader h3 {
   font-size: clamp(24px, 2.4vw, 30px);
   line-height: 1.15;
   letter-spacing: -0.035em;
@@ -353,26 +306,32 @@
   left: 0;
   top: 13px;
 }
-.root.root .fullDetail {
+.root .fullDetail {
   margin: 20px 0;
   border-top: 1px solid var(--line);
 }
-.root.root .fullDetail > summary {
+.root .fullDetail > summary {
   background: transparent;
   padding: 16px 0;
   font-size: 13px;
   color: var(--muted);
 }
 @media (max-width: 800px) {
-  .root.root .mobileTopics {
+  .root .mobileTopics {
     display: block;
   }
-  .root.root .topics {
+  .root .topics {
     display: none;
   }
 }
 /* An editorial guide, with navigation separate from the reading surface. */
 .cover {
+  color: var(--ink);
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  display: flex;
   position: relative;
   overflow: hidden;
   padding: 26px 30px;
@@ -394,14 +353,20 @@
   pointer-events: none;
 }
 .cover h2 {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
   font-size: 32px;
   margin: 8px 0;
 }
 .layout {
+  align-items: start;
+  display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   gap: 24px;
 }
 .reader {
+  min-width: 0;
   border: 1px solid var(--workspace-edge);
   border-radius: var(--workspace-radius);
   background: var(--workspace-glass);
@@ -418,12 +383,19 @@
   letter-spacing: -0.035em;
 }
 .topics button {
+  color: var(--muted);
+  line-height: 1.45;
+  background: transparent;
+  border: 0;
+  text-align: left;
   border-radius: 0;
   padding: 10px 12px;
   min-height: 44px;
   font-size: 12px;
 }
 .topics button[aria-current="page"] {
+  font-weight: 650;
+  color: var(--blue);
   box-shadow: inset 2px 0 var(--blue);
   background: color-mix(in srgb, var(--blue) 5%, transparent);
 }

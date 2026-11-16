@@ -17,10 +17,20 @@ process.env.SENTISENSE_KEY_EXPIRES_AT=new Date(Date.now()+2*86400000).toISOStrin
 process.env.AURYN_SENTISENSE_PREVIEW_ENABLED='false';
 let user=process.env.AURYN_OWNER_USER_ID;
 const now=new Date().toISOString(),today=now.slice(0,10),sourceCalls=[],guards=new Map();
+const targetCache=new Map();let cacheUnavailable=false,cacheDenied=false,cacheReads=0;
 const target={ticker:'TEST',targetLow:80,targetMean:120,targetHigh:160,numberOfAnalysts:12,updatedAt:now,updatedAtEpoch:Math.floor(Date.parse(now)/1000),currentPrice:1,upsidePercent:999,strongBuy:0,buy:0,hold:0,sell:0,strongSell:0};
 globalThis.fetch=async(input,options={})=>{
  const u=new URL(String(input));
  const access=fixtureAccessResponse(input);if(access)return access;
+ if(u.pathname==='/rest/v1/rpc/auryn_preview_targets_read'){
+  cacheReads++;const body=JSON.parse(options.body);assert.match(body.p_key,/^sentisense:preview:v1:[a-f0-9]{64}:TEST$/);assert.match(body.p_denial_key,/^[a-f0-9]{64}$/);
+  if(cacheUnavailable)return Response.json({code:'PGRST202',message:'fixture missing migration'},{status:404});
+  return Response.json(cacheDenied?null:targetCache.get(body.p_key)??null);
+ }
+ if(u.pathname==='/rest/v1/rpc/auryn_preview_targets_write'){
+  const body=JSON.parse(options.body);assert.match(body.p_key,/^sentisense:preview:v1:[a-f0-9]{64}:TEST$/);assert.equal(body.p_value.source,'SentiSense');assert.ok(Date.parse(body.p_expires_at)<=Date.parse(process.env.SENTISENSE_KEY_EXPIRES_AT));
+  targetCache.set(body.p_key,{value:body.p_value,expiresAt:body.p_expires_at});return Response.json(null);
+ }
  if(u.pathname==='/auth/v1/user')return Response.json({id:user,email_confirmed_at:'2026-01-01'});
  if(u.pathname==='/rest/v1/auryn_request_limits'){
   const method=options.method??'GET';
@@ -56,11 +66,14 @@ const route=require(path.join(build,'server/app/api/research/[symbol]/route.js')
 const get=async()=>{const response=await route.GET(new Request('https://preview.example.invalid/api/research/TEST',{headers:{authorization:'Bearer fixture'}}),{params:Promise.resolve({symbol:'TEST'})});const data=await response.json();assert.equal(response.status,200,JSON.stringify(data));return data;};
 const disabled=await get();assert.equal(sourceCalls.length,0);assert.equal(disabled.analystTargets,undefined);assert.equal(disabled.evidence.consensus.target,90);
 process.env.AURYN_SENTISENSE_PREVIEW_ENABLED='true';
+cacheUnavailable=true;assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,0);cacheUnavailable=false;
 const enabled=await get();assert.deepEqual([enabled.analystTargets?.low,enabled.analystTargets?.target,enabled.analystTargets?.high],[80,120,160]);assert.equal(enabled.analystTargets.source,'SentiSense');assert.equal(enabled.quote.price,100);assert.equal(enabled.evidence.consensus.target,90);assert.equal(enabled.evidence.consensus.buy,4);assert.equal(sourceCalls.length,2);assert.equal(guards.size,0);assert.ok(!JSON.stringify(enabled).includes('fixture-sentisense'));
-await get();assert.equal(sourceCalls.length,2);
+await get();assert.equal(sourceCalls.length,2);assert.ok(cacheReads>=3);
+cacheDenied=true;assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);cacheDenied=false;
+cacheUnavailable=true;assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);cacheUnavailable=false;
 user='00000000-0000-4000-8000-000000000001';assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);
 user=process.env.AURYN_OWNER_USER_ID;process.env.VERCEL_ENV='production';assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);
 process.env.VERCEL_ENV='preview';process.env.SENTISENSE_KEY_EXPIRES_AT=new Date(Date.now()-1000).toISOString();assert.equal((await get()).analystTargets,undefined);assert.equal(sourceCalls.length,2);
-const result={passed:true,checks:['disabled-no-provider-call','owner-preview-complete-independent-band','primary-price-evidence-preserved','server-guard-latch-released','cache-no-extra-request','nonowner-withheld','production-withheld','expired-key-withheld','credential-not-in-response'],providerCalls:sourceCalls.length,transport:'controlled fixtures; no network'};
+const result={passed:true,checks:['disabled-no-provider-call','owner-preview-complete-independent-band','primary-price-evidence-preserved','server-guard-latch-released','cache-no-extra-request','missing-cache-fails-closed','warm-shared-denial-withheld','nonowner-withheld','production-withheld','expired-key-withheld','credential-not-in-response'],providerCalls:sourceCalls.length,transport:'controlled fixtures; no network'};
 if(!process.argv[2])fs.writeFileSync('verification/sentisense-preview-20261114/compiled-route-results.json',JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify(result));

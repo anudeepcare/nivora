@@ -1,79 +1,136 @@
+/* Shared search owns its popup and suggestions, including when used in a dialog. */
+.search {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
 .search :global(.search-box) {
-  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
   border-radius: 10px;
+  background: var(--card);
+  color: var(--muted);
 }
 .search :global(.search-box):focus-within {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
-  box-shadow: none;
 }
-.search :global(.search-box) input:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-.search input {
+.search :global(.search-box) input {
+  flex: 1;
   min-width: 0;
+  width: 0;
+  min-height: 48px;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
   font-size: 16px;
+  padding: 8px 0;
+  box-shadow: none;
+}
+.search :global(.search-box) > svg {
+  flex: none;
+  width: 19px;
+}
+.search :global(.search-box) > button {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.search kbd {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }
 .search :global(.search-results) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
   max-height: min(440px, 55dvh);
-  overflow-y: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--workspace-shadow);
 }
-.search {
-  width: 100%;
-  min-width: 0;
-  max-width: none;
-}
-.search > :global(form.search-box) {
+.search :global(.search-results) > button,
+.search :global(.search-suggestions) > button {
   display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
-  max-width: none;
-  min-width: 0;
-  min-height: 48px;
-  height: auto;
-  padding: 0 12px;
-  gap: 10px;
-  box-sizing: border-box;
-}
-.search > :global(form.search-box) input {
-  display: block;
-  flex: 1 1 0%;
-  width: 0;
-  min-width: 0;
-  max-width: none;
-  height: 48px;
-  font-size: 16px;
-  line-height: 1.4;
+  min-height: 56px;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
   color: var(--ink);
+  text-align: left;
+  cursor: pointer;
 }
-.search > :global(form.search-box) > svg {
-  flex: 0 0 19px;
+.search :global(.search-results) > button:hover,
+.search :global(.search-results) > button:global(.selected),
+.search :global(.search-suggestions) > button:hover {
+  background: var(--blue-soft);
 }
-.search > :global(form.search-box) > button {
-  flex: 0 0 40px;
+.search button > div {
+  min-width: 0;
+  flex: 1;
+}
+.search strong {
+  font-size: 14px;
+}
+.search small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.search :global(.search-suggestions) {
+  margin-top: 20px;
+}
+.search h3 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.search :global(.search-results) > p {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 8px;
+}
+.search :is(button, a):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 @media (max-width: 767px) {
-  .search > :global(form.search-box) > kbd {
+  .search kbd {
     display: none;
   }
   .search :global(.search-suggestions) > button {
-    padding: 12px 0;
     min-height: 64px;
   }
   .search :global(.search-suggestions) h3 {
     font-size: 15px;
   }
-}
-
-.search > :global(form.search-box):focus-within {
-  outline: none;
-  border-color: #227f73;
-  box-shadow: 0 0 0 3px #9296e526;
-}
-.search > :global(form.search-box) input:focus {
-  outline: none;
-  box-shadow: none;
-}
-.search input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
 }

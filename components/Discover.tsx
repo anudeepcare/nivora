@@ -1,4 +1,5 @@
 "use client";
+import support from "./SupportingScreens.module.css";
 import OpportunityMap from "./OpportunityMap";
 import { MarketRadar } from "./MarketRadar";
 import mapStyles from "./OpportunityMap.module.css";
@@ -174,7 +175,7 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
     }
   }
   return (
-    <section className="discover-workspace">
+    <section className={support.discover}>
       {!embedded && (
         <PageHeading
           title="Find companies"

@@ -35,6 +35,7 @@ test("public landing leaves the Pace research engine behind a deferred import", 
             return component;
           },
         };
+      if (name === "@/lib/pace-presentation") return { PACE_LEVELS: ["Paused", "Watch zone", "Initial zone", "Deeper zone", "Deep zone"] };
       if (name === "react") return React;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "lucide-react") return icons;

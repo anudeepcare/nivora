@@ -1,259 +1,217 @@
+/* Overview is a single decision canvas: no nested legacy surface resets. */
 .overview {
   display: grid;
-  gap: 16px;
-  align-items: start;
-  margin: 12px 0 24px;
-}
-.overview > * {
+  gap: 20px;
   min-width: 0;
+  margin: 16px 0 24px;
 }
 .decisionStage {
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
   gap: 16px;
   align-items: stretch;
-}
-.decisionStage .chart {
-  grid-column: 1;
-  grid-row: 1;
   min-width: 0;
-  padding: 16px;
+}
+.chart,
+.paceColumn {
+  min-width: 0;
+  padding: 20px;
   border: 1px solid var(--workspace-edge);
   border-radius: 16px;
-  background: var(--workspace-glass);
   box-shadow: var(--workspace-shadow);
 }
-.decisionStage .paceColumn {
+.chart {
+  grid-column: 1;
+  grid-row: 1;
+  background: var(--workspace-panel);
+}
+.paceColumn {
   grid-column: 2;
   grid-row: 1;
-  min-width: 0;
-  padding: 16px;
-  border: 1px solid color-mix(in srgb, var(--blue) 36%, var(--workspace-edge));
-  border-radius: 16px;
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
+  background: #0f1b2d;
+  border-color: #0f1b2d;
+  color: #f8fafc;
 }
 .stageHeading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-}
-.stageHeading > span {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--ink);
+  color: #bac5d5;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
 }
 .context {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin: 10px 0 12px;
-  padding: 3px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 3px;
-  border: 1px solid var(--workspace-edge);
+  margin: 14px 0 18px;
+  padding: 3px;
   border-radius: 10px;
-  background: var(--workspace-tile);
+  background: #263344;
 }
 .context button {
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px;
   border: 0;
   border-radius: 8px;
   font: inherit;
   font-size: 12px;
-  color: var(--muted);
+  color: #d8dfeb;
   background: transparent;
   cursor: pointer;
 }
 .context button[aria-pressed="true"] {
-  background: var(--card);
-  color: var(--blue);
+  color: #101d30;
+  background: #fff;
   font-weight: 650;
-  box-shadow: 0 2px 6px #18355a12;
 }
-.context button:focus-visible,
-.researchTools > summary:focus-visible,
-.consensusDetails > summary:focus-visible {
-  outline: 2px solid var(--blue);
+.context button:focus-visible {
+  outline: 2px solid #a9d5ff;
   outline-offset: 3px;
 }
-.chart.chart :global(.plot-section) {
+.chart :global(.plot-section) {
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: 0;
   background: transparent;
   box-shadow: none;
 }
-.chart.chart :global(.chart-head) {
-  display: block;
-  margin-bottom: 10px;
-}
-.chart.chart :global(.chart-head h3) {
-  margin: 0 0 10px;
-  font-size: 18px;
-  letter-spacing: -0.025em;
-}
-.chart.chart :global(.chart-period-control) {
+.chart :global(.chart-head) {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
 }
-.chart.chart :global(.chart-period-label) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  clip-path: inset(50%);
-  overflow: hidden;
-}
-.chart.chart :global(.ranges) {
+.chart :global(.chart-head h3) {
+  font-size: 16px;
   margin: 0;
+}
+.chart :global(.chart-period-control) {
+  display: grid;
+  gap: 5px;
   max-width: 100%;
-  overflow-x: auto;
-  background: var(--workspace-tile);
-  border: 1px solid var(--workspace-edge);
-  border-radius: 10px;
-  padding: 3px;
 }
-.chart.chart :global(.ranges button) {
-  min-width: 36px;
-  min-height: 36px;
-  padding: 6px 10px;
+.chart :global(.chart-period-label) {
+  font-size: 11px;
+  color: var(--muted);
 }
-.chart.chart :global(.price-chart) {
-  height: 330px;
-  min-height: 330px;
-}
-.chart.chart :global(.chart-wrap) {
-  position: relative;
-}
-.chart.chart :global(.chart-readout) {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  z-index: 2;
-  min-height: 0;
-  font-size: 10px;
-  margin: 0;
-  pointer-events: none;
-  background: var(--workspace-glass);
-  border-radius: 6px;
-  padding: 3px 5px;
-}
-.chart.chart :global(.signal-chart-tools) {
+.chart :global(.ranges) {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 8px 0 4px;
+  gap: 3px;
+  max-width: 100%;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--surface);
 }
-.chart.chart :global(.signal-chart-tools .btn) {
-  min-height: 32px;
-  padding: 5px 8px;
-  font-size: 11px;
-}
-.chart.chart :global(.chart-note) {
-  margin: 6px 0;
-  font-size: 11px;
-  line-height: 1.4;
-}
-.chart.chart :global(.chart-context) {
-  margin: 4px 0;
-  padding: 0;
+.chart :global(.ranges button) {
+  min-width: 32px;
+  min-height: 40px;
+  padding: 6px 10px;
   border: 0;
+  border-radius: 7px;
   background: transparent;
-}
-.chart.chart :global(.chart-context > summary) {
-  min-height: 36px;
-  padding: 8px 0;
+  color: var(--muted);
   font-size: 11px;
-  background: transparent;
   cursor: pointer;
+}
+.chart :global(.ranges button.active),
+.chart :global(.ranges button[aria-pressed="true"]) {
+  color: var(--ink);
+  background: var(--card);
+  box-shadow: 0 1px 4px #0c1b3a10;
 }
 .caseWorkspace {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: 16px;
   align-items: stretch;
 }
 .decisionExplanation,
 .pillars {
   min-width: 0;
+  display: flex;
 }
 .decisionExplanation > section,
 .pillars > section {
-  margin: 0;
+  width: 100%;
   height: 100%;
+  margin: 0;
 }
 .rangeSnapshot,
 .consensusSnapshot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   min-width: 0;
   padding: 16px;
   border: 1px solid var(--workspace-edge);
   border-radius: 14px;
-  background: var(--workspace-glass);
+  background: var(--workspace-panel);
   box-shadow: var(--workspace-shadow);
 }
 .rangeSnapshot h2,
 .consensusSnapshot h2 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   margin: 0 0 14px;
-  font-size: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
   line-height: 1.4;
   text-transform: uppercase;
 }
 .rangeSnapshot > strong,
 .consensusSnapshot > strong {
   display: block;
-  font-size: clamp(18px, 2vw, 26px);
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.2;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
-.rangeSnapshot p,
-.consensusSnapshot p,
-.rangeDetails {
-  font-size: 11px;
-  line-height: 1.45;
-  color: var(--muted);
+.consensusSnapshot > span {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
 }
-.rangeDetails summary {
-  cursor: pointer;
-  min-height: 32px;
-  padding: 8px 0;
+.consensusDetails {
+  margin-top: auto;
+  padding-top: 14px;
 }
-.consensusDetails > summary {
-  cursor: pointer;
-  font-size: 11px;
-  padding: 8px 0;
-  min-height: 32px;
+.rangeMeter {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  margin: 24px 0 22px;
+  border-radius: 6px;
+  background: var(--surface);
 }
-.consensusDetails > section {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  box-shadow: none;
-  background: transparent;
+.rangeMeter i {
+  position: absolute;
+  top: -7px;
+  width: 4px;
+  height: 20px;
+  border-radius: 3px;
+  transform: translateX(-2px);
+  background: var(--ink);
 }
 .overviewMetrics {
   min-width: 0;
 }
 .sectionHeading {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 12px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 .sectionHeading h2 {
   margin: 0;
-  font-size: 22px;
-  letter-spacing: -0.025em;
-}
-.sectionHeading span {
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.3;
 }
 .mobileFacts {
   display: none;
@@ -262,26 +220,21 @@
   display: none;
 }
 .researchTools {
-  border-top: 1px solid var(--line);
-  padding-top: 8px;
-}
-.researchTools > summary {
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   min-height: 44px;
-  padding: 12px 0;
-  font-size: 13px;
-  font-weight: 600;
-}
-.researchTools > summary span {
-  color: var(--muted);
-  margin-left: 12px;
-  font-weight: 400;
-  font-size: 11px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font-size: 12px;
 }
 .supportingEvidence {
   display: grid;
   gap: 16px;
-  padding-top: 12px;
+  min-width: 0;
 }
 .supportingEvidence > * {
   min-width: 0;
@@ -291,93 +244,54 @@
   .caseWorkspace {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .decisionStage {
+    grid-template-columns: minmax(0, 1.4fr) minmax(310px, 1fr);
+  }
 }
 @media (max-width: 900px) {
   .decisionStage {
     grid-template-columns: minmax(0, 1fr);
   }
-  .decisionStage .paceColumn {
+  .paceColumn {
     grid-column: 1;
     grid-row: 1;
   }
-  .decisionStage .chart {
+  .chart {
     grid-column: 1;
     grid-row: 2;
   }
 }
 @media (max-width: 600px) {
   .overview {
-    gap: 12px;
-    margin-top: 10px;
+    gap: 16px;
+    margin-top: 12px;
   }
-  .decisionStage {
-    gap: 12px;
-  }
-  .decisionStage .chart,
-  .decisionStage .paceColumn {
-    padding: 14px;
+  .chart,
+  .paceColumn {
+    padding: 16px;
   }
   .caseWorkspace {
     grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
-  .decisionExplanation {
-    order: 2;
+  .chart :global(.ranges) {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .chart :global(.ranges button) {
+    padding: 6px;
+    flex: none;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 12px;
   }
   .rangeSnapshot {
     display: none;
   }
   .mobileFacts {
     display: block;
-    margin-bottom: 12px;
+    margin-top: 16px;
   }
-  .chart.chart :global(.price-chart) {
-    height: 260px;
-    min-height: 260px;
-  }
-  .chart.chart :global(.ranges) {
-    display: flex;
-    width: 100%;
-  }
-  .chart.chart :global(.ranges button) {
-    flex: 1;
-    padding: 6px;
-    min-width: 30px;
-    min-height: 40px;
-    font-size: 11px;
-  }
-  .context button {
-    min-height: 44px;
-  }
-  .sectionHeading span {
-    font-size: 10px;
-  }
-  .researchTools > summary span {
-    display: block;
-    margin: 5px 0 0;
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .decisionStage .paceColumn,
-  .decisionStage .chart,
-  .rangeSnapshot,
-  .consensusSnapshot {
-    background: var(--card);
-    backdrop-filter: none;
-  }
-}
-.rangeMeter {
-  position: relative;
-  height: 6px;
-  margin: 24px 4px 22px;
-  background: color-mix(in srgb, var(--blue) 14%, transparent);
-  border-radius: 6px;
-}
-.rangeMeter i {
-  position: absolute;
-  width: 4px;
-  height: 20px;
-  top: -7px;
-  transform: translateX(-2px);
-  border-radius: 3px;
-  background: var(--ink);
 }

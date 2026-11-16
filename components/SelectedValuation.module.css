@@ -1,23 +1,22 @@
-.root.root {
+.root {
   min-width: 0;
+  margin: 0 0 16px;
+  padding: 0;
   color: var(--ink);
 }
 .heading {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 20px;
-}
-.eyebrow {
-  color: var(--blue);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .heading h2 {
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1.15;
+  margin: 4px 0;
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
 }
 .heading p {
   margin: 0;
@@ -26,58 +25,87 @@
   font-size: 12px;
   line-height: 1.6;
 }
+.eyebrow {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
 .reasons {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
 }
-.root.root .case {
+.case {
   --case-color: var(--neutral);
   display: flex;
   flex-direction: column;
+  gap: 6px;
   min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 12px;
+  background: var(--workspace-tile);
 }
-.root.root .case[data-case="bear"] {
+.case[data-case="bear"] {
   --case-color: var(--negative);
 }
-.root.root .case[data-case="bull"] {
+.case[data-case="bull"] {
   --case-color: var(--positive);
 }
-.case span {
+.caseLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--case-color);
   font-size: 12px;
   font-weight: 650;
 }
+.caseLabel svg {
+  flex: none;
+}
 .case strong {
-  font-weight: 550;
-  letter-spacing: -0.045em;
+  font-size: clamp(22px, 2vw, 28px);
   line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  color: var(--case-color);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .case small {
-  color: var(--muted);
   font-size: 12px;
+  color: var(--muted);
+}
+.caseInput {
+  margin: 4px 0 0;
+  padding-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.caseInput > span {
+  padding: 0 3px;
+}
+.priceMap {
+  padding: 8px 18px 32px;
 }
 .rail {
   position: relative;
   height: 5px;
   border-radius: 5px;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--negative) 34%, transparent),
-    color-mix(in srgb, var(--neutral) 27%, transparent) 50%,
-    color-mix(in srgb, var(--positive) 34%, transparent)
-  );
+  background: var(--surface);
 }
 .point {
   position: absolute;
   top: 50%;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--neutral);
+  width: 4px;
+  height: 18px;
+  border-radius: 3px;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 3px var(--canvas, var(--card));
+  background: var(--neutral);
 }
 .point[data-side="bear"] {
   background: var(--negative);
@@ -94,144 +122,73 @@
 .now > i {
   display: block;
   width: 2px;
-  height: 17px;
-  margin: auto;
+  height: 22px;
   background: currentColor;
 }
 .now small {
   position: absolute;
-  top: 24px;
+  top: 26px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 10px;
   white-space: nowrap;
   color: var(--muted);
 }
-.root.root .assumptions {
-  margin: 0;
-  border: 0;
-  font-size: 12px;
-  line-height: 1.6;
-}
-.root.root .assumptions summary {
-  padding: 8px 0;
-  background: transparent;
-  border: 0;
-  color: var(--muted);
-  cursor: pointer;
-  font-weight: 500;
-}
-.root.root .years {
+.years {
   display: flex;
-  gap: 14px;
-  margin: 14px 0;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 4px;
+  margin: 14px 0;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--surface);
 }
-.root.root .years button {
-  min-height: 40px;
-  padding: 6px 0;
+.years button {
+  min-height: 44px;
+  padding: 8px 12px;
   border: 0;
-  border-radius: 0;
+  border-radius: 8px;
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
 }
-.root.root .years button[aria-pressed="true"] {
+.years button[aria-pressed="true"] {
   color: var(--blue);
-  font-weight: 700;
+  background: var(--card);
+  font-weight: 650;
 }
-.root.root button:focus-visible,
-.root.root summary:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 4px;
-}
-@media (max-width: 480px) {
-  .reasons {
-    gap: 8px;
-  }
-  .case span {
-    font-size: 11px;
-  }
-  .root.root {
-    padding: 16px 0;
-  }
-}
-.root.root {
-  margin-bottom: 12px;
-}
-.heading h2 {
-  margin: 6px 0;
-}
-.caseInput {
-  font-size: 11px;
+.assumptions {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
   line-height: 1.6;
   color: var(--muted);
-  margin: 4px 0 0;
 }
-.caseInput > span {
-  padding: 0 3px;
-}
-.root.root .assumptions {
-  padding-top: 6px;
-}
-@media (max-width: 600px) {
-  .heading h2 {
-    font-size: 23px;
-  }
-  .reasons {
-    gap: 12px;
-    margin-top: 18px;
-  }
-  .caseInput {
-    font-size: 10px;
-  }
-  .case strong {
-    font-size: 24px;
-  }
-}
-/* Three deliberate scenario surfaces, with visible assumptions and shared price context. */
-.heading h2 {
-  font-size: 25px;
-}
-.heading {
-  align-items: center;
-}
-.reasons {
-  gap: 14px;
-  margin: 20px 0 18px;
-}
-.caseLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.caseLabel svg {
-  flex: none;
-}
-.case strong {
-  font-size: clamp(25px, 2.9vw, 38px);
-}
-.caseInput {
-  padding-top: 8px;
-  border-top: 1px solid color-mix(in srgb, var(--case-color) 12%, transparent);
+.assumptions summary {
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 .status {
   display: inline-flex;
   align-items: center;
   padding: 6px 10px;
-  border-radius: 999px;
+  border-radius: 16px;
+  background: var(--blue-soft);
+  color: var(--blue);
   font-size: 11px;
-  color: var(--valuation-icon);
-  background: color-mix(in srgb, var(--valuation-icon) 9%, var(--card));
   white-space: nowrap;
 }
 .missing {
   display: flex;
-  align-items: flex-start;
   gap: 10px;
-  padding: 14px 16px;
+  align-items: flex-start;
+  padding: 14px;
   border-radius: 12px;
   background: var(--surface);
   font-size: 12px;
@@ -239,155 +196,20 @@
 }
 .missing > svg {
   flex: none;
+  color: var(--warning);
   margin-top: 2px;
-  color: var(--valuation-icon);
-}
-.missing strong {
-  font-size: 12px;
 }
 .missing p {
   margin: 4px 0;
   color: var(--muted);
 }
 .missing small {
+  font-size: 11px;
   color: var(--muted);
-  font-size: 11px;
 }
-.priceMap {
-  max-width: none;
-  padding: 8px 18px 32px;
-}
-@media (max-width: 600px) {
-  .root.root {
-    padding: 18px 14px;
-    border-radius: 18px;
-  }
-  .heading {
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .heading h2 {
-    font-size: 23px;
-  }
-  .root.root .case {
-    padding: 14px 10px;
-    gap: 7px;
-    border-radius: 12px;
-  }
-  .caseLabel {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .case span {
-    font-size: 10px;
-  }
-  .case strong {
-    font-size: 22px;
-  }
-  .case small {
-    font-size: 11px;
-  }
-  .reasons {
-    gap: 8px;
-  }
-  .caseInput {
-    font-size: 10px;
-  }
-  .missing {
-    padding: 12px;
-  }
-}
-@media (max-width: 480px) {
-  .reasons {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
-  }
-  .root.root .case {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 5px 12px;
-    padding: 15px;
-  }
-  .caseLabel {
-    flex-direction: row;
-    align-items: center;
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .case strong {
-    grid-column: 2;
-    grid-row: 1;
-    font-size: 26px;
-  }
-  .case small {
-    grid-column: 2;
-    text-align: right;
-  }
-  .caseInput {
-    grid-column: 1/-1;
-    margin-top: 4px;
-  }
-  .case span {
-    font-size: 12px;
-  }
-}
-:global([data-theme="dark"]) .root.root .case[data-case="bear"] {
-  --case-color: var(--negative);
-}
-:global([data-theme="dark"]) .root.root .case[data-case="base"] {
-  --case-color: var(--neutral);
-}
-:global([data-theme="dark"]) .root.root .case[data-case="bull"] {
-  --case-color: var(--positive);
-}
-:global([data-theme="dark"]) .status {
-  color: #ecc775;
-  background: #ecc77514;
-}
-:global([data-theme="dark"]) .missing > svg {
-  color: #ecc775;
-}
-
-.heading > :global(.button) {
-  flex: 0 0 auto;
-  min-height: 40px;
-  padding: 9px 13px;
-  font-size: 12px;
-}
-@media (max-width: 600px) {
-  .heading {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .root.root {
-    padding: 18px 14px;
-    border-radius: 18px;
-  }
-}
-.root.root .heading {
-  gap: 12px;
-  align-items: start;
-}
-.root.root .heading p {
-  line-height: 1.5;
-}
-.root.root .case span {
-  font-size: 11px;
-}
-.root.root .case small {
-  font-size: 11px;
-}
-@media (max-width: 650px) {
-  .root.root {
-    padding: 16px 14px;
-  }
-}
-
 .recovery {
-  margin-top: 16px;
   min-width: 0;
+  margin-top: 16px;
 }
 .recovery > p {
   font-size: 13px;
@@ -399,50 +221,39 @@
   min-height: 44px;
   margin-bottom: 12px;
 }
-
-/* Compact scenario boxes, without another enclosing panel. */
-.root.root {
-  padding: 12px 0;
-  margin: 0 0 12px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+.root :is(button, summary):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
-.root.root .heading h2 {
-  font-size: 20px;
-  margin: 4px 0;
-}
-.root.root .heading p {
-  font-size: 12px;
-}
-.root.root .reasons {
-  margin: 12px 0;
-  gap: 12px;
-}
-.root.root .case {
-  padding: 12px 14px;
-  border: 0;
-  border-radius: 14px;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--case-color) 9%, var(--card)),
-    var(--card)
-  );
-  box-shadow: 0 8px 28px #17342c08;
-  gap: 4px;
-}
-.root.root .case strong {
-  font-size: clamp(22px, 2vw, 28px);
-  color: var(--case-color);
-}
-.root.root .case span,
-.root.root .case small {
-  font-size: 12px;
-}
-.root.root .priceMap {
-  padding: 6px 18px 32px;
-}
-.root.root .assumptions {
-  padding: 0;
+@media (max-width: 600px) {
+  .reasons {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .case {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px 12px;
+  }
+  .caseLabel {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .case strong {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 24px;
+  }
+  .case small {
+    grid-column: 2;
+    text-align: right;
+  }
+  .caseInput {
+    grid-column: 1/-1;
+  }
+  .years button {
+    padding: 8px;
+    flex: 1;
+  }
 }

@@ -1,7 +1,7 @@
 .desk {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
-  gap: var(--workspace-gap);
+  gap: 20px;
   align-items: start;
   color: var(--ink);
 }
@@ -9,9 +9,10 @@
   min-width: 0;
 }
 .coverage {
-  padding: var(--workspace-inset);
-  background: var(--workspace-panel);
-  border-radius: var(--workspace-radius);
+  padding: 20px;
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
   box-shadow: var(--panel-shadow);
 }
 .heading {
@@ -21,13 +22,13 @@
   gap: 16px;
 }
 .heading h2 {
-  font-size: clamp(24px, 3vw, 34px);
+  font-size: 20px;
   letter-spacing: -0.04em;
   font-weight: 560;
-  margin: 10px 0 8px;
+  margin: 0 0 4px;
 }
 .heading p {
-  margin: 0 0 18px;
+  margin: 0 0 12px;
   font-size: 13px;
   line-height: 1.5;
   color: var(--muted);
@@ -44,17 +45,11 @@
   background: var(--workspace-tile, var(--surface));
   cursor: pointer;
 }
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--blue);
-  font-weight: 700;
-}
 .filters {
   display: flex;
   gap: 6px;
   padding: 5px;
-  background: var(--bg);
+  background: transparent;
   border-radius: 14px;
 }
 .filters button {
@@ -71,8 +66,8 @@
   cursor: pointer;
 }
 .filters button[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--blue-soft);
+  color: var(--blue);
   box-shadow: 0 3px 10px #0000000c;
 }
 .filters span {
@@ -101,18 +96,6 @@
 .meta > span {
   font-weight: 650;
 }
-.lead {
-  position: relative;
-  padding: var(--workspace-inset);
-  border-radius: 18px;
-  margin: 8px 0;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--blue) 5%, var(--card)),
-    color-mix(in srgb, #95a9e3 8%, var(--card))
-  );
-}
-.lead a,
 .story a {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -122,25 +105,9 @@
   text-decoration: none;
   min-height: 44px;
 }
-.leadLabel {
-  grid-column: 1/-1;
-  margin-top: 18px;
-  color: var(--blue);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-}
-.lead h3 {
-  font-size: clamp(21px, 2.1vw, 28px);
-  line-height: 1.3;
-  font-weight: 550;
-  letter-spacing: -0.025em;
-  margin: 0 0 4px;
-}
 .story {
-  padding: 18px 0;
-  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+  border-bottom: 0;
 }
 .story h3 {
   margin: 8px 0 0;
@@ -148,7 +115,6 @@
   line-height: 1.45;
   font-weight: 550;
 }
-.lead a:hover h3,
 .story a:hover h3 {
   color: var(--blue);
 }
@@ -164,7 +130,7 @@
   font: inherit;
   font-size: 12px;
   color: var(--blue);
-  background: var(--bg);
+  background: transparent;
   cursor: pointer;
 }
 .rail {
@@ -176,7 +142,8 @@
   border: 0;
   padding: 20px;
   border-radius: 18px;
-  background: var(--workspace-panel);
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
   box-shadow: var(--panel-shadow);
 }
 .rail h2,
@@ -199,7 +166,7 @@
   padding: 12px 0;
   color: var(--ink);
   text-decoration: none;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 0;
 }
 .filings small {
   display: block;
@@ -251,9 +218,6 @@
   .coverage {
     padding: 20px 14px;
   }
-  .lead {
-    padding: 20px 16px;
-  }
   .filters button {
     padding: 8px 6px;
     font-size: 11px;
@@ -285,5 +249,44 @@
   padding: 12px 0;
   color: var(--ink);
   text-decoration: none;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 0;
+}
+
+/* The rail shares the parent glass, not opaque nested metric tiles. */
+.earnings {
+  margin: 0;
+  padding: 18px;
+  background: var(--workspace-glass);
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+}
+.earnings :global(.section-head) {
+  margin-bottom: 12px;
+}
+.earnings h2 {
+  font-size: 18px;
+}
+.earnings h3 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+.earnings :global(.earnings-kpis) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.earnings :global(.earnings-kpis) > div {
+  min-width: 0;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+}
+.earnings :global(.earnings-kpis) dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+.earnings :global(.earnings-kpis) dd {
+  font-size: 22px;
+  margin: 4px 0 0;
 }

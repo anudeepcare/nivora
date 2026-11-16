@@ -30,6 +30,7 @@ function load(extra = {}) {
   );
   return module.exports;
 }
+const emptyCache = { read: async () => null, write: async () => {} };
 const now = Date.parse("2026-11-14T00:00:00Z");
 const configuration = () => ({
   AURYN_SENTISENSE_PREVIEW_ENABLED: "true",
@@ -59,7 +60,14 @@ function setup(options = {}) {
   const calls = [],
     reservations = [],
     sleeps = [];
+  const rows = new Map();
   const client = api.createSentiSenseClient({
+    cache: options.cache ?? {
+      read: async (key) => rows.get(key) ?? null,
+      write: async (key, value, until) => {
+        rows.set(key, { value, until });
+      },
+    },
     guard: api.createSentiSenseDenialGuard(denialStore()),
     now: () => time,
     sleep: async (ms) => {
@@ -157,6 +165,127 @@ test("private preview gate never contacts provider for production, nonowners, mi
       .then((x) => x.analystTargets),
     undefined,
   );
+});
+
+test("successful targets survive cold clients without spending another upstream allowance", async () => {
+  const rows = new Map();
+  const cache = {
+    read: async (key) => rows.get(key) ?? null,
+    write: async (key, value, until) => rows.set(key, { value, until }),
+  };
+  const first = setup({ cache });
+  const a = await first.client.getTargets(
+    "IREN",
+    { owner: true },
+    configuration(),
+  );
+  assert.ok(a);
+  assert.equal(first.calls.length, 2);
+  const cold = setup({ cache, deny: () => true });
+  cold.advance(8000);
+  const b = await cold.client.getTargets(
+    "IREN",
+    { owner: true },
+    configuration(),
+  );
+  assert.deepEqual(b, a);
+  assert.equal(cold.calls.length, 0);
+  assert.equal(cold.reservations.length, 0);
+  assert.equal(rows.size, 1);
+  assert.ok([...rows.keys()].every((k) => !k.includes("test-secret-not-real")));
+  assert.ok([...rows.values()][0].until <= now + 86400000 + 7200);
+});
+
+test("shared targets never cross preview ownership, key identity, expiry or freshness gates", async () => {
+  const rows = new Map();
+  let reads = 0;
+  const cache = {
+    read: async (key) => {
+      reads++;
+      return rows.get(key) ?? null;
+    },
+    write: async (key, value, until) => rows.set(key, { value, until }),
+  };
+  const first = setup({ cache });
+  await first.client.getTargets("IREN", { owner: true }, configuration());
+  const before = reads;
+  const cold = setup({ cache, deny: () => true });
+  assert.equal(
+    await cold.client.getTargets("IREN", { owner: false }, configuration()),
+    null,
+  );
+  assert.equal(
+    await cold.client.getTargets(
+      "IREN",
+      { owner: true },
+      { ...configuration(), VERCEL_ENV: "production" },
+    ),
+    null,
+  );
+  assert.equal(reads, before);
+  assert.equal(
+    await cold.client.getTargets(
+      "IREN",
+      { owner: true },
+      { ...configuration(), SENTISENSE_API_KEY: "other-key" },
+    ),
+    null,
+  );
+  const row = [...rows.values()][0];
+  row.until = now + 3600000;
+  row.value.updatedAt = "2020-01-01T00:00:00Z";
+  assert.equal(
+    await setup({ cache, deny: () => true }).client.getTargets(
+      "IREN",
+      { owner: true },
+      configuration(),
+    ),
+    null,
+  );
+  row.value.updatedAt = "2026-11-13T23:37:41Z";
+  row.until = now - 1;
+  assert.equal(
+    await setup({ cache, deny: () => true }).client.getTargets(
+      "IREN",
+      { owner: true },
+      configuration(),
+    ),
+    null,
+  );
+  const expired = setup({ cache });
+  expired.advance(3 * 86400000);
+  const n = reads;
+  assert.equal(
+    await expired.client.getTargets("IREN", { owner: true }, configuration()),
+    null,
+  );
+  assert.equal(reads, n);
+});
+
+test("shared cache failures and missing ranges are never persisted as successful targets", async () => {
+  let writes = 0;
+  const cache = {
+    read: async () => {
+      throw Error("missing migration");
+    },
+    write: async () => {
+      writes++;
+      throw Error("write unavailable");
+    },
+  };
+  const failure = setup({ cache, status: 503 });
+  assert.equal(
+    await failure.client.getTargets("IREN", { owner: true }, configuration()),
+    null,
+  );
+  assert.equal(writes, 0);
+  const valid = setup({ cache });
+  assert.equal(
+    await valid.client.getTargets("IREN", { owner: true }, configuration()),
+    null,
+  );
+  assert.equal(writes, 0);
+  assert.equal(valid.calls.length, 0);
 });
 
 test("an explicitly opted-in local development preview can enrich without changing original research", async () => {
@@ -316,6 +445,7 @@ test("24 upstream calls exhaust the shared daily allowance even across fresh cli
     } else ledger.set(key, { count: 1, until: time + windowMs });
   };
   const dependencies = {
+    cache: emptyCache,
     guard: api.createSentiSenseDenialGuard(denialStore()),
     now: () => time,
     sleep: async (ms) => {
@@ -360,6 +490,7 @@ test("simultaneous cold clients sharing a key cannot burst through the shared re
     time = now;
   const ledger = new Map();
   const dependencies = {
+    cache: emptyCache,
     guard: api.createSentiSenseDenialGuard(denialStore()),
     now: () => time,
     sleep: async (ms) => {
@@ -412,6 +543,7 @@ test("durable denial latch blocks cold clients after burst and daily windows unt
     let time = now,
       calls = 0;
     const dependency = () => ({
+      cache: emptyCache,
       now: () => time,
       sleep: async (ms) => {
         time += ms;
@@ -449,6 +581,7 @@ test("guard claim errors fail closed and uncertain transport outcomes leave a du
   assert.equal(typeof api.createSentiSenseDenialGuard, "function");
   let calls = 0;
   const denied = api.createSentiSenseClient({
+    cache: emptyCache,
     reserve: async () => {},
     now: () => now,
     guard: api.createSentiSenseDenialGuard({
@@ -469,6 +602,7 @@ test("guard claim errors fail closed and uncertain transport outcomes leave a du
   const store = denialStore();
   let time = now;
   const dependencies = {
+    cache: emptyCache,
     reserve: async () => {},
     now: () => time,
     guard: api.createSentiSenseDenialGuard(store),
@@ -554,6 +688,7 @@ test("the default hosted guard uses atomic shared table claims across cold clien
     let calls = 0,
       time = now;
     const deps = {
+      cache: emptyCache,
       now: () => time,
       reserve: async () => {},
       transport: async () => {
@@ -605,6 +740,7 @@ test("key expiry during a slow guard acquisition prevents transport", async () =
     calls = 0,
     releases = 0;
   const client = api.createSentiSenseClient({
+    cache: emptyCache,
     now: () => time,
     reserve: async () => {},
     guard: async () => {
@@ -657,5 +793,67 @@ test("a known temporary server error does not hide recovered analyst targets for
     f.reservations.filter((x) => x.max === 24).length,
     3,
     "recovery still consumes the existing daily budget",
+  );
+});
+
+test("a local negative result cannot hide a later valid shared observation", async () => {
+  const rows = new Map();
+  const cache = {
+    read: async (key) => rows.get(key) ?? null,
+    write: async (key, value, until) => rows.set(key, { value, until }),
+  };
+  const failed = setup({ cache, status: 503 });
+  assert.equal(
+    await failed.client.getTargets("IREN", { owner: true }, configuration()),
+    null,
+  );
+  const successful = setup({ cache });
+  const observed = await successful.client.getTargets(
+    "IREN",
+    { owner: true },
+    configuration(),
+  );
+  failed.advance(8000);
+  assert.deepEqual(
+    await failed.client.getTargets("IREN", { owner: true }, configuration()),
+    observed,
+  );
+  assert.equal(
+    failed.calls.length,
+    1,
+    "reuse observation, never retry failed transport",
+  );
+});
+
+test("warm targets cannot bypass a shared denial or unavailable cache", async () => {
+  const rows = new Map();
+  let blocked = false;
+  let unavailable = false;
+  const cache = {
+    read: async (key) => {
+      if (unavailable) throw Error("unavailable");
+      return blocked ? null : (rows.get(key) ?? null);
+    },
+    write: async (key, value, until) => rows.set(key, { value, until }),
+  };
+  const f = setup({ cache });
+  assert.ok(
+    await f.client.getTargets("IREN", { owner: true }, configuration()),
+  );
+  blocked = true;
+  assert.equal(
+    await f.client.getTargets("IREN", { owner: true }, configuration()),
+    null,
+  );
+  blocked = false;
+  unavailable = true;
+  assert.equal(
+    await f.client.getTargets("IREN", { owner: true }, configuration()),
+    null,
+  );
+  assert.equal(
+    f.calls.length,
+    2,
+    "no network retry from a warm but blocked observation",
   );
 });

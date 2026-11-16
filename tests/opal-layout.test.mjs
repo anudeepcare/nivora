@@ -29,33 +29,27 @@ test("approved snapshots align four bounded summary cards to a shared row height
 });
 test("studio research navigation uses an underline rail with clear hover and keyboard focus", () => {
   const file = "components/ResearchNavigation.module.css";
+  assert.equal(declarations(file, ".sections")["overflow-x"], "auto");
+  assert.equal(declarations(file, ".sections button")["border-radius"], "0");
+  const active = declarations(file, '.sections button[aria-current="page"]');
   assert.equal(
-    declarations(file, ".sections.sections").background,
+    declarations(file, ".sections button").background,
     "transparent",
   );
-  assert.equal(declarations(file, ".sections.sections")["border-radius"], "0");
-  const active = declarations(
-    file,
-    '.sections.sections button[aria-current="page"]',
-  );
-  assert.equal(active.background, "transparent");
-  assert.equal(active["box-shadow"], "inset 0 -3px 0 var(--blue)");
+  assert.equal(active["box-shadow"], "inset 0 -3px var(--blue)");
   assert.equal(
-    declarations(
-      file,
-      '.sections.sections button:not([aria-current="page"]):hover',
-    ).color,
+    declarations(file, ".sections button:hover").color,
     "var(--ink)",
   );
   assert.equal(
-    declarations(file, ".sections.sections button:focus-visible").outline,
+    declarations(file, ".sections button:focus-visible").outline,
     "2px solid var(--blue)",
   );
 });
 test("dominant brand surfaces no longer restore the rejected lime and forest palette", () => {
   for (const file of [
     "app/core/tokens.css",
-    "app/appearance.css",
+    "app/core/preferences.css",
     "components/PublicLanding.module.css",
     "components/PaceInstrument.module.css",
   ]) {
@@ -71,12 +65,12 @@ test("dominant brand surfaces no longer restore the rejected lime and forest pal
 test("studio decision and chart are peer surfaces rather than nested cards", () => {
   const file = "components/ResearchOverview.module.css";
   const stage = declarations(file, ".decisionStage");
-  assert.equal(stage.background, "transparent");
-  assert.equal(stage.padding, "0");
-  assert.equal(stage["box-shadow"], "none");
+  assert.ok(!stage.background || stage.background === "transparent");
+  assert.ok(!stage.padding || stage.padding === "0");
+  assert.ok(!stage["box-shadow"] || stage["box-shadow"] === "none");
   assert.equal(
-    declarations(file, ".decisionStage .chart").background,
-    "var(--workspace-glass)",
+    declarations(file, ".chart").background,
+    "var(--workspace-panel)",
   );
   assert.match(
     stage["grid-template-columns"],

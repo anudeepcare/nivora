@@ -1,73 +1,91 @@
-/* Single owner for security identity on every Research tab. */
 .header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  padding: 8px 0;
   min-width: 0;
+  padding: 8px 0;
 }
 .identity {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
 }
 .identity > div {
   min-width: 0;
 }
 .identity h1 {
-  margin: 0 0 3px;
-  font-size: clamp(20px, 2vw, 27px);
-  line-height: 1.2;
-  letter-spacing: -0.035em;
+  margin: 0 0 4px;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.15;
   font-weight: 650;
+  letter-spacing: -0.035em;
   overflow-wrap: anywhere;
 }
 .identity p {
   margin: 0;
   font-size: 12px;
-  color: var(--muted);
   line-height: 1.5;
+  color: var(--muted);
 }
 .price {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: flex-end;
+  gap: 8px;
   min-width: 0;
-  text-align: right;
 }
 .price > div {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
   justify-content: flex-end;
-  gap: 3px 10px;
-  max-width: 330px;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  max-width: 320px;
 }
 .price strong {
-  font-size: clamp(25px, 2.4vw, 32px);
-  line-height: 1.2;
-  font-weight: 650;
-  letter-spacing: -0.04em;
+  font-size: 30px;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
 }
 .price :global(.data-stamp) {
   flex-basis: 100%;
+  justify-content: flex-end;
   font-size: 10px;
+}
+.paceBadge {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.price > button {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--blue);
 }
 @media (max-width: 650px) {
   .header {
-    grid-template-columns: minmax(0, 1fr) minmax(108px, 0.65fr);
+    align-items: flex-start;
     gap: 8px;
   }
   .identity {
-    align-items: center;
     gap: 8px;
+    flex: 1;
   }
   .identity > :first-child {
-    width: 38px;
-    height: 38px;
-    flex: 0 0 38px;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
   }
   .identity h1 {
     font-size: 17px;
@@ -76,26 +94,26 @@
     font-size: 10px;
   }
   .price {
+    gap: 0;
+    max-width: 45%;
     align-items: flex-start;
-    gap: 2px;
   }
   .price > div {
+    gap: 2px;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
   }
   .price strong {
     font-size: 23px;
   }
-  .price :global(.data-stamp) {
-    font-size: 9px;
-    line-height: 1.4;
-  }
   .price > button {
     width: 32px;
-    min-width: 32px;
-    height: 44px;
-    padding: 3px;
+  }
+  .price :global(.data-stamp) {
+    font-size: 9px;
+  }
+  .paceBadge {
+    display: none;
   }
 }
 @media (max-width: 360px) {
@@ -104,22 +122,5 @@
   }
   .price strong {
     font-size: 21px;
-  }
-}
-.paceBadge {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  margin-right: 8px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: var(--blue-soft);
-  color: var(--blue);
-  font-size: 11px;
-  font-weight: 650;
-}
-@media (max-width: 650px) {
-  .paceBadge {
-    display: none;
   }
 }

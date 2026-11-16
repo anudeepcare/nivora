@@ -29,13 +29,13 @@
   line-height: 1.7;
   color: var(--muted);
 }
-.cards.cards {
+.cards {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 20px;
   align-items: stretch;
 }
-.cards.cards > section {
+.cards > section {
   padding: 32px;
   background: var(--workspace-glass);
   border: 1px solid var(--workspace-edge);
@@ -46,7 +46,7 @@
   display: flex;
   flex-direction: column;
 }
-.cards.cards > section:global(.pricing-pro) {
+.cards > section:global(.pricing-pro) {
   background: linear-gradient(145deg, var(--blue-soft), var(--workspace-glass));
   color: var(--ink);
   border-color: var(--blue);
@@ -98,8 +98,8 @@
 }
 .cards > section:global(.pricing-pro) > :global(.button) {
   color: white;
-  background: #245bdb;
-  border-color: #245bdb;
+  background: var(--blue);
+  border-color: var(--blue);
 }
 .cards ul {
   display: grid;
@@ -118,7 +118,7 @@
 }
 .cards :global(.plan-pill) {
   font-size: 11px;
-  background: #ffffff18;
+  background: var(--workspace-tile);
   color: var(--ink);
   border: 1px solid var(--line);
   padding: 5px 8px;
@@ -140,11 +140,11 @@
     max(24px, env(safe-area-inset-left, 0px));
 }
 @media (max-width: 700px) {
-  .cards.cards {
+  .cards {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
-  .cards.cards > section {
+  .cards > section {
     padding: 24px;
   }
   .cards :global(.pricing-amount) {
@@ -158,7 +158,7 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .cards.cards > section {
+  .cards > section {
     background: var(--card);
     backdrop-filter: none;
   }

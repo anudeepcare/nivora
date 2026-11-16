@@ -1,4 +1,6 @@
 "use client";
+import DetailDialog from "./DetailDialog";
+import detailStyle from "./ResearchDetailContent.module.css";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { advancedDesk, type DeskMetric } from "@/lib/research-desks";
@@ -123,52 +125,57 @@ export default function AdvancedDashboard({
           </div>
         </section>
       </div>
-      <details className="research-reference">
-        <summary>Recovery &amp; volatility detail</summary>
-        <section className="advanced-measurements">
-          <header className="section-head">
-            <div>
-              <span className="eyebrow">Execution & recovery</span>
-              <h3>Price gaps and recovery</h3>
+      <DetailDialog
+        title="Recovery & volatility"
+        trigger="Recovery & volatility detail"
+        wide
+      >
+        <div className={detailStyle.content}>
+          <section className="advanced-measurements">
+            <header className="section-head">
+              <div>
+                <span className="eyebrow">Execution & recovery</span>
+                <h3>Price gaps and recovery</h3>
+              </div>
+              <small>Completed prices · {dateLabel(d.asOf)}</small>
+            </header>
+            <div className="desk-secondary-metrics">
+              {d.metrics.slice(4).map((m) => (
+                <article key={m.key}>
+                  <span>{m.label}</span>
+                  <strong>{display(m)}</strong>
+                  <small>{m.note}</small>
+                </article>
+              ))}
             </div>
-            <small>Completed prices · {dateLabel(d.asOf)}</small>
-          </header>
-          <div className="desk-secondary-metrics">
-            {d.metrics.slice(4).map((m) => (
-              <article key={m.key}>
-                <span>{m.label}</span>
-                <strong>{display(m)}</strong>
-                <small>{m.note}</small>
-              </article>
-            ))}
-          </div>
-        </section>
-        <section className="volatility-comparison">
-          <div>
-            <span className="eyebrow">Volatility regime</span>
-            <h3>Short- and long-term volatility</h3>
-            <p>
-              Annualized sample volatility. These windows overlap and do not
-              predict future volatility.
-            </p>
-          </div>
-          <div>
-            {d.volatility.map((v) => (
-              <article key={v.label}>
-                <span>{v.label}</span>
-                <strong>{percent(v.value)}</strong>
-                <i>
-                  <b
-                    style={{
-                      width: `${v.value == null ? 0 : (v.value / volMax) * 100}%`,
-                    }}
-                  />
-                </i>
-              </article>
-            ))}
-          </div>
-        </section>
-      </details>
+          </section>
+          <section className="volatility-comparison">
+            <div>
+              <span className="eyebrow">Volatility regime</span>
+              <h3>Short- and long-term volatility</h3>
+              <p>
+                Annualized sample volatility. These windows overlap and do not
+                predict future volatility.
+              </p>
+            </div>
+            <div>
+              {d.volatility.map((v) => (
+                <article key={v.label}>
+                  <span>{v.label}</span>
+                  <strong>{percent(v.value)}</strong>
+                  <i>
+                    <b
+                      style={{
+                        width: `${v.value == null ? 0 : (v.value / volMax) * 100}%`,
+                      }}
+                    />
+                  </i>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      </DetailDialog>
       <p className="desk-footnote">
         Historical losses can be exceeded. Volume quality, splits and available
         history affect these measurements. Use Trade plan to test explicit

@@ -27,6 +27,8 @@ const dependencies = {
   "@/lib/format": format,
   "@/lib/financial-catalog": { researchPeriods: () => [] },
   "./Ui": { Source: () => null },
+  "./DetailDialog": { __esModule: true, default: ({children}) => React.createElement("div", null, children) },
+  "./NewsCoverage.module.css": { __esModule: true, default: {earnings: "earnings"} },
   "@/lib/decision-research": decision,
 };
 const mod = { exports: {} };

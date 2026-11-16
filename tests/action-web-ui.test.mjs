@@ -154,6 +154,7 @@ test("Strategy Lab visibly distinguishes its P1-spending legacy simulation from 
   let index = 0;
   const empty = () => null;
   const Lab = component("components/ResearchLab.tsx", "ResearchLab", {
+    support: {lab: "lab"},
     ...format,
     useState: () => [states[index++], empty],
     useMemo: (f) => f(),
@@ -183,6 +184,7 @@ test("current v7 Lab withholds pre-release performance and explains the unavaila
   let index = 0;
   const empty = () => null;
   const Lab = component("components/ResearchLab.tsx", "ResearchLab", {
+    support: {lab: "lab"},
     ...format,
     useState: () => [states[index++], empty],
     useMemo: (f) => f(), useProduct: () => ({}), compareDca,

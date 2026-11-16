@@ -1,4 +1,5 @@
 "use client";
+import DetailDialog from "./DetailDialog";
 import { useEffect, useMemo, useState } from "react";
 import { Layers, ArrowRight, Info } from "lucide-react";
 import { studyMarket } from "@/lib/settled-study-bars";
@@ -47,20 +48,26 @@ export default function PriceStudyChart({
       ),
     [research, asOf],
   );
+  const market = studyMarket(research);
+  const observedAt = research.priceObservedAt ?? research.retrievedAt;
+  const scanDay = asOf.slice(0, 10);
+  const demoAsOf = demo ? research.retrievedAt : null;
   const [zoneResult, setZoneResult] = useState<{
     history: Candle[];
-    asOf: string;
+    observedAt: string;
+    scanDay: string;
+    market: ReturnType<typeof studyMarket>;
+    period: "forming" | "confirmed";
     zones: PacePriceZones | null;
   } | null>(null);
   useEffect(() => {
     const controller = new AbortController();
-    const market = studyMarket(research);
     if (market === "unknown" || !selectedPeriod) return;
     import("@/lib/pace-price-zones")
       .then(({ pacePriceZones }) =>
         pacePriceZones(
           research.history,
-          research.priceObservedAt ?? research.retrievedAt,
+          demoAsOf ?? new Date().toISOString(),
           selectedPeriod,
           market,
           controller.signal,
@@ -68,24 +75,42 @@ export default function PriceStudyChart({
       )
       .then((zones) => {
         if (!controller.signal.aborted)
-          setZoneResult({ history: research.history, asOf, zones });
+          setZoneResult({
+            history: research.history,
+            observedAt,
+            scanDay,
+            market,
+            period: selectedPeriod,
+            zones,
+          });
       })
       .catch(() => {
         if (!controller.signal.aborted) setZoneResult(null);
       });
     return () => controller.abort();
-  }, [research, asOf, selectedPeriod]);
+  }, [research.history, observedAt, market, selectedPeriod, scanDay, demoAsOf]);
   const bands = useMemo(
     () =>
       paceChartBands(
         selectedPeriod &&
           zoneResult?.history === research.history &&
-          zoneResult.asOf === asOf
+          zoneResult.observedAt === observedAt &&
+          zoneResult.scanDay === scanDay &&
+          zoneResult.market === market &&
+          zoneResult.period === selectedPeriod
           ? zoneResult.zones
           : null,
         asOf,
       ),
-    [zoneResult, research.history, asOf, selectedPeriod],
+    [
+      zoneResult,
+      research.history,
+      observedAt,
+      asOf,
+      selectedPeriod,
+      scanDay,
+      market,
+    ],
   );
   const [overlay, setOverlay] = useState(false);
   const [showReferences, setShowReferences] = useState(true);
@@ -137,7 +162,7 @@ export default function PriceStudyChart({
         levels={overlay ? levels : showReferences ? references : []}
         paceBands={overlay ? [] : bands}
       />
-      <div className="signal-chart-tools">
+      <div className={s.tools}>
         <button
           className="btn"
           aria-label="Fibonacci levels"
@@ -186,7 +211,7 @@ export default function PriceStudyChart({
         </div>
       )}
       {!overlay && bands.length > 0 && (
-        <span className="chart-note">
+        <span className={s.note}>
           Blue bands · Pace zones{" "}
           <Help label="Pace zone details">
             As of {dateLabel(zoneResult?.zones?.date)}. Deeper blue indicates a
@@ -195,12 +220,15 @@ export default function PriceStudyChart({
           </Help>
         </span>
       )}
-      <details className="chart-context">
-        <summary>Price & volume details</summary>
+      <DetailDialog
+        title="Price & volume details"
+        trigger="Price & volume details"
+        wide
+      >
         <StockFacts research={research} priceContext />
-      </details>
+      </DetailDialog>
       {overlay && (
-        <p className="signal-fib-caption">
+        <p className={s.caption}>
           {fib
             ? `Range ${amount(fib.low, research.quote.currency)} (${dateLabel(fib.lowDate)}) to ${amount(fib.high, research.quote.currency)} (${dateLabel(fib.highDate)}). ${fib.direction === "up" ? "Pullbacks measured down from high." : "Rebounds measured up from low."}`
             : "More completed history and distinct price extremes are required for this overlay."}

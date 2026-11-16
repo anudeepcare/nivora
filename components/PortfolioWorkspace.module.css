@@ -1,1217 +1,86 @@
+/* Portfolio owns its accounting presentation; data/mutations live in the existing hooks. */
 .portfolio {
-  min-width: 0;
-  width: 100%;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid) {
   display: grid;
-  grid-template-columns: minmax(0, 2.15fr) minmax(260px, 1fr);
-  gap: 16px;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid) > div,
-.portfolio.portfolio.portfolio :global(.card) {
+  gap: 20px;
   min-width: 0;
-  max-width: 100%;
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  margin-bottom: 20px;
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
-  min-width: 0;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: linear-gradient(
-    140deg,
-    var(--card) 60%,
-    color-mix(in srgb, var(--orchid) 15%, var(--card))
-  );
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(2) {
-  background: linear-gradient(
-    140deg,
-    var(--card) 60%,
-    color-mix(in srgb, var(--jade) 18%, var(--card))
-  );
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div:nth-child(3) {
-  background: linear-gradient(
-    140deg,
-    var(--card) 60%,
-    color-mix(in srgb, var(--citron) 20%, var(--card))
-  );
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > strong {
-  font-size: clamp(20px, 2vw, 30px);
-  overflow-wrap: anywhere;
-}
-.portfolio.portfolio.portfolio :global(.approved-portfolio-chart) {
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  color: #227f73;
 }
-.portfolio.portfolio.portfolio :global(.approved-table-toolbar) {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.portfolio.portfolio.portfolio :global(.approved-table-toolbar) > label {
-  min-width: 0;
-}
-.ledger {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-}
-@media (max-width: 900px) {
-  .portfolio.portfolio.portfolio :global(.portfolio-grid) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .portfolio.portfolio.portfolio :global(.portfolio-grid) > div:nth-child(2) {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-}
-@media (max-width: 700px) {
-  .portfolio.portfolio.portfolio :global(.portfolio-grid) > div:nth-child(2) {
-    display: block;
-  }
-  .portfolio.portfolio.portfolio :global(.wealth-strip.four) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
-    grid-column: auto;
-    border: 1px solid var(--line);
-    padding: 12px;
-  }
-  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > strong {
-    font-size: 22px;
-    line-height: 1.2;
-    letter-spacing: -0.04em;
-  }
-  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > span {
-    font-size: 11px;
-    min-height: 32px;
-    gap: 5px;
-  }
-  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > small {
-    font-size: 11px;
-  }
-  .portfolio.portfolio.portfolio :global(.card) {
-    padding: 16px;
-    margin-bottom: 14px;
-    border-radius: 12px;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.approved-table-toolbar)
-    > label:first-child {
-    flex: 1 1 100%;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.approved-table-toolbar)
-    :is(input, select) {
-    font-size: 16px;
-    width: 100%;
-    min-width: 0;
-  }
-  .ledger :global(table.holdings-table),
-  .ledger tbody {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-  }
-  .ledger thead {
-    display: none;
-  }
-  .ledger tr {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) 36px;
-    gap: 12px 8px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .ledger td {
-    display: block;
-    min-width: 0;
-    padding: 0;
-    border: 0;
-    text-align: left;
-    white-space: normal;
-    font-size: 13px;
-  }
-  .ledger td:first-child {
-    grid-column: 1/3;
-    grid-row: 1;
-  }
-  .ledger td:last-child {
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: end;
-  }
-  .ledger td:nth-child(2) {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .ledger td:nth-child(3) {
-    grid-column: 2/4;
-    grid-row: 2;
-  }
-  .ledger td:nth-child(4) {
-    grid-column: 1/4;
-    grid-row: 3;
-    padding: 10px;
-    background: var(--surface);
-    border-radius: 8px;
-  }
-  .ledger td:nth-child(2)::before {
-    content: "Weight";
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .ledger td:nth-child(3)::before {
-    content: "Price";
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .ledger td:nth-child(4)::before {
-    content: "Value / return";
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .ledger :global(.company-row) {
-    display: flex;
-    gap: 10px;
-    min-width: 0;
-  }
-  .ledger :global(.company-row) > span:last-child {
-    min-width: 0;
-  }
-  .ledger :global(.company-row) small {
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
-  .ledger td > strong {
-    font-size: 17px;
-  }
-  .ledger td > small {
-    display: block;
-    font-size: 12px;
-  }
-}
-
-/* Touch has no persistent hover state. Keep identity and values on one surface. */
-@media (hover: none) {
-  .ledger tbody tr:hover,
-  .watchLedger tbody tr:hover {
-    background: transparent;
-  }
-}
-.watchLedger {
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  overflow: auto;
-}
-@media (max-width: 700px) {
-  .ledger tr,
-  .watchLedger tr {
-    padding: 14px 12px;
-    margin-bottom: 10px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    background: var(--card);
-    align-items: start;
-  }
-  .ledger tr:hover,
-  .watchLedger tr:hover {
-    background: var(--card);
-  }
-  .ledger tr:focus-within,
-  .watchLedger tr:focus-within {
-    box-shadow: inset 3px 0 #a8bf36;
-  }
-  .ledger td:nth-child(4) {
-    background: transparent;
-    border-top: 1px solid var(--line);
-    border-radius: 0;
-    padding: 10px 0 0;
-  }
-  .ledger :global(.company-row),
-  .watchLedger :global(.company-row) {
-    align-items: flex-start;
-  }
-  .ledger :global(.company-row) b,
-  .watchLedger :global(.company-row) b {
-    display: block;
-    font-size: 15px;
-    letter-spacing: 0.02em;
-  }
-  .ledger :global(.company-row) small,
-  .watchLedger :global(.company-row) small {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-  .watchLedger :global(table.holdings-table),
-  .watchLedger tbody {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-  }
-  .watchLedger thead {
-    display: none;
-  }
-  .watchLedger tr {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 36px;
-    gap: 12px;
-  }
-  .watchLedger td {
-    display: block;
-    min-width: 0;
-    padding: 0;
-    border: 0;
-    white-space: normal;
-    text-align: left;
-    font-size: 13px;
-  }
-  .watchLedger td:first-child {
-    grid-column: 1/3;
-    grid-row: 1;
-  }
-  .watchLedger td:last-child {
-    grid-column: 3;
-    grid-row: 1;
-  }
-  .watchLedger td:nth-child(2) {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .watchLedger td:nth-child(3) {
-    grid-column: 2/4;
-    grid-row: 2;
-    align-self: center;
-  }
-  .watchLedger td:nth-child(4) {
-    grid-column: 1/-1;
-    grid-row: 3;
-    border-top: 1px solid var(--line);
-    padding-top: 10px;
-  }
-  .watchLedger td small {
-    display: block;
-    font-size: 12px;
-    line-height: 1.5;
-  }
-  .watchLedger :global(.company-row) {
-    display: flex;
-    min-width: 0;
-    gap: 10px;
-  }
-  .watchLedger :global(.company-row) > span:last-child {
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-}
-
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:nth-child(n),
-.portfolio.portfolio.portfolio.portfolio
-  :global(.portfolio-grid)
-  > div
-  > :global(.card) {
-  background: var(--card);
-  color: var(--ink);
-  border-color: var(--line);
-}
-.portfolio.portfolio.portfolio.portfolio :global(.approved-portfolio-chart) {
-  color: var(--muted);
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.approved-portfolio-chart[data-direction="down"]) {
-  color: var(--red);
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.approved-portfolio-chart[data-direction="up"]) {
-  color: var(--green);
-}
-
-/* Summary roles carry restrained gradients; the analytical canvas stays clear. */
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:first-child {
-  background:
-    radial-gradient(ellipse at 100% 0%, #414c51, transparent 70%),
-    linear-gradient(135deg, #293338, #192126);
-  color: #f2f3ff;
-  --ink: #f2f3ff;
-  --muted: #c2cbe0;
-  --line: #505e80;
-  --green: #83d8b3;
-  --red: #ffb6af;
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:first-child
-  svg {
-  color: #efbc69;
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:nth-child(2) {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--surface) 65%, var(--card)),
-    var(--card)
-  );
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div[data-tone="negative"] {
-  background: linear-gradient(135deg, var(--card), var(--red-soft));
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div[data-tone="green"] {
-  background: linear-gradient(135deg, var(--card), var(--green-soft));
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:nth-child(3) {
-  background: linear-gradient(
-    135deg,
-    var(--card),
-    color-mix(in srgb, #79a9cc 7%, var(--card))
-  );
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:nth-child(4) {
-  background: linear-gradient(
-    135deg,
-    var(--card),
-    color-mix(in srgb, #d3ac61 7%, var(--card))
-  );
-}
-.portfolio.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
-  border-radius: 14px;
-  box-shadow: 0 5px 20px #17251a08;
-}
-.watchLedger.watchLedger :global(.holdings-table) tbody tr {
-  background: var(--card);
-}
-.watchLedger.watchLedger :global(.holdings-table) tbody tr:hover,
-.watchLedger.watchLedger :global(.holdings-table) tbody tr:focus-within {
-  background: var(--surface-2);
-}
-.watchLedger.watchLedger :global(.holdings-table) td {
-  vertical-align: middle;
-  padding-block: 14px;
-}
-.watchLedger.watchLedger :global(.holdings-table) td:nth-child(4) {
-  text-align: left;
-}
-.paceStatus {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-height: 32px;
-  font-size: 13px;
-  font-weight: 650;
-  color: var(--ink);
-  text-decoration: none;
-}
-.paceStatus:hover {
-  text-decoration: underline;
-}
-.paceStatus + small {
-  display: block;
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-/* Mobile ledger: aligned compact values, no full-screen holding cards. */
-@media (max-width: 700px) {
-  .portfolio.portfolio.portfolio.portfolio :global(.wealth-strip.four) {
-    gap: 8px;
-    margin-bottom: 12px;
-    align-items: stretch;
-  }
-  .portfolio.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
-    padding: 12px;
-    gap: 6px;
-    min-height: 0;
-  }
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.wealth-strip.four)
-    > div
-    > strong {
-    font-size: 20px;
-    margin: 0;
-    letter-spacing: -0.025em;
-  }
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.wealth-strip.four)
-    > div
-    > span {
-    min-height: 24px;
-    font-size: 10px;
-    gap: 4px;
-  }
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.wealth-strip.four)
-    > div
-    > small {
-    font-size: 10px;
-    line-height: 1.35;
-    margin: 0;
-  }
-  .ledger.ledger :global(table.holdings-table) tr,
-  .watchLedger.watchLedger :global(table.holdings-table) tr {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
-    gap: 8px 10px;
-    padding: 12px;
-    margin: 0 0 8px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    min-height: 0;
-    background: var(--card);
-  }
-  .ledger.ledger :global(table.holdings-table) td,
-  .watchLedger.watchLedger :global(table.holdings-table) td {
-    padding: 0;
-    min-height: 0;
-    margin: 0;
-    line-height: 1.35;
-    align-self: start;
-  }
-  .ledger.ledger :global(table.holdings-table) td:first-child,
-  .watchLedger.watchLedger :global(table.holdings-table) td:first-child {
-    grid-column: 1/3;
-    grid-row: 1;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(2) {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(3) {
-    grid-column: 2/4;
-    grid-row: 2;
-    text-align: right;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(4) {
-    grid-column: 1/4;
-    grid-row: 3;
-    padding: 8px 0 0;
-    border-top: 1px solid var(--line);
-    border-radius: 0;
-    background: none;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 3px 10px;
-    text-align: right;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(4)::before {
-    grid-column: 1;
-    grid-row: 1;
-    text-align: left;
-    align-self: center;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(4) > small {
-    grid-column: 1/-1;
-  }
-  .ledger.ledger :global(table.holdings-table) td:last-child,
-  .watchLedger.watchLedger :global(table.holdings-table) td:last-child {
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: end;
-  }
-  .ledger.ledger :global(.company-row),
-  .watchLedger.watchLedger :global(.company-row) {
-    gap: 8px;
-    align-items: start;
-  }
-  .ledger.ledger :global(.company-row) > :first-child,
-  .watchLedger.watchLedger :global(.company-row) > :first-child {
-    width: 32px;
-    height: 32px;
-    flex: 0 0 32px;
-  }
-  .ledger.ledger :global(.holdings-table) small,
-  .watchLedger.watchLedger :global(.holdings-table) small {
-    font-size: 10px;
-    line-height: 1.4;
-    margin-top: 3px;
-  }
-  .ledger.ledger :global(.holdings-table) td > strong {
-    font-size: 16px;
-  }
-  .watchLedger.watchLedger :global(table.holdings-table) td:nth-child(2) {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .watchLedger.watchLedger :global(table.holdings-table) td:nth-child(3) {
-    grid-column: 2/4;
-    grid-row: 2;
-    text-align: right;
-  }
-  .watchLedger.watchLedger :global(table.holdings-table) td:nth-child(4) {
-    grid-column: 1/-1;
-    grid-row: 3;
-    padding-top: 6px;
-    border-top: 1px solid var(--line);
-  }
-}
-
-@media (max-width: 700px) {
-  .ledger.ledger :global(table.holdings-table) tr {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 36px;
-    gap: 10px 8px;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(2) {
-    grid-column: 1;
-    grid-row: 3;
-    font-size: 12px;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(3) {
-    grid-column: 1;
-    grid-row: 2;
-    text-align: left;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(4) {
-    grid-column: 2/4;
-    grid-row: 2/4;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 3px;
-    padding: 0;
-    border: 0;
-    text-align: right;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(4)::before {
-    align-self: flex-end;
-  }
-  .ledger.ledger :global(table.holdings-table) td:nth-child(4) > small {
-    margin: 0;
-  }
-  .ledger.ledger :global(.company-row) small,
-  .watchLedger.watchLedger :global(.company-row) small {
-    font-size: 11px;
-  }
-  .ledger.ledger :global(.holdings-table) small,
-  .watchLedger.watchLedger :global(.holdings-table) small {
-    font-size: 11px;
-  }
-  .watchLedger.watchLedger :global(table.holdings-table) td:nth-child(2) {
-    grid-column: 2/4;
-    grid-row: 2;
-    text-align: right;
-  }
-  .watchLedger.watchLedger :global(table.holdings-table) td:nth-child(3) {
-    grid-column: 1;
-    grid-row: 2;
-    text-align: left;
-  }
-}
-.portfolio.portfolio.portfolio.portfolio.portfolio
-  :global(.approved-table-toolbar) {
-  margin: 12px 0;
-  gap: 12px;
-  align-items: center;
-}
-.portfolio.portfolio.portfolio.portfolio.portfolio
-  :global(.approved-table-toolbar)
-  select {
-  appearance: none;
-  background-color: var(--card);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23788985' stroke-width='1.8'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding: 10px 36px 10px 12px;
-  min-height: 44px;
-  font-size: 14px;
-}
-
-.portfolio .holdingsToolbar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 0 0 18px;
-  min-width: 0;
-}
-.portfolio .holdingsToolbar h2 {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin: 0;
-  font-size: 20px;
-  white-space: nowrap;
-}
-.portfolio .holdingsToolbar h2 svg {
-  color: var(--teal, var(--ink));
-  flex: none;
-}
-.portfolio .holdingsSearch {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 120px;
-  max-width: 360px;
-  margin-left: auto;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
-  color: var(--muted);
-}
-:global(body) .portfolio.portfolio .holdingsToolbar .holdingsSearch input {
-  width: 100%;
-  min-width: 0;
-  min-height: 44px;
-  margin: 0;
-  padding: 10px 0;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  background: transparent;
-  font-size: 16px;
-}
-.portfolio .holdingsSearch:focus-within {
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
-}
-.portfolio .holdingsSearch input:focus {
-  outline: none;
-}
-.portfolio .refreshControls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  flex: none;
-}
-.portfolio .refreshControls select {
-  width: auto;
-  min-height: 44px;
-  margin: 0;
-  padding: 8px 28px 8px 10px;
-  font-size: 13px;
-}
-.portfolio .refreshControls button {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  min-height: 44px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
-  color: var(--ink);
-  touch-action: manipulation;
-}
-.portfolio .refreshControls button:disabled {
-  opacity: 0.5;
-  cursor: wait;
-}
-@media (max-width: 767px) {
-  .portfolio .holdingsToolbar {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .portfolio .holdingsToolbar h2 {
-    font-size: 18px;
-  }
-  .portfolio .holdingsSearch {
-    grid-column: 1/-1;
-    grid-row: 2;
-    max-width: none;
-    width: 100%;
-    margin: 0;
-  }
-  .portfolio .refreshControls {
-    grid-column: 2;
-    grid-row: 1;
-    gap: 4px;
-  }
-  .portfolio .refreshControls select {
-    font-size: 12px;
-    max-width: 125px;
-  }
-}
-
-.portfolio .holdingsToolbar {
-  flex-wrap: wrap;
-}
-.portfolio .holdingsToolbar > select {
-  min-height: 44px;
-  max-width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--card);
-  color: var(--ink);
-  padding: 8px 10px;
-  font: inherit;
-  font-size: 12px;
-}
-
-@media (min-width: 701px) {
-  .ledger.ledger :global(table.holdings-table) td {
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-  .ledger.ledger :global(.company-row) {
-    align-items: center;
-    gap: 12px;
-  }
-  .ledger.ledger :global(.company-row) > :first-child {
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
-  }
-  .ledger.ledger :global(.company-row) small {
-    font-size: 12px;
-    margin-top: 2px;
-  }
-  .ledger.ledger :global(table.holdings-table) td:first-child {
-    max-width: 340px;
-  }
-}
-
-@media (max-width: 767px) {
-  .portfolio .holdingsToolbar > select {
-    grid-column: 1/-1;
-    grid-row: 3;
-    width: 100%;
-    max-width: none;
-    min-width: 0;
-    padding: 10px 34px 10px 12px;
-    min-height: 44px;
-    font-size: 14px;
-  }
-  .portfolio .holdingsToolbar .refreshControls select {
-    max-width: 112px;
-    font-size: 12px;
-  }
-  .portfolio .holdingsToolbar {
-    gap: 10px;
-  }
-  .portfolio .holdingsToolbar h2 {
-    font-size: 18px;
-  }
-}
-
-.portfolio.portfolio.portfolio :global(.approved-holdings-table) :is(th, td) {
-  font-variant-numeric: tabular-nums;
-}
-.portfolio.portfolio.portfolio
-  :global(.approved-holdings-table)
-  th:not(:first-child),
-.portfolio.portfolio.portfolio
-  :global(.approved-holdings-table)
-  td:not(:first-child) {
-  text-align: right;
-}
-.portfolio.portfolio.portfolio :global(.approved-holdings-table) td {
-  padding-top: 14px;
-  padding-bottom: 14px;
-}
-.portfolio.portfolio.portfolio :global(.approved-holdings-table) .company-row {
-  gap: 12px;
-}
-@media (min-width: 900px) {
-  .portfolio.portfolio.portfolio
-    :global(.approved-holdings-table)
-    td:first-child {
-    width: 42%;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.approved-holdings-table)
-    td:nth-child(2) {
-    width: 10%;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.approved-holdings-table)
-    td:nth-child(3) {
-    width: 18%;
-  }
-}
-@media (max-width: 700px) {
-  .portfolio.portfolio.portfolio
-    :global(.approved-holdings-table)
-    td:not(:first-child) {
-    text-align: inherit;
-  }
-}
-/* Net value anchors the summary; supporting balances remain quiet and readable. */
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) {
-  gap: 0;
-  border-radius: 18px;
-  background: var(--card);
-  overflow: hidden;
-  box-shadow: 0 10px 36px #112e2208;
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  padding: 24px;
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) > div:first-child {
-  background:
-    radial-gradient(ellipse at 100% 0, #a4d39322, transparent 70%),
-    linear-gradient(130deg, #172d2c, #2a4639);
-  color: #eff7ed;
-}
-.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:first-child
-  :is(span, small) {
-  color: #c0d3c5;
-}
-.portfolio.portfolio.portfolio
-  :global(.wealth-strip.four)
-  > div:not(:first-child) {
-  background: transparent;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid) {
-  gap: 24px;
-}
-@media (max-width: 700px) {
-  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div {
-    padding: 18px 14px;
-  }
-  .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div > strong {
-    font-size: 22px;
-  }
-  .portfolio.portfolio.portfolio :global(.portfolio-grid) {
-    gap: 18px;
-  }
-}
-/* Keep the ledger broad enough to scan; allocation belongs beside the trend. */
-.portfolio.portfolio.portfolio :global(.portfolio-grid) {
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  align-items: start;
-  gap: 16px;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid > div) {
-  display: contents;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid .card) {
-  grid-column: 1/-1;
-  margin: 0;
-  padding: 20px;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid .portfolio-trend-panel) {
-  grid-column: span 8;
-  grid-row: 1 / span 2;
-}
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-allocation-panel) {
-  grid-column: span 4;
-  grid-row: 1;
-}
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-holdings-panel) {
-  grid-column: 1/-1;
-  grid-row: 3;
-}
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-exposure-panel) {
-  grid-column: 9 / -1;
-  grid-row: 2;
-}
-.portfolio.portfolio.portfolio :global(.allocation-row) {
-  min-height: 36px;
-  padding: 8px 0;
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four) {
-  margin-bottom: 16px;
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four > div) {
-  padding: 16px 18px;
-}
-.portfolio.portfolio.portfolio :global(.wealth-strip.four > div > strong) {
-  font-size: clamp(22px, 2vw, 28px);
-  margin: 10px 0;
-}
-@media (max-width: 900px) {
-  .portfolio.portfolio.portfolio :global(.portfolio-grid .card) {
-    grid-column: 1/-1;
-    grid-row: auto;
-    padding: 16px 14px;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-trend-panel) {
-    order: 0;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-allocation-panel) {
-    order: 1;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-holdings-panel) {
-    order: 2;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-exposure-panel) {
-    order: 3;
-  }
-}
-
-.portfolio.portfolio.portfolio :global(.portfolio-grid .portfolio-trend-panel) {
-  grid-column: 1 / span 8;
-  grid-row: 1 / span 2;
-}
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-holdings-panel) {
-  grid-column: 1/-1;
-  grid-row: 3;
-}
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-exposure-panel) {
-  grid-column: 9/-1;
-  grid-row: 2;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-rows) {
-  display: grid;
-  gap: 14px;
-  margin: 16px 0;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-rows > div > div) {
+.portfolio :global(.page-heading) {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-rows small) {
-  font-size: 11px;
-  color: var(--muted);
-}
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-track) {
-  display: block;
-  height: 7px;
-  margin: 8px 0 5px;
-  border-radius: 4px;
-  background: var(--line);
-  overflow: hidden;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-track i) {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-}
-@media (max-width: 900px) {
-  .portfolio.portfolio.portfolio :global(.portfolio-grid .card) {
-    grid-column: 1/-1;
-    grid-row: auto;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-holdings-panel) {
-    order: 1;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-allocation-panel) {
-    order: 2;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-exposure-panel) {
-    order: 3;
-  }
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid .portfolio-trend-panel) {
-  grid-row: 1;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-column: 9/-1;
-  grid-row: 1;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
-  align-content: start;
+  margin: 0;
 }
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-sidebar .card) {
-  grid-column: 1/-1;
-  grid-row: auto;
+.portfolio :global(.page-heading h1) {
+  font-size: 30px;
+  margin: 0 0 6px;
+  letter-spacing: -0.04em;
 }
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid > .portfolio-holdings-panel) {
-  grid-column: 1/-1;
-  grid-row: 2;
+.portfolio :global(.page-heading p) {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
 }
-@media (max-width: 900px) {
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-trend-panel) {
-    grid-column: 1/-1;
-    grid-row: 1;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid > .portfolio-holdings-panel) {
-    grid-column: 1/-1;
-    grid-row: 2;
-  }
-  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
-    grid-column: 1/-1;
-    grid-row: 3;
-  }
+.portfolio :global(.page-heading .inline-actions) {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
-
-/* Each section owns a row: no tall chart forcing a blank sidebar below it. */
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid > .portfolio-range-panel) {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  background: linear-gradient(
-    130deg,
-    color-mix(in srgb, var(--blue) 4%, var(--card)),
-    var(--card)
-  );
-}
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid > .portfolio-holdings-panel) {
-  grid-row: 3;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-sidebar) {
-  gap: 12px;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-sidebar .section-head) {
-  margin-bottom: 12px;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-sidebar .chart-note) {
-  font-size: 11px;
-  line-height: 1.5;
-  margin-bottom: 0;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-rows) {
-  gap: 10px;
-  margin: 12px 0;
-}
-.portfolio.portfolio.portfolio :global(.allocation-row) {
-  min-height: 32px;
-  padding: 6px 0;
-}
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-sidebar .card) {
-  padding: 18px;
-}
-@media (max-width: 900px) {
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid > .portfolio-range-panel) {
-    grid-row: 2;
-    order: 1;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid > .portfolio-holdings-panel) {
-    grid-row: 3;
-    order: 2;
-  }
-  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
-    grid-row: 4;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-sidebar .card) {
-    grid-column: auto;
-    padding: 16px 14px;
-  }
-}
-@media (max-width: 600px) {
-  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* Portfolio command center: one chart/read row, one composition row, a broad ledger. */
 .balanceDeck {
   display: grid;
-  grid-template-columns: minmax(250px, 1.05fr) minmax(0, 2.5fr);
-  gap: 0;
-  margin-bottom: var(--workspace-gap);
-  overflow: hidden;
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  border: 1px solid var(--workspace-edge);
-  backdrop-filter: blur(18px);
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 24px;
+  gap: 24px;
 }
 .netBalance {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 13px;
-  padding: var(--workspace-inset);
-  background:
-    radial-gradient(
-      ellipse at 0 0,
-      color-mix(in srgb, var(--jade) 24%, transparent),
-      transparent 75%
-    ),
-    var(--workspace-glass);
-  color: var(--ink);
-  box-shadow: inset -1px 0 0 var(--workspace-edge);
+  min-width: 0;
 }
 .netBalance > span {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 12px;
   color: var(--muted);
+  font-size: 12px;
 }
 .netBalance > strong {
-  font-size: clamp(30px, 3.2vw, 44px);
-  line-height: 1.05;
-  letter-spacing: -0.055em;
+  display: block;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  margin: 8px 0;
   font-variant-numeric: tabular-nums;
 }
-.netBalance > small {
+.netBalance small {
   font-size: 11px;
-  line-height: 1.6;
   color: var(--muted);
+  line-height: 1.5;
 }
 .balanceMetrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
-  padding: var(--workspace-inset);
 }
 .balanceMetrics > div {
   min-width: 0;
 }
 .balanceMetrics span {
-  display: block;
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 11px;
 }
 .balanceMetrics strong {
   display: block;
-  margin: 10px 0;
-  font-size: clamp(18px, 1.8vw, 26px);
-  line-height: 1.2;
-  letter-spacing: -0.04em;
+  font-size: 21px;
+  font-weight: 600;
+  margin: 7px 0 4px;
   font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
+}
+.balanceMetrics small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+  display: block;
 }
 .balanceMetrics [data-return-tone="negative"] strong {
   color: var(--negative);
@@ -1219,84 +88,85 @@
 .balanceMetrics [data-return-tone="positive"] strong {
   color: var(--positive);
 }
-.balanceMetrics small {
-  display: block;
-  font-size: 11px;
-  line-height: 1.6;
+.portfolio :global(.portfolio-grid) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.portfolio :global(.card) {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  margin: 0;
+}
+.portfolio :global(.portfolio-range-panel),
+.portfolio :global(.portfolio-holdings-panel),
+.portfolio :global(.portfolio-sidebar) {
+  grid-column: 1/-1;
+}
+.portfolio :global(.portfolio-sidebar) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.portfolio :global(.section-head) {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+.portfolio :global(.section-head h2) {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+.portfolio :global(.section-head p) {
+  margin: 0;
   color: var(--muted);
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid) {
-  gap: var(--workspace-gap);
-  align-items: stretch;
-  grid-auto-rows: auto;
-}
-.portfolio.portfolio.portfolio :global(.portfolio-grid .portfolio-trend-panel) {
-  grid-column: 1 / 9;
-  grid-row: 1;
-  align-self: stretch;
-  margin-block: 0;
-  border: 0;
-  border-radius: var(--workspace-radius);
-  padding: var(--workspace-inset);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  border: 1px solid var(--workspace-edge);
-  backdrop-filter: blur(18px);
+  font-size: 12px;
 }
 .portfolioRead {
-  grid-column: 9 / -1;
-  grid-row: 1;
-  align-self: stretch;
-  margin-block: 0;
-  padding: var(--workspace-inset);
-  border-radius: var(--workspace-radius);
-  background:
-    radial-gradient(
-      ellipse at 100% 0,
-      color-mix(in srgb, var(--jade) 20%, transparent),
-      transparent 75%
-    ),
-    var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  border: 1px solid var(--workspace-edge);
-  backdrop-filter: blur(18px);
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 }
 .readEyebrow {
   display: flex;
-  gap: 8px;
+  gap: 7px;
   align-items: center;
   color: var(--muted);
   font-size: 10px;
+  font-weight: 600;
   text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
+}
+.readEyebrow svg {
+  color: var(--blue);
 }
 .portfolioRead h2 {
-  font-size: clamp(24px, 2.3vw, 34px);
-  line-height: 1.15;
-  letter-spacing: -0.045em;
-  margin: 22px 0 14px;
+  font-size: 23px;
+  line-height: 1.2;
+  margin: 12px 0;
+  letter-spacing: -0.03em;
 }
-.portfolioRead > p {
-  margin: 0 0 20px;
-  font-size: 13px;
-  line-height: 1.8;
+.portfolioRead p {
   color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
 }
 .portfolioRead dl {
-  width: 100%;
-  margin: 0 0 20px;
+  margin: 16px 0;
 }
-.portfolioRead dl > div {
+.portfolioRead dl div {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 6px 12px;
-  padding: 12px 0;
+  gap: 12px;
+  padding: 10px 0;
   border-bottom: 1px solid var(--line);
   font-size: 12px;
 }
@@ -1305,353 +175,342 @@
 }
 .portfolioRead dd {
   margin: 0;
-  font-weight: 650;
+  text-align: right;
+  font-weight: 600;
 }
-.portfolioRead > small {
-  font-size: 10px;
-  line-height: 1.7;
+.portfolioRead small {
+  display: block;
   color: var(--muted);
-  margin-top: 16px;
+  font-size: 10px;
+  line-height: 1.5;
+  margin-top: 12px;
 }
 .readLink {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+.portfolio :global(.allocation-track) {
+  display: flex;
+  gap: 3px;
+  height: 9px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+.portfolio :global(.allocation-track i) {
+  height: 100%;
+  min-width: 2px;
+}
+.portfolio :global(.allocation-row) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+  gap: 12px;
+  font-size: 13px;
+  text-decoration: none;
+}
+.portfolio :global(.allocation-row > span) {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  background: #171d38;
-  color: #f5f7ff;
-  box-shadow: 0 5px 16px #202b4c16;
-  font-size: 12px;
-  font-weight: 650;
-  text-decoration: none;
-  margin-top: auto;
-  width: 100%;
+  gap: 8px;
 }
-.portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
+.portfolio :global(.dot) {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.portfolio :global(.portfolio-exposure-rows) {
   display: grid;
-  grid-column: 1 / -1;
-  grid-row: 2;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  grid-auto-rows: auto;
-  gap: var(--workspace-gap);
+  gap: 12px;
 }
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-sidebar .card) {
-  grid-column: auto;
-  grid-row: auto;
+.portfolio :global(.portfolio-exposure-rows > div) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px;
+  font-size: 12px;
+}
+.portfolio :global(.portfolio-exposure-track) {
+  display: block;
+  grid-column: 1/-1;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--surface);
+}
+.portfolio :global(.portfolio-exposure-track i) {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+}
+.portfolio :global(.chart-note),
+.portfolio :global(.approved-data-note) {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.holdingsToolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.holdingsToolbar h2 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 auto 0 0;
+  font-size: 20px;
+}
+.holdingsToolbar select {
+  max-width: 100%;
+}
+.holdingsSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  min-width: 0;
+}
+.holdingsSearch input {
   border: 0;
-  border-radius: var(--workspace-radius);
-  padding: var(--workspace-inset);
+  background: transparent;
+  min-width: 0;
+  width: 160px;
+  min-height: 44px;
+  font-size: 14px;
+  padding: 8px 0;
 }
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid > .portfolio-range-panel) {
-  grid-column: 1 / -1;
-  grid-row: 4;
-  border: 0;
-  border-radius: var(--workspace-radius);
-  padding: var(--workspace-inset);
+.refreshControls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
-.portfolio.portfolio.portfolio
-  :global(.portfolio-grid > .portfolio-holdings-panel) {
-  grid-column: 1 / -1;
-  grid-row: 3;
-  border: 0;
-  border-radius: var(--workspace-radius);
-  padding: var(--workspace-inset);
-  scroll-margin-top: 90px;
+.ledger,
+.watchLedger {
+  max-width: 100%;
+  overflow-x: auto;
+  min-width: 0;
 }
-.portfolio.portfolio.portfolio :global(.allocation-track) {
-  height: 20px;
-  border-radius: 7px;
-  margin: 20px 0;
+.ledger table,
+.watchLedger table,
+.portfolio :global(.portfolio-ledger) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
-.portfolio.portfolio.portfolio :global(.allocation-row) {
-  min-height: 40px;
+.ledger th,
+.watchLedger th,
+.portfolio :global(.portfolio-ledger th) {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 12px 10px;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
 }
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-rows) {
-  gap: 15px;
-  margin: 20px 0;
+.ledger td,
+.watchLedger td,
+.portfolio :global(.portfolio-ledger td) {
+  text-align: right;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
 }
-.portfolio.portfolio.portfolio :global(.portfolio-exposure-track) {
-  height: 10px;
+.ledger :is(th, td):first-child,
+.watchLedger :is(th, td):first-child,
+.portfolio :global(.portfolio-ledger) :is(th, td):first-child {
+  text-align: left;
+}
+.ledger :global(.company-row),
+.watchLedger :global(.company-row) {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  text-decoration: none;
+  min-width: 150px;
+  min-height: 44px;
+}
+.ledger :global(.company-row small),
+.watchLedger :global(.company-row small) {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  max-width: 180px;
+  white-space: normal;
+}
+.ledger small,
+.watchLedger small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+.paceStatus {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  white-space: nowrap;
+}
+.portfolio :global(.approved-holding-tools) {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 12px;
+}
+.portfolio :global(.approved-cash-mark) {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: var(--surface);
+  border-radius: 8px;
 }
 .decisionDrawer {
-  margin-top: var(--workspace-gap);
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  border: 1px solid var(--workspace-edge);
-  backdrop-filter: blur(18px);
-  padding: var(--workspace-inset);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--card);
 }
-.decisionDrawer > summary {
+.decisionDrawer summary {
+  min-height: 44px;
   cursor: pointer;
-  font-weight: 650;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 13px;
 }
-.decisionDrawer > summary small {
-  margin-left: 16px;
-  color: var(--muted);
+.decisionDrawer small {
+  display: block;
   font-weight: 400;
-  font-size: 12px;
+  color: var(--muted);
+  font-size: 11px;
 }
-.decisionDrawer[open] > summary {
+.portfolio dialog {
+  width: min(920px, calc(100vw - 24px));
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+}
+.portfolio dialog::backdrop {
+  background: #08132288;
+}
+.portfolio dialog > header,
+.portfolio :global(.dialog-head) {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
   margin-bottom: 20px;
 }
-@media (max-width: 1150px) {
-  .balanceMetrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 24px;
-  }
-  .portfolioRead {
-    padding: var(--workspace-inset);
-  }
+.portfolio dialog h2 {
+  font-size: 20px;
+  margin: 0;
 }
-@media (max-width: 900px) {
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-trend-panel) {
-    grid-column: 1 / -1;
+.portfolio :global(.detail-content) {
+  display: grid;
+  gap: 20px;
+}
+.portfolio :global(.portfolio-ledger-wrap) {
+  overflow-x: auto;
+}
+.portfolio :global(.ledger-toolbar) {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+.portfolio :global(.ledger-identity) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.portfolio :global(.ledger-name) {
+  color: var(--muted);
+  font-size: 10px;
+  display: block;
+}
+.portfolio :global(.ledger-mobile-price) {
+  display: none;
+}
+@media (min-width: 1000px) {
+  .balanceDeck {
+    grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr);
+    align-items: center;
+  }
+  .balanceMetrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .portfolio :global(.portfolio-grid) {
+    grid-template-columns: minmax(0, 2fr) minmax(270px, 1fr);
+  }
+  .portfolio :global(.portfolio-trend-panel) {
+    grid-column: 1;
     grid-row: 1;
   }
   .portfolioRead {
-    grid-column: 1 / -1;
-    grid-row: 2;
+    grid-column: 2;
+    grid-row: 1;
   }
-  .portfolioRead h2 {
-    margin-top: 14px;
-  }
-  .portfolioRead dl {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-  }
-  .portfolioRead dl > div {
-    display: block;
-  }
-  .portfolioRead dd {
-    margin-top: 7px;
-  }
-  .readLink {
-    width: auto;
-  }
-  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
-    grid-row: 3;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid > .portfolio-range-panel) {
-    grid-row: 5;
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid > .portfolio-holdings-panel) {
+  .portfolio :global(.portfolio-range-panel) {
     grid-row: 4;
+  }
+  .portfolio :global(.portfolio-sidebar) {
+    grid-row: 3;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .portfolio :global(.portfolio-holdings-panel) {
+    grid-row: 2;
   }
 }
 @media (max-width: 600px) {
-  .balanceDeck {
-    grid-template-columns: minmax(0, 1fr);
-    margin-bottom: var(--workspace-gap);
-  }
-  .netBalance {
-    padding: var(--workspace-inset);
-    gap: 10px;
-  }
-  .netBalance > strong {
-    font-size: 38px;
-  }
-  .balanceMetrics {
-    padding: var(--workspace-inset);
-    gap: 22px;
-  }
-  .balanceMetrics strong {
-    font-size: 23px;
-    margin: 6px 0;
-  }
-  .portfolio.portfolio.portfolio :global(.portfolio-grid) {
-    gap: var(--workspace-gap);
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-trend-panel) {
-    padding: var(--workspace-inset);
-  }
-  .portfolioRead {
-    padding: var(--workspace-inset);
-  }
-  .portfolioRead dl {
-    display: block;
-  }
-  .portfolioRead dl > div {
-    display: flex;
-  }
-  .portfolioRead dd {
-    margin-top: 0;
-  }
-  .portfolio.portfolio.portfolio :global(.portfolio-grid > .portfolio-sidebar) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--workspace-gap);
-  }
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-sidebar .card) {
-    padding: var(--workspace-inset);
-  }
-  .decisionDrawer {
-    padding: var(--workspace-inset);
-  }
-  .decisionDrawer > summary small {
-    display: block;
-    margin: 7px 0 0;
-  }
-}
-
-/* Pearl and sage depth follows the shared canvas; color never replaces financial meaning. */
-.netBalance > span > svg {
-  color: #a5b947;
-}
-:global([data-theme="dark"]) .netBalance > span > svg {
-  color: #d2e887;
-}
-:global([data-theme="dark"]) .readLink {
-  background: var(--citron);
-  color: #253522;
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-sidebar .card),
-.portfolio.portfolio.portfolio.portfolio
-  :global(.portfolio-grid > .card:not(.portfolio-trend-panel)) {
-  background: var(--workspace-glass);
-  border: 1px solid var(--workspace-edge);
-  box-shadow: var(--workspace-shadow);
-  padding: var(--workspace-inset);
-  border-radius: var(--workspace-radius);
-  backdrop-filter: blur(18px);
-}
-@media (prefers-reduced-transparency: reduce) {
   .balanceDeck,
-  .netBalance,
-  .portfolioRead,
-  .decisionDrawer,
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-sidebar .card),
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.portfolio-grid > .card:not(.portfolio-trend-panel)),
-  .portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-trend-panel) {
-    background: var(--card);
-    backdrop-filter: none;
-  }
-}
-
-/* Match the approved transparent cards without changing portfolio calculations. */
-.balanceDeck {
-  grid-template-columns: minmax(240px, 1fr) minmax(0, 2.4fr);
-  gap: 0;
-  border: 1px solid var(--workspace-edge);
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  margin-bottom: 16px;
-}
-.netBalance {
-  padding: 24px;
-  border-radius: 0;
-  background: linear-gradient(130deg, var(--blue-soft), transparent);
-  color: var(--ink);
-}
-.netBalance > span,
-.netBalance > small {
-  color: var(--muted);
-}
-.netBalance > span > svg {
-  color: var(--blue);
-}
-.netBalance > strong {
-  font-size: clamp(32px, 3vw, 44px);
-}
-.balanceMetrics {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  padding: 8px;
-}
-.balanceMetrics > div {
-  padding: 16px;
-}
-.balanceMetrics > div:nth-child(odd) {
-  border-right: 1px solid var(--line);
-}
-.balanceMetrics > div:nth-child(-n + 2) {
-  border-bottom: 1px solid var(--line);
-}
-.balanceMetrics strong {
-  margin: 7px 0;
-  font-size: 25px;
-}
-.portfolioRead,
-.decisionDrawer {
-  border: 1px solid var(--workspace-edge);
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  backdrop-filter: blur(16px);
-  padding: 20px;
-}
-.portfolioRead h2 {
-  font-size: 26px;
-  line-height: 1.15;
-}
-.readLink {
-  min-height: 44px;
-  border-radius: 10px;
-  background: var(--blue);
-  color: white;
-}
-:global([data-theme="dark"]) .readLink {
-  background: var(--blue);
-  color: var(--bg);
-}
-.portfolio.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-trend-panel),
-.portfolio.portfolio.portfolio.portfolio
-  :global(.portfolio-grid .portfolio-sidebar .card),
-.portfolio.portfolio.portfolio.portfolio
-  :global(.portfolio-grid > .card:not(.portfolio-trend-panel)) {
-  border: 1px solid var(--workspace-edge);
-  border-radius: var(--workspace-radius);
-  box-shadow: var(--workspace-shadow);
-  background: var(--workspace-glass);
-  backdrop-filter: blur(16px);
-}
-@media (max-width: 700px) {
-  .balanceDeck {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .netBalance {
-    padding: 20px;
-    box-shadow: inset 0 -1px 0 var(--line);
-  }
-  .balanceMetrics > div {
-    padding: 14px 10px;
-  }
-  .balanceMetrics strong {
-    font-size: 23px;
-  }
+  .portfolio :global(.card),
   .portfolioRead {
     padding: 16px;
   }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .balanceDeck,
-  .netBalance,
-  .portfolioRead,
-  .decisionDrawer,
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-trend-panel),
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.portfolio-grid .portfolio-sidebar .card),
-  .portfolio.portfolio.portfolio.portfolio
-    :global(.portfolio-grid > .card:not(.portfolio-trend-panel)) {
-    background: var(--card);
-    backdrop-filter: none;
+  .balanceDeck {
+    gap: 20px;
+  }
+  .balanceMetrics strong {
+    font-size: 18px;
+  }
+  .holdingsSearch {
+    flex: 1 1 100%;
+  }
+  .holdingsSearch input {
+    width: 100%;
+    font-size: 16px;
+  }
+  .refreshControls {
+    flex-wrap: wrap;
+  }
+  .portfolio dialog {
+    padding: 16px;
+  }
+  .ledger td,
+  .watchLedger td {
+    padding: 10px 8px;
   }
 }

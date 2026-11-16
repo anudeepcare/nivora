@@ -1,0 +1,139 @@
+:root[data-accent="blue"] {
+  --blue: #245bdb;
+  --accent-solid: #245bdb;
+  --blue-soft: #e8efff;
+}
+:root[data-theme="dark"][data-accent="blue"] {
+  --blue: #9fc2ff;
+  --accent-solid: #245bdb;
+  --blue-soft: #243c58;
+}
+/* Appearance tokens: scoped to accents and spacing, never financial meaning or PWA geometry. */
+:root[data-accent="teal"] {
+  --nav-active: var(--accent-solid);
+  --nav-active-ink: #ffffff;
+  --blue: #00777d;
+  --accent-solid: #006d73;
+  --blue-soft: color-mix(in srgb, #00777d 10%, var(--surface));
+}
+:root[data-accent="violet"] {
+  --nav-active: var(--accent-solid);
+  --nav-active-ink: #ffffff;
+  --blue: #7046cf;
+  --accent-solid: #7046cf;
+  --blue-soft: color-mix(in srgb, #7046cf 10%, var(--surface));
+}
+:root[data-accent="rose"] {
+  --nav-active: var(--accent-solid);
+  --nav-active-ink: #ffffff;
+  --blue: #ad2f62;
+  --accent-solid: #ad2f62;
+  --blue-soft: color-mix(in srgb, #ad2f62 10%, var(--surface));
+}
+:root[data-theme="dark"][data-accent="teal"] {
+  --blue: #61d3cc;
+  --blue-soft: color-mix(in srgb, #61d3cc 12%, var(--surface));
+}
+:root[data-theme="dark"][data-accent="violet"] {
+  --blue: #b9a2ff;
+  --blue-soft: color-mix(in srgb, #b9a2ff 12%, var(--surface));
+}
+:root[data-theme="dark"][data-accent="rose"] {
+  --blue: #ffa1c4;
+  --blue-soft: color-mix(in srgb, #ffa1c4 12%, var(--surface));
+}
+:root[data-accent]:not([data-accent="blue"]) .button.primary,
+:root[data-accent]:not([data-accent="blue"])
+  .style-options
+  button[aria-pressed="true"] {
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
+  color: white;
+}
+.appearance-controls {
+  border-top: 1px solid var(--line);
+  padding: 20px 0;
+}
+.appearance-controls h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+.appearance-controls p,
+.appearance-controls small {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.appearance-controls small {
+  display: block;
+  margin: 10px 0;
+}
+.accent-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 14px 0;
+}
+.accent-options button,
+.density-options button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+}
+.accent-options i {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex: none;
+}
+.accent-options button > span {
+  margin-left: auto;
+}
+.accent-options button[aria-pressed="true"],
+.density-options button[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+.density-options {
+  display: flex;
+  gap: 8px;
+}
+.appearance-controls button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+:root[data-density="compact"] {
+  --workspace-gap: 12px;
+  --workspace-inset: 16px;
+}
+@media (max-width: 600px) {
+  .density-options {
+    flex-wrap: wrap;
+  }
+  .accent-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Saved accessibility choices remain active without the retired visual stack. */
+:root[data-text-size="large"] body {
+  font-size: 16px;
+}
+:root[data-text-size="large"] :is(p, td, dt, dd, label, button) {
+  font-size: max(1em, 15px);
+  line-height: 1.65;
+}
+:root[data-motion="reduce"] *,
+:root[data-motion="reduce"] *::before,
+:root[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms;
+  transition-duration: 0.01ms;
+  scroll-behavior: auto;
+}

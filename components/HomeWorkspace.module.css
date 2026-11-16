@@ -1,743 +1,294 @@
-.home.home.home :global(.home-evidence-layout) {
+/* Home owns its layout. No legacy dashboard selectors or override cascade. */
+.home {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  align-items: stretch;
-  gap: 16px;
-  margin: 16px 0;
-}
-.home.home.home :global(.home-evidence-panel) {
+  gap: 24px;
   min-width: 0;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--glass);
-  box-shadow: none;
 }
-.home.home.home :global(.home-evidence-panel) :global(.section-head) {
-  margin-bottom: 16px;
-  gap: 16px;
-}
-.home.home.home :global(.home-section-count) {
-  flex-shrink: 0;
-  color: var(--muted);
-  font-size: 12px;
-  padding-top: 4px;
-}
-.home.home.home :global(.home-news-list) article {
-  padding: 17px 0;
-  border-top: 1px solid var(--line);
-}
-.home.home.home :global(.home-news-meta) {
+.greeting :global(.page-heading) {
   display: flex;
-  flex-wrap: wrap;
-  gap: 7px 12px;
-  margin-bottom: 6px;
-  color: var(--muted);
-  font-size: 12px;
-}
-.home.home.home :global(.home-news-meta) a {
-  color: var(--blue);
-  font-weight: 500;
-}
-.home.home.home :global(.home-news-title) {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.5;
-}
-.home.home.home :global(.home-news-title) > svg {
-  flex-shrink: 0;
-  margin-top: 3px;
-  color: var(--muted);
-}
-.home.home.home :global(.home-news-list) article > .text-link {
-  margin-top: 10px;
-  font-size: 12px;
-  color: var(--blue);
-}
-.home.home.home :global(.home-more-updates) {
-  border-top: 1px solid var(--line);
-}
-.home.home.home :global(.home-more-updates) summary {
-  cursor: pointer;
-  padding: 14px 0;
-  font-size: 14px;
-  color: var(--blue);
-}
-.home.home.home :global(.home-more-updates) article {
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-}
-.home.home.home :global(.home-more-updates) article > span {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-.home.home.home :global(.home-more-updates) article > a {
-  display: flex;
-  gap: 8px;
-  font-size: 15px;
-  line-height: 1.5;
-}
-.home.home.home :global(.home-more-updates) svg {
-  flex-shrink: 0;
-}
-.home.home.home :global(.home-event-day) {
-  padding: 15px 0 4px;
-  border-top: 1px solid var(--line);
-}
-.home.home.home :global(.home-event-day) > time {
-  display: block;
-  margin-bottom: 7px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-}
-.home.home.home :global(.home-event-row) {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
-  padding: 11px 0;
-}
-.home.home.home :global(.home-event-row) > span {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 3px 10px;
-}
-.home.home.home :global(.home-event-row) strong {
-  color: var(--ink);
-  font-size: 15px;
-}
-.home.home.home :global(.home-event-row) span > span {
-  font-size: 14px;
-  color: var(--muted);
-}
-.home.home.home :global(.home-event-row) small {
-  grid-column: 1/-1;
-  font-size: 12px;
-  color: var(--muted);
-}
-.home.home.home :global(.home-event-row) > svg {
-  flex-shrink: 0;
-  color: var(--blue);
-}
-.home.home.home :global(.home-quiet-state) {
-  display: grid;
-  justify-items: start;
-  gap: 10px;
-  padding: 17px 0 10px;
-}
-.home.home.home :global(.home-quiet-state) > svg {
-  color: var(--blue);
-}
-.home.home.home :global(.home-quiet-state) h3 {
-  font-size: 17px;
-  letter-spacing: -0.02em;
-}
-.home.home.home :global(.home-quiet-state) p {
-  font-size: 14px;
-  line-height: 1.65;
-}
-.home.home.home :global(.home-review-row) {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 18px;
-  align-items: center;
-  gap: 13px;
-  padding: 18px 0;
-  border-top: 1px solid var(--line);
-}
-.home.home.home :global(.home-review-mark) {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: var(--blue-soft);
-  color: var(--blue);
-  font-size: 17px;
-  font-weight: 500;
-}
-.home.home.home :global(.home-review-row) strong {
-  display: block;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.5;
-}
-.home.home.home :global(.home-review-row) small {
-  display: block;
-  margin-top: 4px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--muted);
-}
-.home.home.home :global(.home-review-row) > svg {
-  color: var(--blue);
-}
-.home.home.home :global(.home-company) {
-  grid-template-columns: 36px minmax(0, 1fr) 70px auto;
-  gap: 12px;
-  min-height: 76px;
-}
-.home.home.home :global(.home-company) strong {
-  font-size: 14px;
-  line-height: 1.4;
-}
-.home.home.home :global(.home-company) small {
-  font-size: 12px;
-}
-.home.home.home :global(.home-company) :global(.row-quote) strong {
-  font-size: 15px;
-}
-.home.home.home :global(.home-company) :global(.row-quote) small {
-  font-size: 12px;
-}
-.home.home.home :global(.home-company) :global(.home-quote-asof) {
-  color: var(--muted);
-  font-size: 10px;
-}
-.home.home.home :global(.home-decision-view) :global(.approved-data-note) {
-  margin: 12px 0 18px;
-  font-size: 12px;
-}
-
-.home.home.home :global(.home-next-step) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px 20px;
-  align-items: center;
-  padding: 20px;
-  margin: 16px 0;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--valuation-fill);
-}
-.home.home.home :global(.home-next-step) h2 {
-  font-size: 22px;
-  margin: 5px 0;
-}
-.home.home.home :global(.home-source-note) {
-  grid-column: 1/-1;
-  font-size: 11px;
-  color: var(--muted);
   margin: 0;
 }
-.home.home.home :global(.home-milestones) {
-  margin-top: 12px;
-  font-size: 12px;
+.greeting h1 {
+  font-size: clamp(26px, 3vw, 34px);
+  margin: 0 0 6px;
+  letter-spacing: -0.04em;
 }
-.home.home.home :global(.home-milestone) {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-}
-.home.home.home :global(.home-milestone-copy) {
-  display: grid;
-  gap: 3px;
-}
-.home.home.home :global(.home-earnings-overview) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-.home.home.home :global(.home-earnings-chip) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  background: var(--blue-soft);
-  border-radius: 7px;
-  font-size: 12px;
-}
-.home.home.home :global(.wealth-strip) {
-  display: grid;
-  grid-template-columns: 1.2fr 1.2fr 0.7fr auto;
-  align-items: center;
-  padding: 18px;
-  margin-bottom: 16px;
-  gap: 16px;
-}
-.home.home.home :global(.approved-data-note) {
-  margin: 10px 0 16px;
-}
-@media (max-width: 1000px) {
-  .home.home.home :global(.home-evidence-layout) {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 600px) {
-  .home.home.home :global(.home-next-step) {
-    grid-template-columns: 1fr;
-    padding: 14px;
-  }
-  .home.home.home :global(.home-evidence-panel) {
-    padding: 14px;
-  }
-}
-
-.research :global(.approved-research-search) {
-  padding: 18px;
-  margin: 0 0 20px;
-  display: grid;
-  gap: 8px;
-  border: 1px solid var(--line);
-}
-.research :global(.approved-research-search) > h2 {
-  font-size: 18px;
+.greeting p {
   margin: 0;
+  color: var(--muted);
 }
-.research :global(.approved-research-search) > p {
-  margin: 0;
-  font-size: 12px;
-}
-.research :global(.approved-research-search) > :global(.eyebrow) {
-  display: none;
-}
-.research :global(.approved-research-tile) {
-  padding: 12px 0;
-  min-height: 72px;
-}
-
-@media (max-width: 800px) {
-  .home.home.home :global(.wealth-strip) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.home.home.home :global(.home-evidence-panel) {
-  box-shadow: var(--panel-shadow);
-  border-radius: 18px;
-  padding: 24px;
-}
-.home.home.home :global(.home-evidence-layout) {
-  align-items: start;
-}
-.home.home.home :global(.home-news-list),
-.home.home.home :global(.home-event-groups) {
-  max-height: 480px;
-  overflow: auto;
-  scrollbar-width: thin;
-}
-.home.home.home :global(.home-events-panel) {
-  max-height: 650px;
-  overflow: auto;
-  scrollbar-width: thin;
-}
-.home.home.home :global(.home-next-step) {
-  background: var(--glass);
-  box-shadow: var(--panel-shadow);
-  border-radius: 18px;
-}
-.home.home.home :global(.wealth-strip) {
-  background: var(--glass);
-  box-shadow: var(--panel-shadow);
-  border-radius: 18px;
-}
-.home.home.home :global(.home-company) {
-  padding: 18px 0;
-}
-@media (max-width: 600px) {
-  .home.home.home :global(.home-evidence-panel) {
-    padding: 18px;
-  }
-  .home.home.home :global(.home-events-panel) {
-    max-height: 520px;
-  }
-}
-
-.hero {
+.greeting :global(.date-chip) {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr);
-  gap: 20px;
-  align-items: start;
-  margin: 24px 0;
-}
-.holdings {
-  min-width: 0;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  box-shadow: var(--panel-shadow);
-  overflow: hidden;
-}
-.home .holdings :global(.wealth-strip) {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
-  padding: 12px;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  background: transparent;
-}
-.holdings :global(.wealth-strip) > a {
-  grid-column: 1/-1;
-  justify-self: end;
-  padding: 6px 12px;
-}
-.holdings :global(.wealth-strip) > div {
-  background: transparent;
-  padding: 12px;
-}
-.holdings :global(.wealth-strip) strong {
-  font-size: clamp(20px, 2vw, 28px);
-}
-.history {
-  padding: 18px 24px;
-  border-top: 1px solid var(--line);
-}
-.history :global(.chart-note) {
-  font-size: 11px;
-  line-height: 1.6;
-}
-.history svg {
-  width: 100%;
-  height: auto;
-  min-height: 180px;
-  color: var(--financial-icon);
-}
-.pace {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-.pace > section {
-  flex: none;
-}
-.featured {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 6px 14px;
-  color: var(--ink);
-  font-size: 14px;
-}
-.featured > span {
-  min-width: 0;
-}
-.featured small {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-}
-.featured > svg {
-  margin-left: auto;
-  flex: none;
-}
-.paceEmpty {
-  padding: 28px;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  box-shadow: var(--panel-shadow);
-}
-.paceEmpty h2 {
-  font-size: 28px;
-  font-weight: 400;
-}
-.paceEmpty p {
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: 14px;
-}
-.home.home.home :global(.home-news-meta) > span:first-child {
-  width: 28px;
-  height: 28px;
-  flex: none;
-}
-@media (max-width: 1000px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-  .pace {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-  .home .holdings :global(.wealth-strip) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (max-width: 520px) {
-  .home .holdings :global(.wealth-strip) {
-    grid-template-columns: 1fr;
-  }
-  .history {
-    padding: 18px;
-  }
-  .holdings :global(.wealth-strip) > div {
-    padding: 10px 8px;
-  }
-  .holdings :global(.wealth-strip) strong {
-    font-size: 26px;
-  }
-}
-
-.watchboard {
-  min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: linear-gradient(145deg, var(--card) 55%, var(--blue-soft));
-  padding: 22px;
-}
-.radarRow {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid var(--line);
-  color: var(--ink);
-  text-decoration: none;
-}
-.radarRow > span {
-  min-width: 0;
-}
-.radarRow strong {
-  display: block;
-  font-size: 14px;
-}
-.radarRow small {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-.radarRow > span:nth-child(3) {
+  gap: 5px;
   text-align: right;
-}
-.radarRow > span:nth-child(2) small {
+  font-size: 13px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 210px;
 }
-.radarPace {
-  grid-column: 2/-1;
-}
-.radarNote {
+.greeting small {
   font-size: 11px;
-  line-height: 1.6;
-  color: var(--muted);
-  margin-bottom: 0;
-}
-.home.home.home :global(.home-next-step) {
-  padding: 20px 24px;
-  margin: 18px 0;
-}
-.home.home.home :global(.home-evidence-panel) {
-  align-self: start;
-}
-.home .history svg {
-  color: var(--ink);
-}
-.home .watchboard {
-  border-radius: 12px;
-  background: linear-gradient(
-    145deg,
-    var(--card) 75%,
-    color-mix(in srgb, var(--blue) 10%, var(--card))
-  );
-}
-.home .radarRow {
-  padding: 10px 0;
-  row-gap: 3px;
-}
-.home .radarRow small:global(.positive) {
-  color: var(--green);
-}
-.home .radarRow small:global(.negative) {
-  color: var(--red);
-}
-.home .radarRow small:global(.muted) {
   color: var(--muted);
 }
-.home .holdings {
-  border-radius: 12px;
-}
-
-.home.home.home :global(.home-event-day) {
-  display: grid;
-  grid-template-columns: 85px minmax(0, 1fr);
-  gap: 0 12px;
-  padding: 12px 0;
-}
-.home.home.home :global(.home-event-day) > time {
-  grid-column: 1;
-  grid-row: 1/20;
-  padding: 8px;
-  border-radius: 8px;
-  background: var(--blue-soft);
-  color: var(--ink);
-  height: max-content;
-  text-align: center;
-}
-.home.home.home :global(.home-event-row) {
-  grid-column: 2;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--line);
-  gap: 8px;
-}
-.home.home.home :global(.home-event-row) > span {
-  gap: 2px 8px;
-}
-.home.home.home :global(.home-event-row) small {
-  line-height: 1.4;
-}
-@media (max-width: 480px) {
-  .home.home.home :global(.home-event-day) {
-    grid-template-columns: 64px minmax(0, 1fr);
-    gap: 0 8px;
-  }
-}
-
 .quickLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-  margin: 10px 0 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 .quickLinks a {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px;
+  min-height: 100px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
   font-weight: 600;
-  min-height: 36px;
 }
-.home.home.home :global(.home-next-step) {
-  background: linear-gradient(
-    110deg,
-    color-mix(in srgb, var(--blue) 12%, var(--glass)),
-    var(--glass)
-  );
+.quickLinks small {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+}
+.quickLinks a:hover {
+  border-color: var(--blue);
+}
+.home :global(.home-evidence-layout) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.home :global(.home-evidence-panel) {
+  min-width: 0;
+  padding: 20px;
+  background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
 }
-.home.home.home :global(.home-events-panel) {
-  border-top: 1px solid var(--line);
+.home :global(.home-events-panel) {
+  grid-column: 1;
 }
-.home.home.home :global(.home-news-panel) {
-  border-top: 1px solid var(--line);
+.home :global(.home-news-panel) {
+  grid-column: 1/-1;
 }
-
-.home.home.home :global(.home-next-step) {
-  padding: 18px;
-  margin: 16px 0;
+.home :global(.home-evidence-panel .section-head) {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 16px;
 }
-.home.home.home :global(.home-next-step) h2 {
-  font-size: 21px;
+.home :global(.home-evidence-panel .section-head h2) {
+  font-size: 18px;
+  margin: 0 0 6px;
 }
-.home.home.home :global(.home-source-note) {
+.home :global(.home-evidence-panel .section-head p) {
   font-size: 12px;
+  color: var(--muted);
+  margin: 0;
 }
-
-/* Keep the daily view compact; detailed sample analysis opens on demand. */
-.marketRadar {
-  margin: 12px 0;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--glass);
+.home :global(.home-event-groups),
+.home :global(.home-reported-results) {
+  display: grid;
+  gap: 16px;
+}
+.home :global(.home-event-day) > time {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.home :global(.home-event-row) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.home :global(.home-event-row) > span {
+  display: grid;
+  gap: 4px;
   min-width: 0;
 }
-.marketRadar > summary {
-  padding: 14px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
+.home :global(.home-event-row strong) {
+  font-size: 13px;
+  color: var(--ink);
 }
-.marketRadar > summary span {
-  margin-left: 10px;
+.home :global(.home-event-row span span),
+.home :global(.home-event-row small) {
   color: var(--muted);
   font-size: 12px;
-  font-weight: 400;
 }
-.marketRadar > section {
-  margin: 0;
-  border: 0;
-  box-shadow: none;
+.home :global(.earnings-status) {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.home :global(.home-quiet-state) {
+  padding: 12px 0;
+}
+.home :global(.home-quiet-state h3) {
+  font-size: 19px;
+  margin: 0 0 8px;
+}
+.home :global(.home-quiet-state p) {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.home :global(.home-source-note) {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+.home :global(.home-section-count) {
+  color: var(--muted);
+  font-size: 12px;
 }
 .earningsNumbers {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 11px;
 }
-.home.home.home :global(.home-event-row) .earningsNumbers > span {
-  font-size: 12px;
+.workbench {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.workbenchHeading span {
+  font-size: 10px;
+  letter-spacing: 0.08em;
   color: var(--muted);
 }
-.home.home.home :global(.home-event-row) .earningsNumbers strong {
-  font-size: 12px;
-  color: var(--ink);
+.workbenchHeading h2 {
+  margin: 6px 0;
+  font-size: 22px;
 }
-.home.home.home :global(.home-evidence-layout) {
-  margin: 14px 0;
-  gap: 14px;
+.workbenchHeading p,
+.planLink {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
 }
-.home.home.home :global(.home-evidence-panel) {
-  padding: 18px;
+.marketRadar {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
 }
-.home.home.home :global(.home-company) {
-  min-height: 64px;
+.marketRadar summary {
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+.marketRadar summary span {
+  display: block;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 11px;
+}
+.home :global(.home-company) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   padding: 12px 0;
+  text-decoration: none;
+  min-height: 44px;
 }
-.home.home.home :global(.home-quiet-state) {
-  gap: 6px;
-  padding: 12px 0;
+.home :global(.row-quote) {
+  text-align: right;
+  display: grid;
+  gap: 4px;
 }
-.home.home.home :global(.home-quiet-state) h3 {
-  font-size: 15px;
+.home :global(.home-quote-asof) {
+  color: var(--muted);
+  font-size: 10px;
 }
-.home.home.home :global(.home-quiet-state) p {
-  font-size: 12px;
-  line-height: 1.5;
-}
-@media (max-width: 600px) {
-  .marketRadar > summary span {
-    display: block;
-    margin: 5px 0 0;
+@media (min-width: 900px) {
+  .quickLinks {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-  .home.home.home :global(.home-evidence-panel) {
+  .home :global(.home-evidence-layout) {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+  .home :global(.home-events-panel) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+@media (max-width: 420px) {
+  .greeting :global(.page-heading) {
+    align-items: start;
+  }
+  .greeting :global(.date-chip) {
+    display: none;
+  }
+  .quickLinks a {
     padding: 14px;
+    font-size: 14px;
   }
 }
 
-/* A compact greeting leaves the visual hierarchy to the decision hero and charts. */
-.home.home .greeting > div {
-  padding: 10px 0 12px;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  background: transparent;
+/* Research entry uses the same independently scoped workspace rhythm. */
+.research {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
 }
-.home.home .greeting h1 {
-  font-size: clamp(29px, 3vw, 42px);
+.research :global(.page-heading) {
+  margin: 0;
+}
+.research :global(.page-heading h1) {
   margin: 0 0 6px;
+  font-size: clamp(26px, 3vw, 34px);
   letter-spacing: -0.04em;
 }
-.home.home .greeting p {
-  font-size: 13px;
+.research :global(.page-heading p) {
   margin: 0;
+  color: var(--muted);
 }
-.home.home .greeting :global(.date-chip) {
-  background: transparent;
-  padding: 0;
-  border: 0;
+.research :global(.card) {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  min-width: 0;
 }
-.home.home .quickLinks {
-  margin: 0 0 12px;
+.research :global(.approved-research-search) {
+  display: grid;
+  gap: 16px;
 }
-
+.research :global(.approved-research-search h2) {
+  margin: 0;
+  font-size: 18px;
+}
+.research :global(.approved-data-note) {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--warning);
+  font-size: 13px;
+}
 .researchPaging {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 16px;
-  margin: 0 0 24px;
   font-size: 12px;
   color: var(--muted);
 }
@@ -745,364 +296,27 @@
   min-height: 44px;
   padding: 10px 16px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--card);
   color: var(--ink);
   font: inherit;
-  cursor: pointer;
 }
 .researchPaging button:disabled {
-  opacity: 0.4;
-  cursor: default;
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 .researchPaging button:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
-@media (max-width: 767px) {
-  .home.home .quickLinks {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 0 0 4px;
-    margin: 12px 0 16px;
-  }
-  .home.home .quickLinks a {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 40px;
-    padding: 8px 10px;
-    font-size: 12px;
-    border-radius: 10px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    white-space: nowrap;
-  }
-}
-
-/* Single news panel fills its row; no reserved empty grid column. */
-.home.home.home.home :global(.home-secondary-layout) {
-  grid-template-columns: minmax(0, 1fr);
-}
-.home.home.home.home :global(.home-news-panel) {
-  width: 100%;
-  min-width: 0;
-}
-.home.home.home.home :global(.home-news-panel .home-headline-row) {
-  min-width: 0;
-}
-.home.home.home.home :global(.home-event-day) {
-  grid-template-columns: 72px minmax(0, 1fr);
-  gap: 16px;
-}
-.home.home.home.home :global(.home-event-row) {
-  padding: 14px 0;
-  min-height: 0;
-}
-.home.home.home.home :global(.home-event-row > span) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 12px;
-}
-.home.home.home.home :global(.home-event-row > span > strong) {
-  font-size: 15px;
-}
-.home.home.home.home :global(.home-event-row > span > small) {
-  flex-basis: 100%;
-  font-size: 12px;
-}
-.home.home.home.home :global(.home-event-row .earnings-status) {
-  padding: 3px 7px;
-  font-size: 10px;
-  border-radius: 5px;
-}
-@media (min-width: 1100px) {
-  .home.home.home.home :global(.home-news-panel .home-news-list) {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 24px;
-  }
-}
 @media (max-width: 600px) {
-  .home.home.home.home :global(.home-event-day) {
-    grid-template-columns: 1fr;
-    gap: 4px;
+  .research {
+    gap: 16px;
   }
-}
-
-.home.home.home.home :global(.home-more-updates > summary) {
-  padding: 12px 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  font-size: 12px;
-  color: var(--muted);
-}
-.home.home.home.home :global(.home-news-list article) {
-  padding: 16px 0;
-}
-/* Match the account and research workspaces without enclosing every list. */
-.home.home.home :global(.home-evidence-layout) {
-  gap: 28px;
-  margin: 28px 0;
-}
-.home.home.home :global(.home-evidence-panel) {
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-  background: transparent;
-}
-.home.home.home :global(.home-event-row) {
-  padding: 12px 0;
-  min-height: 60px;
-}
-.home.home.home :global(.home-event-row) > span {
-  gap: 3px 12px;
-}
-.home.home.home :global(.home-news-list) article {
-  padding: 16px 0;
-}
-.home.home.home :global(.home-news-title) {
-  font-size: 15px;
-  line-height: 1.5;
-  font-weight: 550;
-}
-.home.home.home :global(.home-source-note) {
-  font-size: 11px;
-}
-@media (min-width: 1100px) {
-  .home.home.home :global(.home-evidence-layout) {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  .research :global(.card) {
+    padding: 16px;
   }
-}
-.home.home.home.home :global(.home-evidence-layout) {
-  gap: 16px;
-  margin: 18px 0;
-}
-.home.home.home.home :global(.home-evidence-panel) {
-  padding: 18px;
-  border: 0;
-  border-radius: 16px;
-  background: var(--card);
-}
-.home.home.home.home :global(.home-news-list article) {
-  padding: 14px 0;
-}
-.home.home.home.home :global(.home-company) {
-  padding-block: 11px;
-}
-.home.home.home.home :global(.home-secondary-layout) {
-  margin-top: 16px;
-}
-.home.home.home.home :global(.home-section-count) {
-  font-size: 11px;
-}
-@media (max-width: 650px) {
-  .home.home.home.home :global(.home-evidence-panel) {
-    padding: 16px 14px;
-  }
-}
-
-/* Keep the first viewport useful and give events and news one coordinated row. */
-.greeting :global(.page-heading),
-.greeting :global(.workspace-heading) {
-  margin-bottom: 14px;
-}
-.greeting h1 {
-  font-size: clamp(29px, 3vw, 42px);
-  line-height: 1.2;
-}
-.quickLinks {
-  margin-block: 14px 18px;
-}
-.planLink {
-  margin: 8px 0 18px;
-  font-size: 13px;
-}
-.home.home.home.home :global(.home-evidence-layout) {
-  align-items: start;
-}
-.home.home.home.home :global(.home-quiet-state) {
-  padding: 12px 0;
-  gap: 8px;
-}
-.home.home.home.home :global(.home-quiet-state) p {
-  font-size: 13px;
-}
-@media (min-width: 1100px) {
-  .home.home.home.home :global(.home-news-panel .home-news-list) {
-    display: block;
-  }
-}
-
-/* Daily briefing → evidence → optional workbench, rather than a stack of tools. */
-.workbench {
-  scroll-margin-top: 90px;
-  margin-top: 32px;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.workbenchHeading {
-  margin-bottom: 22px;
-}
-.workbenchHeading > span {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--blue);
-}
-.workbenchHeading h2 {
-  font-size: 24px;
-  letter-spacing: -0.035em;
-  margin: 8px 0;
-}
-.workbenchHeading p {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0;
-}
-.home.home.home.home :global(.home-evidence-layout) {
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  align-items: stretch;
-  gap: var(--workspace-gap);
-  margin: 22px 0;
-}
-.home.home.home.home :global(.home-evidence-panel) {
-  padding: var(--workspace-inset);
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  border: 1px solid var(--workspace-edge);
-  scroll-margin-top: 90px;
-}
-.home.home.home.home :global(.home-event-day:first-child) {
-  border-top: 0;
-  padding-top: 0;
-}
-.home.home.home.home :global(.home-event-day > time) {
-  font-weight: 650;
-  color: var(--blue);
-}
-@media (max-width: 900px) {
-  .home.home.home.home :global(.home-evidence-layout) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .workbench {
-    scroll-margin-top: 90px;
-    padding: 0;
-  }
-  .home.home.home.home :global(.home-evidence-panel) {
-    padding: var(--workspace-inset);
-  }
-}
-@media (max-width: 600px) {
-  .home.home.home.home :global(.home-evidence-panel) {
-    padding: var(--workspace-inset);
-  }
-  .workbench {
-    scroll-margin-top: 90px;
-    padding: 0;
-  }
-  .workbenchHeading h2 {
-    font-size: 21px;
-  }
-}
-
-/* The phone agenda is one column, including its explicitly placed children. */
-@media (max-width: 600px) {
-  .home.home.home.home :global(.home-event-row) {
-    grid-column: 1 / -1;
-  }
-  .home.home.home.home :global(.home-event-day) > time {
-    grid-row: auto;
-  }
-}
-
-/* Approved compact destination cards share the same glass surface as Research. */
-.home.home .quickLinks {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 16px 0;
-  padding: 0;
-  overflow: visible;
-  border: 0;
-}
-.home.home .quickLinks a {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  min-width: 0;
-  min-height: 96px;
-  padding: 16px;
-  border: 1px solid var(--workspace-edge);
-  border-radius: var(--workspace-radius);
-  background: var(--workspace-glass);
-  box-shadow: var(--workspace-shadow);
-  color: var(--ink);
-  font-size: 14px;
-  white-space: normal;
-  backdrop-filter: blur(16px);
-}
-.home.home .quickLinks a:hover {
-  background: var(--blue-soft);
-}
-.home.home .quickLinks small {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 600;
-}
-.home.home .quickLinks svg {
-  color: var(--blue);
-  flex: none;
-}
-.home.home.home.home :global(.home-evidence-panel) {
-  border: 1px solid var(--workspace-edge);
-  border-radius: var(--workspace-radius);
-  box-shadow: var(--workspace-shadow);
-  background: var(--workspace-glass);
-  backdrop-filter: blur(16px);
-}
-.home.home.home.home :global(.home-evidence-layout) {
-  gap: 16px;
-  margin-block: 16px;
-}
-.workbench {
-  padding-top: 20px;
-}
-.workbenchHeading > span {
-  color: var(--blue);
-}
-@media (max-width: 700px) {
-  .home.home .quickLinks {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .researchPaging {
     gap: 10px;
-  }
-  .home.home .quickLinks a {
-    min-height: 104px;
-    padding: 14px;
-    font-size: 13px;
-  }
-  .home.home.home.home :global(.home-evidence-layout) {
-    gap: 12px;
-  }
-  .home.home .greeting h1 {
-    font-size: 26px;
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .home.home .quickLinks a,
-  .home.home.home.home :global(.home-evidence-panel) {
-    background: var(--card);
-    backdrop-filter: none;
   }
 }

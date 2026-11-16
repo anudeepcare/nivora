@@ -1,4 +1,4 @@
-/* Launch is the same light-glass workspace, before account content arrives. */
+/* Sole scoped presentation owner. Base rules, followed by responsive and accessibility states. */
 .launch {
   position: fixed;
   inset: 0;
@@ -28,7 +28,9 @@
 .launchRail strong {
   letter-spacing: 0.08em;
 }
-.launchRail i,
+.launchRail i {
+  display: none;
+}
 .mark {
   display: none;
 }
@@ -58,8 +60,7 @@
   gap: 16px;
   margin: 28px 0 20px;
 }
-.preview i,
-.preview b {
+.preview i {
   display: block;
   height: 108px;
   border: 1px solid var(--workspace-edge);
@@ -67,13 +68,21 @@
   background: var(--workspace-panel);
 }
 .preview b {
+  display: block;
   height: 280px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-panel);
 }
 .recovery {
   max-width: 520px;
   padding-top: 24px;
 }
-.recovery p,
+.recovery p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
 .skeleton p {
   color: var(--muted);
   font-size: 14px;
@@ -113,35 +122,42 @@
   padding: 24px 0;
   min-height: 55vh;
 }
-.skeletonHeading,
-.skeletonLine,
-.chart,
-.table span {
+.skeletonHeading {
   display: block;
   background: var(--line);
   opacity: 0.55;
   border-radius: 8px;
-}
-.skeletonHeading {
   width: min(60%, 260px);
   height: 28px;
 }
 .skeletonLine {
+  display: block;
+  background: var(--line);
+  opacity: 0.55;
+  border-radius: 8px;
   width: min(80%, 420px);
   height: 14px;
   margin-top: 18px;
 }
 .chart {
+  display: block;
+  background: var(--line);
+  opacity: 0.55;
+  border-radius: 8px;
   height: 260px;
   margin-top: 28px;
+}
+.table span {
+  display: block;
+  background: var(--line);
+  opacity: 0.55;
+  border-radius: 8px;
+  height: 44px;
 }
 .table {
   display: grid;
   gap: 16px;
   margin-top: 28px;
-}
-.table span {
-  height: 44px;
 }
 @media (max-width: 767px) {
   .content {
@@ -156,8 +172,12 @@
   }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .launchRail,
-  .preview i,
+  .launchRail {
+    background: var(--card);
+  }
+  .preview i {
+    background: var(--card);
+  }
   .preview b {
     background: var(--card);
   }

@@ -1,159 +1,162 @@
-.root.root.root {
+.root {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
   align-items: start;
-  gap: var(--workspace-gap, 20px);
+  gap: 20px;
 }
-.root.root.root > * {
-  grid-column: 1 / -1;
+.root > * {
+  grid-column: 1/-1;
   min-width: 0;
   margin: 0;
+}
+.root > .calculator {
+  grid-column: 1;
+  grid-row: 1;
+}
+.root > .scenarios {
+  grid-column: 2;
+  grid-row: 1;
+}
+.calculator,
+.scenarios,
+.market {
+  padding: 20px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+}
+.calculator,
+.scenarios {
+  align-self: stretch;
 }
 .scenarios {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   min-width: 0;
 }
-.root[data-has-consensus="true"] > .scenarios {
-  grid-column: span 8;
-}
-.root.root.root > .consensus {
-  grid-column: span 4;
-}
-.root.root.root > .market {
-  grid-column: 1 / -1;
-}
-.root.root.root > .calculator {
-  grid-column: 1 / -1;
-}
-.root.root.root > .manual:empty {
-  display: none;
-}
-.root.root.root :global(.valuation-board),
-.calculator.calculator {
-  padding: var(--workspace-inset, 24px);
+.scenarios > section,
+.consensus > section {
+  padding: 0;
   border: 0;
-  border-radius: var(--workspace-radius, 24px);
-  background: var(--workspace-glass, var(--card));
-  box-shadow:
-    var(--workspace-shadow, 0 4px 24px #17342c06),
-    inset 0 0 0 1px var(--workspace-edge, #ffffff50);
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
 }
-.root.root.root :global(.valuation-board-grid) {
+.scenarios > button:last-child {
+  margin-top: auto;
+  align-self: flex-start;
+}
+.consensus {
+  min-width: 0;
+}
+.root > .market {
+  grid-column: 1/-1;
+}
+.market :global(.section-head) {
+  margin-bottom: 16px;
+}
+.market :global(.section-head h3) {
+  font-size: 14px;
+  margin: 0;
+}
+.multipleRows {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
-  gap: 10px;
+  gap: 12px;
 }
-.root.root.root :global(.valuation-board-grid > article) {
-  padding: 15px;
-  border: 0;
-  border-radius: 12px;
-  background: linear-gradient(
-    140deg,
-    color-mix(in srgb, #a5b0dc 7%, var(--card)),
-    var(--card)
-  );
+.multipleRows article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 3px 12px;
+  min-width: 0;
 }
-.root.root.root :global(.valuation-board-grid > article > strong) {
-  font-size: 28px;
-  margin: 10px 0 6px;
-}
-.root.root.root :global(.valuation-board-grid > article > p) {
-  font-size: 11px;
-  line-height: 1.5;
-  margin: 5px 0 0;
-}
-.root.root.root :global(.valuation-board-grid > article > span) {
+.multipleRows article > span:first-child {
+  color: var(--muted);
   font-size: 12px;
 }
-.root.root.root > .methods {
-  grid-column: 1 / -1;
-  padding: var(--workspace-inset, 24px);
-  margin: 0;
-  background: var(--workspace-glass, var(--card));
-  border-radius: var(--workspace-radius, 24px);
+.multipleRows article > strong {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
 }
-.methods > summary {
-  font-size: 16px;
-  font-weight: 600;
-  padding: 0;
-  min-height: 28px;
-  background: transparent;
+.multipleRows article > small {
+  grid-column: 1;
+  color: var(--muted);
+  font-size: 11px;
+}
+.multipleRows .multipleTrack {
+  grid-column: 1/-1;
+  width: 100%;
+  height: 6px;
+  background: var(--surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.multipleTrack i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  border-radius: inherit;
+}
+.multipleRows article[data-metric="forwardPE"] .multipleTrack i {
+  background: var(--blue);
+}
+.root > .manual:empty {
+  display: none;
+}
+.methods {
+  justify-self: start;
 }
 .methodGrid {
   display: grid;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 20px;
+  min-width: 0;
 }
 .methodGrid > header {
   display: none;
 }
-.root.root.root .methodGrid > div {
+.methodGrid > div {
   display: grid;
   grid-template-columns: 6px minmax(0, 1fr);
   gap: 8px;
-  padding: 0;
-  border: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
 }
-.root.root.root .methodGrid > div > span {
+.methodGrid > div > span {
   grid-column: 2;
-  font-size: 11px;
-  margin: 0;
-  text-align: left;
-}
-.root.root.root .methodGrid p {
+  color: var(--muted);
   font-size: 12px;
+}
+.methodGrid strong {
+  font-size: 14px;
+}
+.methodGrid p {
+  font-size: 13px;
   line-height: 1.5;
   margin: 5px 0;
 }
-.root.root.root .methodGrid strong {
-  font-size: 13px;
+.methodGrid i {
+  background: var(--line);
+  border-radius: 4px;
 }
-.root.root.root:not(:has(.market)) > .methods {
-  grid-column: 1 / -1;
+.methodGrid i[data-state="available"] {
+  background: var(--positive);
 }
-.root.root.root > :global(.desk-footnote) {
-  font-size: 11px;
-  line-height: 1.6;
-}
-@media (max-width: 1100px) {
-  .root.root.root > .scenarios,
-  .root.root.root > .consensus {
-    grid-column: 1/-1;
-  }
-  .root.root.root > .market,
-  .root.root.root > .methods {
-    grid-column: 1 / -1;
-  }
-}
-@media (max-width: 760px) {
-  .root.root.root.root > *,
-  .root.root.root:not(:has(.market)) > .calculator,
-  .root.root.root:not(:has(.market)) > .methods {
-    grid-column: 1/-1;
-  }
-  .root.root.root > .methods {
+@media (max-width: 800px) {
+  .root {
     grid-template-columns: minmax(0, 1fr);
   }
-  .root.root.root :global(.valuation-board),
-  .calculator.calculator,
-  .root.root.root > .methods {
+  .root > .calculator,
+  .root > .scenarios {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .calculator,
+  .scenarios,
+  .market {
     padding: 16px;
-  }
-  .root.root.root :global(.valuation-board-grid) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 360px) {
-  .root.root.root :global(.valuation-board-grid > article) {
-    padding: 12px;
-  }
-}
-.root.root.root
-  :global(.valuation-board-grid:has(> article:nth-child(4):last-child)) {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-@media (max-width: 760px) {
-  .root.root.root
-    :global(.valuation-board-grid > article:last-child:nth-child(odd)) {
-    grid-column: span 2;
   }
 }

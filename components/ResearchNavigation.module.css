@@ -1,80 +1,57 @@
-/* A continuous reading rail, not a second row of application pills. */
-.sections.sections {
-  gap: 18px;
-  padding: 0;
-  margin: 4px 0 14px;
-  min-height: 44px;
-  border: 0;
+.sections {
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
   border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  scroll-padding-inline: 12px;
+  margin: 8px 0 20px;
+  padding: 0;
+  scroll-padding: 12px;
 }
-.symbol {
-  display: none;
-  flex: none;
-  padding: 7px 10px;
-  margin-right: 4px;
-  color: var(--ink);
-  background: var(--surface);
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-}
-.sections.sections button {
+.sections button {
   position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
   min-height: 44px;
   padding: 10px 0;
   border: 0;
   border-radius: 0;
   background: transparent;
-  box-shadow: none;
   color: var(--muted);
+  font: inherit;
   font-size: 13px;
-  transition: color 140ms ease;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
 }
-.sections.sections button svg {
-  color: currentColor;
-  display: none;
-  width: 16px;
-  height: 16px;
-}
-.sections.sections button[aria-current="page"] {
-  border-radius: 0;
-  background: transparent;
+.sections button[aria-current="page"] {
   color: var(--blue);
-  box-shadow: inset 0 -3px 0 var(--blue);
   font-weight: 650;
+  box-shadow: inset 0 -3px var(--blue);
 }
-.sections.sections button::after {
+.sections button:hover {
+  color: var(--ink);
+}
+.sections button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+.sections button svg,
+.symbol {
   display: none;
 }
-.sections.sections button:not([aria-current="page"]):hover {
-  color: var(--ink);
-  background: transparent;
-}
-.sections.sections button:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: -3px;
-}
-@media (max-width: 700px) {
-  .symbol {
-    display: none;
+@media (max-width: 650px) {
+  .sections {
+    gap: 18px;
+    margin: 4px 0 16px;
   }
-  .sections.sections {
-    gap: 20px;
-    margin: 4px 0 12px;
-    min-height: 48px;
-  }
-  .sections.sections button {
-    min-height: 48px;
-    font-size: 13px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sections.sections button {
-    transition: none;
+  .sections button {
+    font-size: 12px;
+    min-height: 44px;
   }
 }

@@ -1,14 +1,3 @@
-.page {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 28px 20px 48px;
-  color: var(--ink);
-  line-height: 1.6;
-}
-.page h1 {
-  font-size: clamp(1.8rem, 4vw, 2.7rem);
-  line-height: 1.15;
-}
 .page h2 {
   font-size: 1.15rem;
   margin: 0 0 12px;
@@ -76,18 +65,6 @@
   padding: 12px 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
-}
-.candidates label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 48px;
-  cursor: pointer;
-}
-.candidates input {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--blue);
 }
 .notice {
   margin: 20px 0;
@@ -157,10 +134,17 @@
 }
 
 .page {
+  line-height: 1.6;
+  color: var(--ink);
+  padding: 28px 20px 48px;
+  margin: 0 auto;
+  max-width: 1000px;
   min-width: 0;
   padding-inline: 0;
 }
 .page h1 {
+  line-height: 1.15;
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
   max-width: 24ch;
   letter-spacing: -0.035em;
 }
@@ -173,14 +157,22 @@
 .summary > div,
 .rows li,
 .notice {
-  background: var(--glass);
+  background: var(--workspace-glass);
   border-radius: 16px;
 }
 .candidates label {
+  cursor: pointer;
+  min-height: 48px;
+  gap: 10px;
+  align-items: center;
+  display: flex;
   min-width: 0;
   overflow-wrap: anywhere;
 }
 .candidates input {
+  accent-color: var(--blue);
+  height: 22px;
+  width: 22px;
   flex: none;
 }
 @media (max-width: 600px) {

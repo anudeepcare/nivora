@@ -16,6 +16,36 @@ type Dependencies = {
   sleep?: (ms: number) => Promise<void>;
   reserve?: (key: string, max: number, windowMs: number) => Promise<void>;
   guard?: DenialGuard;
+  cache?: TargetCache;
+};
+type TargetCache = {
+  read: (
+    key: string,
+    denialKey: string,
+  ) => Promise<{ until: number; value: AnalystTargets } | null>;
+  write: (key: string, value: AnalystTargets, until: number) => Promise<void>;
+};
+/** Only normalized successful observations are shared, never credentials or failures. */
+const sharedTargetCache: TargetCache = {
+  async read(key, denialKey) {
+    const { accessDb } = await import("./access-server");
+    const { data, error } = await accessDb().rpc("auryn_preview_targets_read", {
+      p_key: key,
+      p_denial_key: denialKey,
+    });
+    if (error) throw Error("Preview cache unavailable");
+    if (!data) return null;
+    return { until: Date.parse(data.expiresAt), value: data.value };
+  },
+  async write(key, value, until) {
+    const { accessDb } = await import("./access-server");
+    const { error } = await accessDb().rpc("auryn_preview_targets_write", {
+      p_key: key,
+      p_value: value,
+      p_expires_at: new Date(until).toISOString(),
+    });
+    if (error) throw Error("Preview cache unavailable");
+  },
 };
 type DenialStore = {
   claim: (
@@ -161,15 +191,25 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
     }
     const current = state;
     if (current.deniedUntil > now()) return null;
+    const targetCache =
+      dependencies.cache ??
+      (env.VERCEL_ENV === "preview" ? sharedTargetCache : undefined);
     const cached = current.cached.get(symbol);
-    if (cached && cached.until > now()) {
-      return cached.value &&
-        usableAnalystTargets(cached.value, symbol, "USD", now())
-        ? cached.value
-        : null;
-    }
+    if (
+      !targetCache &&
+      cached &&
+      cached.until > now() &&
+      cached.value &&
+      usableAnalystTargets(cached.value, symbol, "USD", now())
+    )
+      return cached.value;
     const pending = current.pending.get(symbol);
     if (pending) return pending;
+
+    const cacheKey = `sentisense:preview:v1:${hash}:${symbol}`;
+    const denialKey = createHash("sha256")
+      .update(`sentisense:denial:${hash}`)
+      .digest("hex");
 
     let temporaryServerFailure = false;
     const request = (path: string): Promise<unknown> => {
@@ -240,6 +280,29 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
     };
     const work = (async () => {
       let value: AnalystTargets | null = null;
+      if (targetCache) {
+        try {
+          const saved = await targetCache.read(cacheKey, denialKey);
+          if (
+            saved &&
+            Number.isFinite(saved.until) &&
+            saved.until > now() &&
+            saved.until <= strictUtcTimestamp(env.SENTISENSE_KEY_EXPIRES_AT)! &&
+            saved.until <= now() + day &&
+            sentiSensePreviewEnabled(access, env, now()) &&
+            current.deniedUntil <= now() &&
+            usableAnalystTargets(saved.value, symbol, "USD", now())
+          ) {
+            current.cached.set(symbol, saved);
+            return saved.value;
+          }
+        } catch {
+          // Missing protection infrastructure must not trigger upstream traffic
+          // or allow warm memory to bypass a shared denial.
+          return null;
+        }
+      }
+      if (cached && cached.until > now()) return null;
       try {
         const ticker = encodeURIComponent(symbol);
         const profile = await request(`stocks/${ticker}/profile`);
@@ -249,6 +312,25 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
       } catch {
         // Optional source failures, denial details and secrets never enter research.
       }
+      if (
+        value &&
+        targetCache &&
+        sentiSensePreviewEnabled(access, env, now())
+      ) {
+        try {
+          await targetCache.write(
+            cacheKey,
+            value,
+            Math.min(
+              now() + day,
+              strictUtcTimestamp(env.SENTISENSE_KEY_EXPIRES_AT)!,
+            ),
+          );
+        } catch {
+          /* Preserve a successfully fetched observation if caching fails. */
+        }
+      }
+      if (!sentiSensePreviewEnabled(access, env, now())) return null;
       for (const [symbol, entry] of current.cached)
         if (entry.until <= now()) current.cached.delete(symbol);
       if (current.cached.size < 256 || current.cached.has(symbol))

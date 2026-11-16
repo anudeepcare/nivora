@@ -1,0 +1,264 @@
+.home,
+.updates {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.home :global(.briefing-greeting),
+.home :global(.home-command-bar),
+.home :global(.home-wealth-strip),
+.home :global(.home-daily-brief) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.home :global(.briefing-greeting) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.home :global(.briefing-greeting h1) {
+  font-size: 30px;
+  letter-spacing: -0.04em;
+  margin: 6px 0;
+}
+.home :global(.briefing-kicker),
+.home :global(.briefing-system-label) {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--muted);
+}
+.home :global(.briefing-date),
+.home :global(.briefing-note),
+.home :global(.briefing-news-meta),
+.home :global(.briefing-coverage) {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.home :global(.home-command-metrics) {
+  display: flex;
+  gap: 24px;
+}
+.home :global(.home-command-metrics a) {
+  display: grid;
+  text-decoration: none;
+  min-height: 44px;
+}
+.home :global(.home-command-metrics strong) {
+  font-size: 24px;
+}
+.home :global(.home-command-metrics span) {
+  font-size: 11px;
+  color: var(--muted);
+}
+.home :global(.briefing-welcome) {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.home :global(.briefing-welcome h2) {
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 12px 0;
+}
+.home :global(.briefing-welcome p) {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 13px;
+}
+.home :global(.briefing-welcome small) {
+  display: block;
+  color: var(--muted);
+  margin-top: 12px;
+  font-size: 11px;
+}
+.home :global(.briefing-start-map section),
+.home :global(.briefing-start-paths) {
+  display: flex;
+  gap: 16px;
+  align-items: start;
+  padding: 12px 0;
+}
+.home :global(.briefing-start-paths) {
+  flex-wrap: wrap;
+}
+.home :global(.briefing-start-paths a) {
+  min-height: 44px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-decoration: none;
+  flex: 1;
+}
+.home :global(.briefing-evidence-grid),
+.home :global(.briefing-main-grid) {
+  display: grid;
+  gap: 16px;
+}
+.home :global(.briefing-panel) {
+  padding: 20px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.home :global(.briefing-panel h2) {
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+.home :global(.briefing-panel header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.home :global(.briefing-panel p) {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.home :global(.briefing-impact-row),
+.home :global(.briefing-compact-row),
+.home :global(.briefing-attention-row),
+.home :global(.briefing-calendar-list > a),
+.home :global(.briefing-company-grid > a) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  font-size: 13px;
+}
+.home :global(.briefing-company-name),
+.home :global(.briefing-company-value) {
+  display: grid;
+  gap: 4px;
+}
+.home :global(.briefing-company-value) {
+  text-align: right;
+}
+.home :global(.briefing-company-name small) {
+  color: var(--muted);
+  font-size: 11px;
+}
+.home :global(.briefing-news-list) {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+}
+.home :global(.briefing-news-list > li) {
+  display: grid;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px;
+}
+.home :global(.briefing-news-story a) {
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.home :global(.briefing-news-meta) {
+  display: block;
+  margin-top: 8px;
+}
+.home :global(.home-wealth-main strong) {
+  font-size: 30px;
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+.home :global(.home-wealth-link),
+.home :global(.briefing-text-button) {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.updates {
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.updates :global(.section-head) {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.updates h2 {
+  font-size: 20px;
+  margin: 4px 0;
+}
+.updates :global(.home-update-actions) {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.updates :global(.agenda-lead) {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--surface);
+}
+.updates :global(.agenda-layout) {
+  display: grid;
+  gap: 20px;
+}
+.updates :global(.agenda-item) {
+  display: grid;
+  gap: 6px;
+  min-height: 44px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.updates :global(.agenda-item p) {
+  margin: 0;
+  font-size: 13px;
+}
+.updates :global(.agenda-item small),
+.updates :global(.updates-empty) {
+  color: var(--muted);
+  font-size: 12px;
+}
+.updates :global(.agenda-symbol) {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 600;
+}
+@media (min-width: 900px) {
+  .home :global(.briefing-evidence-grid) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .home :global(.briefing-main-grid),
+  .home :global(.briefing-welcome),
+  .updates :global(.agenda-layout) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .home :global(.briefing-panel),
+  .updates {
+    padding: 16px;
+  }
+  .home :global(.briefing-welcome h2) {
+    font-size: 26px;
+  }
+}

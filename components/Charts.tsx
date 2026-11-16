@@ -1,4 +1,5 @@
 "use client";
+import charts from "./Charts.module.css";
 import { useEffect, useRef, useState } from "react";
 import {
   createChart,
@@ -299,15 +300,18 @@ export function PriceChart({
     };
   }, [paceBands, theme, style, contrast]);
   return (
-    <div className="chart-wrap">
-      <div className="chart-readout" aria-label="Chart inspection">
+    <div className={`chart-wrap ${charts.chart}`}>
+      <div
+        className={`chart-readout ${charts.readout}`}
+        aria-label="Chart inspection"
+      >
         <span>{hover?.time ?? "Explore the chart"}</span>
         <span style={{ fontWeight: 400, fontSize: 12 }}>
           {hover?.values ?? "Touch or hover to inspect"}
         </span>
       </div>
       <div
-        className="price-chart"
+        className={`price-chart ${charts.plot}`}
         role="img"
         aria-label={`Price history for ${range}; ${bars.length} observations. Scroll continues through the page.`}
         ref={element}
@@ -330,7 +334,11 @@ export function MiniChart({
     (v): v is number => typeof v === "number" && Number.isFinite(v),
   );
   if (valid.length < 2)
-    return <div className="mini-empty">More reported periods needed</div>;
+    return (
+      <div className={`mini-empty ${charts.empty}`}>
+        More reported periods needed
+      </div>
+    );
   const min = bars ? Math.min(0, ...valid) : Math.min(...valid),
     max = Math.max(...valid),
     span = max - min || 1,
@@ -338,7 +346,7 @@ export function MiniChart({
     zero = y(0),
     step = 260 / Math.max(1, values.length - 1);
   return (
-    <div className={`mini-chart ${color}`}>
+    <div className={`mini-chart ${charts.mini} ${color}`}>
       <svg
         viewBox="0 0 280 96"
         role="img"

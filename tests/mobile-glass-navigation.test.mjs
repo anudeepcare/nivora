@@ -55,7 +55,7 @@ test("activation removes only obsolete AURYN offline caches", async () => {
 test("navigation shares glass tokens and preserves explicit safe-area top padding", () => {
   const css = fs.readFileSync("components/WorkspaceShell.module.css", "utf8");
   assert.match(css, /var\(--workspace-glass\)/);
-  assert.match(css, /var\(--workspace-control\)/);
+  assert.match(css, /var\(--blue-soft\)/);
   assert.match(css, /padding-top:.*safe-area-inset-top/);
   assert.doesNotMatch(css, /padding-block:\s*7px/);
 });

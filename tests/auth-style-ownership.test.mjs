@@ -54,7 +54,7 @@ test("studio auth keeps theme-aware fields and a readable blue primary action", 
     [],
     "Auth fields must inherit the shared theme without redefining its tokens",
   );
-  assert.equal(declarations(".mp-form-submit").background, "#245bdb");
+  assert.equal(declarations(".mp-form-submit").background, "var(--blue)");
   assert.equal(declarations(".mp-form-submit").color, "white");
   assert.equal(declarations(".mp-social-button").background, "var(--card)");
 });

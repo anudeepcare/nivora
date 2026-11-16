@@ -4,6 +4,8 @@ import { earningsReview, annualThesisBridge } from "@/lib/earnings-review";
 import { dateLabel, percent } from "@/lib/format";
 import { researchPeriods } from "@/lib/financial-catalog";
 import { Source } from "./Ui";
+import DetailDialog from "./DetailDialog";
+import s from "./NewsCoverage.module.css";
 import { earningsCalendar } from "@/lib/earnings-calendar";
 export default function EarningsReview({
   research: r,
@@ -24,7 +26,7 @@ export default function EarningsReview({
   );
   const nextReport = earningsCalendar(r, now).next?.date;
   return (
-    <section className="earnings-review card">
+    <section className={`earnings-review card ${s.earnings}`}>
       <header className="section-head">
         <div>
           <h2>Earnings snapshot</h2>
@@ -62,8 +64,10 @@ export default function EarningsReview({
       ) : (
         <p>Recent reported results are not available in this snapshot.</p>
       )}
-      <details>
-        <summary>What changed in the business?</summary>
+      <DetailDialog
+        title="Business changes after earnings"
+        trigger="What changed in the business?"
+      >
         {bridge ? (
           <>
             <p className="small muted">
@@ -94,7 +98,7 @@ export default function EarningsReview({
             alone does not establish a change in the business thesis.
           </p>
         )}
-      </details>
+      </DetailDialog>
       {nextReport && !hideNextReport && (
         <p className="small muted">Next report · {dateLabel(nextReport)}</p>
       )}

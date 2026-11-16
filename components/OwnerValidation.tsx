@@ -1,4 +1,5 @@
 "use client";
+import support from "./SupportingScreens.module.css";
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/client";
 import { validationTasks } from "@/lib/user-validation";
@@ -37,7 +38,7 @@ export default function OwnerValidation() {
     };
   }, [load]);
   return (
-    <section className="support">
+    <section className={support.owner}>
       <h2>Observed user sessions</h2>
       <p>
         {new Set(sessions.map((s) => s.body.participant)).size} participant

@@ -13,14 +13,14 @@ test("bounded evidence cards align rows and all data remains mapped", () => {
   assert.match(css, /align-items: stretch/);
   assert.match(
     read("components/ResearchEvidenceGrid.tsx"),
-    /ordered.slice\(limit\)/,
+    /renderRows\(ordered, key, true\)/,
   );
   assert.match(read("components/ResearchEvidenceGrid.tsx"), /rows\.map/);
 });
 test("chart tools follow chart rather than push it below fold", () => {
   const s = read("components/PriceStudyChart.tsx");
   assert.ok(
-    s.indexOf("<PriceChart") < s.indexOf('className="signal-chart-tools"'),
+    s.indexOf("<PriceChart") < s.indexOf('className={s.tools}'),
   );
   assert.doesNotMatch(s, /className="chart-context" open/);
 });
@@ -37,7 +37,7 @@ test("mobile reorganizes financial snapshot and business core without losing row
     "TrailingPE",
   ])
     assert.ok(source.includes(`"${key}"`));
-  assert.match(source, /renderRows\(extra, key\)/);
+  assert.match(source, /renderRows\(rows, key, true\)/);
   const css = read("components/ResearchEvidenceGrid.module.css");
   assert.match(css, /\.desktopEvidence\s*\{\s*display: none/);
   assert.match(

@@ -6,7 +6,6 @@ import { portfolioEarningsCount, portfolioRead } from "./portfolio-read";
 import { companyAccent } from "@/lib/visual-signals";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { PaceBadge } from "./WorkspacePace";
-import workspaceVisuals from "./WorkspaceVisuals.module.css";
 
 import { researchLink } from "@/lib/approved-workspace";
 import { amount, percent, quoteTime } from "@/lib/format";
@@ -128,7 +127,7 @@ export function Portfolio() {
   }
   return (
     <section
-      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals}`}
+      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio}`}
     >
       <Heading
         title="Portfolio"

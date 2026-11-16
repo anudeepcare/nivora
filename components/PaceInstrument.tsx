@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Diamond } from "lucide-react";
 import {
   PACE_DESCRIPTIONS,
@@ -14,6 +14,7 @@ import type { Research } from "@/lib/types";
 import s from "./PaceInstrument.module.css";
 import PacePriceZones from "./PacePriceZones";
 import PaceHelp from "./PaceHelp";
+import { Help } from "./Ui";
 const short = ["Pause", "Watch", "Start", "Gradual", "Planned max"];
 type Props = {
   view?: ReturnType<typeof pacePresentation>;
@@ -54,8 +55,22 @@ export default function PaceInstrument({
   const current = decision?.pace;
   const fallback = readings.find((r) => r.key === "forming");
   const level = current ? current.level : (fallback?.level ?? null);
-  const selected = inspect ?? level;
-  const exploring = publicGuide || inspect !== null;
+  const selected = publicGuide ? (inspect ?? level) : level;
+  const exploring = publicGuide;
+  const stageDialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    if (publicGuide || inspect === null) return;
+    const dialog = stageDialog.current;
+    const opener =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    dialog?.showModal();
+    return () => {
+      if (dialog?.open) dialog.close();
+      opener?.focus({ preventScroll: true });
+    };
+  }, [inspect, publicGuide]);
   const period = current?.provisional === false ? "confirmed" : "forming";
   const evidence = useMemo(
     () =>
@@ -72,6 +87,31 @@ export default function PaceInstrument({
         : null,
     [research, now, period],
   );
+  const buildingHistory = useMemo(() => {
+    if (!research || level !== null) return false;
+    const asOf =
+      now ?? Date.parse(research.priceObservedAt ?? research.retrievedAt);
+    const valid = research.history.filter(
+      (bar) =>
+        Number.isFinite(Date.parse(bar.time)) &&
+        Date.parse(bar.time) <= asOf &&
+        Number.isFinite(bar.close) &&
+        bar.close > 0,
+    );
+    const latest = valid.reduce(
+      (last, bar) => (bar.time > last ? bar.time : last),
+      "",
+    );
+    if (!latest || asOf - Date.parse(latest) > 4 * 86400000) return false;
+    const lastMonth = latest.slice(0, 7);
+    return (
+      new Set(
+        valid
+          .filter((bar) => bar.time.slice(0, 7) < lastMonth)
+          .map((bar) => bar.time.slice(0, 7)),
+      ).size < 12
+    );
+  }, [research, level, now]);
   const boundary = level !== null ? evidence?.boundary : null;
   const action =
     decision?.actionLabel ?? view?.actionLabel ?? "Review evidence";
@@ -182,6 +222,34 @@ export default function PaceInstrument({
               selected={selected}
               onInspect={setInspect}
             />
+          ) : research ? (
+            <div className={s.unavailableTiming}>
+              <strong>
+                {buildingHistory
+                  ? "Building monthly history"
+                  : "Pace timing unavailable"}
+              </strong>
+              <p>
+                No fresh qualifying monthly zone is available. The business
+                decision above is separate from Pace timing.
+              </p>
+              <Help label="Pace timing and stages" trigger="About Pace timing">
+                <p>
+                  {buildingHistory
+                    ? "Pace needs 12 consecutive prior completed months and a settled observation. The supplied history does not yet cover that window. Missing timing is not a buy or sell signal."
+                    : (evidence?.reading?.reason ??
+                      "Pace needs sufficient settled price history and a qualifying reading within the last four days. Missing timing is not a buy or sell signal.")}
+                </p>
+                {short.map((name, z) => (
+                  <p key={name}>
+                    <strong>
+                      P{z} · {name}
+                    </strong>{" "}
+                    {PACE_DESCRIPTIONS[z]}
+                  </p>
+                ))}
+              </Help>
+            </div>
           ) : (
             <div className={s.terraces} aria-label="Five Pace stages">
               {short.map((name, z) => (
@@ -230,58 +298,94 @@ export default function PaceInstrument({
           </small>
         )}
       </div>
-      <details
-        className={s.readingDetail}
-        onToggle={(event) => setDetailsOpen(event.currentTarget.open)}
-      >
-        <summary>
-          {exploring
-            ? "About this stage"
-            : level === null
-              ? "What to review"
-              : "Price zones & history"}
-        </summary>
-        {!exploring && research && level !== null && (
-          <PacePriceZones
-            research={research}
-            asOf={new Date(
-              now ??
-                Date.parse(research.priceObservedAt ?? research.retrievedAt),
-            ).toISOString()}
-            period={period}
-            active={detailsOpen}
-          />
-        )}
-        {(exploring || evidence?.reading?.reason) && (
-          <p className={s.description}>
-            {exploring && selected !== null
-              ? PACE_DESCRIPTIONS[selected]
-              : (evidence?.reading?.reason ??
-                "Refresh price history to calculate the current zone.")}
-          </p>
-        )}
-        {!exploring && (
-          <div className={s.evidenceDetails}>
-            {current?.historicalLevel != null && (
-              <p>
-                <strong>Previous month · P{current.historicalLevel}</strong>
-                {dateLabel(current.historicalDate)} · historical reading
-              </p>
-            )}
-            {decision && (
-              <p>
-                <strong>What to review</strong>
-                {decision.changeConditions[0] ?? decision.explanation.detail}
-              </p>
-            )}
-            {onHistory && (
-              <button type="button" onClick={onHistory}>
-                Open technicals & history <ArrowRight size={15} />
-              </button>
-            )}
-          </div>
-        )}
-      </details>
+      {!publicGuide && inspect !== null && (
+        <dialog
+          ref={stageDialog}
+          className={s.stageDialog}
+          aria-label={`P${inspect} · ${PACE_LEVELS[inspect]}`}
+          onClose={() => setInspect(null)}
+        >
+          <header>
+            <h3>
+              P{inspect} · {PACE_LEVELS[inspect]}
+            </h3>
+            <button type="button" onClick={() => stageDialog.current?.close()}>
+              Close
+            </button>
+          </header>
+          <p>{PACE_DESCRIPTIONS[inspect]}</p>
+          <p>Exploring a stage does not change the current decision.</p>
+          {research && (
+            <PacePriceZones
+              research={research}
+              asOf={new Date(
+                now ??
+                  Date.parse(research.priceObservedAt ?? research.retrievedAt),
+              ).toISOString()}
+              period={period}
+            />
+          )}
+        </dialog>
+      )}
+      <div className={s.readingDetail} onClick={() => setDetailsOpen(true)}>
+        <Help
+          label={
+            exploring
+              ? "About this stage"
+              : level === null
+                ? "What to review"
+                : "Price zones & history"
+          }
+          trigger={
+            exploring
+              ? "About this stage"
+              : level === null
+                ? "What to review"
+                : "Price zones & history"
+          }
+        >
+          {!exploring && research && level !== null && (
+            <PacePriceZones
+              research={research}
+              asOf={new Date(
+                now ??
+                  Date.parse(research.priceObservedAt ?? research.retrievedAt),
+              ).toISOString()}
+              period={period}
+              active={detailsOpen}
+            />
+          )}
+          {(exploring || evidence?.reading?.reason) && (
+            <p className={s.description}>
+              {exploring && selected !== null
+                ? PACE_DESCRIPTIONS[selected]
+                : (evidence?.reading?.reason ??
+                  "Refresh price history to calculate the current zone.")}
+            </p>
+          )}
+          {!exploring && (
+            <div className={s.evidenceDetails}>
+              {current?.historicalLevel != null && (
+                <p>
+                  <strong>Previous month · P{current.historicalLevel}</strong>
+                  {dateLabel(current.historicalDate)} · historical reading
+                </p>
+              )}
+              {decision && (
+                <p>
+                  <strong>What to review</strong>
+                  {decision.changeConditions[0] ?? decision.explanation.detail}
+                </p>
+              )}
+              {onHistory && (
+                <button type="button" onClick={onHistory}>
+                  Open technicals & history <ArrowRight size={15} />
+                </button>
+              )}
+            </div>
+          )}
+        </Help>
+      </div>
     </section>
   );
 }

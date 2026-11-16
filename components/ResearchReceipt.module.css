@@ -123,3 +123,20 @@
     flex-wrap: wrap;
   }
 }
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 12px;
+}
+.sources a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--blue);
+  overflow-wrap: anywhere;
+}
+.sources a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}

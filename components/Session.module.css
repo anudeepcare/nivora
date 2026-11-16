@@ -1,25 +1,201 @@
-/* Auth renders above the lazy Product route. Keep its control primitives here,
-   not in Product's compatibility stylesheet, so first entry and revisit agree. */
+/* Sole scoped presentation owner. Base rules, followed by responsive and accessibility states. */
+.auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 100dvh;
+  background: var(--workspace-canvas);
+  color: var(--ink);
+}
+.story {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  padding: max(40px, env(safe-area-inset-top))
+    max(clamp(24px, 5vw, 80px), env(safe-area-inset-right))
+    max(40px, env(safe-area-inset-bottom))
+    max(clamp(24px, 5vw, 80px), env(safe-area-inset-left));
+  background: var(--workspace-glass);
+  border-right: 1px solid var(--workspace-edge);
+}
+.story > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 19px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+.auth :global(.mp-brand) {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 19px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+.auth :global(.mp-brand-mark) {
+  display: flex;
+}
+.storyContent {
+  max-width: 520px;
+  margin-block: auto;
+}
+.eyebrow {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+.storyContent h2 {
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+  margin: 20px 0;
+}
+.storyContent h2 span {
+  color: var(--blue);
+}
+.storyContent p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.storyFoot {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.brandVisual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  margin: 24px 0;
+  isolation: isolate;
+}
+.brandVisual > img {
+  z-index: 1;
+}
+.visualOrbit {
+  position: absolute;
+  width: 180px;
+  height: 150px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+.visualOrbit:nth-child(2) {
+  width: 240px;
+  height: 180px;
+  transform: rotate(25deg);
+}
+.visualCaption {
+  position: absolute;
+  bottom: 0;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.researchCard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.researchCard > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--blue-soft);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--blue);
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: max(32px, env(safe-area-inset-top))
+    max(clamp(20px, 5vw, 72px), env(safe-area-inset-right))
+    max(32px, env(safe-area-inset-bottom))
+    max(clamp(20px, 5vw, 72px), env(safe-area-inset-left));
+}
+.auth .main :global(.mp-auth-home) {
+  align-self: flex-start;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.auth .main :global(.mp-auth-panel) {
+  width: 100%;
+  max-width: 440px;
+  padding: 28px;
+  border: 1px solid var(--workspace-edge);
+  border-radius: 16px;
+  background: var(--workspace-glass);
+  box-shadow: var(--workspace-shadow);
+}
+.auth .main :global(.mp-auth-heading) {
+  margin-bottom: 24px;
+}
+.auth .main :global(.mp-auth-heading h1) {
+  font-size: 30px;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin: 10px 0;
+}
+.auth .main :global(.mp-auth-heading p) {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.auth .main :global(.mp-overline) {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  font-weight: 650;
+}
 .auth .main :global(.mp-social-options) {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 46px;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  gap: 8px;
 }
 .auth .main :global(.mp-social-button) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 11px;
-  width: 100%;
-  padding: 10px;
+  gap: 10px;
+  min-height: 48px;
+  min-width: 0;
   border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 550;
+  cursor: pointer;
 }
 .auth .main :global(.mp-social-button svg) {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+.auth .main :global(.mp-social-x) {
+  font-size: 20px;
 }
 .auth .main :global(.mp-social-x-label) {
   position: absolute;
@@ -29,41 +205,58 @@
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  border: 0;
-}
-.auth .main :global(.mp-social-x) {
-  font-size: 20px;
 }
 .auth .main :global(.mp-form-divider) {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin: 14px 0;
-  font-size: 11px;
+  gap: 12px;
+  margin: 16px 0;
   color: var(--muted);
+  font-size: 11px;
 }
-.auth .main :global(.mp-form-divider)::before,
+.auth .main :global(.mp-form-divider)::before {
+  content: "";
+  height: 1px;
+  background: var(--line);
+  flex: 1;
+}
 .auth .main :global(.mp-form-divider)::after {
   content: "";
   height: 1px;
   background: var(--line);
   flex: 1;
 }
+.auth .main :global(.mp-auth-form) {
+  display: grid;
+  gap: 16px;
+}
 .auth .main :global(.mp-form-field) {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
+}
+.auth .main :global(.mp-field-label) {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
 }
 .auth .main :global(.mp-form-field label) {
-  display: block;
-  color: var(--ink);
   font-size: 13px;
   font-weight: 550;
+  color: var(--ink);
 }
 .auth .main :global(.mp-form-field input) {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
   min-width: 0;
+  min-height: 48px;
   padding: 10px 12px;
   border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
   color: var(--ink);
   font: inherit;
   font-size: 16px;
@@ -71,405 +264,191 @@
 }
 .auth .main :global(.mp-form-field input)::placeholder {
   color: var(--muted);
-  opacity: 0.75;
 }
-.auth .main :global(.mp-form-field small),
-.auth .main :global(.mp-provider-note) {
-  font-size: 12px;
-  line-height: 1.5;
+.auth .main :global(.mp-form-field small) {
   color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
 }
-.auth .main :global(.mp-field-label) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+.auth .main :global(.mp-provider-note) {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.auth .main :global(.mp-field-optional) {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
 }
 .auth .main :global(.mp-password-field) {
   position: relative;
 }
+.auth .main :global(.mp-password-field input) {
+  padding-right: 48px;
+}
 .auth .main :global(.mp-password-field > button) {
   position: absolute;
-  right: 4px;
-  top: 4px;
-  width: 38px;
-  height: 38px;
+  top: 2px;
+  right: 2px;
   display: grid;
   place-items: center;
+  width: 44px;
+  height: 44px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 8px;
   background: transparent;
   color: var(--muted);
+  cursor: pointer;
 }
 .auth .main :global(.mp-icon) {
   width: 17px;
   height: 17px;
-  flex-shrink: 0;
 }
 .auth .main :global(.mp-form-submit) {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 48px;
   width: 100%;
   padding: 10px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--blue);
+  color: white;
   font: inherit;
   font-size: 14px;
-  font-weight: 550;
+  font-weight: 600;
+  cursor: pointer;
+}
+.auth .main :global(.mp-form-submit:hover:not(:disabled)) {
+  filter: brightness(0.95);
+}
+.auth .main :global(.mp-resend-button) {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
 }
 .auth .main :global(.mp-inline-link) {
-  display: inline;
-  padding: 0;
   border: 0;
   background: transparent;
+  color: var(--blue);
   font: inherit;
   font-size: 12px;
-  font-weight: 550;
+  cursor: pointer;
   text-align: left;
+  min-height: 44px;
+}
+.auth .main :global(.mp-back-link) {
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  min-height: 44px;
+}
+.auth .main :global(.mp-switch-auth) {
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.auth .main :global(.mp-switch-auth button) {
+  border: 0;
+  background: none;
+  color: var(--blue);
+  font: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
+.auth .main :global(.mp-auth-disclaimer) {
+  max-width: 440px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 16px 0 0;
+}
+.auth .main :global(.mp-auth-help) {
+  max-width: 440px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 16px 0 0;
+}
+.auth .main :global(.mp-auth-disclaimer a) {
+  color: var(--blue);
+}
+.auth .main :global(.mp-auth-help a) {
+  color: var(--blue);
 }
 .auth .main :global(.mp-form-message) {
-  padding: 10px 12px;
-  margin: 8px 0 12px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 10px;
   font-size: 13px;
   line-height: 1.5;
+  margin: 0 0 12px;
   overflow-wrap: anywhere;
 }
 .auth .main :global(.mp-form-message.error) {
-  background: var(--red-soft, #fff0f0);
-  color: var(--red, #a33446);
+  background: var(--red-soft);
+  color: var(--red);
 }
 .auth .main :global(.mp-form-message.success) {
-  background: var(--green-soft, #edf8f3);
-  color: var(--green, #188367);
-}
-.auth .main :global(.mp-resend-button) {
-  width: 100%;
-  margin-bottom: 10px;
-  min-height: 42px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  color: var(--ink);
-  background: var(--surface);
-  font: inherit;
-}
-.auth .main :global(.mp-auth-disclaimer) {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-}
-.auth .main :global(.mp-auth-disclaimer a) {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.auth .main :global(.mp-auth-help) {
-  color: var(--muted);
-}
-.auth .main :global(button:disabled) {
-  opacity: 0.6;
-}
-
-/* Account entry is a quiet reading desk, with a contrasting editorial panel. */
-.auth.auth {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  min-height: 100dvh;
-  color: var(--ink);
-  background: var(--bg);
-}
-.story {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: calc(36px + env(safe-area-inset-top, 0px))
-    max(clamp(32px, 6vw, 88px), env(safe-area-inset-right, 0px))
-    calc(32px + env(safe-area-inset-bottom, 0px))
-    max(clamp(32px, 6vw, 88px), env(safe-area-inset-left, 0px));
-  background: linear-gradient(145deg, var(--blue-soft), var(--workspace-glass));
-  color: var(--ink);
-}
-.story > a {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  gap: 10px;
-  color: inherit;
-  font-size: 18px;
-  font-weight: 650;
-  letter-spacing: 0.14em;
-}
-.story > a img {
-  width: 30px;
-  height: 34px;
-}
-.storyContent {
-  width: 100%;
-  max-width: 480px;
-  margin-block: auto;
-  padding: 52px 0;
-}
-.eyebrow {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.15em;
-}
-.storyContent h2 {
-  font-size: clamp(38px, 4.2vw, 60px);
-  line-height: 1.08;
-  letter-spacing: -0.05em;
-  font-weight: 500;
-  margin: 20px 0;
-}
-.storyContent h2 span {
-  color: var(--blue);
-  font: inherit;
-}
-.storyContent > p {
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.7;
-  max-width: 32ch;
-}
-.brandVisual {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 200px;
-  margin: 32px 0;
-  overflow: hidden;
-  background: linear-gradient(135deg, #ffffff08, #ffffff00);
-  border: 1px solid var(--workspace-edge);
-  border-radius: 16px;
-}
-.brandVisual > img {
-  position: relative;
-  width: 70px;
-  height: 78px;
-  filter: drop-shadow(0 12px 20px #08192355);
-}
-.visualOrbit {
-  position: absolute;
-  width: 220px;
-  height: 110px;
-  border: 1px solid var(--blue-soft);
-  border-radius: 50%;
-  transform: rotate(-28deg);
-}
-.visualOrbit:nth-child(2) {
-  width: 270px;
-  height: 155px;
-  transform: rotate(28deg);
-  border-color: #709be755;
-}
-.visualCaption {
-  position: absolute;
-  bottom: 16px;
-  color: var(--muted);
-  font-size: 9px;
-  letter-spacing: 0.16em;
-}
-.researchCard {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 24px;
-}
-.researchCard > span {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px 0;
-  color: var(--muted);
-  font-size: 12px;
-  border-top: 1px solid var(--line);
-}
-.researchCard svg {
-  color: var(--blue);
-}
-.storyFoot {
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.7;
-  margin: 0;
-}
-.main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  padding: calc(40px + env(safe-area-inset-top, 0px))
-    max(clamp(24px, 6vw, 84px), env(safe-area-inset-right, 0px))
-    calc(40px + env(safe-area-inset-bottom, 0px))
-    max(clamp(24px, 6vw, 84px), env(safe-area-inset-left, 0px));
-  background: var(--bg);
-  color: var(--ink);
-}
-.auth .main :global(.mp-auth-home) {
-  position: static;
-  align-self: flex-end;
-  margin: 0 0 28px;
-  font-size: 12px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-}
-.auth .main :global(.mp-auth-panel) {
-  width: 100%;
-  max-width: 410px;
-  padding: 28px;
-  margin: auto 0;
-  background: var(--workspace-glass);
-  border: 1px solid var(--workspace-edge);
-  border-radius: 20px;
-  box-shadow: var(--workspace-shadow);
-  backdrop-filter: blur(16px);
-}
-.auth .main :global(.mp-auth-heading) {
-  margin-bottom: 28px;
-}
-.auth .main :global(.mp-auth-heading h1) {
-  font-size: clamp(29px, 3vw, 38px);
-  font-weight: 550;
-  line-height: 1.15;
-  letter-spacing: -0.045em;
-  margin: 12px 0;
-}
-.auth .main :global(.mp-auth-heading p) {
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--muted);
-}
-.auth .main :global(.mp-overline) {
-  color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-}
-.auth .main :global(.mp-auth-form) {
-  width: 100%;
-  min-width: 0;
-}
-.auth .main :global(.mp-form-field) {
-  margin-bottom: 18px;
-}
-.auth .main :global(.mp-form-field input) {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  min-height: 50px;
-  border-radius: 12px;
-  background: var(--card);
-}
-.auth .main :global(.mp-password-field input) {
-  padding-right: 48px;
-}
-.auth .main :global(.mp-form-submit) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 50px;
-  border-radius: 12px;
-  margin-top: 6px;
-  background: #245bdb;
-  border: 1px solid #245bdb;
-  color: white;
-  cursor: pointer;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 550;
-}
-.auth .main :global(.mp-form-submit:hover:not(:disabled)) {
-  background: #1949bb;
-}
-.auth .main :global(.mp-social-options) {
-  gap: 10px;
-  margin-block: 16px;
-}
-.auth .main :global(.mp-social-button) {
-  border-radius: 12px;
-  min-height: 48px;
-  background: var(--card);
-  color: var(--ink);
-}
-.auth .main :global(.mp-inline-link) {
-  color: var(--blue);
-}
-.auth .main :global(.mp-switch-auth) {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 5px;
-  font-size: 13px;
-  margin-top: 24px;
-}
-.auth .main :global(.mp-auth-disclaimer) {
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
-  font-size: 11px;
-  line-height: 1.7;
-}
-.auth .main :global(.mp-auth-help) {
-  position: static;
-  margin: 28px 0 0;
-  font-size: 12px;
-  text-align: center;
+  background: var(--green-soft);
+  color: var(--green);
 }
 .auth .main :global(.mp-auth-mobile-brand) {
   display: none;
 }
 .auth :is(a, button, input):focus-visible {
   outline: 2px solid var(--blue);
-  outline-offset: 4px;
+  outline-offset: 3px;
+}
+.auth button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 @media (max-width: 760px) {
-  .auth.auth {
-    display: block;
+  .auth {
+    grid-template-columns: minmax(0, 1fr);
   }
   .story {
     display: none;
   }
   .main {
-    min-height: 100dvh;
-    padding: calc(24px + env(safe-area-inset-top, 0px))
-      max(24px, env(safe-area-inset-right, 0px))
-      calc(28px + env(safe-area-inset-bottom, 0px))
-      max(24px, env(safe-area-inset-left, 0px));
+    padding: max(16px, env(safe-area-inset-top))
+      max(16px, env(safe-area-inset-right))
+      max(24px, env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
+    justify-content: flex-start;
   }
   .auth .main :global(.mp-auth-mobile-brand) {
     display: block;
     align-self: flex-start;
-  }
-  .auth .main :global(.mp-auth-mobile-brand a) {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--ink);
-    font-size: 18px;
-    font-weight: 650;
-    letter-spacing: 0.14em;
+    padding: 12px 0;
   }
   .auth .main :global(.mp-auth-home) {
-    margin: 12px 0;
+    margin: 0 0 8px;
   }
-  .auth .main :global(.mp-auth-panel) {
-    margin: 22px 0;
-  }
-}
-
-@media (max-width: 760px) {
   .auth .main :global(.mp-auth-panel) {
     padding: 22px 18px;
   }
+  .auth .main :global(.mp-auth-heading h1) {
+    font-size: 28px;
+  }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .story,
+  .story {
+    background: var(--card);
+    backdrop-filter: none;
+  }
   .auth .main :global(.mp-auth-panel) {
     background: var(--card);
     backdrop-filter: none;

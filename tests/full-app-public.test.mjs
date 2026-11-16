@@ -44,7 +44,7 @@ test("legal navigation and privacy controls provide 44px targets", () => {
       parseFloat(
         styles(
           file,
-          ".document.document.document :global(.document-layout) > nav a",
+          ".document :global(.document-layout) > nav a",
           width,
         )["min-height"],
       ) >= 44,

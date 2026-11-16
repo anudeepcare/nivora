@@ -1,4 +1,5 @@
 "use client";
+import DetailDialog from "./DetailDialog";
 import layout from "./ValueStudio.module.css";
 import DecisionInsights from "./DecisionInsights";
 import AnalystTargets from "./AnalystTargets";
@@ -39,6 +40,10 @@ export default function ValueStudio({ research: r }: { research: Research }) {
       m.value != null &&
       !["earningsYield", "forwardYield", "dividendYield"].includes(m.key),
   );
+  const ordered = [...available].sort(
+    (a, b) => (b.value ?? 0) - (a.value ?? 0),
+  );
+  const barMaximum = Math.max(1, ...ordered.map((m) => m.value ?? 0)) * 1.08;
   const missing = d.metrics.filter((m) => m.value == null);
   const yields = d.metrics.filter((m) =>
     ["earningsYield", "forwardYield"].includes(m.key),
@@ -59,16 +64,19 @@ export default function ValueStudio({ research: r }: { research: Research }) {
       </section>
       <div className={layout.scenarios}>
         <StockPillars research={r} decision={decision} casesOnly />
-        <details>
-          <summary>Compare model ranges</summary>
+        {showConsensus && (
+          <div className={layout.consensus}>
+            <AnalystTargets research={r} embedded />
+          </div>
+        )}
+        <DetailDialog
+          title="Compare model ranges"
+          trigger="Compare model ranges"
+          wide
+        >
           <ScenarioLenses research={r} decision={decision} />
-        </details>
+        </DetailDialog>
       </div>
-      {showConsensus && (
-        <div className={layout.consensus}>
-          <AnalystTargets research={r} />
-        </div>
-      )}
       {available.length > 0 && (
         <section
           className={`valuation-board ${layout.market}`}
@@ -83,9 +91,9 @@ export default function ValueStudio({ research: r }: { research: Research }) {
               </h3>
             </div>
           </header>
-          <div className="valuation-board-grid">
-            {available.map((m) => (
-              <article key={m.key} data-tone="neutral">
+          <div className={layout.multipleRows}>
+            {ordered.map((m) => (
+              <article key={m.key} data-tone="neutral" data-metric={m.key}>
                 <span>
                   <Help label={m.label} trigger={m.label}>
                     {m.note}
@@ -107,15 +115,25 @@ export default function ValueStudio({ research: r }: { research: Research }) {
                       : ""}
                   </small>
                 )}
+                <span className={layout.multipleTrack} aria-hidden="true">
+                  <i
+                    style={{ width: `${((m.value ?? 0) / barMaximum) * 100}%` }}
+                  />
+                </span>
               </article>
             ))}
           </div>
+          <Help label="How to read multiple bars">
+            Bars compare the displayed numerical multiples, not investment
+            quality. Ratios use different denominators and should not be ranked
+            as better or worse from their bar lengths.
+          </Help>
           {!!missing.length && (
-            <p className="desk-footnote">
+            <Help label="Unavailable pricing measures">
               Not supplied or not meaningful:{" "}
               {missing.map((m) => m.label).join(" · ")}. These measures are not
               treated as zero.
-            </p>
+            </Help>
           )}
         </section>
       )}
@@ -126,17 +144,23 @@ export default function ValueStudio({ research: r }: { research: Research }) {
         </p>
       )}
       {!available.length && (
-        <details className="value-data-note">
-          <summary>About the pricing evidence</summary>
+        <DetailDialog
+          title="Pricing evidence"
+          trigger="About the pricing evidence"
+        >
           <p className="desk-footnote">
             Reported market multiples are not supplied for this report.
             Available scenarios remain above; missing measures are never treated
             as zero.
           </p>
-        </details>
+        </DetailDialog>
       )}
-      <details className={`value-model-fit ${layout.methods}`}>
-        <summary>Model fit & evidence</summary>
+      <DetailDialog
+        title="Model fit & evidence"
+        trigger="Model fit & evidence"
+        className={layout.methods}
+        wide
+      >
         <div className={layout.methodGrid}>
           <header className="section-head">
             <h3>
@@ -162,21 +186,24 @@ export default function ValueStudio({ research: r }: { research: Research }) {
             </div>
           ))}
         </div>
-      </details>
-      <details className="research-reference">
-        <summary>Estimate scenarios &amp; historical price risk</summary>
+      </DetailDialog>
+      <DetailDialog
+        title="Estimate scenarios & historical price risk"
+        trigger="Estimate scenarios & historical price risk"
+        wide
+      >
         <TargetsEstimates research={r} initialView={2} modelViewsOnly />
-      </details>
+      </DetailDialog>
       <div className={layout.manual}>
         <PriceProjection key={r.company.symbol} research={r} />
       </div>
-      <p className="desk-footnote">
+      <Help label="Pricing dates and limitations">
         Multiples are reported observations and can use different dates from the
         quote. A low multiple alone does not establish value.{" "}
         {r.company.assetType === "crypto"
           ? "Corporate earnings multiples do not apply to this instrument."
           : "Review the reporting date, currency and earnings definition before comparing multiples."}
-      </p>
+      </Help>
     </div>
   );
 }

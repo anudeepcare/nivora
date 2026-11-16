@@ -6,6 +6,8 @@
     "primary-price-evidence-preserved",
     "server-guard-latch-released",
     "cache-no-extra-request",
+    "missing-cache-fails-closed",
+    "warm-shared-denial-withheld",
     "nonowner-withheld",
     "production-withheld",
     "expired-key-withheld",

@@ -1,4 +1,5 @@
 "use client";
+import support from "./SupportingScreens.module.css";
 import { newRequestId } from "@/lib/client-id";
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -82,7 +83,7 @@ export default function AlertCenter() {
     );
   }
   return (
-    <section className="alerts-studio">
+    <section className={support.alerts}>
       <PageHeading
         title="Alerts"
         subtitle="Track price levels, confirmed Pace changes and company filings."
