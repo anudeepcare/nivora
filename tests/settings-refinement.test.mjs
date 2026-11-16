@@ -320,7 +320,7 @@ test("company essentials links Pro discovery directly to Plans", () => {
   assert.equal(link.props.href, "/plans");
 });
 
-test("Settings presents compact groups on one page without duplicate account summaries", () => {
+test("Settings presents focused categories without duplicate account summaries", () => {
   const { tree } = settings({ routePrefix: "/preview" });
   const textNodes = (node) =>
     typeof node === "string"
@@ -332,15 +332,15 @@ test("Settings presents compact groups on one page without duplicate account sum
     textNodes(tree).filter((text) => text === "person@example.com").length,
     1,
   );
-  assert.equal(nodes(tree, (n) => n.props?.hidden === true).length, 0);
-  assert.equal(nodes(tree, (n) => n.type === "details").length, 0,
-    "Settings sections are directly visible without extra disclosure steps");
+  assert.equal(nodes(tree, (n) => n.props?.hidden === true).length, 2);
+  assert.equal(nodes(tree, (n) => n.type === "details").length, 1,
+    "Infrequent password changes stay collapsed without removing the form");
   assert.equal(nodes(tree, (n) => n.type === "header").length, 3);
   assert.equal(
     nodes(tree, (n) => n.type === "input" && n.props.type === "password")
       .length,
     1,
-    "Account controls remain directly available",
+    "Account controls remain available in their category",
   );
   assert.equal(
     nodes(tree, (n) => n.type === "Link" && n.props.href === "/preview/plans")
@@ -391,4 +391,80 @@ test("account menu signs out directly without navigating to Settings", async () 
   await button.props.onClick();
   assert.equal(result.signOutCalls(), 1);
   assert.deepEqual(result.pushes, []);
+});
+
+
+test("Settings category changes rerender the matching panel and retain working controls", async () => {
+  const slots = [];
+  let cursor = 0;
+  const persistentState = (initial) => {
+    const index = cursor++;
+    if (!(index in slots)) slots[index] = typeof initial === "function" ? initial() : initial;
+    return [slots[index], next => {
+      slots[index] = typeof next === "function" ? next(slots[index]) : next;
+    }];
+  };
+  const changes = [];
+  const passwords = [];
+  const Display = load("components/DisplayPreferences.tsx", "DisplayPreferences", {
+    useProduct: () => ({ themePreference: "light", textSize: "standard", reduceMotion: false,
+      setTheme: value => changes.push({theme: value}), setTextSize: empty, setReduceMotion: empty }),
+    ResearchModeSwitch: empty,
+    AppearanceControls: empty,
+  });
+  const Research = load("components/ResearchPreferences.tsx", "ResearchPreferenceControls", {
+    useResearchPreferences: () => ({preferences:{style:"Balanced",horizon:"long"}, disabled:false,
+      setPreferences: patch => changes.push(patch)}),
+    WorkspacePreferences: empty,
+  });
+  const expand = node => {
+    if (!node || typeof node !== "object") return node;
+    if (node.props?.hidden) return node;
+    if (typeof node.type === "function") return expand(node.type(node.props));
+    return React.cloneElement(node, {}, React.Children.toArray(node.props?.children).map(expand));
+  };
+  const render = () => {
+    cursor = 0;
+    return expand(settings(undefined, {
+      useState: persistentState,
+      DisplayPreferences: Display,
+      ResearchPreferenceControls: Research,
+      authClient: () => ({auth:{updateUser:async value => {passwords.push(value);return {error:null};}}}),
+    }).tree);
+  };
+  const assertPanel = (tree, active) => {
+    const panels = nodes(tree, n => ["display-settings", "research-settings", "security-settings"].includes(n.props.id), true);
+    assert.deepEqual(panels.map(n => n.props.id), [active+"-settings"], "Only the selected panel is visible after rerender");
+    const choices = nodes(tree, n => n.type === "button" && n.props["aria-controls"], true);
+    for (const choice of choices) assert.equal(choice.props["aria-pressed"], choice.props["aria-controls"] === active+"-settings");
+  };
+  const select = (tree, id) => nodes(tree, n => n.type === "button" && n.props["aria-controls"] === id+"-settings", true)[0].props.onClick();
+  let tree = render();
+  assertPanel(tree, "display");
+  const dark = nodes(tree, n => n.type === "button" && n.props.children?.includes?.("Dark"), true)[0];
+  assert.ok(dark, "Display controls are reachable in the selected panel");
+  dark.props.onClick();
+  assert.deepEqual(changes.at(-1), {theme:"dark"});
+
+  select(tree, "research"); tree = render(); assertPanel(tree, "research");
+  const style = nodes(tree, n => n.type === "select" && n.props.value === "Balanced", true)[0];
+  assert.ok(style, "Research controls mount in the selected panel");
+  assert.equal(style.props.disabled, false);
+  style.props.onChange({target:{value:"Quality"}});
+  assert.deepEqual(changes.at(-1), {style:"Quality"});
+
+  select(tree, "security"); tree = render(); assertPanel(tree, "security");
+  assert.ok(nodes(tree, n => n.type === "details" && n.props.className === "settings-password-change", true)[0], "Native password disclosure can be opened without a modal");
+  const password = nodes(tree, n => n.type === "input" && n.props.type === "password", true)[0];
+  password.props.onChange({target:{value:"unique-test-password"}});
+  tree = render();
+  assert.equal(nodes(tree, n => n.type === "input" && n.props.type === "password", true)[0].props.value, "unique-test-password");
+  const submit = nodes(tree, n => n.type === "button" && n.props.className === "button primary", true)[0];
+  assert.equal(submit.props.disabled, false);
+  await nodes(tree, n => n.type === "form" && n.props.className === "password-form", true)[0].props.onSubmit({preventDefault(){}});
+  assert.deepEqual(passwords, [{password:"unique-test-password"}]);
+  tree = render();
+  assert.equal(nodes(tree, n => n.type === "input" && n.props.type === "password", true)[0].props.value, "");
+  select(tree, "display"); tree = render(); assertPanel(tree, "display");
+  assert.ok(nodes(tree, n => n.type === "button" && n.props.className === "settings-signout", true)[0], "Sign out stays outside category panels");
 });

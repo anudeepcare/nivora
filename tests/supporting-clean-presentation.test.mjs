@@ -17,7 +17,7 @@ for(const [name, expected] of Object.entries(contracts)) test(`${name} preserves
   assert.match(guide, /type="search"/);
   assert.match(guide, /onChange=\{\(event\) => setQuery\(event.target.value\)\}/);
   assert.match(guide, /role="status"/);
-  assert.match(guide, /<DetailDialog/);
+  assert.match(guide, /<details/);
   return;
  }
  const ast=ts.createSourceFile(name+'.tsx',src,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX),arr=[];

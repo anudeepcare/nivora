@@ -172,108 +172,119 @@ export default function ResearchEvidenceGrid({
   );
   if (!groups.length) return null;
   return (
-    <section className={s.grid} aria-label="Research evidence at a glance">
-      {mobileSummary.length > 0 && (
-        <article
-          className={`${s.panel} ${s.mobileEvidence}`}
-          aria-label="Financial snapshot"
-        >
-          {renderRows(mobileSummary, "snapshot")}
-          <p className={s.snapshot}>Financials {dateLabel(evidence.period)}</p>
-        </article>
-      )}
-      {groups
-        .filter((group) => group.key !== "margins")
-        .map(({ name, key, rows }) => {
-          const remaining = rows.filter((row) => !mobileKeys.includes(row.key));
-          const core =
+    <>
+      <section className={s.grid} aria-label="Research evidence at a glance">
+        {mobileSummary.length > 0 && (
+          <article
+            className={`${s.panel} ${s.mobileEvidence}`}
+            aria-label="Financial snapshot"
+          >
+            {renderRows(mobileSummary, "snapshot")}
+            <p className={s.snapshot}>
+              Financials {dateLabel(evidence.period)}
+            </p>
+          </article>
+        )}
+        {groups
+          .filter((group) => group.key !== "margins")
+          .map(({ name, key, rows }) => {
+            const remaining = rows.filter(
+              (row) => !mobileKeys.includes(row.key),
+            );
+            const core =
+              key === "business"
+                ? remaining.filter((row) =>
+                    ["revenue", "operatingCashFlow", "cash"].includes(row.key),
+                  )
+                : remaining;
+            const extra =
+              key === "business"
+                ? remaining.filter(
+                    (row) =>
+                      !["revenue", "operatingCashFlow", "cash"].includes(
+                        row.key,
+                      ),
+                  )
+                : [];
+            return (
+              <React.Fragment key={`mobile-${key}`}>
+                {(core.length > 0 || extra.length > 0) && (
+                  <article
+                    className={`${s.panel} ${s.mobileEvidence} ${key === "business" ? s.businessStrip : ""}`}
+                  >
+                    <h3>{name}</h3>
+                    {renderRows(core, key)}
+                    {extra.length > 0 && (
+                      <DetailDialog
+                        title={`${name} · all metrics`}
+                        trigger={`View ${rows.length} metrics`}
+                        wide
+                      >
+                        <div className={s.detailMetrics}>
+                          {renderRows(rows, key, true)}
+                        </div>
+                      </DetailDialog>
+                    )}
+                  </article>
+                )}
+              </React.Fragment>
+            );
+          })}
+        {groups.map(({ name, key, icon: Icon, rows, tab }) => {
+          const limit = key === "business" ? 5 : key === "technical" ? 3 : 4;
+          const priorities =
             key === "business"
-              ? remaining.filter((row) =>
-                  ["revenue", "operatingCashFlow", "cash"].includes(row.key),
-                )
-              : remaining;
-          const extra =
-            key === "business"
-              ? remaining.filter(
-                  (row) =>
-                    !["revenue", "operatingCashFlow", "cash"].includes(row.key),
-                )
-              : [];
+              ? ["revenue", "operatingCashFlow", "cash", "roe", "roa"]
+              : key === "valuation"
+                ? [
+                    "TrailingPE",
+                    "ForwardPE",
+                    "EnterpriseValueRevenue",
+                    "marketCap",
+                  ]
+                : [];
+          const ordered = [...rows].sort((a, b) => {
+            const rank = (key: string) => {
+              const i = priorities.indexOf(key);
+              return i < 0 ? priorities.length : i;
+            };
+            return rank(a.key) - rank(b.key);
+          });
           return (
-            <React.Fragment key={`mobile-${key}`}>
-              {(core.length > 0 || extra.length > 0) && (
-                <article
-                  className={`${s.panel} ${s.mobileEvidence} ${key === "business" ? s.businessStrip : ""}`}
-                >
+            <React.Fragment key={key}>
+              <article
+                data-category={key}
+                className={`${s.panel} ${s.desktopEvidence}`}
+              >
+                <header>
+                  <span className={s.icon}>
+                    <Icon size={18} />
+                  </span>
                   <h3>{name}</h3>
-                  {renderRows(core, key)}
-                  {extra.length > 0 && (
-                    <DetailDialog
-                      title={`${name} · all metrics`}
-                      trigger={`View ${rows.length} metrics`}
-                      wide
-                    >
-                      <div className={s.detailMetrics}>
-                        {renderRows(rows, key, true)}
-                      </div>
-                    </DetailDialog>
-                  )}
-                </article>
-              )}
+                  <button
+                    aria-label={`Open ${name}`}
+                    onClick={() => onTab(tab)}
+                  >
+                    <ArrowUpRight size={17} />
+                  </button>
+                </header>
+                {renderRows(ordered.slice(0, limit), key)}
+                {ordered.length > limit && (
+                  <DetailDialog
+                    title={`${name} · all metrics`}
+                    trigger={`View ${ordered.length} metrics`}
+                    wide
+                  >
+                    <div className={s.detailMetrics}>
+                      {renderRows(ordered, key, true)}
+                    </div>
+                  </DetailDialog>
+                )}
+              </article>
             </React.Fragment>
           );
         })}
-      {groups.map(({ name, key, icon: Icon, rows, tab }) => {
-        const limit = key === "business" ? 5 : key === "technical" ? 3 : 4;
-        const priorities =
-          key === "business"
-            ? ["revenue", "operatingCashFlow", "cash", "roe", "roa"]
-            : key === "valuation"
-              ? [
-                  "TrailingPE",
-                  "ForwardPE",
-                  "EnterpriseValueRevenue",
-                  "marketCap",
-                ]
-              : [];
-        const ordered = [...rows].sort((a, b) => {
-          const rank = (key: string) => {
-            const i = priorities.indexOf(key);
-            return i < 0 ? priorities.length : i;
-          };
-          return rank(a.key) - rank(b.key);
-        });
-        return (
-          <React.Fragment key={key}>
-            <article
-              data-category={key}
-              className={`${s.panel} ${s.desktopEvidence}`}
-            >
-              <header>
-                <span className={s.icon}>
-                  <Icon size={18} />
-                </span>
-                <h3>{name}</h3>
-                <button aria-label={`Open ${name}`} onClick={() => onTab(tab)}>
-                  <ArrowUpRight size={17} />
-                </button>
-              </header>
-              {renderRows(ordered.slice(0, limit), key)}
-              {ordered.length > limit && (
-                <DetailDialog
-                  title={`${name} · all metrics`}
-                  trigger={`View ${ordered.length} metrics`}
-                  wide
-                >
-                  <div className={s.detailMetrics}>
-                    {renderRows(ordered, key, true)}
-                  </div>
-                </DetailDialog>
-              )}
-            </article>
-          </React.Fragment>
-        );
-      })}
+      </section>
       <footer className={s.snapshot}>
         <Help label="Evidence dates">
           <p>Financial period: {dateLabel(evidence.period)}</p>
@@ -287,6 +298,6 @@ export default function ResearchEvidenceGrid({
           </p>
         </Help>
       </footer>
-    </section>
+    </>
   );
 }

@@ -21,7 +21,7 @@ test('Pace guidance owns stacked decision/contribution and five-stage layout',()
 });
 test('supporting metadata cannot collapse to adjacent inline values',()=>{
  assert.equal(declaration('SupportingScreens.module.css','.discover :global(.block)','display'),'block');
- assert.equal(declaration('SettingsPage.module.css','.page :global(.account-identities)','display'),'grid');
+ assert.equal(declaration('SettingsPage.module.css','.page :global(.account-identities)','display'),'flex');
  assert.equal(declaration('SettingsPage.module.css','.page :global(.settings-analytics-shortcut)','display'),'grid');
  assert.doesNotMatch(read('HomeWorkspace.tsx'),/className="icon-btn"/);
 });

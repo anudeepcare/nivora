@@ -17,12 +17,24 @@
 :where(a) {
   color: inherit;
   text-underline-offset: 3px;
+  text-decoration: none;
 }
 :where(button, input, select, textarea) {
   font: inherit;
 }
 :where(button) {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface-2);
   color: var(--ink);
+  line-height: 1.35;
 }
 :where(input, select, textarea) {
   max-width: 100%;
@@ -79,8 +91,8 @@
   gap: 8px;
   min-height: 44px;
   padding: 10px 16px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border: 0;
+  border-radius: 12px;
   background: var(--workspace-control);
   color: var(--ink);
   text-decoration: none;
@@ -126,7 +138,7 @@
   min-width: 0;
   margin: 0;
   padding: var(--workspace-inset);
-  border: 1px solid var(--workspace-edge);
+  border: 0;
   border-radius: var(--workspace-radius);
   background: var(--workspace-panel);
   box-shadow: var(--workspace-shadow);
@@ -336,7 +348,7 @@
   );
   margin: auto;
   padding: 24px;
-  border: 1px solid var(--workspace-edge);
+  border: 0;
   border-radius: 18px;
   background: var(--card);
   color: var(--ink);
@@ -449,4 +461,39 @@
   display: flex;
   align-items: center;
   min-height: 44px;
+}
+
+/* Shared segmented control: one surface, not a row of outlined buttons. */
+:where(.segments, .segmented) {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 4px;
+  border: 0;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--muted) 7%, transparent);
+}
+:where(.segments, .segmented) > button {
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+:where(.segments, .segmented)
+  > :is(.active, [aria-pressed="true"], [aria-selected="true"]) {
+  color: var(--ink);
+  background: var(--card);
+  box-shadow: 0 2px 7px #18233909;
+}
+:where(button.text-link, button.source, .footer-analytics-choice) {
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  padding: 6px 0;
+  min-height: 36px;
 }

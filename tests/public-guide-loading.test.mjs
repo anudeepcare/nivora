@@ -9,7 +9,7 @@ import * as icons from "lucide-react";
 // Loading the public module should not evaluate the stock analysis engine.
 // next/dynamic is the code-splitting boundary; its loader is intentionally idle
 // until React renders the selected guide. Existing public tests exercise that UI.
-test("public landing leaves the Pace research engine behind a deferred import", () => {
+test("public landing does not import the stock research engine", () => {
   const eager = [];
   const deferred = [];
   const code = ts.transpileModule(
@@ -67,8 +67,8 @@ test("public landing leaves the Pace research engine behind a deferred import", 
   );
   assert.equal(
     deferred.length,
-    1,
-    "the Pace guide retains an on-demand loader",
+    0,
+    "the lightweight guide has no research engine dependency at all",
   );
   assert.equal(typeof mod.exports.default, "function");
 });

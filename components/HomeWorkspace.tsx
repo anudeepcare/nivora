@@ -1,11 +1,14 @@
 "use client";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import HomeDailyBriefing from "./HomeDailyBriefing";
 import HomeNewsFeed from "./HomeNewsFeed";
 import HomeMarketCards from "./HomeMarketCards";
-import { MarketRadar } from "./MarketRadar";
-import OpportunityMap from "./OpportunityMap";
-import ResearchInbox from "./ResearchInbox";
+const MarketRadar = dynamic(() =>
+  import("./MarketRadar").then((m) => m.MarketRadar),
+);
+const OpportunityMap = dynamic(() => import("./OpportunityMap"));
+const ResearchInbox = dynamic(() => import("./ResearchInbox"));
 import { useHomeFeed } from "./useHomeFeed";
 import { PaceBoard } from "./WorkspacePace";
 
@@ -97,7 +100,8 @@ function EarningsNumbers({
 
 function HomeOverview() {
   const [radarOpen, setRadarOpen] = useState(false);
-  const state = useWorkspaceData(),
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const state = useWorkspaceData("all", toolsOpen),
     { workspace, quotes, model, prefix, demo, displayName } = state;
   const today = new Date(
     demo
@@ -245,7 +249,7 @@ function HomeOverview() {
           </span>
           <SearchIcon size={18} />
         </Link>
-        <Link href="#home-workbench">
+        <Link href="#home-workbench" onClick={() => setToolsOpen(true)}>
           <span>
             <small>04 / TEST</small>Research tools
           </span>
@@ -461,56 +465,62 @@ function HomeOverview() {
         </>
       )}
 
-      <section
+      <details
+        open={toolsOpen}
+        onToggle={(event) => setToolsOpen(event.currentTarget.open)}
         className={homeStyles.workbench}
         id="home-workbench"
         aria-label="Research tools and saved reviews"
       >
-        <div className={homeStyles.workbenchHeading}>
+        <summary className={homeStyles.workbenchHeading}>
           <span>GO DEEPER</span>
-          <h2>Turn your briefing into a plan.</h2>
-          <p>Your saved reviews and confirmed Pace readings.</p>
-        </div>
-        <p className={homeStyles.planLink}>
-          <Link className="text-link" href={`${prefix}/monthly-plan`}>
-            Build this month’s research plan →
-          </Link>
-        </p>
-        <ResearchInbox
-          today={day}
-          events={feed.data?.events ?? []}
-          coverageIssue={!!feed.error || !readiness.eventsReady}
-        />
-        {loadedResearch.length > 0 && (
-          <details
-            className={homeStyles.marketRadar}
-            open={radarOpen}
-            onToggle={(event) => setRadarOpen(event.currentTarget.open)}
-          >
-            <summary>
-              Market radar{" "}
-              <span>
-                {loadedResearch.length} loaded companies · historical breadth &
-                rotation
-              </span>
-            </summary>
-            {radarOpen && (
-              <>
-                <OpportunityMap
-                  research={loadedResearch}
-                  requested={symbols}
-                  prefix={prefix}
-                  demo={!!demo}
-                />
-                <MarketRadar research={loadedResearch} asOf={day} />
-              </>
+          <h2>Your research desk</h2>
+          <p>Saved reviews, Pace readings and market tools.</p>
+        </summary>
+        {toolsOpen && (
+          <>
+            <p className={homeStyles.planLink}>
+              <Link className="text-link" href={`${prefix}/monthly-plan`}>
+                Build this month’s research plan →
+              </Link>
+            </p>
+            <ResearchInbox
+              today={day}
+              events={feed.data?.events ?? []}
+              coverageIssue={!!feed.error || !readiness.eventsReady}
+            />
+            {loadedResearch.length > 0 && (
+              <details
+                className={homeStyles.marketRadar}
+                open={radarOpen}
+                onToggle={(event) => setRadarOpen(event.currentTarget.open)}
+              >
+                <summary>
+                  Market radar{" "}
+                  <span>
+                    {loadedResearch.length} loaded companies · historical
+                    breadth & rotation
+                  </span>
+                </summary>
+                {radarOpen && (
+                  <>
+                    <OpportunityMap
+                      research={loadedResearch}
+                      requested={symbols}
+                      prefix={prefix}
+                      demo={!!demo}
+                    />
+                    <MarketRadar research={loadedResearch} asOf={day} />
+                  </>
+                )}
+              </details>
             )}
-          </details>
+            {symbols.length > 0 && (
+              <PaceBoard {...state.paceScan} prefix={prefix} />
+            )}
+          </>
         )}
-        {symbols.length > 0 && (
-          <PaceBoard {...state.paceScan} prefix={prefix} />
-        )}
-      </section>
+      </details>
     </section>
   );
 }

@@ -68,7 +68,7 @@ export default function IntegratedResearch({
       >
         <div className={s.paceColumn}>
           <div className={s.stageHeading}>
-            <span>THE DECISION · AURYN PACE</span>
+            <span>YOUR NEXT MOVE</span>
           </div>
           <div className={s.context} aria-label="Decision context">
             <button
@@ -101,13 +101,15 @@ export default function IntegratedResearch({
         </div>
         <div className={s.chart}>{chart}</div>
       </section>
-      <div className={s.caseWorkspace}>
+      <div className={s.scenarioStage}>
         <div className={s.decisionExplanation}>
           <ResearchConclusion decision={d} asOf={r.retrievedAt} onTab={onTab} />
         </div>
         <div className={s.pillars}>
           <StockPillars research={r} decision={d} />
         </div>
+      </div>
+      <div className={s.priceContext}>
         <section className={s.rangeSnapshot} aria-label="Closing price range">
           <h2>
             {closingRange?.label ?? "Closing price range"}{" "}
@@ -172,7 +174,7 @@ export default function IntegratedResearch({
       >
         <header className={s.sectionHeading}>
           <div>
-            <h2>The evidence</h2>
+            <h2>Business at a glance</h2>
           </div>
         </header>
         <ResearchEvidenceGrid research={r} onTab={onTab} />

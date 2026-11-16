@@ -9,7 +9,7 @@ import { aurynDecision } from "@/lib/auryn-decision";
 import ScenarioLenses from "./ScenarioLenses";
 import SectionIcon from "./SectionIcon";
 import { Help } from "./Ui";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
 import { percent } from "@/lib/format";
@@ -23,6 +23,7 @@ const display = (m: DeskMetric) =>
       ? `${m.value.toFixed(1)}×`
       : percent(m.value);
 export default function ValueStudio({ research: r }: { research: Research }) {
+  const [projectionOpened, setProjectionOpened] = useState(false);
   const d = useMemo(() => valueDesk(r), [r]);
   const consensus = useMemo(() => consensusOutlook(r), [r]);
   // A complete range is already shown by StockPillars. Keep a separate
@@ -40,10 +41,6 @@ export default function ValueStudio({ research: r }: { research: Research }) {
       m.value != null &&
       !["earningsYield", "forwardYield", "dividendYield"].includes(m.key),
   );
-  const ordered = [...available].sort(
-    (a, b) => (b.value ?? 0) - (a.value ?? 0),
-  );
-  const barMaximum = Math.max(1, ...ordered.map((m) => m.value ?? 0)) * 1.08;
   const missing = d.metrics.filter((m) => m.value == null);
   const yields = d.metrics.filter((m) =>
     ["earningsYield", "forwardYield"].includes(m.key),
@@ -92,7 +89,7 @@ export default function ValueStudio({ research: r }: { research: Research }) {
             </div>
           </header>
           <div className={layout.multipleRows}>
-            {ordered.map((m) => (
+            {available.map((m) => (
               <article key={m.key} data-tone="neutral" data-metric={m.key}>
                 <span>
                   <Help label={m.label} trigger={m.label}>
@@ -115,19 +112,10 @@ export default function ValueStudio({ research: r }: { research: Research }) {
                       : ""}
                   </small>
                 )}
-                <span className={layout.multipleTrack} aria-hidden="true">
-                  <i
-                    style={{ width: `${((m.value ?? 0) / barMaximum) * 100}%` }}
-                  />
-                </span>
               </article>
             ))}
           </div>
-          <Help label="How to read multiple bars">
-            Bars compare the displayed numerical multiples, not investment
-            quality. Ratios use different denominators and should not be ranked
-            as better or worse from their bar lengths.
-          </Help>
+
           {!!missing.length && (
             <Help label="Unavailable pricing measures">
               Not supplied or not meaningful:{" "}
@@ -194,9 +182,17 @@ export default function ValueStudio({ research: r }: { research: Research }) {
       >
         <TargetsEstimates research={r} initialView={2} modelViewsOnly />
       </DetailDialog>
-      <div className={layout.manual}>
-        <PriceProjection key={r.company.symbol} research={r} />
-      </div>
+      <details
+        className={layout.manual}
+        onToggle={(event) => {
+          if (event.currentTarget.open) setProjectionOpened(true);
+        }}
+      >
+        <summary>Build your own price projection</summary>
+        {projectionOpened && (
+          <PriceProjection key={r.company.symbol} research={r} />
+        )}
+      </details>
       <Help label="Pricing dates and limitations">
         Multiples are reported observations and can use different dates from the
         quote. A low multiple alone does not establish value.{" "}

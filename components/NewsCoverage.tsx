@@ -42,8 +42,11 @@ export default function NewsCoverage({
   );
   const rows = feed[scope];
   const visible = rows.slice(0, 6);
-  const renderArticle = (n: DeskArticle) => (
-    <article className={s.story} key={n.url}>
+  const renderArticle = (n: DeskArticle, index: number) => (
+    <article
+      className={`${s.story} ${index === 0 ? s.leadStory : ""}`}
+      key={n.url}
+    >
       <div className={s.meta}>
         <span>{n.source}</span>
         <time dateTime={n.date}>{dateLabel(n.date)}</time>
@@ -60,7 +63,7 @@ export default function NewsCoverage({
         <header className={s.heading}>
           <div>
             <h2>{symbol} news</h2>
-            <p>Read the source. Separate reporting from the investment case.</p>
+            <p>The latest reporting and source records.</p>
           </div>
           <button
             type="button"
@@ -91,11 +94,18 @@ export default function NewsCoverage({
             Broader coverage <span>{feed.broader.length}</span>
           </button>
         </div>
-        <p className={s.basis}>
+        <Help
+          label="How headlines are grouped"
+          trigger={
+            scope === "company"
+              ? "Company-matched headlines"
+              : "Broader coverage · relevance varies"
+          }
+        >
           {scope === "company"
-            ? "Titles mentioning the company name or explicit ticker. Headline matching does not verify the article or explain a price move."
+            ? "Titles mention the company name or explicit ticker. This does not verify the article or explain a price move."
             : "Other articles returned for this ticker. Company relevance is not established from the headline."}
-        </p>
+        </Help>
         {visible.length ? (
           <div className={s.stories}>{visible.map(renderArticle)}</div>
         ) : (

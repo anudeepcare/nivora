@@ -34,8 +34,8 @@
   ) {
   padding: 20px;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
 }
 .layout[data-desk="Financials"] > :global(.business-history) {
   grid-column: span 8;
@@ -196,6 +196,9 @@
   gap: 20px;
   align-items: start;
 }
+.surface :global(.case-ownership-row) > :only-child {
+  grid-column: 1 / -1;
+}
 .surface :global(.business-context-layout) {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
@@ -301,8 +304,8 @@
 .surface :global(.analyst-workspace) {
   min-width: 0;
   padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
   background: var(--card);
 }
 .surface :global(.analyst-summary) {
@@ -362,7 +365,7 @@
   padding: 20px;
   border: 1px solid var(--line);
   background: var(--card);
-  border-radius: 16px;
+  border-radius: 24px;
 }
 .surface :global(.workbench-form) {
   display: grid;
@@ -430,8 +433,8 @@
   min-width: 0;
   margin: 0;
   padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
   background: var(--card);
 }
 .surface :global(.advanced-chart-grid svg) {

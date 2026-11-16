@@ -50,7 +50,7 @@ test("SentiSense source selection never touches legacy endpoint on source failur
     done();
   }
 });
-test("sole-source guard remains for nonquote legacy endpoints even with explicit EODHD live quotes", async () => {
+test("sole-source guard remains for legacy research endpoints even with explicit EODHD live quotes", async () => {
   const done = fixture();
   try {
     process.env.AURYN_PRICE_PROVIDER = "eodhd";
@@ -95,7 +95,6 @@ test("explicit EODHD price mode reads only real-time quotes, never legacy resear
     const eod = sourceModule("lib/eodhd.ts");
     assert.equal(eod.eodEnabled(), false);
     await assert.rejects(eod.eodRequest("fundamentals/APP.US"));
-    await assert.rejects(eod.eodRequest("eod/APP.US"));
     await assert.rejects(api.twelve("quote", { symbol: "APP" }));
     assert.ok(urls.length > 0);
     assert.ok(
@@ -163,3 +162,46 @@ for (const invalid of ["null-price", "future-observation"]) {
     });
   }
 }
+
+test("EODHD price mode supplies split-adjusted daily chart history, not SentiSense weekly bars", async () => {
+  const done = fixture();
+  try {
+    process.env.AURYN_PRICE_PROVIDER = "eodhd";
+    const calls = [];
+    globalThis.fetch = async (input) => {
+      const url = new URL(input); calls.push(url);
+      assert.equal(url.hostname, "eodhd.com");
+      if (url.pathname === "/api/splits/APP.US") return Response.json([]);
+      assert.equal(url.pathname, "/api/eod/APP.US");
+      return Response.json([{date:"2026-11-13",open:100,high:110,low:90,close:105,adjusted_close:105,volume:1000}]);
+    };
+    const result = await sourceModule("lib/providers.ts").marketHistory("APP", "5Y");
+    assert.equal(result.candles.length, 1);
+    assert.equal(result.candles[0].close, 105);
+    assert.match(result.source, /EODHD/);
+    assert.equal(calls.length, 2);
+  } finally { done(); }
+});
+
+test("research receives five-year daily EODHD history even when SentiSense research is unavailable", async () => {
+  const done = fixture();
+  try {
+    process.env.AURYN_PRICE_PROVIDER = "eodhd";
+    const calls = [];
+    globalThis.fetch = async (input) => {
+      const url = new URL(input); calls.push(url);
+      if (url.hostname === "app.sentisense.ai") return new Response("", {status:503});
+      assert.equal(url.hostname, "eodhd.com");
+      if (url.pathname === "/api/splits/APP.US") return Response.json([]);
+      if (url.pathname === "/api/real-time/APP.US") return Response.json({code:"APP.US",close:105,timestamp:Math.floor(Date.now()/1000)});
+      assert.equal(url.pathname, "/api/eod/APP.US");
+      assert.ok(Date.parse(url.searchParams.get("from")) < Date.now()-4*365*86400000);
+      return Response.json([{date:"2026-11-13",open:100,high:110,low:90,close:105,adjusted_close:105,volume:1000}]);
+    };
+    const result = await sourceModule("lib/providers.ts").research("APP");
+    assert.equal(result.history.length, 1);
+    assert.match(result.historySource, /EODHD/);
+    assert.ok(!result.issues.some(x => x.includes("one-year window")));
+    assert.ok(!calls.some(x => x.pathname === "/api/v1/stocks/chart"));
+  } finally { done(); }
+});

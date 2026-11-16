@@ -45,7 +45,7 @@ function load(name, bindings) {
   bindings = { PaceHelp: () => null, ...bindings };
   if (name === "HomeOverview")
     bindings.EarningsNumbers = load("EarningsNumbers", {});
-  const file = name === "ResearchHome" ? "components/ResearchHomePage.tsx" : "components/HomeWorkspace.tsx";
+  const file = name === "PaceBoard" ? "components/WorkspacePace.tsx" : name === "ResearchHome" ? "components/ResearchHomePage.tsx" : "components/HomeWorkspace.tsx";
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -56,7 +56,7 @@ function load(name, bindings) {
   const declaration = ast.statements.find(
     (node) => ts.isFunctionDeclaration(node) && node.name?.text === name,
   );
-  const code = ts.transpileModule(declaration.getText(ast), {
+  const code = ts.transpileModule(declaration.getText(ast).replace(/^export /, ""), {
     compilerOptions: {
       jsx: ts.JsxEmit.React,
       module: ts.ModuleKind.CommonJS,
@@ -245,7 +245,7 @@ test("New account Home has research tools without empty personal feeds", () => {
   assert.match(html, /Research a company/);
 });
 
-test("Home accumulation panel excludes valuation-only entries without confirmed Pace", () => {
+test("Home defers research scans and never presents an unconfirmed valuation-only signal as Pace", () => {
   const r = structuredClone(demoData.research.MSFT);
   r.evidence = undefined;
   r.history = [];
@@ -253,7 +253,18 @@ test("Home accumulation panel excludes valuation-only entries without confirmed 
   const signal = workspaceGuidance(r, false, Date.parse(r.retrievedAt));
   assert.equal(signal.action, "Buy");
   assert.equal(signal.view.rawLevel, null);
+  const state = [];
+  let cursor = 0;
+  const useState = (initial) => {
+    const index = cursor++;
+    if (!(index in state)) state[index] = initial;
+    return [state[index], (value) => { state[index] = value; }];
+  };
+  const PaceBoard = load("PaceBoard", { s: {}, Link, researchLink: (symbol) => "/research/" + symbol, ...format });
+  const rows = { MSFT: { signal } };
   const Home = load("HomeOverview", {
+    useState,
+    PaceBoard,
     useWorkspaceData: () => ({
       research: () => undefined,
       workspace: { positions: [], watchlist: [{ symbol: "MSFT" }] },
@@ -261,6 +272,7 @@ test("Home accumulation panel excludes valuation-only entries without confirmed 
       model: { allocations: [] },
       prefix: "",
       pace: () => signal,
+      paceScan: { rows, loading: false, refresh: empty },
     }),
     useHomeFeed: () => ({
       data: {
@@ -301,9 +313,34 @@ test("Home accumulation panel excludes valuation-only entries without confirmed 
     Bookmark: empty,
     Activity: empty,
   });
-  const html = renderToStaticMarkup(React.createElement(Home));
-  assert.doesNotMatch(html, /confirmed Pending/);
-  assert.match(html, /Accumulation opportunities/);
+  const render = () => { cursor = 0; return Home(); };
+  const find = (node, predicate) => {
+    if (!React.isValidElement(node)) return null;
+    if (predicate(node)) return node;
+    for (const child of React.Children.toArray(node.props.children)) {
+      const found = find(child, predicate);
+      if (found) return found;
+    }
+    return null;
+  };
+  let tree = render();
+  assert.equal(find(tree, node => node.type === PaceBoard), null, "Pace board is deferred");
+  const desk = find(tree, node => node.props.id === "home-workbench");
+  desk.props.onToggle({ currentTarget: { open: true } });
+  tree = render();
+  assert.ok(find(tree, node => node.type === PaceBoard), "Opening desk mounts real Pace board");
+  let html = renderToStaticMarkup(tree);
+  assert.match(html, /No confirmed accumulation opportunities/);
+  assert.doesNotMatch(html, /View MSFT evidence/);
+  rows.CONFIRMED = { signal: {
+    view: { rawLevel: 3, permitted: true, actionLabel: "Add gradually · P3", code: "P3" },
+    periods: [{ key: "confirmed", date: "2026-10-30", level: 3 }],
+  } };
+  html = renderToStaticMarkup(render());
+  assert.match(html, /View CONFIRMED evidence/);
+  assert.match(html, /2026-10-30/);
+  assert.match(html, /Add gradually/);
+  assert.doesNotMatch(html, /View MSFT evidence/);
 });
 
 test("Home earnings preserves zero and negative actuals, estimates and pending releases", () => {

@@ -22,6 +22,6 @@ test('help uses guide without replacing policy sections',()=>{
 });
 test('portfolio glass remains bounded and honors transparency preference',()=>{
  const css=fs.readFileSync('components/PortfolioWorkspace.module.css','utf8');
- assert.match(css,/\.balanceDeck\s*\{[^}]*background: var\(--workspace-panel\)/s);
- assert.match(css,/prefers-reduced-transparency/);
+ assert.match(css,/\.balanceDeck\s*\{[^}]*background: linear-gradient\(120deg, var\(--card\), var\(--blue-soft\)\)/s);
+ assert.match(css,/prefers-reduced-transparency[\s\S]*background: var\(--card\);[\s\S]*backdrop-filter: none/);
 });

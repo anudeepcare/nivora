@@ -5,7 +5,7 @@ import { classifyPaceV7, paceV7Signal } from '../lib/pace-classifier-v7.ts';
 import { researchAccumulation } from '../lib/accumulation-policy-v7.ts';
 import { researchAccumulation as v6 } from '../lib/accumulation-policy-v6.ts';
 import { makePacePriceEvaluator } from '../lib/pace-price-evaluator.ts';
-const base='verification/analyst-and-pace-20261112/';
+const base='tests/fixtures/pace-v7/';
 const features=JSON.parse(fs.readFileSync(base+'features.json')).filter(r=>r.features);
 const expected=new Map(JSON.parse(fs.readFileSync(base+'candidate-study.json')).rows.map(r=>[r.symbol,r]));
 test('active v7 reproduces all frozen predictions and held-out 205/223 result',()=>{

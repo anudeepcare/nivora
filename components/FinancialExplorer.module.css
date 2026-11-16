@@ -1,7 +1,7 @@
 .explorer {
   padding: 20px;
-  border: 1px solid var(--workspace-edge);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
   background: var(--workspace-glass);
   box-shadow: var(--workspace-shadow);
   min-width: 0;

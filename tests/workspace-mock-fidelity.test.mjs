@@ -17,10 +17,10 @@ test("workspace surfaces do not restore the rejected dark watchlist billboard", 
   assert.match(css, /background: var\(--card\)/);
   assert.doesNotMatch(css, /backdrop-filter/);
 });
-test("public hero follows the reference two-column intro and Pace chart", () => {
+test("public hero pairs its intro with a lightweight illustrative product guide", () => {
   assert.match(
     read("PublicLanding.module.css"),
-    /grid-template-columns: minmax\(0, 0\.8fr\) minmax\(0, 1\.2fr\)/,
+    /grid-template-columns: 1\.05fr 1fr/,
   );
   assert.doesNotMatch(
     read("PublicLanding.tsx"),
@@ -38,13 +38,13 @@ test("support priority and status labels have independent width rather than shri
   );
 });
 
-test("settings uses compact separator-free rows and transparent nested segments", () => {
+test("settings uses open category surfaces and intentional touch-sized controls", () => {
   const css = read("SettingsPage.module.css");
-  assert.doesNotMatch(css, /border-bottom:/);
-  assert.match(css, /min-height: 52px/);
-  assert.match(css, /background: var\(--workspace-glass\)/);
-  const segment = css.match(/\.page :global\(\.segments\) \{([^}]+)\}/)?.[1];
-  assert.match(segment ?? "", /background: transparent/);
+  assert.match(css, /workspace-setting-group/);
+  assert.match(css, /\[hidden\]\s*\{\s*display: none/);
+  assert.match(css, /min-height: 64px/);
+  assert.match(css, /background: var\(--workspace-panel\)/);
+  assert.match(css, /background: var\(--surface\)/);
   assert.match(css, /min-height: 44px/);
 });
 
@@ -73,19 +73,13 @@ test("discovery results can be scrolled with a keyboard", () => {
 
 test("primary workspace cards stretch within their row without equalizing unrelated rows", () => {
   const portfolio = read("PortfolioWorkspace.module.css");
-  assert.match(
-    portfolio,
-    /grid-template-columns: minmax\(0, 2fr\) minmax\(270px, 1fr\)/,
-  );
-  assert.match(
-    portfolio,
-    /:global\(\.portfolio-trend-panel\) \{\s+grid-column: 1;\s+grid-row: 1/,
-  );
-  assert.match(portfolio, /\.portfolioRead \{\s+grid-column: 2;\s+grid-row: 1/);
+  assert.match(portfolio, /:global\(\.portfolio-grid\) \{[^}]*grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(portfolio, /\.portfolioRead \{[^}]*grid-template-columns: minmax\(0, 1.1fr\) minmax\(0, 1fr\)/);
+  assert.match(portfolio, /:global\(\.portfolio-holdings-panel\)[^{]*[\s\S]*grid-column: 1\/-1/);
   assert.match(read("HomeDailyBriefing.module.css"), /align-items: stretch/);
   assert.match(
     read("SettingsPage.module.css"),
-    /grid-template-rows: auto auto auto min-content minmax\(0, 1fr\)/,
+    /grid-template-rows: auto auto auto auto min-content 1fr/,
   );
 });
 

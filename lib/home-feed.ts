@@ -81,6 +81,7 @@ export function homeFeedReadiness(
 export async function loadHomeFeed(
   symbols: string[],
   read: (batch: string[]) => Promise<HomeFeed>,
+  budgetMs = 18_000,
 ): Promise<HomeFeed> {
   const stocks = [
     ...new Set(
@@ -97,10 +98,33 @@ export async function loadHomeFeed(
     eventsReady: true,
     newsReady: true,
   };
-  for (let offset = 0; offset < stocks.length; offset += 30) {
-    const batch = stocks.slice(offset, offset + 30);
+  const batches = Array.from(
+    { length: Math.ceil(stocks.length / 30) },
+    (_, index) => stocks.slice(index * 30, (index + 1) * 30),
+  );
+  let aborted: Error | null = null;
+  const settled = await settledFeedMap(
+    batches,
+    async (batch) => {
+      if (aborted) throw aborted;
+      try {
+        return await read(batch);
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError")
+          aborted = error;
+        throw error;
+      }
+    },
+    1,
+    budgetMs,
+  );
+  if (aborted) throw aborted;
+  for (let index = 0; index < batches.length; index++) {
+    const batch = batches[index];
     try {
-      const data = await read(batch),
+      const row = settled[index];
+      if (row.status === "rejected") throw row.reason;
+      const data = row.value,
         ready = homeFeedReadiness(data);
       result.events.push(...data.events);
       result.news.push(...data.news);
@@ -143,23 +167,30 @@ export async function settledFeedMap<T, R>(
   values: T[],
   read: (value: T) => Promise<R>,
   concurrency = 4,
+  budgetMs = 12_000,
 ): Promise<PromiseSettledResult<R>[]> {
-  const results: PromiseSettledResult<R>[] = new Array(values.length);
+  const timeout = () => ({
+    status: "rejected" as const,
+    reason: new Error("Company update deadline reached."),
+  });
+  const results: PromiseSettledResult<R>[] = Array.from(values, timeout);
+  if (!values.length) return results;
   let cursor = 0;
+  let closed = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const deadline = Date.now() + Math.max(1, budgetMs);
   const worker = async () => {
-    while (cursor < values.length) {
+    while (!closed && cursor < values.length && Date.now() < deadline) {
       const index = cursor++;
       try {
-        results[index] = {
-          status: "fulfilled",
-          value: await read(values[index]),
-        };
+        const value = await read(values[index]);
+        if (!closed) results[index] = { status: "fulfilled", value };
       } catch (reason) {
-        results[index] = { status: "rejected", reason };
+        if (!closed) results[index] = { status: "rejected", reason };
       }
     }
   };
-  await Promise.all(
+  const work = Promise.all(
     Array.from(
       {
         length: Math.min(
@@ -170,6 +201,19 @@ export async function settledFeedMap<T, R>(
       worker,
     ),
   );
+  try {
+    await Promise.race([
+      work,
+      new Promise<void>((resolve) => {
+        timer = setTimeout(resolve, Math.max(1, budgetMs));
+      }),
+    ]);
+  } finally {
+    // In-flight provider calls retain their own timeout/quota controls. Never
+    // start queued work or mutate the published partial response after expiry.
+    closed = true;
+    if (timer) clearTimeout(timer);
+  }
   return results;
 }
 

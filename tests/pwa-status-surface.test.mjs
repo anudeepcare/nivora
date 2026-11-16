@@ -25,7 +25,7 @@ test("studio shell reserves notch space and shares browser chrome colors in both
   const foundation = postcss.parse(read("app/core/tokens.css"));
   const colors = [];
   foundation.walkDecls("--chrome-surface", (d) => colors.push(d.value));
-  assert.deepEqual(colors, ["#f4f8ff", "#111b2c"]);
+  assert.deepEqual(colors, ["#f5f6fa", "#111b2c"]);
   for (const file of [
     "app/layout.tsx",
     "components/Pwa.tsx",

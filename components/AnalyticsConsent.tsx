@@ -22,9 +22,7 @@ export function PrivacyChoices({ compact = false }: { compact?: boolean }) {
     <button
       type="button"
       className={
-        compact
-          ? "footer-analytics-choice"
-          : "text-link settings-analytics-button"
+        compact ? s.footerChoice : "text-link settings-analytics-button"
       }
       onClick={() => window.dispatchEvent(new Event("auryn:privacy"))}
     >

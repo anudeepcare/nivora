@@ -1,15 +1,15 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   gap: 12px;
   margin: 0;
   align-items: stretch;
 }
 .panel {
   min-width: 0;
-  padding: 14px;
-  border: 1px solid var(--workspace-edge);
-  border-radius: 14px;
+  padding: 20px;
+  border: 0;
+  border-radius: 20px;
   background: var(--workspace-panel);
   box-shadow: var(--workspace-shadow);
 }
@@ -102,7 +102,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .panel {
-    padding: 14px;
+    padding: 20px;
   }
   .panel dl {
     display: grid;
@@ -200,7 +200,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 14px;
+  padding: 20px;
   border-radius: 12px;
   background: var(--workspace-tile);
 }

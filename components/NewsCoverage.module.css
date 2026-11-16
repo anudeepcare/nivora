@@ -9,11 +9,11 @@
   min-width: 0;
 }
 .coverage {
-  padding: 20px;
-  background: var(--workspace-glass);
-  border: 1px solid var(--workspace-edge);
-  border-radius: 16px;
-  box-shadow: var(--panel-shadow);
+  padding: 4px 0;
+  background: transparent;
+  border: 0;
+  border-radius: 24px;
+  box-shadow: none;
 }
 .heading {
   display: flex;
@@ -143,7 +143,7 @@
   padding: 20px;
   border-radius: 18px;
   background: var(--workspace-glass);
-  border: 1px solid var(--workspace-edge);
+  border: 0;
   box-shadow: var(--panel-shadow);
 }
 .rail h2,
@@ -182,7 +182,7 @@
   padding: 32px 12px;
   text-align: center;
   background: var(--workspace-glass, var(--card));
-  border-radius: 16px;
+  border-radius: 24px;
   margin-top: 18px;
 }
 .empty svg {
@@ -257,8 +257,8 @@
   margin: 0;
   padding: 18px;
   background: var(--workspace-glass);
-  border: 1px solid var(--workspace-edge);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
 }
 .earnings :global(.section-head) {
   margin-bottom: 12px;
@@ -289,4 +289,20 @@
 .earnings :global(.earnings-kpis) dd {
   font-size: 22px;
   margin: 4px 0 0;
+}
+
+.leadStory {
+  padding: 24px 0 28px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+.leadStory h3 {
+  font-size: clamp(24px, 2.7vw, 34px);
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+@media (max-width: 650px) {
+  .leadStory h3 {
+    font-size: 25px;
+  }
 }

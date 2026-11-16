@@ -27,7 +27,7 @@ test("Studio accent settings and rendered accent agree in both themes", () => {
 test("brand canvas uses approved ice and navy glass surfaces with readable semantic text", () => {
   const css = read("app/core/tokens.css");
   for (const [selector, bg] of [
-    [':root[data-theme="light"]', "#f4f8ff"],
+    [':root[data-theme="light"]', "#f5f6fa"],
     [':root[data-theme="dark"]', "#0d1524"],
   ]) {
     const t = block(css, selector);
@@ -75,7 +75,7 @@ test("valuation removes only the Test assumptions shortcut while keeping model t
   ])
     assert.match(source, new RegExp(`<${tag}`));
 });
-test("approved navigation uses a selected blue button and loading retains separate status", () => {
+test("navigation uses a distinct selected glass surface and loading retains separate status", () => {
   const css = read("components/WorkspaceShell.module.css");
   const root = postcss.parse(css);
   let active;
@@ -83,7 +83,7 @@ test("approved navigation uses a selected blue button and loading retains separa
     if (r.selectors.includes('.nav a[aria-current="page"]'))
       r.walkDecls("background", (d) => (active = d.value));
   });
-  assert.equal(active, "var(--blue-soft)");
+  assert.equal(active, "var(--card)");
   assert.match(css, /position: sticky/);
   assert.doesNotMatch(css, /width: 220px/);
   assert.match(css, /\.routePending[^}]+height: 2px/);
@@ -91,11 +91,11 @@ test("approved navigation uses a selected blue button and loading retains separa
 test("changed offline palette is installed as a fresh shell version", () => {
   assert.match(
     read("public/sw.js"),
-    /const OFFLINE_CACHE = "auryn-offline-v10"/,
+    /const OFFLINE_CACHE = "auryn-offline-v11"/,
   );
   assert.match(
     read("app/layout.tsx"),
-    /manifest.webmanifest\?v=20261115-approved-glass/,
+    /manifest.webmanifest\?v=20261116-ground-up/,
   );
 });
 test("optional appearance accents continue to color navigation with readable selected text", () => {

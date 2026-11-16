@@ -280,3 +280,71 @@ test("cached benchmarks bypass network and an empty portfolio requests no histor
   await turn();
   assert.equal(empty.pending.length, 0);
 });
+
+test("history uses two workers after access check and publishes each partial result", async () => {
+  const { app, pending } = portfolioHarness();
+  const symbols = ["A", "B", "C", "D"];
+  const props = {
+    positions: symbols.map((symbol) => ({
+      symbol,
+      quantity: 1,
+      cost: 50,
+      currency: "USD",
+      assetType: "stock",
+    })),
+    quotes: Object.fromEntries(
+      symbols.map((symbol) => [
+        symbol,
+        { quote: { currency: "USD", price: 110 } },
+      ]),
+    ),
+  };
+  app.render(props);
+  await turn();
+  assert.equal(pending.length, 1);
+  pending[0].resolve(historyReply);
+  await turn();
+  assert.equal(pending.length, 3, "exactly two holdings start after benchmark");
+  pending[1].resolve(historyReply);
+  await turn();
+  assert.equal(pending.length, 4, "completed worker takes the next holding");
+  const partial = app.render(props);
+  assert.ok(
+    find(partial, (node) => node.props?.role === "slider").length,
+    "partial valid chart renders before queue completes",
+  );
+  pending[2].resolve(historyReply);
+  pending[3].resolve(historyReply);
+  await turn();
+  pending[4].resolve(historyReply);
+  await turn();
+});
+
+test("aggregate history deadline exits loading with a truthful timeout status", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout", "Date"], now: Date.now() });
+  const { app, pending } = portfolioHarness();
+  const props = holdingProps();
+  app.render(props);
+  await turn();
+  pending[0].resolve(historyReply);
+  await turn();
+  t.mock.timers.tick(20000);
+  await turn();
+  const tree = app.render(props);
+  assert.ok(
+    find(
+      tree,
+      (node) =>
+        node.props?.role === "status" &&
+        /timed out/.test(String(node.props.children)),
+    ).length,
+  );
+  const retry = find(
+    tree,
+    (node) =>
+      node.type === "button" &&
+      node.props?.children === "Retry missing history",
+  )[0];
+  assert.ok(retry);
+  assert.equal(retry.props.disabled, false);
+});

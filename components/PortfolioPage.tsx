@@ -1,11 +1,11 @@
 "use client";
-import DecisionAttention from "./DecisionAttention";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import dynamic from "next/dynamic";
 import { portfolioEarningsCount, portfolioRead } from "./portfolio-read";
 import { companyAccent } from "@/lib/visual-signals";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { PaceBadge } from "./WorkspacePace";
+import { portfolioPaceFilter } from "@/lib/portfolio-pace-filter";
 
 import { researchLink } from "@/lib/approved-workspace";
 import { amount, percent, quoteTime } from "@/lib/format";
@@ -29,6 +29,7 @@ import { FeatureGate } from "./Access";
 import AccountBalances from "./AccountBalances";
 import ApprovedPortfolioChart from "./ApprovedPortfolioChart";
 import { PositionEditor } from "./ApprovedWorkspaceForms";
+const DecisionAttention = dynamic(() => import("./DecisionAttention"));
 const PortfolioCharts = dynamic(() => import("./PortfolioCharts"), {
   loading: () => <p role="status">Loading analysis…</p>,
 });
@@ -59,7 +60,8 @@ import {
 } from "./WorkspaceShared";
 export function Portfolio() {
   const preferences = useWorkspacePreferences();
-  const state = useWorkspaceData("portfolio"),
+  const [paceRequested, setPaceRequested] = useState(false);
+  const state = useWorkspaceData("portfolio", paceRequested),
     { workspace, quotes, model, q, prefix } = state;
   const positions = workspace?.positions ?? [];
   const [query, setQuery] = useWorkspaceFilter("portfolio"),
@@ -69,6 +71,7 @@ export function Portfolio() {
     [currencySaving, setCurrencySaving] = useState(false),
     [currencyError, setCurrencyError] = useState("");
   const [paceFilter, setPaceFilter] = useState("all");
+  const [decisionOpen, setDecisionOpen] = useState(false);
   const balances = useRef<HTMLDialogElement>(null),
     depth = useRef<HTMLDialogElement>(null);
   const calendar = usePortfolioCalendar(positions);
@@ -99,8 +102,18 @@ export function Portfolio() {
       `${p.symbol} ${quotes.data[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
         .toLowerCase()
         .includes(query.trim().toLowerCase()) &&
-      (paceFilter === "all" ||
-        String(state.pace(p.symbol)?.view.rawLevel) === paceFilter),
+      portfolioPaceFilter({
+        filter: paceFilter,
+        eligible: p.assetType !== "cash" && p.assetType !== "crypto",
+        level: state.pace(p.symbol)?.view.rawLevel,
+        hasSignal: !!state.pace(p.symbol),
+      }),
+  );
+  const pendingPaceRows = visible.filter(
+    (p) =>
+      p.assetType !== "cash" &&
+      p.assetType !== "crypto" &&
+      !state.pace(p.symbol),
   );
   const companies = Object.fromEntries(
     Object.entries(quotes.data).map(([symbol, row]) => [symbol, row.company]),
@@ -241,56 +254,56 @@ export function Portfolio() {
           listed assets and cash only.
         </p>
       )}
+      <aside
+        className={portfolioStyles.portfolioRead}
+        aria-label="Your portfolio read"
+        data-tone={read.tone}
+      >
+        <div className={portfolioStyles.readSummary}>
+          <span className={portfolioStyles.readEyebrow}>
+            <Diamond size={16} fill="currentColor" aria-hidden="true" /> Your
+            portfolio read
+          </span>
+          <h2>{read.title}</h2>
+          <p>{read.detail}</p>
+        </div>
+        <dl>
+          <div>
+            <dt>Largest position</dt>
+            <dd>
+              {model.allocations[0]
+                ? `${model.allocations[0].symbol} · ${percent(model.allocations[0].weight)}`
+                : "Awaiting prices"}
+            </dd>
+          </div>
+          <div>
+            <dt>Earnings · next 7 days</dt>
+            <dd>
+              {calendar.data && calendar.data.followed > 0
+                ? `${earningsCount} confirmed holdings`
+                : "Dates not confirmed"}
+            </dd>
+          </div>
+          <div>
+            <dt>Price coverage</dt>
+            <dd>
+              {!quotes.ready
+                ? "Loading prices"
+                : model.unpriced.length
+                  ? `${model.unpriced.length} need a price`
+                  : "All holdings priced"}
+            </dd>
+          </div>
+        </dl>
+        <div className={portfolioStyles.readActions}>
+          <Coverage state={state} />
+          <a href="#portfolio-holdings" className={portfolioStyles.readLink}>
+            Review holdings <ArrowDownRight size={16} />
+          </a>
+        </div>
+      </aside>
       <div className="portfolio-grid">
         <ApprovedPortfolioChart positions={positions} quotes={quotes.data}>
-          <aside
-            className={portfolioStyles.portfolioRead}
-            aria-label="Your portfolio read"
-            data-tone={read.tone}
-          >
-            <span className={portfolioStyles.readEyebrow}>
-              <Diamond size={16} fill="currentColor" aria-hidden="true" /> Your
-              portfolio read
-            </span>
-            <h2>{read.title}</h2>
-            <p>{read.detail}</p>
-            <dl>
-              <div>
-                <dt>Largest position</dt>
-                <dd>
-                  {model.allocations[0]
-                    ? `${model.allocations[0].symbol} · ${percent(model.allocations[0].weight)}`
-                    : "Awaiting prices"}
-                </dd>
-              </div>
-              <div>
-                <dt>Earnings · next 7 days</dt>
-                <dd>
-                  {calendar.data && calendar.data.followed > 0
-                    ? `${earningsCount} confirmed holdings`
-                    : "Dates not confirmed"}
-                </dd>
-              </div>
-              <div>
-                <dt>Price coverage</dt>
-                <dd>
-                  {!quotes.ready
-                    ? "Loading prices"
-                    : model.unpriced.length
-                      ? `${model.unpriced.length} need a price`
-                      : "All holdings priced"}
-                </dd>
-              </div>
-            </dl>
-            <Coverage state={state} />
-            <a href="#portfolio-holdings" className={portfolioStyles.readLink}>
-              Review holdings <ArrowDownRight size={16} />
-            </a>
-            <small>
-              Snapshot, not a live account balance. Calendar coverage may be
-              incomplete.
-            </small>
-          </aside>
           <div className="portfolio-sidebar">
             <section className="card portfolio-allocation-panel">
               <SectionHead title="Allocation" subtitle="Priced investments" />
@@ -442,10 +455,22 @@ export function Portfolio() {
                   />
                 </label>
               )}
+              {!paceRequested && positions.length > 0 && (
+                <button
+                  className="btn"
+                  type="button"
+                  onClick={() => setPaceRequested(true)}
+                >
+                  <Diamond size={16} aria-hidden="true" /> Check Pace
+                </button>
+              )}
               <select
                 aria-label="Filter holdings by accumulation pace"
                 value={paceFilter}
-                onChange={(e) => setPaceFilter(e.target.value)}
+                onChange={(e) => {
+                  setPaceFilter(e.target.value);
+                  if (e.target.value !== "all") setPaceRequested(true);
+                }}
               >
                 <option value="all">All pace levels</option>
                 {[4, 3, 2, 1, 0].map((n) => (
@@ -470,6 +495,7 @@ export function Portfolio() {
                   </select>
                 )}
                 <button
+                  className="icon-button"
                   type="button"
                   disabled={quotes.loading}
                   onClick={quotes.refresh}
@@ -485,12 +511,28 @@ export function Portfolio() {
                 </button>
               </div>
             </div>
+            {paceRequested && state.paceScan.loading && (
+              <p className="chart-note" role="status">
+                Checking Pace… Holdings stay visible while readings arrive.
+              </p>
+            )}
+            {paceFilter !== "all" && pendingPaceRows.length > 0 && (
+              <p className="chart-note" role="status">
+                Showing P{paceFilter} matches plus {pendingPaceRows.length}{" "}
+                {pendingPaceRows.length === 1 ? "holding" : "holdings"} without
+                a reading.
+                {state.paceScan.loading
+                  ? " Readings are still being checked."
+                  : " These are not confirmed matches."}
+              </p>
+            )}
             {visible.length ? (
               <HoldingsTable
                 positions={visible}
                 allPositions={positions}
                 state={state}
                 earnings={earnings}
+                paceRequested={paceRequested}
                 onEdit={setEditing}
               />
             ) : (
@@ -537,29 +579,37 @@ export function Portfolio() {
           </section>
         </ApprovedPortfolioChart>
       </div>
-      <details className={portfolioStyles.decisionDrawer}>
+      <details
+        className={portfolioStyles.decisionDrawer}
+        onToggle={(event) => {
+          setDecisionOpen(event.currentTarget.open);
+          if (event.currentTarget.open) setPaceRequested(true);
+        }}
+      >
         <summary>
           <span>Position decisions & evidence</span>
           <small>Business checks, Pace and concentration</small>
         </summary>
-        <DecisionAttention
-          compact
-          symbols={[
-            ...new Set(
-              positions
-                .filter((p) => p.assetType !== "cash" && p.quantity > 0)
-                .map((p) => p.symbol),
-            ),
-          ]}
-          held={positions
-            .filter((p) => p.assetType !== "cash" && p.quantity > 0)
-            .map((p) => p.symbol)}
-          rows={state.paceScan.rows}
-          allocations={model.allocations}
-          concentrationLimit={preferences.preferences.concentrationLimit}
-          prefix={prefix}
-          loading={state.paceScan.loading}
-        />
+        {decisionOpen && (
+          <DecisionAttention
+            compact
+            symbols={[
+              ...new Set(
+                positions
+                  .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+                  .map((p) => p.symbol),
+              ),
+            ]}
+            held={positions
+              .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+              .map((p) => p.symbol)}
+            rows={state.paceScan.rows}
+            allocations={model.allocations}
+            concentrationLimit={preferences.preferences.concentrationLimit}
+            prefix={prefix}
+            loading={state.paceScan.loading}
+          />
+        )}
       </details>
       <p className="chart-note">
         Unrealized returns exclude realized trades, dividends, fees and taxes.
@@ -691,12 +741,14 @@ function HoldingsTable({
   allPositions,
   state,
   earnings,
+  paceRequested,
   onEdit,
 }: {
   positions: Position[];
   allPositions: Position[];
   state: ReturnType<typeof useWorkspaceData>;
   earnings: Set<string>;
+  paceRequested: boolean;
   onEdit: (p: Position) => void;
 }) {
   const { model, q, quotes, prefix } = state;
@@ -765,6 +817,19 @@ function HoldingsTable({
                         {p.assetType !== "crypto" && (
                           <PaceBadge
                             signal={decision}
+                            status={
+                              decision
+                                ? undefined
+                                : !paceRequested
+                                  ? "not-checked"
+                                  : state.paceScan.rows[p.symbol]?.error
+                                    ? "unavailable"
+                                    : state.paceScan.loading
+                                      ? "checking"
+                                      : !state.paceScan.rows[p.symbol]
+                                        ? "not-checked"
+                                        : "unavailable"
+                            }
                             loading={state.paceScan.loading}
                           />
                         )}

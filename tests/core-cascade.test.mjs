@@ -30,7 +30,7 @@ test('canonical cascade separates tokens, low-specificity shared controls and sc
 test('shared workspace dimensions are owned by the shell, independent of research tabs',()=>{
  assert.match(read('components/Shell.tsx'),/import experience from "\.\/WorkspaceShell.module.css"/);
  const workspace=props('components/WorkspaceShell.module.css','.workspace');
- assert.equal(workspace.width,'min(1440px, 100%)');
+ assert.equal(workspace.width,'min(1380px, 100%)');
  assert.equal(workspace.margin,'auto');
  assert.equal(props('components/WorkspaceShell.module.css','.content')['min-width'],'0');
  assert.match(read('components/Shell.tsx'),/id="content" className=\{experience.content\}/);

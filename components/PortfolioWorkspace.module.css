@@ -1,7 +1,7 @@
 /* Portfolio owns its accounting presentation; data/mutations live in the existing hooks. */
 .portfolio {
   display: grid;
-  gap: 20px;
+  gap: 32px;
   min-width: 0;
   width: 100%;
 }
@@ -14,7 +14,7 @@
   margin: 0;
 }
 .portfolio :global(.page-heading h1) {
-  font-size: 30px;
+  font-size: clamp(30px, 4vw, 44px);
   margin: 0 0 6px;
   letter-spacing: -0.04em;
 }
@@ -31,10 +31,10 @@
 .balanceDeck {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--workspace-panel);
-  padding: 24px;
+  border: 0;
+  border-radius: 24px;
+  background: linear-gradient(120deg, var(--card), var(--blue-soft));
+  padding: clamp(20px, 3vw, 36px);
   gap: 24px;
   box-shadow: var(--workspace-shadow);
   backdrop-filter: blur(16px);
@@ -48,7 +48,7 @@
 }
 .netBalance > strong {
   display: block;
-  font-size: clamp(30px, 4vw, 42px);
+  font-size: clamp(36px, 5vw, 56px);
   font-weight: 650;
   letter-spacing: -0.04em;
   margin: 8px 0;
@@ -69,7 +69,7 @@
 }
 .balanceMetrics span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .balanceMetrics strong {
   display: block;
@@ -98,9 +98,9 @@
 }
 .portfolio :global(.card) {
   min-width: 0;
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  padding: 24px;
+  border: 0;
+  border-radius: 24px;
   background: var(--workspace-panel);
   margin: 0;
 }
@@ -131,11 +131,39 @@
   font-size: 12px;
 }
 .portfolioRead {
-  border: 1px solid var(--line);
-  background: var(--card);
-  border-radius: 12px;
-  padding: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px 32px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  padding: 0 4px 24px;
   min-width: 0;
+}
+.readSummary {
+  min-width: 0;
+}
+.readActions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.readActions :global(.coverage) {
+  margin: 0;
+}
+.readActions button {
+  border: 0;
+  border-radius: 10px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  padding: 10px 14px;
+  min-height: 44px;
+  font: inherit;
+  cursor: pointer;
 }
 .readEyebrow {
   display: flex;
@@ -153,7 +181,7 @@
 .portfolioRead h2 {
   font-size: 23px;
   line-height: 1.2;
-  margin: 12px 0;
+  margin: 8px 0;
   letter-spacing: -0.03em;
 }
 .portfolioRead p {
@@ -162,14 +190,16 @@
   line-height: 1.6;
 }
 .portfolioRead dl {
-  margin: 16px 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
 .portfolioRead dl div {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 8px 0;
   font-size: 12px;
 }
 .portfolioRead dt {
@@ -177,7 +207,7 @@
 }
 .portfolioRead dd {
   margin: 0;
-  text-align: right;
+  text-align: left;
   font-weight: 600;
 }
 .portfolioRead small {
@@ -301,9 +331,13 @@
 }
 .ledger,
 .watchLedger {
+  position: relative;
+  width: 100%;
   max-width: 100%;
-  overflow-x: auto;
   min-width: 0;
+  contain: inline-size;
+  overflow: auto;
+  overscroll-behavior-inline: contain;
 }
 .ledger table,
 .watchLedger table,
@@ -387,10 +421,10 @@
   border-radius: 8px;
 }
 .decisionDrawer {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 16px;
-  background: var(--card);
+  border: 0;
+  border-top: 1px solid var(--line);
+  padding: 20px 4px;
+  background: transparent;
 }
 .decisionDrawer summary {
   min-height: 44px;
@@ -465,16 +499,13 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .portfolio :global(.portfolio-grid) {
-    grid-template-columns: minmax(0, 2fr) minmax(270px, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
   .portfolio :global(.portfolio-trend-panel) {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 1;
   }
-  .portfolioRead {
-    grid-column: 2;
-    grid-row: 1;
-  }
+
   .portfolio :global(.portfolio-range-panel) {
     grid-row: 4;
   }
@@ -486,10 +517,26 @@
     grid-row: 2;
   }
 }
+@media (max-width: 760px) {
+  .portfolioRead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .portfolioRead dl {
+    gap: 12px;
+  }
+  .portfolioRead dd {
+    font-size: 13px;
+  }
+  .portfolioRead p {
+    margin: 8px 0;
+  }
+  .readActions {
+    gap: 4px;
+  }
+}
 @media (max-width: 600px) {
   .balanceDeck,
-  .portfolio :global(.card),
-  .portfolioRead {
+  .portfolio :global(.card) {
     padding: 16px;
   }
   .balanceDeck {
@@ -522,5 +569,73 @@
   .portfolio :global(.card) {
     background: var(--card);
     backdrop-filter: none;
+  }
+}
+
+.refreshControls > button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.portfolio :global(.portfolio-trend-panel) {
+  border: 0;
+  border-radius: 24px;
+  padding: 24px;
+}
+.portfolio :global(.portfolio-holdings-panel) {
+  padding: 24px 0;
+  background: transparent;
+  border-radius: 0;
+}
+.portfolio :global(.portfolio-sidebar) {
+  gap: 24px;
+}
+.holdingsToolbar select {
+  min-height: 44px;
+  border-radius: 12px;
+}
+.ledger th {
+  font-size: 11px;
+}
+.ledger td {
+  padding-top: 18px;
+  padding-bottom: 18px;
+  font-size: 14px;
+}
+.ledger :global(.company-row small),
+.ledger small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.portfolioRead :is(a, button):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .portfolio {
+    gap: 24px;
+  }
+  .portfolio :global(.portfolio-trend-panel) {
+    padding: 16px;
+  }
+  .portfolio :global(.portfolio-holdings-panel) {
+    padding: 16px 0;
+  }
+  .holdingsToolbar {
+    gap: 8px;
+  }
+  .holdingsToolbar h2 {
+    width: 100%;
+  }
+  .holdingsToolbar > select {
+    flex: 1;
+    min-width: 0;
+  }
+  .refreshControls {
+    flex: 1;
+    min-width: 0;
+  }
+  .refreshControls select {
+    flex: 1;
+    min-width: 0;
   }
 }

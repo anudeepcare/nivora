@@ -1,7 +1,7 @@
 .events {
   min-width: 0;
   padding: 18px;
-  border: 1px solid var(--workspace-edge);
+  border: 0;
   border-radius: var(--workspace-radius);
   background: var(--workspace-glass);
 }

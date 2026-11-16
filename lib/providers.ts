@@ -359,11 +359,14 @@ async function twelveQuote(
 export type ChartRange = "1D" | "1W" | "1M" | "6M" | "1Y" | "5Y";
 export async function marketHistory(symbol: string, range: ChartRange = "5Y") {
   symbol = researchSymbol(symbol);
-  if (isSentiSenseMarket()) return sentiMarket.history(symbol, range);
-  const sources = preferredMarketSources(
-    range === "1D" || range === "1W" ? "intraday" : "daily",
-    configuredSources(),
-  );
+  if (isSentiSenseMarket() && !isEodLiveQuotes())
+    return sentiMarket.history(symbol, range);
+  const sources = isEodLiveQuotes()
+    ? (["eodhd"] as ("eodhd" | "twelve")[])
+    : preferredMarketSources(
+        range === "1D" || range === "1W" ? "intraday" : "daily",
+        configuredSources(),
+      );
   return cached(
     `selected-history:${sources.join(",")}:${symbol}:${range}`,
     range === "1D" || range === "1W" ? 60000 : 900000,
@@ -785,7 +788,7 @@ export async function research(symbol: string): Promise<Research> {
   symbol = researchSymbol(symbol);
   const results = await Promise.allSettled([
     quote(symbol),
-    isSentiSenseMarket()
+    isSentiSenseMarket() && !isEodLiveQuotes()
       ? sentiMarket.dailyResearchHistory(symbol)
       : marketHistory(symbol),
     symbol.includes("/")
@@ -871,7 +874,7 @@ export async function research(symbol: string): Promise<Research> {
     retrievedAt: new Date().toISOString(),
     issues: [
       ...issues,
-      ...(isSentiSenseMarket()
+      ...(isSentiSenseMarket() && !isEodLiveQuotes()
         ? [
             "Daily history is limited to the source’s one-year window. Longer chart ranges have a different sampling basis and are not substituted into daily indicators or monthly Pace.",
           ]

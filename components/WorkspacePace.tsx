@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useProduct } from "./Session";
 import { api } from "@/lib/client";
-import { readResource } from "@/lib/resource-cache";
+import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { workspaceGuidance } from "@/lib/edge-research";
 import { dateLabel } from "@/lib/format";
 import { researchLink } from "@/lib/approved-workspace";
 import s from "./WorkspacePace.module.css";
+import { paceRetryDelay } from "@/lib/pace-retry";
 export type PaceSignal = ReturnType<typeof workspaceGuidance>;
 type Row = {
   signal?: PaceSignal;
@@ -21,8 +22,14 @@ export function useWorkspacePace(symbols: string[]) {
   const [rows, setRows] = useState<Record<string, Row>>({});
   const [loading, setLoading] = useState(false);
   const [revision, setRevision] = useState(0);
+  const [autoRetry, setAutoRetry] = useState(0);
+  const retries = useRef({ scope: "", attempt: 0 });
   useEffect(() => {
     let active = true;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    const scope = `${key}:${revision}`;
+    if (retries.current.scope !== scope)
+      retries.current = { scope, attempt: 0 };
     setRows((old) =>
       Object.fromEntries(
         Object.entries(old).filter(([symbol]) =>
@@ -61,18 +68,27 @@ export function useWorkspacePace(symbols: string[]) {
     }
     setLoading(names.length > 0);
     void (async () => {
+      let failed = false;
       for (let i = 0; i < names.length && active; i += 2) {
         const batch = names.slice(i, i + 2);
         const path = `pace-scan?symbols=${encodeURIComponent(batch.join(","))}`;
         try {
+          const cached = resourceSnapshot<Record<string, Row>>(cache, path);
+          const incomplete =
+            cached &&
+            batch.some((symbol) => !cached[symbol] || cached[symbol].error);
           const result = await readResource<Record<string, Row>>(
             cache,
             path,
-            revision ? 0 : 900000,
+            revision && autoRetry === 0 ? 0 : incomplete ? 30000 : 900000,
             () => api(path),
+          );
+          failed ||= batch.some(
+            (symbol) => !result[symbol] || !!result[symbol].error,
           );
           if (active) setRows((old) => ({ ...old, ...result }));
         } catch {
+          failed = true;
           if (active)
             setRows((old) => ({
               ...old,
@@ -85,12 +101,23 @@ export function useWorkspacePace(symbols: string[]) {
             }));
         }
       }
-      if (active) setLoading(false);
+      if (active) {
+        setLoading(false);
+        const delay = paceRetryDelay(retries.current.attempt, failed);
+        if (delay != null) {
+          retries.current.attempt += 1;
+          retryTimer = setTimeout(() => {
+            if (active && document.visibilityState !== "hidden")
+              setAutoRetry((n) => n + 1);
+          }, delay);
+        }
+      }
     })();
     return () => {
       active = false;
+      if (retryTimer) clearTimeout(retryTimer);
     };
-  }, [key, cache, demo, revision]);
+  }, [key, cache, demo, revision, autoRetry]);
   const presented = Object.fromEntries(
     Object.entries(rows).map(([symbol, row]) => [
       symbol,
@@ -104,14 +131,23 @@ export function useWorkspacePace(symbols: string[]) {
       },
     ]),
   );
-  return { rows: presented, loading, refresh: () => setRevision((n) => n + 1) };
+  return {
+    rows: presented,
+    loading,
+    refresh: () => {
+      setAutoRetry(0);
+      setRevision((n) => n + 1);
+    },
+  };
 }
 export function PaceBadge({
   signal,
   loading = false,
+  status,
 }: {
   signal?: PaceSignal | null;
   loading?: boolean;
+  status?: "not-checked" | "checking" | "unavailable";
 }) {
   const pace = signal?.currentPace;
   const reading = signal?.periods.find(
@@ -128,9 +164,15 @@ export function PaceBadge({
       <b>
         {level !== null
           ? `P${level}${pace?.provisional ? " · provisional" : ""}`
-          : loading
-            ? "Checking…"
-            : "No current zone"}
+          : !signal && status
+            ? {
+                "not-checked": "Not checked",
+                checking: "Checking…",
+                unavailable: "Unavailable",
+              }[status]
+            : loading
+              ? "Checking…"
+              : "No current zone"}
       </b>
       <span>{signal?.view.actionLabel.replace(/ · P[0-4]$/, "") ?? ""}</span>
     </span>

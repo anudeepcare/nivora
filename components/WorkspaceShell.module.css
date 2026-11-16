@@ -24,13 +24,13 @@
   z-index: 40;
   display: flex;
   align-items: center;
-  gap: 24px;
-  min-height: 72px;
+  gap: 32px;
+  min-height: 78px;
   padding: 8px max(24px, calc((100% - 1440px) / 2), env(safe-area-inset-right))
     8px max(24px, calc((100% - 1440px) / 2), env(safe-area-inset-left));
   padding-top: max(8px, env(safe-area-inset-top));
-  background: var(--workspace-glass);
-  border-bottom: 1px solid var(--workspace-edge);
+  background: color-mix(in srgb, var(--card) 84%, transparent);
+  border-bottom: 0;
   backdrop-filter: blur(16px);
 }
 .brand {
@@ -40,9 +40,9 @@
   flex: none;
   text-decoration: none;
   color: var(--ink);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
 }
 .brand img {
   display: block;
@@ -50,6 +50,9 @@
 .nav {
   display: flex;
   gap: 4px;
+  padding: 4px;
+  border-radius: 32px;
+  background: color-mix(in srgb, var(--muted) 5%, transparent);
 }
 .nav a,
 .dock a {
@@ -59,20 +62,21 @@
   justify-content: center;
   gap: 8px;
   min-height: 44px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 10px 18px;
+  border-radius: 26px;
   color: var(--muted);
   text-decoration: none;
-  font-size: 14px;
-  font-weight: 550;
+  font-size: 12px;
+  font-weight: 600;
 }
 .nav svg {
   display: none;
 }
 .nav a[aria-current="page"],
 .dock a[aria-current="page"] {
-  background: var(--blue-soft);
-  color: var(--blue);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 2px 8px #1c24380b;
 }
 .nav a:hover,
 .dock a:hover {
@@ -84,12 +88,12 @@
   gap: 10px;
   min-height: 44px;
   min-width: 0;
-  width: 280px;
+  width: 250px;
   margin-left: auto;
   padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--glass);
+  border: 0;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--muted) 5%, transparent);
   color: var(--muted);
   font: inherit;
   font-size: 13px;
@@ -124,9 +128,9 @@
   color: var(--blue);
 }
 .workspace {
-  width: min(1440px, 100%);
+  width: min(1380px, 100%);
   margin: auto;
-  padding: 24px max(24px, env(safe-area-inset-right)) 32px
+  padding: 36px max(28px, env(safe-area-inset-right)) 40px
     max(24px, env(safe-area-inset-left));
 }
 .contextBar {
@@ -148,7 +152,7 @@
   overflow: auto;
   overscroll-behavior: contain;
   border: 1px solid var(--workspace-edge);
-  border-radius: 16px;
+  border-radius: 24px;
   background: var(--card);
   color: var(--ink);
   box-shadow: 0 24px 80px #07152d33;
@@ -204,8 +208,8 @@
   align-items: center;
   min-height: 80px;
   padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border: 0;
+  border-radius: 14px;
   text-decoration: none;
   color: var(--ink);
   background: var(--glass);
@@ -315,17 +319,21 @@
   }
   .dock {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 16px;
+    right: 16px;
     z-index: 45;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
-    padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+    padding: 6px;
+    border-radius: 26px;
+    box-shadow:
+      0 8px 35px #18233918,
+      inset 0 1px 0 #ffffff90;
     background: var(--workspace-glass);
     backdrop-filter: blur(16px);
-    border-top: 1px solid var(--workspace-edge);
+    border: 1px solid var(--workspace-edge);
   }
   .dock a {
     flex-direction: column;
@@ -333,6 +341,7 @@
     padding: 6px 4px;
     font-size: 10px;
     min-height: 52px;
+    border-radius: 20px;
   }
   .dock svg {
     width: 20px;

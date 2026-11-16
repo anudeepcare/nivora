@@ -56,3 +56,13 @@ test("complex pace bands stay inline instead of creating nested rows", () => {
   assert.match(source, /<span[\s\S]*?className=\{styles.bandCount\}/);
   assert.doesNotMatch(source, /<small className=\{styles.bandCount\}/);
 });
+
+test("date footer does not reserve empty desktop evidence tracks", () => {
+  const source = read("components/ResearchEvidenceGrid.tsx");
+  assert.match(source, /<\/section>\s*<footer className=\{s.snapshot\}/);
+  assert.match(read("components/ResearchEvidenceGrid.module.css"), /repeat\(auto-fit,/);
+});
+
+test("investment case uses full width when ownership evidence is unavailable", () => {
+  assert.match(read("components/ResearchScreens.module.css"), /case-ownership-row\) > :only-child \{\s*grid-column: 1 \/ -1/);
+});

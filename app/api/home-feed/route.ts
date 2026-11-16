@@ -46,8 +46,11 @@ export async function GET(request: Request) {
     if (!symbols.length) return privateJson(result);
     if (isSentiSenseMarket()) {
       const [calendar, news] = await Promise.all([
-        Promise.allSettled(
-          kind !== "news" ? [sentiSenseCalendar(symbols, from, to)] : [],
+        settledFeedMap(
+          kind !== "news" ? [() => sentiSenseCalendar(symbols, from, to)] : [],
+          (read) => read(),
+          1,
+          12_000,
         ),
         settledFeedMap(kind !== "events" ? symbols : [], sentiSenseNews),
       ]);
@@ -92,14 +95,21 @@ export async function GET(request: Request) {
       to,
     };
     const [calendar, news] = await Promise.all([
-      Promise.allSettled([
-        kind !== "news"
-          ? eodRequest("calendar/earnings", params, 300000)
-          : Promise.resolve(null),
-        kind !== "news"
-          ? eodRequest("calendar/splits", params, 21600000)
-          : Promise.resolve(null),
-      ]),
+      settledFeedMap(
+        [
+          () =>
+            kind !== "news"
+              ? eodRequest("calendar/earnings", params, 300000)
+              : Promise.resolve(null),
+          () =>
+            kind !== "news"
+              ? eodRequest("calendar/splits", params, 21600000)
+              : Promise.resolve(null),
+        ],
+        (read) => read(),
+        2,
+        12_000,
+      ),
       settledFeedMap(kind !== "events" ? symbols : [], (symbol) =>
         eodNews(symbol),
       ),

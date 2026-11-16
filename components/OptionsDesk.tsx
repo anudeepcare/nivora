@@ -1,5 +1,4 @@
 "use client";
-import QuickRead from "./QuickRead";
 import OptionsAggregatePanel from "./OptionsAggregatePanel";
 import { optionsLiquidity } from "@/lib/options-liquidity";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
@@ -399,10 +398,9 @@ export default function OptionsDesk({
   return (
     <div className={deskStyles.desk}>
       <div className={deskStyles.orientation}>
-        <strong>Options, in context</strong>
+        <strong>Options workspace</strong>
         <p>
-          Choose an expiration, explore price levels, then inspect a contract or
-          try it with simulated cash.
+          Price levels, contracts and risk. Practice without placing a trade.
         </p>
       </div>
       <header className={deskStyles.commandBar}>
@@ -501,33 +499,34 @@ export default function OptionsDesk({
         </section>
       ) : (
         <>
-          <QuickRead
-            title="The options snapshot"
-            items={[
-              {
-                label: "Selected expiration",
-                value: expiryLabel(active),
-                detail: `${days} days · ${summary.rows.length} contracts in this snapshot.`,
-              },
-              ...(summary.straddle !== null && spot > 0
-                ? [
-                    {
-                      label: "Option-priced range",
-                      value: `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`,
-                      detail:
-                        "At-the-money straddle estimate, not a guaranteed range.",
-                      tone: "caution" as const,
-                    },
-                  ]
-                : []),
-              {
-                label: "Read before choosing a contract",
-                value: "Check spread and liquidity",
-                detail:
-                  "Exposure estimates describe positioning; they do not establish direction.",
-              },
-            ]}
-          />
+          <dl
+            className={deskStyles.snapshotRibbon}
+            aria-label="Options snapshot"
+          >
+            <div>
+              <dt>Expiration</dt>
+              <dd>{expiryLabel(active)}</dd>
+              <small>
+                {days} days · {summary.rows.length} contracts
+              </small>
+            </div>
+            <div>
+              <dt>Option-priced range</dt>
+              <dd>
+                {summary.straddle !== null && spot > 0
+                  ? `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`
+                  : "Not measured"}
+              </dd>
+              <small>ATM straddle estimate, not a forecast</small>
+            </div>
+            <div>
+              <dt>Two-sided quotes</dt>
+              <dd>
+                {quoteQuality.twoSided} / {quoteQuality.contracts}
+              </dd>
+              <small>Check spread and liquidity before choosing</small>
+            </div>
+          </dl>
           <div
             className={deskStyles.marketLine}
             aria-label="Selected options snapshot"

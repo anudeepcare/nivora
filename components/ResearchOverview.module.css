@@ -1,97 +1,94 @@
-/* Overview is a single decision canvas: no nested legacy surface resets. */
+/* One research canvas. The model supplies decisions; layout never invents data. */
 .overview {
   display: grid;
-  gap: 20px;
+  gap: 32px;
   min-width: 0;
-  margin: 16px 0 24px;
+  margin: 24px 0 40px;
 }
 .decisionStage {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
-  gap: 16px;
-  align-items: stretch;
-  min-width: 0;
+  grid-template-columns: minmax(0, 1.75fr) minmax(310px, 1fr);
+  gap: 32px;
+  align-items: start;
 }
 .chart,
 .paceColumn {
   min-width: 0;
-  padding: 20px;
-  border: 1px solid var(--workspace-edge);
-  border-radius: 16px;
-  box-shadow: var(--workspace-shadow);
 }
 .chart {
   grid-column: 1;
   grid-row: 1;
+  padding: 24px;
+  border-radius: 28px;
   background: var(--workspace-panel);
+  box-shadow: 0 16px 48px #15285008;
 }
 .paceColumn {
   grid-column: 2;
   grid-row: 1;
-  background: #0f1b2d;
-  border-color: #0f1b2d;
+  padding: 24px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #182a49, #101b30 70%);
   color: #f8fafc;
 }
 .stageHeading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #bac5d5;
   font-size: 11px;
   font-weight: 650;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.12em;
+  color: #c1d0ea;
 }
 .context {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 3px;
-  margin: 14px 0 18px;
-  padding: 3px;
-  border-radius: 10px;
-  background: #263344;
+  display: flex;
+  gap: 4px;
+  margin: 18px 0;
+  padding: 4px;
+  border-radius: 16px;
+  background: #ffffff0d;
 }
 .context button {
+  flex: 1;
   min-height: 44px;
-  padding: 8px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 12px;
+  padding: 8px;
   font: inherit;
   font-size: 12px;
-  color: #d8dfeb;
+  color: #d8e3f4;
   background: transparent;
   cursor: pointer;
 }
 .context button[aria-pressed="true"] {
-  color: #101d30;
-  background: #fff;
-  font-weight: 650;
+  background: #edf3ff;
+  color: #142746;
+  font-weight: 600;
 }
 .context button:focus-visible {
   outline: 2px solid #a9d5ff;
   outline-offset: 3px;
 }
 .chart :global(.plot-section) {
-  margin: 0;
-  padding: 0;
   border: 0;
+  padding: 0;
+  margin: 0;
   background: transparent;
   box-shadow: none;
 }
 .chart :global(.chart-head) {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 .chart :global(.chart-head h3) {
-  font-size: 16px;
   margin: 0;
+  font-size: 16px;
+  font-weight: 600;
 }
 .chart :global(.chart-period-control) {
   display: grid;
-  gap: 5px;
+  gap: 6px;
   max-width: 100%;
 }
 .chart :global(.chart-period-label) {
@@ -100,118 +97,151 @@
 }
 .chart :global(.ranges) {
   display: flex;
-  gap: 3px;
   max-width: 100%;
+  gap: 2px;
   padding: 4px;
-  border-radius: 10px;
+  border-radius: 14px;
   background: var(--surface);
+  overflow-x: auto;
 }
 .chart :global(.ranges button) {
-  min-width: 32px;
+  flex: none;
+  min-width: 36px;
   min-height: 40px;
-  padding: 6px 10px;
+  padding: 6px 9px;
   border: 0;
-  border-radius: 7px;
+  border-radius: 10px;
   background: transparent;
   color: var(--muted);
-  font-size: 11px;
+  font: inherit;
+  font-size: 12px;
   cursor: pointer;
 }
 .chart :global(.ranges button.active),
 .chart :global(.ranges button[aria-pressed="true"]) {
-  color: var(--ink);
+  color: var(--blue);
   background: var(--card);
-  box-shadow: 0 1px 4px #0c1b3a10;
+  box-shadow: 0 2px 8px #1528500a;
 }
-.caseWorkspace {
+.chart :global(.segments) {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+.chart :global(.segments button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  border: 0;
+  border-radius: 9px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.chart :global(.segments button.active) {
+  background: var(--card);
+  color: var(--blue);
+}
+.scenarioStage {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+  gap: 40px;
+  align-items: start;
 }
 .decisionExplanation,
 .pillars {
   min-width: 0;
-  display: flex;
 }
 .decisionExplanation > section,
 .pillars > section {
-  width: 100%;
-  height: 100%;
   margin: 0;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.pillars {
+  grid-column: 2;
+  grid-row: 1;
+}
+.priceContext {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
 }
 .rangeSnapshot,
 .consensusSnapshot {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   min-width: 0;
-  padding: 16px;
-  border: 1px solid var(--workspace-edge);
-  border-radius: 14px;
-  background: var(--workspace-panel);
-  box-shadow: var(--workspace-shadow);
+  flex: 1;
 }
 .rangeSnapshot h2,
 .consensusSnapshot h2 {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin: 0 0 14px;
+  gap: 6px;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 650;
-  line-height: 1.4;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0;
 }
 .rangeSnapshot > strong,
 .consensusSnapshot > strong {
-  display: block;
-  font-size: clamp(20px, 2vw, 28px);
-  line-height: 1.2;
-  letter-spacing: -0.03em;
+  font-size: 18px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 .consensusSnapshot > span {
-  margin: 6px 0 0;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
 }
 .consensusDetails {
-  margin-top: auto;
-  padding-top: 14px;
+  font-size: 12px;
+  margin-left: auto;
 }
 .rangeMeter {
   position: relative;
-  width: 100%;
-  height: 6px;
-  margin: 24px 0 22px;
-  border-radius: 6px;
-  background: var(--surface);
+  width: 64px;
+  height: 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--blue) 14%, transparent);
 }
 .rangeMeter i {
   position: absolute;
-  top: -7px;
-  width: 4px;
-  height: 20px;
-  border-radius: 3px;
-  transform: translateX(-2px);
-  background: var(--ink);
+  top: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  transform: translateX(-5px) rotate(45deg);
+  background: var(--blue);
 }
 .overviewMetrics {
   min-width: 0;
 }
 .sectionHeading {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
+  align-items: center;
+  margin-bottom: 20px;
 }
 .sectionHeading h2 {
   margin: 0;
-  font-size: 18px;
-  line-height: 1.3;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+  font-weight: 600;
 }
 .mobileFacts {
   display: none;
@@ -222,35 +252,41 @@
 .researchTools {
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
   min-height: 44px;
-  padding: 8px 0;
+  width: fit-content;
   border: 0;
   background: transparent;
   color: var(--blue);
-  font-size: 12px;
+  font-size: 13px;
 }
 .supportingEvidence {
   display: grid;
-  gap: 16px;
+  gap: 20px;
   min-width: 0;
 }
 .supportingEvidence > * {
   min-width: 0;
   margin: 0;
 }
-@media (max-width: 1100px) {
-  .caseWorkspace {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+@media (max-width: 1000px) {
   .decisionStage {
-    grid-template-columns: minmax(0, 1.4fr) minmax(310px, 1fr);
+    grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr);
+    gap: 20px;
+  }
+  .chart,
+  .paceColumn {
+    padding: 20px;
   }
 }
-@media (max-width: 900px) {
-  .decisionStage {
+@media (max-width: 700px) {
+  .overview {
+    gap: 28px;
+    margin-top: 16px;
+  }
+  .decisionStage,
+  .scenarioStage {
     grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
   .paceColumn {
     grid-column: 1;
@@ -259,39 +295,31 @@
   .chart {
     grid-column: 1;
     grid-row: 2;
-  }
-}
-@media (max-width: 600px) {
-  .overview {
-    gap: 16px;
-    margin-top: 12px;
-  }
-  .chart,
-  .paceColumn {
     padding: 16px;
   }
-  .caseWorkspace {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+  .pillars {
+    grid-column: 1;
+    grid-row: 1;
   }
-  .chart :global(.ranges) {
-    width: 100%;
-    justify-content: flex-start;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
+  .decisionExplanation {
+    grid-column: 1;
+    grid-row: 2;
   }
   .chart :global(.ranges button) {
-    padding: 6px;
-    flex: none;
     min-width: 44px;
     min-height: 44px;
-    font-size: 12px;
   }
-  .rangeSnapshot {
-    display: none;
+  .priceContext {
+    padding: 16px;
+    gap: 20px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .consensusDetails {
+    margin-left: 0;
   }
   .mobileFacts {
     display: block;
-    margin-top: 16px;
+    margin-top: 24px;
   }
 }

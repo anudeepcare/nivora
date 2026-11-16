@@ -51,37 +51,24 @@ function resolve(value, tokens) {
   );
 }
 
-test("public scenarios keep AA text on all three theme-aware surfaces", () => {
-  const css = parse("components/PublicLanding.module.css");
-  const core = parse("app/core/tokens.css");
+test("public guide text keeps AA contrast on both theme surfaces", () => {
+  const css = parse("components/PublicLanding.module.css"),
+    core = parse("app/core/tokens.css");
+  assert.equal(declarations(css, [".page"]).color, "var(--ink)");
+  assert.equal(declarations(css, [".previewBody p"]).color, "var(--muted)");
   for (const theme of ["light", "dark"]) {
     const tokens = {
       ...declarations(core, [":root", ':root[data-theme="light"]']),
       ...(theme === "dark"
         ? declarations(core, [':root[data-theme="dark"]'])
         : {}),
-      ...declarations(css, [".page.page.page"]),
-      ...declarations(css, [".page.page.page :global(.ap-opening)"]),
-      ...declarations(css, [".demo"]),
     };
-    for (const selector of [
-      ".scenarios article",
-      ".scenarios article:nth-child(2)",
-      ".scenarios article:nth-child(3)",
-    ]) {
-      const surface = resolve(declarations(css, [selector]).background, tokens);
-      assert.match(
-        surface,
-        /^#[a-f\d]{6}$/,
-        "Each scenario resolves to a theme-aware surface",
-      );
-      for (const foreground of [tokens["--ink"], tokens["--muted"]]) {
+    for (const surface of [tokens["--card"], tokens["--surface"]])
+      for (const text of [tokens["--ink"], tokens["--muted"]])
         assert.ok(
-          contrast(resolve(foreground, tokens), surface) >= 4.5,
-          `${theme} ${selector} text ${foreground} must pass 4.5:1`,
+          contrast(text, surface) >= 4.5,
+          `${theme} ${text} on ${surface}`,
         );
-      }
-    }
   }
 });
 
@@ -152,14 +139,10 @@ test("offline retry uses the same readable brand control palette as the workspac
   }
 });
 
-test("public demo next control stays readable and touch-sized on narrow phones", () => {
+test("public guide tabs stay readable and touch-sized on narrow phones", () => {
   const css = parse("components/PublicLanding.module.css");
   for (const width of [320, 390, 420, 768, 1440]) {
-    const control = declarations(
-      css,
-      [".demoFooter button", ".demo .demoFooter button"],
-      width,
-    );
+    const control = declarations(css, [".tabs button"], width);
     assert.ok(
       parseFloat(control["font-size"]) >= 12,
       `${width}px next label must not shrink into microtext`,
@@ -168,5 +151,31 @@ test("public demo next control stays readable and touch-sized on narrow phones",
       parseFloat(control["min-height"]) >= 44,
       `${width}px next button requires a 44px target`,
     );
+  }
+});
+
+test("public text meets AA across conservatively composited gradient and glass endpoints", () => {
+  const css=parse("components/PublicLanding.module.css"), core=parse("app/core/tokens.css");
+  const rgba=(hex)=>{const h=hex.replace('#','');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)).concat(h.length===8?parseInt(h.slice(6,8),16)/255:1)};
+  const blend=(front,back)=>front.slice(0,3).map((v,i)=>v*front[3]+back[i]*(1-front[3])).concat(1);
+  const hex=(rgb)=>'#'+rgb.slice(0,3).map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+  for(const theme of ['light','dark']){
+    const tokens={...declarations(core,[':root',':root[data-theme="light"]']),...(theme==='dark'?declarations(core,[':root[data-theme="dark"]']):{})};
+    const local={...declarations(css,['.page']),...(theme==='dark'?declarations(css,[':global([data-theme="dark"]) .page']):{})};
+    const bg=rgba(tokens['--bg']);
+    for(const a of [0,rgba(local['--public-tint-a'])[3]])for(const b of [0,rgba(local['--public-tint-b'])[3]]){
+      const tintA=rgba(local['--public-tint-a']);tintA[3]=a;
+      const tintB=rgba(local['--public-tint-b']);tintB[3]=b;
+      const canvas=blend(tintA,blend(tintB,bg));
+      const closing=blend(rgba(local['--public-close-tint']),canvas);
+      const surfaces=[canvas,closing];
+      for(const alpha of [.75,.94]){
+        const card=rgba(tokens['--card']);card[3]=alpha;
+        const glass=blend(card,canvas);surfaces.push(glass);
+        const tab=rgba(tokens['--muted']);tab[3]=.06;surfaces.push(blend(tab,glass));
+      }
+      for(const surface of surfaces)for(const name of ['ink','muted'])assert.ok(contrast(tokens['--'+name],hex(surface))>=4.5,`${theme} ${name} on ${hex(surface)}`);
+      assert.ok(contrast(local['--public-heading'],hex(canvas))>=3,`${theme} large accent heading`);
+    }
   }
 });

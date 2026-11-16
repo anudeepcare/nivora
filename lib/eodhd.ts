@@ -38,7 +38,10 @@ export async function eodRequest(
 ): Promise<any> {
   if (
     isSentiSenseMarket() &&
-    !(isEodLiveQuotes() && /^real-time\/[A-Za-z0-9.-]+$/.test(path))
+    !(
+      isEodLiveQuotes() &&
+      /^(?:real-time|eod|intraday|splits)\/[A-Za-z0-9.-]+$/.test(path)
+    )
   )
     throw new HttpError("Legacy data sources are disabled.", 503);
   const token = process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN;

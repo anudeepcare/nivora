@@ -11,32 +11,27 @@ const declarations = (path, selector) => {
   });
   return values;
 };
-test("approved snapshots align four bounded summary cards to a shared row height", () => {
+test("scenario canvas pairs explanation and cases, then stacks cases first on mobile", () => {
   const file = "components/ResearchOverview.module.css";
-  assert.equal(declarations(file, ".caseWorkspace")["align-items"], "stretch");
-  assert.equal(
-    declarations(file, ".caseWorkspace")["grid-template-columns"],
-    "repeat(4, minmax(0, 1fr))",
-  );
-  assert.match(
-    read(file),
-    /@media \(max-width: 1100px\)[\s\S]*repeat\(2, minmax\(0, 1fr\)\)/,
-  );
-  assert.match(
-    read(file),
-    /@media \(max-width: 600px\)[\s\S]*\.caseWorkspace \{\s*grid-template-columns: minmax\(0, 1fr\)/,
-  );
+  assert.equal(declarations(file, ".scenarioStage")["align-items"], "start");
+  assert.equal(declarations(file, ".scenarioStage")["grid-template-columns"], "minmax(0, 1fr) minmax(0, 1.35fr)");
+  const mobile = read(file).split("@media (max-width: 700px)")[1];
+  assert.match(mobile, /\.scenarioStage \{[^}]*grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(mobile, /\.pillars \{[^}]*grid-row: 1/);
+  assert.match(mobile, /\.decisionExplanation \{[^}]*grid-row: 2/);
 });
-test("studio research navigation uses an underline rail with clear hover and keyboard focus", () => {
+test("research navigation uses touch-sized selected pills with clear hover and keyboard focus", () => {
   const file = "components/ResearchNavigation.module.css";
   assert.equal(declarations(file, ".sections")["overflow-x"], "auto");
-  assert.equal(declarations(file, ".sections button")["border-radius"], "0");
+  assert.equal(declarations(file, ".sections button")["border-radius"], "14px");
+  assert.ok(parseFloat(declarations(file, ".sections button")["min-height"]) >= 44);
   const active = declarations(file, '.sections button[aria-current="page"]');
   assert.equal(
     declarations(file, ".sections button").background,
     "transparent",
   );
-  assert.equal(active["box-shadow"], "inset 0 -3px var(--blue)");
+  assert.equal(active.background, "var(--blue-soft)");
+  assert.equal(active.color, "var(--blue)");
   assert.equal(
     declarations(file, ".sections button:hover").color,
     "var(--ink)",
@@ -74,6 +69,6 @@ test("studio decision and chart are peer surfaces rather than nested cards", () 
   );
   assert.match(
     stage["grid-template-columns"],
-    /minmax\(0, 1.8fr\) minmax\(320px, 1fr\)/,
+    /minmax\(0, 1.75fr\) minmax\(310px, 1fr\)/,
   );
 });

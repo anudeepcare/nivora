@@ -42,6 +42,7 @@ export default function ApprovedPortfolioChart({
   const { cache, demo, owner } = useProduct();
   const [history, setHistory] = useState<WorkspaceHistory>({}),
     [loading, setLoading] = useState(false),
+    [loadIssue, setLoadIssue] = useState(""),
     [revision, setRevision] = useState(0);
   const container = useRef<HTMLDivElement>(null);
   const attempted = useRef<{ scope: string; symbols: Set<string> }>({
@@ -70,7 +71,7 @@ export default function ApprovedPortfolioChart({
           (p) =>
             p.assetType !== "cash" &&
             p.quantity > 0 &&
-            quotes[p.symbol]?.quote?.currency === "USD",
+            (!p.currency || p.currency === "USD"),
         )
         .map((p) => p.symbol),
     ),
@@ -80,16 +81,19 @@ export default function ApprovedPortfolioChart({
     let active = true;
     const saved: WorkspaceHistory = {};
     // Fetch the comparison first rather than behind the entire holdings queue.
-    // Keep one request at a time and the same total budget and coverage rules.
+    // Validate access once, then fetch at most two holdings concurrently.
     const selected = key ? [...new Set([benchmark, ...key.split(",")])] : [];
     for (const symbol of selected) {
       const research =
         demo?.research[symbol] ??
         (cache.get(`research/${encodeURIComponent(symbol.replace("/", "-"))}`)
           ?.value as Research | undefined);
-      const chart = cache.get(
+      const chart = (cache.get(
         `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=6M`,
-      )?.value as { candles: Candle[]; source: string } | undefined;
+      )?.value ??
+        cache.get(
+          `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=5Y`,
+        )?.value) as { candles: Candle[]; source: string } | undefined;
       if (chart?.candles?.length) saved[symbol] = chart;
       else if (research?.history?.length)
         saved[symbol] = {
@@ -97,7 +101,12 @@ export default function ApprovedPortfolioChart({
           source: research.historySource || "Supplied research history",
         };
     }
-    setHistory(saved);
+    setHistory((prior) => ({
+      ...Object.fromEntries(
+        Object.entries(prior).filter(([symbol]) => selected.includes(symbol)),
+      ),
+      ...saved,
+    }));
     const scope = `${owner}:${key}:${benchmark}`;
     if (attempted.current.scope !== scope)
       attempted.current = { scope, symbols: new Set() };
@@ -114,29 +123,82 @@ export default function ApprovedPortfolioChart({
       };
     }
     setLoading(true);
+    setLoadIssue("");
     void (async () => {
-      // Bounded, sequential reads avoid consuming a whole account's market-data budget.
-      for (const symbol of missing) {
-        if (!active) break;
+      const deadline = Date.now() + 20000;
+      let stopped = false;
+      let timedOut = false;
+      const fetchOne = async (symbol: string) => {
+        if (!active || stopped || Date.now() >= deadline) {
+          if (Date.now() >= deadline) timedOut = true;
+          return;
+        }
         attempted.current.symbols.add(symbol);
         const path = `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=6M`;
+        const controller = new AbortController();
+        let timer: ReturnType<typeof setTimeout> | undefined;
         try {
-          const result = await readResource(cache, path, 900000, () =>
-            // The cache shares in-flight requests. Keep this read alive across
-            // benchmark changes; only the active effect may publish UI state.
-            api<{ candles: Candle[]; source: string }>(path),
-          );
+          const result = await Promise.race([
+            readResource(cache, path, 900000, () =>
+              // Cleanup does not abort a shared read when the benchmark changes.
+              api<{ candles: Candle[]; source: string }>(
+                path,
+                undefined,
+                controller.signal,
+              ),
+            ),
+            new Promise<never>((_, reject) => {
+              timer = setTimeout(
+                () => {
+                  timedOut = true;
+                  controller.abort();
+                  reject(new Error("History request timed out"));
+                },
+                Math.min(12000, Math.max(1, deadline - Date.now())),
+              );
+            }),
+          ]);
           if (active) setHistory((prior) => ({ ...prior, [symbol]: result }));
         } catch (error) {
           if (
             error instanceof ApiError &&
             [401, 403, 429].includes(error.status)
-          )
-            break;
-          /* Keep the valid partial series; coverage below names exclusions. */
+          ) {
+            stopped = true;
+            if (active)
+              setLoadIssue(
+                error.status === 429
+                  ? "History requests are temporarily limited. Available data is shown."
+                  : "History access needs attention. Available data is shown.",
+              );
+          }
+          // Failed instruments never erase successfully loaded series.
+        } finally {
+          if (timer) clearTimeout(timer);
         }
+      };
+      // The first read checks access/budget before starting the small worker pool.
+      await fetchOne(missing[0]);
+      let next = 1;
+      const worker = async () => {
+        while (
+          active &&
+          !stopped &&
+          next < missing.length &&
+          Date.now() < deadline
+        ) {
+          await fetchOne(missing[next++]);
+        }
+        if (next < missing.length && Date.now() >= deadline) timedOut = true;
+      };
+      await Promise.all([worker(), worker()]);
+      if (active) {
+        if (timedOut && !stopped)
+          setLoadIssue(
+            "Some history requests timed out. Available data is shown; retry to load the rest.",
+          );
+        setLoading(false);
       }
-      if (active) setLoading(false);
     })();
     return () => {
       active = false;
@@ -245,6 +307,11 @@ export default function ApprovedPortfolioChart({
   return (
     <>
       <section className={`card portfolio-trend-panel ${styles.panel}`}>
+        {loadIssue && (
+          <p className={styles.unavailable} role="status">
+            {loadIssue}
+          </p>
+        )}
         <div ref={container} className={styles.chart}>
           <header className={styles.header}>
             <div>

@@ -271,3 +271,29 @@ test("research estimates use shared strict envelope, range and duplicate validat
   });
   assert.equal(out.evidence.estimates[0].analysts, null);
 });
+
+test("independent statement requests start without waiting for profile response", async () => {
+  const calls = [];
+  let resolveProfile;
+  const gate = new Promise(resolve => { resolveProfile = resolve; });
+  const run = fetchSentiSenseFundamentals("APP", async (path) => {
+    calls.push(path);
+    if (path.endsWith("/profile")) return gate;
+    return {};
+  }, observed);
+  await Promise.resolve();
+  const started = calls.length;
+  resolveProfile(profile);
+  await run;
+  assert.equal(started, 5);
+});
+
+test("stable reported statements use a longer cache than current fundamentals", async () => {
+  const ttls = [];
+  await fetchSentiSenseFundamentals("APP", async (path, _params, ttl) => {
+    ttls.push([path,ttl]);
+    return path.endsWith("/profile") ? profile : {};
+  },observed);
+  assert.deepEqual(ttls.filter(([p])=>p === "stocks/fundamentals/history").map(([,ttl])=>ttl),[3600,3600]);
+  assert.equal(ttls.find(([p])=>p === "stocks/fundamentals/current")[1],300);
+});

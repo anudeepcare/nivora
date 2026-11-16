@@ -126,6 +126,7 @@ export function Metric({
 }
 export function useWorkspaceData(
   scope: "all" | "portfolio" | "watchlist" = "all",
+  scanEnabled = true,
 ) {
   const product = useProduct(),
     quotes = useWorkspaceQuotes(scope);
@@ -135,16 +136,20 @@ export function useWorkspaceData(
   );
   const prefix =
     product.demo && product.demo.routePrefix !== "" ? "/preview" : "";
-  const paceScan = useWorkspacePace([
-    ...(scope === "watchlist"
-      ? []
-      : (product.workspace?.positions ?? [])
-          .filter((p) => p.assetType === "stock")
-          .map((p) => p.symbol)),
-    ...(scope === "portfolio"
-      ? []
-      : (product.workspace?.watchlist ?? []).map((p) => p.symbol)),
-  ]);
+  const paceScan = useWorkspacePace(
+    scanEnabled && (quotes.ready || !!product.demo)
+      ? [
+          ...(scope === "watchlist"
+            ? []
+            : (product.workspace?.positions ?? [])
+                .filter((p) => p.assetType === "stock")
+                .map((p) => p.symbol)),
+          ...(scope === "portfolio"
+            ? []
+            : (product.workspace?.watchlist ?? []).map((p) => p.symbol)),
+        ]
+      : [],
+  );
   const research = (symbol: string) =>
     product.demo?.research[symbol] ??
     (product.cache.get(

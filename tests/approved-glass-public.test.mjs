@@ -20,10 +20,10 @@ test("public design inherits the approved theme rather than isolating warm paper
   const css = read("components/PublicLanding.module.css");
   assert.equal(final(css, ".page", "color"), "var(--ink)");
   assert.equal(final(css, ".page", "--ink"), undefined);
-  assert.match(css, /background-clip: text/);
+  assert.match(css, /radial-gradient/);
   assert.match(
     read("components/PublicLanding.tsx"),
-    /Research\.[\s\S]*Decide\.[\s\S]*Review\./,
+    /Less noise\.[\s\S]*More perspective\./,
   );
 });
 test("workspace destination grid remains two-up on mobile and retains four real destinations", () => {
@@ -41,5 +41,5 @@ test("auth form owns its glass and respects reduced transparency without losing 
     "16px",
   );
   assert.match(css, /prefers-reduced-transparency: reduce/);
-  assert.ok(read("components/Session.tsx").includes("#f4f8ff"));
+  assert.ok(read("components/Session.tsx").includes("#f5f6fa"));
 });

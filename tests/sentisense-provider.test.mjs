@@ -533,6 +533,9 @@ function denialStore() {
     async release(key, ticket) {
       if (values.get(key)?.ticket === ticket) values.delete(key);
     },
+    async extend(key, ticket, until) {
+      if (values.get(key)?.ticket === ticket) values.get(key).expiresAt = until;
+    },
   };
 }
 test("durable denial latch blocks cold clients after burst and daily windows until temporary key expiry", async () => {
@@ -1123,4 +1126,57 @@ test("coalesced Pro callers share the bounded deadline when cache read stalls", 
   complete(null);
   await new Promise((resolve) => setTimeout(resolve, 25));
   assert.equal(calls, 0, "late cache completion cannot start upstream");
+});
+
+test("uncertain Pro transport pauses cold instances for one minute, not fifteen", async () => {
+  const api = load(), store = denialStore();
+  let time = now, calls = 0;
+  const deps = { cache:emptyCache, now:()=>time, reserve:async()=>{}, guard:api.createSentiSenseDenialGuard(store), transport:async()=>{calls++;throw Error("network timeout");} };
+  const env = {...configuration(), AURYN_SENTISENSE_MODE:"pro"};
+  const access = {owner:false,authenticated:true};
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env);
+  time += 30_000;
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env);
+  assert.equal(calls,1);
+  time += 31_000;
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env);
+  assert.equal(calls,2);
+});
+
+test("failed Pro response body read receives the transient cooldown, not a denial lock", async () => {
+  const api = load(), store = denialStore();
+  let time = now, calls = 0;
+  const deps = { cache:emptyCache, now:()=>time, reserve:async()=>{}, guard:api.createSentiSenseDenialGuard(store), transport:async()=>{
+    calls++;
+    return { status:200,ok:true,text:async()=>{throw Error("body interrupted");} };
+  } };
+  const env = {...configuration(), AURYN_SENTISENSE_MODE:"pro"};
+  const access = {owner:false,authenticated:true};
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env);
+  time += 30_000;
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env);
+  assert.equal(calls,1);
+  time += 31_000;
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env);
+  assert.equal(calls,2);
+});
+
+test("Pro deadline after headers aborts the body and shortens only its transient latch", async () => {
+  const api = load(), store = denialStore();
+  let time = now, calls = 0, bodyAborted = false;
+  const deps = { cache:emptyCache, now:()=>time, reserve:async()=>{}, guard:api.createSentiSenseDenialGuard(store), transport:async(_url,{signal})=>{
+    calls++;
+    return {status:200,ok:true,text:()=>new Promise((_resolve,reject)=>signal.addEventListener("abort",()=>{bodyAborted=true;reject(Error("body aborted"));},{once:true}))};
+  } };
+  const env = {...configuration(), AURYN_SENTISENSE_MODE:"pro"};
+  const access = {owner:false,authenticated:true};
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env,{budgetMs:20});
+  await new Promise(setImmediate);
+  assert.equal(bodyAborted,true);
+  time += 30_000;
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env,{budgetMs:20});
+  assert.equal(calls,1);
+  time += 31_000;
+  await api.createSentiSenseClient(deps).getTargets("APP",access,env,{budgetMs:20});
+  assert.equal(calls,2);
 });

@@ -10,7 +10,6 @@ import {
   PieChart,
   ShieldCheck,
 } from "lucide-react";
-import DetailDialog from "./DetailDialog";
 import s from "./ProductGuide.module.css";
 
 const journeys = [
@@ -73,7 +72,7 @@ export default function ProductGuide({
       </section>
       <section className={s.topics} aria-labelledby="guide-topics-heading">
         <div className={s.topicHeader}>
-          <h2 id="guide-topics-heading">A little context. When you need it.</h2>
+          <h2 id="guide-topics-heading">Answers, without the detour.</h2>
           <label>
             <span>Find a topic</span>
             <span className={s.search}>
@@ -100,12 +99,13 @@ export default function ProductGuide({
         )}
         <div className={s.topicGrid}>
           {filtered.map((topic) => (
-            <article key={topic.title}>
-              <h3>{topic.title}</h3>
-              <DetailDialog title={topic.title} trigger="Read explanation">
-                <p>{topic.text}</p>
-              </DetailDialog>
-            </article>
+            <details key={topic.title}>
+              <summary>
+                {topic.title}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>{topic.text}</p>
+            </details>
           ))}
         </div>
         {!filtered.length && (

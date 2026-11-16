@@ -6,7 +6,7 @@
 }
 .financialWorkbench {
   display: grid;
-  grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   align-items: start;
 }
@@ -15,13 +15,14 @@
 }
 .financialCurrent {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   min-width: 0;
 }
 .statementCard {
   padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
   background: var(--card);
   min-width: 0;
 }
@@ -72,8 +73,8 @@
   min-width: 0;
   margin: 0;
   padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
   background: var(--card);
 }
 .panel :global(.financial-cash-bridge figcaption) {
@@ -107,8 +108,8 @@
 .panel :global(.financial-detail-groups > section) {
   min-width: 0;
   padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
   background: var(--card);
 }
 .panel :global(.financial-detail-groups h3) {
@@ -157,8 +158,8 @@
   min-width: 0;
   padding: 16px;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
 }
 .technicalCurrent {
   display: grid;
@@ -195,8 +196,8 @@
   min-width: 0;
   padding: 16px;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
 }
 .panel :global(.technical-desk-groups h3) {
   margin: 0;
@@ -229,8 +230,8 @@
 }
 .priceMap {
   padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 0;
+  border-radius: 24px;
   background: var(--card);
   min-width: 0;
 }
@@ -417,4 +418,102 @@
 }
 .panel :global(.financial-cash-bridge [data-tone="neutral"] rect) {
   fill: var(--muted);
+}
+
+.periodControls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background: var(--surface);
+  min-width: min(100%, 280px);
+}
+.periodControls button {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 12px;
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.periodControls button[aria-pressed="true"] {
+  color: var(--blue);
+  background: var(--card);
+  box-shadow: 0 2px 8px #1327480d;
+}
+.periodControls button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+@media (max-width: 650px) {
+  .periodControls {
+    width: 100%;
+  }
+}
+
+.businessPulse {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 12px 0 28px;
+}
+.businessPulse > div {
+  min-width: 0;
+}
+.businessPulse dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+.businessPulse dd {
+  font-size: clamp(28px, 3.5vw, 44px);
+  letter-spacing: -0.05em;
+  line-height: 1.15;
+  margin: 12px 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.businessPulse small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.deepFinancials {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.deepFinancials > summary {
+  cursor: pointer;
+  min-height: 52px;
+  align-content: center;
+  color: var(--blue);
+  font-size: 14px;
+}
+.deepFinancials > div {
+  margin: 20px 0;
+}
+@media (max-width: 650px) {
+  .businessPulse {
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  .businessPulse > div {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 4px 12px;
+  }
+  .businessPulse dd {
+    margin: 0;
+    font-size: 28px;
+  }
+  .businessPulse small {
+    grid-column: 1/-1;
+  }
+  .financialCurrent {
+    grid-template-columns: 1fr;
+  }
 }

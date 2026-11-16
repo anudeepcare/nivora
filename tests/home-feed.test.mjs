@@ -442,3 +442,30 @@ test("Home batch aggregation retains early evidence when a later batch is partia
     assert.ok(feed.issues.length, later);
   }
 });
+
+test("news batch deadline returns completed results and never starts queued work after timeout", { timeout: 250 }, async () => {
+  const started = [];
+  const result = await m.settledFeedMap(["quick", "stalled", "never"], async (v) => {
+    started.push(v);
+    if(v === "stalled") return new Promise(()=>{});
+    return v;
+  }, 1, 20);
+  assert.deepEqual(started, ["quick", "stalled"]);
+  assert.equal(result[0].status, "fulfilled");
+  assert.equal(result[1].status, "rejected");
+  assert.equal(result[2].status, "rejected");
+});
+
+test("whole Home load deadline spans all API batches and preserves completed batches", {timeout:250}, async () => {
+  const started = [];
+  const result = await m.loadHomeFeed(Array.from({length:90},(_,i)=>`STK${i}`), async (batch)=>{
+    started.push(batch[0]);
+    if(batch[0] !== "STK0") return new Promise(()=>{});
+    return {events:[],news:[],issues:[],retrievedAt:"2026-11-16T12:00:00Z",followed:30,newsFollowed:30,eventsReady:true,newsReady:true};
+  },20);
+  assert.deepEqual(started,["STK0","STK30"]);
+  assert.equal(result.followed,30);
+  assert.equal(result.eventsReady,false);
+  assert.equal(result.newsReady,false);
+  assert.ok(result.issues.length);
+});

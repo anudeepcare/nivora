@@ -1,7 +1,3 @@
-# November 16, 2026 — SentiSense integration candidate
-
-Current: `SENTISENSE_MIGRATION_RELEASE.md` and `../verification/SENTISENSE-MIGRATION-20261116.json`. No production rollout or subscription cancellation. All entries below are historical and do not establish current live-data or visual acceptance.
-
 # November 6, 2026 — Recovery, mobile navigation and Business charts
 
 See `verification/RECOVERY-AND-MOBILE-20261106.md` for this cumulative update, validation and live acceptance requirements. Recovery uses account/session-bound verification, mobile navigation contrast and links are repaired, Business charts are bounded and responsive, and portfolio history loads all eligible missing holdings with visible partial-total reconciliation. Hosted access policy fails closed if its flag is missing. Preview access/owner configuration was updated; no code was deployed. Supabase email-template configuration and actual password reset still need live acceptance after deployment.

@@ -1,4 +1,4 @@
-import { loadGuide } from './helpers/product-guide.mjs';
+import { loadGuide } from "./helpers/product-guide.mjs";
 import { experience, PaceInstrument } from "./helpers/integrated-ui.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -19,6 +19,7 @@ function load(file, name, bindings) {
       React.createElement("a", { href: "/" + page }, children),
     experience,
     landing: experience,
+    styles: experience,
     PaceInstrument,
     SUPPORT_EMAIL: "support@auryninvest.com",
     PACE_LEVELS: [
@@ -39,8 +40,13 @@ function load(file, name, bindings) {
     true,
     ts.ScriptKind.TSX,
   );
-  const declarations = source.statements.filter((n) =>
-    ts.isFunctionDeclaration(n),
+  const declarations = source.statements.filter(
+    (n) =>
+      ts.isFunctionDeclaration(n) ||
+      (ts.isVariableStatement(n) &&
+        n.declarationList.declarations.some(
+          (d) => d.name.getText(source) === "lenses",
+        )),
   );
   const code = declarations
     .map((n) =>
@@ -66,6 +72,7 @@ const common = {
   ...Object.fromEntries(
     [
       "ArrowRight",
+      "ArrowUpRight",
       "Search",
       "FileText",
       "ChartNoAxesCombined",
@@ -161,46 +168,31 @@ test("public home leads with the benefit and an account action without fabricate
     common,
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
-  assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Research\.<br\/>Decide\.<br\/>Review\./);
+  assert.match(html, /Less noise\.<br\/>/);
+  assert.match(html, /More perspective\./);
   assert.match(html, /id="how-it-works"/);
-  assert.match(html, /One place to connect the business, the price and your portfolio\./);
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Open your workspace/);
-  assert.match(html, /Illustrative Pace zone chart/);
-  assert.match(html, /not market data/);
-  assert.match(html, /No live quote or recommendation/);
-  assert.match(html, /AURYN PACE · ONE READING PER COMPANY/);
-  for (const route of [
-    "discover",
-    "watchlist",
-    "portfolio",
-    "help",
-    "research/NOW",
-    "sample",
-    "pricing",
-  ])
+  assert.match(html, /Product guide · not live data/);
+  assert.match(html, /Your research\. Your pace\. Your decision\./);
+  for (const route of ["help", "sample", "pricing", "methodology", "contact"])
     assert.ok(html.includes(`href="/${route}"`));
-  assert.match(html, /Scenarios are conditional\. Ownership is not a recommendation/);
+  assert.match(html, /not live recommendations/);
   assert.doesNotMatch(
     html,
     /Northstar|Microsoft|Apple Inc|Tesla|NVIDIA|NVDA|MSFT|AAPL|\+\d+(?:\.\d+)?%|\$124|data-demo-form|#\/research/,
   );
 });
 
-test("public and account previews explain Pace without fictional company results or an implied recommendation", () => {
+test("public and account previews explain their current lens without fictional company results", () => {
   for (const compact of [false, true]) {
     const html = renderToStaticMarkup(
       React.createElement(PublicSample, { compact }),
     );
     assert.match(html, /Illustrative product guide/);
-    assert.match(html, /AURYN Accumulation Pace/);
-    assert.match(html, /not predicted returns/);
-    assert.match(html, /Previous month closing zone · history/);
-    assert.match(html, /Current month · forming/);
-    assert.doesNotMatch(
-      html,
-      /Northstar|sample values|Revenue growth|FCF margin|Supportive <strong>7|\$\d|\+\d+(?:\.\d+)?%/,
-    );
+    assert.match(html, /Product guide · not live data/);
+    assert.match(html, /Understand what you own/);
+    assert.match(html, /role="tab"/);
+    assert.doesNotMatch(html, /Northstar|sample values|\$\d|\+\d+(?:\.\d+)?%/);
   }
 });
 
@@ -219,25 +211,26 @@ test("public navigation opens accessibly, closes on Escape, and closes after a d
   const toggle = () =>
     nodes(
       render(),
-      (n) =>
-        n.type === "button" &&
-        n.props["aria-controls"] === "ap-mobile-navigation",
+      (n) => n.type === "button" && n.props["aria-controls"] === "public-menu",
     )[0];
   assert.equal(toggle().props["aria-expanded"], false);
   toggle().props.onClick();
   assert.equal(toggle().props["aria-expanded"], true);
   const navigation = nodes(
     render(),
-    (n) => n.type === "nav" && n.props.id === "ap-mobile-navigation",
+    (n) => n.type === "nav" && n.props.id === "public-menu",
   )[0];
   assert(navigation);
   let focusReturned = false;
-  nodes(render(), (n) => n.type === "header")[0].props.onKeyDown({
+  nodes(
+    render(),
+    (n) => typeof n.props?.onKeyDown === "function",
+  )[0].props.onKeyDown({
     key: "Escape",
     preventDefault() {},
     currentTarget: {
       querySelector(selector) {
-        assert.equal(selector, '[aria-controls="ap-mobile-navigation"]');
+        assert.equal(selector, '[aria-controls="public-menu"]');
         return {
           focus() {
             focusReturned = true;
@@ -781,7 +774,7 @@ test("saved appearance preferences hydrate from matching markup without overwrit
 
 test("investment demo switches by click and keyboard while keeping sample context explicit", () => {
   let step = 0;
-  const Demo = load("components/PublicLanding.tsx", "InvestmentDemo", {
+  const Demo = load("components/PublicLanding.tsx", "PublicSample", {
     ...common,
     useState: () => [
       step,
@@ -797,7 +790,7 @@ test("investment demo switches by click and keyboard while keeping sample contex
   assert.equal(tabs()[1].props["aria-selected"], true);
   assert.match(
     renderToStaticMarkup(render()),
-    /Illustrative scenarios, not price targets/,
+    /Compare bear, base and bull scenarios/,
   );
   let focused = -1;
   tabs()[1].props.onKeyDown({
@@ -816,20 +809,18 @@ test("investment demo switches by click and keyboard while keeping sample contex
   });
   assert.equal(step, 2);
   assert.equal(focused, 2);
-  assert.equal(
-    nodes(render(), (n) => n.type === PaceInstrument)[0].props.publicGuide,
-    true,
+  assert.match(
+    renderToStaticMarkup(render()),
+    /A zone alone is not a recommendation/,
   );
+  assert.match(renderToStaticMarkup(render()), /P0 · Pause/);
   tabs()[2].props.onKeyDown({
     key: "Home",
     preventDefault() {},
     currentTarget: {},
   });
   assert.equal(step, 0);
-  assert.match(
-    renderToStaticMarkup(render()),
-    /Research framework · illustrative guide/,
-  );
+  assert.match(renderToStaticMarkup(render()), /Product guide · not live data/);
 });
 
 test("help and methodology show their publication date without internal release identifiers", async () => {
@@ -838,7 +829,8 @@ test("help and methodology show their publication date without internal release 
   );
   const LegalDocument = load("components/LegalDocument.tsx", "LegalDocument", {
     ...common,
-      ProductGuide: loadGuide(),
+    ProductGuide: loadGuide(),
+    PwaDiagnostics: () => null,
     documents,
     legalConfiguration,
     styles: { document: "legal-document-owned" },

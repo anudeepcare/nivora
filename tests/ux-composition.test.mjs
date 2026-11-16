@@ -157,14 +157,14 @@ test("optional Overview sections do not reserve empty named grid rows", () => {
 });
 
 
-test("Valuation groups cases and consensus at right and uses truthful compact multiple bars", () => {
+test("Valuation pairs cases and consensus with actual ratio values, not incomparable bar lengths", () => {
  const View=valueStudio(), r=research({target:120});
  r.evidence.multiples={TrailingPE:40,ForwardPE:20,PriceBookMRQ:5};
  const html=renderToStaticMarkup(React.createElement(View,{research:r}));
  assert.match(html, /class="scenarios"[\s\S]*?selected-cases[\s\S]*?class="consensus"[\s\S]*?analyst-targets/);
  assert.match(html, /data-metric="trailingPE"/);assert.match(html,/40.0×/);assert.match(html,/20.0×/);
- assert.match(html,/width:92.59259259259258%/);
- assert.match(html,/not investment quality/);
- const source=fs.readFileSync("components/ValueStudio.tsx","utf8");assert.doesNotMatch(source,/<details|<summary/);
+ assert.doesNotMatch(html,/width:[0-9.]+%/);
+ assert.match(html,/Earnings yield/);
+ const source=fs.readFileSync("components/ValueStudio.tsx","utf8");assert.match(source,/<summary>Build your own price projection<\/summary>/);assert.match(source,/projectionOpened &&/);
  assert.match(source,/<DetailDialog[\s\S]*?title="Model fit &amp; evidence"|title="Model fit & evidence"/);
 });

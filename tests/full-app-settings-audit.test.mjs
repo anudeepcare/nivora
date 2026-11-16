@@ -33,10 +33,11 @@ test('Settings sections expose headings to assistive navigation', () => {
     assert.match(source, new RegExp(`<h2>${label}</h2>`));
 });
 test('Settings phone inputs and rows protect their available width and touch area', () => {
-  const media = '(max-width: 600px)';
+  const media = '(max-width: 520px)';
   assert.equal(value(settings, '.page :global(.research-preferences) select,\n.page :global(.password-form) input', 'min-width'), '0');
   assert.equal(value(settings, '.page :global(.research-preferences) fieldset label', 'min-height'), '44px');
-  assert.equal(value(settings, '.page :global(.workspace-setting-group)', 'padding', media), '16px 14px');
+  assert.equal(value(settings, '.page :global(.research-preferences)', 'grid-template-columns', media), 'minmax(0, 1fr)');
+  assert.equal(value(settings, '.page :global(.research-preferences) select,\n.page :global(.password-form) input', 'font-size', media), '16px');
 });
 test('Monthly plan uses the live theme palette rather than undefined light fallbacks', () => {
   const source = fs.readFileSync('components/MonthlyPlan.module.css', 'utf8');

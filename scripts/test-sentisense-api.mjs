@@ -94,5 +94,8 @@ cacheUnavailable=true;assert.equal((await getTargets()).targets,null);assert.equ
 assert.equal(guards.size,0);delete process.env.AURYN_SENTISENSE_MODE;
 assert.equal((await getTargets()).enabled,false);assert.equal(sourceCalls.length,4);
 const result={passed:true,checks:['disabled-no-provider-call','owner-preview-complete-independent-band','primary-price-evidence-preserved','server-guard-latch-released','cache-no-extra-request','missing-cache-fails-closed','warm-shared-denial-withheld','nonowner-withheld','production-withheld','expired-key-withheld','credential-not-in-response','paid-base-no-optional-work','standalone-auth-required','standalone-feature-required','standalone-disabled-without-pro-mode','pro-authenticated-beta-preview','pro-production-capable','pro-trial-cache-isolation','pro-warm-denial-and-missing-cache-withheld'],providerCalls:sourceCalls.length,transport:'controlled fixtures; no network'};
-if(!process.argv[2])fs.writeFileSync('verification/sentisense-preview-20261114/compiled-route-results.json',JSON.stringify(result,null,2)+'\n');
+if(!process.argv[2]) {
+  fs.mkdirSync('verification/sentisense-preview-20261114', {recursive:true});
+  fs.writeFileSync('verification/sentisense-preview-20261114/compiled-route-results.json',JSON.stringify(result,null,2)+'\n');
+}
 console.log(JSON.stringify(result));

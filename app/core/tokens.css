@@ -10,16 +10,14 @@
 :root {
   --app-width: 1480px;
   --workspace-gap: 20px;
-  --workspace-radius: 14px;
+  --workspace-radius: 22px;
   --workspace-inset: 24px;
-  --chrome-surface: #f4f8ff;
+  --chrome-surface: #f5f6fa;
   --app-gutter: clamp(16px, 3vw, 40px);
-  --font-ui:
-    "Commissioner", "AURYN Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
   --radius-control: 10px;
-  --radius-panel: 16px;
-  --radius: 16px;
+  --radius-panel: 22px;
+  --radius: 22px;
   --space-page: 28px;
   --accent-solid: #245bdb;
   --blue: #245bdb;
@@ -42,25 +40,24 @@
 :root,
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f4f8ff;
+  --bg: #f5f6fa;
   --app-background: var(--workspace-canvas);
   --canvas-gradient: var(--workspace-canvas);
   --workspace-canvas:
-    radial-gradient(ellipse at 0% 0%, #b8f0ff55, transparent 38%),
-    radial-gradient(ellipse at 100% 16%, #d6cbff33, transparent 42%),
-    radial-gradient(ellipse at 10% 100%, #b8e8ff22, transparent 45%), #f4f8ff;
+    radial-gradient(ellipse at 90% 0%, #e5e8f780, transparent 50%),
+    radial-gradient(ellipse at 0% 40%, #e1f1f440, transparent 40%), #f5f6fa;
   --workspace-glass: #ffffffb8;
   --workspace-panel: linear-gradient(135deg, #ffffffd4, #f5f9ffb8);
   --workspace-tile: linear-gradient(130deg, #e2edff66, #ffffffa6);
   --workspace-control: #ffffffc9;
-  --workspace-edge: #cadbf0;
-  --workspace-shadow: 0 10px 30px #0c1b3a08, inset 0 1px 0 #ffffffb3;
+  --workspace-edge: #ffffff99;
+  --workspace-shadow: 0 14px 42px #26324b06, inset 0 1px 0 #ffffffb3;
   --workspace-accent: #245bdb;
   --nav-active: #245bdb;
   --nav-active-ink: #ffffff;
   --glass: #ffffffc4;
   --panel-shadow: var(--workspace-shadow);
-  --paper: #f4f8ff;
+  --paper: #f5f6fa;
   --card: #ffffff;
   --control-ink: #0c1b3a;
   --control-muted: #4c5f7d;
@@ -69,11 +66,11 @@
   --control-line: #b7bfd7;
   --surface: #e9f1ff;
   --surface-2: #f1f6ff;
-  --ink: #0c1b3a;
-  --text: #0c1b3a;
-  --muted: #4c5f7d;
-  --line: #cadbf0;
-  --border: #cadbf0;
+  --ink: #1c2438;
+  --text: #1c2438;
+  --muted: #5d687e;
+  --line: #e6e9f0;
+  --border: #e6e9f0;
   --positive: #087a49;
   --negative: #c52f42;
   --neutral: #4c5f7d;

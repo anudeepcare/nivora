@@ -45,6 +45,7 @@ export type SentiSenseFundamentalPayloads = {
 export type SentiSenseRequest = (
   path: string,
   params?: Record<string, string>,
+  ttlSeconds?: number,
 ) => Promise<unknown>;
 const flowFields: Partial<Record<Metric, string>> = {
   revenue: "revenue",
@@ -318,31 +319,41 @@ export async function fetchSentiSenseFundamentals(
   request: SentiSenseRequest,
   observedAt = new Date().toISOString(),
 ) {
-  const profile = await request(`stocks/${encodeURIComponent(symbol)}/profile`);
   const settled = await Promise.allSettled([
-    request("stocks/fundamentals/history", {
-      ticker: symbol,
-      timeframe: "quarterly",
-      limit: "40",
-    }),
-    request("stocks/fundamentals/history", {
-      ticker: symbol,
-      timeframe: "annual",
-      limit: "20",
-    }),
-    request("stocks/fundamentals/current", { ticker: symbol }),
-    request(`analyst/${encodeURIComponent(symbol)}/estimates`),
+    request(`stocks/${encodeURIComponent(symbol)}/profile`, {}, 3600),
+    request(
+      "stocks/fundamentals/history",
+      {
+        ticker: symbol,
+        timeframe: "quarterly",
+        limit: "40",
+      },
+      3600,
+    ),
+    request(
+      "stocks/fundamentals/history",
+      {
+        ticker: symbol,
+        timeframe: "annual",
+        limit: "20",
+      },
+      3600,
+    ),
+    request("stocks/fundamentals/current", { ticker: symbol }, 300),
+    request(`analyst/${encodeURIComponent(symbol)}/estimates`, {}, 3600),
   ]);
+  if (settled[0].status === "rejected") throw settled[0].reason;
+  const profile = settled[0].value;
   const value = (index: number) =>
     settled[index].status === "fulfilled" ? settled[index].value : undefined;
   return normalizeSentiSenseFundamentals(
     symbol,
     {
       profile,
-      quarterly: value(0),
-      annual: value(1),
-      current: value(2),
-      estimates: value(3),
+      quarterly: value(1),
+      annual: value(2),
+      current: value(3),
+      estimates: value(4),
     },
     observedAt,
   );

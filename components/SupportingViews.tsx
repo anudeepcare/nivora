@@ -43,6 +43,7 @@ export function Settings() {
   const { access } = useAccess();
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const [backHref, setBackHref] = useState(`${prefix}/overview`);
+  const [activeSection, setActiveSection] = useState("display");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -123,7 +124,10 @@ export function Settings() {
           <ArrowLeft size={18} /> Back
         </Link>
       </div>
-      <PageHeading title="Settings" subtitle="Your account, your workspace." />
+      <PageHeading
+        title="Make room for your way."
+        subtitle="Your account and preferences, in one quiet place."
+      />
       {message && (
         <div className="settings-feedback" role="status">
           <Notice>{message}</Notice>
@@ -169,8 +173,34 @@ export function Settings() {
           <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </div>
+      <nav className="settings-sections" aria-label="Settings sections">
+        <span className="settings-nav-label">YOUR WORKSPACE</span>
+        {[
+          ["display", "Display & reading", "A comfortable view"],
+          ["research", "Research defaults", "Start with your perspective"],
+          ["security", "Account & security", "Sign-in and password"],
+        ].map(([id, title, detail]) => (
+          <button
+            type="button"
+            key={id}
+            aria-controls={`${id}-settings`}
+            aria-pressed={activeSection === id}
+            onClick={() => setActiveSection(id)}
+          >
+            <span>
+              <strong>{title}</strong>
+              <small>{detail}</small>
+            </span>
+            <ChevronRight size={16} aria-hidden="true" />
+          </button>
+        ))}
+      </nav>
       <div className="workspace-settings-groups">
-        <section className="workspace-setting-group">
+        <section
+          className="workspace-setting-group"
+          id="display-settings"
+          hidden={activeSection !== "display"}
+        >
           <header>
             <span>
               <h2>Display & reading</h2>
@@ -181,7 +211,11 @@ export function Settings() {
             <DisplayPreferences />
           </div>
         </section>
-        <section className="workspace-setting-group">
+        <section
+          className="workspace-setting-group"
+          id="research-settings"
+          hidden={activeSection !== "research"}
+        >
           <header>
             <span>
               <h2>Research preferences</h2>
@@ -192,7 +226,11 @@ export function Settings() {
             <ResearchPreferenceControls />
           </div>
         </section>
-        <section className="workspace-setting-group">
+        <section
+          className="workspace-setting-group"
+          id="security-settings"
+          hidden={activeSection !== "security"}
+        >
           <header>
             <span>
               <h2>Account & security</h2>
@@ -218,29 +256,35 @@ export function Settings() {
                 ))}
               </div>
             )}
-            <form className="password-form" onSubmit={update}>
-              <label>
-                New password
-                <input
-                  type="password"
-                  minLength={8}
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </label>
-              <p>
-                Use at least 8 characters and a password you don’t use
-                elsewhere.
-              </p>
-              <button
-                className="button primary"
-                disabled={busy || (!!demo && demo.routePrefix !== "")}
-              >
-                {busy ? "Saving…" : "Update password"}
-              </button>
-            </form>
+            <details className="settings-password-change">
+              <summary>
+                Change your password{" "}
+                <ChevronRight size={17} aria-hidden="true" />
+              </summary>
+              <form className="password-form" onSubmit={update}>
+                <label>
+                  New password
+                  <input
+                    type="password"
+                    minLength={8}
+                    autoComplete="new-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </label>
+                <p>
+                  Use at least 8 characters and a password you don’t use
+                  elsewhere.
+                </p>
+                <button
+                  className="button primary"
+                  disabled={busy || (!!demo && demo.routePrefix !== "")}
+                >
+                  {busy ? "Saving…" : "Update password"}
+                </button>
+              </form>
+            </details>
           </div>
         </section>
       </div>

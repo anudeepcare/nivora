@@ -1,5 +1,4 @@
 "use client";
-import QuickRead from "./QuickRead";
 import layout from "./ResearchMetrics.module.css";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
@@ -218,7 +217,7 @@ export default function FinancialPicture({
               : "Select a reporting period"}
           </p>
         </div>
-        <div className="segments" aria-label="Financial period">
+        <div className={layout.periodControls} aria-label="Financial period">
           {(["ttm", "annual", "quarterly"] as const).map((v) => (
             <button
               key={v}
@@ -232,48 +231,30 @@ export default function FinancialPicture({
         </div>
       </header>
       {p && (
-        <QuickRead
-          title="The business in 30 seconds"
-          items={[
-            ...(growth != null
-              ? [
-                  {
-                    label: "Revenue · same period a year ago",
-                    value: percent(growth, true),
-                    detail: `${amount(p.revenue, p.currency, true)} in this ${scope === "ttm" ? "rolling twelve-month" : scope} period.`,
-                    tone:
-                      growth >= 0
-                        ? ("positive" as const)
-                        : ("caution" as const),
-                  },
-                ]
-              : []),
-            ...(p.margin != null
-              ? [
-                  {
-                    label: "Operating margin",
-                    value: percent(p.margin),
-                    detail: "Revenue retained before interest and tax.",
-                    tone:
-                      p.margin >= 0
-                        ? ("positive" as const)
-                        : ("caution" as const),
-                  },
-                ]
-              : []),
-            ...(p.fcf != null
-              ? [
-                  {
-                    label: "Cash after capital spending",
-                    value: amount(p.fcf, p.currency, true),
-                    detail: "Operating cash less reported capital expenditure.",
-                    tone:
-                      p.fcf >= 0 ? ("positive" as const) : ("caution" as const),
-                  },
-                ]
-              : []),
-          ]}
-        />
+        <dl
+          className={layout.businessPulse}
+          aria-label="Business pulse for selected period"
+        >
+          <div>
+            <dt>Revenue</dt>
+            <dd>{amount(p.revenue, p.currency, true)}</dd>
+            <small>
+              {growth == null
+                ? "Year-over-year comparison not supplied"
+                : `${percent(growth, true)} year over year`}
+            </small>
+          </div>
+          <div>
+            <dt>Operating margin</dt>
+            <dd>{percent(p.margin)}</dd>
+            <small>Before interest and tax</small>
+          </div>
+          <div>
+            <dt>Cash after capital spending</dt>
+            <dd>{amount(p.fcf, p.currency, true)}</dd>
+            <small>Operating cash less capex</small>
+          </div>
+        </dl>
       )}
       {p ? (
         <>
@@ -384,55 +365,59 @@ export default function FinancialPicture({
               </section>
             </aside>
           </div>
-          <div className="financial-detail-groups">
-            {detailGroups.map((group) => {
-              const available = group.rows.filter(
-                ([, value]) =>
-                  typeof value === "number" && Number.isFinite(value),
-              );
-              return available.length ? (
-                <section key={group.title} data-group={group.title}>
-                  <h3>{group.title}</h3>
-                  <div className="detail-metric-grid">
-                    {available.map(([label, value, unit, help]) => (
-                      <div className="detail-metric" key={String(label)}>
-                        <Help label={String(label)} trigger={String(label)}>
-                          <p>{String(help)}</p>
-                          <p>
-                            Uses the selected financial period. Definitions and
-                            sector relevance matter; a ratio alone does not
-                            determine a buy or sell.
-                          </p>
-                        </Help>
-                        <strong
-                          className={`num ${Number(value) < 0 ? "negative" : ""}`}
-                        >
-                          {unit === "percent"
-                            ? percent(Number(value))
-                            : unit === "money"
-                              ? amount(Number(value), p.currency)
-                              : `${Number(value).toFixed(1)}×`}
-                        </strong>
-                        {unit === "percent" &&
-                          Number(value) >= 0 &&
-                          Number(value) <= 100 && (
-                            <span
-                              className={layout.ratioTrack}
-                              aria-hidden="true"
-                            >
-                              <span style={{ width: `${Number(value)}%` }} />
-                            </span>
-                          )}
-                        <small>
-                          {interpretation(String(label), Number(value))}
-                        </small>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ) : null;
-            })}
-          </div>
+          <details className={layout.deepFinancials}>
+            <summary>Explore ratios & reported statements</summary>
+            <div className="financial-detail-groups">
+              {detailGroups.map((group) => {
+                const available = group.rows.filter(
+                  ([, value]) =>
+                    typeof value === "number" && Number.isFinite(value),
+                );
+                return available.length ? (
+                  <section key={group.title} data-group={group.title}>
+                    <h3>{group.title}</h3>
+                    <div className="detail-metric-grid">
+                      {available.map(([label, value, unit, help]) => (
+                        <div className="detail-metric" key={String(label)}>
+                          <Help label={String(label)} trigger={String(label)}>
+                            <p>{String(help)}</p>
+                            <p>
+                              Uses the selected financial period. Definitions
+                              and sector relevance matter; a ratio alone does
+                              not determine a buy or sell.
+                            </p>
+                          </Help>
+                          <strong
+                            className={`num ${Number(value) < 0 ? "negative" : ""}`}
+                          >
+                            {unit === "percent"
+                              ? percent(Number(value))
+                              : unit === "money"
+                                ? amount(Number(value), p.currency)
+                                : `${Number(value).toFixed(1)}×`}
+                          </strong>
+                          {unit === "percent" &&
+                            Number(value) >= 0 &&
+                            Number(value) <= 100 && (
+                              <span
+                                className={layout.ratioTrack}
+                                aria-hidden="true"
+                              >
+                                <span style={{ width: `${Number(value)}%` }} />
+                              </span>
+                            )}
+                          <small>
+                            {interpretation(String(label), Number(value))}
+                          </small>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                ) : null;
+              })}
+            </div>
+            <FinancialDetailTable research={r} />
+          </details>
           <div className="shared-stamp">
             <DataStamp
               source={p.sourceUrl || p.basis}
@@ -453,7 +438,6 @@ export default function FinancialPicture({
           data.
         </Empty>
       )}
-      <FinancialDetailTable research={r} />
     </section>
   );
 }

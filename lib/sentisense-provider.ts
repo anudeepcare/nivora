@@ -271,6 +271,7 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
       .digest("hex");
 
     let temporaryServerFailure = false;
+    let temporaryTransportFailure = false;
     const request = (path: string): Promise<unknown> => {
       const operation = current.tail.then(async () => {
         if (!available() || current.deniedUntil > now())
@@ -303,18 +304,30 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
           throw Error("Preview expired");
         }
         current.lastStarted = now();
-        const response = await transport(
-          `https://app.sentisense.ai/api/v1/${path}`,
-          {
-            headers: {
-              "X-SentiSense-API-Key": key,
-              Accept: "application/json",
+        let response: Response;
+        try {
+          response = await transport(
+            `https://app.sentisense.ai/api/v1/${path}`,
+            {
+              headers: {
+                "X-SentiSense-API-Key": key,
+                Accept: "application/json",
+              },
+              redirect: "error",
+              cache: "no-store",
+              signal: paid ? controller.signal : AbortSignal.timeout(15_000),
             },
-            redirect: "error",
-            cache: "no-store",
-            signal: paid ? controller.signal : AbortSignal.timeout(15_000),
-          },
-        );
+          );
+        } catch (error) {
+          // A timeout/network failure is not an authorization denial. Preserve
+          // the cross-worker latch briefly, but do not disable the entire key
+          // for fifteen minutes after a single slow request. No automatic retry.
+          if (paid && release.blockUntil) {
+            temporaryTransportFailure = true;
+            await release.blockUntil(now() + 60_000);
+          }
+          throw error;
+        }
         if ([401, 403, 429].includes(response.status)) {
           current.deniedUntil = paid ? now() + 15 * 60_000 : keyExpiry();
           if (paid && response.status === 429) {
@@ -341,7 +354,18 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
           temporaryServerFailure = response.status >= 500;
           throw Error("Optional target source unavailable");
         }
-        const text = await response.text();
+        let text: string;
+        try {
+          text = await response.text();
+        } catch (error) {
+          // Fetch can resolve its headers before the response stream fails.
+          // Body-read failures carry the same transient policy as transport.
+          if (paid && release.blockUntil) {
+            temporaryTransportFailure = true;
+            await release.blockUntil(now() + 60_000);
+          }
+          throw error;
+        }
         await release();
         if (text.length > 200_000)
           throw Error("Optional target response too large");
@@ -406,7 +430,11 @@ export function createSentiSenseClient(dependencies: Dependencies = {}) {
           // every later request still passes the same expiry and quota gates.
           until: Math.min(
             now() +
-              (temporaryServerFailure || (paid && !value) ? 5 * 60_000 : ttl),
+              (temporaryTransportFailure
+                ? 60_000
+                : temporaryServerFailure || (paid && !value)
+                  ? 5 * 60_000
+                  : ttl),
             keyExpiry(),
           ),
           value,

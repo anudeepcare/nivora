@@ -37,11 +37,11 @@ test("disclosure rows no longer receive an opaque surface when expanded", () => 
     /details\[open\]/,
   );
 });
-test("overview uses coordinated paired panels, not margins inside a gap grid", () => {
+test("overview pairs the explanation with scenarios without nested margins", () => {
   const css = read("components/ResearchOverview.module.css");
   assert.match(
     css,
-    /\.caseWorkspace[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/s,
+    /\.scenarioStage[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1.35fr\)/s,
   );
   assert.match(
     read("components/StockPillars.module.css"),

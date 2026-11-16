@@ -51,6 +51,9 @@ function loadComponent(file, name, bindings) {
     detailStyle: { content: "detail-content" },
     aux: new Proxy({}, { get: (_, key) => String(key) }),
     landing: new Proxy({}, { get: (_, key) => String(key) }),
+    styles: new Proxy({}, { get: (_, key) => String(key) }),
+    Link: ({children,...props}) => React.createElement("a",props,children),
+    ArrowUpRight,
     studyMarket,
     revenueSensitivity: () => ({ available: false }),
     RevenueSensitivityCases: () => null,
@@ -216,7 +219,9 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
   ])
     assert(html.includes(label));
   assert.match(html, /aria-label="Income statement snapshot"/);
-  assert.equal((html.match(/<dt>/g) || []).length, 4);
+  const statement = html.match(/<dl[^>]*aria-label="Income statement snapshot"[^>]*>([\s\S]*?)<\/dl>/)?.[1];
+  assert.ok(statement, "Labelled statement remains accessible");
+  assert.equal((statement.match(/<dt>/g) || []).length, 4);
   assert.equal((html.match(/<dd class="num">/g) || []).length, 4);
   assert.doesNotMatch(html, /supported metrics|Expand|Forecast|Market cap/);
 });
@@ -686,6 +691,7 @@ test("public legal and help documents render all cross-links and readable sectio
     {
       React,
       ProductGuide: loadGuide(),
+      PwaDiagnostics: () => null,
       styles: { document: "document-owned" },
       useState: React.useState,
       ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {
@@ -901,9 +907,9 @@ test("the single settings page preserves account, membership and help", () => {
   assert.doesNotMatch(html, /href="\/(discover|research-lab|trading)"/);
   assert.match(html, /Account &amp; security/);
   assert.match(html, /href="\/help"/);
-  assert.equal((html.match(/<details/g) || []).length, 0);
+  assert.equal((html.match(/<details/g) || []).length, 1);
   assert.equal((html.match(/reader@example.com/g) || []).length, 1);
-  assert.doesNotMatch(html, /hidden=""/);
+  assert.equal((html.match(/hidden=""/g) || []).length, 2);
   assert.match(html, /href="\/plans"/);
   assert.doesNotMatch(html, /<dialog/);
 });
@@ -1179,64 +1185,35 @@ test("account equity displays debt separately without representing it as a losin
   assert.match(html, /Partial equity/);
 });
 
-test("public sample explains actual contribution levels without fictional observations or account requests", () => {
-  const forbiddenRequest = () => {
-    throw Error("A public guide must not load account or market data");
-  };
-  const PublicSample = loadComponent(
-    "components/PublicLanding.tsx",
-    "PublicSample",
-    {
-      React,
-      Layers3,
-      Scale,
-      ShieldCheck,
-      ChartNoAxesCombined,
-      api: forbiddenRequest,
-      authClient: forbiddenRequest,
-    },
-  );
-  for (const compact of [false, true]) {
-    const html = renderToStaticMarkup(
-      React.createElement(PublicSample, { compact }),
-    );
-    assert.match(
-      html,
-      /aria-label="Illustrative product guide, not a live investment recommendation"/,
-    );
-    assert.match(html, /Business/);
-    assert.match(html, /Value/);
-    assert.match(html, /Risk/);
-    assert.match(html, /Previous month closing zone/);
-    assert.match(html, /Current month · forming/);
-    for (const level of ["P0", "P1", "P2", "P3", "P4"])
-      assert.ok(html.includes(level));
-    assert.match(html, /Evidence first. Your judgment always/);
-    assert.doesNotMatch(
-      html,
-      /Northstar|Revenue growth|FCF margin|\$\d|\+\d+(?:\.\d+)?%|guaranteed|buy now|api_key/i,
-    );
+test("public sample explains contribution levels without account or market requests", () => {
+  const forbiddenRequest = () => { throw Error("A public guide must not load account or market data"); };
+  for (const selected of [0, 1, 2]) {
+    const PublicSample = loadComponent("components/PublicLanding.tsx", "PublicSample", {
+      React, Layers3, ChartNoAxesCombined, api: forbiddenRequest, authClient: forbiddenRequest,
+      useState: () => [selected, () => {}],
+    });
+    for (const compact of [false, true]) {
+      const html = renderToStaticMarkup(React.createElement(PublicSample, {compact}));
+      assert.match(html, /Illustrative product guide, not a live investment recommendation/);
+      for (const tab of ["Business", "Value", "Pace"]) assert.ok(html.includes(tab));
+      if(selected === 2) {
+        for(const level of ["P0", "P1", "P2", "P3", "P4"]) assert.ok(html.includes(level));
+        assert.match(html, /A zone alone is not a recommendation/);
+      }
+      assert.match(html, /Evidence first. Your judgment always/);
+      assert.doesNotMatch(html, /Northstar|Revenue growth|FCF margin|\$\d|\+\d+(?:\.\d+)?%|guaranteed|buy now|api_key/i);
+    }
   }
 });
 
-test("public product guide offers native expandable details and the real methodology route", () => {
-  const ProductWalkthrough = loadComponent(
-    "components/PublicLanding.tsx",
-    "ProductWalkthrough",
-    {
-      React,
-      ArrowRight,
-      Link: ({ children, ...props }) =>
-        React.createElement("a", props, children),
-    },
-  );
-  const html = renderToStaticMarkup(React.createElement(ProductWalkthrough));
-  assert.equal((html.match(/<details(?: |>|\n)/g) || []).length, 3);
-  assert.equal((html.match(/<summary>/g) || []).length, 3);
-  assert.equal((html.match(/<details open=""/g) || []).length, 1);
-  assert.match(html, /href="\/methodology"/);
-  assert.match(html, /id="product-guide"/);
-  assert.doesNotMatch(html, /aria-pressed|role="tab"/);
+test("public product guide exposes three keyboard tabs and the real methodology route", () => {
+  const Guide = loadComponent("components/PublicLanding.tsx", "PublicSample", {React, Layers3, ChartNoAxesCombined});
+  const html=renderToStaticMarkup(React.createElement(Guide));
+  assert.equal((html.match(/role="tab"/g)||[]).length,3);
+  assert.equal((html.match(/role="tabpanel"/g)||[]).length,1);
+  assert.match(html,/href="\/methodology"/);
+  assert.match(html,/aria-selected="true"/);
+  assert.doesNotMatch(html,/aria-pressed/);
 });
 
 test("monthly chart distinguishes unavailable warm-up data from ordinary 1x conditions", async () => {
