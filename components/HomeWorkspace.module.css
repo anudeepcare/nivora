@@ -926,3 +926,20 @@
   display: flex;
   flex-direction: column;
 }
+
+.priceDetails > summary {
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 44px;
+  align-content: center;
+}
+.priceDetails > summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.priceDetails[open] > summary {
+  margin-bottom: 12px;
+}
+.home.home.home .priceDetails {
+  align-self: start;
+}

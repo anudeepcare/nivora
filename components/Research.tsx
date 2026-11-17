@@ -2,6 +2,8 @@
 import { researchLenses, lensForSection } from "@/lib/reference-navigation";
 import cockpit from "./ReferenceCockpit.module.css";
 import ReferenceAtlas from "./ReferenceAtlas";
+import ResearchWorkspace from "./ResearchWorkspace";
+import EarningsReview from "./EarningsReview";
 import CompanyEventCalendar from "./CompanyEventCalendar";
 import IndicatorOverview from "./IndicatorOverview";
 import SentiSensePanels from "./SentiSensePanels";
@@ -89,9 +91,10 @@ import PriceStudyChart from "./PriceStudyChart";
 const Financials = dynamic(() => import("./FinancialPicture"), {
   loading: () => <p role="status">Loading…</p>,
 });
-import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
+import { TechnicalPicture } from "./ResearchDetails";
+import OwnershipPicture from "./OwnershipPicture";
+import Analyst from "./Analyst";
 import { groupHistory } from "@/lib/chart-period";
-import EarningsReview from "./EarningsReview";
 const DcaResearch = dynamic(() => import("./DcaResearch"), {
   loading: () => <p role="status">Loading…</p>,
 });
@@ -472,6 +475,25 @@ export default function Research({ symbol }: { symbol: string }) {
   const supportingSections = activeLens.sections.filter((section) =>
     visible.includes(section),
   );
+  const intervalControls =
+    tab === "Technicals" ? (
+      <div className="segments" aria-label="Chart interval">
+        {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
+          <button
+            key={v}
+            className={frequency === v ? "active" : ""}
+            aria-pressed={frequency === v}
+            onClick={() => {
+              setFrequency(v);
+              rangeTouched.current = true;
+              setRange(v === "Monthly" ? "5Y" : "1Y");
+            }}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
+    ) : undefined;
   const chart = (
     <section className="plot-section">
       <header className="row between chart-head">
@@ -494,27 +516,10 @@ export default function Research({ symbol }: { symbol: string }) {
           ))}
         </div>
       </header>
-      {tab === "Technicals" && (
-        <div className="segments" aria-label="Chart interval">
-          {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
-            <button
-              key={v}
-              className={frequency === v ? "active" : ""}
-              aria-pressed={frequency === v}
-              onClick={() => {
-                setFrequency(v);
-                rangeTouched.current = true;
-                setRange(v === "Monthly" ? "5Y" : "1Y");
-              }}
-            >
-              {v}
-            </button>
-          ))}
-        </div>
-      )}
       {bars.length ? (
         <PriceStudyChart
           research={r}
+          controls={intervalControls}
           onOptions={undefined}
           bars={chartBars}
           range={frequency === "Daily" ? range : `${range} ${frequency}`}
@@ -522,11 +527,14 @@ export default function Research({ symbol }: { symbol: string }) {
           contrast={tab === "Snapshot"}
         />
       ) : (
-        <div className="chart-empty" role="status">
-          {short.loading
-            ? "Loading this period…"
-            : short.error || "No observations in this period."}
-        </div>
+        <>
+          {intervalControls}
+          <div className="chart-empty" role="status">
+            {short.loading
+              ? "Loading this period…"
+              : short.error || "No observations in this period."}
+          </div>
+        </>
       )}
       <div className="chart-note">
         <DataStamp
@@ -709,8 +717,9 @@ export default function Research({ symbol }: { symbol: string }) {
             <ReferenceAtlas research={r} onTab={switchTab} />
             <div className={cockpit.primaryChart}>{chart}</div>
             <details className={cockpit.deepEvidence}>
-              <summary>Detailed business, price and decision evidence</summary>
+              <summary>Decision context & supporting inputs</summary>
               <DecisionOverview
+                compact
                 key={r.company.symbol}
                 research={r}
                 onTab={switchTab}
@@ -753,94 +762,154 @@ export default function Research({ symbol }: { symbol: string }) {
             }
           >
             {tab === "News" && (
-              <>
-                <CompanyEventCalendar key={r.company.symbol} research={r} />
-                <CompanyUpdates research={r} preview={!!demo}>
-                  <EarningsReview
-                    research={r}
-                    now={demo ? Date.parse(r.retrievedAt) : Date.now()}
-                  />
-                </CompanyUpdates>
-                <SentiSensePanels
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                  group="events"
-                />
-                <details className="research-reference">
-                  <summary>Earnings history &amp; estimates</summary>
-                  <EarningsWorkspace research={r} />
-                </details>
-              </>
+              <ResearchWorkspace
+                key={`${r.company.symbol}-events`}
+                label="Events"
+                views={[
+                  {
+                    title: "Calendar",
+                    content: <CompanyEventCalendar research={r} />,
+                  },
+                  {
+                    title: "News & filings",
+                    content: <CompanyUpdates research={r} preview={!!demo} />,
+                  },
+                  {
+                    title: "Earnings & estimates",
+                    content: (
+                      <>
+                        <EarningsReview research={r} contextOnly />
+                        <EarningsWorkspace research={r} />
+                      </>
+                    ),
+                  },
+                  {
+                    title: "Stories & reactions",
+                    content: (
+                      <SentiSensePanels
+                        symbol={r.company.symbol}
+                        preview={!!demo}
+                        group="events"
+                      />
+                    ),
+                  },
+                ]}
+              />
             )}
             {tab === "Advanced" && (
-              <>
-                <IndicatorOverview research={r} />
-                <details className={cockpit.deepEvidence}>
-                  <summary>Risk, position &amp; scenario tools</summary>
-                  <AdvancedResearch key={r.company.symbol} research={r} />
-                </details>
-                <details className={cockpit.deepEvidence}>
-                  <summary>
-                    Company filings, operating metrics &amp; source evidence
-                  </summary>
-                  <SentiSensePanels
-                    symbol={r.company.symbol}
-                    preview={!!demo}
-                    group="indicators"
-                  />
-                </details>
-              </>
+              <ResearchWorkspace
+                key={`${r.company.symbol}-indicators`}
+                label="Indicators"
+                views={[
+                  {
+                    title: "Business & market",
+                    content: <IndicatorOverview research={r} />,
+                  },
+                  {
+                    title: "Risk & research tools",
+                    content: (
+                      <AdvancedResearch key={r.company.symbol} research={r} />
+                    ),
+                  },
+                  {
+                    title: "Operating & short-interest evidence",
+                    content: (
+                      <SentiSensePanels
+                        symbol={r.company.symbol}
+                        preview={!!demo}
+                        group="indicators"
+                      />
+                    ),
+                  },
+                ]}
+              />
             )}
             {tab === "Options" && (
-              <>
-                <SentiSensePanels
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                  group="options"
-                />
-                <OptionsMarketOverview preview={!!demo} />
-                <details className={cockpit.deepEvidence}>
-                  <summary>
-                    Contract tools, practice &amp; options guide
-                  </summary>
-                  <OptionsDesk
-                    key={r.company.symbol}
-                    research={r}
-                    preview={!!demo}
-                  />
-                </details>
-              </>
+              <ResearchWorkspace
+                key={`${r.company.symbol}-options`}
+                label="Options"
+                views={[
+                  {
+                    title: "Company positioning",
+                    content: (
+                      <SentiSensePanels
+                        symbol={r.company.symbol}
+                        preview={!!demo}
+                        group="options"
+                      />
+                    ),
+                  },
+                  {
+                    title: "Market overview",
+                    content: <OptionsMarketOverview preview={!!demo} />,
+                  },
+                  {
+                    title: "Contract tools & practice",
+                    content: (
+                      <OptionsDesk
+                        key={r.company.symbol}
+                        research={r}
+                        preview={!!demo}
+                      />
+                    ),
+                  },
+                ]}
+              />
             )}
             {tab === "Analysts" && (
-              <>
-                <SentiSensePanels
-                  group="analysts"
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                />
-                <section aria-label="EODHD analyst estimates and model evidence">
-                  <header className="section-head">
-                    <div>
-                      <h2>Estimates &amp; model evidence</h2>
-                      <p>
-                        Separate source coverage and reporting periods. These
-                        figures are not merged with the analyst consensus above.
-                      </p>
-                    </div>
-                  </header>
-                  <TargetsEstimates
-                    research={r}
-                    ratings={<AnalystRatings research={r} hideConsensus />}
-                  />
-                </section>
-              </>
+              <ResearchWorkspace
+                key={`${r.company.symbol}-analysts`}
+                label="Analyst evidence"
+                views={[
+                  {
+                    title: "Consensus & revisions",
+                    content: (
+                      <SentiSensePanels
+                        group="analysts"
+                        symbol={r.company.symbol}
+                        preview={!!demo}
+                      />
+                    ),
+                  },
+                  {
+                    title: "Estimates & model evidence",
+                    content: (
+                      <section aria-label="Separate estimates and model evidence">
+                        <p className="small muted">
+                          Separate source coverage and reporting periods. These
+                          figures are not merged with the consensus feed.
+                        </p>
+                        <TargetsEstimates
+                          research={r}
+                          ratings={
+                            <AnalystRatings research={r} hideConsensus />
+                          }
+                        />
+                      </section>
+                    ),
+                  },
+                ]}
+              />
             )}
             {tab === "Financials" && (
-              <>
-                <Financials research={r} />
-                <BusinessHistory research={r} />
-                <FinancingContext research={r} />
-              </>
+              <ResearchWorkspace
+                key={`${r.company.symbol}-business`}
+                label="Business evidence"
+                views={[
+                  {
+                    title: "Financial statements",
+                    content: <Financials research={r} />,
+                  },
+                  {
+                    title: "Operating history",
+                    content: <BusinessHistory research={r} />,
+                  },
+                  {
+                    title: "Funding & dilution",
+                    content: <FinancingContext research={r} />,
+                  },
+                ]}
+              />
             )}
             {tab === "Valuation" && <ValueStudio research={r} />}
             {tab === "Technicals" && technicalsHidden && (
@@ -905,46 +974,67 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Thesis" && (
               <>
-                <div
-                  className={cockpit.ownershipGrid}
-                  style={
-                    congressionalHidden
-                      ? { gridTemplateColumns: "minmax(0, 1fr)" }
-                      : undefined
-                  }
-                >
-                  <section aria-label="Institutional and insider evidence">
-                    <SentiSensePanels
-                      symbol={r.company.symbol}
-                      preview={!!demo}
-                      group="ownership"
-                    />
-                  </section>
-                  {!congressionalHidden && (
-                    <section aria-label="Congressional activity">
-                      <CongressDisclosures
-                        symbol={r.company.symbol}
-                        preview={!!demo}
-                      />
-                    </section>
-                  )}
-                </div>
-                <details className={cockpit.deepEvidence}>
-                  <summary>
-                    Business case, ownership context &amp; research assistant
-                  </summary>
-                  <ThesisPicture research={r} />
-                  <BusinessMap key={r.company.symbol} research={r} />
-                </details>
-                <details className="edge-method">
-                  <summary>How the business is assessed</summary>
-                  <DecisionWorkspace
-                    research={r}
-                    onTab={switchTab}
-                    part="detail"
-                  />
-                  <DecisionWatch key={r.company.symbol} research={r} />
-                </details>
+                <ResearchWorkspace
+                  key={`${r.company.symbol}-ownership-context`}
+                  label="Ownership"
+                  views={[
+                    {
+                      title: "Dated filings & activity",
+                      content: (
+                        <div
+                          className={cockpit.ownershipGrid}
+                          style={
+                            congressionalHidden
+                              ? { gridTemplateColumns: "minmax(0, 1fr)" }
+                              : undefined
+                          }
+                        >
+                          <section aria-label="Institutional and insider evidence">
+                            <SentiSensePanels
+                              symbol={r.company.symbol}
+                              preview={!!demo}
+                              group="ownership"
+                            />
+                          </section>
+                          {!congressionalHidden && (
+                            <section aria-label="Congressional activity">
+                              <CongressDisclosures
+                                symbol={r.company.symbol}
+                                preview={!!demo}
+                              />
+                            </section>
+                          )}
+                        </div>
+                      ),
+                    },
+                    {
+                      title: "Reported ownership",
+                      content: <OwnershipPicture research={r} />,
+                    },
+                    {
+                      title: "Business context & assistant",
+                      content: (
+                        <>
+                          <BusinessMap key={r.company.symbol} research={r} />
+                          <Analyst research={r} compact />
+                        </>
+                      ),
+                    },
+                    {
+                      title: "Evidence & alerts",
+                      content: (
+                        <>
+                          <DecisionWorkspace
+                            research={r}
+                            onTab={switchTab}
+                            part="detail"
+                          />
+                          <DecisionWatch key={r.company.symbol} research={r} />
+                        </>
+                      ),
+                    },
+                  ]}
+                />
               </>
             )}
           </FeatureGate>

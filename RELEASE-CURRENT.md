@@ -1,64 +1,36 @@
-# Current release — synchronized analyst targets and Pace v6
+# Current source candidate — November 17, 2026
 
-This release supersedes earlier notes saying the candidate was offline or monthly-v5 remained the current app engine.
+Version: 1.0.0. Status: implementation review and internal testing.
 
-## UX priority release
-- Simplified Pace into one reading, one action line, the next conditional zone and one Levels & history disclosure. Stage exploration, historical context and the link to full technicals remain available.
-- Replaced 627 lines of overlapping Pace CSS with a focused module; no classifier or investment-policy change in this pass.
-- Added Since you last checked: device-local prior-visit comparisons of compatible Pace, same-period EPS estimates, analyst consensus and newer price observations. Maximum three changes, no first-visit noise, provider/date/currency validation, refresh updates against the original visit baseline.
-- Preserved advanced/Pro tools and metrics. Restored the expectations calculator under Valuation; estimate coverage and earnings yields open on demand. Empty Overview scaffolding stays hidden while full tabs remain available.
-- Refined owner documentation with a calm cover, topic navigation, search, proper lists/tables, mobile chapter selection, reading time and keyboard-friendly chapter navigation. Technical source remains owner-only and opt-in; full download remains available.
-- Updated the guide to explain active monthly-v6, historical v5 fallback and current validation limits.
+This document describes the current source handoff, not a production deployment, a guarantee that every paid endpoint is available, or completed desktop/mobile acceptance. Earlier release notes and historical validation results are preserved in `docs/release-notes-nov08-historical.md`; they are not current verification evidence.
 
-## Options cleanup
-- Removed the session-activity panel.
-- Saved views and account controls remain collapsed; empty saved-view and replay selectors are hidden.
-- Shortened control labels and removed repeated keyboard/tutorial paragraphs.
-- Expiration comparison stays collapsed and full width, retaining actual observation dates and missing-data distinctions.
+## Scope
 
-## Target synchronization
-- Overview, Valuation and the Analyst targets tab reuse AnalystTargets and consensusOutlook. Values, reference price, changes and target dates are identical for the same research snapshot.
-- Valid analyst targets take the headline position; calculated AURYN scenarios stay separately labelled. Overview falls back to the selected AURYN model if analyst targets are absent.
-- Low / consensus / high retain distinct coral / gold / teal cards. Missing bounds are never invented.
-- Removed repeated target metadata paragraphs. This does not establish provider parity with DCA Optimizer.
-- APP live payload remains unverified because protected-preview access was blocked; no corrected APP figures are asserted.
+This pass refines the existing working implementation toward the supplied design. It is not a claim that a new codebase was independently built from zero or that every screen exactly matches Figma. Useful existing research, paid-product groundwork, account controls, and specialist tools are intended to remain accessible. Duplicate presentation is consolidated rather than treated as permission to remove features.
 
-## App changes
-- Enabled the frozen monthly-v6 technical classifier in the shared analysis engine used by Research and portfolio/watchlist assessments. No per-ticker overrides or runtime training.
-- Preserved monthly-v5 historical readings before the model cutoff and fallback for crypto/insufficient history. Legacy backtests remain explicitly labeled.
-- Current conditional levels are recalculated using the new classifier; obsolete v5 buy thresholds are not displayed for v6 readings.
-- Pace remains first on Overview. Historical closing zones stay distinct from current provisional zones.
-- Removed duplicate valuation scenarios. Restored coral/gold/teal bear/base/bull styling; negative percentage changes remain negative regardless of scenario label.
-- Targets uses the same selected default scenario model; explicit user P/E assumptions remain separate.
-- Removed repeated earnings thesis/preparation commentary and redundant notes fetching. Kept actual EPS, estimate, surprise, next report date and earnings history.
-- Removed the long options-map tutorial and its unused CSS.
+## Implemented in this candidate
 
-## Verification
-The actual shared TypeScript engine reproduces all 589 saved candidate outputs exactly. In the saved reserved subset, agreement is 159/182 (87.4%); reference deeper categories match 53/69 (76.8%). This explored snapshot is not independent future-date validation or return-prediction accuracy. No 99% claim.
+- Compact research, Today, comparison, and portfolio presentation. Existing calculations and specialist tools remain separate from visual refinements; no financial accuracy claim follows from a layout change.
+- Settings places signal controls first, provides section navigation, and consolidates position concentration, cash reserve, and modeled options-loss preferences into one guardrail section. These are decision-support reviews, not order execution or trading restrictions.
+- Saved research-panel visibility is applied without changing provider permissions or subscription entitlements. Research style, horizon, depth, appearance, chart/watchlist defaults, and account controls remain available.
+- Support inbox refresh and filter reset, clear external-email reply behavior, and a distinction between provider acceptance and delivery. Retry behavior remains a real resend operation, not a preview action.
+- Compact owner handbook and help reading surfaces. Help search trims spaces, reports matches, and can be reset. Owner-only content and authorization remain protected.
+- Aligned pricing and footer layout, retained plan and legal links, and concise current What's New notes. Candidate notes do not trigger a published-release announcement.
+
+## Important boundaries
+
+- Account history must not be presented as reconstructed performance from today's holdings. The implemented ledger workflow requires supported complete records and dated evidence; missing evidence must remain unavailable rather than invented. Holdings gains/losses and current allocation are different measures.
+- Price timestamps, missing datasets, and provider coverage still matter. A successful refresh does not prove a new market observation or universal endpoint entitlement.
+- Additional notification delivery is not active. Existing in-app alert setup must not be described as email/push delivery.
+- Analyst targets, conditional valuation scenarios, historical ranges, and Pace answer different questions. No reference-provider parity, future-return accuracy, or new independent validation is claimed here.
+- Paid-product groundwork has not been declared production-ready merely because its controls exist. Live provider access, supported datasets, billing, communications, and sensitive account actions require their own verification.
+
+## Verification status
+
+Focused settings, guardrail, help, admin/support, access, and release-note tests have been run during implementation. TypeScript and ESLint have also been run on the working tree. Exact final integrated test totals belong to the final build report because other changes can still occur before packaging.
+
+Still pending as acceptance criteria: end-to-end live-data checks, the complete screen/interaction inventory against the supplied reference, desktop/mobile/installed-app review, independent financial/reference reconciliation, and confirmation of complete paid-plan endpoint coverage. Do not label the application fully verified on the basis of unit tests alone.
 
 ## Delivery
-Source only; no deployment or database changes. Optional public Pace record publishing requires scripts/sql/enable-pace-v6.sql to accept the new version. App display/calculation does not require that SQL. Existing public-record permissions are preserved. No newly verified APP forecast values are claimed.
 
-## Reference-led responsive refinement — November 8
-- Valuation now leads with the HTML-inspired editable “What the price needs” sentence, followed by the existing bear/base/bull view. EPS requirements use the selected price reference; comparable positive estimates have a common-scale bar comparison.
-- Ownership and Ask AURYN share their own row; the investment case and business map retain their desktop alignment.
-- Financial categories, technical panels, Overview evidence, Home, Watchlist and public examples use coordinated gutters and card sizing.
-- Model-fit detail remains accessible without dominating the valuation page. Calculations, scenarios and Pro tools remain available.
-
-## Reference completeness — November 8
-- Added the 30-second read with the selected holding/entry decision, available price movement, target comparison and momentum context.
-- Equalized top fact cells, kept individual help/dates and preserved scheduled earnings priority.
-- Added switchable analyst-target and moving-average chart references, alongside the existing independent Fibonacci overlay.
-- Paired consensus with data freshness; compact freshness strip when target coverage is missing.
-- Aligned Pace/chart boundaries and condensed repeated evidence/risk text.
-- Reworked public product questions into three consistent cards.
-
-## Readability and workspace review — November 8
-
-Clearer Pace summary with a filled diamond; stronger text contrast; compact mobile financial-period controls; short evidence reads in Business, Case, Technicals, Targets, Options and Portfolio. Ownership adds the largest supplied holder and explanations. Options groups its command/filter surfaces and removes repeated expiry/range metadata. The valuation sentence keeps accessible labels outside the visible text. Portfolio distinguishes missing calendar coverage and defers five optional analysis modules until opened. Research navigation follows the selected tab as layout settles. Calculations, scenarios and tools remain in place.
-
-This is a source release; no production deployment or database changes were performed.
-
-## Decision context and Options alignment
-
-Added Review first to holdings and watchlists using the shared existing decision record. Includes measured reasons, risk and reassessment conditions with reference/report dates. Personal concentration thresholds prompt a separate position-size review without converting a healthy business into Sell. Options controls, tabs, filters and exposure-summary values use coordinated alignment rules. Scenario forecasting accuracy remains unvalidated; the UI does not assign invented probabilities.
+This work does not deploy the application, send support messages, purchase services, or change live account data. Deployment and environment configuration are separate from the source handoff. Do not apply historical SQL or migration instructions solely because they appear in archived notes; use the current setup documentation and verify the intended environment first.

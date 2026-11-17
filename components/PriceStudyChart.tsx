@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Layers, ArrowRight, Info } from "lucide-react";
 import { indicators } from "@/lib/analysis";
 import { consensusOutlook } from "@/lib/outlook";
@@ -18,6 +18,7 @@ export default function PriceStudyChart({
   style,
   contrast,
   onOptions,
+  controls,
 }: {
   research: Research;
   bars: Candle[];
@@ -25,6 +26,7 @@ export default function PriceStudyChart({
   style: "line" | "candles";
   contrast?: boolean;
   onOptions?: () => void;
+  controls?: ReactNode;
 }) {
   const [overlay, setOverlay] = useState(false);
   const [showReferences, setShowReferences] = useState(true);
@@ -63,7 +65,8 @@ export default function PriceStudyChart({
   );
   return (
     <>
-      <div className="signal-chart-tools">
+      <div className={`signal-chart-tools ${s.tools}`}>
+        {controls}
         <button
           className="btn"
           aria-label="Fibonacci levels"
@@ -87,30 +90,22 @@ export default function PriceStudyChart({
           Technicals for custom anchors, moving averages, momentum, volatility
           and volume studies.
         </Help>
+        {!overlay && references.length > 0 && (
+          <button
+            type="button"
+            className="btn"
+            aria-pressed={showReferences}
+            onClick={() => setShowReferences(!showReferences)}
+          >
+            {showReferences ? "Hide" : "Show"} references
+          </button>
+        )}
         {onOptions && (
           <button className="text-link" onClick={onOptions}>
             Gamma & options <ArrowRight size={15} />
           </button>
         )}
       </div>
-      {!overlay && references.length > 0 && (
-        <div className={s.references} aria-label="Chart references">
-          <button
-            type="button"
-            aria-pressed={showReferences}
-            onClick={() => setShowReferences(!showReferences)}
-          >
-            {showReferences ? "Hide" : "Show"} references
-          </button>
-          {showReferences &&
-            references.map((row) => (
-              <span key={row.label}>
-                <i style={{ background: row.color }} />
-                {row.label} {amount(row.price, research.quote.currency)}
-              </span>
-            ))}
-        </div>
-      )}
       <PriceChart
         bars={bars}
         range={range}
@@ -118,6 +113,19 @@ export default function PriceStudyChart({
         contrast={contrast}
         levels={overlay ? levels : showReferences ? references : []}
       />
+      {!overlay && references.length > 0 && (
+        <details className={s.referenceDetails}>
+          <summary>Reference prices</summary>
+          <div className={s.references} aria-label="Chart references">
+            {references.map((row) => (
+              <span key={row.label}>
+                <i style={{ background: row.color }} />
+                {row.label} {amount(row.price, research.quote.currency)}
+              </span>
+            ))}
+          </div>
+        </details>
+      )}
       <details className="chart-context" open>
         <summary>Price range & completed volume</summary>
         <StockFacts research={research} priceContext />

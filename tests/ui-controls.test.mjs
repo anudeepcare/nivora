@@ -186,6 +186,8 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
       useState: React.useState,
       FinancialDetailTable: empty,
       FinancialExplorer: empty,
+      MarketCapHistory: ({ symbol }) =>
+        React.createElement("span", { "data-market-cap": symbol }),
       ResearchCompare: empty,
       researchPeriods,
       ...format,
@@ -198,6 +200,7 @@ test("Financials avoids duplicate overview tiles and retains statement rows with
     React.createElement(FinancialPicture, { research: demoData.research.MSFT }),
   );
   assert.equal((html.match(/class="metric"/g) || []).length, 0);
+  assert.match(html, /data-market-cap="MSFT"/);
   for (const label of [
     "Revenue",
     "Operating margin",
@@ -883,14 +886,38 @@ test("the single settings page preserves account, membership and help", () => {
     PageHeading: empty,
     ResearchPreferenceControls: empty,
     DisplayPreferences: empty,
-    SettingsExperience: loadComponent("components/SettingsExperience.tsx", "SettingsExperience", {
-      React,
-      useResearchPreferences: () => ({preferences:{detail:"essential",horizon:"long"},setPreferences:()=>{},disabled:false,error:null}),
-    }),
-    SettingsSignalPolicies: loadComponent("components/SettingsExperience.tsx", "SettingsSignalPolicies", {
-      React,
-      useWorkspacePreferences: () => ({preferences:{hiddenSignals:[],maxLossPercent:null,cashReservePercent:null},save:()=>{},saving:false,ready:true,localOnly:false,error:null}),
-    }),
+    SettingsExperience: loadComponent(
+      "components/SettingsExperience.tsx",
+      "SettingsExperience",
+      {
+        React,
+        useResearchPreferences: () => ({
+          preferences: { detail: "essential", horizon: "long" },
+          setPreferences: () => {},
+          disabled: false,
+          error: null,
+        }),
+      },
+    ),
+    SettingsSignalPolicies: loadComponent(
+      "components/SettingsExperience.tsx",
+      "SettingsSignalPolicies",
+      {
+        React,
+        useWorkspacePreferences: () => ({
+          preferences: {
+            hiddenSignals: [],
+            maxLossPercent: null,
+            cashReservePercent: null,
+          },
+          save: () => {},
+          saving: false,
+          ready: true,
+          localOnly: false,
+          error: null,
+        }),
+      },
+    ),
   });
   const html = renderToStaticMarkup(React.createElement(Settings));
   assert.doesNotMatch(html, /href="\/(discover|research-lab|trading)"/);
@@ -1252,7 +1279,10 @@ test("monthly chart distinguishes unavailable warm-up data from ordinary 1x cond
     "components/AccumulationDesk.tsx",
     "AccumulationDesk",
     {
-      styles: { paceChartFirst: "paceChartFirst", paceReadings: "paceReadings" },
+      styles: {
+        paceChartFirst: "paceChartFirst",
+        paceReadings: "paceReadings",
+      },
       React,
       useMemo: React.useMemo,
       useState: React.useState,
@@ -1494,7 +1524,10 @@ test("weekly accumulation has its own history, date labels and no misleading mon
     "components/AccumulationDesk.tsx",
     "AccumulationDesk",
     {
-      styles: { paceChartFirst: "paceChartFirst", paceReadings: "paceReadings" },
+      styles: {
+        paceChartFirst: "paceChartFirst",
+        paceReadings: "paceReadings",
+      },
       React,
       useMemo: React.useMemo,
       useState: (initial) => React.useState(++state === 1 ? "weekly" : initial),
@@ -1661,7 +1694,10 @@ test("technical accumulation shows both periods and anchors calculations to comp
     "components/AccumulationDesk.tsx",
     "AccumulationDesk",
     {
-      styles: { paceChartFirst: "paceChartFirst", paceReadings: "paceReadings" },
+      styles: {
+        paceChartFirst: "paceChartFirst",
+        paceReadings: "paceReadings",
+      },
       React,
       useMemo: React.useMemo,
       useState: React.useState,

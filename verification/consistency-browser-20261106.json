@@ -1,0 +1,636 @@
+{
+  "browser": [
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/watchlist",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/research/MSFT",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/research/MSFT?tab=Financials",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "financialChart": 1,
+      "metricValue": "Jun 30, 2021: $130B"
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/settings",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/help",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/contact",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/watchlist",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/research/MSFT",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/research/MSFT?tab=Financials",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "financialChart": 1,
+      "metricValue": "Jun 30, 2021: $130B"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/settings",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/help",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/contact",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 0
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/watchlist",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/research/MSFT",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/research/MSFT?tab=Financials",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "financialChart": 1,
+      "metricValue": "Jun 30, 2021: $130B"
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/settings",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/help",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/contact",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/watchlist",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/research/MSFT",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/research/MSFT?tab=Financials",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "financialChart": 1,
+      "metricValue": "Jun 30, 2021: $130B"
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/settings",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/help",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/contact",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/watchlist",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/research/MSFT",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/research/MSFT?tab=Financials",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "financialChart": 1,
+      "metricValue": "Jun 30, 2021: $130B"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/settings",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/help",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/contact",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 0
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/watchlist",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/research/MSFT",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/research/MSFT?tab=Financials",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "financialChart": 1,
+      "metricValue": "Jun 30, 2021: $130B"
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/settings",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/help",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/contact",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/",
+      "status": 200,
+      "overflow": false,
+      "errors": []
+    }
+  ],
+  "chartFollowup": [
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true,
+      "pointerValue": "Aug 25, 2026: $31,470.34, value of included holdings",
+      "pointerInspection": true
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true,
+      "pointerValue": "Aug 25, 2026: $31,470.34, value of included holdings",
+      "pointerInspection": true
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true,
+      "pointerValue": "Aug 28, 2026: $31,818.40, value of included holdings",
+      "pointerInspection": true
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true,
+      "pointerValue": "Aug 28, 2026: $31,818.40, value of included holdings",
+      "pointerInspection": true
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true,
+      "pointerValue": "Aug 31, 2026: $32,082.97, value of included holdings",
+      "pointerInspection": true
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/overview",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "homeChart": 1,
+      "homeValue": "Sep 15, 2026: $169.12"
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "route": "/preview/portfolio",
+      "status": 200,
+      "overflow": false,
+      "errors": [],
+      "chart": 1,
+      "firstValue": "Jul 27, 2026: $31,845.07, value of included holdings",
+      "lastValue": "Oct 16, 2026: $34,363.00, value of included holdings",
+      "inspection": true,
+      "pointerValue": "Aug 31, 2026: $32,082.97, value of included holdings",
+      "pointerInspection": true
+    }
+  ],
+  "automatedTests": {
+    "passed": 1072,
+    "failed": 0,
+    "postCorrectionFocusedPassed": 19
+  },
+  "limitations": [
+    "Preview fixtures; no live mutations",
+    "Installed iPhone PWA and device frame pacing unverified",
+    "Production not deployed"
+  ]
+}

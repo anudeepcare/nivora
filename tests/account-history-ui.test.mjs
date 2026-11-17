@@ -29,6 +29,13 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
   const calls = [];
   const bindings = {
     React,
+    styles: new Proxy({}, { get: (_, key) => key }),
+    useEffect: () => {},
+    useRef: (initial) => {
+      const i = cursor++;
+      if (!(i in state)) state[i] = { current: initial };
+      return state[i];
+    },
     useState: (initial) => {
       const i = cursor++;
       if (!(i in state)) state[i] = initial;
@@ -39,21 +46,54 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
       calls.push([path, body]);
       if (body && body.revision !== serverRevision)
         throw Error("Reload transactions before calculating history.");
+      if (path === "account-history/jobs" && !body.id)
+        return {
+          id: "job1",
+          completed: 0,
+          total: 2,
+          result: null,
+          retry: false,
+        };
       return path === "transactions"
         ? { revision: serverRevision, rows: [] }
         : {
-            status: "available",
-            reason: "Confirmed",
-            revision: 7,
-            points: [
-              {
-                date: "2026-01-02",
-                equity: 1100,
-                cash: 500,
-                netContributions: 1000,
-                gain: 100,
-              },
-            ],
+            id: "job1",
+            completed: 2,
+            total: 2,
+            retry: false,
+            result: {
+              status: "available",
+              reason: "Confirmed",
+              benchmarks: [
+                {
+                  symbol: "SPY",
+                  status: "available",
+                  points: [
+                    { date: "2026-01-02", value: 1000 },
+                    { date: "2026-01-06", value: 1300 },
+                  ],
+                  source: "EODHD",
+                  basis: "split-dividend-adjusted",
+                },
+              ],
+              revision: 7,
+              points: [
+                {
+                  date: "2026-01-02",
+                  equity: 1100,
+                  cash: 500,
+                  netContributions: 1000,
+                  gain: 100,
+                },
+                {
+                  date: "2026-01-06",
+                  equity: 1200,
+                  cash: 500,
+                  netContributions: 1000,
+                  gain: 200,
+                },
+              ],
+            },
           };
     },
   };
@@ -75,6 +115,8 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
   let tree = nodes();
   const buttons = () => nodes().filter((n) => n.type === "button");
   assert.equal(calls.length, 0);
+  assert.ok(tree.some((n) => n.props.className === "actions"));
+  assert.ok(tree.some((n) => n.props.className === "confirmation"));
   assert.equal(buttons()[1].props.disabled, true);
   assert.equal(tree.find((n) => n.type === "input").props.disabled, true);
   await buttons()[0].props.onClick();
@@ -88,7 +130,7 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
   assert.equal(tree.find((n) => n.type === "input").props.disabled, true);
   assert.equal(buttons()[1].props.disabled, true);
   assert.deepEqual(calls[1], [
-    "account-history",
+    "account-history/jobs",
     { revision: 7, confirmComplete: true },
   ]);
   assert.ok(!tree.some((n) => n.type === "svg"));
@@ -100,9 +142,46 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
   await buttons()[1].props.onClick();
   tree = nodes();
   assert.deepEqual(calls.at(-1), [
-    "account-history",
-    { revision: 8, confirmComplete: true },
+    "account-history/jobs",
+    { revision: 8, confirmComplete: true, id: "job1" },
   ]);
   assert.ok(tree.some((n) => n.type === "svg"));
+  assert.equal(tree.filter((n) => n.type === "polyline").length, 3);
+  assert.ok(
+    tree.some(
+      (n) =>
+        n.type === "summary" &&
+        n.props.children === "Market comparison · SPY / QQQ",
+    ),
+  );
   assert.ok(tree.some((n) => n.type === "table"));
+  assert.ok(
+    tree.some(
+      (n) =>
+        n.type === "input" &&
+        n.props.type === "range" &&
+        n.props["aria-label"] === "Inspect account history date",
+    ),
+  );
+  assert.ok(
+    tree.some((n) => n.type === "text" && n.props.children === "2026-01-02"),
+  );
+  assert.ok(
+    tree.some((n) => n.type === "text" && n.props.children === "2026-01-06"),
+  );
+  assert.ok(
+    tree.some((n) => n.type === "strong" && n.props.children === "2026-01-06"),
+  );
+  tree
+    .find((n) => n.type === "input" && n.props.type === "range")
+    .props.onChange({ target: { value: "0" } });
+  assert.ok(
+    nodes().some(
+      (n) => n.type === "strong" && n.props.children === "2026-01-02",
+    ),
+  );
+  assert.match(
+    nodes().find((n) => n.props.type === "range").props["aria-valuetext"] ?? "",
+    /2026-01-02.*1100/,
+  );
 });

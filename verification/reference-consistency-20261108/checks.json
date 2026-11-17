@@ -1,0 +1,34 @@
+{
+  "productionBuild": "passed",
+  "lint": "passed",
+  "types": "passed",
+  "fullSuiteBeforeCanonicalReferenceAdjustment": {
+    "passed": 1238,
+    "failed": 0
+  },
+  "focusedFinalRegression": {
+    "passed": 72,
+    "failed": 0
+  },
+  "updatedUIControlsIncludingPositiveAndMissingEPS": {
+    "passed": 63,
+    "failed": 0
+  },
+  "populatedComponents": "40 width/theme/view combinations plus native input interaction checks",
+  "publicRoutes": "24 combinations passed",
+  "deployment": "not performed",
+  "appRoutes": {
+    "passed": 78,
+    "errors": 0,
+    "widths": [
+      390,
+      768,
+      1440
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "expandedStates": true
+  }
+}

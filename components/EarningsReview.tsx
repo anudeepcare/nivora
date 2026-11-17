@@ -8,9 +8,11 @@ import { earningsCalendar } from "@/lib/earnings-calendar";
 export default function EarningsReview({
   research: r,
   now = Date.now(),
+  contextOnly = false,
 }: {
   research: Research;
   now?: number;
+  contextOnly?: boolean;
 }) {
   const review = earningsReview(
     r.evidence?.earnings ?? [],
@@ -23,42 +25,48 @@ export default function EarningsReview({
   const nextReport = earningsCalendar(r, now).next?.date;
   return (
     <section className="earnings-review card">
-      <header className="section-head">
-        <div>
-          <h2>Earnings snapshot</h2>
-        </div>
-      </header>
-      {review ? (
+      {!contextOnly && (
         <>
-          <h3>{review.label}</h3>
-          <p className="small muted">{dateLabel(review.date)} · Reported EPS</p>
-          <dl className="earnings-kpis">
+          <header className="section-head">
             <div>
-              <dt>Actual</dt>
-              <dd>{review.actual?.toFixed(2) ?? "Pending"}</dd>
+              <h2>Earnings snapshot</h2>
             </div>
-            <div>
-              <dt>Estimate</dt>
-              <dd>{review.estimate?.toFixed(2) ?? "Unavailable"}</dd>
-            </div>
-            <div>
-              <dt>Surprise</dt>
-              <dd
-                className={
-                  review.surprise !== null && review.surprise < 0
-                    ? "negative"
-                    : ""
-                }
-              >
-                {review.surprise !== null
-                  ? percent(review.surprise, true)
-                  : "Unavailable"}
-              </dd>
-            </div>
-          </dl>
+          </header>
+          {review ? (
+            <>
+              <h3>{review.label}</h3>
+              <p className="small muted">
+                {dateLabel(review.date)} · Reported EPS
+              </p>
+              <dl className="earnings-kpis">
+                <div>
+                  <dt>Actual</dt>
+                  <dd>{review.actual?.toFixed(2) ?? "Pending"}</dd>
+                </div>
+                <div>
+                  <dt>Estimate</dt>
+                  <dd>{review.estimate?.toFixed(2) ?? "Unavailable"}</dd>
+                </div>
+                <div>
+                  <dt>Surprise</dt>
+                  <dd
+                    className={
+                      review.surprise !== null && review.surprise < 0
+                        ? "negative"
+                        : ""
+                    }
+                  >
+                    {review.surprise !== null
+                      ? percent(review.surprise, true)
+                      : "Unavailable"}
+                  </dd>
+                </div>
+              </dl>
+            </>
+          ) : (
+            <p>Recent reported results are not available in this snapshot.</p>
+          )}
         </>
-      ) : (
-        <p>Recent reported results are not available in this snapshot.</p>
       )}
       <details>
         <summary>What changed in the business?</summary>
@@ -68,7 +76,7 @@ export default function EarningsReview({
               Annual periods {dateLabel(bridge.prior.end)} →{" "}
               {dateLabel(bridge.latest.end)} · {bridge.latest.currency} ·{" "}
               {bridge.latest.basis}. These filings may predate the earnings
-              result above.
+              results.
             </p>
             <ul>
               {bridge.checks.map((check) => (
@@ -93,7 +101,7 @@ export default function EarningsReview({
           </p>
         )}
       </details>
-      {nextReport && (
+      {!contextOnly && nextReport && (
         <p className="small muted">Next report · {dateLabel(nextReport)}</p>
       )}
     </section>

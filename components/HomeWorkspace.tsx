@@ -22,14 +22,7 @@ import {
   relevantHoldingHeadlines,
 } from "@/lib/home-feed";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
-import {
-  ArrowUpRight,
-  Bookmark,
-  CalendarDays,
-  FileText,
-  RefreshCw,
-  Search as SearchIcon,
-} from "lucide-react";
+import { ArrowUpRight, CalendarDays, FileText, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { FeatureGate } from "./Access";
 import CompanySparkline from "./CompanySparkline";
@@ -217,7 +210,7 @@ function HomeOverview() {
     >
       <div className={todayStyles.hero}>
         <Heading
-          title="Three things to review today."
+          title="Your research today."
           subtitle="Decisions, changes and exposure. Everything in context."
           actions={
             <span className="date-chip">
@@ -236,17 +229,6 @@ function HomeOverview() {
         />
       </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <div className={homeStyles.quickLinks}>
-        <Link href={`${prefix}/discover`}>
-          Discover ideas <ArrowUpRight size={16} />
-        </Link>
-        <Link href={`${prefix}/watchlist`}>
-          Your watchlist <Bookmark size={16} />
-        </Link>
-        <Link href={`${prefix}/research`}>
-          Research a company <SearchIcon size={16} />
-        </Link>
-      </div>
       <TodaySequence
         prefix={prefix}
         decision={
@@ -316,7 +298,10 @@ function HomeOverview() {
         <>
           <Coverage state={state} />
           <div className="home-evidence-layout">
-            <section className="home-evidence-panel">
+            <details
+              className={`home-evidence-panel ${homeStyles.priceDetails}`}
+            >
+              <summary>Followed company prices</summary>
               <SectionHead
                 title="Your companies"
                 subtitle="Prices and updates for companies you follow."
@@ -349,7 +334,7 @@ function HomeOverview() {
                   Save an idea or record a holding to make this space yours.
                 </Empty>
               )}
-            </section>
+            </details>
             <section
               className="home-evidence-panel home-events-panel"
               id="home-earnings"

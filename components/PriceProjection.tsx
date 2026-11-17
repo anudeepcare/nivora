@@ -9,8 +9,10 @@ import { projectEarnings, type ProjectionInputs } from "@/lib/price-projection";
 import { amount, dateLabel } from "@/lib/format";
 export default function PriceProjection({
   research: r,
+  embedded = false,
 }: {
   research: Research;
+  embedded?: boolean;
 }) {
   const p = useMemo(
     () => financialPeriods(r.facts, "annual", r.retrievedAt).at(-1),
@@ -83,10 +85,18 @@ export default function PriceProjection({
   const active = cases.find((c) => c.name === selected) ?? cases[1];
   const last = active.rows?.at(-1);
   const spot = r.quote.price;
-  if (!supported) return null;
+  if (!supported)
+    return embedded ? (
+      <p role="status">
+        Personal earnings cases require reconciled positive revenue, earnings
+        and weighted shares in the listing currency. Other supported scenario
+        tools remain available.
+      </p>
+    ) : null;
+  const Container = embedded ? "section" : "details";
   return (
-    <details className="value-personal-model">
-      <summary>Adjust scenarios</summary>
+    <Container className="value-personal-model">
+      {!embedded && <summary>Adjust scenarios</summary>}
       <section className="options-card price-projection">
         <header className="options-heading">
           <div>
@@ -302,6 +312,6 @@ export default function PriceProjection({
           </>
         )}
       </section>
-    </details>
+    </Container>
   );
 }

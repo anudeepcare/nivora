@@ -86,13 +86,14 @@
 }
 .root.root.root .methodGrid > div {
   display: grid;
-  grid-template-columns: 6px minmax(0, 1fr);
+  grid-template-columns: 6px minmax(0, 1fr) auto;
   gap: 8px;
   padding: 0;
   border: 0;
 }
 .root.root.root .methodGrid > div > span {
-  grid-column: 2;
+  grid-column: 3;
+  align-self: start;
   font-size: 11px;
   margin: 0;
   text-align: left;
@@ -162,4 +163,20 @@
 .calculator > summary {
   cursor: pointer;
   font-weight: 600;
+}
+
+.root.root.root > .crosscheck {
+  grid-column: 1 / -1;
+}
+.crosscheck:empty {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .root.root.root .methodGrid > div {
+    grid-template-columns: 6px minmax(0, 1fr);
+  }
+  .root.root.root .methodGrid > div > span {
+    grid-column: 2;
+  }
 }

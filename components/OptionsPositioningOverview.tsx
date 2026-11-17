@@ -75,6 +75,54 @@ export default function OptionsPositioningOverview({
         )}
       </section>
       <section
+        className={styles.volume}
+        aria-label="Reported open-interest concentrations"
+      >
+        <header>
+          <h4>Open-interest concentrations</h4>
+          <span>
+            {p.walls.expiry
+              ? `Expiry ${dateLabel(p.walls.expiry)}`
+              : "Expiry not supplied"}
+          </span>
+        </header>
+        {p.walls.rows.length ? (
+          <div
+            className={styles.scroll}
+            tabIndex={0}
+            role="region"
+            aria-label="Reported strike open interest"
+          >
+            {p.walls.rows.map((wall, index) => (
+              <div
+                className={styles.wall}
+                key={`${wall.side}-${wall.strike}-${index}`}
+              >
+                <span>
+                  {wall.side} · ${number(wall.strike)}
+                </span>
+                <meter
+                  min={0}
+                  max={Math.max(1, ...p.walls.rows.map((row) => row.oi))}
+                  value={wall.oi}
+                  aria-label={`${wall.side} ${wall.strike} open interest`}
+                />
+                <strong>{number(wall.oi)}</strong>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No dated strike-level concentrations supplied.</p>
+        )}
+        <p>
+          {p.walls.maxPain != null && (
+            <>Reported max pain ${number(p.walls.maxPain)} · </>
+          )}
+          Reported subset, not the full chain. Open interest is not dealer gamma
+          or trade direction.
+        </p>
+      </section>
+      <section
         className={styles.activity}
         aria-label="Reported unusual contract activity"
       >

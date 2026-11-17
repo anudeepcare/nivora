@@ -54,7 +54,7 @@ test("Pace chart precedes long interpretation and Indicators opens chart overvie
   );
   assert.match(
     research,
-    /<summary>Risk, position &amp; scenario tools<\/summary>/,
+    /title: "Risk & research tools"/,
   );
 });
 test("indicator cards render six real charts, dated tables and no invented empty-history chart", async () => {

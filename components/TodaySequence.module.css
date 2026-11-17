@@ -147,3 +147,7 @@
     font-size: 14px;
   }
 }
+
+.sequence[data-has-decision="false"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}

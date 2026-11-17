@@ -1,0 +1,482 @@
+[
+  {
+    "route": "/",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Clearer stock research. A better next move.",
+    "main": true,
+    "text": "Skip to content\nAURYN\nSign in\nResearch, connected\nIllustrative product guide\nBusiness\nValue\nPace\n01 / THE RESEARCH LENS\n",
+    "errors": []
+  },
+  {
+    "route": "/changelog",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "What’s new · AURYN",
+    "main": true,
+    "text": "AURYN\n← Back to your workspace\nPRODUCT UPDATES\nWhat’s new\n\nNew tools, thoughtful improvements and the details behind the",
+    "errors": []
+  },
+  {
+    "route": "/help",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN help · Research, accounts and Pace",
+    "main": true,
+    "text": "AURYN\n← Back to your workspace\nReliability\nTerms\nPrivacy\nRisk disclosure\nMethodology\nHelp\nContact AURYN →\nAURYN · HELP &",
+    "errors": []
+  },
+  {
+    "route": "/contact",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "Contact AURYN · Support and feedback",
+    "main": true,
+    "text": "AURYN\n← Back to your workspace\nWE’RE LISTENING\nHow can\nwe help?\n\nsupport@auryninvest.com\n\nA question, a concern, or an i",
+    "errors": []
+  },
+  {
+    "route": "/pricing",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN plans · Free and Pro",
+    "main": false,
+    "text": "AURYN\nSign in →\nAURYN membership\nMore clarity. Your choice.\n\nStart free. Go deeper with Pro.\n\nPro\nMost complete research",
+    "errors": []
+  },
+  {
+    "route": "/login",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "AURYN\nAURYN PACE\nExplore the framework\nStart small\nP0\nP1\nP2\nP3\nP4\nFramework · P2\nTap a step to explore\nReading details\n←",
+    "errors": []
+  },
+  {
+    "route": "/preview/compare",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nCompare t",
+    "errors": []
+  },
+  {
+    "route": "/preview/alerts",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nAlerts\n\nY",
+    "errors": []
+  },
+  {
+    "route": "/preview/research-lab",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nUnderstan",
+    "errors": []
+  },
+  {
+    "route": "/preview/trading",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nADMINISTR",
+    "errors": []
+  },
+  {
+    "route": "/preview/discover",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nDiscover ",
+    "errors": []
+  },
+  {
+    "route": "/preview/overview",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nGood afte",
+    "errors": []
+  },
+  {
+    "route": "/preview/portfolio",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nYour port",
+    "errors": []
+  },
+  {
+    "route": "/preview/watchlist",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nIdeas wor",
+    "errors": []
+  },
+  {
+    "route": "/preview/settings",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nBack\nSett",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Snapshot",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Financials",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Valuation",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=News",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Options",
+    "width": 390,
+    "status": 200,
+    "scrollWidth": 380,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nFind a company or ticker\nP\nDesign preview · Illustrative data · Account actions disabled\nMicrosoft",
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Clearer stock research. A better next move.",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHow it works\nPricing\nOur approach\nSign in\nGet started\nResearch, connected\nIllustrative product gui",
+    "errors": []
+  },
+  {
+    "route": "/changelog",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "What’s new · AURYN",
+    "main": true,
+    "text": "AURYN\n← Back to your workspace\nPRODUCT UPDATES\nWhat’s new\n\nNew tools, thoughtful improvements and the details behind the",
+    "errors": []
+  },
+  {
+    "route": "/help",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN help · Research, accounts and Pace",
+    "main": true,
+    "text": "AURYN\n← Back to your workspace\nReliability\nTerms\nPrivacy\nRisk disclosure\nMethodology\nHelp\nContact AURYN →\nAURYN · HELP &",
+    "errors": []
+  },
+  {
+    "route": "/contact",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "Contact AURYN · Support and feedback",
+    "main": true,
+    "text": "AURYN\n← Back to your workspace\nWE’RE LISTENING\nHow can\nwe help?\n\nsupport@auryninvest.com\n\nA question, a concern, or an i",
+    "errors": []
+  },
+  {
+    "route": "/pricing",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN plans · Free and Pro",
+    "main": false,
+    "text": "AURYN\nSign in →\nAURYN membership\nMore clarity. Your choice.\n\nStart free. Go deeper with Pro.\n\nPro\nMost complete research",
+    "errors": []
+  },
+  {
+    "route": "/login",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "AURYN\nAURYN PACE\nExplore the framework\nStart small\nP0\nP1\nP2\nP3\nP4\nFramework · P2\nTap a step to explore\nReading details\nP",
+    "errors": []
+  },
+  {
+    "route": "/preview/compare",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/alerts",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research-lab",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/trading",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/discover",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/overview",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/portfolio",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/watchlist",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/settings",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Snapshot",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Financials",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Valuation",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=News",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Options",
+    "width": 1440,
+    "status": 200,
+    "scrollWidth": 1430,
+    "title": "AURYN · Your workspace",
+    "main": true,
+    "text": "Skip to content\nAURYN\nHome\nResearch\nWatchlist\nPortfolio\nFind a company or ticker\n⌘ K\nP\nDesign preview · Illustrative dat",
+    "errors": []
+  }
+]

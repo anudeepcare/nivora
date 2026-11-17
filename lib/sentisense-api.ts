@@ -1,8 +1,10 @@
+import { researchReport } from "./sentisense-report.ts";
 /** Server-only SentiSense adapter. No endpoint, host or credential is caller-controlled.
  * Payloads retain provider units/field names; consumers must validate numeric fields.
  * Memory caching is deduplication, NOT a distributed subscription quota ledger.
  */
 export type SentiSenseDataset =
+  | "aiReport"
   | "institutionProfile"
   | "institutionHistory"
   | "institutionalQuarters"
@@ -67,6 +69,7 @@ export type SentiSenseResult = {
   retryAfterSeconds?: number;
 };
 const paths: Record<SentiSenseDataset, (ticker: string) => string> = {
+  aiReport: (t) => `/stocks/${t}/ai-summary?depth=deep`,
   institutionProfile: () => "",
   institutionHistory: () => "",
   institutionalQuarters: () => "/institutional/quarters",
@@ -159,6 +162,8 @@ const universeDatasets = new Set<SentiSenseDataset>([
   "institutionalActivists",
 ]);
 const bareDatasets = new Set<SentiSenseDataset>([
+  "aiReport",
+  "documents",
   "institutionalQuarters",
   "etfHoldings",
   "kpiCoverage",
@@ -177,6 +182,7 @@ const bareDatasets = new Set<SentiSenseDataset>([
   "kpiTypes",
 ]);
 function validPayload(dataset: SentiSenseDataset, data: unknown): boolean {
+  if (dataset === "aiReport") return researchReport(data) !== null;
   if (dataset === "institutionProfile")
     return (
       object(data) &&
@@ -566,6 +572,10 @@ export function createSentiSenseClient({
           return empty("subject-mismatch");
         if (
           (!universeDatasets.has(dataset) && !matchesSubject(data, ticker!)) ||
+          (dataset === "documents" &&
+            object(data) &&
+            typeof data.searchTicker === "string" &&
+            sentiSenseTicker(data.searchTicker) !== ticker) ||
           (typeof body.ticker === "string" &&
             body.ticker.toUpperCase() !== ticker)
         )
@@ -592,6 +602,7 @@ export function createSentiSenseClient({
         const isPreview = body.isPreview === true;
         const asOf =
           [
+            dataset === "aiReport" ? researchReport(data)?.updatedAt : null,
             dataset === "institutionalActivists" ? storyId : null,
             object(data) ? data.latestReportDate : null,
             object(data) ? data.asOf : null,

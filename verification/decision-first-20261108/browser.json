@@ -1,0 +1,74 @@
+[
+  {
+    "width": 320,
+    "theme": "light",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "theme": "dark",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "light",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "theme": "dark",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "light",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "theme": "dark",
+    "decisionFirst": true,
+    "borderlessPriceStages": true,
+    "borderlessScenarios": true,
+    "coloredScenarioLabels": true,
+    "overflow": false
+  }
+]

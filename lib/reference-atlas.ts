@@ -130,3 +130,9 @@ export function referenceAtlas(research: Research) {
     paceReason: reading.reason,
   };
 }
+
+/** Presentation precision only; original model horizon remains unchanged. */
+export function atlasHorizonLabel(years: number | null | undefined): string {
+  if (years == null || !Number.isFinite(years) || years <= 0) return "";
+  return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(years)} years`;
+}

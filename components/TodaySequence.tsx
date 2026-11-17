@@ -15,21 +15,18 @@ export default function TodaySequence({
   return (
     <section
       className={styles.sequence}
+      data-has-decision={decision ? "true" : "false"}
       aria-label="Today's research priorities"
     >
-      <article className={styles.primary}>
-        <span>01 · DECISION</span>
-        <h2>
-          {decision
-            ? `${decision.symbol}: ${decision.action}`
-            : "Begin with the evidence. Not the price move."}
-        </h2>
-        <p>
-          {decision
-            ? "A deeper Pace reading is available in your followed companies. Review the business checks and price bands before changing your plan."
-            : "Open a company to review its business, expectations and Pace. Missing coverage is not a buy or sell signal."}
-        </p>
-        {decision && (
+      {decision && (
+        <article className={styles.primary}>
+          <span>DECISION</span>
+          <h2>
+            {decision.symbol}: {decision.action}
+          </h2>
+          <p>
+            Review business checks and price bands before changing your plan.
+          </p>
           <div className={styles.reading}>
             <b>{decision.code}</b>
             <span>
@@ -37,20 +34,16 @@ export default function TodaySequence({
               <small>Not a change alert or an executed trade</small>
             </span>
           </div>
-        )}
-        <Link
-          href={
-            decision
-              ? `${prefix}/research/${encodeURIComponent(decision.symbol)}`
-              : `${prefix}/research`
-          }
-        >
-          {decision ? `Review ${decision.symbol}` : "Find a company"}
-          <ArrowUpRight size={18} />
-        </Link>
-      </article>
+          <Link
+            href={`${prefix}/research/${encodeURIComponent(decision.symbol)}`}
+          >
+            Review {decision.symbol}
+            <ArrowUpRight size={18} />
+          </Link>
+        </article>
+      )}
       <article>
-        <span>02 · CHANGE</span>
+        <span>LATEST HEADLINE</span>
         <h3>{headline?.title || "Keep the source in view."}</h3>
         <p>
           {headline
@@ -68,7 +61,7 @@ export default function TodaySequence({
         )}
       </article>
       <article>
-        <span>03 · EXPOSURE</span>
+        <span>EXPOSURE</span>
         <h3>
           {concentration
             ? `${concentration.symbol} is your largest priced position.`

@@ -195,7 +195,8 @@
 }
 .values span {
   min-width: 0;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .values small {
   display: block;

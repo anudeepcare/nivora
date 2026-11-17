@@ -269,6 +269,13 @@ export default function SelectedValuation({
       </header>
       {v && (
         <>
+          <p className={s.referenceBasis}>
+            Comparison: {amount(d.reference?.price, r.quote.currency)} ·{" "}
+            {dateLabel(d.reference?.asOf)}.
+            {lead
+              ? " Source-defined range; not a valuation forecast."
+              : " Conditional model, not an analyst target or probability."}
+          </p>
           <div className={s.reasons}>
             {(["bear", "base", "bull"] as const).map((name) => (
               <div className={s.case} key={name} data-case={name}>

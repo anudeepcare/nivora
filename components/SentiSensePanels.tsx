@@ -10,6 +10,7 @@ import type { SentiSenseDataset, SentiSenseResult } from "@/lib/sentisense-api";
 import { intelligenceView } from "@/lib/sentisense-view";
 import { useResource } from "./Session";
 import SentiSenseStories from "./SentiSenseStories";
+import SentiSenseReport from "./SentiSenseReport";
 import SentiSenseConsensus from "./SentiSenseConsensus";
 import s from "./SentiSensePanels.module.css";
 const groups = {
@@ -44,6 +45,7 @@ const groups = {
     ["kpis", "Company KPIs"],
     ["kpiTypes", "Metric catalog"],
     ["profile", "Company profile"],
+    ["aiReport", "Research report"],
     ["fundamentalsCurrent", "Trailing profile"],
     ["fundamentalsQuarterly", "Quarterly statements"],
     ["fundamentalsAnnual", "Annual statements"],
@@ -128,7 +130,9 @@ export default function SentiSensePanels({
           </button>
         ))}
       </nav>
-      {dataset === "tickerStories" ? (
+      {dataset === "aiReport" ? (
+        <SentiSenseReport key={symbol} symbol={symbol} />
+      ) : dataset === "tickerStories" ? (
         <SentiSenseStories key={symbol} symbol={symbol} />
       ) : dataset === "consensus" ? (
         <SentiSenseConsensus symbol={symbol} preview={false} />

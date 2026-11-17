@@ -736,3 +736,40 @@ test("institution CIK requests use fixed paged profile/history and reject anothe
   });
   assert.equal((await other.institution("1067983")).status, "subject-mismatch");
 });
+
+test("document publications accept documented bare response and enforce search identity", async () => {
+  for (const [searchTicker, expected] of [
+    ["APP", "available"],
+    ["MSFT", "subject-mismatch"],
+  ]) {
+    const read = createSentiSenseClient({
+      key: "test",
+      fetcher: async () =>
+        response({
+          documents: [
+            {
+              id: "news-1",
+              sourceName: "Publisher",
+              url: "https://example.com/article",
+              published: 1794873600,
+            },
+          ],
+          totalCount: 1,
+          searchTicker,
+          source: "NEWS",
+          startDate: "2026-10-17",
+          endDate: "2026-11-17",
+        }),
+    });
+    const result = await read("APP", "documents");
+    assert.equal(result.status, expected);
+    if (expected === "available") {
+      assert.equal(result.data.documents[0].id, "news-1");
+      assert.equal(
+        result.asOf,
+        null,
+        "query end is not a publication timestamp",
+      );
+    } else assert.equal(result.data, null);
+  }
+});

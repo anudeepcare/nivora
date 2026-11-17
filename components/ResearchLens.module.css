@@ -16,7 +16,7 @@
 }
 .sparkgrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   align-items: start;
 }
@@ -147,4 +147,11 @@
     flex-direction: column;
     gap: 4px;
   }
+}
+
+.indicators > section > h3 {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 12px 0 8px;
 }

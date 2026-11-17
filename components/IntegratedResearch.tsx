@@ -22,11 +22,13 @@ export default function IntegratedResearch({
   research: r,
   onTab,
   chart,
+  compact = false,
 }: {
   research: Research;
   onTab: (tab: EvidenceSection) => void;
   chart?: ReactNode;
   pro?: boolean;
+  compact?: boolean;
 }) {
   const { workspace, demo } = useProduct();
   const owns = !!workspace?.positions.some(
@@ -56,6 +58,55 @@ export default function IntegratedResearch({
       [r, decisionOwns, now],
     ),
     d = m.decision;
+  if (compact)
+    return (
+      <section aria-label="Decision context and supporting inputs">
+        <div className="segments" aria-label="Decision context">
+          <button aria-pressed={decisionOwns} onClick={() => setContext(true)}>
+            Existing holding
+          </button>
+          <button
+            aria-pressed={!decisionOwns}
+            onClick={() => setContext(false)}
+          >
+            New purchase
+          </button>
+        </div>
+        <p>
+          <strong>{d.actionLabel}</strong> · {d.headline}
+        </p>
+        {!!d.risks.length && (
+          <details>
+            <summary>Decision risks ({d.risks.length})</summary>
+            <ul>
+              {d.risks.map((risk) => (
+                <li key={risk}>{risk}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+        <CompanyMetrics research={r} />
+        <ResearchChanges
+          research={r}
+          now={now}
+          onOpen={onTab}
+          pace={
+            d.pace?.level == null
+              ? null
+              : {
+                  level: d.pace.level,
+                  policy: d.brief?.accumulation?.version ?? "monthly",
+                  date: d.pace.date ?? "",
+                  source: r.historySource ?? null,
+                }
+          }
+        />
+        <details>
+          <summary>Input freshness & calculation basis</summary>
+          <DataFreshness research={r} now={now} decision={d} />
+        </details>
+      </section>
+    );
   return (
     <>
       <div className={s.overview}>

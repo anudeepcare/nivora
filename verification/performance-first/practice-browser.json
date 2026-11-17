@@ -1,0 +1,14 @@
+[
+  {
+    "name": "options",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "name": "options",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  }
+]

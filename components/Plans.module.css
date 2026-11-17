@@ -164,3 +164,21 @@
   background: #26392e;
   color: #e0fa7c;
 }
+
+/* Shared public/account pricing: aligned comparison, neutral readable surfaces. */
+.cards, .page .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.cards > section, .page .cards > section, .page .cards > section:global(.pricing-pro) {
+  display: flex; flex-direction: column; min-width: 0; padding: 22px;
+  background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 14px;
+  --ink: inherit; --muted: inherit; --line: inherit;
+}
+.cards > section:global(.pricing-pro), .page .cards > section:global(.pricing-pro) { border-color: var(--blue); }
+.cards :global(.pricing-card-title), .page .cards :global(.pricing-card-title) { min-height: 58px; }
+.cards :global(.pricing-amount), .page .cards :global(.pricing-amount) { font-size: 36px; margin: 12px 0; }
+.cards :global(.pricing-recommended), .page .cards :global(.pricing-recommended) { background: var(--blue-soft); color: var(--blue); }
+.cards ul, .page .cards ul, .page .cards > section:first-child ul { grid-template-columns: 1fr; gap: 7px; padding-left: 18px; }
+.cards > section > :global(.button), .page .cards > section > :global(.button) { min-height: 44px; width: 100%; white-space: normal; }
+@media (max-width: 650px) {
+  .cards, .page .cards { grid-template-columns: 1fr; }
+  .cards > section, .page .cards > section { padding: 18px; }
+}

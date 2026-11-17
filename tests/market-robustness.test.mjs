@@ -190,7 +190,7 @@ test("the three new views render for every market shape without leaking NaN, Inf
       clean(html, `${kind} lenses`);
       if (html) {
         rendered++;
-        assert.match(html, /Scenario cross-check/);
+        assert.match(html, /Source ranges by horizon/);
         assert.match(html, /never averaged together/);
       }
       const positions = [{ id: "1", symbol: research.company.symbol, quantity: 12.5, cost: 1, assetType: research.company.assetType }];

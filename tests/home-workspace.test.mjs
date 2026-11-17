@@ -262,7 +262,8 @@ test("New account Home has research tools without empty personal feeds", () => {
     html,
     /aria-label="Portfolio summary"|Company earnings and events|What changed/,
   );
-  assert.match(html, /Research a company/);
+  assert.doesNotMatch(html, /Research a company|Begin with the evidence/);
+  assert.match(html, /Build this month’s research plan/);
 });
 
 test("Home accumulation panel excludes valuation-only entries without confirmed Pace", () => {

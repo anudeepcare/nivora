@@ -100,7 +100,7 @@ function shell(
 }
 test("account menu retains Settings return context", () => {
   const { tree, pushes } = shell("research");
-  const avatar = nodes(tree, n => n.props?.["aria-label"] === "Account and workspace tools")[0];
+  const avatar = nodes(tree, n => n.props?.["aria-label"] === "More tools and account")[0];
   assert.equal(avatar.type, "button");
   assert.equal(avatar.props["aria-haspopup"], "dialog");
   const settings = nodes(tree, n => n.type === "Link" && n.props.href === "/settings")[0];

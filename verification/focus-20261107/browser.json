@@ -1,0 +1,74 @@
+[
+  {
+    "width": 390,
+    "path": "/",
+    "status": 200,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "path": "/track-record",
+    "status": 200,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "path": "/portfolio-check",
+    "status": 200,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "path": "/preview",
+    "status": 404
+  },
+  {
+    "width": 390,
+    "path": "/preview/redesign",
+    "status": 404
+  },
+  {
+    "width": 390,
+    "path": "/preview/research/MSFT",
+    "status": 404
+  },
+  {
+    "width": 1440,
+    "path": "/",
+    "status": 200,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "path": "/track-record",
+    "status": 200,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "path": "/portfolio-check",
+    "status": 200,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "path": "/preview",
+    "status": 404
+  },
+  {
+    "width": 1440,
+    "path": "/preview/redesign",
+    "status": 404
+  },
+  {
+    "width": 1440,
+    "path": "/preview/research/MSFT",
+    "status": 404
+  }
+]

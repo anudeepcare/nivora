@@ -58,7 +58,33 @@ export function optionsPositioning(value: unknown) {
         a.strike - b.strike ||
         a.type.localeCompare(b.type),
     );
+  const wallInput = record(d.oiWalls),
+    expiry = date(wallInput.expiry);
+  const wallRows = expiry
+    ? (["callWalls", "putWalls"] as const)
+        .flatMap((key) =>
+          (Array.isArray(wallInput[key]) ? (wallInput[key] as unknown[]) : [])
+            .slice(0, 50)
+            .flatMap((value) => {
+              const row = record(value),
+                strike = nonnegative(row.strike),
+                oi = nonnegative(row.oi);
+              return strike != null &&
+                strike > 0 &&
+                oi != null &&
+                Number.isInteger(oi)
+                ? [{ strike, oi, side: key === "callWalls" ? "Call" : "Put" }]
+                : [];
+            }),
+        )
+        .sort((a, b) => a.strike - b.strike || a.side.localeCompare(b.side))
+    : [];
   return {
+    walls: {
+      expiry,
+      rows: wallRows,
+      maxPain: expiry ? nonnegative(wallInput.maxPain) : null,
+    },
     asOf: date(typeof d.asOf === "string" ? d.asOf.slice(0, 10) : null),
     metrics: {
       atmIv: iv == null ? null : iv * 100,

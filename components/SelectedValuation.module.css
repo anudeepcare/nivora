@@ -70,7 +70,8 @@
   letter-spacing: -0.045em;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .case small {
   color: var(--muted);
@@ -519,4 +520,11 @@
 }
 .root.root .assumptions {
   padding: 0;
+}
+
+.referenceBasis {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
 }

@@ -1,3 +1,4 @@
+import { researchReport } from "./sentisense-report.ts";
 import type { SentiSenseDataset, SentiSenseResult } from "./sentisense-api";
 /** Closed response schemas. Scalar leaves cannot smuggle nested provider objects. */
 type Shape = true | { [key: string]: Shape } | readonly [Shape];
@@ -106,7 +107,11 @@ const schemas: Partial<Record<SentiSenseDataset, Shape>> = {
     ...metrics,
     latest: metrics,
     context: fields("ivRank1y"),
-    oiWalls: fields("maxPain"),
+    oiWalls: {
+      ...fields("expiry maxPain totalCallOi totalPutOi"),
+      callWalls: [fields("strike oi")],
+      putWalls: [fields("strike oi")],
+    },
     unusual: [
       fields(
         "contract expiry type strike volume oi volOiRatio premium oiConfirmation",
@@ -220,6 +225,7 @@ export function intelligenceData(
   data: unknown,
 ): unknown {
   if (data == null) return null;
+  if (dataset === "aiReport") return researchReport(data);
   const row = listSchemas[dataset];
   if (row)
     return Array.isArray(data)

@@ -198,16 +198,25 @@ export default function Shell({
         Skip to content
       </a>
       <header className={experience.header}>
-        <Link
-          href="/"
-          className={experience.brand}
-          aria-label="AURYN home"
-        >
+        <Link href="/" className={experience.brand} aria-label="AURYN home">
           <img src="/icon.svg" width="32" height="32" alt="" />
           <span>AURYN</span>
         </Link>
         <nav className={experience.nav} aria-label="Main navigation">
           {primary.map(nav)}
+          <button
+            className={experience.moreTrigger}
+            data-active={
+              ["discover", "compare", "research-lab", "trading"].includes(page)
+                ? "true"
+                : undefined
+            }
+            aria-label="More research and workspace tools"
+            aria-haspopup="dialog"
+            onClick={() => tools.current?.showModal()}
+          >
+            More
+          </button>
         </nav>
         <button
           className={experience.searchTrigger}
@@ -235,7 +244,7 @@ export default function Shell({
             <Bell size={19} />
           </Link>
           <button
-            aria-label="Account and workspace tools"
+            aria-label="More tools and account"
             aria-haspopup="dialog"
             onClick={() => tools.current?.showModal()}
           >
@@ -278,7 +287,7 @@ export default function Shell({
         <header className="dialog-head">
           <div>
             <span className="eyebrow">Your workspace</span>
-            <h2>Account & workspace</h2>
+            <h2>Research tools &amp; workspace</h2>
           </div>
           <button
             className="icon-button"

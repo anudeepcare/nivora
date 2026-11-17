@@ -87,7 +87,12 @@ test("overview headline uses the same analyst observations as the target panel",
       assert.equal(c, null, kind);
       continue;
     }
-    if (c) assert.deepEqual(p.cases && [p.cases.bear, p.cases.base, p.cases.bull], [c.bear, c.base, c.bull], kind);
+    if (c)
+      assert.deepEqual(
+        p.cases && [p.cases.bear, p.cases.base, p.cases.bull],
+        [c.bear, c.base, c.bull],
+        kind,
+      );
     else if (p.cases) assert.match(p.cases.source, /AURYN/, kind);
     if (c) assert.ok(c.bear <= c.base && c.base <= c.bull, kind);
   }
@@ -140,4 +145,25 @@ test("expected range scales with the stock's own volatility and stays within san
   const violent = expectedRange(mk(0.12), asOf, 252, "crypto");
   assert.equal(violent.available, false);
   assert.match(violent.reason, /too violently/);
+});
+
+test("historical scenario headlines identify volatility, not expected forecasts", () => {
+  const r = pick("large-cap");
+  const plain = scenarioHeadline({ ...r, evidence: undefined });
+  assert.equal(plain.eyebrow, "One-year volatility range");
+  assert.match(plain.detail, /Not fair value or a forecast/);
+  const combined = scenarioHeadline({
+    ...r,
+    evidence: {
+      ...r.evidence,
+      consensus: { target: (plain.base + plain.bull) / 2 },
+    },
+  });
+  assert.equal(
+    combined.eyebrow,
+    "Analyst consensus with a one-year volatility range",
+  );
+  assert.match(combined.detail, /Not AURYN fair value or a forecast/);
+  assert.equal(combined.bear, plain.bear);
+  assert.equal(combined.bull, plain.bull);
 });

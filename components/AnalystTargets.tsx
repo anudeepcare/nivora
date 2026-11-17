@@ -103,11 +103,15 @@ export default function AnalystTargets({
           </div>
           <div>
             <span>
-              {c.referenceStatus === "older"
-                ? "Versus older quote"
-                : c.referenceStatus === "unavailable"
-                  ? "Price comparison unavailable"
-                  : "Versus current price"}
+              {c.referenceStatus === "unavailable"
+                ? "Price comparison unavailable"
+                : c.referenceBasis === "settled-close"
+                  ? c.referenceStatus === "older"
+                    ? "Versus older settled close"
+                    : "Versus settled close"
+                  : c.referenceStatus === "older"
+                    ? "Versus older quote"
+                    : "Versus current quote"}
             </span>
             <strong
               className={

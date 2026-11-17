@@ -1,22 +1,15 @@
 "use client";
 import layout from "./ValueStudio.module.css";
-import DecisionInsights from "./DecisionInsights";
 import AnalystTargets from "./AnalystTargets";
 import { consensusOutlook } from "@/lib/outlook";
 import SelectedValuation from "./SelectedValuation";
 import { scenarioHeadline } from "@/lib/scenario-headline";
 import ScenarioLenses from "./ScenarioLenses";
 import SectionIcon from "./SectionIcon";
-import { useMemo, useState } from "react";
-import dynamic from "next/dynamic";
-const ExpectationWorkbench = dynamic(
-  () => import("./ProfessionalWorkbench").then((m) => m.ExpectationWorkbench),
-  { loading: () => <p role="status">Opening assumptions…</p> },
-);
+import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
 import { percent } from "@/lib/format";
-import PriceProjection from "./PriceProjection";
 import { modelAssessment } from "@/lib/model-assessment";
 const display = (m: DeskMetric) =>
   m.value == null
@@ -25,7 +18,6 @@ const display = (m: DeskMetric) =>
       ? `${m.value.toFixed(1)}×`
       : percent(m.value);
 export default function ValueStudio({ research: r }: { research: Research }) {
-  const [assumptionsOpen, setAssumptionsOpen] = useState(false);
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
   const headline = useMemo(() => scenarioHeadline(r), [r]);
@@ -45,46 +37,16 @@ export default function ValueStudio({ research: r }: { research: Research }) {
       data-has-consensus={!!consensusOutlook(r)}
     >
       <div className={layout.scenarios}>
-        <SelectedValuation
-          research={r}
-          headline={headline}
-          actions={
-            <button
-              type="button"
-              className="button"
-              aria-expanded={assumptionsOpen}
-              aria-controls="scenario-assumptions"
-              onClick={() => setAssumptionsOpen((open) => !open)}
-            >
-              Test assumptions →
-            </button>
-          }
-        />
-        <ScenarioLenses research={r} />
+        <SelectedValuation research={r} headline={headline} />
       </div>
-      {assumptionsOpen && (
-        <section
-          id="scenario-assumptions"
-          className={layout.assumptions}
-          aria-label="Test scenario assumptions"
-        >
-          <ExpectationWorkbench research={r} />
-        </section>
-      )}
       {consensusOutlook(r) && (
         <div className={layout.consensus}>
           <AnalystTargets research={r} />
         </div>
       )}
-      <details className={layout.calculator}>
-        <summary>What the price needs</summary>
-        <DecisionInsights
-          research={r}
-          now={Date.parse(r.priceObservedAt ?? r.retrievedAt)}
-          initialTab={1}
-          embedded
-        />
-      </details>
+      <div className={layout.crosscheck}>
+        <ScenarioLenses research={r} hideSingle />
+      </div>
       {available.length > 0 && (
         <section
           className={`valuation-board ${layout.market}`}
@@ -176,9 +138,6 @@ export default function ValueStudio({ research: r }: { research: Research }) {
           ))}
         </div>
       </details>
-      <div className={layout.manual}>
-        <PriceProjection key={r.company.symbol} research={r} />
-      </div>
       <p className="desk-footnote">
         Multiples are reported observations and can use different dates from the
         quote. A low multiple alone does not establish value.{" "}

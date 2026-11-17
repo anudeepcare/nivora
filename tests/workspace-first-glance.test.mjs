@@ -53,3 +53,13 @@ test("Portfolio starts with compact metrics and keeps explanations behind disclo
     /clamp\(28px, 2\.4vw, 34px\)/,
   );
 });
+
+test('Today removes nav duplication and generic decision promotion while preserving dated company trends',()=>{
+ const home=read('components/HomeWorkspace.tsx');
+ assert.doesNotMatch(home,/className=\{homeStyles.quickLinks\}/);
+ assert.match(home,/Followed company prices/);
+ const cards=read('components/HomeMarketCards.tsx');
+ assert.match(cards,/Followed company trends/);assert.doesNotMatch(cards,/"Market pulse"|"THE BIG PICTURE"/);
+ assert.match(cards,/daily change/);assert.match(cards,/Daily closes/);
+ const sequence=read('components/TodaySequence.tsx');assert.doesNotMatch(sequence,/Begin with the evidence|Find a company/);assert.match(sequence,/\{decision &&/);
+});

@@ -299,6 +299,7 @@
 }
 .lower {
   display: grid;
+  align-items: start;
   grid-template-columns: 1.15fr 1fr;
   gap: 14px;
   margin-top: 14px;

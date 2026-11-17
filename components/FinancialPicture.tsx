@@ -1,5 +1,6 @@
 "use client";
 import QuickRead from "./QuickRead";
+import MarketCapHistory from "./MarketCapHistory";
 import layout from "./ResearchMetrics.module.css";
 import { useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
@@ -231,6 +232,9 @@ export default function FinancialPicture({
           ))}
         </div>
       </header>
+      {r.company.assetType === "stock" && (
+        <MarketCapHistory key={r.company.symbol} symbol={r.company.symbol} />
+      )}
       {p && (
         <QuickRead
           title="The business in 30 seconds"

@@ -158,25 +158,14 @@ export default function AccumulationDesk({
       </div>
       <div className="accumulation-summary">
         <div>
-          <h3>
-            {signal
-              ? signal.multiplier === 0
-                ? trimTier === "strong"
-                  ? "Price extension review"
-                  : "Pause new buying"
-                : signal.multiplier === 1
-                  ? "No accumulation zone established"
-                  : "Stronger pullback condition"
-              : `More ${cadence} history needed`}
-          </h3>
           <p>{signal?.reason ?? chosen.reason}</p>
-          <small>
-            {signal
-              ? `${signal === chosen.forming ? (weekly ? "Current week · forming" : "Current month · forming") : weekly ? "Confirmed week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
-              : weekly
+          {!signal && (
+            <small>
+              {weekly
                 ? "52 consecutive completed prior weeks required"
                 : "12 consecutive completed prior months required"}
-          </small>
+            </small>
+          )}
         </div>
         <dl>
           <div>
@@ -193,22 +182,6 @@ export default function AccumulationDesk({
           </div>
         </dl>
       </div>
-      <p className="small muted">
-        P means Pace. Levels describe accumulation zones, not purchase
-        multiples, leverage or expected returns.{" "}
-        {signal &&
-          "historyBasis" in signal &&
-          signal.historyBasis === "limited" &&
-          "priorMonths" in signal && (
-            <strong className="dca-limited-history">
-              Limited listing history · {String(signal.priorMonths)} prior
-              completed months.{" "}
-            </strong>
-          )}
-        Completed periods stay fixed for unchanged input history; the forming
-        reading can change. A deeper price pullback does not establish a better
-        business or confirmed support.
-      </p>
       {signal?.trimReview && (
         <div className="accumulation-extension" role="note">
           <strong>
@@ -254,6 +227,22 @@ export default function AccumulationDesk({
       {!weekly && <PaceHistoryInsights research={r} />}
       <details className="policy-rules">
         <summary>See the rules and price assumptions</summary>
+        <p className="small muted">
+          P means Pace. Levels describe accumulation zones, not purchase
+          multiples, leverage or expected returns.{" "}
+          {signal &&
+            "historyBasis" in signal &&
+            signal.historyBasis === "limited" &&
+            "priorMonths" in signal && (
+              <strong className="dca-limited-history">
+                Limited listing history · {String(signal.priorMonths)} prior
+                completed months.{" "}
+              </strong>
+            )}
+          Completed periods stay fixed for unchanged input history; the forming
+          reading can change. A deeper price pullback does not establish a
+          better business or confirmed support.
+        </p>
         <p>
           {weekly
             ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."

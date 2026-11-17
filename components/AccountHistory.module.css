@@ -1,0 +1,76 @@
+.history {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.history p {
+  margin: 0;
+}
+.intro,
+.scope {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.setup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.confirmation {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  min-width: 0;
+}
+.confirmation input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin: 2px 0 0;
+  padding: 0;
+}
+.setup button {
+  flex-shrink: 0;
+}
+.chart {
+  min-width: 0;
+}
+.chart svg {
+  display: block;
+}
+.chart text {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.chart input {
+  width: 100%;
+  margin: 6px 0;
+  accent-color: var(--blue);
+}
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 640px) {
+  .setup {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .actions {
+    align-items: flex-start;
+  }
+}

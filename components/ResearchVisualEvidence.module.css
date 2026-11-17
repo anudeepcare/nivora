@@ -357,3 +357,32 @@
     max-height: 230px;
   }
 }
+
+/* Calendar is a compact index, not a second page-sized hero. Keep touch dates spacious. */
+.panel[aria-label="Company events calendar"] {
+  padding: 12px;
+}
+.panel[aria-label="Company events calendar"] .header {
+  margin-bottom: 8px;
+}
+.panel[aria-label="Company events calendar"] .monthHead {
+  margin-bottom: 6px;
+}
+.panel[aria-label="Company events calendar"] .day {
+  height: 28px;
+}
+.panel[aria-label="Company events calendar"] .scroll {
+  max-height: 220px;
+  overscroll-behavior: auto;
+}
+@media (pointer: coarse) {
+  .panel[aria-label="Company events calendar"] .day {
+    min-height: 44px;
+    height: auto;
+  }
+  .monthHead button,
+  .agendaHead button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

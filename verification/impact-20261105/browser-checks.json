@@ -1,0 +1,422 @@
+[
+  {
+    "route": "/",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/overview",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/discover",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Snapshot",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "check": "Pace left and equal height",
+    "theme": "light",
+    "width": 1440,
+    "passed": true,
+    "pace": {
+      "x": 24,
+      "y": 277.234375,
+      "width": 478.09375,
+      "height": 590.671875
+    },
+    "chart": {
+      "x": 518.09375,
+      "y": 277.234375,
+      "width": 887.90625,
+      "height": 590.671875
+    }
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "check": "Targets tab Annual estimates",
+    "theme": "light",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "Targets tab AURYN scenarios",
+    "theme": "light",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Historical price risk",
+    "theme": "light",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Analyst targets",
+    "theme": "light",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/compare?symbols=MSFT,AAPL",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/alerts",
+    "theme": "light",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/overview",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/discover",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Snapshot",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "check": "Targets tab Annual estimates",
+    "theme": "light",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "Targets tab AURYN scenarios",
+    "theme": "light",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Historical price risk",
+    "theme": "light",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Analyst targets",
+    "theme": "light",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/compare?symbols=MSFT,AAPL",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/alerts",
+    "theme": "light",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/overview",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/discover",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Snapshot",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "check": "Pace left and equal height",
+    "theme": "dark",
+    "width": 1440,
+    "passed": true,
+    "pace": {
+      "x": 24,
+      "y": 277.234375,
+      "width": 478.09375,
+      "height": 590.671875
+    },
+    "chart": {
+      "x": 518.09375,
+      "y": 277.234375,
+      "width": 887.90625,
+      "height": 590.671875
+    }
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "check": "Targets tab Annual estimates",
+    "theme": "dark",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "Targets tab AURYN scenarios",
+    "theme": "dark",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Historical price risk",
+    "theme": "dark",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Analyst targets",
+    "theme": "dark",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/compare?symbols=MSFT,AAPL",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/alerts",
+    "theme": "dark",
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/overview",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/discover",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Snapshot",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "check": "Targets tab Annual estimates",
+    "theme": "dark",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "Targets tab AURYN scenarios",
+    "theme": "dark",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Historical price risk",
+    "theme": "dark",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "check": "Targets tab Analyst targets",
+    "theme": "dark",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/compare?symbols=MSFT,AAPL",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "route": "/preview/alerts",
+    "theme": "dark",
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "passed": true
+  }
+]

@@ -13,10 +13,10 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
   const [query, setQuery] = useState(""),
     d = documents[id],
     sections = d.sections.filter((s) =>
-      (s.title + " " + s.text).toLowerCase().includes(query.toLowerCase()),
+      (s.title + " " + s.text).toLowerCase().includes(query.trim().toLowerCase()),
     );
   return (
-    <main className={`legal-document atlas-document ${styles.document}`}>
+    <main className={`legal-document atlas-document ${styles.document}`} data-document={id}>
       <header>
         <Link href="/" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
@@ -61,6 +61,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
               />
             </label>
           )}
+          {id === "help" && query && <div className="help-search-result" role="status"><span>{sections.length} matching {sections.length === 1 ? "topic" : "topics"}</span><button type="button" onClick={() => setQuery("")}>Clear search</button></div>}
           <div className="document-sections">
             {sections.map((s, i) => (
               <section key={s.title}>

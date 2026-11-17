@@ -1,0 +1,146 @@
+[
+  {
+    "view": "Valuation",
+    "width": 320,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 320,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 320,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 320,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 320,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 320,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 390,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 390,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 768,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 768,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 768,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 768,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 768,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 768,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 1440,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 1440,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 1440,
+    "theme": "light",
+    "passed": true
+  },
+  {
+    "view": "Valuation",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Financials",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  },
+  {
+    "view": "Analysts",
+    "width": 1440,
+    "theme": "dark",
+    "passed": true
+  }
+]

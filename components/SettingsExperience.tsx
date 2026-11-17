@@ -121,14 +121,7 @@ export function SettingsSignalPolicies({
               <span>
                 <b>
                   {label}
-                  <span
-                    className="settings-info"
-                    tabIndex={0}
-                    title={detail}
-                    aria-label={detail}
-                  >
-                    i
-                  </span>
+
                 </b>
                 <small>{detail}</small>
               </span>
@@ -246,14 +239,7 @@ export function SettingsSignalPolicies({
               <span>
                 <b>
                   {label}
-                  <span
-                    className="settings-info"
-                    tabIndex={0}
-                    title={detail}
-                    aria-label={detail}
-                  >
-                    i
-                  </span>
+
                 </b>
                 <small>{detail}</small>
               </span>

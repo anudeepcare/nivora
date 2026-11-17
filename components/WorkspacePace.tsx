@@ -134,6 +134,7 @@ export function PaceBoard({
   const qualifying = Object.entries(rows).filter(
     ([, r]) => r.signal?.view.permitted && (r.signal.view.rawLevel ?? 0) >= 2,
   );
+  if (!qualifying.length) return null;
   return (
     <section className={s.board} aria-label="Accumulation opportunities">
       <header>

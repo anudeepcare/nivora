@@ -1,0 +1,29 @@
+{
+  "tests": {
+    "passed": 1218,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "lint": "passed",
+  "format": "passed",
+  "browser": {
+    "paceFirst": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "horizontalOverflow": false,
+    "scenarioCards": [
+      390,
+      1440
+    ],
+    "distinctScenarioColors": true
+  },
+  "deployment": "not performed",
+  "databaseChanges": "not applied"
+}

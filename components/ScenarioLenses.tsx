@@ -81,7 +81,7 @@ export default function ScenarioLenses({
   );
   if (!view.available) return null;
   if (hideSingle && view.lenses.length < 2) return null;
-  const { currency, reference, lenses, primary } = view;
+  const { currency, reference, lenses } = view;
   const prices = [
     reference.price,
     ...lenses.flatMap((x) =>
@@ -94,69 +94,27 @@ export default function ScenarioLenses({
   const money = (v: number | null) =>
     v == null ? "—" : priceAmount(v, currency);
   const gap = (v: number) => percent((v / reference.price - 1) * 100, true);
-  const positionText =
-    view.position.state === "inside"
-      ? `${view.position.percent.toFixed(0)}% of the way from bear to bull`
-      : view.position.state === "below-bear"
-        ? "Below the bear case"
-        : view.position.state === "above-bull"
-          ? "Above the bull case"
-          : "No bear/bull range";
   return (
     <section
       className={s.root}
-      aria-label="Bear, base and bull across methods"
+      aria-label="Source ranges by horizon"
       data-agreement={view.agreement.level}
     >
       <header className={s.heading}>
         <div>
-          <span className={s.eyebrow}>Scenario cross-check</span>
-          <h3>Bear, base &amp; bull across methods</h3>
+          <span className={s.eyebrow}>Supporting observations</span>
+          <h3>Source ranges by horizon</h3>
         </div>
         <p>
           {lenses.length} method{lenses.length === 1 ? "" : "s"} · reference{" "}
           {money(reference.price)} · {dateLabel(reference.asOf)}
         </p>
       </header>
-      <dl className={s.read}>
-        <div data-tone={view.agreement.level}>
-          <dt>Method agreement</dt>
-          <dd>{view.agreement.label}</dd>
-          <small>{view.agreement.detail}</small>
-        </div>
-        <div>
-          <dt>Bull and bear gaps</dt>
-          <dd>
-            {view.asymmetry ? (
-              <>
-                <span data-case="bull">
-                  Bull {percent(view.asymmetry.upside, true)}
-                </span>
-                {" · "}
-                <span data-case="bear">
-                  Bear {percent(-view.asymmetry.downside, true)}
-                </span>
-              </>
-            ) : (
-              "—"
-            )}
-          </dd>
-          <small>
-            {view.asymmetry?.ratio != null
-              ? `${primary.label}: the bull gap is ${view.asymmetry.ratio.toFixed(1)}× the bear gap. A ratio is not a probability.`
-              : view.asymmetry
-                ? `${primary.label}: the current price sits outside its bear–bull range.`
-                : `${primary.label} supplies no bear/bull range.`}
-          </small>
-        </div>
-        <div>
-          <dt>Where the price sits</dt>
-          <dd>{positionText}</dd>
-          <small>
-            Within the {primary.label} range · {primary.horizon}.
-          </small>
-        </div>
-      </dl>
+      <p>
+        Different sources and horizons, not competing forecasts. Historical
+        ranges describe past observations; analyst targets are opinions. Neither
+        is a probability or a substitute for the selected model.
+      </p>
       <div
         className={s.plot}
         role="img"
@@ -168,7 +126,7 @@ export default function ScenarioLenses({
           .join(". ")}.`}
       >
         {lenses.map((x) => (
-          <div className={s.row} key={x.id} data-primary={x === primary}>
+          <div className={s.row} key={x.id}>
             <div className={s.label}>
               <strong>{x.label}</strong>
               <small>{x.horizon}</small>

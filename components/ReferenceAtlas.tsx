@@ -3,6 +3,7 @@ import { useId, useMemo, useState } from "react";
 import type { Research } from "@/lib/types";
 import {
   referenceAtlas,
+  atlasHorizonLabel,
   type AtlasSignal,
   type AtlasTarget,
 } from "@/lib/reference-atlas";
@@ -37,6 +38,22 @@ export default function ReferenceAtlas({
   const signal = m.signals[selected],
     b = m.brief,
     glow = useId();
+  const centerLabel = (
+    {
+      Business: "REV GROWTH",
+      Value: "BASE CASE",
+      Momentum: "RSI · 14",
+      Catalysts: "NEXT EARNINGS",
+      Ownership: "OWNER TREND",
+      Risk: "RISK",
+    } as Record<string, string>
+  )[signal.label];
+  const centerValue =
+    signal.label === "Risk"
+      ? "Review"
+      : signal.label === "Ownership"
+        ? "—"
+        : reading(signal, b.businessNumbers.currency);
   const values = [
     {
       label: "Revenue",
@@ -147,10 +164,16 @@ export default function ReferenceAtlas({
             ))}
             <circle cx="150" cy="145" r="38" className={s.core} />
             <text x="150" y="137" textAnchor="middle" className={s.coreLabel}>
-              AURYN VIEW
+              {centerLabel}
             </text>
-            <text x="150" y="157" textAnchor="middle" className={s.coreValue}>
-              {m.pace === null ? "REVIEW" : `P${m.pace}`}
+            <text
+              x="150"
+              y="157"
+              textAnchor="middle"
+              className={s.coreValue}
+              style={centerValue.length > 8 ? { fontSize: 10 } : undefined}
+            >
+              {centerValue}
             </text>
           </svg>
           <div
@@ -238,7 +261,10 @@ export default function ReferenceAtlas({
         <section className={s.scenarios}>
           <header>
             <span className={s.eyebrow}>
-              Outcome range {m.horizon ? `· ${m.horizon} years` : ""}
+              Outcome range{" "}
+              {atlasHorizonLabel(m.horizon)
+                ? `· ${atlasHorizonLabel(m.horizon)}`
+                : ""}
             </span>
             <button onClick={() => onTab("Valuation")}>Open model ↗</button>
           </header>
@@ -264,7 +290,14 @@ export default function ReferenceAtlas({
               </p>
             </>
           ) : (
-            <p>{b.value.reason}</p>
+            <p>
+              {b.checks.some(
+                (check) =>
+                  check.detail && b.value.reason.includes(check.detail),
+              )
+                ? "Model range unavailable. The missing evidence is listed alongside."
+                : b.value.reason}
+            </p>
           )}
         </section>
         <section className={s.evidence}>

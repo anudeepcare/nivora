@@ -1,3 +1,4 @@
+import { accountBenchmarks } from "./account-benchmark.ts";
 import {
   accountPerformance,
   type AccountPriceEvidence,
@@ -28,11 +29,14 @@ export async function accountHistory(
   confirmed: boolean,
   read: Reader,
   now = Date.now(),
+  maxSymbols = 10,
 ) {
-  if (!confirmed)
-    throw new AccountHistoryError(
-      "Confirm that the saved ledger contains every account transaction from inception.",
-    );
+  const { transactions, from, through, symbols } = historyScope(
+    rows,
+    confirmed,
+    now,
+    maxSymbols,
+  );
   const deadline = Date.now() + 35000;
   const boundedRead: Reader = (path, params, ttl) => {
     if (Date.now() >= deadline)
@@ -41,41 +45,6 @@ export async function accountHistory(
       );
     return read(path, params, ttl);
   };
-  const transactions = cleanTransactions(rows);
-  const from = transactions.map((t) => t.date).sort()[0];
-  const through = new Date(now - 86400000).toISOString().slice(0, 10);
-  if (
-    !from ||
-    from > through ||
-    Date.parse(through) - Date.parse(from) > 365 * 86400000
-  )
-    throw new AccountHistoryError(
-      "History currently supports complete ledgers up to one year old, through yesterday.",
-    );
-  if (transactions.some((t) => t.date > through))
-    throw new AccountHistoryError(
-      "Wait until all saved transaction dates have completed before building history.",
-    );
-  // Validate the entire saved ledger, including activity after the last priced day.
-  for (const date of [...new Set(transactions.map((t) => t.date))].sort()) {
-    if (
-      reconcileTransactions(transactions.filter((t) => t.date <= date)).errors
-        .length
-    )
-      throw new AccountHistoryError(
-        `Ledger reconciliation failed on ${date}; review missing cash, shares or unsupported borrowing before building history.`,
-      );
-  }
-  const symbols = [
-    ...new Set(transactions.filter((t) => t.symbol).map((t) => t.symbol)),
-  ];
-  if (
-    symbols.length > 10 ||
-    symbols.some((s) => !/^[A-Z][A-Z0-9-]{0,9}$/.test(s))
-  )
-    throw new AccountHistoryError(
-      "History currently supports up to ten US-listed USD instruments.",
-    );
   const prices: AccountPriceEvidence[] = [];
   // Two securities at a time; shared provider cache/quota is supplied by caller.
   let next = 0;
@@ -170,8 +139,13 @@ export async function accountHistory(
     through,
     prices,
   });
+  const benchmarks =
+    result.status === "available"
+      ? await accountBenchmarks(transactions, dates, from, through, boundedRead)
+      : [];
   return {
     ...result,
+    benchmarks,
     requestedThrough: through,
     lastValuationDate,
     reason:
@@ -180,4 +154,54 @@ export async function accountHistory(
         : result.reason,
     ledgerCompleteness: "user-confirmed" as const,
   };
+}
+
+export function historyScope(
+  rows: unknown,
+  confirmed: boolean,
+  now = Date.now(),
+  maxSymbols = 10,
+) {
+  if (!confirmed)
+    throw new AccountHistoryError(
+      "Confirm that the saved ledger contains every account transaction from inception.",
+    );
+  const transactions = cleanTransactions(rows);
+  const from = transactions.map((t) => t.date).sort()[0];
+  const through = new Date(now - 86400000).toISOString().slice(0, 10);
+  if (
+    !from ||
+    from > through ||
+    Date.parse(through) - Date.parse(from) > 365 * 86400000
+  )
+    throw new AccountHistoryError(
+      "History currently supports complete ledgers up to one year old, through yesterday.",
+    );
+  if (transactions.some((t) => t.date > through))
+    throw new AccountHistoryError(
+      "Wait until all saved transaction dates have completed before building history.",
+    );
+  // Validate the entire saved ledger, including activity after the last priced day.
+  for (const date of [...new Set(transactions.map((t) => t.date))].sort()) {
+    if (
+      reconcileTransactions(transactions.filter((t) => t.date <= date)).errors
+        .length
+    )
+      throw new AccountHistoryError(
+        `Ledger reconciliation failed on ${date}; review missing cash, shares or unsupported borrowing before building history.`,
+      );
+  }
+  const symbols = [
+    ...new Set(transactions.filter((t) => t.symbol).map((t) => t.symbol)),
+  ];
+  if (
+    symbols.length > maxSymbols ||
+    symbols.some((s) => !/^[A-Z][A-Z0-9-]{0,9}$/.test(s))
+  )
+    throw new AccountHistoryError(
+      maxSymbols === 10
+        ? "History currently supports up to ten US-listed USD instruments."
+        : `History currently supports up to ${maxSymbols} US-listed USD instruments.`,
+    );
+  return { transactions, from, through, symbols };
 }

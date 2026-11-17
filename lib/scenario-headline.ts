@@ -47,7 +47,7 @@ export function scenarioHeadline(r: Research): ScenarioHeadline | null {
   )
     return {
       source: "analyst-history",
-      eyebrow: "Analyst consensus with a one-year expected range",
+      eyebrow: "Analyst consensus with a one-year volatility range",
       detail: `Base is the analyst consensus target. Bear and bull are a poor and a strong year for a stock that moves as much as this one (about ${span.volatility.toFixed(0)}% a year): in a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, about one year in five finished below a bear case built this way and one in five above the bull case. Not AURYN fair value or a forecast.`,
       note: "Base: analyst consensus. Bear and bull: 0.859 times the past year's daily volatility, scaled to one year, either side of today's price. No direction is assumed.",
       bear: span.bear,
@@ -57,7 +57,7 @@ export function scenarioHeadline(r: Research): ScenarioHeadline | null {
   if (!view.lenses.some((x) => x.kind === "analyst" && x.bear != null) && span)
     return {
       source: "history",
-      eyebrow: "One-year expected range",
+      eyebrow: "One-year volatility range",
       detail: `No AURYN model or analyst range qualifies yet, so no direction is assumed: base is today's price. Bear and bull are a poor and a strong year for a stock that moves as much as this one (about ${span.volatility.toFixed(0)}% a year): in a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, about one year in five finished below a bear case built this way and one in five above the bull case. Not fair value or a forecast.`,
       note: "Bear and bull: 0.859 times the past year's daily volatility, scaled to one year, either side of today's price.",
       bear: span.bear,

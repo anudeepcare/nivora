@@ -239,3 +239,11 @@
     margin: 12px 0 18px;
   }
 }
+
+/* Searchable help uses a compact reading list; legal document copy stays intact. */
+.document.document.document[data-document="help"] :global(.document-sections) { display: grid; gap: 0; }
+.document.document.document[data-document="help"] :global(.document-sections) > section { padding: 18px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; }
+.document.document.document[data-document="help"] :global(.document-sections) h2 { font-size: 17px; font-weight: 500; margin: 0 0 8px; }
+.document.document.document[data-document="help"] :global(.document-sections) p { font-size: 14px; line-height: 1.7; margin: 0; }
+.document :global(.help-search-result) { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }
+.document :global(.help-search-result) button { min-height: 40px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }

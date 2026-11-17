@@ -1,9 +1,9 @@
 .panel {
-  padding: 24px;
+  padding: 16px;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: var(--glass);
-  margin: 24px 0;
+  margin: 0;
   min-width: 0;
 }
 .panel header {
@@ -14,7 +14,7 @@
 }
 .panel h3 {
   margin: 8px 0;
-  font-size: 23px;
+  font-size: 18px;
   letter-spacing: -0.025em;
 }
 .panel header p {
@@ -72,12 +72,12 @@
   color: var(--ink);
 }
 .row[data-action="purchase"] .action {
-  background: #a8ddc03d;
-  color: #18765c;
+  background: var(--green-soft);
+  color: var(--green);
 }
 .row[data-action="sale"] .action {
-  background: #76b6aa30;
-  color: #227f73;
+  background: var(--red-soft);
+  color: var(--red);
 }
 .panel > p {
   font-size: 12px;

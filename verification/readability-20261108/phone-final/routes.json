@@ -1,0 +1,280 @@
+[
+  {
+    "route": "/",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: understand your companies, review what changed, ",
+    "errors": []
+  },
+  {
+    "route": "/preview/overview",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Good morning.",
+    "text": "Design preview · Illustrative data · Account actions disabled\nGood morning.\n\nYour companies, upcoming events and research.\n\nDiscover ideas\nYour watchlist\nResearch a company\nCOMPANY",
+    "errors": []
+  },
+  {
+    "route": "/preview/watchlist",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Ideas worth following.",
+    "text": "Design preview · Illustrative data · Account actions disabled\nIdeas worth following.\n\nYour saved companies, prices and upcoming events.\n\nAdd a company\n6\nfollowed\nCreate a price ale",
+    "errors": []
+  },
+  {
+    "route": "/preview/portfolio",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Portfolio",
+    "text": "Design preview · Illustrative data · Account actions disabled\nPortfolio\n\nHoldings, performance and allocation.\n\nTransactions\nCash & balances\nAdd position\nPriced assets & cash\n$38,8",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Snapshot",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Valuation",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Valuation",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Financials",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Financials",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Technicals",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Analysts",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=News",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "News",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Options",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Options",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Thesis",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Advanced",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: understand your companies, review what changed, ",
+    "errors": []
+  },
+  {
+    "route": "/preview/overview",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Good morning.",
+    "text": "Design preview · Illustrative data · Account actions disabled\nGood morning.\n\nYour companies, upcoming events and research.\n\nDiscover ideas\nYour watchlist\nResearch a company\nCOMPANY",
+    "errors": []
+  },
+  {
+    "route": "/preview/watchlist",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Ideas worth following.",
+    "text": "Design preview · Illustrative data · Account actions disabled\nIdeas worth following.\n\nYour saved companies, prices and upcoming events.\n\nAdd a company\n6\nfollowed\nCreate a price ale",
+    "errors": []
+  },
+  {
+    "route": "/preview/portfolio",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Portfolio",
+    "text": "Design preview · Illustrative data · Account actions disabled\nPortfolio\n\nHoldings, performance and allocation.\n\nTransactions\nCash & balances\nAdd position\nPriced assets & cash\n$38,8",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Snapshot",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Valuation",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Valuation",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Financials",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Financials",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Technicals",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Technicals",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Analysts",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Analysts",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=News",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "News",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Options",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Options",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Thesis",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Thesis",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  },
+  {
+    "route": "/preview/research/MSFT?tab=Advanced",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Microsoft",
+    "tab": "Advanced",
+    "text": "Design preview · Illustrative data · Account actions disabled\nMicrosoft\n\nMSFT · NASDAQ · USD\n\n$428.60\nSession change\n+0.4%\nLatest close · Oct 16, 2026\nRevenue growth\n12.1%\nAnnual ·",
+    "errors": []
+  }
+]

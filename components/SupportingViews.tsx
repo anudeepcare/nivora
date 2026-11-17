@@ -127,8 +127,8 @@ export function Settings() {
       </div>
       <p className="settings-eyebrow">YOUR WORKSPACE</p>
       <PageHeading
-        title="Make the product think like you do."
-        subtitle="Control research depth, reading style, decision policy, and alerts."
+        title="Settings"
+        subtitle="Your research, display, and portfolio preferences."
       />
       {message && (
         <div className="settings-feedback" role="status">
@@ -181,9 +181,7 @@ export function Settings() {
         <a href="#settings-research">Research</a>
         <a href="#settings-policy">Guardrails</a>
         <a href="#settings-account">Account</a>
-        <Link href={`${prefix}/alerts`}>
-          Price alerts <ArrowUpRight size={14} />
-        </Link>
+        <a href="#settings-notifications">Alerts</a>
       </nav>
       <div className="workspace-settings-groups">
         <SettingsSignalPolicies section="signals" />
@@ -267,11 +265,6 @@ export function Settings() {
         className="workspace-settings-shortcuts"
         aria-label="Account and support"
       >
-        <Link href={`${prefix}/alerts`}>
-          <Bell size={18} />
-          <span>Price alerts</span>
-          <ChevronRight size={17} />
-        </Link>
         <ContextLink page="help">
           <ShieldCheck size={18} />
           <span>Help & support</span>

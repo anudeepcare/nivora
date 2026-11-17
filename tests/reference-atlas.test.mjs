@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { referenceAtlas } from "../lib/reference-atlas.ts";
+import { referenceAtlas, atlasHorizonLabel } from "../lib/reference-atlas.ts";
 import { demoData } from "./fixtures/demo.ts";
 import { researchBrief } from "../lib/research-brief.ts";
 const source = demoData.research.MSFT;
@@ -66,4 +66,10 @@ test("Catalysts uses next scheduled event rather than count of past reports", ()
   assert.match(m.signals[3].detail, /scheduled/);
   assert.equal(m.signals[4].value, null);
   assert.equal(m.signals[4].valueLabel, "Not established");
+});
+
+test("Atlas horizon rounds presentation without changing modeled duration", () => {
+ assert.equal(atlasHorizonLabel(1.6157771480404086), "1.6 years");
+ assert.equal(atlasHorizonLabel(2), "2 years");
+ for (const missing of [null, undefined, NaN, Infinity, 0, -1]) assert.equal(atlasHorizonLabel(missing), "");
 });

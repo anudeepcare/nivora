@@ -132,3 +132,21 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.wall {
+  display: grid;
+  grid-template-columns: 110px minmax(60px, 1fr) 75px;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.wall meter {
+  width: 100%;
+  accent-color: var(--blue);
+}
+.wall strong {
+  text-align: right;
+  font-weight: 500;
+}

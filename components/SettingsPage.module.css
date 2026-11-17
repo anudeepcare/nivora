@@ -727,3 +727,13 @@
   .page :global(.segments) button { padding: 7px 10px; }
 }
 .page :global(.settings-email-hint) { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+
+/* Keep account identifiers and controls within their shared column. */
+.page :global(.workspace-account-row) > div { min-width: 0; }
+.page :global(.workspace-account-row) strong { overflow-wrap: anywhere; }
+.page :global(.settings-policy-row) > span { min-width: 0; }
+.page :global(.settings-policy-row) select { min-height: 44px; }
+@media (max-width: 480px) {
+  .page :global(.settings-policy) :global(.settings-policy-row) { flex-direction: column; align-items: stretch; }
+  .page :global(.settings-policy-row) select { width: 100%; max-width: 100%; }
+}
