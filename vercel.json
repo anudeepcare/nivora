@@ -1,1 +1,6 @@
-{"framework":null,"rewrites":[{"source":"/(.*)","destination":"/api"}],"functions":{"api/index.js":{"includeFiles":"src/public/**","maxDuration":30}}}
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    { "path": "/api/jobs/theses", "schedule": "0 14 * * *" }
+  ]
+}

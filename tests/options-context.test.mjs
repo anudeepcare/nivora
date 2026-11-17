@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {volatilityContext,rankContracts} from '../lib/options-context.ts';
+const c=(x={})=>({id:'a',type:'call',strike:100,expiry:'2026-12-18',observed:'2026-11-05',bid:2,ask:3,oi:10,volume:30,iv:.3,delta:.5,gamma:.02,theta:-.1,vega:.1,multiplier:100,standard:true,...x});
+test('volatility term structure uses nearest standard strike and preserves source dates',()=>{const v=volatilityContext([c(),c({id:'far',strike:120,iv:.9}),c({id:'p',type:'put',iv:.4})],[],100);assert.equal(v.term[0].iv,.35);assert.equal(v.term[0].observed,'2026-11-05');assert.equal(v.realized,null);});
+test('does not mix source dates into a single implied volatility point',()=>{assert.equal(volatilityContext([c(),c({id:'p',type:'put',observed:'2026-11-04'})],[],100).term.length,0);});
+test('contract rankings ignore unavailable volume and compute volume/OI only for positive OI',()=>{const rows=[c({id:'missing',volume:null}),c({id:'zero',oi:0}),c({id:'ratio',oi:5})];assert.equal(rankContracts(rows,'ratio')[0].id,'ratio');assert.equal(rankContracts(rows,'volume').at(-1).id,'missing');});
+test('weekly-only observations do not become daily realized volatility',()=>{const history=Array.from({length:21},(_,i)=>({time:new Date(Date.UTC(2026,0,5+i*7)).toISOString().slice(0,10),close:100*Math.exp(i%2?.05:0)}));assert.equal(volatilityContext([],history,100,'2026-11-05').realized,null);});

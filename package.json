@@ -1,1 +1,47 @@
-{"name":"auryn-new","private":true,"type":"module","scripts":{"test":"node --test","start":"node src/server/app.js","start:local":"node --env-file=.env.local src/server/app.js","validate":"node scripts/validate-universe.js"},"engines":{"node":">=20"}}
+{
+  "name": "auryn-product",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "typecheck": "next typegen && tsc --noEmit",
+    "verify": "npm run lint && npm run format:check && npm test && npm run typecheck && npm run build",
+    "test:api": "node scripts/test-api.mjs && node scripts/test-research-regressions.mjs && node scripts/test-eodhd-api.mjs && node scripts/test-shared-market-api.mjs && node scripts/test-access-api.mjs && node scripts/test-billing-api.mjs && node scripts/test-options-api.mjs && node scripts/test-owner-expiry-api.mjs && node scripts/test-congress-api.mjs && node scripts/check-production-isolation.mjs",
+    "test:acceptance": "npm run verify && npm run test:api",
+    "prebuild": "node scripts/generate-policy-fingerprint.mjs",
+    "lint": "eslint app components lib --max-warnings 0",
+    "format:check": "prettier --check \"app/**/*.{ts,tsx,css}\" \"components/**/*.{ts,tsx,css}\" \"lib/**/*.{ts,tsx}\" eslint.config.mjs next.config.ts"
+  },
+  "dependencies": {
+    "@supabase/ssr": "0.6.1",
+    "@supabase/supabase-js": "2.112.4",
+    "lightweight-charts": "5.2.1",
+    "lucide-react": "0.468.0",
+    "next": "15.5.28",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "stripe": "23.0.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "eslint": "10.14.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "postcss": "8.5.30",
+    "prettier": "3.6.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1"
+  },
+  "overrides": {
+    "postcss": "8.5.30"
+  },
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  }
+}

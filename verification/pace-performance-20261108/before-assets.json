@@ -1,0 +1,13 @@
+{
+  "css": {
+    "files": 18,
+    "rawBytes": 1127744,
+    "gzipBytes": 190653
+  },
+  "js": {
+    "files": 102,
+    "rawBytes": 2269093,
+    "gzipBytes": 723375
+  },
+  "legacyCssBytes": 995494
+}

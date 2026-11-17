@@ -1,0 +1,122 @@
+[
+  {
+    "route": "/",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nProduct\nProduct guide\nPricing\nSign in\nGet started\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: unders",
+    "errors": []
+  },
+  {
+    "route": "/sample",
+    "width": 1440,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Explore a more considered way to invest.",
+    "text": "Skip to content\nAURYN\nProduct\nProduct guide\nPricing\nSign in\nGet started\nBUSINESS. VALUE. YOUR PACE.\nExplore a more considered way to invest.\n\nA clear monthly research routine: unde",
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nProduct\nProduct guide\nPricing\nSign in\nGet started\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: unders",
+    "errors": []
+  },
+  {
+    "route": "/sample",
+    "width": 1440,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Explore a more considered way to invest.",
+    "text": "Skip to content\nAURYN\nProduct\nProduct guide\nPricing\nSign in\nGet started\nBUSINESS. VALUE. YOUR PACE.\nExplore a more considered way to invest.\n\nA clear monthly research routine: unde",
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 768,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: understand your companies, review what changed, ",
+    "errors": []
+  },
+  {
+    "route": "/sample",
+    "width": 768,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Explore a more considered way to invest.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nExplore a more considered way to invest.\n\nA clear monthly research routine: understand your companies, review what changed",
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 768,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: understand your companies, review what changed, ",
+    "errors": []
+  },
+  {
+    "route": "/sample",
+    "width": 768,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Explore a more considered way to invest.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nExplore a more considered way to invest.\n\nA clear monthly research routine: understand your companies, review what changed",
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: understand your companies, review what changed, ",
+    "errors": []
+  },
+  {
+    "route": "/sample",
+    "width": 390,
+    "theme": "light",
+    "status": 200,
+    "overflow": false,
+    "heading": "Explore a more considered way to invest.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nExplore a more considered way to invest.\n\nA clear monthly research routine: understand your companies, review what changed",
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Invest every month.Know your reasons.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nInvest every month.\nKnow your reasons.\n\nA clear monthly research routine: understand your companies, review what changed, ",
+    "errors": []
+  },
+  {
+    "route": "/sample",
+    "width": 390,
+    "theme": "dark",
+    "status": 200,
+    "overflow": false,
+    "heading": "Explore a more considered way to invest.",
+    "text": "Skip to content\nAURYN\nSign in\nBUSINESS. VALUE. YOUR PACE.\nExplore a more considered way to invest.\n\nA clear monthly research routine: understand your companies, review what changed",
+    "errors": []
+  }
+]

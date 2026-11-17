@@ -1,0 +1,122 @@
+.map {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 14px;
+  margin: 16px 0;
+}
+.map header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.map h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.map p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 6px 0;
+}
+.map header > span {
+  font-size: 12px;
+  display: grid;
+  gap: 5px;
+}
+.map header > span strong {
+  font-size: 22px;
+}
+.levels {
+  display: grid;
+  gap: 6px;
+  margin: 16px 0;
+}
+.levels button {
+  display: grid;
+  grid-template-columns: 150px minmax(60px, 1fr) 140px;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  color: var(--ink);
+  border-radius: 9px;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.levels button[aria-pressed="true"] {
+  border-color: var(--green);
+}
+.levels span {
+  display: grid;
+  gap: 4px;
+}
+.levels small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.levels strong,
+.levels b {
+  font-size: 13px;
+}
+.levels span:last-child {
+  text-align: right;
+}
+.track {
+  position: relative;
+  height: 28px;
+  background: linear-gradient(
+    90deg,
+    transparent 49.5%,
+    var(--line) 49.5%,
+    var(--line) 50.5%,
+    transparent 50.5%
+  );
+}
+.track:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--line);
+}
+.track i {
+  position: absolute;
+  top: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  transform: translateX(-50%);
+}
+.note {
+  font-size: 12px;
+  color: var(--muted);
+}
+.detail {
+  padding: 12px;
+  background: color-mix(in srgb, var(--green) 9%, var(--card));
+  border-radius: 8px;
+}
+@media (max-width: 600px) {
+  .map {
+    padding: 14px;
+  }
+  .levels button {
+    grid-template-columns: minmax(0, 1fr) minmax(110px, auto);
+    gap: 8px;
+  }
+  .levels .track {
+    grid-column: 1/-1;
+    grid-row: 2;
+  }
+  .levels span:last-child {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

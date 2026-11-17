@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import { supportUpdate, supportSearch } from '../lib/support-workflow.ts';
+const id='00000000-0000-4000-8000-000000000001';
+test('bulk updates are bounded, deduplicated and validate fields',()=>{assert.deepEqual(supportUpdate({ids:[id,id],status:'resolved'}),{ids:[id],patch:{status:'resolved'}});assert.throws(()=>supportUpdate({ids:[],status:'resolved'}));assert.throws(()=>supportUpdate({ids:Array(51).fill(id),status:'new'}));assert.throws(()=>supportUpdate({ids:[id],status:'deleted'}));assert.throws(()=>supportUpdate({ids:[id],assignee:'x'.repeat(121)}));assert.deepEqual(supportUpdate({id,priority:'urgent',assignee:' Support '}),{ids:[id],patch:{priority:'urgent',assignee:'Support'}});});
+test('search bounds input and rejects unsupported control characters',()=>{assert.equal(supportSearch('  billing   problem '),'billing problem');assert.throws(()=>supportSearch('x'.repeat(161)));assert.throws(()=>supportSearch('a\u0000b'));});

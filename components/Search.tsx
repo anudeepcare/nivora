@@ -1,0 +1,327 @@
+"use client";
+import searchStyles from "./Search.module.css";
+import { trackAnalytics } from "@/lib/analytics-policy";
+import { useId, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Search as SearchIcon, ArrowUpRight, X } from "lucide-react";
+import { api } from "@/lib/client";
+import { readResource } from "@/lib/resource-cache";
+import type { Company } from "@/lib/types";
+import {
+  searchSelection,
+  searchRequestKey,
+  searchListScrollTop,
+} from "@/lib/search-selection";
+import { useProduct } from "./Session";
+import { SecurityLogo } from "./Ui";
+export default function Search({
+  large = false,
+  autoFocus = false,
+  onNavigate,
+  onSelect,
+}: {
+  large?: boolean;
+  autoFocus?: boolean;
+  onNavigate?: () => void;
+  onSelect?: (symbol: string) => void;
+}) {
+  const listId = useId();
+  const { demo, workspace, cache } = useProduct(),
+    router = useRouter(),
+    box = useRef<HTMLDivElement>(null),
+    input = useRef<HTMLInputElement>(null),
+    [query, setQuery] = useState(""),
+    [results, setResults] = useState<Company[]>([]),
+    [open, setOpen] = useState(false),
+    [selected, setSelected] = useState(-1),
+    [loading, setLoading] = useState(false),
+    [error, setError] = useState("");
+  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  const showResults = open && query.trim().length > 0;
+  const recent = [
+    ...new Set([
+      ...(workspace?.watchlist.map((x) => x.symbol) ?? []),
+      ...(workspace?.positions
+        .filter((x) => x.assetType !== "cash")
+        .map((x) => x.symbol) ?? []),
+    ]),
+  ].slice(0, 6);
+  useEffect(() => {
+    if (!showResults || selected < 0) return;
+    const item = document.getElementById(`${listId}-${selected}`);
+    const list = document.getElementById(listId);
+    if (!item || !list) return;
+    const container = list.getBoundingClientRect(),
+      target = item.getBoundingClientRect();
+    list.scrollTop = searchListScrollTop(
+      list.scrollTop,
+      container.top,
+      container.bottom,
+      target.top,
+      target.bottom,
+    );
+  }, [showResults, selected, listId]);
+  useEffect(() => {
+    const close = (e: PointerEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", close);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+    };
+  }, []);
+  useEffect(() => {
+    setSelected(-1);
+    setResults([]);
+    setError("");
+    if (query.trim().length < 1) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+    let active = true;
+    const requestKey = searchRequestKey(query);
+    const cached = !demo ? cache.get(requestKey) : null;
+    const local = !demo
+      ? [...cache.entries()]
+          .flatMap(([key, entry]) => {
+            if (!key.startsWith("research/") && !key.startsWith("research:"))
+              return [];
+            const company = (entry.value as { company?: Company })?.company;
+            return company &&
+              (company.symbol + " " + company.name)
+                .toLowerCase()
+                .includes(query.trim().toLowerCase())
+              ? [company]
+              : [];
+          })
+          .filter(
+            (company, index, all) =>
+              all.findIndex((other) => other.symbol === company.symbol) ===
+              index,
+          )
+          .slice(0, 8)
+      : [];
+    if (local.length) setResults(local);
+    setLoading(!cached || Date.now() - cached.at >= 300000);
+    const load = async () => {
+      const started = performance.now();
+      try {
+        const rows = demo
+          ? Object.values(demo.research)
+              .map((r) => r.company)
+              .filter((c) =>
+                (c.symbol + " " + c.name)
+                  .toLowerCase()
+                  .includes(query.toLowerCase()),
+              )
+          : (
+              await readResource<{ results: Company[] }>(
+                cache,
+                requestKey,
+                300000,
+                () => api<{ results: Company[] }>(requestKey),
+              )
+            ).results;
+        if (active) {
+          if (!demo)
+            trackAnalytics("search_result", {
+              outcome: rows.length ? "success" : "empty",
+              duration: performance.now() - started,
+            });
+          setResults(rows);
+          setError("");
+        }
+      } catch (e) {
+        if (active) {
+          if (!demo)
+            trackAnalytics("search_result", {
+              outcome: "error",
+              duration: performance.now() - started,
+            });
+          setResults(local);
+          setError(e instanceof Error ? e.message : "Search unavailable");
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    const timer =
+      cached && Date.now() - cached.at < 300000 ? null : setTimeout(load, 200);
+    if (timer == null) void load();
+    return () => {
+      active = false;
+      if (timer != null) clearTimeout(timer);
+    };
+  }, [query, demo, cache]);
+  const go = (symbol: string) => {
+    if (!demo) trackAnalytics("search_select");
+    setOpen(false);
+    setQuery("");
+    onNavigate?.();
+    if (onSelect) {
+      onSelect(symbol);
+      return;
+    }
+    router.push(
+      `${prefix}/research/${encodeURIComponent(symbol.replace("/", "-"))}`,
+    );
+  };
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      go(searchSelection(query, results, selected));
+    } catch {
+      setError("Choose a company below or enter its ticker.");
+      setOpen(true);
+    }
+  }
+  return (
+    <div
+      ref={box}
+      className={`search ${searchStyles.search} ${large ? "large" : ""}`}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
+      }}
+    >
+      <form className="search-box" onSubmit={submit}>
+        <SearchIcon size={19} />
+        <input
+          ref={input}
+          autoFocus={autoFocus}
+          type="search"
+          aria-label="Search companies or tickers"
+          role="combobox"
+          aria-expanded={showResults}
+          aria-controls={showResults ? listId : undefined}
+          aria-autocomplete="list"
+          aria-activedescendant={
+            showResults && selected >= 0 ? `${listId}-${selected}` : undefined
+          }
+          placeholder="Search a company or crypto"
+          autoComplete="off"
+          value={query}
+          onFocus={() => setOpen(true)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setOpen(false);
+              return;
+            }
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setSelected((i) => Math.min(results.length - 1, i + 1));
+              setOpen(true);
+            }
+            if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setSelected((i) => Math.max(-1, i - 1));
+            }
+          }}
+        />
+        {query ? (
+          <button
+            type="button"
+            aria-label="Clear search"
+            onClick={() => {
+              setQuery("");
+              setOpen(false);
+              input.current?.focus({ preventScroll: true });
+            }}
+          >
+            <X size={17} />
+          </button>
+        ) : (
+          <kbd>⌘ K</kbd>
+        )}
+      </form>
+      {autoFocus && !query.trim() && recent.length > 0 && (
+        <section className="search-suggestions" aria-label="Saved instruments">
+          <h3>Your saved instruments</h3>
+          {recent.map((symbol) => {
+            const quote = cache?.get("quote:" + symbol)?.value as
+              | { company?: Company }
+              | undefined;
+            return (
+              <button key={symbol} type="button" onClick={() => go(symbol)}>
+                <SecurityLogo symbol={symbol} size={38} />
+                <span>
+                  <b>{quote?.company?.name || symbol}</b>
+                  <small>
+                    {symbol} ·{" "}
+                    {symbol.includes("/") ? "Crypto pair" : "Saved company"}
+                  </small>
+                </span>
+                <ArrowUpRight size={17} />
+              </button>
+            );
+          })}
+        </section>
+      )}
+      {showResults && (
+        <div
+          className="search-results"
+          id={listId}
+          role="listbox"
+          aria-label="Companies"
+        >
+          {loading && <p role="status">Searching…</p>}
+          {results.map((c, i) => (
+            <button
+              type="button"
+              role="option"
+              tabIndex={-1}
+              id={`${listId}-${i}`}
+              aria-selected={selected === i}
+              className={selected === i ? "selected" : ""}
+              key={`${c.symbol}:${c.exchange}`}
+              onPointerDown={(e) => e.preventDefault()}
+              onClick={() => go(c.symbol)}
+            >
+              <SecurityLogo symbol={c.symbol} size={34} />
+              <span>
+                <b>{c.name}</b>
+                <small>
+                  {c.symbol} · {c.exchange}
+                </small>
+              </span>
+              <ArrowUpRight size={16} />
+            </button>
+          ))}
+          {error && <p>{error}</p>}
+          {!loading && !results.length && (
+            <p>
+              {error
+                ? "Search is temporarily unavailable. You can still open an exact ticker below."
+                : "No matching US listing or USD crypto pair returned."}
+            </p>
+          )}
+          {/^[A-Za-z0-9][A-Za-z0-9.-]{0,14}(\/[A-Za-z]{3,5})?$/.test(
+            query.trim(),
+          ) &&
+            !results.some(
+              (c) => c.symbol.toUpperCase() === query.trim().toUpperCase(),
+            ) && (
+              <button
+                type="button"
+                tabIndex={-1}
+                className="search-direct"
+                onPointerDown={(e) => e.preventDefault()}
+                onClick={() => go(searchSelection(query, []))}
+              >
+                <SearchIcon size={17} />
+                <span>
+                  <b>Open {query.trim().toUpperCase()}</b>
+                  <small>Look up this exact ticker</small>
+                </span>
+                <ArrowUpRight size={16} />
+              </button>
+            )}
+        </div>
+      )}
+    </div>
+  );
+}

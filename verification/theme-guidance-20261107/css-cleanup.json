@@ -1,0 +1,6 @@
+{
+  "rulesRemoved": 8,
+  "duplicateDeclarationsRemoved": 0,
+  "rawBytesRemoved": 1142,
+  "scope": "Unused former consent selectors and identical repeated declarations in the same rule only"
+}

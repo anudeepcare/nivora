@@ -1,0 +1,28 @@
+{
+  "route_checks": 78,
+  "populated_options_checks": 8,
+  "interaction_viewports": [
+    390,
+    768,
+    1440
+  ],
+  "full_suite": {
+    "passed": 1237,
+    "failed": 0
+  },
+  "final_focused_suite": {
+    "passed": 14,
+    "failed": 0
+  },
+  "lint": "passed",
+  "types": "passed",
+  "preview_data": "synthetic",
+  "live_latency_benchmark": "not performed",
+  "deployment": "not performed",
+  "production_build": "passed",
+  "selected_horizon_text_fits": [
+    390,
+    768,
+    1440
+  ]
+}

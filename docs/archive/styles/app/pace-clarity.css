@@ -1,0 +1,21 @@
+
+@layer compatibility {
+/* Shared Pace hierarchy across research and workspace cards. */
+.pace-guidance { display: grid; gap: 14px; min-width: 0; }
+.pace-guidance .pace-action { margin: 0; display: grid; gap: 6px; }
+.pace-guidance .pace-action > strong { font-size: clamp(22px, 2vw, 30px); line-height: 1.18; letter-spacing: -.025em; }
+.pace-guidance .pace-assessment-label { font-size: 12px; }
+.pace-guidance .pace-contribution-guide { margin: 0; padding: 14px; border-radius: 14px; display: grid; gap: 7px; }
+.pace-guidance .pace-contribution-guide > strong { font-size: 17px; line-height: 1.4; }
+.pace-guidance small { line-height: 1.6; }
+.pace-explanation { border-top: 1px solid currentColor; padding-top: 12px; }
+.pace-explanation > summary { cursor: pointer; min-height: 44px; display: list-item; font-size: 14px; font-weight: 600; }
+.pace-explanation > summary:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }
+.pace-explanation .pace-context { margin-top: 0; }
+.pace-guidance-compact { gap: 6px; }
+.pace-guidance-compact .pace-action > strong { font-size: 16px; }
+@media (prefers-reduced-motion: no-preference) {
+  .pace-explanation[open] > :not(summary) { animation: pace-reveal 160ms ease-out; }
+  @keyframes pace-reveal { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+}
+}

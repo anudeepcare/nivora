@@ -1,0 +1,125 @@
+.dialog {
+  box-sizing: border-box;
+  width: min(850px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+  overflow: auto;
+  overscroll-behavior: contain;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.dialog::backdrop {
+  background: #18251f66;
+}
+.dialog header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.dialog h2 {
+  font-size: 22px;
+  margin: 4px 0 12px;
+}
+.dialog header span,
+.dialog small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.dialog button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
+.dialog nav {
+  display: flex;
+  gap: 8px;
+  overflow: auto;
+  margin: 8px 0 20px;
+}
+.dialog nav button {
+  white-space: nowrap;
+}
+.dialog nav button[aria-pressed="true"] {
+  background: var(--surface);
+  font-weight: 600;
+}
+.dialog section {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.dialog h3 {
+  font-size: 15px;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 4px 0;
+}
+.dialog p {
+  margin: 8px 0;
+}
+.dialog a {
+  display: inline-block;
+  margin-right: 14px;
+  color: var(--blue);
+  min-height: 32px;
+}
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.compare label {
+  font-weight: 600;
+}
+.compare textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 160px;
+  padding: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 16px;
+}
+.diff {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 16px;
+}
+.diff p {
+  margin: 0;
+  padding: 4px;
+}
+.diff [data-change="added"] {
+  background: #2b8d6320;
+}
+.diff [data-change="removed"] {
+  background: #c24f4f20;
+}
+@media (max-width: 600px) {
+  .dialog {
+    padding: 16px;
+  }
+  .dialog h2 {
+    font-size: 19px;
+  }
+  .compare {
+    grid-template-columns: 1fr;
+  }
+  .dialog h3 {
+    flex-wrap: wrap;
+  }
+}

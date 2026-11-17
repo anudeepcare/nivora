@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {themePreference,resolvedTheme} from '../lib/theme-preference.ts';
+test('new users start in light while explicit dark and system choices survive',()=>{assert.equal(themePreference(null),'light');assert.equal(themePreference('invalid'),'light');assert.equal(themePreference('dark'),'dark');assert.equal(themePreference('system'),'system');assert.equal(resolvedTheme('light',true),'light');assert.equal(resolvedTheme('system',true),'dark');assert.equal(resolvedTheme('dark',false),'dark');});

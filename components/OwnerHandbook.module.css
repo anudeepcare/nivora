@@ -1,0 +1,444 @@
+.root {
+  min-width: 0;
+  margin: 20px 0;
+  color: var(--ink);
+}
+.cover {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 36px;
+  border-radius: 22px;
+  background: linear-gradient(120deg, #202c27, #29382d);
+  color: #f5f8ef;
+}
+.kicker {
+  color: #d6f35a;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 650;
+}
+.cover h2 {
+  margin: 14px 0 12px;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+}
+.cover p {
+  margin: 0;
+  color: #c5d0c5;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.root button {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.cover button {
+  background: #ffffff0b;
+  border-color: #ffffff35;
+  color: #e6f4c5;
+}
+.root button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.root button:focus-visible,
+.root input:focus-visible,
+.root select:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  padding: 24px 0;
+}
+.tools > label:first-child {
+  flex: 1;
+  min-width: 220px;
+  max-width: 650px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.root input:not([type="checkbox"]),
+.root select {
+  display: block;
+  margin-top: 8px;
+  min-height: 46px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+}
+.referenceToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 44px;
+}
+.referenceToggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+}
+.layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.topics {
+  position: sticky;
+  top: 100px;
+  display: grid;
+  gap: 3px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  overscroll-behavior: contain;
+}
+.topics > span {
+  padding: 6px 12px 12px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.topics button {
+  text-align: left;
+  border: 0;
+  background: transparent;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.topics button:hover {
+  background: var(--card);
+  color: var(--ink);
+}
+.topics button[aria-current="page"] {
+  background: color-mix(in srgb, var(--green) 9%, var(--card));
+  color: var(--green);
+  font-weight: 650;
+}
+.reader {
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  min-width: 0;
+}
+.reader article {
+  max-width: 82ch;
+  margin: auto;
+}
+.readerMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.readerMeta > span {
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 650;
+}
+.reader h3 {
+  scroll-margin-top: 112px;
+  margin: 0 0 24px;
+  font-size: clamp(23px, 3vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.body {
+  font-size: 15px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.body p {
+  margin: 0 0 18px;
+  white-space: pre-line;
+}
+.body h4 {
+  font-size: 17px;
+  margin: 28px 0 12px;
+}
+.body strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+.body ul,
+.body ol {
+  padding-left: 22px;
+  margin: 0 0 22px;
+}
+.body li {
+  margin: 8px 0;
+  padding-left: 4px;
+}
+.body li::marker {
+  color: var(--green);
+}
+.body pre {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--bg);
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.body code {
+  padding: 2px 5px;
+  background: var(--bg);
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+.table {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.table th,
+.table td {
+  overflow-wrap: normal;
+  word-break: normal;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.table th {
+  color: var(--muted);
+  font-weight: 600;
+}
+.chapterNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 32px;
+}
+.chapterNav span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.mobileTopics {
+  display: none;
+}
+.empty {
+  padding: 24px 0;
+}
+.empty p {
+  color: var(--muted);
+}
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .topics {
+    display: none;
+  }
+  .mobileTopics {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 26px;
+  }
+  .reader {
+    padding: 22px;
+  }
+}
+@media (max-width: 480px) {
+  .cover {
+    padding: 24px;
+    border-radius: 18px;
+  }
+  .tools {
+    gap: 8px;
+  }
+  .referenceToggle {
+    width: 100%;
+  }
+  .reader {
+    padding: 18px;
+  }
+  .body {
+    font-size: 14px;
+  }
+  .chapterNav button {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+}
+
+.root.root .mobileTopics {
+  display: none;
+}
+.root.root .referenceToggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.root.root .referenceToggle input {
+  flex: none;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+.root.root .reader {
+  min-width: 0;
+}
+.root.root .reader h3 {
+  font-size: clamp(25px, 3vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+.intro > p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 58ch;
+}
+.intro ul {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+  margin: 24px 0 30px;
+}
+.intro li {
+  padding: 16px 0 16px 26px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  line-height: 1.6;
+}
+.intro li::before {
+  content: "◆";
+  color: var(--green);
+  font-size: 10px;
+  position: absolute;
+  left: 0;
+  top: 21px;
+}
+.root.root .fullDetail {
+  margin: 20px 0;
+  border-top: 1px solid var(--line);
+}
+.root.root .fullDetail > summary {
+  background: transparent;
+  padding: 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+@media (max-width: 800px) {
+  .root.root .mobileTopics {
+    display: block;
+  }
+  .root.root .topics {
+    display: none;
+  }
+}
+/* An editorial guide, with navigation separate from the reading surface. */
+.cover {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 30px;
+  background:
+    radial-gradient(ellipse at 100% 0, #b3da7a24, transparent 65%),
+    linear-gradient(125deg, #172c2a, #2d4434);
+  border-radius: 18px;
+}
+.cover:after {
+  content: "";
+  position: absolute;
+  right: 30%;
+  top: -70px;
+  width: 200px;
+  height: 260px;
+  background: url("/pace-diamond.svg") center/contain no-repeat;
+  opacity: 0.12;
+  transform: rotate(14deg);
+  pointer-events: none;
+}
+.cover h2 {
+  font-size: 32px;
+  margin: 8px 0;
+}
+.layout {
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 40px;
+}
+.reader {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 16px 0 24px;
+}
+.reader article {
+  max-width: 70ch;
+}
+.reader h1,
+.reader h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+.topics button {
+  border-radius: 0;
+  padding: 10px 12px;
+  min-height: 44px;
+  font-size: 12px;
+}
+.topics button[aria-current="page"] {
+  box-shadow: inset 2px 0 var(--green);
+  background: color-mix(in srgb, var(--green) 5%, transparent);
+}
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .cover {
+    padding: 22px;
+  }
+  .cover h2 {
+    font-size: 28px;
+  }
+  .reader {
+    padding-top: 10px;
+  }
+}

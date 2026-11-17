@@ -1,0 +1,1809 @@
+{
+  "asOf": "2026-11-04T00:00:00Z",
+  "policyHash": "e84c1c261b7a04e5a11f96a15f9d5f4e5fb9db5df152160f7e09c237bc8b03e9",
+  "summary": {
+    "requested": 200,
+    "eligible": 0,
+    "insufficientHistory": 199,
+    "sourceUnavailable": 1
+  },
+  "competitorHistoricalSignals": "Unavailable; referenced verification/dca-reference-30.json is absent.",
+  "interpretation": "Eligibility check only. No investment outcome or competitor superiority claim is supported. No thresholds changed.",
+  "rows": [
+    {
+      "symbol": "APP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NFLX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "UBER",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ONDS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SOFI",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AAPL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MSFT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NVDA",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AMZN",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "GOOGL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "META",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TSLA",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AVGO",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ORCL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CRM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ADBE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AMD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "INTC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "QCOM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TXN",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MU",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AMAT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "LRCX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "KLAC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SNPS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CDNS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NOW",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PANW",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CRWD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ZS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "FTNT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NET",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DDOG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MDB",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SNOW",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PLTR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SHOP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SQ",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PYPL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "COIN",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HOOD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AFRM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "UPST",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "RBLX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ROKU",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SPOT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DIS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CMCSA",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "T",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "VZ",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TMUS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CHTR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "WBD",
+      "status": "source-unavailable"
+    },
+    {
+      "symbol": "PARA",
+      "observations": 500,
+      "first": "2024-11-01",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PINS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SNAP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "RDDT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DASH",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ABNB",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BKNG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "EXPE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MAR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HLT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "RCL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CCL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NCLH",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DAL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "UAL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AAL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "LUV",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "JPM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BAC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "WFC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "C",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "GS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SCHW",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BLK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "KKR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "APO",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AXP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "V",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MA",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "COF",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "USB",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PNC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TFC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "STT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NTRS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ALL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PGR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TRV",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CB",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AIG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MET",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PRU",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AFL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BRK.B",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "UNH",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "JNJ",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "LLY",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ABBV",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MRK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PFE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BMY",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AMGN",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "GILD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "REGN",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "VRTX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ISRG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MDT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ABT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TMO",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DHR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SYK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BSX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "EW",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ZTS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CI",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CVS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HUM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HCA",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MCK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CAH",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "COR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NVO",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AZN",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SNY",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "GSK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "XOM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CVX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "COP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "EOG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SLB",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HAL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "OXY",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MPC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "VLO",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PSX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "WMB",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "KMI",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "OKE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "LNG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ET",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "EPD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NEE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DUK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SO",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "AEP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "EXC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SRE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "XEL",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ED",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PEG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PCG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "GE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "GEV",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CAT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HON",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MMM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "RTX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "LMT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NOC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "GD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "BA",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "LHX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TDG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HEI",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ETN",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "EMR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ROK",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PH",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "ITW",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CMI",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PCAR",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "UNP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CSX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NSC",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "UPS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "FDX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "WM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "RSG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CTAS",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "URI",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "COST",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "WMT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "TGT",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "HD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "LOW",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "NKE",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "SBUX",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "MCD",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "YUM",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "CMG",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "DPZ",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "KO",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    },
+    {
+      "symbol": "PEP",
+      "observations": 500,
+      "first": "2024-11-05",
+      "last": "2026-11-03",
+      "status": "insufficient-history",
+      "eligibleMonths": 11,
+      "reason": "18 completed execution months after the 12-month minimum prior-history warm-up are required."
+    }
+  ]
+}

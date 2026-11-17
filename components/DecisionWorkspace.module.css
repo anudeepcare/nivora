@@ -1,0 +1,26 @@
+.root.root :global(.decision-lens-layout) {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: start;
+}
+.root.root :global(.lens-visual) {
+  min-width: 0;
+  max-width: 440px;
+  width: 100%;
+  margin: auto;
+}
+.root.root :global(.lens-visual svg) {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 340/285;
+}
+.root.root :global(.lens-visual svg text) {
+  font-family: inherit;
+}
+@media (max-width: 700px) {
+  .root.root :global(.decision-lens-layout) {
+    grid-template-columns: 1fr;
+  }
+}

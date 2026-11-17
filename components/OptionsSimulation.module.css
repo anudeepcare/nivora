@@ -1,0 +1,226 @@
+.wallet {
+  min-width: 0;
+  color: var(--ink);
+  padding: 12px 0;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+.heading h3 {
+  font-size: 17px;
+  margin: 4px 0;
+}
+.heading p,
+.help,
+.saving p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 4px 0;
+}
+.eyebrow {
+  display: block;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.badge {
+  font-size: 12px;
+  padding: 5px 8px;
+  background: var(--citron);
+  color: #24272b;
+  border: 1px solid var(--citron);
+  border-radius: 8px;
+  font-weight: 700;
+}
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 12px 0;
+  padding: 10px 0;
+  border-block: 1px solid var(--line);
+}
+.metrics > div {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+.metrics span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.metrics strong {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.wallet summary {
+  cursor: pointer;
+  font-size: 12px;
+  min-height: 44px;
+  padding: 12px 0;
+}
+.tradingDesk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: start;
+  margin: 10px 0;
+}
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px;
+  gap: 10px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--green) 6%, var(--card));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.wallet label {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+}
+.wallet :is(select, input, textarea) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+}
+.notes,
+.order {
+  grid-column: 1/-1;
+}
+.order {
+  display: grid;
+  gap: 10px;
+}
+.review {
+  display: grid;
+  gap: 4px;
+}
+.review span,
+.review small {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.review strong {
+  font-size: 17px;
+}
+.wallet button {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--card);
+  color: var(--ink);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.order button {
+  background: var(--citron);
+  color: #24272b;
+  border-color: var(--citron);
+  font-weight: 650;
+}
+.wallet button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.wallet :is(button, select, input, textarea, summary):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.positions h4 {
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+.positions > p {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}
+.position {
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+  display: grid;
+  gap: 10px;
+}
+.position strong {
+  font-size: 13px;
+}
+.position p {
+  font-size: 12px;
+  margin: 6px 0;
+}
+.position small {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.tradeNote {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.close {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+  align-items: end;
+}
+.close small {
+  grid-column: 1/-1;
+}
+.exit {
+  display: block;
+  margin-top: 4px;
+}
+.saving {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+}
+.saveActions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.saving > p:empty {
+  display: none;
+}
+@media (max-width: 800px) {
+  .tradingDesk {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+@media (max-width: 500px) {
+  .heading {
+    align-items: start;
+  }
+  .metrics {
+    gap: 8px 12px;
+  }
+  .metrics > div {
+    flex-basis: calc(50% - 12px);
+  }
+  .wallet :is(select, input, textarea) {
+    font-size: 16px;
+  }
+}

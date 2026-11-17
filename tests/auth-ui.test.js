@@ -1,2 +1,0 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {AuthUiState} from '../src/public/auth-state.js';
-test('expired session centrally locks navigation until re-authenticated',()=>{const state=new AuthUiState();assert.equal(state.canNavigate(),false);state.unlock();assert.equal(state.canNavigate(),true);state.expire();assert.equal(state.canNavigate(),false);assert.equal(state.reason,'session-expired')});

@@ -1,0 +1,51 @@
+{
+  "verifiedAt": "2026-11-07T14:03:32.560Z",
+  "scope": "Isolated actual MonthlyPlan component with mocked Session and Workspace hooks; not authenticated integration or production verification",
+  "fixture": {
+    "positions": "A: 100 shares with EUR historical cost currency; B: 20 shares; all current sample USD prices $1",
+    "watchlist": [
+      "C"
+    ],
+    "sampleDate": "2026-10-17",
+    "quoteHook": "Intentionally stale sample quotes; original demo research quotes non-stale"
+  },
+  "viewports": [
+    {
+      "width": 390,
+      "height": 900,
+      "status": "passed",
+      "checks": [
+        "Original sample quotes remain valid despite stale quote-hook output",
+        "USD valuation accepts EUR historical cost currency",
+        "Budget change: $100 produces A $10 / B $90 at 100% cap",
+        "Adding C redistributes A $0 / B $40 / C $60",
+        "20% cap produces B $24 / C $44 / retained cash $32",
+        "After weights reflect cap and total contribution",
+        "Negative budget withholds draft download",
+        "Deselecting all candidates retains contribution",
+        "No horizontal overflow in tested states",
+        "No browser page errors"
+      ],
+      "screenshot": "monthly-plan-390.png"
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "status": "passed",
+      "checks": [
+        "Original sample quotes remain valid despite stale quote-hook output",
+        "USD valuation accepts EUR historical cost currency",
+        "Budget change: $100 produces A $10 / B $90 at 100% cap",
+        "Adding C redistributes A $0 / B $40 / C $60",
+        "20% cap produces B $24 / C $44 / retained cash $32",
+        "After weights reflect cap and total contribution",
+        "Negative budget withholds draft download",
+        "Deselecting all candidates retains contribution",
+        "No horizontal overflow in tested states",
+        "No browser page errors"
+      ],
+      "screenshot": "monthly-plan-1440.png"
+    }
+  ],
+  "status": "passed"
+}

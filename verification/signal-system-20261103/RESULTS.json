@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-03",
+  "scope": "shared design, public and account pages, workspace pages and research navigation/chart layout",
+  "automated": {
+    "tests": 867,
+    "passed": 867,
+    "failed": 0,
+    "typecheck": "passed",
+    "productionBuild": "passed after removing stale generated .next output",
+    "diffWhitespace": "passed"
+  },
+  "browser": "desktop checks documented in CHECKS.md",
+  "mobileBrowser": "not verified; viewport resizing unavailable",
+  "liveAuthentication": "not verified; local configuration unavailable",
+  "remoteDeployment": "not performed; GitHub writes blocked"
+}

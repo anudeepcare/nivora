@@ -1,0 +1,42 @@
+[
+  {
+    "symbol": "NFLX",
+    "currency": "USD",
+    "closeDate": "2026-11-11",
+    "close": 64.54,
+    "low": 57,
+    "consensus": 84.76,
+    "high": 126,
+    "analysts": 43
+  },
+  {
+    "symbol": "IREN",
+    "currency": "USD",
+    "closeDate": "2026-11-11",
+    "close": 20.84,
+    "low": 23,
+    "consensus": 56.69,
+    "high": 139,
+    "analysts": 19
+  },
+  {
+    "symbol": "NBIS",
+    "currency": "USD",
+    "closeDate": "2026-11-11",
+    "close": 154.69,
+    "low": 84,
+    "consensus": 278.05,
+    "high": 410,
+    "analysts": 20
+  },
+  {
+    "symbol": "NOW",
+    "currency": "USD",
+    "closeDate": "2026-11-11",
+    "close": 102.76,
+    "low": 72,
+    "consensus": 155.82,
+    "high": 266,
+    "analysts": 46
+  }
+]

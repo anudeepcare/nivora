@@ -1,0 +1,38 @@
+{
+  "unit_tests": {
+    "passed": 1238,
+    "failed": 0
+  },
+  "browser_cases": {
+    "actual_app_routes": 48,
+    "populated_desks": 24,
+    "overview_interactions": 8,
+    "options_handbook_public_tools": 40,
+    "missing_rating_followup": 4,
+    "portfolio_labs_case_followup": 12
+  },
+  "reviewed_workspaces": [
+    "Overview",
+    "Case & ownership",
+    "Business",
+    "Valuation",
+    "Technicals",
+    "Targets & estimates",
+    "News & earnings",
+    "Labs",
+    "Options",
+    "Home",
+    "Watchlist",
+    "Portfolio"
+  ],
+  "validation": [
+    "production build passed",
+    "lint passed",
+    "TypeScript checked in production build",
+    "desktop/mobile and light/dark",
+    "expanded news and secondary detail states"
+  ],
+  "calculation_changes": "none",
+  "deployed": false,
+  "limits": "Dated observed and illustrative fixtures; live provider coverage and forecasting performance are not established by UI checks."
+}

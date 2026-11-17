@@ -1,0 +1,5800 @@
+{
+  "scope": "Saved Nov 6 snapshot; reference-label agreement, not investment accuracy. Historical aggregate results were already inspected; this is a reserved-symbol diagnostic, not a pristine independent validation. No later-date reference labels available.",
+  "inputSha256": "c2f1df4b9eb41f7e60793e156dbb3ee07a5bbc71c163a8e5409f14a5ea229ffb",
+  "split": "SHA256(auryn-pace-20261108:issuer-key) mod 10 < 3 holdout; known paired classes grouped; remaining issuer overlap unverified.",
+  "candidateCount": 12,
+  "selected": {
+    "distanceScale": 0.85,
+    "spreadScale": 1
+  },
+  "development": {
+    "baseline": {
+      "n": 407,
+      "exact": 0.7444717444717445,
+      "deeperN": 143,
+      "deeperExact": 0.3146853146853147,
+      "macro": 0.4555375878471623,
+      "classes": {
+        "1": {
+          "n": 263,
+          "matches": 257,
+          "agreement": 0.9771863117870723
+        },
+        "2": {
+          "n": 57,
+          "matches": 29,
+          "agreement": 0.5087719298245614
+        },
+        "3": {
+          "n": 33,
+          "matches": 3,
+          "agreement": 0.09090909090909091
+        },
+        "4": {
+          "n": 53,
+          "matches": 13,
+          "agreement": 0.24528301886792453
+        },
+        "LIGHT_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        },
+        "STRONG_TRIM": {
+          "n": 1,
+          "matches": 1,
+          "agreement": 1.0
+        }
+      },
+      "matrix": {
+        "1 -> 1": 257,
+        "1 -> 2": 3,
+        "1 -> LIGHT_TRIM": 3,
+        "2 -> 1": 27,
+        "2 -> 2": 29,
+        "2 -> 3": 1,
+        "3 -> 1": 5,
+        "3 -> 2": 23,
+        "3 -> 3": 3,
+        "3 -> 4": 2,
+        "4 -> 2": 20,
+        "4 -> 3": 20,
+        "4 -> 4": 13,
+        "STRONG_TRIM -> STRONG_TRIM": 1
+      }
+    },
+    "candidate": {
+      "n": 407,
+      "exact": 0.7764127764127764,
+      "deeperN": 143,
+      "deeperExact": 0.4405594405594406,
+      "macro": 0.5409565636465927,
+      "classes": {
+        "1": {
+          "n": 263,
+          "matches": 252,
+          "agreement": 0.9581749049429658
+        },
+        "2": {
+          "n": 57,
+          "matches": 39,
+          "agreement": 0.6842105263157895
+        },
+        "3": {
+          "n": 33,
+          "matches": 6,
+          "agreement": 0.18181818181818182
+        },
+        "4": {
+          "n": 53,
+          "matches": 18,
+          "agreement": 0.33962264150943394
+        },
+        "LIGHT_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        },
+        "STRONG_TRIM": {
+          "n": 1,
+          "matches": 1,
+          "agreement": 1.0
+        }
+      },
+      "matrix": {
+        "1 -> 1": 252,
+        "1 -> 2": 8,
+        "1 -> LIGHT_TRIM": 3,
+        "2 -> 1": 17,
+        "2 -> 2": 39,
+        "2 -> 3": 1,
+        "3 -> 1": 5,
+        "3 -> 2": 20,
+        "3 -> 3": 6,
+        "3 -> 4": 2,
+        "4 -> 2": 13,
+        "4 -> 3": 22,
+        "4 -> 4": 18,
+        "STRONG_TRIM -> STRONG_TRIM": 1
+      }
+    }
+  },
+  "holdout": {
+    "baseline": {
+      "n": 182,
+      "exact": 0.7417582417582418,
+      "deeperN": 69,
+      "deeperExact": 0.4057971014492754,
+      "macro": 0.5091394568202624,
+      "classes": {
+        "1": {
+          "n": 113,
+          "matches": 107,
+          "agreement": 0.9469026548672567
+        },
+        "2": {
+          "n": 29,
+          "matches": 20,
+          "agreement": 0.6896551724137931
+        },
+        "3": {
+          "n": 20,
+          "matches": 1,
+          "agreement": 0.05
+        },
+        "4": {
+          "n": 20,
+          "matches": 7,
+          "agreement": 0.35
+        },
+        "LIGHT_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        },
+        "STRONG_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        }
+      },
+      "matrix": {
+        "1 -> 1": 107,
+        "1 -> 2": 1,
+        "1 -> LIGHT_TRIM": 5,
+        "2 -> 1": 8,
+        "2 -> 2": 20,
+        "2 -> 3": 1,
+        "3 -> 1": 4,
+        "3 -> 2": 14,
+        "3 -> 3": 1,
+        "3 -> 4": 1,
+        "4 -> 2": 4,
+        "4 -> 3": 9,
+        "4 -> 4": 7
+      }
+    },
+    "candidate": {
+      "n": 182,
+      "exact": 0.7527472527472527,
+      "deeperN": 69,
+      "deeperExact": 0.43478260869565216,
+      "macro": 0.5341394568202624,
+      "classes": {
+        "1": {
+          "n": 113,
+          "matches": 107,
+          "agreement": 0.9469026548672567
+        },
+        "2": {
+          "n": 29,
+          "matches": 20,
+          "agreement": 0.6896551724137931
+        },
+        "3": {
+          "n": 20,
+          "matches": 2,
+          "agreement": 0.1
+        },
+        "4": {
+          "n": 20,
+          "matches": 8,
+          "agreement": 0.4
+        },
+        "LIGHT_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        },
+        "STRONG_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        }
+      },
+      "matrix": {
+        "1 -> 1": 107,
+        "1 -> 2": 1,
+        "1 -> LIGHT_TRIM": 5,
+        "2 -> 1": 8,
+        "2 -> 2": 20,
+        "2 -> 3": 1,
+        "3 -> 1": 4,
+        "3 -> 2": 13,
+        "3 -> 3": 2,
+        "3 -> 4": 1,
+        "4 -> 2": 4,
+        "4 -> 3": 8,
+        "4 -> 4": 8
+      }
+    }
+  },
+  "allSnapshot": {
+    "baseline": {
+      "n": 589,
+      "exact": 0.7436332767402377,
+      "deeperN": 212,
+      "deeperExact": 0.3443396226415094,
+      "macro": 0.4718242122740944,
+      "classes": {
+        "1": {
+          "n": 376,
+          "matches": 364,
+          "agreement": 0.9680851063829787
+        },
+        "2": {
+          "n": 86,
+          "matches": 49,
+          "agreement": 0.5697674418604651
+        },
+        "3": {
+          "n": 53,
+          "matches": 4,
+          "agreement": 0.07547169811320754
+        },
+        "4": {
+          "n": 73,
+          "matches": 20,
+          "agreement": 0.273972602739726
+        },
+        "LIGHT_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        },
+        "STRONG_TRIM": {
+          "n": 1,
+          "matches": 1,
+          "agreement": 1.0
+        }
+      },
+      "matrix": {
+        "1 -> 1": 364,
+        "1 -> 2": 4,
+        "1 -> LIGHT_TRIM": 8,
+        "2 -> 1": 35,
+        "2 -> 2": 49,
+        "2 -> 3": 2,
+        "3 -> 1": 9,
+        "3 -> 2": 37,
+        "3 -> 3": 4,
+        "3 -> 4": 3,
+        "4 -> 2": 24,
+        "4 -> 3": 29,
+        "4 -> 4": 20,
+        "STRONG_TRIM -> STRONG_TRIM": 1
+      }
+    },
+    "candidate": {
+      "n": 589,
+      "exact": 0.769100169779287,
+      "deeperN": 212,
+      "deeperExact": 0.4386792452830189,
+      "macro": 0.5369853813646298,
+      "classes": {
+        "1": {
+          "n": 376,
+          "matches": 359,
+          "agreement": 0.9547872340425532
+        },
+        "2": {
+          "n": 86,
+          "matches": 59,
+          "agreement": 0.686046511627907
+        },
+        "3": {
+          "n": 53,
+          "matches": 8,
+          "agreement": 0.1509433962264151
+        },
+        "4": {
+          "n": 73,
+          "matches": 26,
+          "agreement": 0.3561643835616438
+        },
+        "LIGHT_TRIM": {
+          "n": 0,
+          "matches": 0,
+          "agreement": null
+        },
+        "STRONG_TRIM": {
+          "n": 1,
+          "matches": 1,
+          "agreement": 1.0
+        }
+      },
+      "matrix": {
+        "1 -> 1": 359,
+        "1 -> 2": 9,
+        "1 -> LIGHT_TRIM": 8,
+        "2 -> 1": 25,
+        "2 -> 2": 59,
+        "2 -> 3": 2,
+        "3 -> 1": 9,
+        "3 -> 2": 33,
+        "3 -> 3": 8,
+        "3 -> 4": 3,
+        "4 -> 2": 17,
+        "4 -> 3": 30,
+        "4 -> 4": 26,
+        "STRONG_TRIM -> STRONG_TRIM": 1
+      }
+    }
+  },
+  "productionPolicyChanged": false,
+  "promotionStatus": "Research candidate only; no temporal validation, sparse trim coverage, and reference-methodology unknown.",
+  "trials": [
+    {
+      "config": {
+        "distanceScale": 0.5,
+        "spreadScale": 0.5
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.8427518427518428,
+        "deeperN": 143,
+        "deeperExact": 0.7202797202797203,
+        "macro": 0.727058419156697,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 239,
+            "agreement": 0.908745247148289
+          },
+          "2": {
+            "n": 57,
+            "matches": 44,
+            "agreement": 0.7719298245614035
+          },
+          "3": {
+            "n": 33,
+            "matches": 10,
+            "agreement": 0.30303030303030304
+          },
+          "4": {
+            "n": 53,
+            "matches": 49,
+            "agreement": 0.9245283018867925
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 239,
+          "1 -> 2": 18,
+          "1 -> 3": 2,
+          "1 -> 4": 1,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 2,
+          "2 -> 2": 44,
+          "2 -> 3": 9,
+          "2 -> 4": 2,
+          "3 -> 2": 9,
+          "3 -> 3": 10,
+          "3 -> 4": 14,
+          "4 -> 2": 1,
+          "4 -> 3": 3,
+          "4 -> 4": 49,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.5,
+        "spreadScale": 0.75
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.8402948402948403,
+        "deeperN": 143,
+        "deeperExact": 0.6993006993006993,
+        "macro": 0.71062577512202,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 241,
+            "agreement": 0.9163498098859315
+          },
+          "2": {
+            "n": 57,
+            "matches": 48,
+            "agreement": 0.8421052631578947
+          },
+          "3": {
+            "n": 33,
+            "matches": 9,
+            "agreement": 0.2727272727272727
+          },
+          "4": {
+            "n": 53,
+            "matches": 43,
+            "agreement": 0.8113207547169812
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 241,
+          "1 -> 2": 17,
+          "1 -> 3": 2,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 2,
+          "2 -> 2": 48,
+          "2 -> 3": 6,
+          "2 -> 4": 1,
+          "3 -> 2": 12,
+          "3 -> 3": 9,
+          "3 -> 4": 12,
+          "4 -> 2": 1,
+          "4 -> 3": 9,
+          "4 -> 4": 43,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.5,
+        "spreadScale": 1
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.8304668304668305,
+        "deeperN": 143,
+        "deeperExact": 0.6293706293706294,
+        "macro": 0.6669626418504047,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 247,
+            "agreement": 0.9391634980988594
+          },
+          "2": {
+            "n": 57,
+            "matches": 46,
+            "agreement": 0.8070175438596491
+          },
+          "3": {
+            "n": 33,
+            "matches": 8,
+            "agreement": 0.24242424242424243
+          },
+          "4": {
+            "n": 53,
+            "matches": 36,
+            "agreement": 0.6792452830188679
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 247,
+          "1 -> 2": 13,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 7,
+          "2 -> 2": 46,
+          "2 -> 3": 4,
+          "3 -> 1": 3,
+          "3 -> 2": 12,
+          "3 -> 3": 8,
+          "3 -> 4": 10,
+          "4 -> 2": 7,
+          "4 -> 3": 10,
+          "4 -> 4": 36,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.7,
+        "spreadScale": 0.5
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.8452088452088452,
+        "deeperN": 143,
+        "deeperExact": 0.6713286713286714,
+        "macro": 0.6981233050865396,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 247,
+            "agreement": 0.9391634980988594
+          },
+          "2": {
+            "n": 57,
+            "matches": 46,
+            "agreement": 0.8070175438596491
+          },
+          "3": {
+            "n": 33,
+            "matches": 9,
+            "agreement": 0.2727272727272727
+          },
+          "4": {
+            "n": 53,
+            "matches": 41,
+            "agreement": 0.7735849056603774
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 247,
+          "1 -> 2": 12,
+          "1 -> 3": 1,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 9,
+          "2 -> 2": 46,
+          "2 -> 4": 2,
+          "3 -> 1": 1,
+          "3 -> 2": 18,
+          "3 -> 3": 9,
+          "3 -> 4": 5,
+          "4 -> 2": 4,
+          "4 -> 3": 8,
+          "4 -> 4": 41,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.7,
+        "spreadScale": 0.75
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.8353808353808354,
+        "deeperN": 143,
+        "deeperExact": 0.6363636363636364,
+        "macro": 0.6751579535485728,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 248,
+            "agreement": 0.9429657794676806
+          },
+          "2": {
+            "n": 57,
+            "matches": 47,
+            "agreement": 0.8245614035087719
+          },
+          "3": {
+            "n": 33,
+            "matches": 9,
+            "agreement": 0.2727272727272727
+          },
+          "4": {
+            "n": 53,
+            "matches": 35,
+            "agreement": 0.660377358490566
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 248,
+          "1 -> 2": 11,
+          "1 -> 3": 1,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 9,
+          "2 -> 2": 47,
+          "2 -> 4": 1,
+          "3 -> 1": 1,
+          "3 -> 2": 18,
+          "3 -> 3": 9,
+          "3 -> 4": 5,
+          "4 -> 2": 4,
+          "4 -> 3": 14,
+          "4 -> 4": 35,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.7,
+        "spreadScale": 1
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.8230958230958231,
+        "deeperN": 143,
+        "deeperExact": 0.5804195804195804,
+        "macro": 0.6409358479581746,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 251,
+            "agreement": 0.9543726235741445
+          },
+          "2": {
+            "n": 57,
+            "matches": 45,
+            "agreement": 0.7894736842105263
+          },
+          "3": {
+            "n": 33,
+            "matches": 9,
+            "agreement": 0.2727272727272727
+          },
+          "4": {
+            "n": 53,
+            "matches": 29,
+            "agreement": 0.5471698113207547
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 251,
+          "1 -> 2": 9,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 11,
+          "2 -> 2": 45,
+          "2 -> 3": 1,
+          "3 -> 1": 4,
+          "3 -> 2": 16,
+          "3 -> 3": 9,
+          "3 -> 4": 4,
+          "4 -> 2": 10,
+          "4 -> 3": 14,
+          "4 -> 4": 29,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.85,
+        "spreadScale": 0.5
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.7886977886977887,
+        "deeperN": 143,
+        "deeperExact": 0.4825174825174825,
+        "macro": 0.5711666565405223,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 251,
+            "agreement": 0.9543726235741445
+          },
+          "2": {
+            "n": 57,
+            "matches": 39,
+            "agreement": 0.6842105263157895
+          },
+          "3": {
+            "n": 33,
+            "matches": 7,
+            "agreement": 0.21212121212121213
+          },
+          "4": {
+            "n": 53,
+            "matches": 23,
+            "agreement": 0.4339622641509434
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 251,
+          "1 -> 2": 9,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 16,
+          "2 -> 2": 39,
+          "2 -> 3": 1,
+          "2 -> 4": 1,
+          "3 -> 1": 3,
+          "3 -> 2": 21,
+          "3 -> 3": 7,
+          "3 -> 4": 2,
+          "4 -> 2": 7,
+          "4 -> 3": 23,
+          "4 -> 4": 23,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.85,
+        "spreadScale": 0.75
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.7837837837837838,
+        "deeperN": 143,
+        "deeperExact": 0.46853146853146854,
+        "macro": 0.5614016780565767,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 251,
+            "agreement": 0.9543726235741445
+          },
+          "2": {
+            "n": 57,
+            "matches": 40,
+            "agreement": 0.7017543859649122
+          },
+          "3": {
+            "n": 33,
+            "matches": 7,
+            "agreement": 0.21212121212121213
+          },
+          "4": {
+            "n": 53,
+            "matches": 20,
+            "agreement": 0.37735849056603776
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 251,
+          "1 -> 2": 9,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 16,
+          "2 -> 2": 40,
+          "2 -> 4": 1,
+          "3 -> 1": 3,
+          "3 -> 2": 21,
+          "3 -> 3": 7,
+          "3 -> 4": 2,
+          "4 -> 2": 7,
+          "4 -> 3": 26,
+          "4 -> 4": 20,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 0.85,
+        "spreadScale": 1
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.7764127764127764,
+        "deeperN": 143,
+        "deeperExact": 0.4405594405594406,
+        "macro": 0.5409565636465927,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 252,
+            "agreement": 0.9581749049429658
+          },
+          "2": {
+            "n": 57,
+            "matches": 39,
+            "agreement": 0.6842105263157895
+          },
+          "3": {
+            "n": 33,
+            "matches": 6,
+            "agreement": 0.18181818181818182
+          },
+          "4": {
+            "n": 53,
+            "matches": 18,
+            "agreement": 0.33962264150943394
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 252,
+          "1 -> 2": 8,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 17,
+          "2 -> 2": 39,
+          "2 -> 3": 1,
+          "3 -> 1": 5,
+          "3 -> 2": 20,
+          "3 -> 3": 6,
+          "3 -> 4": 2,
+          "4 -> 2": 13,
+          "4 -> 3": 22,
+          "4 -> 4": 18,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 1,
+        "spreadScale": 0.5
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.742014742014742,
+        "deeperN": 143,
+        "deeperExact": 0.3146853146853147,
+        "macro": 0.4549180337247517,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 256,
+            "agreement": 0.973384030418251
+          },
+          "2": {
+            "n": 57,
+            "matches": 28,
+            "agreement": 0.49122807017543857
+          },
+          "3": {
+            "n": 33,
+            "matches": 3,
+            "agreement": 0.09090909090909091
+          },
+          "4": {
+            "n": 53,
+            "matches": 14,
+            "agreement": 0.2641509433962264
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 256,
+          "1 -> 2": 4,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 27,
+          "2 -> 2": 28,
+          "2 -> 3": 2,
+          "3 -> 1": 3,
+          "3 -> 2": 25,
+          "3 -> 3": 3,
+          "3 -> 4": 2,
+          "4 -> 2": 15,
+          "4 -> 3": 24,
+          "4 -> 4": 14,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 1,
+        "spreadScale": 0.75
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.7444717444717445,
+        "deeperN": 143,
+        "deeperExact": 0.32167832167832167,
+        "macro": 0.4593039986370324,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 256,
+            "agreement": 0.973384030418251
+          },
+          "2": {
+            "n": 57,
+            "matches": 29,
+            "agreement": 0.5087719298245614
+          },
+          "3": {
+            "n": 33,
+            "matches": 3,
+            "agreement": 0.09090909090909091
+          },
+          "4": {
+            "n": 53,
+            "matches": 14,
+            "agreement": 0.2641509433962264
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 256,
+          "1 -> 2": 4,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 27,
+          "2 -> 2": 29,
+          "2 -> 3": 1,
+          "3 -> 1": 3,
+          "3 -> 2": 25,
+          "3 -> 3": 3,
+          "3 -> 4": 2,
+          "4 -> 2": 15,
+          "4 -> 3": 24,
+          "4 -> 4": 14,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    },
+    {
+      "config": {
+        "distanceScale": 1,
+        "spreadScale": 1
+      },
+      "score": {
+        "n": 407,
+        "exact": 0.7444717444717445,
+        "deeperN": 143,
+        "deeperExact": 0.3146853146853147,
+        "macro": 0.4555375878471623,
+        "classes": {
+          "1": {
+            "n": 263,
+            "matches": 257,
+            "agreement": 0.9771863117870723
+          },
+          "2": {
+            "n": 57,
+            "matches": 29,
+            "agreement": 0.5087719298245614
+          },
+          "3": {
+            "n": 33,
+            "matches": 3,
+            "agreement": 0.09090909090909091
+          },
+          "4": {
+            "n": 53,
+            "matches": 13,
+            "agreement": 0.24528301886792453
+          },
+          "LIGHT_TRIM": {
+            "n": 0,
+            "matches": 0,
+            "agreement": null
+          },
+          "STRONG_TRIM": {
+            "n": 1,
+            "matches": 1,
+            "agreement": 1.0
+          }
+        },
+        "matrix": {
+          "1 -> 1": 257,
+          "1 -> 2": 3,
+          "1 -> LIGHT_TRIM": 3,
+          "2 -> 1": 27,
+          "2 -> 2": 29,
+          "2 -> 3": 1,
+          "3 -> 1": 5,
+          "3 -> 2": 23,
+          "3 -> 3": 3,
+          "3 -> 4": 2,
+          "4 -> 2": 20,
+          "4 -> 3": 20,
+          "4 -> 4": 13,
+          "STRONG_TRIM -> STRONG_TRIM": 1
+        }
+      }
+    }
+  ],
+  "rows": [
+    {
+      "symbol": "A",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AA",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "AAL",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AAP",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "AAPL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AAT",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ABBV",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ABNB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ABT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ACGL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ACHR",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "ACN",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "ADBE",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ADI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ADM",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ADP",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "ADSK",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AEE",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AEP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AES",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AFL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AFRM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AIG",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AIZ",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AJG",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AKAM",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "ALAB",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ALB",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "ALGN",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ALL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ALLE",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ALNY",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMAT",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMCR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMD",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AME",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMGN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMKR",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMRZ",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AMZN",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ANET",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AON",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AOS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "APA",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "APD",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "APH",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "APO",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "APP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "APTV",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "ARE",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ARM",
+      "split": "development",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ASTS",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "ATO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AVAV",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "AVGO",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "AVY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AWK",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AXON",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "AXP",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AZN",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "AZO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BA",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BABA",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BAC",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BALL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BAX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BBD",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "BBDO",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "BBY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BCE",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BDX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BEN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BG",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BIDU",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "BIIB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BIO",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BKKT",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "BKNG",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BKR",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BLDR",
+      "split": "development",
+      "reference": "3",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "BLK",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BLOK",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BMNR",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BMY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BNTX",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BOTZ",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BRO",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BSBR",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BSX",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BULL",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "BWA",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "BWXT",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "BX",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "BXP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "C",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CAG",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CAH",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CARR",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "CAT",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CBOE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CBRE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CCI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CCJ",
+      "split": "development",
+      "reference": "3",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CCL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CDNS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CDW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CEG",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "CF",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CFG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CHD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CHRW",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CHTR",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CIEN",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "CIFR",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "CINF",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CLS",
+      "split": "development",
+      "reference": "3",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "CLSK",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "CLX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CMCSA",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CME",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CMG",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CMI",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CMS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CNC",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CNP",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "COF",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "COHR",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "COIN",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "COO",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "COP",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "COR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "COST",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CPAY",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "CPB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CPNG",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "CPRT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CPT",
+      "split": "development",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CRCL",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "CRDO",
+      "split": "development",
+      "reference": "2",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CRL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CRM",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CRWD",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CRWV",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "CSCO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CSGP",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "CSIQ",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CSX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CTAS",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CTSH",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CTVA",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CVS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CVX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "CW",
+      "split": "development",
+      "reference": "3",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CYTK",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "CZR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "D",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DAL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DASH",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DD",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DDOG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DECK",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "DG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DGX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DHI",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DHR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DIS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DKNG",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "DKS",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "DLR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DLTR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DOC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DOV",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DOW",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DPZ",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DQ",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "DRI",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DTE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DUK",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DVA",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DVN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "DXCM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EBAY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ECL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ED",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EFX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EH",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "EIX",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "EL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ELV",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EME",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "EMN",
+      "split": "development",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EMR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ENB",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ENPH",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "EOG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EPAM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EPD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EQIX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EQT",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ES",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ESS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ET",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "ETN",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ETR",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ETSY",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EVRG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EXC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EXE",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "EXPD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EXPE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "EXR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "F",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FANG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FAST",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FCX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FDS",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "FDX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FFIV",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FICO",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "FIG",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "FIS",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "FITB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FIX",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "FLEX",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "FLUT",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "FMC",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "FOX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FOXA",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FRT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FSLR",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "FTAI",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "FTNT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "FTV",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GEHC",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GEN",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GEV",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GFS",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GGG",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GILD",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GIS",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GLD",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GLW",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GNRC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GOOG",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GOOGL",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "GPC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GPN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "GRMN",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GSK",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "GWW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HAL",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HAS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HBAN",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HCA",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HDB",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HEI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HIG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HII",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "HIMS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HLN",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HLT",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HON",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HOOD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "HPE",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HPQ",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HRL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HSAI",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "HSIC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HST",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HSY",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HUBB",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "HUM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "HWM",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "IBM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ICE",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ICLN",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "IDXX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IEX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IFF",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ILMN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "INCY",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "INFY",
+      "split": "development",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "INTC",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "INTU",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "INVH",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IP",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IQV",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IREN",
+      "split": "development",
+      "reference": "3",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "IRM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ISRG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ITA",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ITUB",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ITW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "IVZ",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "J",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "JBHT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "JBL",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "JBS",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "JCI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "JKHY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "JKS",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "JNJ",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "JPM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KDK",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "KDP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KEY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KEYS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KGC",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "KHC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KIM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KKR",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KLAC",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "KMB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KMI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KMX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "KR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "L",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LDOS",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "LEN",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LEU",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "LH",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LHX",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "LII",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "LIN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LKQ",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "LLY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LMT",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LNG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LNT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LOW",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LPLA",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "LRCX",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "LTBR",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "LULU",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "LUV",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LVS",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "LW",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LYB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "LYV",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MA",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MAA",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MAR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MAS",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MCD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MCHP",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "MCK",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MCO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MDB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "MDLZ",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MDT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MELI",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "MET",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "META",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MGM",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "MHK",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MKC",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "MKTX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MLM",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "MMM",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MNST",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MOH",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MOS",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MPC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MPWR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MRK",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MRNA",
+      "split": "development",
+      "reference": "STRONG_TRIM",
+      "baseline": "STRONG_TRIM",
+      "candidate": "STRONG_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "MS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MSCI",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MSFT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MSI",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MTB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MTCH",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MTD",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "MTSI",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "MU",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NBIS",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NCLH",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NDAQ",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NDSN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NEE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NEM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NET",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NFLX",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "NI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NKE",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "NNE",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "NOC",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "NOK",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "NOW",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "NRG",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "NSC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NTAP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NTRS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NU",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "NUE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NVDA",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NVO",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "NVR",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NVT",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "NWS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NWSA",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "NXPI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "O",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ODFL",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "OKE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "OMC",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ON",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ONDS",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "ORCL",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "ORLY",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "OSCR",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "OTIS",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "OXY",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PANW",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PAYC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "PAYX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PCAR",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PCG",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PDD",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PEG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PEP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PFE",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PFG",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PGR",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PH",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PHM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PINS",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PKG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PKX",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PLD",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PLTR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PLUG",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "PM",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PNC",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PNR",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PNW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PODD",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "POOL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PPG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PPL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PRU",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PSA",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PSX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PTC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "PUK",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PWR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "PYPL",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "QCOM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "QXO",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "RBLX",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RCL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RDDT",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": true
+    },
+    {
+      "symbol": "REG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "REGN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RF",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RIVN",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "RJF",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RKLB",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "RL",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RMD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ROK",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ROKU",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "ROL",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "ROP",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": true
+    },
+    {
+      "symbol": "ROST",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RSG",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RTX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "RVTY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SBAC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SBET",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "SBUX",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SCHW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SE",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "SHOP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SHW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SJM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SLB",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SLV",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": true
+    },
+    {
+      "symbol": "SMCI",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "SNA",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SNAP",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "SNDK",
+      "split": "development",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SNOW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SNPS",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SNY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SOFI",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": true
+    },
+    {
+      "symbol": "SOLV",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SPG",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "SPGI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "SPOT",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "SQM",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "SRE",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "STE",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "STLA",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "STLD",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "STM",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "STT",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "STX",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "STZ",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "SW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "SWK",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "SWKS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "SYK",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "SYM",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "SYY",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "T",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TAN",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TAP",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TCOM",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TDG",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TDY",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TECH",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TEL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TER",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TFC",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TFX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "LIGHT_TRIM",
+      "candidate": "LIGHT_TRIM",
+      "samePrice": false
+    },
+    {
+      "symbol": "TGT",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TJX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TLK",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "4",
+      "samePrice": false
+    },
+    {
+      "symbol": "TMO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TMUS",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TPL",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "TPR",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TRGP",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TRMB",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TROW",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TRV",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TSCO",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "TSEM",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TSLA",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "TXN",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "UAL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "UBER",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "UI",
+      "split": "holdout",
+      "reference": "3",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "UNH",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "UNP",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "UPS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "UPST",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "4",
+      "samePrice": false
+    },
+    {
+      "symbol": "URA",
+      "split": "development",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "4",
+      "samePrice": false
+    },
+    {
+      "symbol": "URI",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "USB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "V",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "VALE",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "VICI",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "VIV",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "VLO",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "VRT",
+      "split": "holdout",
+      "reference": "2",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "VRTX",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "VST",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "VZ",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "WDC",
+      "split": "development",
+      "reference": "2",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "WES",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": true
+    },
+    {
+      "symbol": "WFC",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "WLK",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "WM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "WMB",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "WMS",
+      "split": "development",
+      "reference": "4",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "WMT",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "WWD",
+      "split": "development",
+      "reference": "2",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "WYFI",
+      "split": "development",
+      "reference": "4",
+      "baseline": "4",
+      "candidate": "4",
+      "samePrice": false
+    },
+    {
+      "symbol": "XEL",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "XOM",
+      "split": "holdout",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "XPEV",
+      "split": "holdout",
+      "reference": "4",
+      "baseline": "3",
+      "candidate": "3",
+      "samePrice": false
+    },
+    {
+      "symbol": "XYL",
+      "split": "development",
+      "reference": "3",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    },
+    {
+      "symbol": "YUM",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "ZS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "1",
+      "candidate": "1",
+      "samePrice": false
+    },
+    {
+      "symbol": "ZTS",
+      "split": "development",
+      "reference": "1",
+      "baseline": "2",
+      "candidate": "2",
+      "samePrice": false
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+.root.root.root {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+.root.root.root > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 0;
+}
+.scenarios {
+  min-width: 0;
+}
+.root[data-has-consensus="true"] > .scenarios {
+  grid-column: span 8;
+}
+.root.root.root > .consensus {
+  grid-column: span 4;
+}
+.root.root.root > .market {
+  grid-column: 1 / -1;
+}
+.root.root.root > .calculator {
+  grid-column: 1 / -1;
+}
+.root.root.root > .manual:empty {
+  display: none;
+}
+.root.root.root :global(.valuation-board),
+.calculator.calculator {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 4px 24px #17342c06;
+}
+.root.root.root :global(.valuation-board-grid) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 10px;
+}
+.root.root.root :global(.valuation-board-grid > article) {
+  padding: 15px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--green) 6%, var(--card)),
+    var(--card)
+  );
+}
+.root.root.root :global(.valuation-board-grid > article > strong) {
+  font-size: 28px;
+  margin: 10px 0 6px;
+}
+.root.root.root :global(.valuation-board-grid > article > p) {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 5px 0 0;
+}
+.root.root.root :global(.valuation-board-grid > article > span) {
+  font-size: 12px;
+}
+.root.root.root > .methods {
+  grid-column: 1 / -1;
+  padding: 20px;
+  margin: 0;
+  background: var(--card);
+  border-radius: 18px;
+}
+.methods > summary {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0;
+  min-height: 28px;
+  background: transparent;
+}
+.methodGrid {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+.methodGrid > header {
+  display: none;
+}
+.root.root.root .methodGrid > div {
+  display: grid;
+  grid-template-columns: 6px minmax(0, 1fr);
+  gap: 8px;
+  padding: 0;
+  border: 0;
+}
+.root.root.root .methodGrid > div > span {
+  grid-column: 2;
+  font-size: 11px;
+  margin: 0;
+  text-align: left;
+}
+.root.root.root .methodGrid p {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 5px 0;
+}
+.root.root.root .methodGrid strong {
+  font-size: 13px;
+}
+.root.root.root:not(:has(.market)) > .methods {
+  grid-column: 1 / -1;
+}
+.root.root.root > :global(.desk-footnote) {
+  font-size: 11px;
+  line-height: 1.6;
+}
+@media (max-width: 1100px) {
+  .root.root.root > .scenarios,
+  .root.root.root > .consensus {
+    grid-column: 1/-1;
+  }
+  .root.root.root > .market,
+  .root.root.root > .methods {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 760px) {
+  .root.root.root.root > *,
+  .root.root.root:not(:has(.market)) > .calculator,
+  .root.root.root:not(:has(.market)) > .methods {
+    grid-column: 1/-1;
+  }
+  .root.root.root > .methods {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root.root.root :global(.valuation-board),
+  .calculator.calculator,
+  .root.root.root > .methods {
+    padding: 16px;
+  }
+  .root.root.root :global(.valuation-board-grid) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 360px) {
+  .root.root.root :global(.valuation-board-grid > article) {
+    padding: 12px;
+  }
+}
+.root.root.root
+  :global(.valuation-board-grid:has(> article:nth-child(4):last-child)) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 760px) {
+  .root.root.root
+    :global(.valuation-board-grid > article:last-child:nth-child(odd)) {
+    grid-column: span 2;
+  }
+}

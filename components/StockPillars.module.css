@@ -1,0 +1,185 @@
+.root {
+  margin: 4px 0 20px;
+  padding: 22px;
+  border-radius: 18px;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, #76b6aa 11%, var(--card)),
+    var(--card) 65%
+  );
+  box-shadow: var(--panel-shadow);
+  color: var(--ink);
+}
+.eyebrow {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.root h2 {
+  margin: 8px 0 6px;
+  font-size: clamp(19px, 2.4vw, 25px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.root header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 22px;
+  margin: 20px 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.list li {
+  --tone: var(--muted);
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
+}
+.list li[data-status="supportive"] {
+  --tone: #00866b;
+}
+.list li[data-status="mixed"] {
+  --tone: #a38232;
+}
+.list li[data-status="caution"] {
+  --tone: #c65050;
+}
+.badge {
+  padding: 5px 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  color: var(--tone);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+.list small {
+  display: block;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.list strong {
+  display: block;
+  margin: 2px 0 3px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.list p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+@media (max-width: 980px) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .root {
+    padding: 18px 16px;
+  }
+  .list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.cases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 18px;
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.cases > div {
+  --tone: #a38232;
+  min-width: 0;
+}
+.cases > div[data-case="bear"] {
+  --tone: #c65050;
+}
+.cases > div[data-case="bull"] {
+  --tone: #00866b;
+}
+.cases small {
+  display: block;
+  color: var(--tone);
+  font-size: 11.5px;
+  font-weight: 650;
+}
+.cases strong {
+  display: block;
+  margin: 2px 0;
+  font-size: clamp(17px, 2.6vw, 24px);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.cases span {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.cases p {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.exit {
+  margin: 14px 0 0;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #c65050 10%, transparent);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.exit[data-level="trim"] {
+  background: color-mix(in srgb, #a38232 13%, transparent);
+}
+.odds {
+  --tone: #a38232;
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border-left: 4px solid var(--tone);
+  background: color-mix(in srgb, var(--tone) 9%, transparent);
+}
+.odds[data-grade="favourable"] {
+  --tone: #00866b;
+}
+.odds[data-grade="unfavourable"] {
+  --tone: #c65050;
+}
+.odds strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+}
+.odds p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}

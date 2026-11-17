@@ -1,0 +1,127 @@
+.root {
+  min-width: 0;
+  margin: 16px 0;
+  color: var(--ink);
+}
+.root h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 12px;
+}
+.grid article {
+  min-width: 0;
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--green) 7%, var(--card)),
+    var(--card)
+  );
+}
+.grid article[data-tone="caution"] {
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, #d99839 12%, var(--card)),
+    var(--card)
+  );
+}
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  color: var(--green);
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+}
+[data-tone="caution"] .icon {
+  color: #a66a18;
+  background: color-mix(in srgb, #d99839 16%, transparent);
+}
+[data-tone="pace"] .icon {
+  background: #19271f;
+  color: #d2f58b;
+}
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.grid strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.grid p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+@media (max-width: 650px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .grid article {
+    padding: 13px;
+  }
+  .grid strong {
+    font-size: 16px;
+  }
+}
+.root.root .grid p {
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 5px 0 0;
+}
+.root.root .grid strong {
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.4;
+}
+/* A phone gets short evidence rows, keeping the primary chart within reach. */
+@media (max-width: 650px) {
+  .root.root .grid article {
+    padding: 11px 12px;
+    gap: 10px;
+  }
+  .root.root .grid article > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    min-width: 0;
+  }
+  .root.root .grid .label {
+    font-size: 12px;
+  }
+  .root.root .grid strong {
+    font-size: 15px;
+    margin: 0;
+  }
+  .root.root .grid p {
+    flex-basis: 100%;
+    font-size: 12px;
+    line-height: 1.45;
+    margin: 2px 0 0;
+  }
+  .root.root .grid .icon {
+    height: 30px;
+    width: 30px;
+  }
+}

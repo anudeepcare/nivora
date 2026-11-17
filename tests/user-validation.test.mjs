@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {cleanValidationSession} from '../lib/user-validation.ts';
+const v={participant:'P001',task:'monthly-plan',completed:true,seconds:120,consent:true,observedAt:'2026-11-06T12:00:00Z'};
+test('validation requires actual consent, anonymous code, supported task and past time',()=>{assert.equal(cleanValidationSession(v,'2026-11-07').completed,true);for(const patch of [{consent:false},{participant:'person@example.com'},{task:'fake'},{seconds:0},{observedAt:'2027-01-01'}])assert.throws(()=>cleanValidationSession({...v,...patch},'2026-11-07'))});
