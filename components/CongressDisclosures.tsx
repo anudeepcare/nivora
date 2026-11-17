@@ -1,4 +1,5 @@
 "use client";
+import evidenceScroll from "./EvidenceScroll.module.css";
 import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./CongressDisclosures.module.css";
 import { api } from "@/lib/client";
@@ -84,7 +85,12 @@ export default function CongressDisclosures({
               : ""}
           </p>
           {result.rows.length ? (
-            <div className={`congress-list ${styles.list}`}>
+            <div
+              className={`congress-list ${styles.list} ${evidenceScroll.region}`}
+              tabIndex={0}
+              role="region"
+              aria-label="Congressional disclosure records"
+            >
               {result.rows.map((r) => (
                 <article
                   key={r.id}

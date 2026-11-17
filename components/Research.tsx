@@ -540,6 +540,30 @@ export default function Research({ symbol }: { symbol: string }) {
     now: demo ? Date.parse(r.retrievedAt) : Date.now(),
   });
   const headerContext = headerMarketContext(r);
+  const evidenceToolbar = (
+    <div className={cockpit.toolbar}>
+      {supportingSections.length > 1 && (
+        <nav
+          className={cockpit.supporting}
+          aria-label={`${activeLens.label} evidence`}
+        >
+          {supportingSections.map((section) => (
+            <button
+              key={section}
+              aria-current={tab === section ? "page" : undefined}
+              onClick={() => switchTab(section)}
+            >
+              {tabPresentation[section].label}
+            </button>
+          ))}
+        </nav>
+      )}
+      <details className={cockpit.facts}>
+        <summary>Company facts &amp; source dates</summary>
+        <StockFacts research={r} />
+      </details>
+    </div>
+  );
   return (
     <article
       className={`research-page approved-research-page ${cockpit.root}`}
@@ -608,7 +632,6 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       </header>
-      <StockFacts research={r} />
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
@@ -653,22 +676,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
-      {supportingSections.length > 1 && (
-        <nav
-          className={cockpit.supporting}
-          aria-label={`${activeLens.label} evidence`}
-        >
-          {supportingSections.map((section) => (
-            <button
-              key={section}
-              aria-current={tab === section ? "page" : undefined}
-              onClick={() => switchTab(section)}
-            >
-              {tabPresentation[section].label}
-            </button>
-          ))}
-        </nav>
-      )}
+      {tab !== "Snapshot" && evidenceToolbar}
       <div id="research-overview" hidden={tab !== "Snapshot"}>
         {retainedCharts.includes("Snapshot") && (
           <FeatureGate
@@ -688,6 +696,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </FeatureGate>
         )}
       </div>
+      {tab === "Snapshot" && evidenceToolbar}
       <section
         className={`signal-research-panel ${tabVisuals.root}`}
         data-research-section={tab}
@@ -699,36 +708,6 @@ export default function Research({ symbol }: { symbol: string }) {
           className={`approved-evidence-body au-stack ${deskLayout.content}`}
           data-desk={tab}
         >
-          {tab !== "Snapshot" && (
-            <header className={cockpit.lensHeading}>
-              <div>
-                <span>
-                  {activeLens.label.toUpperCase()} / {r.company.symbol}
-                </span>
-                <h2>
-                  {
-                    (
-                      {
-                        Valuation: "Build the future the price requires.",
-                        Technicals: "Trend, levels, and participation",
-                        Thesis: "Who owns the business",
-                        News: "Events that can move your decisions",
-                        Advanced: "Every metric has context.",
-                        Options: "Where risk and exposure meet",
-                        Pace: "A buying rhythm, not another rating.",
-                        Financials: "Follow the operating evidence",
-                        Analysts: "Expectations, with the assumptions visible",
-                      } as Record<string, string>
-                    )[tab]
-                  }
-                </h2>
-              </div>
-              <p>
-                Source dates and coverage stay with the evidence. Missing values
-                remain unavailable.
-              </p>
-            </header>
-          )}
           <FeatureGate
             feature={
               (
@@ -752,23 +731,17 @@ export default function Research({ symbol }: { symbol: string }) {
           >
             {tab === "News" && (
               <>
-                <div className={cockpit.eventsGrid}>
-                  <section aria-label="Event calendar and estimates">
-                    <SentiSensePanels
-                      symbol={r.company.symbol}
-                      preview={!!demo}
-                      group="events"
-                    />
-                  </section>
-                  <section aria-label="Company updates and earnings">
-                    <CompanyUpdates research={r} preview={!!demo}>
-                      <EarningsReview
-                        research={r}
-                        now={demo ? Date.parse(r.retrievedAt) : Date.now()}
-                      />
-                    </CompanyUpdates>
-                  </section>
-                </div>
+                <CompanyUpdates research={r} preview={!!demo}>
+                  <EarningsReview
+                    research={r}
+                    now={demo ? Date.parse(r.retrievedAt) : Date.now()}
+                  />
+                </CompanyUpdates>
+                <SentiSensePanels
+                  symbol={r.company.symbol}
+                  preview={!!demo}
+                  group="events"
+                />
                 <details className="research-reference">
                   <summary>Earnings history &amp; estimates</summary>
                   <EarningsWorkspace research={r} />
@@ -777,31 +750,38 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Advanced" && (
               <>
-                <SentiSensePanels
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                  group="indicators"
-                />
                 <AdvancedResearch
                   key={r.company.symbol}
                   research={r}
                   initialSection={workbenchTarget}
                 />
+                <details className={cockpit.deepEvidence}>
+                  <summary>
+                    Company filings, operating metrics &amp; source evidence
+                  </summary>
+                  <SentiSensePanels
+                    symbol={r.company.symbol}
+                    preview={!!demo}
+                    group="indicators"
+                  />
+                </details>
               </>
             )}
             {tab === "Options" && (
               <>
-                <OptionsDesk
-                  key={r.company.symbol}
-                  research={r}
+                <SentiSensePanels
+                  symbol={r.company.symbol}
                   preview={!!demo}
+                  group="options"
                 />
                 <details className={cockpit.deepEvidence}>
-                  <summary>Options source evidence &amp; history</summary>
-                  <SentiSensePanels
-                    symbol={r.company.symbol}
+                  <summary>
+                    Contract tools, practice &amp; options guide
+                  </summary>
+                  <OptionsDesk
+                    key={r.company.symbol}
+                    research={r}
                     preview={!!demo}
-                    group="options"
                   />
                 </details>
               </>
@@ -921,24 +901,6 @@ export default function Research({ symbol }: { symbol: string }) {
                 className="au-stack"
                 aria-label="Pace monthly price zones and historical evidence"
               >
-                <header className="section-head">
-                  <div>
-                    <h2>Pace</h2>
-                    <p>
-                      Monthly price zones, confirmed readings and historical
-                      policy evidence.
-                    </p>
-                  </div>
-                  <PaceHelp trigger="How Pace works" />
-                </header>
-                {p && (
-                  <PaceReadings
-                    readings={pacePeriods({
-                      ...p.dca.confirmed,
-                      forming: p.dca.forming,
-                    })}
-                  />
-                )}
                 <DcaResearch research={r} />
               </section>
             )}

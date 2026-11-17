@@ -43,6 +43,7 @@ function load(name, bindings) {
   bindings = {
     homeStyles: { home: "home" },
     todayStyles: { hero: "hero" },
+    cockpit: { library: "library" },
     styles: new Proxy({}, { get: (_, k) => k }),
     Link,
     ArrowUpRight: () => null,

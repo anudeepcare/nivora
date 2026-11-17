@@ -1887,3 +1887,58 @@
     border-bottom: 1px solid var(--line);
   }
 }
+
+/* The public surface inherits one palette; legacy opening variables must not
+   override it or produce a green/dark header inside the light reference. */
+.page.page.page :global(.ap-opening) {
+  --ink: inherit;
+  --muted: inherit;
+  --line: inherit;
+  --surface: inherit;
+  --glass: inherit;
+  color: var(--ink);
+  background: transparent;
+}
+.page.page.page .header :global(.ap-button-primary) {
+  background: var(--landing-accent);
+  color: #fff;
+  border-color: var(--landing-accent);
+}
+.page.page.page .heroCopy h1 span {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+.page.page.page .heroVisual {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.page.page.page .header :global(.ap-mobile-navigation) {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.page.page.page .header :global(.ap-mobile-navigation a) {
+  color: var(--ink);
+}
+.page.page.page .header :global(.ap-nav a:hover),
+.page.page.page .header :global(.ap-signin:hover),
+.page.page.page .header :global(.ap-mobile-navigation a:hover) {
+  color: var(--landing-accent);
+}
+.themeToggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+.themeToggle:hover { color: var(--ink); background: var(--surface); }
+.themeToggle:focus-visible { outline: 2px solid var(--landing-accent); outline-offset: 3px; }

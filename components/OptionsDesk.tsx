@@ -408,7 +408,9 @@ export default function OptionsDesk({
             onChange={(e) => chooseExpiry(e.target.value)}
           >
             {!expiries.length && (
-              <option value="">Waiting for contracts</option>
+              <option value="">
+                {busy ? "Loading contracts…" : "Contract data unavailable"}
+              </option>
             )}
             {expiries.map((date) => (
               <option key={date} value={date}>
@@ -428,6 +430,7 @@ export default function OptionsDesk({
               key={id}
               type="button"
               aria-pressed={view === id}
+              disabled={!contracts.length && id !== "learn"}
               onClick={() => navigate(id)}
             >
               {label}
@@ -438,6 +441,7 @@ export default function OptionsDesk({
           <span>Advanced</span>
           <select
             aria-label="Advanced options tools"
+            disabled={!contracts.length}
             value={
               ["vanna", "flow", "leaps", "strategy", "diagnostics"].includes(
                 view,

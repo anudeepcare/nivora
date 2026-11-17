@@ -693,16 +693,7 @@ function Login({ initialError }: { initialError: string }) {
                   </svg>
                   <span>Continue with Google</span>
                 </button>
-                <button
-                  type="button"
-                  className="mp-social-button mp-social-x"
-                  aria-label="Continue with X"
-                  disabled={busy || socialProviders.x === false}
-                  onClick={() => social("x")}
-                >
-                  <span aria-hidden="true">𝕏</span>
-                  <span className="mp-social-x-label">Continue with X</span>
-                </button>
+
               </div>
               {(socialProviders.google === false ||
                 socialProviders.x === false) && (
@@ -720,6 +711,8 @@ function Login({ initialError }: { initialError: string }) {
           )}
           <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
             {mode === "signup" && (
+              <details className={experience.secondaryOptions}>
+                <summary>Add your name (optional)</summary>
               <div className="mp-form-field">
                 <label htmlFor="auryn-signup-name">
                   Full name{" "}
@@ -736,6 +729,7 @@ function Login({ initialError }: { initialError: string }) {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
+              </details>
             )}
             <div className="mp-form-field">
               <label htmlFor="auryn-signin-email">Email address</label>
@@ -855,11 +849,26 @@ function Login({ initialError }: { initialError: string }) {
                 : mode === "login"
                   ? "Sign in"
                   : mode === "signup"
-                    ? "Create account"
+                    ? "Create workspace"
                     : "Send reset link"}
               <span aria-hidden="true">→</span>
             </button>
           </form>
+          {mode !== "reset" && (
+            <details className={experience.secondaryOptions}>
+              <summary>More sign-in options</summary>
+                <button
+                  type="button"
+                  className="mp-social-button mp-social-x"
+                  aria-label="Continue with X"
+                  disabled={busy || socialProviders.x === false}
+                  onClick={() => social("x")}
+                >
+                  <span aria-hidden="true">𝕏</span>
+                  <span className="mp-social-x-label">Continue with X</span>
+                </button>
+            </details>
+          )}
           <p className="mp-switch-auth">
             {mode === "reset"
               ? "Remember your password?"

@@ -199,7 +199,7 @@ export default function Shell({
       </a>
       <header className={experience.header}>
         <Link
-          href={`${prefix}/overview`}
+          href="/"
           className={experience.brand}
           aria-label="AURYN home"
         >

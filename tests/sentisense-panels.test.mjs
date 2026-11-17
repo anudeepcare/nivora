@@ -5,6 +5,30 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { intelligenceView } from "../lib/sentisense-view.ts";
+function loadTable() {
+  const ast = ts.createSourceFile(
+    "table.tsx",
+    fs.readFileSync("components/IntelligenceTable.tsx", "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const body = ast.statements
+    .filter((n) => !ts.isImportDeclaration(n))
+    .map((n) => n.getText(ast).replace(/^export default /, ""))
+    .join("\n");
+  const code = ts.transpileModule(body, {
+    compilerOptions: {
+      jsx: ts.JsxEmit.React,
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+    },
+  }).outputText;
+  return new Function("React", "s", code + ";return IntelligenceTable;")(
+    React,
+    new Proxy({}, { get: (_, k) => k }),
+  );
+}
 function harness(hiddenSignals = []) {
   const ast = ts.createSourceFile(
     "panels.tsx",
@@ -42,6 +66,7 @@ function harness(hiddenSignals = []) {
       },
     ],
     intelligenceView,
+    IntelligenceTable: loadTable(),
     s: new Proxy({}, { get: (_, key) => key }),
     SentiSenseConsensus: () =>
       React.createElement("p", null, "Analyst consensus"),
@@ -120,4 +145,32 @@ test("hidden evidence preferences remove providers without hiding restore contro
   const page = ownership.render({ symbol: "AAPL", group: "ownership" });
   assert.doesNotMatch(page, />Institutions<|>Public officials</);
   assert.match(ownership.requests[0], /dataset=insiders/);
+});
+
+test("shared evidence table keeps full source detail in disclosure without expanding every row", () => {
+  const Table = loadTable();
+  const citation = "Source evidence ".repeat(40);
+  const html = renderToStaticMarkup(
+    React.createElement(Table, {
+      title: "Financials",
+      rows: [
+        {
+          label: "Q3",
+          date: "2026-09-30",
+          href: null,
+          cells: [
+            { label: "Value", value: "0 USD" },
+            { label: "Source citation", value: citation },
+          ],
+        },
+      ],
+    }),
+  );
+  assert.match(html, /<table/);
+  assert.match(html, /scope="col">Value/);
+  assert.match(html, /0 USD/);
+  assert.match(html, /<details/);
+  assert.match(html, /View source citation/);
+  assert.ok(html.includes(citation));
+  assert.doesNotMatch(html, /<details[^>]*open/);
 });

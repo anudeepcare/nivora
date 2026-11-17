@@ -226,7 +226,10 @@ export function Watchlist() {
               <span>TODAY</span>
               <span />
             </div>
-            <ul>
+            <ul
+              tabIndex={0}
+              aria-label="Followed companies, scroll for more rows"
+            >
               {symbols.map((symbol) => {
                 const row = quotes.data[symbol],
                   signal = pace(symbol);

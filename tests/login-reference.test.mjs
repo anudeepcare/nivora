@@ -23,7 +23,7 @@ test("login uses reference composition without pretending illustration is live m
   assert.ok(view.includes("auth.resetPasswordForEmail"));
 });
 test("login remains vertically accessible and explicitly owns form layout", () => {
-  assert.match(css, /grid-template-columns:\s*1fr minmax\(480px,\s*0?\.72fr\)/);
+  assert.match(css, /grid-template-columns:\s*minmax\(0,\s*58fr\) minmax\(0,\s*42fr\)/);
   assert.match(css, /height:\s*auto/);
   assert.match(css, /overflow:\s*visible/);
   assert.match(css, /\.mp-auth-form\)[\s\S]*?display:\s*block/);

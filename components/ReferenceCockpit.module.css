@@ -1,5 +1,7 @@
 /* Reference-derived cockpit structure. Data components keep their existing behavior. */
 .root {
+  --research-gutter: clamp(12px, 2vw, 28px);
+  --research-gap: 16px;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -10,13 +12,13 @@
 .root > header {
   flex: 0 0 auto;
   min-height: 88px;
-  padding: 12px 28px;
+  padding: 12px var(--research-gutter);
 }
 .lenses {
   display: flex;
   flex: 0 0 58px;
   gap: 4px;
-  padding: 0 28px;
+  padding: 0 var(--research-gutter);
   overflow-x: auto;
   border-block: 1px solid var(--line);
   background: var(--card);
@@ -51,7 +53,7 @@
   flex: 0 0 auto;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 8px 28px;
+  padding: 0;
 }
 .supporting button {
   min-height: 36px;
@@ -70,7 +72,7 @@
   flex: 0 0 auto;
   min-height: 0;
   overflow: visible;
-  padding: 22px 28px;
+  padding: 16px var(--research-gutter);
 }
 .root > [hidden] {
   display: none !important;
@@ -88,9 +90,7 @@
     padding: 0 11px;
     font-size: 11px;
   }
-  .supporting {
-    padding: 8px 12px;
-  }
+
   .root > :global(#research-overview),
   .root > :global(.signal-research-panel) {
     padding: 12px;
@@ -159,22 +159,16 @@
   color: var(--muted);
   line-height: 1.6;
 }
-.eventsGrid,
 .ownershipGrid {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: var(--research-gap);
   align-items: start;
 }
-.ownershipGrid {
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-}
-.eventsGrid > section,
 .ownershipGrid > section {
   min-width: 0;
 }
 @media (max-width: 1000px) {
-  .eventsGrid,
   .ownershipGrid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -185,5 +179,67 @@
   }
   .lensHeading p {
     max-width: 100%;
+  }
+}
+
+/* One shared gutter and one in-flow disclosure row for every research lens. */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 8px var(--research-gutter);
+  border-bottom: 1px solid var(--line);
+}
+.facts {
+  margin-left: auto;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.facts summary {
+  cursor: pointer;
+  min-height: 36px;
+  display: list-item;
+  align-content: center;
+  list-style-position: inside;
+  padding: 8px 0;
+}
+.facts[open] {
+  flex-basis: 100%;
+  margin-left: 0;
+}
+.facts[open] > section {
+  margin: 8px 0 0;
+}
+.lenses button:focus-visible,
+.supporting button:focus-visible,
+.facts summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -3px;
+}
+.library {
+  width: min(1420px, calc(100% - 52px));
+  margin: 0 auto;
+  padding: 28px 0;
+  min-width: 0;
+}
+@media (max-width: 760px) {
+  .toolbar {
+    padding: 6px 12px;
+  }
+  .facts {
+    margin-left: 0;
+  }
+  .supporting {
+    gap: 5px;
+  }
+  .supporting button {
+    font-size: 11px;
+    min-height: 40px;
+  }
+  .library {
+    width: calc(100% - 24px);
+    padding: 18px 0;
   }
 }

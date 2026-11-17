@@ -45,7 +45,12 @@ export default function SentiSenseStories({ symbol }: { symbol: string }) {
           substitute story is shown.
         </p>
       ) : (
-        <div className={s.records}>
+        <div
+          className={s.records}
+          tabIndex={0}
+          role="region"
+          aria-label="Company story records"
+        >
           {!rows.length ? (
             <p>No stories returned for this company.</p>
           ) : (

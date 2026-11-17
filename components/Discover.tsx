@@ -343,7 +343,12 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
             </details>
           )}
           {values.length ? (
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              role="region"
+              aria-label="Discovery results, scroll for more rows and columns"
+              tabIndex={0}
+            >
               <table>
                 <thead>
                   <tr>

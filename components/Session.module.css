@@ -7,7 +7,7 @@
   color: var(--ink);
   background: #f7f7f5;
   display: grid;
-  grid-template-columns: 1fr minmax(480px, 0.72fr);
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
   min-height: 100svh;
   height: auto;
   overflow: visible;
@@ -17,7 +17,7 @@
   color: #f5f7fb;
   background:
     radial-gradient(circle at 80% 5%, #334364 0, transparent 35%), #151e2f;
-  padding: 150px clamp(45px, 8vw, 130px) 70px;
+  padding: 156px clamp(45px, 8vw, 130px) 32px;
   min-width: 0;
 }
 .story > a {
@@ -46,17 +46,17 @@
 .storyContent > h2 {
   max-width: 750px;
   margin: 22px 0 0;
-  font-size: clamp(45px, 5.3vw, 74px);
+  font-size: clamp(45px, 5.18vw, 74px);
   line-height: 1.02;
   letter-spacing: -3.5px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .researchCard {
   background: #1c2940;
   border: 1px solid #3a4860;
   border-radius: 13px;
   max-width: 650px;
-  margin-top: 70px;
+  margin-top: 64px;
   padding: 28px;
 }
 .researchCard > small {
@@ -68,7 +68,7 @@
 .researchCard h3 {
   margin: 13px 0 0;
   font-size: 25px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .researchCard p {
   color: #b2bfd1;
@@ -111,11 +111,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 80px 50px;
+  padding: 100px 50px 30px;
 }
 .auth .main :global(.mp-auth-panel) {
   width: 100%;
-  max-width: 390px;
+  max-width: 381px;
   padding: 0;
   margin: 0;
   border: 0;
@@ -144,11 +144,11 @@
   margin: 0 0 26px;
 }
 .auth .main :global(.mp-auth-heading h1) {
-  font-size: 32px;
+  font-size: 30px;
   letter-spacing: -1px;
   line-height: 1.15;
   margin: 10px 0 0;
-  font-weight: 600;
+  font-weight: 500;
 }
 .auth .main :global(.mp-auth-heading p) {
   color: var(--muted);
@@ -186,8 +186,8 @@
   padding-right: 46px;
 }
 .auth .main :global(.mp-social-options) {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 .auth .main :global(.mp-social-button) {
@@ -311,4 +311,25 @@
   .storyContent > h2 {
     font-size: 37px;
   }
+}
+
+.secondaryOptions {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.secondaryOptions summary { cursor: pointer; width: fit-content; }
+.secondaryOptions[open] > button { margin-top: 10px; width: 100%; }
+.auth .main .secondaryOptions :global(.mp-social-x-label) {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+.auth .main .secondaryOptions :global(.mp-social-x) { font-size: 13px !important; }
+@media (min-width: 901px) {
+  .main { justify-content: flex-start; }
+  .auth .main :global(.mp-auth-home) { margin-bottom: 20px; }
 }

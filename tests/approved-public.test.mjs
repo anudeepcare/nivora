@@ -237,6 +237,9 @@ test("public navigation opens accessibly, closes on Escape, and closes after a d
     (n) => n.type === "nav" && n.props.id === "ap-mobile-navigation",
   )[0];
   assert(navigation);
+  for (const href of ["/#how-it-works", "/#pace-public", "/#use-cases", "/pricing", "/methodology", "/overview"]) {
+    assert(nodes(navigation, (n) => n.type === Link && n.props.href === href).length, `Mobile menu must retain ${href}`);
+  }
   nodes(render(), (n) => n.type === "header")[0].props.onKeyDown({
     key: "Escape",
   });

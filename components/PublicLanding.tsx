@@ -7,9 +7,10 @@ import { PrivacyChoices } from "./AnalyticsConsent";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   ArrowRight,
+  Sun,
+  Moon,
   ChartNoAxesCombined,
   Menu,
   X,
@@ -18,7 +19,26 @@ import {
   Layers3,
   Scale,
 } from "lucide-react";
-import { authClient } from "@/lib/client";
+
+function PublicThemeToggle() {
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+  useEffect(() => {
+    setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+  }, []);
+  return (
+    <button type="button" className={landing.themeToggle}
+      aria-label={`Use ${theme === "dark" ? "day" : "night"} theme`}
+      onClick={() => {
+        const next = theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        document.documentElement.style.colorScheme = next;
+        try { localStorage.setItem("auryn-product-theme", next); } catch { /* Optional preference. */ }
+        setTheme(next);
+      }}>
+      {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+    </button>
+  );
+}
 
 function PublicBrand() {
   return (
@@ -467,7 +487,6 @@ export default function PublicLanding({
 }: {
   sampleOnly?: boolean;
 }) {
-  const router = useRouter();
   const [menu, setMenu] = useState(false);
   useEffect(() => {
     if (!sampleOnly) return;
@@ -483,21 +502,7 @@ export default function PublicLanding({
         tag.content = previous[index];
       });
   }, [sampleOnly]);
-  useEffect(() => {
-    if (sampleOnly) return;
-    let alive = true;
-    try {
-      authClient()
-        .auth.getSession()
-        .then(({ data }) => {
-          if (alive && data.session) router.replace("/overview");
-        })
-        .catch(() => {});
-    } catch {}
-    return () => {
-      alive = false;
-    };
-  }, [router, sampleOnly]);
+
 
   return (
     <main
@@ -523,14 +528,15 @@ export default function PublicLanding({
               <Link href="/methodology">Method</Link>
             </nav>
             <div className="ap-header-actions">
+              <PublicThemeToggle />
               <Link className="ap-signin" href="/login">
                 Sign in
               </Link>
               <Link
                 className="ap-button ap-button-primary ap-header-cta"
-                href="/login?mode=signup"
+                href="/overview"
               >
-                Get started <ArrowRight size={16} aria-hidden="true" />
+                Explore workspace <ArrowRight size={16} aria-hidden="true" />
               </Link>
               <button
                 className="ap-menu-button"
@@ -554,20 +560,16 @@ export default function PublicLanding({
               className="ap-mobile-navigation"
               aria-label="More public navigation"
             >
-              <Link href="/#how-it-works" onClick={() => setMenu(false)}>
-                How it works
-              </Link>
-              <Link href="/pricing" onClick={() => setMenu(false)}>
-                Pricing
-              </Link>
-              <Link href="/sample" onClick={() => setMenu(false)}>
-                Product guide
-              </Link>
+              <Link href="/#how-it-works" onClick={() => setMenu(false)}>Product</Link>
+              <Link href="/#pace-public" onClick={() => setMenu(false)}>Pace</Link>
+              <Link href="/#use-cases" onClick={() => setMenu(false)}>Use cases</Link>
+              <Link href="/pricing" onClick={() => setMenu(false)}>Pricing</Link>
+              <Link href="/methodology" onClick={() => setMenu(false)}>Method</Link>
               <Link href="/login" onClick={() => setMenu(false)}>
                 Sign in
               </Link>
-              <Link href="/login?mode=signup" onClick={() => setMenu(false)}>
-                Get started
+              <Link href="/overview" onClick={() => setMenu(false)}>
+                Explore workspace
               </Link>
               <Link href="/help" onClick={() => setMenu(false)}>
                 Help

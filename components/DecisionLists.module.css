@@ -22,8 +22,8 @@
 .command > div {
   display: flex;
   flex-direction: column;
-  min-height: 180px;
-  padding: 24px;
+  min-height: 0;
+  padding: 20px;
   border-right: 1px solid var(--line);
 }
 .command > div:last-child {
@@ -92,7 +92,8 @@
   background: var(--card);
   margin-top: 18px;
   overflow: auto;
-  max-height: 65svh;
+  max-height: min(75svh, 660px);
+  scrollbar-gutter: stable;
 }
 .compare :global(.compare-table) {
   min-width: 720px;
@@ -122,10 +123,9 @@
 .queueHead,
 .queue li {
   display: grid;
-  grid-template-columns: minmax(150px, 1.1fr) 140px 120px minmax(
-      180px,
-      1.4fr
-    ) 120px 32px;
+  grid-template-columns:
+    minmax(150px, 1.1fr) 140px 120px minmax(180px, 1.4fr)
+    120px 32px;
   align-items: center;
   gap: 15px;
 }
@@ -144,7 +144,13 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--card);
-  overflow: hidden;
+  max-height: min(75svh, 840px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+.queue ul:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 .queue li {
   padding: 18px 20px;
@@ -243,7 +249,7 @@
     grid-column: 1/-1;
   }
   .command > div {
-    min-height: 140px;
+    min-height: 0;
     padding: 18px;
     border-bottom: 1px solid var(--line);
   }
@@ -252,7 +258,8 @@
     background: transparent;
     display: grid;
     gap: 10px;
-    overflow: visible;
+    max-height: min(75svh, 840px);
+    overflow: auto;
   }
   .queue li {
     grid-template-columns: minmax(0, 1fr) auto;
@@ -285,4 +292,29 @@
     grid-row: 4;
     justify-self: end;
   }
+}
+
+.compare.compare.compare :global(.page-heading h1),
+.watchlist.watchlist.watchlist :global(.page-heading h1) {
+  font-size: var(--workspace-title-size, clamp(30px, 3vw, 44px));
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+.compare.compare.compare :global(.page-heading),
+.watchlist.watchlist.watchlist :global(.page-heading) {
+  padding-block: 12px 16px;
+  margin-bottom: 16px;
+  min-height: 0;
+}
+
+.compare :global(.compare-table thead) {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card);
+}
+.compare :global(.table-scroll:focus-visible) {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }

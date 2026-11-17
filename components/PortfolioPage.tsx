@@ -200,7 +200,7 @@ export function Portfolio() {
           ]}
         />
       )}
-      <div className="portfolio-grid">
+      <div className={reference.grid} data-portfolio-layout="reference">
         <div className={reference.capitalOverview}>
           <section className="card portfolio-allocation-panel">
             <SectionHead
@@ -344,7 +344,7 @@ export function Portfolio() {
             </Empty>
           )}
         </section>
-        <div>
+        <div className={reference.history}>
           <section className="card portfolio-trend-panel">
             <SectionHead
               title="What the portfolio actually did"
@@ -431,7 +431,9 @@ export function Portfolio() {
             )}
           </section>
         </div>
-        <section className="card portfolio-holdings-panel">
+        <section
+          className={`card portfolio-holdings-panel ${reference.holdings}`}
+        >
           <span className={reference.eyebrow}>ALL HOLDINGS</span>
           <div className={portfolioStyles.holdingsToolbar}>
             <h2>
@@ -701,7 +703,7 @@ function HoldingsTable({
     <div
       className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll}`}
       role="region"
-      aria-label="Portfolio holdings, scroll for all columns"
+      aria-label="Portfolio holdings, scroll for more rows and columns"
       tabIndex={0}
     >
       <table className="holdings-table approved-holdings-table">

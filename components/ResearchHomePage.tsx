@@ -1,4 +1,5 @@
 "use client";
+import cockpit from "./ReferenceCockpit.module.css";
 import HomeMarketCards from "./HomeMarketCards";
 
 import { useState } from "react";
@@ -27,7 +28,7 @@ export function ResearchHome() {
   const visibleSymbols = symbols.slice(currentPage * 4, currentPage * 4 + 4);
   return (
     <section
-      className={`approved-workspace approved-research-home ${homeStyles.research}`}
+      className={`approved-workspace approved-research-home ${homeStyles.research} ${cockpit.library}`}
     >
       <Heading
         title="Research"

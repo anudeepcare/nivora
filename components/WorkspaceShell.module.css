@@ -1,5 +1,9 @@
 /* White navigation shared across all workspace routes. */
 .shell {
+  --workspace-gap: 16px;
+  --workspace-panel-padding: 20px;
+  --workspace-title-size: clamp(30px, 3vw, 44px);
+  --workspace-panel-radius: 14px;
   display: block;
   width: 100%;
   padding: 0;

@@ -1,0 +1,19 @@
+/* Long evidence lists share one bounded, keyboard-reachable scroll surface.
+   The page and short content keep their natural height. No fixed workspace. */
+.region {
+  min-width: 0;
+  max-height: var(--evidence-list-height, 520px);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  overscroll-behavior: auto;
+}
+.region:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .region {
+    max-height: min(var(--evidence-list-height, 520px), 60dvh);
+  }
+}

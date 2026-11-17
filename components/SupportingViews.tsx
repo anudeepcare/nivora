@@ -491,7 +491,12 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
       )}
       <PaceHelp trigger="Understand AURYN Pace" />
       {values.length ? (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="Company comparison, scroll for more metrics and columns"
+          tabIndex={0}
+        >
           <table className="compare-table">
             <thead>
               <tr>

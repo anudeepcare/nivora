@@ -1,4 +1,5 @@
 "use client";
+import IntelligenceTable from "./IntelligenceTable";
 import OptionsObservationChart from "./OptionsObservationChart";
 import Link from "next/link";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
@@ -93,7 +94,17 @@ export default function SentiSensePanels({
       <header className={s.header}>
         <div>
           <span className={s.eyebrow}>RESEARCH INTELLIGENCE</span>
-          <h2>Go beyond the price</h2>
+          <h2>
+            {
+              {
+                analysts: "Analyst evidence",
+                ownership: "Ownership evidence",
+                events: "Stories, filings & earnings",
+                options: "Options positioning & history",
+                indicators: "Company data library",
+              }[group]
+            }
+          </h2>
         </div>
         <span className={s.provider}>SentiSense</span>
       </header>
@@ -186,47 +197,7 @@ function Dataset({
                       <h4>{group.title}</h4>
                       <span>{group.rows.length} displayed</span>
                     </div>
-                    <div className={s.records}>
-                      {group.rows.map((row, i) => (
-                        <article
-                          className={s.record}
-                          key={`${row.label}:${row.date}:${i}`}
-                        >
-                          <header>
-                            <h5>
-                              {row.href ? (
-                                <a
-                                  href={row.href}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {row.label} ↗
-                                </a>
-                              ) : (
-                                row.label
-                              )}
-                            </h5>
-                            <time>{row.date ?? "Date not supplied"}</time>
-                          </header>
-                          {row.cells.length > 0 && (
-                            <dl className={s.metrics}>
-                              {row.cells.map((cell, j) => (
-                                <div key={`${cell.label}:${j}`}>
-                                  <dt>{cell.label}</dt>
-                                  <dd>{cell.value}</dd>
-                                </div>
-                              ))}
-                            </dl>
-                          )}
-                          {row.text && (
-                            <details className={s.readout}>
-                              <summary>Read provider summary</summary>
-                              <p>{row.text}</p>
-                            </details>
-                          )}
-                        </article>
-                      ))}
-                    </div>
+                    <IntelligenceTable rows={group.rows} title={group.title} />
                   </section>
                 ),
             )

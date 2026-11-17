@@ -1,16 +1,17 @@
 .sequence {
   display: grid;
   grid-template-columns: 1.25fr 0.75fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: auto auto;
   background: var(--card, #0f1827);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--workspace-panel-radius, 14px);
   overflow: hidden;
   margin: 8px 0 24px;
   min-width: 0;
 }
 .sequence article {
-  padding: 27px;
+  padding: var(--workspace-panel-padding, 20px);
+  min-height: 0;
   min-width: 0;
 }
 .sequence article + article {
@@ -24,20 +25,20 @@
   border-right: 1px solid var(--line);
   background: radial-gradient(
     ellipse at 0 0,
-    color-mix(in srgb, var(--green) 10%, transparent),
+    color-mix(in srgb, var(--blue) 10%, transparent),
     transparent 70%
   );
 }
 .sequence article > span {
   font: 11px var(--font-mono, monospace);
   letter-spacing: 0.09em;
-  color: var(--green);
+  color: var(--blue);
 }
 .sequence h2 {
-  font-size: clamp(25px, 3vw, 35px);
+  font-size: clamp(24px, 2.4vw, 32px);
   letter-spacing: -0.04em;
   line-height: 1.18;
-  margin: 28px 0 15px;
+  margin: 18px 0 12px;
 }
 .sequence h3 {
   font-size: 19px;
@@ -58,14 +59,14 @@
   align-items: center;
   gap: 7px;
   min-height: 44px;
-  color: var(--green);
+  color: var(--blue);
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
   margin-top: 16px;
 }
 .sequence a:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--blue);
   outline-offset: 4px;
 }
 .reading {
@@ -76,7 +77,7 @@
 }
 .reading > b {
   font: 500 38px var(--font-mono, monospace);
-  color: var(--green);
+  color: var(--blue);
 }
 .reading > span {
   font-size: 12px;
@@ -109,8 +110,8 @@
   }
 }
 .hero {
-  padding: 38px 0 25px;
-  min-height: 180px;
+  padding: 12px 0 16px;
+  min-height: 0;
   display: flex;
   align-items: flex-end;
 }
@@ -123,7 +124,7 @@
   margin: 0 !important;
 }
 .hero h1 {
-  font-size: clamp(36px, 4.5vw, 60px) !important;
+  font-size: var(--workspace-title-size, clamp(30px, 3vw, 44px)) !important;
   letter-spacing: -0.05em;
   line-height: 1.08;
   margin: 0 0 12px;
@@ -138,7 +139,7 @@
     min-height: 0;
   }
   .hero h1 {
-    font-size: 38px !important;
+    font-size: 30px !important;
   }
   .hero p {
     font-size: 14px;
