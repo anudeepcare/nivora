@@ -7,15 +7,24 @@ This directory contains a dependency-free local research application built witho
 ```bash
 npm test
 npm run validate
-AURYN_APP_API_KEY='replace-with-24+-random-characters' npm start
+npm start
 ```
 
-This is a local engineering build, not a deployable service. Startup fails unless
-`AURYN_APP_API_KEY` contains at least 24 characters, and the server binds to loopback.
-The browser exchanges that key once for an opaque, expiring HttpOnly SameSite cookie;
-the key is not embedded in client code or persisted by the browser. `/api/health`
-still reports `deploymentReady: false`: multi-user identity, distributed abuse
-enforcement, and provider acceptance are not implemented or verified.
+This is a local engineering build, not a deployable service. The server binds to
+loopback. Customer login, sign-up, recovery, refresh and sign-out use Supabase Auth
+through server routes and HttpOnly SameSite cookies; provider credentials and auth
+tokens are never embedded in client JavaScript or browser storage. Configure
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the server
+environment. The service-role key is deliberately not required. `/api/health` still
+reports `deploymentReady: false`: production-user/data migration, distributed abuse
+enforcement, and live provider acceptance remain unverified.
+
+Password recovery also requires `AURYN_PUBLIC_ORIGIN`, matching an allowlisted
+Supabase Auth redirect. Recovery callbacks are verified server-side before an
+HttpOnly recovery session can update a password. Browser-local settings, Watchlist,
+snapshots, portfolio transactions and cash are namespaced by the verified user ID.
+Pre-auth legacy values remain quarantined under their original keys; they are never
+silently assigned to the next account or deleted.
 
 Provider queues are bounded in-process. If verified provider budgets are configured,
 `AURYN_QUOTA_LEDGER_PATH` can opt into a lock-protected cross-process weighted-usage
@@ -25,6 +34,8 @@ remain disabled unless their environment values are explicitly configured.
 This file ledger coordinates processes only when they share the same durable filesystem.
 It is not cross-instance enforcement for isolated/serverless hosts; such a deployment
 would require an external atomic store and remains outside this local build.
+The HTTP client limiter is also process-local and is not production-grade distributed
+abuse protection.
 
 Open `http://127.0.0.1:4173`. Provider credentials are server-only environment variables documented in `.env.example`. For the owner-only local secret workflow, see [docs/secure-provider-setup.md](docs/secure-provider-setup.md) and run `npm run start:local`. With no credentials, the UI and API return explicit `unavailable` states and make no provider requests. SentiSense uses `X-SentiSense-API-Key`; EODHD's required query token is assembled only on the server.
 

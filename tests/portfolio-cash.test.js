@@ -20,9 +20,9 @@ test('cash balance persists only normalized browser-local state',()=>{
 
 test('portfolio screen records cash locally and supplies it to reserve review',async()=>{
   const source=await fs.readFile(new URL('../src/public/app.js',import.meta.url),'utf8');
-  assert.match(source,/readCashBalance\(localStorage\)/);
+  assert.match(source,/readCashBalance\(userStorage\)/);
   assert.match(source,/id="cash-balance-form"/);
-  assert.match(source,/saveCashBalance\(localStorage/);
+  assert.match(source,/saveCashBalance\(userStorage/);
   assert.match(source,/cashState:cashBalance/);
   assert.match(source,/cashReservePercent:policy\.cashReserve/);
 });

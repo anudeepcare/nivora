@@ -1,0 +1,2592 @@
+{
+  "generatedAt": "2026-11-17T14:52:23.347Z",
+  "offlineStructural": {
+    "generatedAt": "2026-11-17T14:52:23.347Z",
+    "mode": "synthetic-model-fixtures",
+    "securityCoverage": false,
+    "requested": 512,
+    "passed": 512,
+    "failed": 0,
+    "skipped": 0,
+    "results": [
+      {
+        "caseId": "SYNTHETIC_CASE_0001",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0002",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0003",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0004",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0005",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0006",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0007",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0008",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0009",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0010",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0011",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0012",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0013",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0014",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0015",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0016",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0017",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0018",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0019",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0020",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0021",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0022",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0023",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0024",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0025",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0026",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0027",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0028",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0029",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0030",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0031",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0032",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0033",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0034",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0035",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0036",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0037",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0038",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0039",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0040",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0041",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0042",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0043",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0044",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0045",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0046",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0047",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0048",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0049",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0050",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0051",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0052",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0053",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0054",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0055",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0056",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0057",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0058",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0059",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0060",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0061",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0062",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0063",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0064",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0065",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0066",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0067",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0068",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0069",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0070",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0071",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0072",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0073",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0074",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0075",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0076",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0077",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0078",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0079",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0080",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0081",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0082",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0083",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0084",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0085",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0086",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0087",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0088",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0089",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0090",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0091",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0092",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0093",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0094",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0095",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0096",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0097",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0098",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0099",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0100",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0101",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0102",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0103",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0104",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0105",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0106",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0107",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0108",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0109",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0110",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0111",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0112",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0113",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0114",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0115",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0116",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0117",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0118",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0119",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0120",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0121",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0122",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0123",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0124",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0125",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0126",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0127",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0128",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0129",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0130",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0131",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0132",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0133",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0134",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0135",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0136",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0137",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0138",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0139",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0140",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0141",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0142",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0143",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0144",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0145",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0146",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0147",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0148",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0149",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0150",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0151",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0152",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0153",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0154",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0155",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0156",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0157",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0158",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0159",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0160",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0161",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0162",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0163",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0164",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0165",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0166",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0167",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0168",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0169",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0170",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0171",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0172",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0173",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0174",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0175",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0176",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0177",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0178",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0179",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0180",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0181",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0182",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0183",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0184",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0185",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0186",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0187",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0188",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0189",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0190",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0191",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0192",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0193",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0194",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0195",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0196",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0197",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0198",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0199",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0200",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0201",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0202",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0203",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0204",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0205",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0206",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0207",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0208",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0209",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0210",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0211",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0212",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0213",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0214",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0215",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0216",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0217",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0218",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0219",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0220",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0221",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0222",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0223",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0224",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0225",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0226",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0227",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0228",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0229",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0230",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0231",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0232",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0233",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0234",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0235",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0236",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0237",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0238",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0239",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0240",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0241",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0242",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0243",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0244",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0245",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0246",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0247",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0248",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0249",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0250",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0251",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0252",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0253",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0254",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0255",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0256",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0257",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0258",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0259",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0260",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0261",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0262",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0263",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0264",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0265",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0266",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0267",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0268",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0269",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0270",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0271",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0272",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0273",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0274",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0275",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0276",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0277",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0278",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0279",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0280",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0281",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0282",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0283",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0284",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0285",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0286",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0287",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0288",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0289",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0290",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0291",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0292",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0293",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0294",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0295",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0296",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0297",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0298",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0299",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0300",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0301",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0302",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0303",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0304",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0305",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0306",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0307",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0308",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0309",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0310",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0311",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0312",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0313",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0314",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0315",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0316",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0317",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0318",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0319",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0320",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0321",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0322",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0323",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0324",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0325",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0326",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0327",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0328",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0329",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0330",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0331",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0332",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0333",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0334",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0335",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0336",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0337",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0338",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0339",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0340",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0341",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0342",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0343",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0344",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0345",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0346",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0347",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0348",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0349",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0350",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0351",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0352",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0353",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0354",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0355",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0356",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0357",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0358",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0359",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0360",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0361",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0362",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0363",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0364",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0365",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0366",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0367",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0368",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0369",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0370",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0371",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0372",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0373",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0374",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0375",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0376",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0377",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0378",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0379",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0380",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0381",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0382",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0383",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0384",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0385",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0386",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0387",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0388",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0389",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0390",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0391",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0392",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0393",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0394",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0395",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0396",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0397",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0398",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0399",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0400",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0401",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0402",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0403",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0404",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0405",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0406",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0407",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0408",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0409",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0410",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0411",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0412",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0413",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0414",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0415",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0416",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0417",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0418",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0419",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0420",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0421",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0422",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0423",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0424",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0425",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0426",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0427",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0428",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0429",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0430",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0431",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0432",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0433",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0434",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0435",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0436",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0437",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0438",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0439",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0440",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0441",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0442",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0443",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0444",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0445",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0446",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0447",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0448",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0449",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0450",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0451",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0452",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0453",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0454",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0455",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0456",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0457",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0458",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0459",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0460",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0461",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0462",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0463",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0464",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0465",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0466",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0467",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0468",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0469",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0470",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0471",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0472",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0473",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0474",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0475",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0476",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0477",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0478",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0479",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0480",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0481",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0482",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0483",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0484",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0485",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0486",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0487",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0488",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0489",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0490",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0491",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0492",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0493",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0494",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0495",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0496",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0497",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0498",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0499",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0500",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0501",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0502",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0503",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0504",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0505",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0506",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0507",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0508",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0509",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0510",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0511",
+        "status": "passed"
+      },
+      {
+        "caseId": "SYNTHETIC_CASE_0512",
+        "status": "passed"
+      }
+    ]
+  },
+  "realSecurityUniverse": {
+    "sourceType": "user-provided-reference-snapshot",
+    "capturedAt": "2026-11-12T03:24:24.706Z",
+    "uniqueCount": 512,
+    "uniqueSymbols": [
+      "A",
+      "AA",
+      "AAL",
+      "AAMI",
+      "AAOI",
+      "AAON",
+      "AAP",
+      "AAPL",
+      "AARD",
+      "AAT",
+      "AAUC",
+      "ABAT",
+      "ABBV",
+      "ABCB",
+      "ABCL",
+      "ABEO",
+      "ABEV",
+      "ABG",
+      "ABM",
+      "ABNB",
+      "ABOS",
+      "ABR",
+      "ABSI",
+      "ABT",
+      "ABTC",
+      "ABUS",
+      "ABVX",
+      "ABX",
+      "ACAD",
+      "ACCO",
+      "ACDC",
+      "ACEL",
+      "ACGL",
+      "ACH",
+      "ACHC",
+      "ACHR",
+      "ACHV",
+      "ACI",
+      "ACIC",
+      "ACIU",
+      "ACIW",
+      "ACLS",
+      "ACM",
+      "ACMR",
+      "ACN",
+      "ACNB",
+      "ACR",
+      "ACRE",
+      "ACRS",
+      "ACT",
+      "ACTG",
+      "ACU",
+      "AD",
+      "ADAM",
+      "ADBE",
+      "ADC",
+      "ADCT",
+      "ADEA",
+      "ADI",
+      "ADM",
+      "ADMA",
+      "ADNT",
+      "ADP",
+      "ADPT",
+      "ADSK",
+      "ADT",
+      "ADTN",
+      "ADUS",
+      "ADV",
+      "AEBI",
+      "AEE",
+      "AEFC",
+      "AEG",
+      "AEHR",
+      "AEIS",
+      "AEM",
+      "AEO",
+      "AEP",
+      "AER",
+      "AES",
+      "AESI",
+      "AEVA",
+      "AFG",
+      "AFL",
+      "AFRI",
+      "AFRM",
+      "AG",
+      "AGCO",
+      "AGEN",
+      "AGI",
+      "AGIO",
+      "AGL",
+      "AGM",
+      "AGNC",
+      "AGNT",
+      "AGO",
+      "AGPXX",
+      "AGRO",
+      "AGX",
+      "AGYS",
+      "AHCO",
+      "AHR",
+      "AHRT",
+      "AI",
+      "AIG",
+      "AII",
+      "AIN",
+      "AIOT",
+      "AIP",
+      "AIR",
+      "AIRJ",
+      "AIRO",
+      "AIRS",
+      "AIT",
+      "AIV",
+      "AIZ",
+      "AIZN",
+      "AJG",
+      "AKAM",
+      "AKBA",
+      "AKR",
+      "ALAB",
+      "ALB",
+      "ALC",
+      "ALCO",
+      "ALEC",
+      "ALG",
+      "ALGM",
+      "ALGN",
+      "ALGT",
+      "ALHC",
+      "ALK",
+      "ALKS",
+      "ALKT",
+      "ALL",
+      "ALLE",
+      "ALLO",
+      "ALLY",
+      "ALM",
+      "ALMS",
+      "ALMU",
+      "ALNT",
+      "ALNY",
+      "ALOY",
+      "ALRM",
+      "ALRS",
+      "ALSN",
+      "ALT",
+      "ALTG",
+      "ALTI",
+      "ALTO",
+      "ALV",
+      "ALVO",
+      "ALX",
+      "ALXO",
+      "AM",
+      "AMAL",
+      "AMAT",
+      "AMBA",
+      "AMBP",
+      "AMBQ",
+      "AMC",
+      "AMCR",
+      "AMCX",
+      "AMD",
+      "AME",
+      "AMG",
+      "AMGN",
+      "AMH",
+      "AMKR",
+      "AMLX",
+      "AMN",
+      "AMP",
+      "AMPH",
+      "AMPL",
+      "AMPX",
+      "AMPY",
+      "AMR",
+      "AMRC",
+      "AMRX",
+      "AMRZ",
+      "AMSC",
+      "AMSF",
+      "AMT",
+      "AMTB",
+      "AMTM",
+      "AMTX",
+      "AMX",
+      "AMZN",
+      "AN",
+      "ANAB",
+      "ANDE",
+      "ANET",
+      "ANF",
+      "ANGI",
+      "ANGO",
+      "ANIK",
+      "ANIP",
+      "ANNX",
+      "ANRO",
+      "ANTX",
+      "AOMR",
+      "AON",
+      "AORT",
+      "AOS",
+      "AOSL",
+      "AP",
+      "APA",
+      "APAM",
+      "APD",
+      "APEI",
+      "APG",
+      "APH",
+      "APLD",
+      "APLE",
+      "APO",
+      "APOG",
+      "APOS",
+      "APP",
+      "APPF",
+      "APPN",
+      "APPS",
+      "APTV",
+      "AQN",
+      "AQNB",
+      "AQST",
+      "AR",
+      "ARCB",
+      "ARCC",
+      "ARCT",
+      "ARDT",
+      "ARDX",
+      "ARE",
+      "AREC",
+      "ARES",
+      "ARGX",
+      "ARHS",
+      "ARIS",
+      "ARKB",
+      "ARKK",
+      "ARKO",
+      "ARL",
+      "ARLO",
+      "ARM",
+      "ARMK",
+      "ARMP",
+      "AROC",
+      "AROW",
+      "ARQQ",
+      "ARQT",
+      "ARR",
+      "ARRY",
+      "ARTV",
+      "ARVN",
+      "ARW",
+      "ARWR",
+      "ARX",
+      "AS",
+      "ASAN",
+      "ASB",
+      "ASC",
+      "ASH",
+      "ASIC",
+      "ASIX",
+      "ASLE",
+      "ASMB",
+      "ASML",
+      "ASND",
+      "ASO",
+      "ASPI",
+      "ASPN",
+      "ASR",
+      "ASST",
+      "ASTE",
+      "ASTH",
+      "ASTS",
+      "ASUR",
+      "ASX",
+      "ASYS",
+      "ATAT",
+      "ATEC",
+      "ATEN",
+      "ATEX",
+      "ATHM",
+      "ATHS",
+      "ATI",
+      "ATLC",
+      "ATLO",
+      "ATMU",
+      "ATNI",
+      "ATO",
+      "ATOM",
+      "ATR",
+      "ATRC",
+      "ATRO",
+      "AU",
+      "AUB",
+      "AUGO",
+      "AUPH",
+      "AUR",
+      "AURA",
+      "AUTL",
+      "AVA",
+      "AVAH",
+      "AVAL",
+      "AVAV",
+      "AVBC",
+      "AVBH",
+      "AVBP",
+      "AVGO",
+      "AVIR",
+      "AVNT",
+      "AVNW",
+      "AVO",
+      "AVPT",
+      "AVR",
+      "AVT",
+      "AVTR",
+      "AVTX",
+      "AVXL",
+      "AVY",
+      "AWI",
+      "AWK",
+      "AWR",
+      "AX",
+      "AXGN",
+      "AXON",
+      "AXP",
+      "AXS",
+      "AXSM",
+      "AXTA",
+      "AXTI",
+      "AYI",
+      "AZN",
+      "AZO",
+      "AZTA",
+      "AZZ",
+      "B",
+      "BA",
+      "BABA",
+      "BAC",
+      "BAH",
+      "BALL",
+      "BALY",
+      "BAM",
+      "BANC",
+      "BAND",
+      "BANF",
+      "BANR",
+      "BAP",
+      "BATRA",
+      "BATRK",
+      "BAX",
+      "BB",
+      "BBAI",
+      "BBAR",
+      "BBCP",
+      "BBD",
+      "BBDO",
+      "BBIO",
+      "BBNX",
+      "BBOT",
+      "BBSI",
+      "BBT",
+      "BBUC",
+      "BBVA",
+      "BBW",
+      "BBWI",
+      "BBY",
+      "BC",
+      "BCAL",
+      "BCAX",
+      "BCBP",
+      "BCC",
+      "BCE",
+      "BCH",
+      "BCML",
+      "BCO",
+      "BCPC",
+      "BCRX",
+      "BCS",
+      "BCYC",
+      "BDC",
+      "BDN",
+      "BDTX",
+      "BDX",
+      "BE",
+      "BEAM",
+      "BEKE",
+      "BELFA",
+      "BELFB",
+      "BEN",
+      "BEP",
+      "BEPC",
+      "BEPH",
+      "BEPI",
+      "BETR",
+      "BF-B",
+      "BFAM",
+      "BFC",
+      "BFH",
+      "BFLY",
+      "BFS",
+      "BFST",
+      "BG",
+      "BGC",
+      "BGS",
+      "BH",
+      "BH-A",
+      "BHB",
+      "BHC",
+      "BHE",
+      "BHF",
+      "BHP",
+      "BHR",
+      "BHRB",
+      "BHVN",
+      "BIDU",
+      "BIIB",
+      "BILI",
+      "BILL",
+      "BIO",
+      "BIOA",
+      "BIP",
+      "BIPC",
+      "BIPH",
+      "BIPI",
+      "BIRK",
+      "BJ",
+      "BJRI",
+      "BKD",
+      "BKE",
+      "BKH",
+      "BKKT",
+      "BKNG",
+      "BKR",
+      "BKSY",
+      "BKTI",
+      "BKU",
+      "BKV",
+      "BL",
+      "BLBD",
+      "BLCO",
+      "BLDR",
+      "BLK",
+      "BLKB",
+      "BLMN",
+      "BLND",
+      "BLOK",
+      "BLSH",
+      "BLTE",
+      "BLX",
+      "BLZE",
+      "BMA",
+      "BMBL",
+      "BMI",
+      "BMNR",
+      "BMO",
+      "BMRC",
+      "BMRN",
+      "BMY",
+      "BN",
+      "BNAI",
+      "BNED",
+      "BNH",
+      "BNJ",
+      "BNL",
+      "BNS",
+      "BNT",
+      "BNTC",
+      "BNTX",
+      "BNY",
+      "BOC",
+      "BOH",
+      "BOKF",
+      "BOOT",
+      "BORR",
+      "BOTZ",
+      "BOW",
+      "BOX",
+      "BP",
+      "BPOP",
+      "BPRN",
+      "BPYPO",
+      "BR",
+      "BRBR",
+      "BRBS",
+      "BRC",
+      "BRCB",
+      "BRCC",
+      "BRK-A",
+      "BRK-B",
+      "BRKR",
+      "BRO",
+      "BROS",
+      "BRSL",
+      "BRSP",
+      "BRT",
+      "BRUN",
+      "BRX",
+      "BRZE",
+      "BSAC",
+      "BSBR",
+      "BSP",
+      "BSRR",
+      "BSVN",
+      "BSX",
+      "BSY",
+      "BTBT",
+      "BTC",
+      "BTCUSD",
+      "BTDR"
+    ],
+    "liveValidated": false
+  },
+  "liveProvider": {
+    "status": "not-run",
+    "requested": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 512,
+    "reason": "Provider credentials and endpoint entitlements were not verified in this workspace."
+  },
+  "parityClaim": false,
+  "statement": "Synthetic model fixtures test algorithms only. The real-security universe is a future live-validation manifest, not validated coverage."
+}
