@@ -27,6 +27,7 @@ const features: Partial<Record<SentiSenseDataset, Feature>> = {
   shortVolume: "advanced",
   float: "advanced",
   stockEtfs: "advanced",
+  tickerStories: "news",
   earnings: "news",
   documents: "news",
   holders: "advanced",

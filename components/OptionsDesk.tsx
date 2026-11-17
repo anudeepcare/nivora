@@ -1,4 +1,5 @@
 "use client";
+import GuardrailReview from "./GuardrailReview";
 import QuickRead from "./QuickRead";
 import { optionsLiquidity } from "@/lib/options-liquidity";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
@@ -1210,6 +1211,7 @@ export default function OptionsDesk({
                           </strong>
                         </article>
                       </div>
+                      <GuardrailReview maximumLoss={risk.maxLoss} />
                       <Plot
                         points={payoff}
                         label="Stock price at expiry → · profit / loss ($), one contract per leg"

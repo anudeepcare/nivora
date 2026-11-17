@@ -3,9 +3,9 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: 100%;
+  height: auto;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 .root > header {
   flex: 0 0 auto;
@@ -67,12 +67,10 @@
 }
 .root > :global(#research-overview),
 .root > :global(.signal-research-panel) {
-  flex: 1 1 0;
+  flex: 0 0 auto;
   min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
   padding: 22px 28px;
-  scrollbar-gutter: stable;
 }
 .root > [hidden] {
   display: none !important;
@@ -109,4 +107,83 @@
   font-size: 12px;
   color: var(--muted);
   min-height: 30px;
+}
+
+.preferenceNotice {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.preferenceNotice h2 {
+  font-size: 22px;
+  font-weight: 500;
+}
+.preferenceNotice p {
+  color: var(--muted);
+  max-width: 660px;
+  line-height: 1.6;
+}
+.preferenceNotice a {
+  display: inline-block;
+  padding-block: 12px;
+  color: var(--blue);
+}
+
+.lensHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  padding: 8px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+.lensHeading span {
+  color: var(--blue);
+  font:
+    10px "DM Mono",
+    monospace;
+  letter-spacing: 1px;
+}
+.lensHeading h2 {
+  margin: 12px 0 0;
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1.12;
+}
+.lensHeading p {
+  margin: 0;
+  max-width: 280px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.eventsGrid,
+.ownershipGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 18px;
+  align-items: start;
+}
+.ownershipGrid {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+}
+.eventsGrid > section,
+.ownershipGrid > section {
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .eventsGrid,
+  .ownershipGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lensHeading {
+    align-items: start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lensHeading p {
+    max-width: 100%;
+  }
 }

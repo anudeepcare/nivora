@@ -1,4 +1,5 @@
 "use client";
+import GuardrailReview from "./GuardrailReview";
 import { useState, useId } from "react";
 import { SlidersHorizontal, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
@@ -190,6 +191,7 @@ export default function PositionExplorer({
               displayed weight uses the priced portion only.
             </p>
           )}
+          <GuardrailReview cashSpend={Math.max(0, result.valueDifference)} />
           {result.scenarioChange != null && (
             <div className="position-scenario">
               <span>In the Bear sensitivity</span>

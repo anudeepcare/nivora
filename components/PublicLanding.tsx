@@ -470,6 +470,7 @@ export default function PublicLanding({
   const router = useRouter();
   const [menu, setMenu] = useState(false);
   useEffect(() => {
+    if (!sampleOnly) return;
     const tags = Array.from(
       document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
     );
@@ -481,7 +482,7 @@ export default function PublicLanding({
       tags.forEach((tag, index) => {
         tag.content = previous[index];
       });
-  }, []);
+  }, [sampleOnly]);
   useEffect(() => {
     if (sampleOnly) return;
     let alive = true;
@@ -516,8 +517,10 @@ export default function PublicLanding({
             <PublicBrand />
             <nav className="ap-nav" aria-label="Main navigation">
               <Link href="/#how-it-works">Product</Link>
-              <Link href="/sample">Product guide</Link>
+              <Link href="/#pace-public">Pace</Link>
+              <Link href="/#use-cases">Use cases</Link>
               <Link href="/pricing">Pricing</Link>
+              <Link href="/methodology">Method</Link>
             </nav>
             <div className="ap-header-actions">
               <Link className="ap-signin" href="/login">
@@ -578,28 +581,31 @@ export default function PublicLanding({
           aria-labelledby="ap-hero-heading"
         >
           <div className={landing.heroCopy}>
-            <span className={landing.eyebrow}>BUSINESS. VALUE. YOUR PACE.</span>
+            <span className={landing.eyebrow}>
+              STOCK RESEARCH FOR THE DECISION, NOT THE DASHBOARD
+            </span>
             <h1 id="ap-hero-heading">
               {sampleOnly ? (
                 "Explore a more considered way to invest."
               ) : (
                 <>
-                  Invest every month.
+                  Understand any stock
                   <br />
-                  <span>Know your reasons.</span>
+                  <span>in thirty seconds.</span>
                 </>
               )}
             </h1>
             <p>
-              A clear monthly research routine: understand your companies,
-              review what changed, and plan within your limits.
+              See the business, what the price assumes, what changed, who is
+              acting, and how fast to build. Then open the evidence behind each
+              conclusion.
             </p>
             <div className={landing.actions}>
               <Link className={landing.primary} href="/login?mode=signup">
                 Get started <ArrowRight size={18} aria-hidden="true" />
               </Link>
               <a className={landing.secondary} href="#how-it-works">
-                Explore the product <ArrowRight size={17} aria-hidden="true" />
+                See the method <ArrowRight size={17} aria-hidden="true" />
               </a>
             </div>
             <p>
@@ -615,11 +621,36 @@ export default function PublicLanding({
               </span>
             </div>
           </div>
-          <div className={landing.heroVisual}>
-            <InvestmentDemo />
-            <div className={landing.previewCaption}>
-              <span>Product preview</span> Illustrative research
-            </div>
+          <div className={landing.heroVisual} id="product">
+            <section
+              className={landing.referenceBrief}
+              aria-label="Research framework · no live company scores"
+            >
+              <header>
+                <span>AURYN · DECISION BRIEF</span>
+                <small>Research framework · no live company scores</small>
+              </header>
+              <div>
+                <small>THE QUESTIONS THAT MATTER</small>
+                <h2>
+                  A business worth understanding.
+                  <br />A price worth questioning.
+                </h2>
+                <p>Business evidence. Price assumptions. Your own pace.</p>
+              </div>
+              <footer>
+                {["Business", "Expectations", "Change", "Pace"].map(
+                  (name, index) => (
+                    <span key={name}>
+                      <small>{name}</small>
+                      <strong>
+                        {["Evidence", "Assumptions", "Context", "P0–P4"][index]}
+                      </strong>
+                    </span>
+                  ),
+                )}
+              </footer>
+            </section>
           </div>
         </section>
         <div
@@ -645,6 +676,23 @@ export default function PublicLanding({
       </div>
 
       {sampleOnly && <ProductWalkthrough />}
+      <section
+        className={landing.referenceStory}
+        aria-labelledby="reference-story-title"
+      >
+        <span className={landing.eyebrow}>
+          ONE COMPANY · ONE CONNECTED STORY
+        </span>
+        <h2 id="reference-story-title">
+          Stop rebuilding the decision in your head.
+        </h2>
+        <p>
+          Auryn connects operating evidence, expectations, events, ownership,
+          price behavior, and portfolio limits without collapsing them into a
+          black-box score.
+        </p>
+        <InvestmentDemo />
+      </section>
 
       <section
         className={`${landing.workflow} ap-container`}
@@ -745,6 +793,109 @@ export default function PublicLanding({
             </div>
           </article>
         </div>
+      </section>
+      <section
+        className={landing.referencePace}
+        id="pace-public"
+        aria-labelledby="reference-pace-title"
+      >
+        <span className={landing.eyebrow}>AURYN ACCUMULATION PACE</span>
+        <h2 id="reference-pace-title">A buying rhythm, not another rating.</h2>
+        <p>
+          Pace separates business qualification from price conditions and
+          portfolio capacity.
+        </p>
+        <div>
+          {[
+            ["P0", "Pause", "Price extension or unsupported conditions"],
+            ["P1", "Watch", "No accumulation zone established"],
+            ["P2", "Start small", "Initial qualifying price zone"],
+            ["P3", "Build", "Deeper qualifying price zone"],
+            ["P4", "Deep zone", "Strongest planned accumulation zone"],
+          ].map(([level, label, description]) => (
+            <article key={level}>
+              <span>{level}</span>
+              <h3>{label}</h3>
+              <p>{description}</p>
+            </article>
+          ))}
+        </div>
+        <p>
+          Pace is a condition, not a position-size instruction. Cash,
+          concentration, and your saved limits still apply. Current-month
+          readings remain forming.
+        </p>
+        <Link href="/pace">Explore Pace methodology →</Link>
+      </section>
+      <section
+        className={landing.referenceCases}
+        id="use-cases"
+        aria-labelledby="reference-cases-title"
+      >
+        <span className={landing.eyebrow}>
+          BUILT AROUND THE QUESTIONS INVESTORS ACTUALLY ASK
+        </span>
+        <h2 id="reference-cases-title">
+          From interesting to a decision you can explain.
+        </h2>
+        <div>
+          {[
+            [
+              "Where should my next contribution go?",
+              "Compare business evidence, valuation, Pace, and portfolio capacity across followed companies.",
+              "/compare",
+            ],
+            [
+              "What does this price need to be true?",
+              "Change growth, margins, horizon, and exit multiple in an interactive assumption engine.",
+              "/research/APP?tab=Valuation",
+            ],
+            [
+              "Did the business change, or just the stock?",
+              "Separate operating evidence from market moves and repeated news.",
+              "/research/APP?tab=News",
+            ],
+            [
+              "What could prove me wrong?",
+              "Keep risk checks and explicit invalidation conditions beside the evidence.",
+              "/research/APP?tab=Thesis",
+            ],
+            [
+              "Who is buying or selling?",
+              "Inspect ownership and insider activity with filing-delay and coverage context.",
+              "/research/APP?tab=Thesis",
+            ],
+            [
+              "How should I express the view?",
+              "Explore accumulation conditions or defined-risk options with visible assumptions.",
+              "/research/APP?tab=Options",
+            ],
+          ].map(([title, description, href], index) => (
+            <article key={title}>
+              <span>0{index + 1}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+              <Link href={href}>Explore use case →</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section
+        className={landing.referencePricing}
+        id="pricing"
+        aria-labelledby="reference-pricing-title"
+      >
+        <span className={landing.eyebrow}>PRICING</span>
+        <h2 id="reference-pricing-title">
+          Start with clarity. Go deeper when you need it.
+        </h2>
+        <p>
+          Compare the current Free and Pro features, availability, and billing
+          terms before choosing.
+        </p>
+        <Link className={landing.primary} href="/pricing">
+          Compare current plans →
+        </Link>
       </section>
       <section
         className={`${landing.closing} ap-container`}

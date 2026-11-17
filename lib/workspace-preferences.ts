@@ -6,6 +6,23 @@ export function workspacePreferences(value: unknown) {
       : {};
   return {
     ...sanitizeResearchPreferences(raw),
+    hiddenSignals: Array.isArray(raw.hiddenSignals)
+      ? [
+          ...new Set(
+            raw.hiddenSignals.filter(
+              (v): v is string =>
+                typeof v === "string" &&
+                [
+                  "congressional",
+                  "insiders",
+                  "institutions",
+                  "options",
+                  "technicals",
+                ].includes(v),
+            ),
+          ),
+        ]
+      : [],
     visibleMetrics: Array.isArray(raw.visibleMetrics)
       ? [
           ...new Set(
@@ -27,6 +44,20 @@ export function workspacePreferences(value: unknown) {
     )
       ? String(raw.chartRange)
       : "1Y",
+    cashReservePercent:
+      typeof raw.cashReservePercent === "number" &&
+      Number.isFinite(raw.cashReservePercent) &&
+      raw.cashReservePercent >= 0 &&
+      raw.cashReservePercent <= 100
+        ? raw.cashReservePercent
+        : null,
+    maxLossPercent:
+      typeof raw.maxLossPercent === "number" &&
+      Number.isFinite(raw.maxLossPercent) &&
+      raw.maxLossPercent > 0 &&
+      raw.maxLossPercent <= 100
+        ? raw.maxLossPercent
+        : null,
     concentrationLimit:
       typeof raw.concentrationLimit === "number" &&
       Number.isFinite(raw.concentrationLimit) &&

@@ -1,5 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
+import SavedScenarioControls from "./SavedScenarioControls";
+import { applySavedScenario, type SavedScenario } from "@/lib/saved-scenarios";
 import type { Research } from "@/lib/types";
 import { financialPeriods } from "@/lib/engine";
 import { modelCoverage } from "@/lib/research-depth";
@@ -227,6 +229,23 @@ export default function PriceProjection({
                 </tbody>
               </table>
             </div>
+            <SavedScenarioControls
+              value={{
+                version: 1,
+                symbol: r.company.symbol,
+                currency: r.quote.currency,
+                baselineDate: p.end,
+                savedAt: r.retrievedAt,
+                years,
+                selected: selected as SavedScenario["selected"],
+                input,
+              }}
+              onRestore={(saved) => {
+                setInput(applySavedScenario(saved, input));
+                setYears(saved.years);
+                setSelected(saved.selected);
+              }}
+            />
             <details className="projection-inputs">
               <summary>Adjust assumptions</summary>
               <p>

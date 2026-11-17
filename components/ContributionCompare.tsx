@@ -1,4 +1,5 @@
 "use client";
+import GuardrailReview from "./GuardrailReview";
 import SearchableSelect from "./SearchableSelect";
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -240,6 +241,7 @@ function Candidate({
       ) : r && d ? (
         <>
           <p>{r.company.name}</p>
+          <GuardrailReview cashSpend={addition} />
           <dl>
             <div>
               <dt>

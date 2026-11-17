@@ -58,6 +58,8 @@ const common = {
   ...Object.fromEntries(
     [
       "ArrowRight",
+      "Sun",
+      "Moon",
       "Search",
       "FileText",
       "ChartNoAxesCombined",
@@ -154,12 +156,17 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Invest every month/);
+  assert.match(html, /Understand any stock/);
   assert.match(html, /id="how-it-works"/);
   assert.match(html, /href="\/#how-it-works"/);
   assert.doesNotMatch(html, /Our approach/);
-  assert.match(html, /Know your reasons\./);
-  assert.match(html, /href="#how-it-works"[^>]*>Explore the product/);
+  assert.match(html, /in thirty seconds\./);
+  assert.match(html, /href="#how-it-works"[^>]*>See the method/);
+  assert.match(html, /id="product"/);
+  assert.match(html, /id="pace-public"/);
+  assert.match(html, /id="use-cases"/);
+  assert.match(html, /id="pricing"/);
+  assert.match(html, /Research framework · no live company scores/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
   assert.match(html, /AURYN Accumulation Pace/);

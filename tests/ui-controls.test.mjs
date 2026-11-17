@@ -18,6 +18,8 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
+  Sun,
+  Moon,
   Layers3,
   Scale,
   ShieldCheck,
@@ -820,10 +822,15 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
       false,
       0,
       { google: false, x: false },
+      "dark",
+      "",
+      false,
     ];
     const Login = loadComponent("components/Session.tsx", "Login", {
       React,
       Layers3,
+      Sun,
+      Moon,
       Scale,
       ChartNoAxesCombined,
       ArrowRight,
@@ -846,9 +853,9 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
     if (mode !== "reset") assert.match(html, /name="password"/);
     assert.match(html, /About AURYN/);
     assert.match(html, /Business/);
-    assert.match(html, /Value/);
-    assert.match(html, /Your pace/);
-    assert.match(html, /One place for your investment research/);
+    assert.match(html, /Expectations/);
+    assert.match(html, /Pace/);
+    assert.match(html, /Keep the evidence in view/);
     assert.doesNotMatch(html, /desktop-nav|mobile-dock|guaranteed returns/);
   }
 });
@@ -876,6 +883,14 @@ test("the single settings page preserves account, membership and help", () => {
     PageHeading: empty,
     ResearchPreferenceControls: empty,
     DisplayPreferences: empty,
+    SettingsExperience: loadComponent("components/SettingsExperience.tsx", "SettingsExperience", {
+      React,
+      useResearchPreferences: () => ({preferences:{detail:"essential",horizon:"long"},setPreferences:()=>{},disabled:false,error:null}),
+    }),
+    SettingsSignalPolicies: loadComponent("components/SettingsExperience.tsx", "SettingsSignalPolicies", {
+      React,
+      useWorkspacePreferences: () => ({preferences:{hiddenSignals:[],maxLossPercent:null,cashReservePercent:null},save:()=>{},saving:false,ready:true,localOnly:false,error:null}),
+    }),
   });
   const html = renderToStaticMarkup(React.createElement(Settings));
   assert.doesNotMatch(html, /href="\/(discover|research-lab|trading)"/);

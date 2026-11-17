@@ -1,7 +1,6 @@
 "use client";
 import DecisionAttention from "./DecisionAttention";
 import { customerText } from "@/lib/customer-language";
-import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { useHomeFeed } from "./useHomeFeed";
 import { PaceBadge } from "./WorkspacePace";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
@@ -21,8 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import CompanySparkline from "./CompanySparkline";
-import PaceHelp from "./PaceHelp";
+import decisionStyles from "./DecisionLists.module.css";
 import Search from "./Search";
 import { useProduct, useResource, useWorkspaceFilter } from "./Session";
 import { Empty, Notice, SecurityLogo } from "./Ui";
@@ -106,18 +104,19 @@ export function Watchlist() {
   }
   return (
     <section
-      className={`approved-workspace approved-watchlist ${workspaceVisuals.workspaceVisuals}`}
+      className={`approved-workspace approved-watchlist ${workspaceVisuals.workspaceVisuals} ${decisionStyles.watchlist}`}
     >
+      <span className={decisionStyles.eyebrow}>DECISION QUEUE</span>
       <Heading
-        title="Ideas worth following."
-        subtitle="Your saved companies, prices and upcoming events."
+        title="Your companies. Decisions to review."
+        subtitle="Business context, Pace and the next conditions worth watching."
         actions={
           <button
             className="btn primary"
             onClick={() => dialog.current?.showModal()}
           >
             <Plus size={16} />
-            Add a company
+            Follow company
           </button>
         }
       />
@@ -218,114 +217,99 @@ export function Watchlist() {
           </p>
         )}
         {symbols.length ? (
-          <div className={`table-scroll ${portfolioStyles.watchLedger}`}>
-            <table className="holdings-table approved-watch-table">
-              <caption className="sr-only">
-                Saved companies, observed prices, loaded price history and
-                confirmed monthly Pace.
-              </caption>
-              <thead>
-                <tr>
-                  <th>Company</th>
-                  <th>Price</th>
-                  <th>Trend</th>
-                  <th>
-                    AURYN Pace <PaceHelp />
-                  </th>
-                  <th>
-                    <span className="sr-only">Remove company</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {symbols.map((symbol) => {
-                  const row = quotes.data[symbol],
-                    signal = pace(symbol);
-                  return (
-                    <tr key={symbol}>
-                      <td>
-                        <Link
-                          className="company-row"
-                          href={researchLink(symbol, prefix)}
-                        >
-                          <SecurityLogo symbol={symbol} />
-                          <span>
-                            <b>{symbol}</b>
-                            <small>
-                              {row?.company?.name || "Open research"}
-                            </small>
-                          </span>
-                        </Link>
-                        <small>
-                          {nextDates.has(symbol)
-                            ? `Earnings · ${dateLabel(nextDates.get(symbol))}`
-                            : calendar.loading
-                              ? "Checking earnings…"
-                              : calendar.error
-                                ? "Earnings unavailable"
-                                : "Next earnings unconfirmed"}
-                        </small>
-                        {noteDates.data?.documents.find((n) => n.key === symbol)
-                          ?.body.condition && (
-                          <small className="watch-checkpoint">
-                            {
-                              noteDates.data.documents.find(
-                                (n) => n.key === symbol,
-                              )?.body.condition
-                            }
-                          </small>
-                        )}
-                      </td>
-                      <td>
-                        <strong>
-                          {amount(row?.quote?.price, row?.quote?.currency)}
-                        </strong>
-                        <small
-                          className={
-                            row?.quote?.changePct == null
-                              ? "muted"
-                              : row.quote.changePct < 0
-                                ? "negative"
-                                : "green"
-                          }
-                        >
-                          {percent(row?.quote?.changePct, true)}
-                        </small>
-                        <small title={customerText(row?.quote?.source)}>
-                          {row?.quote?.asOf
-                            ? `${row.quote.stale ? "Older · " : ""}${quoteTime(row.quote.asOf, true)}`
-                            : quotes.loading
-                              ? "Checking price…"
-                              : "Price unavailable"}
-                        </small>
-                      </td>
-                      <td>
-                        <CompanySparkline symbol={symbol} />
-                      </td>
-                      <td>
-                        <Link
-                          className={portfolioStyles.paceStatus}
-                          href={researchLink(symbol, prefix)}
-                          title={signal?.reason}
-                        >
-                          <PaceBadge signal={signal} />
-                        </Link>
-                      </td>
-                      <td>
-                        <button
-                          className="icon-button"
-                          disabled={!!removing}
-                          aria-label={`Remove ${symbol} from watchlist`}
-                          onClick={() => remove(symbol)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className={decisionStyles.queue}>
+            <div className={decisionStyles.queueHead} aria-hidden="true">
+              <span>COMPANY</span>
+              <span>POSTURE</span>
+              <span>PACE</span>
+              <span>EVIDENCE / NEXT CONDITION</span>
+              <span>TODAY</span>
+              <span />
+            </div>
+            <ul>
+              {symbols.map((symbol) => {
+                const row = quotes.data[symbol],
+                  signal = pace(symbol);
+                const condition = noteDates.data?.documents.find(
+                  (n) => n.key === symbol,
+                )?.body.condition;
+                return (
+                  <li key={symbol}>
+                    <Link
+                      className={decisionStyles.company}
+                      href={researchLink(symbol, prefix)}
+                    >
+                      <SecurityLogo symbol={symbol} />
+                      <span>
+                        <b>{symbol}</b>
+                        <small>{row?.company?.name || "Open research"}</small>
+                      </span>
+                    </Link>
+                    <strong className={decisionStyles.posture}>
+                      {signal?.contextLabel || "Checking evidence"}
+                    </strong>
+                    <Link
+                      className={decisionStyles.pace}
+                      href={researchLink(symbol, prefix)}
+                      title={signal?.reason}
+                    >
+                      <PaceBadge
+                        signal={signal}
+                        loading={state.paceScan.loading}
+                      />
+                    </Link>
+                    <div className={decisionStyles.evidence}>
+                      <p>
+                        {condition ||
+                          signal?.changeCondition ||
+                          signal?.reason ||
+                          "Evidence unavailable. Open research to check coverage."}
+                      </p>
+                      <small>
+                        {nextDates.has(symbol)
+                          ? `Earnings · ${dateLabel(nextDates.get(symbol))}`
+                          : calendar.loading
+                            ? "Checking earnings…"
+                            : calendar.error
+                              ? "Earnings unavailable"
+                              : "Next earnings unconfirmed"}
+                      </small>
+                    </div>
+                    <div className={decisionStyles.today}>
+                      <strong>
+                        {amount(row?.quote?.price, row?.quote?.currency)}
+                      </strong>
+                      <span
+                        className={
+                          row?.quote?.changePct == null
+                            ? "muted"
+                            : row.quote.changePct < 0
+                              ? "negative"
+                              : "green"
+                        }
+                      >
+                        {percent(row?.quote?.changePct, true)}
+                      </span>
+                      <small title={customerText(row?.quote?.source)}>
+                        {row?.quote?.asOf
+                          ? `${row.quote.stale ? "Older · " : ""}${quoteTime(row.quote.asOf, true)}`
+                          : quotes.loading
+                            ? "Checking price…"
+                            : "Price unavailable"}
+                      </small>
+                    </div>
+                    <button
+                      className="icon-button"
+                      disabled={!!removing}
+                      aria-label={`Remove ${symbol} from watchlist`}
+                      onClick={() => remove(symbol)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         ) : (
           <Empty

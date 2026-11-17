@@ -155,6 +155,8 @@ function settings(demo, overrides = {}) {
     PageHeading: empty,
     DisplayPreferences: empty,
     ResearchPreferenceControls: empty,
+    SettingsExperience: empty,
+    SettingsSignalPolicies: empty,
     ArrowUpRight: empty,
     ArrowLeft: empty,
     ChevronRight: empty,
@@ -389,4 +391,22 @@ test("account menu signs out directly without navigating to Settings", async () 
   await button.props.onClick();
   assert.equal(result.signOutCalls(), 1);
   assert.deepEqual(result.pushes, []);
+});
+
+ test("Figma research experience cards persist actual research preferences", () => {
+ const saved=[]; const View=load("components/SettingsExperience.tsx","SettingsExperience",{useResearchPreferences:()=>({preferences:{detail:"essential",horizon:"long"},setPreferences:p=>saved.push(p),disabled:false,error:null})});
+ const buttons=nodes(View(),n=>n.type==="button");
+ assert.equal(buttons.length,3); assert.equal(buttons[0].props["aria-pressed"],true);
+ buttons[1].props.onClick(); buttons[2].props.onClick();
+ assert.deepEqual(saved,[{detail:"advanced",horizon:"long"},{detail:"essential",horizon:"swing"}]);
+ });
+
+test("Signal visibility saves account preferences but unavailable delivery stays disabled",()=>{
+ const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});const tree=View();
+ const controls=nodes(tree,n=>n.type==="input");assert.equal(controls.length,5);assert.ok(controls.every(n=>!n.props.disabled&&n.props.checked));controls[0].props.onChange({target:{checked:false}});assert.deepEqual(saved,[{hiddenSignals:["congressional"]}]);
+ assert.ok(nodes(tree,n=>n.type==="button").every(n=>n.props.disabled));
+});
+test("Preview cannot claim saved signal visibility",()=>{const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:()=>assert.fail(),saving:false,ready:true,localOnly:true,error:null})});assert.ok(nodes(View(),n=>n.type==="input").every(n=>n.props.disabled));});
+test("guardrail selections persist actual account percentages and support off",()=>{
+ const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[],maxLossPercent:null,cashReservePercent:10},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});const selects=nodes(View(),n=>n.type==="select");assert.equal(selects.length,2);selects[0].props.onChange({target:{value:"1"}});selects[1].props.onChange({target:{value:""}});assert.deepEqual(saved,[{maxLossPercent:1},{cashReservePercent:null}]);
 });

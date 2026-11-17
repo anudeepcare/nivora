@@ -5,7 +5,7 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { intelligenceView } from "../lib/sentisense-view.ts";
-function harness() {
+function harness(hiddenSignals = []) {
   const ast = ts.createSourceFile(
     "panels.tsx",
     fs.readFileSync("components/SentiSensePanels.tsx", "utf8"),
@@ -33,6 +33,8 @@ function harness() {
   const requests = [];
   const bindings = {
     React,
+    useWorkspacePreferences: () => ({ preferences: { hiddenSignals } }),
+    Link: ({ children, ...props }) => React.createElement("a", props, children),
     useState: (initial) => [
       selected ?? initial,
       (value) => {
@@ -106,4 +108,16 @@ test("demo does not make paid provider calls", () => {
     "",
   );
   assert.equal(h.requests.length, 0);
+});
+
+test("hidden evidence preferences remove providers without hiding restore control", () => {
+  const h = harness(["options"]);
+  const html = h.render({ symbol: "AAPL", group: "options" });
+  assert.match(html, /Research panels hidden/);
+  assert.match(html, /href="\/settings"/);
+  assert.equal(h.requests.length, 0);
+  const ownership = harness(["institutions", "congressional"]);
+  const page = ownership.render({ symbol: "AAPL", group: "ownership" });
+  assert.doesNotMatch(page, />Institutions<|>Public officials</);
+  assert.match(ownership.requests[0], /dataset=insiders/);
 });

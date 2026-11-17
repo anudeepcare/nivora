@@ -1,4 +1,5 @@
 "use client";
+import { settleWithDeadline } from "@/lib/request-deadline";
 import { invalidateResource } from "@/lib/resource-cache";
 import { usePathname, useRouter } from "next/navigation";
 import { authDestination, authErrorMessage } from "@/lib/auth-navigation";
@@ -21,13 +22,7 @@ import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
 import LaunchScreen, { LaunchSequence } from "./LaunchScreen";
 import experience from "./Session.module.css";
-import {
-  ArrowRight,
-  Layers3,
-  Scale,
-  ChartNoAxesCombined,
-  Check,
-} from "lucide-react";
+import { ArrowRight, Sun, Moon, Check } from "lucide-react";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
@@ -79,8 +74,7 @@ export function ProductSession({
     let authEventSeen = false;
     try {
       const client = authClient();
-      client.auth
-        .getSession()
+      settleWithDeadline(client.auth.getSession(), 10000)
         .then(({ data, error }) => {
           if (!alive || authEventSeen) return;
           if (error) setError("Your account session could not be loaded.");
@@ -117,8 +111,7 @@ export function ProductSession({
     const restored = (event: PageTransitionEvent) => {
       if (!event.persisted) return;
       // Resume without discarding the mounted shell or replaying launch screens.
-      void authClient()
-        .auth.getSession()
+      void settleWithDeadline(authClient().auth.getSession(), 10000)
         .then(({ data, error }) => {
           if (active && !error) {
             if (!data.session) clearAccountCache();
@@ -474,6 +467,12 @@ function Login({ initialError }: { initialError: string }) {
     google: boolean | null;
     x: boolean | null;
   }>({ google: null, x: null });
+  const [loginTheme, setLoginTheme] = useState<"light" | "dark">("dark");
+  useEffect(() => {
+    setLoginTheme(
+      document.documentElement.dataset.theme === "light" ? "light" : "dark",
+    );
+  }, []);
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
@@ -595,37 +594,46 @@ function Login({ initialError }: { initialError: string }) {
           <img src="/icon.svg" alt="" width="30" height="30" /> AURYN
         </a>
         <div className={experience.storyContent}>
-          <span className={experience.eyebrow}>YOUR INVESTMENT WORKSPACE</span>
-          <h2>
-            Your research.
-            <br />
-            <span>A clearer view.</span>
-          </h2>
-          <p>One place for your investment research.</p>
-          <div className={experience.brandVisual} aria-hidden="true">
-            <span className={experience.visualOrbit} />
-            <span className={experience.visualOrbit} />
-            <img src="/icon.svg" alt="" width="82" height="88" />
-            <span className={experience.visualCaption}>
-              A CONNECTED PERSPECTIVE
-            </span>
-          </div>
+          <span className={experience.eyebrow}>YOUR RESEARCH, CONTINUED</span>
+          <h2>Return to the reasons behind every position.</h2>
           <div className={experience.researchCard}>
-            <span>
-              <Layers3 size={18} /> Business
-            </span>
-            <span>
-              <Scale size={18} /> Value
-            </span>
-            <span>
-              <ChartNoAxesCombined size={18} /> Your pace
-            </span>
+            <small>YOUR DECISION WORKSPACE</small>
+            <h3>Keep the evidence in view.</h3>
+            <p>
+              Connect the business, its expectations and your accumulation
+              conditions before making a decision.
+            </p>
+            <div>
+              <span>
+                <b>Business</b>Understand the evidence
+              </span>
+              <span>
+                <b>Expectations</b>Explore the scenarios
+              </span>
+              <span>
+                <b>Pace</b>Review your conditions
+              </span>
+            </div>
           </div>
         </div>
-        <p className={experience.storyFoot}>
-          Research with perspective. Invest at your own pace.
-        </p>
       </aside>
+      <button
+        type="button"
+        className={experience.themeToggle}
+        aria-label={`Use ${loginTheme === "dark" ? "day" : "night"} theme`}
+        onClick={() => {
+          const next = loginTheme === "dark" ? "light" : "dark";
+          document.documentElement.dataset.theme = next;
+          try {
+            localStorage.setItem("auryn-product-theme", next);
+          } catch {
+            /* Optional preference persistence. */
+          }
+          setLoginTheme(next);
+        }}
+      >
+        {loginTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+      </button>
       <section className={experience.main} aria-label="Account access">
         <div className="mp-auth-mobile-brand">
           <a className="mp-brand" href="/" aria-label="Auryn home">
@@ -646,22 +654,22 @@ function Login({ initialError }: { initialError: string }) {
               {mode === "reset"
                 ? "RESET PASSWORD"
                 : mode === "signup"
-                  ? "WELCOME TO AURYN"
-                  : "YOUR WORKSPACE AWAITS"}
+                  ? "START WITH YOUR JUDGMENT"
+                  : "WELCOME BACK"}
             </span>
             <h1>
               {mode === "login"
-                ? "Welcome back."
+                ? "Sign in to Auryn"
                 : mode === "signup"
-                  ? "Start with clarity."
+                  ? "Create your workspace"
                   : "A fresh start."}
             </h1>
             <p>
               {mode === "signup"
-                ? "Create your account to start your research."
+                ? "Build a research system around the way you invest."
                 : mode === "reset"
                   ? "We’ll email a secure link to restore access to your workspace."
-                  : "Sign in to continue your research."}
+                  : "Continue your research and saved decisions."}
             </p>
           </div>
           {mode !== "reset" && (

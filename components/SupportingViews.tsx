@@ -1,7 +1,12 @@
 "use client";
 import ComparisonCharts from "./ComparisonCharts";
+import ContributionCompare from "./ContributionCompare";
+import decisionStyles from "./DecisionLists.module.css";
 import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
+import SettingsExperience, {
+  SettingsSignalPolicies,
+} from "./SettingsExperience";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { ContextLink } from "./ContextLink";
@@ -121,9 +126,10 @@ export function Settings() {
           <ArrowLeft size={18} /> Back
         </Link>
       </div>
+      <p className="settings-eyebrow">YOUR WORKSPACE</p>
       <PageHeading
-        title="Settings"
-        subtitle="Manage your account, display and research preferences."
+        title="Make the product think like you do."
+        subtitle="Control research depth, reading style, decision policy, and alerts."
       />
       {message && (
         <div className="settings-feedback" role="status">
@@ -171,11 +177,13 @@ export function Settings() {
         </button>
       </div>
       <div className="workspace-settings-groups">
+        <SettingsExperience />
+        <SettingsSignalPolicies />
         <section className="workspace-setting-group">
           <header>
             <span>
-              <strong>Display & reading</strong>
-              <small>Theme, text and accessibility</small>
+              <small>APPEARANCE</small>
+              <strong>Accent and reading comfort</strong>
             </span>
           </header>
           <div className="workspace-setting-body">
@@ -185,8 +193,8 @@ export function Settings() {
         <section className="workspace-setting-group">
           <header>
             <span>
-              <strong>Research preferences</strong>
-              <small>How you want evidence presented</small>
+              <small>DECISION POLICY</small>
+              <strong>Research and portfolio guardrails</strong>
             </span>
           </header>
           <div className="workspace-setting-body">
@@ -392,10 +400,11 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     })),
   );
   return (
-    <section>
+    <section className={decisionStyles.compare}>
+      <span className={decisionStyles.eyebrow}>CONTRIBUTION COMPARISON</span>
       <PageHeading
-        title="Compare companies"
-        subtitle="Compare reported financials with their periods and currencies."
+        title="Your companies. One next dollar."
+        subtitle="Compare business evidence, expectations, Pace and portfolio capacity."
       />
       <div className="source-line">
         {saved.data?.documents.map((d) => (
@@ -444,7 +453,41 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         <p className="context-note">{compatibility.join(" ")}</p>
       )}
       {values.length > 0 && (
-        <ComparisonCharts research={values.map(({ r }) => r)} />
+        <>
+          <section
+            className={decisionStyles.command}
+            aria-label="Decision comparison"
+            style={{
+              gridTemplateColumns: `1.25fr repeat(${values.length}, minmax(140px, .75fr))`,
+            }}
+          >
+            <div className={decisionStyles.commandLabel}>
+              <span>DECISION</span>
+              <strong>Compare the evidence</strong>
+              <p>
+                Each company retains its own context. No automatic winner or
+                allocation is inferred.
+              </p>
+            </div>
+            {values.map(({ r, edge }) => (
+              <div key={r.company.symbol}>
+                <Link
+                  href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
+                >
+                  <SecurityLogo symbol={r.company.symbol} />
+                  {r.company.symbol}
+                </Link>
+                <strong>{edge.decision.contextLabel}</strong>
+                <b>{edge.pacePresentation.code}</b>
+                <small>{edge.pacePresentation.actionLabel}</small>
+              </div>
+            ))}
+          </section>
+          <details className={decisionStyles.details}>
+            <summary>Price and financial charts</summary>
+            <ComparisonCharts research={values.map(({ r }) => r)} />
+          </details>
+        </>
       )}
       <PaceHelp trigger="Understand AURYN Pace" />
       {values.length ? (
@@ -520,6 +563,15 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         <Empty title="Compare growth, margins and valuation">
           Choose two to four companies to compare their reported economics.
         </Empty>
+      )}
+      {values.length >= 2 && (
+        <details className={decisionStyles.details}>
+          <summary>Next contribution · portfolio capacity</summary>
+          <ContributionCompare
+            symbols={values.map(({ r }) => r.company.symbol)}
+            prefix={prefix}
+          />
+        </details>
       )}
     </section>
   );

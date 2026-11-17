@@ -1,4 +1,7 @@
 "use client";
+import DiscoveryPlot from "./DiscoveryPlot";
+import SentiSenseCoverage from "./SentiSenseCoverage";
+import discoverStyles from "./DiscoverWorkspace.module.css";
 import EodEventCalendar from "./EodEventCalendar";
 import OpportunityMap from "./OpportunityMap";
 import { MarketRadar } from "./MarketRadar";
@@ -27,7 +30,7 @@ import { api } from "@/lib/client";
 import { perspective } from "@/lib/analysis";
 import { amount, percent } from "@/lib/format";
 import type { Research } from "@/lib/types";
-import { Empty, PageHeading, SecurityLogo, Notice, Help } from "./Ui";
+import { Empty, SecurityLogo, Notice, Help } from "./Ui";
 export default function Discover({ embedded = false }: { embedded?: boolean }) {
   const { workspace, demo, cache } = useProduct(),
     prefix = demo && demo.routePrefix !== "" ? "/preview" : "",
@@ -175,246 +178,284 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
     }
   }
   return (
-    <section className="discover-workspace">
-      {!embedded && <EodEventCalendar preview={!!demo} />}
+    <section
+      className={`discover-workspace ${embedded ? discoverStyles.embedded : discoverStyles.workspace}`}
+    >
       {!embedded && (
-        <PageHeading
-          title="Find companies"
-          subtitle="Filter companies by sector, business results and confirmed Pace."
-        />
+        <header className={discoverStyles.hero}>
+          <span>DISCOVER</span>
+          <h1>Find a reason to look closer.</h1>
+          <p>
+            Screen your companies by evidence, growth, cash generation and Pace,
+            not popularity.
+          </p>
+        </header>
       )}
-      <p className="small muted">
-        Your selected universe only · up to 12 instruments per requested scan.
-        No market-wide ranking or automatic background scan.
-      </p>
-      {saved.data?.documents.length ? (
-        <div className="source-line">
-          Saved screens:{" "}
-          {saved.data.documents.map((v) => (
-            <button
-              className="text-button"
-              disabled={busy}
-              key={v.key}
-              onClick={() => {
-                setDraft(v.body.symbols.join(", "));
-                setFilter(v.body.filter || "all");
-                setRows([]);
-                setRequested([]);
-                setCoverage({ requested: 0, returned: 0 });
-                setCriteria(v.body.criteria ?? emptyOpportunityFilters);
-                setMessage(
-                  "Saved criteria loaded. Screen companies to refresh the evidence.",
-                );
-              }}
-            >
-              {v.body.name}
-            </button>
-          ))}
-        </div>
-      ) : null}
-      <form className="compare-search" onSubmit={scan}>
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value.toUpperCase())}
-          aria-label="Screen symbols"
-          placeholder={
-            universe.length
-              ? `Use your ${universe.length} saved companies, or enter tickers`
-              : "Enter up to 12 tickers, separated by commas"
-          }
-        />
-        <button className="button primary" disabled={busy}>
-          <SearchIcon size={16} />
-          {busy ? "Reviewing sources…" : "Screen companies"}
-        </button>
-      </form>
-      <div className="analyst-controls discover-controls">
-        <div className={mapStyles.filters}>
-          <label>
-            Sector
-            <select
-              value={criteria.sector}
-              onChange={(e) => {
-                setFilter("all");
-                setCriteria({ ...criteria, sector: e.target.value });
-              }}
-            >
-              <option value="all">All sectors</option>
-              {[...new Set(rows.map((r) => opportunityRow(r).sector))]
-                .sort()
-                .map((sector) => (
-                  <option key={sector}>{sector}</option>
-                ))}
-            </select>
-          </label>
-          <label>
-            Confirmed Pace
-            <select
-              value={criteria.pace}
-              onChange={(e) => {
-                setFilter("all");
-                setCriteria({ ...criteria, pace: e.target.value });
-              }}
-            >
-              <option value="all">All Pace readings</option>
-              {["P0", "P1", "P2", "P3", "P4"].map((p) => (
-                <option key={p}>{p}</option>
+      <div
+        className={embedded ? discoverStyles.embedded : discoverStyles.layout}
+      >
+        <div className={discoverStyles.desk}>
+          <p className="small muted">
+            Your selected universe only · up to 12 instruments per requested
+            scan. No market-wide ranking or automatic background scan.
+          </p>
+          {saved.data?.documents.length ? (
+            <div className="source-line">
+              Saved screens:{" "}
+              {saved.data.documents.map((v) => (
+                <button
+                  className="text-button"
+                  disabled={busy}
+                  key={v.key}
+                  onClick={() => {
+                    setDraft(v.body.symbols.join(", "));
+                    setFilter(v.body.filter || "all");
+                    setRows([]);
+                    setRequested([]);
+                    setCoverage({ requested: 0, returned: 0 });
+                    setCriteria(v.body.criteria ?? emptyOpportunityFilters);
+                    setMessage(
+                      "Saved criteria loaded. Screen companies to refresh the evidence.",
+                    );
+                  }}
+                >
+                  {v.body.name}
+                </button>
               ))}
-              <option value="unavailable">Reading unavailable</option>
-            </select>
-          </label>
-          <label>
-            Business evidence
-            <select
-              value={criteria.quality}
-              onChange={(e) => {
-                setFilter("all");
-                setCriteria({ ...criteria, quality: e.target.value });
-              }}
-            >
-              <option value="all">All business evidence</option>
-              <option value="cash">Positive free cash flow</option>
-              <option value="growth">Positive revenue growth</option>
-              <option value="profit">Positive operating income</option>
-            </select>
-          </label>
-          <button
-            className="button"
-            type="button"
-            onClick={() => {
-              setCriteria(emptyOpportunityFilters);
-              setFilter("all");
-            }}
-          >
-            Reset filters
-          </button>
-          <button className="button" disabled={!rows.length} onClick={save}>
-            <Save size={16} />
-            Save screen
-          </button>
-        </div>
-      </div>
-      {!!coverage.requested && (
-        <p className="context-note">
-          Evidence returned for {coverage.returned} of {coverage.requested}{" "}
-          requested instruments · {values.length} match the selected filter.
-          Missing values do not count as matches.
-        </p>
-      )}
-      {message && <Notice>{message}</Notice>}
-      {!!requested.length && (
-        <OpportunityMap
-          research={rows}
-          requested={requested}
-          prefix={prefix}
-          demo={!!demo}
-          onSector={(sector) => {
-            setFilter("all");
-            setCriteria({ ...criteria, sector });
-          }}
-        />
-      )}
-      {rows.length > 0 && (
-        <details className="panel">
-          <summary>Breadth & rotation · loaded companies</summary>
-          <MarketRadar research={rows} />
-        </details>
-      )}
-      {values.length ? (
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>AURYN View</th>
-                <th>Cash after capex</th>
-                <th>Revenue growth</th>
-                <th>Trend</th>
-                <th>
-                  AURYN Pace <PaceHelp />
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {values.map(({ r, p, edge }) => (
-                <tr key={r.company.symbol}>
-                  <td>
-                    <Link
-                      className="investment-identity"
-                      href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
-                    >
-                      <SecurityLogo symbol={r.company.symbol} />
-                      <span>
-                        <b>{r.company.symbol}</b>
-                        <small>{r.company.name}</small>
-                      </span>
-                    </Link>
-                  </td>
-                  <td>
-                    <strong
-                      className={
-                        edge.tone === "risk"
-                          ? "red"
-                          : edge.tone === "positive"
-                            ? "green"
-                            : ""
-                      }
-                    >
-                      {edge.pacePresentation.actionLabel}
-                    </strong>
-                    <small className="block">
-                      {edge.decision.contextLabel} · {edge.reason}
-                    </small>
-                    <small className="block">
-                      New purchase: {edge.decision.actionLabels.entry} ·
-                      Holding: {edge.decision.actionLabels.holding}
-                    </small>
-                  </td>
-                  <td>
-                    {amount(p.last?.fcf, p.last?.currency, true)}
-                    <small className="block">
-                      {p.periodBasis} · {p.last?.end ?? "Period unavailable"}
-                    </small>
-                  </td>
-                  <td>{percent(p.growth)}</td>
-                  <td>{p.tech.trend}</td>
-                  <td>
-                    <PaceGuidance
-                      view={edge.pacePresentation}
-                      readings={edge.pacePeriods}
-                      compact
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <Empty
-          title={
-            rows.length
-              ? "No companies match this filter"
-              : "Choose companies to screen"
-          }
-        >
-          {rows.length
-            ? "Try a different sector, Pace zone or business measure. Missing evidence never counts as a match."
-            : "Scan up to twelve companies from your watchlist, holdings or tickers."}
-          {rows.length > 0 && (
-            <button
-              className="text-button"
-              onClick={() => {
-                setCriteria(emptyOpportunityFilters);
-                setFilter("all");
-              }}
-            >
-              Reset filters
+            </div>
+          ) : null}
+          <form className="compare-search" onSubmit={scan}>
+            <input
+              value={draft}
+              onChange={(e) => setDraft(e.target.value.toUpperCase())}
+              aria-label="Screen symbols"
+              placeholder={
+                universe.length
+                  ? `Use your ${universe.length} saved companies, or enter tickers`
+                  : "Enter up to 12 tickers, separated by commas"
+              }
+            />
+            <button className="button primary" disabled={busy}>
+              <SearchIcon size={16} />
+              {busy ? "Reviewing sources…" : "Screen companies"}
             </button>
+          </form>
+          <div className="analyst-controls discover-controls">
+            <div className={mapStyles.filters}>
+              <label>
+                Sector
+                <select
+                  value={criteria.sector}
+                  onChange={(e) => {
+                    setFilter("all");
+                    setCriteria({ ...criteria, sector: e.target.value });
+                  }}
+                >
+                  <option value="all">All sectors</option>
+                  {[...new Set(rows.map((r) => opportunityRow(r).sector))]
+                    .sort()
+                    .map((sector) => (
+                      <option key={sector}>{sector}</option>
+                    ))}
+                </select>
+              </label>
+              <label>
+                Confirmed Pace
+                <select
+                  value={criteria.pace}
+                  onChange={(e) => {
+                    setFilter("all");
+                    setCriteria({ ...criteria, pace: e.target.value });
+                  }}
+                >
+                  <option value="all">All Pace readings</option>
+                  {["P0", "P1", "P2", "P3", "P4"].map((p) => (
+                    <option key={p}>{p}</option>
+                  ))}
+                  <option value="unavailable">Reading unavailable</option>
+                </select>
+              </label>
+              <label>
+                Business evidence
+                <select
+                  value={criteria.quality}
+                  onChange={(e) => {
+                    setFilter("all");
+                    setCriteria({ ...criteria, quality: e.target.value });
+                  }}
+                >
+                  <option value="all">All business evidence</option>
+                  <option value="cash">Positive free cash flow</option>
+                  <option value="growth">Positive revenue growth</option>
+                  <option value="profit">Positive operating income</option>
+                </select>
+              </label>
+              <button
+                className="button"
+                type="button"
+                onClick={() => {
+                  setCriteria(emptyOpportunityFilters);
+                  setFilter("all");
+                }}
+              >
+                Reset filters
+              </button>
+              <button className="button" disabled={!rows.length} onClick={save}>
+                <Save size={16} />
+                Save screen
+              </button>
+            </div>
+          </div>
+          {!!coverage.requested && (
+            <p className="context-note">
+              Evidence returned for {coverage.returned} of {coverage.requested}{" "}
+              requested instruments · {values.length} match the selected filter.
+              Missing values do not count as matches.
+            </p>
           )}
-          A filter match is a research lead, not a recommendation.
-        </Empty>
-      )}
+          {message && <Notice>{message}</Notice>}
+          <DiscoveryPlot
+            prefix={prefix}
+            rows={values.map(({ r, p, opportunity }) => ({
+              symbol: r.company.symbol,
+              growth: p.growth,
+              cash: p.last?.fcf ?? null,
+              revenue: p.last?.revenue ?? null,
+              pace: opportunity.pace,
+            }))}
+          />
+          {!!requested.length && (
+            <OpportunityMap
+              research={rows}
+              requested={requested}
+              prefix={prefix}
+              demo={!!demo}
+              onSector={(sector) => {
+                setFilter("all");
+                setCriteria({ ...criteria, sector });
+              }}
+            />
+          )}
+          {rows.length > 0 && (
+            <details className="panel">
+              <summary>Breadth & rotation · loaded companies</summary>
+              <MarketRadar research={rows} />
+            </details>
+          )}
+          {values.length ? (
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>AURYN View</th>
+                    <th>Cash after capex</th>
+                    <th>Revenue growth</th>
+                    <th>Trend</th>
+                    <th>
+                      AURYN Pace <PaceHelp />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {values.map(({ r, p, edge }) => (
+                    <tr key={r.company.symbol}>
+                      <td>
+                        <Link
+                          className="investment-identity"
+                          href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
+                        >
+                          <SecurityLogo symbol={r.company.symbol} />
+                          <span>
+                            <b>{r.company.symbol}</b>
+                            <small>{r.company.name}</small>
+                          </span>
+                        </Link>
+                      </td>
+                      <td>
+                        <strong
+                          className={
+                            edge.tone === "risk"
+                              ? "red"
+                              : edge.tone === "positive"
+                                ? "green"
+                                : ""
+                          }
+                        >
+                          {edge.pacePresentation.actionLabel}
+                        </strong>
+                        <small className="block">
+                          {edge.decision.contextLabel} · {edge.reason}
+                        </small>
+                        <small className="block">
+                          New purchase: {edge.decision.actionLabels.entry} ·
+                          Holding: {edge.decision.actionLabels.holding}
+                        </small>
+                      </td>
+                      <td>
+                        {amount(p.last?.fcf, p.last?.currency, true)}
+                        <small className="block">
+                          {p.periodBasis} ·{" "}
+                          {p.last?.end ?? "Period unavailable"}
+                        </small>
+                      </td>
+                      <td>{percent(p.growth)}</td>
+                      <td>{p.tech.trend}</td>
+                      <td>
+                        <PaceGuidance
+                          view={edge.pacePresentation}
+                          readings={edge.pacePeriods}
+                          compact
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <Empty
+              title={
+                rows.length
+                  ? "No companies match this filter"
+                  : "Choose companies to screen"
+              }
+            >
+              {rows.length
+                ? "Try a different sector, Pace zone or business measure. Missing evidence never counts as a match."
+                : "Scan up to twelve companies from your watchlist, holdings or tickers."}
+              {rows.length > 0 && (
+                <button
+                  className="text-button"
+                  onClick={() => {
+                    setCriteria(emptyOpportunityFilters);
+                    setFilter("all");
+                  }}
+                >
+                  Reset filters
+                </button>
+              )}
+              A filter match is a research lead, not a recommendation.
+            </Empty>
+          )}
+        </div>
+        {!embedded && (
+          <aside
+            className={discoverStyles.context}
+            aria-label="Discovery sources"
+          >
+            <SentiSenseCoverage preview={!!demo} />
+            <EodEventCalendar preview={!!demo} />
+            <div className={discoverStyles.note}>
+              <span>RESEARCH, NOT RANKINGS</span>
+              <p>
+                Compare business evidence and price context. A filter match is a
+                lead to investigate, not a buy recommendation.
+              </p>
+            </div>
+          </aside>
+        )}
+      </div>
     </section>
   );
 }

@@ -217,7 +217,9 @@
     gap: 14px;
   }
   .records {
-    max-height: 360px;
+    max-height: none;
+    overflow: visible;
+    overscroll-behavior: auto;
   }
   .provider {
     font-size: 10px;
@@ -225,4 +227,21 @@
   .tabs {
     margin-right: -8px;
   }
+}
+
+.search {
+  display: block;
+  width: min(100%, 420px);
+  min-height: 42px;
+  margin: 8px 0 16px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--ink, #dce5f5) 20%, transparent);
+  border-radius: 9px;
+  background: var(--surface, #0e1625);
+  color: var(--ink, #dce5f5);
+  font: inherit;
+}
+.search:focus-visible {
+  outline: 2px solid #79eadc;
+  outline-offset: 2px;
 }

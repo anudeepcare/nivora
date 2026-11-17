@@ -1,8 +1,12 @@
 "use client";
+import OptionsObservationChart from "./OptionsObservationChart";
+import Link from "next/link";
+import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { useState } from "react";
 import type { SentiSenseDataset, SentiSenseResult } from "@/lib/sentisense-api";
 import { intelligenceView } from "@/lib/sentisense-view";
 import { useResource } from "./Session";
+import SentiSenseStories from "./SentiSenseStories";
 import SentiSenseConsensus from "./SentiSenseConsensus";
 import s from "./SentiSensePanels.module.css";
 const groups = {
@@ -22,6 +26,7 @@ const groups = {
     ["float", "Free float"],
   ],
   events: [
+    ["tickerStories", "Stories & sources"],
     ["earnings", "Earnings reports"],
     ["earningsReactions", "Market reactions"],
     ["filingChanges", "Filing changes"],
@@ -53,12 +58,36 @@ export default function SentiSensePanels({
   group: SentiSenseGroupName;
   preview?: boolean;
 }) {
-  const choices = groups[group];
-  const [selection, setSelection] = useState<string>(choices[0][0]);
+  const { preferences } = useWorkspacePreferences();
+  const hidden = preferences.hiddenSignals ?? [];
+  const categories: Partial<Record<SentiSenseDataset, string>> = {
+    holders: "institutions",
+    ownershipHistory: "institutions",
+    insiders: "insiders",
+    politicians: "congressional",
+    options: "options",
+    optionsHistory: "options",
+    optionsIntraday: "options",
+  };
+  const choices = groups[group].filter(
+    ([id]) => !hidden.includes(categories[id] ?? ""),
+  );
+  const [selection, setSelection] = useState<string>(groups[group][0][0]);
   const dataset = (
-    choices.some(([id]) => id === selection) ? selection : choices[0][0]
+    choices.some(([id]) => id === selection) ? selection : choices[0]?.[0]
   ) as SentiSenseDataset;
   if (preview) return null;
+  if (!choices.length)
+    return (
+      <section className={s.panel}>
+        <h2>Research panels hidden</h2>
+        <p>
+          Your display preferences hide these evidence panels. Coverage and
+          access are unchanged.
+        </p>
+        <Link href="/settings">Change research preferences</Link>
+      </section>
+    );
   return (
     <section className={s.panel} aria-label="SentiSense research">
       <header className={s.header}>
@@ -80,7 +109,9 @@ export default function SentiSensePanels({
           </button>
         ))}
       </nav>
-      {dataset === "consensus" ? (
+      {dataset === "tickerStories" ? (
+        <SentiSenseStories key={symbol} symbol={symbol} />
+      ) : dataset === "consensus" ? (
         <SentiSenseConsensus symbol={symbol} preview={false} />
       ) : (
         <Dataset
@@ -134,6 +165,12 @@ function Dataset({
             <p className={s.notice}>
               Limited provider preview. Coverage and fields may be reduced.
             </p>
+          )}
+          {(dataset === "optionsHistory" || dataset === "optionsIntraday") && (
+            <OptionsObservationChart
+              data={result?.data}
+              intraday={dataset === "optionsIntraday"}
+            />
           )}
           {!count ? (
             <p className={s.state}>

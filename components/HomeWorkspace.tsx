@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import todayStyles from "./TodaySequence.module.css";
+import TodaySequence from "./TodaySequence";
 import ContributionCompare from "./ContributionCompare";
 import HomeMarketCards from "./HomeMarketCards";
 import { MarketRadar } from "./MarketRadar";
@@ -102,7 +104,7 @@ function EarningsNumbers({
 function HomeOverview() {
   const [radarOpen, setRadarOpen] = useState(false);
   const state = useWorkspaceData(),
-    { workspace, quotes, model, prefix, demo, displayName, pace } = state;
+    { workspace, quotes, model, prefix, demo, pace } = state;
   const today = new Date(
     demo
       ? Object.values(demo.research)[0]?.retrievedAt || Date.now()
@@ -191,13 +193,6 @@ function HomeOverview() {
     const research = state.research(symbol);
     return research ? [research] : [];
   });
-  const hour = today.getHours(),
-    greeting =
-      hour < 12
-        ? "Good morning"
-        : hour < 18
-          ? "Good afternoon"
-          : "Good evening";
   const renderHeadline = (news: (typeof headlines)[number]) => (
     <article key={`${news.symbol}:${news.url}`}>
       <div className="home-news-meta">
@@ -220,10 +215,10 @@ function HomeOverview() {
     <section
       className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
     >
-      <div className={homeStyles.greeting}>
+      <div className={todayStyles.hero}>
         <Heading
-          title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
-          subtitle="Your companies, upcoming events and research."
+          title="Three things to review today."
+          subtitle="Decisions, changes and exposure. Everything in context."
           actions={
             <span className="date-chip">
               {today.toLocaleDateString(undefined, {
@@ -252,6 +247,20 @@ function HomeOverview() {
           Research a company <SearchIcon size={16} />
         </Link>
       </div>
+      <TodaySequence
+        prefix={prefix}
+        decision={
+          best?.signal
+            ? {
+                symbol: best.symbol,
+                action: best.signal.view.actionLabel.replace(/ · P[0-4]$/, ""),
+                code: best.signal.view.code,
+              }
+            : null
+        }
+        headline={headlines[0] ?? null}
+        concentration={largest ?? null}
+      />
       {!!workspace?.positions.length && (
         <PortfolioDay
           positions={workspace.positions}

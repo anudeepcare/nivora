@@ -69,7 +69,7 @@ test("financial selected-control styles outrank global button resets", () => {
     });
   }
 });
-function researchMarkup(issues = []) {
+function researchMarkup(issues = [], options = {}) {
   const source = fs.readFileSync("components/Research.tsx", "utf8");
   const ast = ts.createSourceFile(
     "Research.tsx",
@@ -148,13 +148,13 @@ function researchMarkup(issues = []) {
     tabs: ["Snapshot", "Financials", "Valuation", "Technicals", "Thesis"],
     ranges: ["1D", "1W", "1M", "6M", "1Y", "5Y"],
     useState: (v) => [typeof v === "function" ? v() : v, empty],
-    useSearchParams: () => new URLSearchParams(),
+    useSearchParams: () => new URLSearchParams(options.tab ? {tab: options.tab} : {}),
     useMemo: (f) => f(),
     useRef: (value) => ({ current: value }),
     useLayoutEffect: () => {},
     useEffect: () => {},
     useLivePrices: () => ({ ticks: {}, connected: false }),
-    useWorkspacePreferences:()=>({preferences:{chartRange:"1Y"},ready:true}),
+    useWorkspacePreferences:()=>({preferences:{chartRange:"1Y",hiddenSignals:options.hiddenSignals ?? []},ready:true}),
     useResearchPreferences: () => ({ preferences: { detail: "essential" } }),
     ResearchModeSwitch: () => null,
     mergePriceTick: (base) => base,
@@ -317,4 +317,12 @@ test("coverage details preserve the failure without exposing vendor names", () =
   ]);
   assert.doesNotMatch(html, /EODHD|Twelve Data/i);
   assert.match(html, /did not authorize this dataset/);
+});
+
+test("technical visibility preference removes the actual panel and provides restore navigation",()=>{
+ const html=researchMarkup([], {tab:"Technicals",hiddenSignals:["technicals"]});
+ assert.match(html,/Technical indicators are hidden/);
+ assert.match(html,/href="\/settings"/);
+ assert.doesNotMatch(html,/data-retained-panel="Technicals"/);
+ assert.match(html,/separate Pace calculation/);
 });

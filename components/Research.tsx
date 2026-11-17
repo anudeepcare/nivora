@@ -155,6 +155,9 @@ const tabPresentation = {
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
   const workspacePreferences = useWorkspacePreferences();
+  const technicalsHidden =
+    workspacePreferences.preferences.hiddenSignals?.includes("technicals") ??
+    false;
   const rangeTouched = useRef(false);
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
@@ -332,19 +335,22 @@ export default function Research({ symbol }: { symbol: string }) {
     window.history.replaceState(null, "", url);
     requestAnimationFrame(() => {
       const navigation = researchNavigation.current;
-      const top = navigation?.getBoundingClientRect().top;
-      const headerHeight =
-        document.querySelector("[data-shell] > header")?.getBoundingClientRect()
-          .height ?? 72;
-      if (
-        navigation &&
-        top != null &&
-        (top < headerHeight || top > window.innerHeight - 100)
-      )
+      const content = document.getElementById("content");
+      if (!navigation || !content) return;
+      const top = navigation.getBoundingClientRect().top;
+      const bounds = content.getBoundingClientRect();
+      if (content.dataset.workspaceScroll === "true") {
+        if (top < bounds.top || top > bounds.bottom - 100)
+          content.scrollTo({
+            top: content.scrollTop + top - bounds.top,
+            behavior: "instant",
+          });
+      } else if (top < 72 || top > window.innerHeight - 100) {
         window.scrollTo({
-          top: window.scrollY + top - headerHeight - 8,
+          top: window.scrollY + top - 80,
           behavior: "instant",
         });
+      }
     });
   };
   const intraday = range === "1D" || range === "1W";
@@ -693,6 +699,36 @@ export default function Research({ symbol }: { symbol: string }) {
           className={`approved-evidence-body au-stack ${deskLayout.content}`}
           data-desk={tab}
         >
+          {tab !== "Snapshot" && (
+            <header className={cockpit.lensHeading}>
+              <div>
+                <span>
+                  {activeLens.label.toUpperCase()} / {r.company.symbol}
+                </span>
+                <h2>
+                  {
+                    (
+                      {
+                        Valuation: "Build the future the price requires.",
+                        Technicals: "Trend, levels, and participation",
+                        Thesis: "Who owns the business",
+                        News: "Events that can move your decisions",
+                        Advanced: "Every metric has context.",
+                        Options: "Where risk and exposure meet",
+                        Pace: "A buying rhythm, not another rating.",
+                        Financials: "Follow the operating evidence",
+                        Analysts: "Expectations, with the assumptions visible",
+                      } as Record<string, string>
+                    )[tab]
+                  }
+                </h2>
+              </div>
+              <p>
+                Source dates and coverage stay with the evidence. Missing values
+                remain unavailable.
+              </p>
+            </header>
+          )}
           <FeatureGate
             feature={
               (
@@ -716,17 +752,23 @@ export default function Research({ symbol }: { symbol: string }) {
           >
             {tab === "News" && (
               <>
-                <SentiSensePanels
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                  group="events"
-                />
-                <CompanyUpdates research={r} preview={!!demo}>
-                  <EarningsReview
-                    research={r}
-                    now={demo ? Date.parse(r.retrievedAt) : Date.now()}
-                  />
-                </CompanyUpdates>
+                <div className={cockpit.eventsGrid}>
+                  <section aria-label="Event calendar and estimates">
+                    <SentiSensePanels
+                      symbol={r.company.symbol}
+                      preview={!!demo}
+                      group="events"
+                    />
+                  </section>
+                  <section aria-label="Company updates and earnings">
+                    <CompanyUpdates research={r} preview={!!demo}>
+                      <EarningsReview
+                        research={r}
+                        now={demo ? Date.parse(r.retrievedAt) : Date.now()}
+                      />
+                    </CompanyUpdates>
+                  </section>
+                </div>
                 <details className="research-reference">
                   <summary>Earnings history &amp; estimates</summary>
                   <EarningsWorkspace research={r} />
@@ -740,10 +782,6 @@ export default function Research({ symbol }: { symbol: string }) {
                   preview={!!demo}
                   group="indicators"
                 />
-                <CongressDisclosures
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                />
                 <AdvancedResearch
                   key={r.company.symbol}
                   research={r}
@@ -753,16 +791,19 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Options" && (
               <>
-                <SentiSensePanels
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                  group="options"
-                />
                 <OptionsDesk
                   key={r.company.symbol}
                   research={r}
                   preview={!!demo}
                 />
+                <details className={cockpit.deepEvidence}>
+                  <summary>Options source evidence &amp; history</summary>
+                  <SentiSensePanels
+                    symbol={r.company.symbol}
+                    preview={!!demo}
+                    group="options"
+                  />
+                </details>
               </>
             )}
             {tab === "Analysts" && (
@@ -794,7 +835,20 @@ export default function Research({ symbol }: { symbol: string }) {
                 }}
               />
             )}
+            {tab === "Technicals" && technicalsHidden && (
+              <section className={cockpit.preferenceNotice} role="status">
+                <h2>Technical indicators are hidden</h2>
+                <p>
+                  Your research preference hides this evidence. It does not
+                  change your access or the separate Pace calculation.
+                </p>
+                <a href="/settings">
+                  Restore technical indicators in Settings →
+                </a>
+              </section>
+            )}
             {access.features.technicals &&
+              !technicalsHidden &&
               retainedCharts.includes("Technicals") && (
                 <section
                   data-retained-panel="Technicals"
@@ -890,11 +944,21 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Thesis" && (
               <>
-                <SentiSensePanels
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                  group="ownership"
-                />
+                <div className={cockpit.ownershipGrid}>
+                  <section aria-label="Institutional and insider evidence">
+                    <SentiSensePanels
+                      symbol={r.company.symbol}
+                      preview={!!demo}
+                      group="ownership"
+                    />
+                  </section>
+                  <section aria-label="Congressional activity">
+                    <CongressDisclosures
+                      symbol={r.company.symbol}
+                      preview={!!demo}
+                    />
+                  </section>
+                </div>
                 <ThesisPicture research={r} />
                 <BusinessMap key={r.company.symbol} research={r} />
                 <details className="edge-method">

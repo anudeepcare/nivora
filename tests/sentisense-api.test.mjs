@@ -303,3 +303,92 @@ test("new bare endpoints reject misplaced security and nonfinite ETF weight", as
     assert.equal((await read("AAPL", id)).status, want);
   }
 });
+test("ticker stories use effective lookback and reject unrelated stories", async () => {
+  let url;
+  const row = {
+    id: "story-1",
+    cluster: { title: "Report", clusteredAt: 1780000000 },
+    tickers: ["AAPL"],
+  };
+  const read = createSentiSenseClient({
+    key: "x",
+    fetcher: async (u) => {
+      url = u;
+      return response([row]);
+    },
+  });
+  assert.equal((await read("AAPL.US", "tickerStories")).status, "available");
+  assert.equal(
+    url,
+    "https://app.sentisense.ai/api/v1/documents/stories?ticker=AAPL&filterHours=720&limit=20",
+  );
+  assert.equal(
+    (await read("MSFT", "tickerStories")).status,
+    "subject-mismatch",
+  );
+});
+test("story detail enforces bounded identity and ticker membership without a generic proxy", async () => {
+  let calls = 0;
+  const detail = {
+    id: "story-1",
+    title: "Report",
+    tickers: ["AAPL"],
+    narrativeBody: "Evidence [doc1]",
+    citationLinks: { doc1: "https://example.com/news" },
+  };
+  const read = createSentiSenseClient({
+    key: "x",
+    fetcher: async (url) => {
+      calls++;
+      assert.equal(
+        url,
+        "https://app.sentisense.ai/api/v1/documents/stories/story-1",
+      );
+      return response(detail);
+    },
+  });
+  assert.equal(
+    (await read.readStory("AAPL", "../secret")).status,
+    "invalid-request",
+  );
+  assert.equal((await read("AAPL", "storyDetail")).status, "invalid-request");
+  assert.equal(calls, 0);
+  assert.equal((await read.readStory("AAPL", "story-1")).status, "available");
+  assert.equal(
+    (await read.readStory("MSFT", "story-1")).status,
+    "subject-mismatch",
+  );
+  detail.id = "other";
+  assert.equal(
+    (await read.readStory("TSLA", "story-1")).status,
+    "subject-mismatch",
+  );
+});
+test("tracked stock coverage has daily cache and validates bare string list", async () => {
+  let time = 1780000000000,
+    calls = 0;
+  const read = createSentiSenseClient({
+    key: "x",
+    now: () => time,
+    fetcher: async (url) => {
+      calls++;
+      assert.equal(url, "https://app.sentisense.ai/api/v1/stocks");
+      return response(["AAPL", "BRK.B"]);
+    },
+  });
+  const first = await read.trackedStocks();
+  assert.equal(first.status, "available");
+  assert.equal(first.symbol, "");
+  assert.equal(first.asOf, null);
+  time += 3600000;
+  await read.trackedStocks();
+  assert.equal(calls, 1);
+  time += 86400000;
+  await read.trackedStocks();
+  assert.equal(calls, 2);
+  const bad = createSentiSenseClient({
+    key: "x",
+    fetcher: async () => response(["AAPL", {}]),
+  });
+  assert.equal((await bad.trackedStocks()).status, "invalid-response");
+});

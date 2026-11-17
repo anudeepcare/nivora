@@ -1,5 +1,5 @@
 "use client";
-import { fetchWithDeadline } from "./request-deadline";
+import { fetchWithDeadline, settleWithDeadline } from "./request-deadline";
 import { customerText } from "./customer-language";
 import { createBrowserClient } from "@supabase/ssr";
 import { completeSignOut } from "./auth-actions";
@@ -31,7 +31,10 @@ export async function api<T>(
   body?: unknown,
   signal?: AbortSignal,
 ): Promise<T> {
-  const { data, error } = await authClient().auth.getSession();
+  const { data, error } = await settleWithDeadline(
+    authClient().auth.getSession(),
+    10000,
+  );
   if (error || !data.session)
     throw new ApiError("Your session ended. Sign in again.", 401);
   const send = (token: string) =>
@@ -62,7 +65,10 @@ export async function api<T>(
   // A rejected token has not authorized a mutation. Refresh once, sharing the
   // refresh across concurrent requests, then retry with the replacement token.
   if (response.status === 401 && !signal?.aborted) {
-    refreshInFlight ??= authClient().auth.refreshSession();
+    refreshInFlight ??= settleWithDeadline(
+      authClient().auth.refreshSession(),
+      10000,
+    );
     const pending = refreshInFlight;
     let refreshed;
     try {
@@ -73,7 +79,14 @@ export async function api<T>(
     if (!refreshed.error && refreshed.data.session && !signal?.aborted)
       response = await send(refreshed.data.session.access_token);
   }
-  const value = await response.json().catch(() => ({}));
+  const value = await settleWithDeadline(response.json(), 20000).catch(() => {
+    if (response.ok)
+      throw new ApiError(
+        "The server response could not be read. Please try again.",
+        502,
+      );
+    return {};
+  });
   if (!response.ok)
     throw new ApiError(
       customerText(value.error || "This request could not be completed."),

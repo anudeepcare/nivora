@@ -244,7 +244,12 @@ export default function Shell({
         </div>
       </header>
       <div className={experience.workspace}>
-        <main id="content" className={experience.content} tabIndex={-1}>
+        <main
+          id="content"
+          data-workspace-scroll={page === "research" ? "true" : undefined}
+          className={experience.content}
+          tabIndex={-1}
+        >
           <AccessNotice />
           <ReleaseNotice />
           {demo && demo.routePrefix !== "" && (

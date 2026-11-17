@@ -157,3 +157,13 @@ test("mobile scroll memory follows the document instead of a non-scrolling conte
   env.onScroll(() => {});
   assert.deepEqual(listeners, ["scroll"]);
 });
+
+test('bounded workspace scroll restoration targets the inner pane rather than the document',()=>{
+ const calls=[],listeners=new Map();
+ const pane={dataset:{workspaceScroll:'true'},scrollTop:145,scrollHeight:1400,clientHeight:600,children:[],scrollTo:x=>calls.push(x),addEventListener:(e,fn)=>listeners.set(e,fn),removeEventListener:e=>listeners.delete(e)};
+ const window={scrollY:999,innerHeight:800,scrollTo:()=>assert.fail('must not scroll document')};
+ const document={getElementById:()=>pane,documentElement:{scrollHeight:5000},querySelector:()=>null};
+ const {browserScrollEnvironment}=navigation(window,document);const env=browserScrollEnvironment();
+ assert.equal(env.readTop(),145);assert.equal(env.maxScroll(),800);env.scrollTo(300);assert.equal(calls[0].top,300);
+ const stop=env.onScroll(()=>{});assert.ok(listeners.has('scroll'));stop();assert.equal(listeners.has('scroll'),false);
+});

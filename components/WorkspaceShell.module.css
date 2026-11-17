@@ -819,15 +819,14 @@
     width: min(240px, 18vw);
   }
 }
-/* Research is a viewport workspace: only its evidence pane scrolls. */
+/* One bounded workspace pane owns scroll, including the disclosure footer.
+   Evidence keeps natural height rather than collapsing below fixed metrics. */
 .shell[data-page="research"] {
-  position: fixed;
-  inset: 0;
+  position: relative;
   height: var(--visual-height, 100dvh);
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 .shell[data-page="research"] .header {
   flex: 0 0 auto;
@@ -840,26 +839,24 @@
   max-width: none;
   min-height: 0;
   margin: 0;
-  overflow: hidden;
 }
 .shell[data-page="research"] .content {
   flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
+  display: block;
   min-height: 0;
   padding: 0;
-  overflow: hidden;
-}
-.shell[data-page="research"] .content > * {
-  flex-shrink: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
 }
 .shell[data-page="research"] .content > :global(.research-page) {
-  flex: 1 1 0;
+  height: auto;
   min-height: 0;
+  overflow: visible;
 }
 .shell[data-page="research"] .content > :global(.product-footer) {
+  position: static;
   margin: 0;
-  padding: 8px 20px;
+  padding: 12px 20px;
   font-size: 10px;
 }
 @media (max-width: 767px) {

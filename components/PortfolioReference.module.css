@@ -1,0 +1,136 @@
+.page.page.page.page {
+  min-width: 0;
+  padding-bottom: 32px;
+}
+.eyebrow {
+  display: block;
+  font: 10px/1.6 var(--font-mono, monospace);
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+.page.page.page.page h1 {
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  font-size: clamp(28px, 3.4vw, 48px);
+}
+.page.page.page.page :global(.portfolio-grid) {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+.capitalOverview,
+.actions,
+.exposure {
+  min-width: 0;
+}
+.actions {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  background: var(--card);
+}
+.page.page.page.page
+  :global(.portfolio-grid)
+  > div:has(:global(.portfolio-trend-panel)),
+.page.page.page.page :global(.portfolio-holdings-panel) {
+  grid-column: 1 / -1;
+}
+.exposure {
+  grid-column: 1 / -1;
+}
+.exposure :global(.portfolio-exposure-rows) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+}
+.ring {
+  position: relative;
+  width: min(100%, 260px);
+  margin: 8px auto 20px;
+}
+.ring svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ring > div {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.ring strong {
+  font: 500 clamp(18px, 2vw, 27px) var(--font-mono, monospace);
+}
+.ring small {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 8px;
+}
+.page.page.page.page :global(.allocation-track) {
+  display: none;
+}
+.page.page.page.page :global(.wealth-strip.four) > div {
+  background: var(--card);
+  box-shadow: none;
+}
+.holdingsScroll {
+  max-height: min(65dvh, 720px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.holdingsScroll:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.holdingsScroll table {
+  min-width: 760px;
+  width: 100%;
+}
+.holdingsScroll thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card);
+}
+@media (max-width: 760px) {
+  .page.page.page.page :global(.portfolio-grid) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .page.page.page.page :global(.portfolio-grid) > div:nth-child(2) {
+    display: block;
+  }
+  .actions {
+    padding: 16px;
+  }
+  .ring {
+    max-width: 220px;
+  }
+  .holdingsScroll {
+    max-height: 65dvh;
+  }
+}
+.historyUnavailable {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+}
+.historyUnavailable p {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
