@@ -943,3 +943,9 @@
 .home.home.home .priceDetails {
   align-self: start;
 }
+
+/* A collapsed price list must not strand the events column beside blank space. */
+.home.home.home.home :global(.home-evidence-layout):has(.priceDetails:not([open])) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.marketRadar > section + section { border-top: 1px solid var(--line); border-radius: 0; }

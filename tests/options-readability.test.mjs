@@ -65,8 +65,26 @@ function render(chain, view = "positioning") {
   ).outputText;
   new Function("require", "module", "exports", code)(
     (name) => {
-      if (name === "./GuardrailReview") return {__esModule:true,default:()=>null};
-      if (name === "./QuickRead") return {__esModule:true,default:({items})=>React.createElement("section",null,items.map(x=>React.createElement("article",{key:x.label},x.label,x.value,x.detail)))};
+      if (name === "./GuardrailReview")
+        return { __esModule: true, default: () => null };
+      if (name === "./QuickRead")
+        return {
+          __esModule: true,
+          default: ({ items }) =>
+            React.createElement(
+              "section",
+              null,
+              items.map((x) =>
+                React.createElement(
+                  "article",
+                  { key: x.label },
+                  x.label,
+                  x.value,
+                  x.detail,
+                ),
+              ),
+            ),
+        };
       if (name === "./SearchableSelect")
         return {
           __esModule: true,
@@ -185,4 +203,15 @@ test("contract inspection and guide remain independently accessible", () => {
   const guide = render(chain, "learn");
   assert.match(guide, /Options essentials/);
   assert.match(guide, /Open interest &amp; GEX/);
+});
+
+test("empty contract tools have no disabled toolbar clutter and guide stays reachable", () => {
+  const html = render(null);
+  assert.doesNotMatch(
+    html,
+    /aria-label="Expiration date"|aria-label="Advanced options tools"|disabled=""/,
+  );
+  assert.match(html, /Options guide/);
+  const guide = render(null, "learn");
+  assert.match(guide, /Options essentials/);
 });

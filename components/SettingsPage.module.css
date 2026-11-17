@@ -737,3 +737,14 @@
   .page :global(.settings-policy) :global(.settings-policy-row) { flex-direction: column; align-items: stretch; }
   .page :global(.settings-policy-row) select { width: 100%; max-width: 100%; }
 }
+
+/* The shared pale blue token is not a suitable selected fill with dark-theme ink. */
+.page :global(.density-options) button[aria-pressed="true"] {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.page :global(.settings-signals) > label:last-of-type { grid-column: 1 / -1; }
+.page :global(.settings-signals) > header p { margin: 6px 0 0; color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.5; }
+
+.page :global(.settings-signals) > header { display: block; }

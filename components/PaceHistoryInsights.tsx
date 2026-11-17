@@ -56,16 +56,21 @@ export default function PaceHistoryInsights({
             <div>
               <dt>Observed visits</dt>
               <dd>{zone.visits}</dd>
-              <small>{zone.months} confirmed months</small>
+              <small>
+                {zone.months} confirmed {zone.months === 1 ? "month" : "months"}
+              </small>
             </div>
             <div>
               <dt>Median completed stay</dt>
               <dd>
                 {zone.medianDuration === null
                   ? "Not available"
-                  : `${zone.medianDuration} months`}
+                  : `${zone.medianDuration} ${zone.medianDuration === 1 ? "month" : "months"}`}
               </dd>
-              <small>{zone.completedVisits} fully observed stays</small>
+              <small>
+                {zone.completedVisits} fully observed{" "}
+                {zone.completedVisits === 1 ? "stay" : "stays"}
+              </small>
             </div>
             <div>
               <dt>Duration range</dt>

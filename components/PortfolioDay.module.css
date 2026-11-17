@@ -61,7 +61,7 @@
 }
 .movers {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 12px 24px;
   padding-right: 8px;
 }
@@ -80,21 +80,26 @@
 }
 .movers li {
   display: grid;
-  grid-template-columns: 56px minmax(84px, max-content) max-content;
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
   gap: 12px;
   align-items: baseline;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
 .movers a {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 650;
 }
 .movers span {
+  text-align: right;
   color: var(--tone);
   font-weight: 600;
   white-space: nowrap;
 }
 .movers small {
+  text-align: right;
+  white-space: nowrap;
   color: var(--muted);
   font-size: 11.5px;
 }

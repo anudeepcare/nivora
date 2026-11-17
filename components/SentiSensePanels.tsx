@@ -94,17 +94,22 @@ export default function SentiSensePanels({
       </section>
     );
   return (
-    <section className={s.panel} aria-label="Research intelligence">
+    <section
+      className={group === "options" ? s.optionsPanel : s.panel}
+      aria-label="Research intelligence"
+    >
       <header className={s.header}>
         <div>
-          <span className={s.eyebrow}>RESEARCH INTELLIGENCE</span>
+          {group !== "options" && (
+            <span className={s.eyebrow}>RESEARCH INTELLIGENCE</span>
+          )}
           <h2>
             {
               {
                 analysts: "Analyst evidence",
                 ownership: "Ownership evidence",
                 events: "Stories, filings & earnings",
-                options: "Options positioning & history",
+                options: "Options evidence",
                 indicators: "Company data library",
               }[group]
             }
@@ -177,10 +182,12 @@ function Dataset({
   );
   return (
     <div className={s.content}>
-      <div className={s.intro}>
-        <h3>{view.title}</h3>
-        <p>{view.note}</p>
-      </div>
+      {dataset !== "options" && (
+        <div className={s.intro}>
+          <h3>{view.title}</h3>
+          <p>{view.note}</p>
+        </div>
+      )}
       {resource.loading ? (
         <p className={s.state} role="status">
           Loading {view.title.toLowerCase()}…

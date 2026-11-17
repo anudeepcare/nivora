@@ -716,15 +716,12 @@ export default function Research({ symbol }: { symbol: string }) {
           >
             <ReferenceAtlas research={r} onTab={switchTab} />
             <div className={cockpit.primaryChart}>{chart}</div>
-            <details className={cockpit.deepEvidence}>
-              <summary>Decision context & supporting inputs</summary>
-              <DecisionOverview
-                compact
-                key={r.company.symbol}
-                research={r}
-                onTab={switchTab}
-              />
-            </details>
+            <DecisionOverview
+              compact
+              key={r.company.symbol}
+              research={r}
+              onTab={switchTab}
+            />
           </FeatureGate>
         )}
       </div>

@@ -75,6 +75,8 @@
   gap: 28px;
 }
 .grid article {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   border-top: 1px solid var(--line);
   padding-top: 12px;
@@ -321,5 +323,47 @@
   }
   .root header h2 {
     font-size: 22px;
+  }
+}
+
+/* The comparison is deferred until this disclosure is opened. */
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 48px;
+  padding: 14px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.toggle svg {
+  flex: none;
+  transition: transform 150ms ease;
+}
+.toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+.toggle:hover {
+  background: var(--surface);
+}
+.toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.footer {
+  margin-top: auto;
+  padding-top: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .toggle svg {
+    transition: none;
   }
 }

@@ -188,35 +188,37 @@ export default function AccountHistory() {
           </div>
         </details>
       )}
-      <div className={styles.setup}>
-        <label className={styles.confirmation}>
-          <input
-            type="checkbox"
-            checked={confirmed}
-            disabled={busy || !reviewed}
-            onChange={(e) => {
-              setConfirmed(e.target.checked);
-              setResult(null);
-            }}
-          />
-          <span>
-            I have reviewed this saved revision: it contains every deposit,
-            withdrawal, trade, dividend, fee and split for these accounts from
-            inception.
-          </span>
-        </label>
-        <button
-          className="btn"
-          disabled={!confirmed || !reviewed || busy}
-          onClick={calculate}
-        >
-          {busy
-            ? "Checking ledger & prices…"
-            : error
-              ? "Retry history"
-              : "Build account history"}
-        </button>
-      </div>
+      {reviewed && (
+        <div className={styles.setup}>
+          <label className={styles.confirmation}>
+            <input
+              type="checkbox"
+              checked={confirmed}
+              disabled={busy || !reviewed}
+              onChange={(e) => {
+                setConfirmed(e.target.checked);
+                setResult(null);
+              }}
+            />
+            <span>
+              I have reviewed this saved revision: it contains every deposit,
+              withdrawal, trade, dividend, fee and split for these accounts from
+              inception.
+            </span>
+          </label>
+          <button
+            className="btn"
+            disabled={!confirmed || !reviewed || busy}
+            onClick={calculate}
+          >
+            {busy
+              ? "Checking ledger & prices…"
+              : error
+                ? "Retry history"
+                : "Build account history"}
+          </button>
+        </div>
+      )}
       <p className={styles.scope}>
         Larger or incomplete ledgers are not shown as partial performance.
         Confirmation does not change your records.

@@ -1,6 +1,6 @@
 .history {
-  margin-top: 24px;
-  padding: 24px;
+  margin-top: 14px;
+  padding: 16px;
   border: 1px solid var(--line, #dce3df);
   border-radius: 14px;
   background: var(--surface, #fff);
@@ -8,13 +8,13 @@
 }
 .history h3 {
   margin: 7px 0;
-  font-size: 21px;
+  font-size: 17px;
 }
 .history h4 {
-  margin: 24px 0 10px;
+  margin: 16px 0 8px;
 }
 .history header p {
-  margin: 8px 0 20px;
+  margin: 6px 0 12px;
   color: var(--muted, #596f65);
   line-height: 1.6;
 }
@@ -33,15 +33,15 @@
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin: 22px 0;
+  gap: 12px;
+  margin: 14px 0;
 }
 .stats dt {
   font-size: 12px;
   color: var(--muted, #596f65);
 }
 .stats dd {
-  font-size: 22px;
+  font-size: 18px;
   margin: 8px 0;
   font-weight: 600;
 }
@@ -74,7 +74,7 @@
 }
 .history th,
 .history td {
-  padding: 12px 10px;
+  padding: 9px 10px;
   border-bottom: 1px solid var(--line, #dce3df);
 }
 .history thead th {

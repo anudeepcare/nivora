@@ -19,7 +19,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: var(--workspace-gap, 16px);
-  align-items: start;
+  align-items: stretch;
 }
 .grid > * {
   min-width: 0;
@@ -27,7 +27,12 @@
   margin: 0;
 }
 .grid > .capitalOverview {
+  display: flex;
   grid-column: 1;
+}
+.capitalOverview > :global(.card) {
+  flex: 1;
+  min-width: 0;
 }
 .grid > .actions {
   grid-column: 2;
@@ -67,6 +72,7 @@
   gap: 20px;
 }
 .ring {
+  container-type: inline-size;
   position: relative;
   width: min(100%, 260px);
   margin: 8px auto 20px;
@@ -78,7 +84,7 @@
 }
 .ring > div {
   position: absolute;
-  inset: 0;
+  inset: 22%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -86,9 +92,13 @@
   pointer-events: none;
 }
 .ring strong {
-  font: 500 clamp(18px, 2vw, 27px) var(--font-mono, monospace);
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
+  font: 500 clamp(12px, 6.8cqi, 19px) / 1.3 var(--font-mono, monospace);
 }
 .ring small {
+  text-align: center;
   color: var(--muted);
   font-size: 11px;
   margin-top: 8px;

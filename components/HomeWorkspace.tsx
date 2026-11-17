@@ -302,15 +302,9 @@ function HomeOverview() {
               className={`home-evidence-panel ${homeStyles.priceDetails}`}
             >
               <summary>Followed company prices</summary>
-              <SectionHead
-                title="Your companies"
-                subtitle="Prices and updates for companies you follow."
-                action={
-                  <Link className="text-link" href={`${prefix}/watchlist`}>
-                    View all <ArrowUpRight size={16} />
-                  </Link>
-                }
-              />
+              <Link className="text-link" href={`${prefix}/watchlist`}>
+                View all followed companies <ArrowUpRight size={16} />
+              </Link>
               {symbols.length ? (
                 symbols
                   .slice(0, 5)

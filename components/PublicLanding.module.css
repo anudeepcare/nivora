@@ -1745,13 +1745,13 @@
 .referenceCases article {
   display: flex;
   flex-direction: column;
-  min-height: 280px;
+  min-height: 0;
   padding: 28px;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
 .referenceCases h3 {
-  margin: 28px 0 11px;
+  margin: 18px 0 10px;
   font-size: 20px;
   line-height: 1.35;
 }

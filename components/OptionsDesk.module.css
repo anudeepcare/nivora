@@ -145,14 +145,20 @@
   margin: 8px 0;
 }
 .options_empty {
-  padding: 22px 0;
+  padding: 12px 0;
   max-width: 75ch;
+  min-width: 0;
 }
 .options_empty h3 {
   margin: 8px 0;
 }
 .options_empty p {
   color: var(--muted);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  overflow: visible;
+  max-height: none;
+  -webkit-line-clamp: unset;
 }
 .options_empty_inline {
   display: flex;

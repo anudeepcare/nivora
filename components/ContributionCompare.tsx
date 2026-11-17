@@ -1,7 +1,8 @@
 "use client";
 import GuardrailReview from "./GuardrailReview";
 import SearchableSelect from "./SearchableSelect";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import type { Research, Quote } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
@@ -45,20 +46,26 @@ function Workbench({ choices, prefix }: { choices: string[]; prefix: string }) {
   const [open, setOpen] = useState(false),
     [selection, setSelection] = useState<string[]>([]),
     [addition, setAddition] = useState("");
+  const contentId = useId();
   const selected = selection.length ? selection : choices.slice(0, 3);
   return (
     <section className={s.root} aria-label="Compare your next contribution">
       <button
-        className="text-button"
+        className={s.toggle}
+        type="button"
+        aria-controls={contentId}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
-        {open
-          ? "Close contribution comparison"
-          : "Compare contribution choices"}
+        <span>
+          {open
+            ? "Close contribution comparison"
+            : "Compare contribution choices"}
+        </span>
+        <ChevronDown size={18} aria-hidden="true" />
       </button>
       {open && (
-        <div className={s.content}>
+        <div className={s.content} id={contentId}>
           {choices.length ? (
             <>
               <div className={s.controls}>
@@ -289,13 +296,15 @@ function Candidate({
                 This addition would exceed your {fit.limit}% position threshold.
               </p>
             )}
-          <small>
-            Financial period {dateLabel(d.period)} · quote{" "}
-            {dateLabel(r.quote.asOf)}
-          </small>
-          <Link href={`${prefix}/research/${encodeURIComponent(symbol)}`}>
-            Review the evidence →
-          </Link>
+          <footer className={s.footer}>
+            <small>
+              Financial period {dateLabel(d.period)} · quote{" "}
+              {dateLabel(r.quote.asOf)}
+            </small>
+            <Link href={`${prefix}/research/${encodeURIComponent(symbol)}`}>
+              Review the evidence →
+            </Link>
+          </footer>
         </>
       ) : (
         <p>Research unavailable in this preview.</p>

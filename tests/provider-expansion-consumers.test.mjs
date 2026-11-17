@@ -163,7 +163,7 @@ test("user-facing market errors are neutral while source provenance is retained"
   assert.match(source, /source: "EODHD"/);
 });
 test("market overview keeps stock and ETF boards distinct with source units", () => {
-  let states = [true, "stocks"],
+  let states = ["stocks"],
     index = 0;
   const rows = [];
   const View = load(
@@ -195,7 +195,7 @@ test("market overview keeps stock and ETF boards distinct with source units", ()
   assert.equal(rows[0].cells[0].value, "25.00%");
   assert.equal(rows[0].cells[1].value, "0.00×");
   assert.ok(!rows.some((r) => r.label === "QQQ"));
-  states = [true, "funds"];
+  states = ["funds"];
   index = 0;
   rows.length = 0;
   renderToStaticMarkup(React.createElement(View));

@@ -90,11 +90,8 @@ export function SettingsSignalPolicies({
               <small>DATA &amp; SIGNALS</small>
               <strong>Research panels</strong>
             </span>
+            <p>Choose visible panels. Your data coverage and permissions stay unchanged.</p>
           </header>
-          <p className="settings-feature-status">
-            Choose visible panels. Your data coverage and permissions stay
-            unchanged.
-          </p>
           {[
             [
               "Congressional transactions",

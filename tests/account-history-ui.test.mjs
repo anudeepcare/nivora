@@ -116,19 +116,23 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
   const buttons = () => nodes().filter((n) => n.type === "button");
   assert.equal(calls.length, 0);
   assert.ok(tree.some((n) => n.props.className === "actions"));
-  assert.ok(tree.some((n) => n.props.className === "confirmation"));
-  assert.equal(buttons()[1].props.disabled, true);
-  assert.equal(tree.find((n) => n.type === "input").props.disabled, true);
+  assert.ok(!tree.some((n) => n.props.className === "confirmation"));
+  assert.equal(buttons().length, 1);
+  assert.ok(!tree.some((n) => n.props.type === "checkbox"));
   await buttons()[0].props.onClick();
+  assert.equal(buttons()[1].props.disabled, true);
+  assert.equal(
+    nodes().find((n) => n.props.type === "checkbox").props.checked,
+    false,
+  );
   nodes()
     .find((n) => n.type === "input")
     .props.onChange({ target: { checked: true } });
   serverRevision = 8;
   await buttons()[1].props.onClick();
   tree = nodes();
-  assert.equal(tree.find((n) => n.type === "input").props.checked, false);
-  assert.equal(tree.find((n) => n.type === "input").props.disabled, true);
-  assert.equal(buttons()[1].props.disabled, true);
+  assert.ok(!tree.some((n) => n.props.type === "checkbox"));
+  assert.equal(buttons().length, 1);
   assert.deepEqual(calls[1], [
     "account-history/jobs",
     { revision: 7, confirmComplete: true },

@@ -1,0 +1,72 @@
+.root {
+  min-width: 0;
+}
+.root h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 550;
+}
+.root > p {
+  max-width: 80ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+  max-width: 880px;
+  margin-top: 20px;
+}
+.form > label,
+.form > button {
+  min-width: 0;
+  margin-top: 0;
+}
+.form label {
+  font-size: 13px;
+}
+.form :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.form :is(input, select) {
+  min-height: 44px;
+}
+.form textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.wide,
+.form .consent {
+  grid-column: 1 / -1;
+}
+.form .consent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.form .consent input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  flex: none;
+  margin: 0;
+}
+.form > button {
+  justify-self: start;
+  min-height: 44px;
+}
+@media (max-width: 640px) {
+  .form {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .form > button {
+    width: 100%;
+  }
+}

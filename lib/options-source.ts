@@ -46,7 +46,7 @@ export async function loadOptionChain(
   return {
     status: "unavailable",
     message:
-      "Contract-level quotes and Greeks are not connected under the configured EODHD / SentiSense integration. Use the SentiSense positioning, daily history and intraday snapshots above. Aggregate analytics are not executable option quotes.",
+      "Contract quotes and Greeks are not connected. Company positioning includes aggregate observations and history, not executable option quotes.",
     contracts: [] as OptionContract[],
     complete: false,
   };

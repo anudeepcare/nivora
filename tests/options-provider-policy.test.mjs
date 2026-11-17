@@ -59,7 +59,7 @@ test("legacy enable/provider flags never authorize Alpaca or Marketplace option-
       assert.equal(result.status, "unavailable");
       assert.deepEqual(result.contracts, []);
       assert.equal(result.complete, false);
-      assert.match(result.message, /SentiSense/);
+      assert.match(result.message, /Company positioning/);
       assert.equal(h.calls(), 0);
     }
   } finally {

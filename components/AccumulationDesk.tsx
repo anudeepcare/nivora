@@ -122,8 +122,10 @@ export default function AccumulationDesk({
               : "Cycle-relative · monthly discipline"}
           </span>
           <h2>AURYN Pace · price history</h2>
-          <small>Model {chosen.version} · settled prices</small>
-          <PaceHelp trigger="What does P mean?" />
+          <div className={styles.paceMeta}>
+            <small>Model {chosen.version} · settled prices</small>
+            <PaceHelp trigger="What does P mean?" />
+          </div>
         </div>
         <div className="segments" aria-label="Accumulation time horizon">
           {(["monthly", "weekly"] as const).map((v) => (
@@ -158,6 +160,13 @@ export default function AccumulationDesk({
       </div>
       <div className="accumulation-summary">
         <div>
+          <small>
+            {confirmed
+              ? "Last confirmed reading · rationale"
+              : signal
+                ? "Current forming reading · rationale"
+                : "History coverage"}
+          </small>
           <p>{signal?.reason ?? chosen.reason}</p>
           {!signal && (
             <small>
@@ -246,7 +255,7 @@ export default function AccumulationDesk({
         <p>
           {weekly
             ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."
-            : "Monthly v6 uses a fixed technical classifier across monthly price position, daily trend, volatility and momentum. Existing extension rules remain in place. Earlier observations and insufficient-history cases retain v5. Conditional price levels are local transitions, not guarantees for all prices beyond a threshold."}
+            : "Monthly v6 uses a fixed technical classifier across monthly price position, daily trend, volatility and momentum. Existing extension rules remain in place. Earlier observations and insufficient-history cases retain v5. Conditional price levels are local transitions, not guarantees for all prices beyond a threshold."}{" "}
           Weekly and monthly calculations differ. Historical readings do not
           establish future outperformance.
         </p>
@@ -276,7 +285,7 @@ export default function AccumulationDesk({
         </button>
       )}
       {showEvaluation && !weekly && (
-        <section className="policy-evaluation">
+        <section className={`policy-evaluation ${styles.paceEvaluation}`}>
           <header>
             <div>
               <span className="eyebrow">

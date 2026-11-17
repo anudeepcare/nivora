@@ -444,17 +444,95 @@
 }
 
 /* Match Settings and support rather than a separate marketing cover. */
-.cover { padding: 20px 24px; gap: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); }
-.cover:after { display: none; }
-.cover h2 { font-size: clamp(24px, 3vw, 30px); font-weight: 500; margin: 8px 0; }
-.cover p { color: var(--muted); font-size: 13px; max-width: 70ch; }
-.kicker { color: var(--blue); font-weight: 500; }
-.cover button { color: var(--ink); background: var(--card); border-color: var(--line); }
-.tools { padding: 16px 0; gap: 12px 20px; }
-.layout { gap: 24px; }
-.topics button[aria-current="page"] { color: var(--blue); background: var(--blue-soft); box-shadow: inset 2px 0 var(--blue); }
-.readerMeta > span { color: var(--blue); }
-.root :is(button, input, select):focus-visible { outline-color: var(--blue); }
-.body { font-size: 14px; line-height: 1.7; }
-.body p { margin-bottom: 14px; }
-@media (max-width: 800px) { .layout { gap: 16px; } .cover { padding: 18px; } }
+.cover {
+  padding: 20px 24px;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink);
+}
+.cover:after {
+  display: none;
+}
+.cover h2 {
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 500;
+  margin: 8px 0;
+}
+.cover p {
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 70ch;
+}
+.kicker {
+  color: var(--blue);
+  font-weight: 500;
+}
+.cover button {
+  color: var(--ink);
+  background: var(--card);
+  border-color: var(--line);
+}
+.tools {
+  padding: 16px 0;
+  gap: 12px 20px;
+}
+.layout {
+  gap: 24px;
+}
+.topics button[aria-current="page"] {
+  color: var(--blue);
+  background: var(--blue-soft);
+  box-shadow: inset 2px 0 var(--blue);
+}
+.readerMeta > span {
+  color: var(--blue);
+}
+.root :is(button, input, select):focus-visible {
+  outline-color: var(--blue);
+}
+.body {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.body p {
+  margin-bottom: 14px;
+}
+@media (max-width: 800px) {
+  .layout {
+    gap: 16px;
+  }
+  .cover {
+    padding: 18px;
+  }
+}
+
+/* Short chapter introductions should read as a list, not three empty panels. */
+.intro > p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.intro ul {
+  margin: 12px 0 18px;
+}
+.intro li {
+  margin: 0;
+  padding: 8px 0 8px 20px;
+  line-height: 1.6;
+}
+.intro li::before {
+  top: 12px;
+  color: var(--blue);
+  font-size: 8px;
+}
+.root.root .reader h3 {
+  font-size: clamp(22px, 2.5vw, 28px);
+  margin-bottom: 16px;
+}
+.readerMeta {
+  margin-bottom: 12px;
+}
+.root.root .fullDetail {
+  margin: 14px 0;
+}

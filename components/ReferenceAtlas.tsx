@@ -257,63 +257,91 @@ export default function ReferenceAtlas({
           </button>
         ))}
       </section>
-      <div className={s.lower}>
-        <section className={s.scenarios}>
+      {m.cases.length !== 3 ? (
+        <section
+          className={s.unavailable}
+          aria-label="Model availability and evidence"
+        >
           <header>
-            <span className={s.eyebrow}>
-              Outcome range{" "}
-              {atlasHorizonLabel(m.horizon)
-                ? `· ${atlasHorizonLabel(m.horizon)}`
-                : ""}
-            </span>
-            <button onClick={() => onTab("Valuation")}>Open model ↗</button>
+            <h3>Model range unavailable</h3>
+            <button onClick={() => onTab("Valuation")}>
+              View scenario evidence ↗
+            </button>
           </header>
-          {m.cases.length === 3 ? (
-            <>
-              <div className={s.caseGrid}>
-                {m.cases.map((item) => (
-                  <button
-                    key={item.label}
-                    data-tone={item.tone}
-                    onClick={() => onTab("Valuation")}
-                  >
-                    <span>{item.label}</span>
-                    <strong>{amount(item.value, b.scenario!.currency)}</strong>
-                    <small>{percent(item.annual)} annualized</small>
-                  </button>
-                ))}
+          {!b.checks.some(
+            (check) => check.detail && b.value.reason.includes(check.detail),
+          ) && <p>{b.value.reason}</p>}
+          <div className={s.checkGrid}>
+            {b.checks.map((check) => (
+              <div key={check.label}>
+                <span>{check.label}</span>
+                <strong data-state={check.status}>{check.status}</strong>
+                <p>{check.detail}</p>
               </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <div className={s.lower}>
+          <section className={s.scenarios}>
+            <header>
+              <span className={s.eyebrow}>
+                Outcome range{" "}
+                {atlasHorizonLabel(m.horizon)
+                  ? `· ${atlasHorizonLabel(m.horizon)}`
+                  : ""}
+              </span>
+              <button onClick={() => onTab("Valuation")}>Open model ↗</button>
+            </header>
+            {m.cases.length === 3 ? (
+              <>
+                <div className={s.caseGrid}>
+                  {m.cases.map((item) => (
+                    <button
+                      key={item.label}
+                      data-tone={item.tone}
+                      onClick={() => onTab("Valuation")}
+                    >
+                      <span>{item.label}</span>
+                      <strong>
+                        {amount(item.value, b.scenario!.currency)}
+                      </strong>
+                      <small>{percent(item.annual)} annualized</small>
+                    </button>
+                  ))}
+                </div>
+                <p>
+                  Forecast-multiple sensitivity · not fair value. Model dated{" "}
+                  {dateLabel(b.scenario!.asOf)}; ends{" "}
+                  {dateLabel(b.scenario!.end)}.
+                </p>
+              </>
+            ) : (
               <p>
-                Forecast-multiple sensitivity · not fair value. Model dated{" "}
-                {dateLabel(b.scenario!.asOf)}; ends {dateLabel(b.scenario!.end)}
-                .
+                {b.checks.some(
+                  (check) =>
+                    check.detail && b.value.reason.includes(check.detail),
+                )
+                  ? "Model range unavailable. The missing evidence is listed alongside."
+                  : b.value.reason}
               </p>
-            </>
-          ) : (
-            <p>
-              {b.checks.some(
-                (check) =>
-                  check.detail && b.value.reason.includes(check.detail),
-              )
-                ? "Model range unavailable. The missing evidence is listed alongside."
-                : b.value.reason}
-            </p>
-          )}
-        </section>
-        <section className={s.evidence}>
-          <header>
-            <span className={s.eyebrow}>Evidence checks</span>
-            <span>No hidden assumptions</span>
-          </header>
-          {b.checks.map((check) => (
-            <div key={check.label}>
-              <span>{check.label}</span>
-              <strong data-state={check.status}>{check.status}</strong>
-              <small>{check.detail}</small>
-            </div>
-          ))}
-        </section>
-      </div>
+            )}
+          </section>
+          <section className={s.evidence}>
+            <header>
+              <span className={s.eyebrow}>Evidence checks</span>
+              <span>No hidden assumptions</span>
+            </header>
+            {b.checks.map((check) => (
+              <div key={check.label}>
+                <span>{check.label}</span>
+                <strong data-state={check.status}>{check.status}</strong>
+                <small>{check.detail}</small>
+              </div>
+            ))}
+          </section>
+        </div>
+      )}
     </section>
   );
 }

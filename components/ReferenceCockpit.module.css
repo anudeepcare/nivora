@@ -271,3 +271,13 @@
 :global([data-theme="dark"]) .lenses button[aria-current="page"] {
   color: #fff;
 }
+
+.facts.facts > summary {
+  width: fit-content;
+  min-height: 32px;
+  padding: 4px 8px;
+  font-size: 11px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}

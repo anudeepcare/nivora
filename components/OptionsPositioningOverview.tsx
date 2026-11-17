@@ -101,12 +101,23 @@ export default function OptionsPositioningOverview({
                 <span>
                   {wall.side} · ${number(wall.strike)}
                 </span>
-                <meter
-                  min={0}
-                  max={Math.max(1, ...p.walls.rows.map((row) => row.oi))}
-                  value={wall.oi}
+                <div
+                  className={styles.wallMeter}
+                  role="meter"
+                  aria-valuemin={0}
+                  aria-valuemax={Math.max(
+                    1,
+                    ...p.walls.rows.map((row) => row.oi),
+                  )}
+                  aria-valuenow={wall.oi}
                   aria-label={`${wall.side} ${wall.strike} open interest`}
-                />
+                >
+                  <span
+                    style={{
+                      width: `${(wall.oi / Math.max(1, ...p.walls.rows.map((row) => row.oi))) * 100}%`,
+                    }}
+                  />
+                </div>
                 <strong>{number(wall.oi)}</strong>
               </div>
             ))}

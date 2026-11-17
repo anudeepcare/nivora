@@ -62,12 +62,26 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
             </label>
           )}
           {id === "help" && query && <div className="help-search-result" role="status"><span>{sections.length} matching {sections.length === 1 ? "topic" : "topics"}</span><button type="button" onClick={() => setQuery("")}>Clear search</button></div>}
+          {id === "methodology" && (
+            <section className={styles.methodologyIntro} aria-label="Method at a glance">
+              <h2>Business. Price. Pace.</h2>
+              <p>{d.sections.find((s) => s.title === "Three separate questions")?.text}</p>
+              <p>Model conditions support research, not orders or personalized advice. Open a topic below for the exact rules, assumptions and limitations.</p>
+            </section>
+          )}
           <div className="document-sections">
-            {sections.map((s, i) => (
-              <section key={s.title}>
-                <h2>{s.title}</h2>
-                <p>{s.text}</p>
-              </section>
+            {sections.filter((s) => id !== "methodology" || s.title !== "Three separate questions").map((s) => (
+              id === "methodology" ? (
+                <details key={s.title} className={styles.methodologyDetails}>
+                  <summary>{s.title}</summary>
+                  <p>{s.text}</p>
+                </details>
+              ) : (
+                <section key={s.title}>
+                  <h2>{s.title}</h2>
+                  <p>{s.text}</p>
+                </section>
+              )
             ))}
             {!sections.length && (
               <p>No matching topic. Try a shorter search.</p>

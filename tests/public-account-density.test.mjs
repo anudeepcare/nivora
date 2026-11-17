@@ -20,3 +20,12 @@ test('research panel explanations have one visible accessible owner', () => {
  assert.doesNotMatch(source, /title=\{detail\}/);
  assert.match(source, /<small>\{detail\}<\/small>/);
 });
+test('public conversion has one closing section rather than consecutive pricing pitches', () => {
+ const source = read('PublicLanding.tsx');
+ assert.doesNotMatch(source, /reference-pricing-title/);
+ assert.match(source, /id="pricing"/);
+ assert.match(source, /Compare plans/);
+});
+test('settings spacing selection uses an explicit readable foreground', () => {
+ assert.match(read('SettingsPage.module.css'), /density-options.*aria-pressed="true"[\s\S]*?color: #fff/);
+});

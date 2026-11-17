@@ -254,15 +254,22 @@ test("restored lower grid renders real metric rows and category navigation witho
   assert.doesNotMatch(html, /<details|<summary/);
 });
 
-test("compact active evidence retains decision context and metrics without duplicate orbit/Pace/scenarios", () => {
+test("compact active evidence retains unique context and changes without duplicate company metrics", () => {
   const { render } = setup(true);
   const html = renderToStaticMarkup(render());
   assert.match(html, /Decision context/);
-  assert.match(html, /contextual company metrics/);
+  assert.doesNotMatch(html, /contextual company metrics/);
   assert.match(html, /changes/);
   assert.match(html, /freshness/);
   assert.doesNotMatch(
     html,
     />pace<|>crystal<|scenario lenses|>pillars<|>all evidence</,
   );
+});
+
+test("active Atlas does not conceal unique decision controls under the old evidence accordion",()=>{
+ const s=fs.readFileSync("components/Research.tsx","utf8");
+ assert.doesNotMatch(s,/Decision context & supporting inputs/);
+ assert.match(s,/<DecisionOverview\s+compact/);
+ assert.match(s,/Company facts &amp; source dates/);
 });

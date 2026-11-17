@@ -391,80 +391,98 @@ export default function OptionsDesk({
   );
   return (
     <div className={deskStyles.desk}>
-      <div className={deskStyles.orientation}>
-        <strong>Options, in context</strong>
-        <p>
-          Choose an expiration, explore price levels, then inspect a contract or
-          try it with simulated cash.
-        </p>
-      </div>
-      <header className={deskStyles.commandBar}>
-        <label className={deskStyles.expiryControl}>
-          <span>Expiration date</span>
-          <select
-            aria-label="Expiration date"
-            value={active}
-            disabled={!expiries.length}
-            onChange={(e) => chooseExpiry(e.target.value)}
-          >
-            {!expiries.length && (
-              <option value="">
-                {busy ? "Loading contracts…" : "Contract data unavailable"}
-              </option>
-            )}
-            {expiries.map((date) => (
-              <option key={date} value={date}>
-                {expiryLabel(date)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <nav className={deskStyles.views} aria-label="Options sections">
-          {[
-            ["positioning", "Price levels"],
-            ["chain", "Calls & puts"],
-            ["simulation", "Practice"],
-            ["learn", "Guide"],
-          ].map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={view === id}
-              disabled={!contracts.length && id !== "learn"}
-              onClick={() => navigate(id)}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
-        <label className={deskStyles.advancedControl}>
-          <span>Advanced</span>
-          <select
-            aria-label="Advanced options tools"
-            disabled={!contracts.length}
-            value={
-              ["vanna", "flow", "leaps", "strategy", "diagnostics"].includes(
-                view,
-              )
-                ? view
-                : ""
-            }
-            onChange={(e) => navigate(e.target.value)}
-          >
-            <option value="" disabled>
-              Choose a tool
-            </option>
-            <option value="diagnostics">Volatility & gamma</option>
-            <option value="vanna">Vanna exposure</option>
-            <option value="flow">Trade tape</option>
-            <option value="leaps">Long-term contracts</option>
-            <option value="strategy">Strategy payoff</option>
-          </select>
-        </label>
-      </header>
+      {!!contracts.length && (
+        <>
+          <div className={deskStyles.orientation}>
+            <strong>Options, in context</strong>
+            <p>
+              Choose an expiration, explore price levels, then inspect a
+              contract or try it with simulated cash.
+            </p>
+          </div>
+          <header className={deskStyles.commandBar}>
+            <label className={deskStyles.expiryControl}>
+              <span>Expiration date</span>
+              <select
+                aria-label="Expiration date"
+                value={active}
+                disabled={!expiries.length}
+                onChange={(e) => chooseExpiry(e.target.value)}
+              >
+                {!expiries.length && (
+                  <option value="">
+                    {busy ? "Loading contracts…" : "Contract data unavailable"}
+                  </option>
+                )}
+                {expiries.map((date) => (
+                  <option key={date} value={date}>
+                    {expiryLabel(date)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <nav className={deskStyles.views} aria-label="Options sections">
+              {[
+                ["positioning", "Price levels"],
+                ["chain", "Calls & puts"],
+                ["simulation", "Practice"],
+                ["learn", "Guide"],
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={view === id}
+                  disabled={!contracts.length && id !== "learn"}
+                  onClick={() => navigate(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+            <label className={deskStyles.advancedControl}>
+              <span>Advanced</span>
+              <select
+                aria-label="Advanced options tools"
+                disabled={!contracts.length}
+                value={
+                  [
+                    "vanna",
+                    "flow",
+                    "leaps",
+                    "strategy",
+                    "diagnostics",
+                  ].includes(view)
+                    ? view
+                    : ""
+                }
+                onChange={(e) => navigate(e.target.value)}
+              >
+                <option value="" disabled>
+                  Choose a tool
+                </option>
+                <option value="diagnostics">Volatility & gamma</option>
+                <option value="vanna">Vanna exposure</option>
+                <option value="flow">Trade tape</option>
+                <option value="leaps">Long-term contracts</option>
+                <option value="strategy">Strategy payoff</option>
+              </select>
+            </label>
+          </header>
+        </>
+      )}
+      {!contracts.length && (
+        <button
+          type="button"
+          onClick={() => navigate(view === "learn" ? "positioning" : "learn")}
+        >
+          {view === "learn" ? "Back to coverage" : "Options guide"}
+        </button>
+      )}
       {error && (
         <p role="alert" className={deskStyles.options_notice}>
-          {error} Previously loaded observations remain dated as shown.{" "}
+          {error}
+          {contracts.length > 0 &&
+            " Previously loaded observations remain dated as shown."}{" "}
           <button
             type="button"
             disabled={busy}
@@ -481,7 +499,6 @@ export default function OptionsDesk({
       )}
       {!contracts.length ? (
         <section className={deskStyles.options_empty} hidden={view === "learn"}>
-          <Layers3 size={32} />
           <h3>
             {busy
               ? "Connecting your options workspace"

@@ -273,15 +273,96 @@
     flex-basis: 75%;
   }
 }
-.inbox h2 { margin: 0 0 6px; font-size: 18px; font-weight: 550; }
-.hint { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 8px 0 12px; }
-.actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.inbox :is(button, a, summary, input, select):focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
-.delivery { background: var(--card); border: 1px solid var(--line); overflow-wrap: anywhere; }
-.body > a { display: inline-flex; align-items: center; min-height: 40px; font-size: 13px; }
-.inbox button { min-height: 40px; }
+.inbox h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 550;
+}
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 8px 0 12px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.inbox :is(button, a, summary, input, select):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.delivery {
+  background: var(--card);
+  border: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.body > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  font-size: 13px;
+}
+.inbox button {
+  min-height: 40px;
+}
 @media (max-width: 600px) {
- .actions { width: 100%; }
- .actions button { flex: 1; min-height: 44px; white-space: normal; }
- .search > label:first-child { min-width: 0; }
+  .actions {
+    width: 100%;
+  }
+  .actions button {
+    flex: 1;
+    min-height: 44px;
+    white-space: normal;
+  }
+  .search > label:first-child {
+    min-width: 0;
+  }
+}
+
+/* Keep filtering in one toolbar instead of stacking independent control rows. */
+.search {
+  margin: 12px 0 0;
+  gap: 10px;
+}
+.search > label,
+.search > button {
+  margin-top: 0;
+}
+.search > label:first-child {
+  flex: 1 1 240px;
+}
+.search > label:not(:first-child) {
+  flex: 0 1 170px;
+}
+.tools {
+  padding: 8px 0;
+}
+.delivery {
+  margin: 8px 0;
+  padding: 10px 12px;
+}
+.hint {
+  margin: 4px 0 8px;
+}
+.bulk {
+  padding: 8px 10px;
+  gap: 8px 12px;
+}
+@media (max-width: 600px) {
+  .search > label:first-child {
+    flex-basis: calc(100% - 100px);
+  }
+  .search > label:not(:first-child) {
+    flex: 1 1 130px;
+    width: auto;
+  }
+  .search > label {
+    min-width: 0;
+  }
+  .search select {
+    width: 100%;
+  }
 }

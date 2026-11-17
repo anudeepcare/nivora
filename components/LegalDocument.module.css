@@ -247,3 +247,13 @@
 .document.document.document[data-document="help"] :global(.document-sections) p { font-size: 14px; line-height: 1.7; margin: 0; }
 .document :global(.help-search-result) { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }
 .document :global(.help-search-result) button { min-height: 40px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+
+/* Methodology: a readable overview, with exact policy details available on demand. */
+.document[data-document="methodology"] :global(.document-sections) { display: grid; gap: 0; }
+.methodologyIntro { padding: 0 0 20px; }
+.methodologyIntro h2 { font-size: 20px; font-weight: 500; margin: 0 0 12px; }
+.methodologyIntro p, .methodologyDetails p { font-size: 14px; line-height: 1.7; color: var(--muted); }
+.methodologyDetails { border-top: 1px solid var(--line); padding: 0; }
+.methodologyDetails summary { cursor: pointer; padding: 16px 0; min-height: 44px; font-size: 15px; font-weight: 500; color: var(--ink); }
+.methodologyDetails summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.methodologyDetails p { margin: 0 0 20px; max-width: 78ch; }

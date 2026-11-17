@@ -335,3 +335,32 @@
   outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
+
+.provider.provider {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  flex: 0 1 auto;
+}
+.provider.provider > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 6px;
+  font-size: 11px;
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  cursor: pointer;
+}
+.provider.provider > p {
+  max-width: 260px;
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 6px;
+}
+
+.optionsPanel {
+  min-width: 0;
+  color: var(--ink);
+}

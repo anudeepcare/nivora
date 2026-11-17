@@ -974,30 +974,14 @@ export default function PublicLanding({
         </div>
       </section>
       <section
-        className={landing.referencePricing}
-        id="pricing"
-        aria-labelledby="reference-pricing-title"
-      >
-        <span className={landing.eyebrow}>PRICING</span>
-        <h2 id="reference-pricing-title">
-          Start with clarity. Go deeper when you need it.
-        </h2>
-        <p>
-          Compare the current Free and Pro features, availability, and billing
-          terms before choosing.
-        </p>
-        <Link className={landing.primary} href="/pricing">
-          Compare current plans →
-        </Link>
-      </section>
-      <section
         className={`${landing.closing} ap-container`}
+        id="pricing"
         aria-labelledby="ap-closing-heading"
       >
         <div>
           <span className={landing.eyebrow}>YOUR RESEARCH. YOUR PACE.</span>
           <h2 id="ap-closing-heading">A clearer view starts here.</h2>
-          <p>Start with Free. Go deeper with Pro when you’re ready.</p>
+          <p>Compare Free and Pro features, availability, and billing terms before choosing.</p>
         </div>
         <div className={landing.actions}>
           <Link className={landing.primary} href="/login?mode=signup">

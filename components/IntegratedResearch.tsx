@@ -85,7 +85,6 @@ export default function IntegratedResearch({
             </ul>
           </details>
         )}
-        <CompanyMetrics research={r} />
         <ResearchChanges
           research={r}
           now={now}
@@ -102,7 +101,7 @@ export default function IntegratedResearch({
           }
         />
         <details>
-          <summary>Input freshness & calculation basis</summary>
+          <summary>Decision calculation basis</summary>
           <DataFreshness research={r} now={now} decision={d} />
         </details>
       </section>
