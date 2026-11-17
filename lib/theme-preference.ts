@@ -1,7 +1,7 @@
 export function themePreference(
   value: string | null,
 ): "light" | "dark" | "system" {
-  return value === "dark" || value === "system" ? value : "light";
+  return value === "light" || value === "system" ? value : "dark";
 }
 export function resolvedTheme(
   value: "light" | "dark" | "system",

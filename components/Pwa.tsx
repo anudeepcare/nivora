@@ -114,7 +114,7 @@ export default function Pwa() {
     const syncThemeColor = () => {
       const dark = document.documentElement?.dataset?.theme === "dark";
       document.documentElement.style.colorScheme = dark ? "dark" : "light";
-      const color = dark ? "#24272b" : "#f7f8f5";
+      const color = dark ? "#080d18" : "#f7f7f5";
       document
         .querySelectorAll?.('meta[name="theme-color"]')
         .forEach((meta) => meta.setAttribute("content", color));

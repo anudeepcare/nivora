@@ -1,0 +1,243 @@
+[
+  {
+    "selector": ":root",
+    "property": "--app-width",
+    "from": "1480px",
+    "to": "1420px"
+  },
+  {
+    "selector": ":root",
+    "property": "--chrome-surface",
+    "from": "#f7f8f5",
+    "to": "#f7f7f5"
+  },
+  {
+    "selector": ":root",
+    "property": "--font-ui",
+    "from": "\"Commissioner\", \"AURYN Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\",\n    sans-serif",
+    "to": "\"Manrope\", \"AURYN Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\",\n    sans-serif"
+  },
+  {
+    "selector": ":root",
+    "property": "--radius-panel",
+    "from": "16px",
+    "to": "14px"
+  },
+  {
+    "selector": ":root",
+    "property": "--radius",
+    "from": "16px",
+    "to": "14px"
+  },
+  {
+    "selector": ":root",
+    "property": "--accent-solid",
+    "from": "#24272b",
+    "to": "#4f46c8"
+  },
+  {
+    "selector": ":root",
+    "property": "--blue",
+    "from": "#24272b",
+    "to": "#5146b8"
+  },
+  {
+    "selector": ":root",
+    "property": "--blue-soft",
+    "from": "#edf5c9",
+    "to": "#eeecff"
+  },
+  {
+    "selector": ":root",
+    "property": "--valuation-fill",
+    "from": "color-mix(in srgb, #d6f35a 8%, var(--card))",
+    "to": "color-mix(in srgb, #a69aff 8%, var(--card))"
+  },
+  {
+    "selector": ":root",
+    "property": "--business-icon",
+    "from": "#167b57",
+    "to": "#087b78"
+  },
+  {
+    "selector": ":root",
+    "property": "--ownership-icon",
+    "from": "#347d76",
+    "to": "#7051c8"
+  },
+  {
+    "selector": ":root",
+    "property": "--pace-fill",
+    "from": "#24272b",
+    "to": "#087b78"
+  },
+  {
+    "selector": ":root",
+    "property": "--citron",
+    "from": "#d6f35a",
+    "to": "#a69aff"
+  },
+  {
+    "selector": ":root",
+    "property": "--brand-gradient",
+    "from": "linear-gradient(125deg, #d6f35a, #a8ddc0)",
+    "to": "linear-gradient(125deg, #9b8cff, #79eadc)"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--chrome-surface",
+    "from": "#24272b",
+    "to": "#080d18"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--bg",
+    "from": "#191c1e",
+    "to": "#080d18"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--app-background",
+    "from": "#191c1e",
+    "to": "#080d18"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--glass",
+    "from": "#24272bed",
+    "to": "#080d18eb"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--paper",
+    "from": "#191c1e",
+    "to": "#080d18"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--card",
+    "from": "#24272b",
+    "to": "#0e1625"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--control-muted",
+    "from": "#b9c1bf",
+    "to": "#9aa9bd"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--control-card",
+    "from": "#24272b",
+    "to": "#0e1625"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--control-surface",
+    "from": "#303536",
+    "to": "#121d2e"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--control-line",
+    "from": "#65716a",
+    "to": "#394962"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--surface",
+    "from": "#303536",
+    "to": "#121d2e"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--surface-2",
+    "from": "#24272b",
+    "to": "#0b121f"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--muted",
+    "from": "#b9c1bf",
+    "to": "#9aa9bd"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--line",
+    "from": "#42484a",
+    "to": "#263247"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--border",
+    "from": "#42484a",
+    "to": "#263247"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--blue",
+    "from": "#d6f35a",
+    "to": "#a69aff"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--blue-soft",
+    "from": "#353d28",
+    "to": "#232144"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--valuation-fill",
+    "from": "color-mix(in srgb, #d6f35a 8%, var(--card))",
+    "to": "color-mix(in srgb, #a69aff 8%, var(--card))"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--business-icon",
+    "from": "#167b57",
+    "to": "#087b78"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--ownership-icon",
+    "from": "#347d76",
+    "to": "#7051c8"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--green",
+    "from": "#6dd5b6",
+    "to": "#79eadc"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--green-soft",
+    "from": "#193b33",
+    "to": "#123830"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--amber",
+    "from": "#e7bc72",
+    "to": "#ffb478"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--cyan",
+    "from": "#85d5ec",
+    "to": "#79eadc"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--cyan-soft",
+    "from": "#1c3541",
+    "to": "#153236"
+  },
+  {
+    "selector": ":root",
+    "media": "(max-width: 767px)",
+    "property": "--font-ui",
+    "from": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Commissioner\", sans-serif",
+    "to": "\"Manrope\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  }
+]

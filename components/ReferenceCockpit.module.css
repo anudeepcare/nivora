@@ -1,0 +1,112 @@
+/* Reference-derived cockpit structure. Data components keep their existing behavior. */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.root > header {
+  flex: 0 0 auto;
+  min-height: 88px;
+  padding: 12px 28px;
+}
+.lenses {
+  display: flex;
+  flex: 0 0 58px;
+  gap: 4px;
+  padding: 0 28px;
+  overflow-x: auto;
+  border-block: 1px solid var(--line);
+  background: var(--card);
+  scrollbar-width: thin;
+}
+.lenses button {
+  position: relative;
+  flex: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.lenses button[aria-current="page"] {
+  color: var(--ink);
+}
+.lenses button[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: var(--cyan, #79eadc);
+}
+.supporting {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 28px;
+}
+.supporting button {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--muted);
+}
+.supporting button[aria-current="page"] {
+  color: var(--ink);
+  background: var(--surface);
+}
+.root > :global(#research-overview),
+.root > :global(.signal-research-panel) {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 22px 28px;
+  scrollbar-gutter: stable;
+}
+.root > [hidden] {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  .root > header {
+    padding: 12px;
+    min-height: 82px;
+  }
+  .lenses {
+    flex-basis: 52px;
+    padding: 0 10px;
+  }
+  .lenses button {
+    padding: 0 11px;
+    font-size: 11px;
+  }
+  .supporting {
+    padding: 8px 12px;
+  }
+  .root > :global(#research-overview),
+  .root > :global(.signal-research-panel) {
+    padding: 12px;
+  }
+}
+.deepEvidence {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+.deepEvidence > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 30px;
+}

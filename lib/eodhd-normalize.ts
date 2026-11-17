@@ -74,6 +74,13 @@ export function normalizeEodQuote(
 ): Quote {
   if (String(raw?.code ?? "").toUpperCase() !== eodTicker(symbol))
     throw Error("Quote belongs to a different instrument");
+  const suppliedCurrency =
+    raw?.currency ?? raw?.currency_code ?? raw?.CurrencyCode;
+  if (
+    suppliedCurrency != null &&
+    String(suppliedCurrency).toUpperCase() !== "USD"
+  )
+    throw Error("Quote currency does not match the requested USD listing");
   const stamp = numeric(raw.timestamp),
     ms = stamp == null ? NaN : stamp * 1000;
   const asOf =
@@ -647,6 +654,8 @@ export function normalizeEodFundamentals(
     company,
     name: company.name,
     filings: [],
-    issues: [] as string[],
+    issues: facts.length
+      ? []
+      : ["Financial statement coverage is unavailable for this instrument."],
   };
 }

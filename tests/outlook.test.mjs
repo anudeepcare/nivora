@@ -361,41 +361,88 @@ test("an explicit P/E wins over price anchoring in both calculations and provena
   assert.doesNotMatch(result.caveat, /Price-anchored sensitivity/);
 });
 
-test('frontier and infrastructure failures offer a sourced funding path without automatic targets',()=>{
- for(const symbol of ['ASTS','NBIS','IREN']) {
-  const r=research();r.company.symbol=symbol;
-  const result=outlook.researchOutlook(r);
-  assert.equal(result.available,false);
-  assert.equal(result.recovery?.kind,'funded-assumptions');
-  assert.match(result.recovery.detail,/capex|financing/i);
-  assert.equal('cases' in result,false);
- }
- const insurer=research();insurer.company.symbol='OSCR';insurer.evidence.profile={sector:'Healthcare',industry:'Healthcare Plans'};
- assert.equal(outlook.researchOutlook(insurer).recovery,undefined);
+test("frontier and infrastructure failures offer a sourced funding path without automatic targets", () => {
+  for (const symbol of ["ASTS", "NBIS", "IREN"]) {
+    const r = research();
+    r.company.symbol = symbol;
+    const result = outlook.researchOutlook(r);
+    assert.equal(result.available, false);
+    assert.equal(result.recovery?.kind, "funded-assumptions");
+    assert.match(result.recovery.detail, /capex|financing/i);
+    assert.equal("cases" in result, false);
+  }
+  const insurer = research();
+  insurer.company.symbol = "OSCR";
+  insurer.evidence.profile = {
+    sector: "Healthcare",
+    industry: "Healthcare Plans",
+  };
+  assert.equal(outlook.researchOutlook(insurer).recovery, undefined);
 });
 
 test("complete annual EPS ranges 90–269 days away remain eligible without annualizing quarterly EPS", () => {
   for (const symbol of ["HIMS", "CRM", "MSFT"]) {
-    const r=research();r.company.symbol=symbol;r.evidence.estimates=[{...r.evidence.estimates[1], date:"2027-05-31"}];
-    const result=load().researchOutlook(r);
-    assert.equal(result.available,true,symbol);
-    assert.equal(result.end,"2027-05-31");assert.equal(result.cases[1].target,100);
-    r.evidence.estimates[0].frequency="quarterly";assert.equal(load().researchOutlook(r).available,false);
-    r.evidence.estimates[0].frequency="annual";r.evidence.estimates[0].date="2026-12-31";assert.equal(load().researchOutlook(r).available,false);
+    const r = research();
+    r.company.symbol = symbol;
+    r.evidence.estimates = [{ ...r.evidence.estimates[1], date: "2027-05-31" }];
+    const result = load().researchOutlook(r);
+    assert.equal(result.available, true, symbol);
+    assert.equal(result.end, "2027-05-31");
+    assert.equal(result.cases[1].target, 100);
+    r.evidence.estimates[0].frequency = "quarterly";
+    assert.equal(load().researchOutlook(r).available, false);
+    r.evidence.estimates[0].frequency = "annual";
+    r.evidence.estimates[0].date = "2026-12-31";
+    assert.equal(load().researchOutlook(r).available, false);
   }
 });
 
- test("selected analyst reference provenance survives a discarded stale quote", () => {
+test("selected analyst reference provenance survives a discarded stale quote", () => {
   const r = research();
   r.company.exchange = "NASDAQ";
   r.retrievedAt = "2026-10-27T01:00:00Z";
   r.evidence.updatedAt = "2026-10-26";
-  r.evidence.consensus = {target:150};
-  r.quote = {...r.quote, price:120, stale:true, asOf:"2026-10-23T20:00:00Z"};
-  r.history = [{time:"2026-10-26",open:110,high:110,low:110,close:110,volume:100}];
+  r.evidence.consensus = { target: 150 };
+  r.quote = {
+    ...r.quote,
+    price: 120,
+    stale: true,
+    asOf: "2026-10-23T20:00:00Z",
+  };
+  r.history = [
+    {
+      time: "2026-10-26",
+      open: 110,
+      high: 110,
+      low: 110,
+      close: 110,
+      volume: 100,
+    },
+  ];
   const c = outlook.consensusOutlook(r);
-  assert.equal(c.referencePrice,110);
-  assert.equal(c.referenceStatus,"current");
-  assert.equal(c.referenceAsOf,"2026-10-26");
-  assert.equal(c.referenceBasis,"settled-close");
+  assert.equal(c.referencePrice, 110);
+  assert.equal(c.referenceStatus, "current");
+  assert.equal(c.referenceAsOf, "2026-10-26");
+  assert.equal(c.referenceBasis, "settled-close");
+});
+
+test("provider estimates without evidence dates or fiscal endpoints never become model scenarios", () => {
+  const { researchOutlook } = load();
+  const missingObservation = research();
+  missingObservation.evidence.updatedAt = null;
+  assert.equal(researchOutlook(missingObservation).available, false);
+  const missingPeriod = research();
+  missingPeriod.evidence.estimates = missingPeriod.evidence.estimates.map(
+    (x) => ({ ...x, date: "", period: "+1y" }),
+  );
+  assert.equal(researchOutlook(missingPeriod).available, false);
+  const wrongCurrency = research();
+  wrongCurrency.evidence.estimates = wrongCurrency.evidence.estimates.map(
+    (x) => ({ ...x, currency: "EUR" }),
+  );
+  assert.equal(researchOutlook(wrongCurrency).available, false);
+  const consensusOnly = research();
+  consensusOnly.evidence.estimates = [];
+  consensusOnly.evidence.consensus = { low: 80, target: 100, high: 120 };
+  assert.equal(researchOutlook(consensusOnly).available, false);
 });

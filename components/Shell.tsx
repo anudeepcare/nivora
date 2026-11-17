@@ -1,4 +1,8 @@
 "use client";
+import {
+  desktopNavigation,
+  mobileNavigation,
+} from "@/lib/reference-navigation";
 import { ReleaseNotice } from "./ReleaseNotes";
 import experience from "./WorkspaceShell.module.css";
 import { AccessNotice, useAccess } from "./Access";
@@ -43,12 +47,19 @@ function LinkProgress() {
     />
   ) : null;
 }
-const primary = [
-  { path: "overview", label: "Home", icon: Home },
-  { path: "research", label: "Research", icon: ChartNoAxesCombined },
-  { path: "watchlist", label: "Watchlist", icon: Bookmark },
-  { path: "portfolio", label: "Portfolio", icon: PieChart },
-];
+const navigationIcons = {
+  overview: Home,
+  research: ChartNoAxesCombined,
+  discover: Compass,
+  compare: Scale,
+  watchlist: Bookmark,
+  portfolio: PieChart,
+};
+const primary = desktopNavigation.map((item) => ({
+  ...item,
+  icon: navigationIcons[item.path],
+}));
+
 export default function Shell({
   page,
   children,
@@ -246,7 +257,13 @@ export default function Shell({
         </main>
       </div>
       <nav className={experience.dock} aria-label="Mobile navigation">
-        {primary.map((r) => nav(r))}
+        {primary
+          .filter((item) =>
+            ["overview", "research", "watchlist", "portfolio"].includes(
+              item.path,
+            ),
+          )
+          .map((r) => nav(r))}
       </nav>
       <dialog
         ref={tools}

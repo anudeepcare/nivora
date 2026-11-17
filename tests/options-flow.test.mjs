@@ -169,14 +169,18 @@ function adapter(
   );
   return { load: exports.loadOptionsFlow, counts };
 }
-test("flow switch blocks every chain and trade request before source access", async () => {
+test("flow reports unavailable without querying excluded sources", async () => {
   const a = adapter({ AURYN_OPTIONS_ENABLED: "true" });
   const r = await a.load("AAPL", null);
   assert.equal(r.status, "unavailable");
-  assert.match(r.message, /permissions|rights/i);
+  assert.match(r.message, /EODHD.*SentiSense/);
+  assert.deepEqual(r.trades, []);
+  assert.deepEqual(r.contracts, []);
+  assert.equal(r.partial, true);
   assert.deepEqual(a.counts, { chain: 0, budget: 0, fetch: 0 });
 });
-test("one bounded page reserves budget, coalesces requests and labels truncated symbol-first sample", async () => {
+
+test("configured excluded credentials never enable a synthetic or legacy tape", async () => {
   const a = adapter({
     AURYN_OPTIONS_ENABLED: "true",
     AURYN_OPTIONS_FLOW_ENABLED: "true",
@@ -187,12 +191,13 @@ test("one bounded page reserves budget, coalesces requests and labels truncated 
     a.load("AAPL", null),
     a.load("AAPL", null),
   ]);
-  assert.equal(r.partial, true);
-  assert.equal(r.trades.length, 1);
   assert.deepEqual(r, s);
-  await a.load("AAPL", null);
-  assert.deepEqual(a.counts, { chain: 1, budget: 1, fetch: 1 });
+  assert.equal(r.status, "unavailable");
+  assert.deepEqual(r.trades, []);
+  assert.equal(r.partial, true);
+  assert.deepEqual(a.counts, { chain: 0, budget: 0, fetch: 0 });
 });
+
 test("source condition code strings are preserved and impossible calendar timestamps discarded", () => {
   const base = { t: "2026-11-05T18:59:00Z", p: 2, s: 1, x: "A", c: "I", i: 1 };
   const r = mod.normalizeFlowTrades(
@@ -203,33 +208,26 @@ test("source condition code strings are preserved and impossible calendar timest
   assert.equal(r.length, 1);
   assert.equal(r[0].condition, "I");
 });
-test("missing credentials and invalid expiry fail before chain or budget requests", async () => {
-  const enabled = {
+test("unavailable trade tape never spends budget regardless of expiry or credentials", async () => {
+  const a = adapter({
     AURYN_OPTIONS_ENABLED: "true",
     AURYN_OPTIONS_FLOW_ENABLED: "true",
-  };
-  const a = adapter(enabled);
-  await assert.rejects(a.load("AAPL"), /not configured/);
-  assert.deepEqual(a.counts, { chain: 0, budget: 0, fetch: 0 });
-  const b = adapter({
-    ...enabled,
-    ALPACA_PAPER_API_KEY: "test",
-    ALPACA_PAPER_API_SECRET: "test",
   });
-  await assert.rejects(b.load("AAPL", "2028-02-30"), /valid expiry/);
-  assert.deepEqual(b.counts, { chain: 0, budget: 0, fetch: 0 });
+  for (const expiry of [null, "2028-02-30"]) {
+    const r = await a.load("AAPL", expiry);
+    assert.equal(r.status, "unavailable");
+    assert.deepEqual(r.trades, []);
+  }
+  assert.deepEqual(a.counts, { chain: 0, budget: 0, fetch: 0 });
 });
-test("unsupported upstream data fails visibly and is not cached as an empty tape", async () => {
-  const a = adapter(
-    {
-      AURYN_OPTIONS_ENABLED: "true",
-      AURYN_OPTIONS_FLOW_ENABLED: "true",
-      ALPACA_PAPER_API_KEY: "test",
-      ALPACA_PAPER_API_SECRET: "test",
-    },
-    { unexpected: [] },
-  );
-  await assert.rejects(a.load("AAPL"), /unsupported/);
-  await assert.rejects(a.load("AAPL"), /unsupported/);
-  assert.equal(a.counts.fetch, 2);
+
+test("unavailable integration is never labelled a successfully empty tape", async () => {
+  const a = adapter({}, { unexpected: [] });
+  for (let i = 0; i < 2; i++) {
+    const r = await a.load("AAPL");
+    assert.equal(r.status, "unavailable");
+    assert.match(r.message, /not available|No synthetic/);
+    assert.equal(r.partial, true);
+  }
+  assert.equal(a.counts.fetch, 0);
 });

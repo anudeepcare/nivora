@@ -47,8 +47,8 @@ test('launch covers safe areas and honors OS and saved reduced-motion settings',
 
 test('access and workspace gates share elapsed startup time instead of restarting the slow clock',()=>{
   let delay;
-  const now=Date.now();
-  const Launch=load('LaunchScreen',{useContext:()=>now-8000,useEffect:fn=>fn(),window:{setTimeout:(_,ms)=>{delay=ms;return 1;},clearTimeout:()=>{}}});
+  const now=1800000000000;
+  const Launch=load('LaunchScreen',{Date:{now:()=>now},useContext:()=>now-8000,useEffect:fn=>fn(),window:{setTimeout:(_,ms)=>{delay=ms;return 1;},clearTimeout:()=>{}}});
   Launch();
-  assert(delay<=2000 && delay>=1900);
+  assert.equal(delay,2000);
 });

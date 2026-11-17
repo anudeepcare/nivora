@@ -1,3 +1,4 @@
+import { researchLenses, lensForSection } from "../lib/reference-navigation.ts";
 import { readCompatCss } from './read-compat-css.mjs';
 import {experience} from './helpers/integrated-ui.mjs';
 import { customerText } from "../lib/customer-language.ts";
@@ -266,6 +267,10 @@ function researchMarkup(issues = []) {
     "ArrowUpRight",
   ])
     bindings[name] = empty;
+  bindings.researchLenses = researchLenses;
+  bindings.lensForSection = lensForSection;
+  bindings.cockpit = new Proxy({}, { get: (_, key) => String(key) });
+  bindings.ReferenceAtlas = () => React.createElement("section", { "data-reference-atlas": true });
   bindings.tabVisuals = { root: "research-tab-visuals" };
   bindings.deskLayout = { content: "research-desk-layout" };
   bindings.Help = ({ children }) => React.createElement("div", null, children);

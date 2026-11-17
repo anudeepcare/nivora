@@ -4,77 +4,55 @@ import {
   fixtureProviders,
   marketResponse,
   bar,
+  sourceModule,
 } from "./helpers/provider-fixture.mjs";
 const originalFetch = globalThis.fetch;
 test.after(() => {
   globalThis.fetch = originalFetch;
 });
 
-test("class-share fallback accepts equivalent Twelve quote and history identities", async () => {
-  const p = fixtureProviders((u) => {
-    if (u.hostname === "eodhd.com") return new Response("", { status: 503 });
-    if (u.pathname === "/quote")
-      return Response.json({
-        symbol: "BRK.B",
-        name: "Berkshire Hathaway Class B",
-        exchange: "NYSE",
-        currency: "USD",
-        close: 400,
-        timestamp: Math.floor(Date.now() / 1000),
-      });
-    if (u.pathname === "/time_series")
-      return Response.json({
-        meta: { symbol: "BRK.B", currency: "USD", exchange: "NYSE" },
-        values: [bar],
-      });
-    return marketResponse(u);
-  });
+test("EODHD class-share aliases preserve instrument identity and prices", async () => {
+  const p = fixtureProviders(marketResponse);
   const r = await p.research("BRK-B");
-  assert.equal(r.quote.price, 400);
+  assert.equal(r.quote.price, 102);
   assert.equal(r.company.symbol, "BRK-B");
   assert.equal(r.history.length, 1);
-  assert.match(r.quote.source, /Twelve Data.*fallback/);
+  assert.match(r.quote.source, /EODHD/);
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
 });
 
-test("a primary profile without financial statements uses SEC facts and preserves reporting currency", async () => {
-  const p = fixtureProviders((u) => {
-    if (u.pathname.endsWith("company_tickers.json"))
-      return Response.json({
-        0: { ticker: "SAP", cik_str: 1000184, title: "SAP SE" },
-      });
-    if (u.pathname.includes("companyfacts"))
-      return Response.json({
-        entityName: "SAP SE",
-        facts: {
-          "ifrs-full": {
-            Revenue: {
-              units: {
-                EUR: [
-                  {
-                    val: 1000,
-                    start: "2025-01-01",
-                    end: "2025-12-31",
-                    filed: "2026-02-01",
-                    form: "20-F",
-                    accn: "0001000184-26-000001",
-                  },
-                ],
+test("EODHD reporting currency remains distinct from USD share-price currency", async () => {
+  const p = fixtureProviders((u) =>
+    u.pathname.includes("/fundamentals/")
+      ? Response.json({
+          General: {
+            Code: "SAP",
+            Name: "SAP SE",
+            Exchange: "NYSE",
+            CurrencyCode: "USD",
+            CountryISO: "DE",
+          },
+          Financials: {
+            Income_Statement: {
+              currency_symbol: "EUR",
+              quarterly: {
+                a: {
+                  date: "2026-06-30",
+                  filing_date: "2026-08-01",
+                  totalRevenue: 1000,
+                },
               },
             },
           },
-        },
-      });
-    if (u.pathname.includes("/submissions/"))
-      return Response.json({ filings: { recent: { form: [] } } });
-    return marketResponse(u);
-  });
+        })
+      : marketResponse(u),
+  );
   const r = await p.research("SAP");
   assert.equal(r.quote.currency, "USD");
   assert.equal(r.facts[0]?.currency, "EUR");
-  assert.equal(r.facts[0]?.basis, "IFRS");
-  assert.equal(r.facts[0]?.filed, "2026-02-01");
-  assert.match(r.facts[0]?.sourceUrl, /sec.gov/);
-  assert.match(r.issues.join(" "), /SEC|fallback/);
+  assert.equal(r.facts[0]?.filed, "2026-08-01");
+  assert.ok(r.facts.every((f) => f.sourceUrl.includes("eodhd.com")));
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
 });
 
 test("ETF missing corporate facts retains identity, price and limited history with explicit coverage", async () => {
@@ -84,6 +62,7 @@ test("ETF missing corporate facts retains identity, price and limited history wi
   assert.equal(r.quote.price, 102);
   assert.equal(r.history.length, 1);
   assert.deepEqual(r.facts, []);
+  assert.equal(r.coverage.fundamentals.status, "unavailable");
   assert.match(r.issues.join(" "), /financial|coverage/i);
 });
 
@@ -95,7 +74,7 @@ test("malformed and unsupported symbols are rejected before any provider traffic
   assert.equal(p.calls.length, 0);
 });
 
-test("foreign-currency Twelve history cannot contaminate USD research", async () => {
+test("excluded foreign-currency Twelve data cannot contaminate research", async () => {
   const p = fixtureProviders(
     (u) =>
       u.pathname === "/time_series"
@@ -107,59 +86,49 @@ test("foreign-currency Twelve history cannot contaminate USD research", async ()
     { eodhd: false },
   );
   const r = await p.research("SAP");
-  assert.equal(r.quote.price, 103);
+  assert.equal(r.quote.price, null);
   assert.deepEqual(r.history, []);
-  assert.match(r.issues.join(" "), /currency|listing/i);
+  assert.notEqual(r.coverage.quote.status, "available");
+  assert.equal(p.calls.length, 0);
 });
 
-test("invalid empty SEC responses remain retryable and disclose missing coverage", async () => {
+test("malformed EODHD fundamentals stay retryable and recover without excluded sources", async () => {
   let broken = true;
-  const p = fixtureProviders(
-    (u) => {
-      if (u.pathname.endsWith("company_tickers.json"))
-        return Response.json({
-          0: { ticker: "IPO", cik_str: 123, title: "New Public Company" },
-        });
-      if (u.pathname.includes("companyfacts"))
-        return Response.json(
+  const p = fixtureProviders((u) =>
+    u.pathname.includes("/fundamentals/")
+      ? Response.json(
           broken
             ? {}
             : {
-                entityName: "New Public Company",
-                facts: {
-                  "us-gaap": {
-                    Revenues: {
-                      units: {
-                        USD: [
-                          {
-                            val: 20,
-                            start: "2026-01-01",
-                            end: "2026-03-31",
-                            filed: "2026-05-01",
-                            form: "10-Q",
-                            accn: "0000000123-26-000001",
-                          },
-                        ],
+                General: {
+                  Code: "IPO",
+                  Name: "New Public Company",
+                  Exchange: "NYSE",
+                  CurrencyCode: "USD",
+                },
+                Financials: {
+                  Income_Statement: {
+                    currency_symbol: "USD",
+                    quarterly: {
+                      a: {
+                        date: "2026-03-31",
+                        filing_date: "2026-05-01",
+                        totalRevenue: 20,
                       },
                     },
                   },
                 },
               },
-        );
-      if (u.pathname.includes("/submissions/"))
-        return Response.json(
-          broken ? {} : { filings: { recent: { form: [] } } },
-        );
-      return marketResponse(u);
-    },
-    { eodhd: false },
+        )
+      : marketResponse(u),
   );
   const first = await p.research("IPO");
   assert.equal(first.history.length, 1);
-  assert.match(first.issues.join(" "), /Financial facts|Company disclosures/);
+  assert.equal(first.coverage.fundamentals.status, "unavailable");
   broken = false;
   const next = await p.research("IPO");
-  assert.equal(next.facts[0]?.value, 20);
+  assert.equal(next.facts.find((f) => f.metric === "revenue")?.value, 20);
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
 });
 
 test("expired last-good prices and history survive total outage with original dates and cached provenance", async () => {
@@ -188,7 +157,7 @@ test("expired last-good prices and history survive total outage with original da
 });
 
 for (const failure of ["timeout", "429", "empty", "invalid-json"])
-  test(`primary ${failure} response falls back without losing useful research`, async () => {
+  test(`primary ${failure} response reports missing data without excluded fallback`, async () => {
     const p = fixtureProviders((u) => {
       if (u.hostname === "eodhd.com") {
         if (failure === "timeout")
@@ -201,10 +170,11 @@ for (const failure of ["timeout", "429", "empty", "invalid-json"])
       return marketResponse(u);
     });
     const r = await p.research("OUTAGE");
-    assert.equal(r.quote.price, 103);
-    assert.equal(r.history.length, 1);
-    assert.match(r.quote.source, /fallback/);
-    assert.match(r.historySource, /fallback/);
+    assert.equal(r.quote.price, null);
+    assert.equal(r.history.length, 0);
+    assert.notEqual(r.coverage.quote.status, "available");
+    assert.ok(r.issues.length > 0);
+    assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
   });
 
 test("crypto aliases keep the requested asset identity and never request corporate financials", async () => {
@@ -221,30 +191,39 @@ test("crypto aliases keep the requested asset identity and never request corpora
   );
 });
 
-test("search falls through invalid primary payload and deduplicates class-share aliases", async () => {
+test("EODHD search deduplicates class-share aliases without foreign listing contamination", async () => {
   const p = fixtureProviders((u) =>
-    u.hostname === "eodhd.com"
-      ? Response.json({})
-      : Response.json({
-          data: [
-            {
-              symbol: "BRK-B",
-              instrument_name: "Berkshire Class B",
-              currency: "USD",
-              exchange: "NYSE",
-            },
-            {
-              symbol: "BRK.B",
-              instrument_name: "Berkshire Class B",
-              currency: "USD",
-              exchange: "NYSE",
-            },
-          ],
-        }),
+    u.pathname.includes("/search/")
+      ? Response.json([
+          {
+            Code: "BRK-B",
+            Name: "Berkshire Class B",
+            Exchange: "US",
+            Currency: "USD",
+            Type: "Common Stock",
+          },
+          {
+            Code: "BRK.B",
+            Name: "Berkshire Class B",
+            Exchange: "US",
+            Currency: "USD",
+            Type: "Common Stock",
+          },
+          {
+            Code: "BRK-B",
+            Name: "Wrong listing",
+            Exchange: "XETRA",
+            Currency: "EUR",
+            Type: "Common Stock",
+          },
+        ])
+      : marketResponse(u),
   );
   const rows = await p.search("brk.b");
   assert.equal(rows.length, 1);
-  assert.equal(rows[0].symbol, "BRK.B");
+  assert.ok(["BRK.B", "BRK-B"].includes(rows[0].symbol));
+  assert.equal(rows[0].currency, "USD");
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
 });
 
 test("documented unknown symbols differ from temporary provider outages", async () => {
@@ -300,23 +279,20 @@ test("cached fallback expires at its original bounded horizon despite repeated r
   }
 });
 
-test("crypto quote currency is validated even when pair identity matches", async () => {
-  const p = fixtureProviders(
-    (u) =>
-      u.pathname === "/quote"
-        ? Response.json({
-            symbol: "ETH/USD",
-            name: "Ethereum",
-            currency: "EUR",
-            close: 200,
-            timestamp: Math.floor(Date.now() / 1000),
-          })
-        : marketResponse(u),
-    { eodhd: false },
+test("EODHD crypto quote rejects explicit currency contradicting the requested pair", async () => {
+  const p = fixtureProviders((u) =>
+    u.pathname.includes("/real-time/")
+      ? Response.json({
+          code: "ETH-USD.CC",
+          currency: "EUR",
+          close: 200,
+          timestamp: Math.floor(Date.now() / 1000),
+        })
+      : marketResponse(u),
   );
   const r = await p.research("ETH/USD");
   assert.equal(r.quote.price, null);
-  assert.match(r.issues.join(" "), /currency/i);
+  assert.match(r.issues.join(" "), /unavailable|currency/i);
 });
 
 test("future-dated quote is not retained as the only price when backup is unavailable", async () => {
@@ -336,23 +312,26 @@ test("future-dated quote is not retained as the only price when backup is unavai
   assert.equal(r.history.length, 1);
 });
 
-test("class-share fallback profile preserves verified issuer identity when quote is offline", async () => {
-  const p = fixtureProviders((u) => {
-    if (u.hostname === "eodhd.com" || u.pathname === "/quote")
-      return new Response("", { status: 503 });
-    if (u.pathname === "/profile")
-      return Response.json({
-        symbol: "BRK.B",
-        name: "Berkshire Hathaway Class B",
-        currency: "USD",
-        exchange: "NYSE",
-      });
-    return marketResponse(u);
-  });
+test("EODHD class-share profile preserves verified issuer identity when quote is offline", async () => {
+  const p = fixtureProviders((u) =>
+    u.pathname.includes("/real-time/")
+      ? new Response("", { status: 503 })
+      : u.pathname.includes("/fundamentals/")
+        ? Response.json({
+            General: {
+              Code: "BRK-B",
+              Name: "Berkshire Hathaway Class B",
+              CurrencyCode: "USD",
+              Exchange: "NYSE",
+            },
+          })
+        : marketResponse(u),
+  );
   const r = await p.research("BRK-B");
   assert.equal(r.company.name, "Berkshire Hathaway Class B");
   assert.equal(r.quote.price, null);
   assert.equal(r.history.length, 1);
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
 });
 
 test("a cached fallback cannot outlive its retention deadline inside a refresh TTL", async () => {
@@ -376,31 +355,15 @@ test("a cached fallback cannot outlive its retention deadline inside a refresh T
   }
 });
 
-test("valid SEC identity with zero supported financial observations discloses coverage", async () => {
-  const p = fixtureProviders(
-    (u) => {
-      if (u.pathname.endsWith("company_tickers.json"))
-        return Response.json({
-          0: {
-            ticker: "EMPTY",
-            cik_str: 123,
-            title: "Empty Statement Coverage",
-          },
-        });
-      if (u.pathname.includes("companyfacts"))
-        return Response.json({
-          entityName: "Empty Statement Coverage",
-          facts: {},
-        });
-      if (u.pathname.includes("/submissions/"))
-        return Response.json({ filings: { recent: { form: [] } } });
-      return marketResponse(u);
-    },
-    { eodhd: false },
-  );
+test("valid EODHD identity with zero financial observations discloses missing coverage", async () => {
+  const p = fixtureProviders(marketResponse);
   const r = await p.research("EMPTY");
-  assert.equal(r.quote.price, 103);
-  assert.match(r.issues.join(" "), /financial.*coverage|coverage.*financial/i);
+  assert.equal(r.company.name, "Verified EMPTY");
+  assert.equal(r.quote.price, 102);
+  assert.deepEqual(r.facts, []);
+  assert.equal(r.coverage.fundamentals.status, "unavailable");
+  assert.match(r.issues.join(" "), /financial|coverage/i);
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
 });
 
 test("invalid primary price rows are retried after recovery instead of cached as a successful dataset", async () => {
@@ -420,7 +383,10 @@ test("invalid primary price rows are retried after recovery instead of cached as
 test("chart route classifies malformed symbols before provider requests", async (t) => {
   const previousAccess = process.env.AURYN_ACCESS_ENABLED;
   process.env.AURYN_ACCESS_ENABLED = "false";
-  t.after(() => { if(previousAccess === undefined) delete process.env.AURYN_ACCESS_ENABLED; else process.env.AURYN_ACCESS_ENABLED = previousAccess; });
+  t.after(() => {
+    if (previousAccess === undefined) delete process.env.AURYN_ACCESS_ENABLED;
+    else process.env.AURYN_ACCESS_ENABLED = previousAccess;
+  });
   const p = fixtureProviders((u) =>
     u.pathname === "/auth/v1/user"
       ? Response.json({
@@ -461,5 +427,22 @@ test("a primary outage plus fallback not-found stays partial instead of declarin
   const r = await p.research("UNCERTAIN");
   assert.equal(r.company.symbol, "UNCERTAIN");
   assert.equal(r.quote.price, null);
-  assert.match(r.issues.join(" "), /unavailable/i);
+  assert.match(r.issues.join(" "), /unavailable|could not return/i);
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
+});
+
+test("EODHD quote rejects each explicit non-USD currency field before normalization", () => {
+  const { normalizeEodQuote } = sourceModule("lib/eodhd-normalize.ts");
+  for (const field of ["currency", "currency_code", "CurrencyCode"]) {
+    assert.throws(
+      () =>
+        normalizeEodQuote("ETH/USD", {
+          code: "ETH-USD.CC",
+          [field]: "EUR",
+          close: 200,
+          timestamp: Math.floor(Date.now() / 1000),
+        }),
+      /currency/i,
+    );
+  }
 });

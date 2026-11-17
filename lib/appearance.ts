@@ -1,10 +1,10 @@
 export const APPEARANCE_KEY = "auryn-appearance-v4";
 export const accents = {
   blue: {
-    label: "Citron",
-    solid: "#24272b",
-    light: "#24272b",
-    dark: "#d6f35a",
+    label: "Indigo",
+    solid: "#4f46c8",
+    light: "#5146b8",
+    dark: "#a69aff",
   },
   teal: { label: "Ocean", solid: "#006d73", light: "#00777d", dark: "#61d3cc" },
   violet: {

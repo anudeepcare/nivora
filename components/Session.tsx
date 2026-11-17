@@ -217,11 +217,11 @@ function StoreProvider({
         null,
     ),
     [workspaceError, setWorkspaceError] = useState(""),
-    [theme, setThemeState] = useState<"light" | "dark">("light"),
+    [theme, setThemeState] = useState<"light" | "dark">("dark"),
     // Match the server render; the boot script already applies saved appearance.
     [themePreference, setThemePreference] = useState<
       "light" | "dark" | "system"
-    >("light"),
+    >("dark"),
     [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
     [reduceMotion, setReduceMotionState] = useState(false),
     [preferencesReady, setPreferencesReady] = useState(false);
@@ -274,7 +274,7 @@ function StoreProvider({
       document
         .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
         .forEach((meta) => {
-          meta.content = value === "dark" ? "#24272b" : "#f7f8f5";
+          meta.content = value === "dark" ? "#080d18" : "#f7f7f5";
           meta.removeAttribute("media");
         });
       setThemeState(value);

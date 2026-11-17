@@ -78,7 +78,7 @@ dd {
 @media (max-width: 767px) {
   :root {
     --font-ui:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", "Commissioner", sans-serif;
+      "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
   body {
     font-family: var(--font-ui);

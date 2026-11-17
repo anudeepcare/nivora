@@ -1,4 +1,5 @@
 "use client";
+import EodEventCalendar from "./EodEventCalendar";
 import OpportunityMap from "./OpportunityMap";
 import { MarketRadar } from "./MarketRadar";
 import mapStyles from "./OpportunityMap.module.css";
@@ -175,6 +176,7 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
   }
   return (
     <section className="discover-workspace">
+      {!embedded && <EodEventCalendar preview={!!demo} />}
       {!embedded && (
         <PageHeading
           title="Find companies"

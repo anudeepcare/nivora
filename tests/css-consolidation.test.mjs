@@ -59,11 +59,35 @@ test('consolidated compatibility preserves the ordered cascade after exact dupli
     assert.match(match[1], /^(\/|data:|https?:|#)/, `Relative asset URL: ${match[1]}`);
   }
 });
-test('token extraction preserves the complete foundation cascade and font registration order', async () => {
-  assert.deepEqual(
-    semantic(await expanded('app/core/foundation.css')),
-    semantic(await expanded('docs/archive/styles/foundation.before.css')),
-  );
+test('reference token delta preserves every other foundation declaration and font registration order', async () => {
+  const before = await expanded('docs/archive/styles/foundation.before.css');
+  // This reviewed fixture lists exact intentional changes, not an ignored class
+  // of properties. Any unlisted change or unexpected old value still fails.
+  const changes=JSON.parse(fs.readFileSync('tests/fixtures/reference-token-delta.json','utf8'));
+  assert.ok(changes.length > 30);
+  for(const change of changes){
+    const matches=[];
+    before.walkDecls(change.property,d=>{
+      const context=d.parent.parent;
+      const rightContext=change.media ? context.type==='atrule' && context.name==='media' && context.params===change.media : context.type==='root';
+      if(d.parent.selector===change.selector && rightContext)matches.push(d);
+    });
+    assert.equal(matches.length,1,`Exact token scope: ${change.selector} ${change.property}`);
+    assert.equal(matches[0].value,change.from);
+    matches[0].value=change.to;
+  }
+  const root=before.nodes.find(n=>n.type==='rule'&&n.selector===':root');
+  root.nodes.find(n=>n.prop==='--app-gutter').cloneAfter({prop:'--font-mono',value:'"DM Mono", "SFMono-Regular", Consolas, monospace'});
+  const registrations=[['DM Mono',400,'dm-mono-400'],['DM Mono',500,'dm-mono-500'],... [400,500,600,700,800].map(weight=>['Manrope',weight,`manrope-${weight}`])];
+  const fontSource=registrations.map(([family,weight,file])=>`@font-face { font-family: "${family}"; font-style: normal; font-weight: ${weight}; font-display: swap; src: url("/fonts/${file}.ttf") format("truetype"); }`).join('\n');
+  const fontRules=postcss.parse(await prettier.format(fontSource,{parser:'css'}));
+  before.prepend(fontRules.nodes);
+  assert.deepEqual(semantic(await expanded('app/core/foundation.css')),semantic(before));
+  for(const [, , file] of registrations){
+    const bytes=fs.readFileSync(`public/fonts/${file}.ttf`);
+    assert.equal(bytes.subarray(0,4).toString('hex'),'00010000',`${file} is a valid local TrueType font`);
+    assert.ok(bytes.length > 10000);
+  }
   const foundation = postcss.parse(fs.readFileSync('app/core/foundation.css', 'utf8'));
   assert.equal(foundation.nodes[0].name, 'import');
   assert.equal(foundation.nodes[0].params, '"./tokens.css"');
