@@ -170,10 +170,10 @@ test("public home leads with the benefit and an account action without fabricate
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
   assert.match(html, /AURYN Accumulation Pace/);
-  assert.match(html, /Product walkthrough/);
-  assert.match(html, /Compare your next contribution/);
-  assert.match(html, /Question the price/);
-  assert.match(html, /Know when to revisit/);
+  assert.doesNotMatch(html, /id="investment-demo"/);
+  assert.doesNotMatch(html, /class="ap-benefits/);
+  assert.match(html, /href="\/track-record"/);
+  assert.match(html, /href="\/portfolio-check"/);
   assert.match(html, /Turn the price into the earnings it would require/);
   assert.match(html, /horizon and/);
   assert.match(html, /future multiple/);
@@ -181,10 +181,8 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /Turn earnings into questions/);
   assert.match(html, /alerts for supported conditions/);
   assert.match(html, /updates from the companies you follow/);
-  assert.match(html, /Discover/);
-  assert.match(html, /Understand/);
-  assert.match(html, /Plan/);
-  assert.match(html, /no live recommendation/);
+  for (const title of ["Decision Atlas", "Scenario engine", "Catalyst calendar", "Ownership network", "Pace simulator"]) assert.match(html, new RegExp(title));
+  assert.match(html, /Live coverage, dates and missing evidence/);
   assert.match(html, /href="\/sample"/);
   assert.match(html, /href="\/pricing"/);
   assert.doesNotMatch(
@@ -782,4 +780,35 @@ test("help and methodology show their publication date without internal release 
       /continuation-20261104|evidence-lenses-v1|lib\/decision-research/,
     );
   }
+});
+
+test("reference product tour switches all five lenses and links to their real research sections", () => {
+  let active = 0;
+  const Tour = load("components/PublicLanding.tsx", "ReferenceProductTour", {
+    ...common,
+    useState: () => [active, (next) => { active = next; }],
+  });
+  const expected = ["Snapshot", "Valuation", "News", "Thesis", "Pace"];
+  for (let index = 0; index < expected.length; index++) {
+    const buttons = nodes(Tour(), n => n.props?.role === "tab");
+    buttons[index].props.onClick();
+    const panels = nodes(Tour(), n => n.props?.role === "tabpanel");
+    assert.equal(panels.filter(n => !n.props.hidden).length, 1);
+    assert.equal(panels[index].props.hidden, false);
+    assert(nodes(panels[index], n => n.type === Link && n.props.href === `/research/APP?tab=${expected[index]}`).length);
+  }
+  let prevented = false;
+  nodes(Tour(), n => n.props?.role === "tab")[4].props.onKeyDown({key: "Home", preventDefault: () => {prevented = true;}, currentTarget: {parentElement: null}});
+  assert.equal(active, 0);
+  assert.equal(prevented, true);
+});
+
+test("each public research lens has a labeled explanatory diagram without invented market scores", () => {
+ const Diagram = load("components/PublicLanding.tsx", "ResearchDiagram", common);
+ for (let lens = 0; lens < 5; lens++) {
+   const html = renderToStaticMarkup(React.createElement(Diagram, {lens}));
+   assert.match(html, /role="img"/);
+   assert.match(html, /Framework illustration/);
+   assert.doesNotMatch(html, /\$\d|\d+%|APP entered|BUILD IN STAGES/);
+ }
 });

@@ -2,6 +2,8 @@
 import { researchLenses, lensForSection } from "@/lib/reference-navigation";
 import cockpit from "./ReferenceCockpit.module.css";
 import ReferenceAtlas from "./ReferenceAtlas";
+import CompanyEventCalendar from "./CompanyEventCalendar";
+import IndicatorOverview from "./IndicatorOverview";
 import SentiSensePanels from "./SentiSensePanels";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
@@ -30,6 +32,7 @@ import { retainResearchQuote } from "@/lib/research-quote";
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
 });
+const OptionsMarketOverview = dynamic(() => import("./OptionsMarketOverview"));
 const OptionsDesk = dynamic(() => import("./OptionsDesk"), {
   loading: () => <p role="status">Opening options…</p>,
 });
@@ -155,6 +158,9 @@ const tabPresentation = {
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
   const workspacePreferences = useWorkspacePreferences();
+  const congressionalHidden =
+    workspacePreferences.preferences.hiddenSignals?.includes("congressional") ??
+    false;
   const technicalsHidden =
     workspacePreferences.preferences.hiddenSignals?.includes("technicals") ??
     false;
@@ -290,7 +296,6 @@ export default function Research({ symbol }: { symbol: string }) {
     if (next === "Snapshot" || next === "Technicals")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
   }, [requestedTab]);
-  const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const researchNavigation = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
     const revealSelection = () => {
@@ -489,6 +494,24 @@ export default function Research({ symbol }: { symbol: string }) {
           ))}
         </div>
       </header>
+      {tab === "Technicals" && (
+        <div className="segments" aria-label="Chart interval">
+          {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
+            <button
+              key={v}
+              className={frequency === v ? "active" : ""}
+              aria-pressed={frequency === v}
+              onClick={() => {
+                setFrequency(v);
+                rangeTouched.current = true;
+                setRange(v === "Monthly" ? "5Y" : "1Y");
+              }}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+      )}
       {bars.length ? (
         <PriceStudyChart
           research={r}
@@ -676,7 +699,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
-      {tab !== "Snapshot" && evidenceToolbar}
+      {tab !== "Snapshot" && tab !== "Technicals" && evidenceToolbar}
       <div id="research-overview" hidden={tab !== "Snapshot"}>
         {retainedCharts.includes("Snapshot") && (
           <FeatureGate
@@ -684,13 +707,13 @@ export default function Research({ symbol }: { symbol: string }) {
             fallback={<FreeSnapshot research={r} />}
           >
             <ReferenceAtlas research={r} onTab={switchTab} />
+            <div className={cockpit.primaryChart}>{chart}</div>
             <details className={cockpit.deepEvidence}>
               <summary>Detailed business, price and decision evidence</summary>
               <DecisionOverview
                 key={r.company.symbol}
                 research={r}
                 onTab={switchTab}
-                chart={chart}
               />
             </details>
           </FeatureGate>
@@ -731,6 +754,7 @@ export default function Research({ symbol }: { symbol: string }) {
           >
             {tab === "News" && (
               <>
+                <CompanyEventCalendar key={r.company.symbol} research={r} />
                 <CompanyUpdates research={r} preview={!!demo}>
                   <EarningsReview
                     research={r}
@@ -750,11 +774,11 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Advanced" && (
               <>
-                <AdvancedResearch
-                  key={r.company.symbol}
-                  research={r}
-                  initialSection={workbenchTarget}
-                />
+                <IndicatorOverview research={r} />
+                <details className={cockpit.deepEvidence}>
+                  <summary>Risk, position &amp; scenario tools</summary>
+                  <AdvancedResearch key={r.company.symbol} research={r} />
+                </details>
                 <details className={cockpit.deepEvidence}>
                   <summary>
                     Company filings, operating metrics &amp; source evidence
@@ -774,6 +798,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   preview={!!demo}
                   group="options"
                 />
+                <OptionsMarketOverview preview={!!demo} />
                 <details className={cockpit.deepEvidence}>
                   <summary>
                     Contract tools, practice &amp; options guide
@@ -793,10 +818,21 @@ export default function Research({ symbol }: { symbol: string }) {
                   symbol={r.company.symbol}
                   preview={!!demo}
                 />
-                <TargetsEstimates
-                  research={r}
-                  ratings={<AnalystRatings research={r} hideConsensus />}
-                />
+                <section aria-label="EODHD analyst estimates and model evidence">
+                  <header className="section-head">
+                    <div>
+                      <h2>Estimates &amp; model evidence</h2>
+                      <p>
+                        Separate source coverage and reporting periods. These
+                        figures are not merged with the analyst consensus above.
+                      </p>
+                    </div>
+                  </header>
+                  <TargetsEstimates
+                    research={r}
+                    ratings={<AnalystRatings research={r} hideConsensus />}
+                  />
+                </section>
               </>
             )}
             {tab === "Financials" && (
@@ -806,15 +842,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 <FinancingContext research={r} />
               </>
             )}
-            {tab === "Valuation" && (
-              <ValueStudio
-                research={r}
-                onWorkbench={() => {
-                  setWorkbenchTarget("expectations");
-                  switchTab("Advanced");
-                }}
-              />
-            )}
+            {tab === "Valuation" && <ValueStudio research={r} />}
             {tab === "Technicals" && technicalsHidden && (
               <section className={cockpit.preferenceNotice} role="status">
                 <h2>Technical indicators are hidden</h2>
@@ -822,6 +850,25 @@ export default function Research({ symbol }: { symbol: string }) {
                   Your research preference hides this evidence. It does not
                   change your access or the separate Pace calculation.
                 </p>
+                <button
+                  className="button"
+                  disabled={
+                    workspacePreferences.saving || !workspacePreferences.ready
+                  }
+                  onClick={() =>
+                    void workspacePreferences.save({
+                      hiddenSignals:
+                        workspacePreferences.preferences.hiddenSignals.filter(
+                          (signal) => signal !== "technicals",
+                        ),
+                    })
+                  }
+                >
+                  Show technical indicators
+                </button>
+                {workspacePreferences.error && (
+                  <p role="alert">{workspacePreferences.error}</p>
+                )}
                 <a href="/settings">
                   Restore technical indicators in Settings →
                 </a>
@@ -829,55 +876,13 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {access.features.technicals &&
               !technicalsHidden &&
-              retainedCharts.includes("Technicals") && (
+              (tab === "Technicals" ||
+                retainedCharts.includes("Technicals")) && (
                 <section
                   data-retained-panel="Technicals"
                   hidden={tab !== "Technicals"}
                   className="au-stack"
                 >
-                  <header className="section-head">
-                    <div>
-                      <h2>Technicals</h2>
-                      <p>
-                        Trend, momentum, participation and risk. Studies use
-                        completed daily prices.
-                      </p>
-                    </div>
-                    <div className="segments" aria-label="Chart interval">
-                      {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
-                        <button
-                          key={v}
-                          className={frequency === v ? "active" : ""}
-                          aria-pressed={frequency === v}
-                          onClick={() => {
-                            setFrequency(v);
-                            rangeTouched.current = true;
-                            setRange(v === "Monthly" ? "5Y" : "1Y");
-                          }}
-                        >
-                          {v}
-                        </button>
-                      ))}
-                    </div>
-                  </header>
-                  {p && (
-                    <section
-                      className="technical-pace"
-                      aria-label="AURYN Pace price evidence"
-                    >
-                      <div>
-                        <span className="eyebrow">AURYN PACE</span>
-                        <strong>Your price-based accumulation reading</strong>
-                        <PaceHelp trigger="What does P mean?" />
-                      </div>
-                      <PaceReadings
-                        readings={pacePeriods({
-                          ...p.dca.confirmed,
-                          forming: p.dca.forming,
-                        })}
-                      />
-                    </section>
-                  )}
                   <TechnicalPicture
                     research={r}
                     dca={null}
@@ -888,12 +893,6 @@ export default function Research({ symbol }: { symbol: string }) {
                       </>
                     }
                   />
-                  <details className="value-personal-model">
-                    <summary>
-                      Monthly price zones and historical policy evidence
-                    </summary>
-                    <DcaResearch research={r} />
-                  </details>
                 </section>
               )}
             {tab === "Pace" && (
@@ -906,7 +905,14 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Thesis" && (
               <>
-                <div className={cockpit.ownershipGrid}>
+                <div
+                  className={cockpit.ownershipGrid}
+                  style={
+                    congressionalHidden
+                      ? { gridTemplateColumns: "minmax(0, 1fr)" }
+                      : undefined
+                  }
+                >
                   <section aria-label="Institutional and insider evidence">
                     <SentiSensePanels
                       symbol={r.company.symbol}
@@ -914,15 +920,22 @@ export default function Research({ symbol }: { symbol: string }) {
                       group="ownership"
                     />
                   </section>
-                  <section aria-label="Congressional activity">
-                    <CongressDisclosures
-                      symbol={r.company.symbol}
-                      preview={!!demo}
-                    />
-                  </section>
+                  {!congressionalHidden && (
+                    <section aria-label="Congressional activity">
+                      <CongressDisclosures
+                        symbol={r.company.symbol}
+                        preview={!!demo}
+                      />
+                    </section>
+                  )}
                 </div>
-                <ThesisPicture research={r} />
-                <BusinessMap key={r.company.symbol} research={r} />
+                <details className={cockpit.deepEvidence}>
+                  <summary>
+                    Business case, ownership context &amp; research assistant
+                  </summary>
+                  <ThesisPicture research={r} />
+                  <BusinessMap key={r.company.symbol} research={r} />
+                </details>
                 <details className="edge-method">
                   <summary>How the business is assessed</summary>
                   <DecisionWorkspace
@@ -937,6 +950,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </FeatureGate>
         </div>
       </section>
+      {tab === "Technicals" && evidenceToolbar}
     </article>
   );
 }

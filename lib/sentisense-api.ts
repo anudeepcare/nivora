@@ -3,6 +3,15 @@
  * Memory caching is deduplication, NOT a distributed subscription quota ledger.
  */
 export type SentiSenseDataset =
+  | "institutionProfile"
+  | "institutionHistory"
+  | "institutionalQuarters"
+  | "institutionalActivists"
+  | "institutionalFlows"
+  | "etfHoldings"
+  | "etfAnalyst"
+  | "kpiCoverage"
+  | "optionsOverview"
   | "tickerStories"
   | "storyDetail"
   | "trackedStockCoverage"
@@ -58,6 +67,15 @@ export type SentiSenseResult = {
   retryAfterSeconds?: number;
 };
 const paths: Record<SentiSenseDataset, (ticker: string) => string> = {
+  institutionProfile: () => "",
+  institutionHistory: () => "",
+  institutionalQuarters: () => "/institutional/quarters",
+  institutionalActivists: () => "", // Quarter is selected from the fixed quarters endpoint.
+  institutionalFlows: () => "/institutional/flows?limit=20",
+  etfHoldings: (t) => `/etfs/${t}/holdings`,
+  etfAnalyst: (t) => `/etfs/${t}/aggregates/analyst`,
+  kpiCoverage: () => "/stocks/with-kpis",
+  optionsOverview: () => "/options/overview",
   tickerStories: (t) =>
     `/documents/stories?ticker=${t}&filterHours=720&limit=20`,
   storyDetail: () => "", // Only callable through validated readStory.
@@ -93,7 +111,18 @@ const paths: Record<SentiSenseDataset, (ticker: string) => string> = {
 };
 export const SENTISENSE_DATASETS = Object.freeze(
   Object.keys(paths).filter(
-    (id) => !["storyDetail", "trackedStockCoverage"].includes(id),
+    (id) =>
+      ![
+        "storyDetail",
+        "trackedStockCoverage",
+        "kpiCoverage",
+        "optionsOverview",
+        "institutionalFlows",
+        "institutionProfile",
+        "institutionHistory",
+        "institutionalQuarters",
+        "institutionalActivists",
+      ].includes(id),
   ) as SentiSenseDataset[],
 );
 
@@ -119,7 +148,20 @@ export function sentiSenseTicker(symbol: string): string | null {
   if (!explicit && /\.(?:L|F|V|T)$/.test(ticker)) return null;
   return ticker.replace(/-([A-Z])$/, ".$1");
 }
+const universeDatasets = new Set<SentiSenseDataset>([
+  "institutionProfile",
+  "institutionHistory",
+  "trackedStockCoverage",
+  "kpiCoverage",
+  "optionsOverview",
+  "institutionalFlows",
+  "institutionalQuarters",
+  "institutionalActivists",
+]);
 const bareDatasets = new Set<SentiSenseDataset>([
+  "institutionalQuarters",
+  "etfHoldings",
+  "kpiCoverage",
   "tickerStories",
   "storyDetail",
   "trackedStockCoverage",
@@ -135,6 +177,132 @@ const bareDatasets = new Set<SentiSenseDataset>([
   "kpiTypes",
 ]);
 function validPayload(dataset: SentiSenseDataset, data: unknown): boolean {
+  if (dataset === "institutionProfile")
+    return (
+      object(data) &&
+      typeof data.filerCik === "string" &&
+      dated(data.latestReportDate) &&
+      Array.isArray(data.holdings)
+    );
+  if (dataset === "institutionHistory")
+    return (
+      object(data) &&
+      typeof data.filerCik === "string" &&
+      Array.isArray(data.quarters) &&
+      data.quarters.every((q) => object(q) && dated(q.reportDate))
+    );
+
+  if (dataset === "institutionalQuarters")
+    return (
+      Array.isArray(data) &&
+      data.every(
+        (row) =>
+          object(row) &&
+          dated(row.reportDate) &&
+          typeof row.pending === "boolean",
+      )
+    );
+  if (dataset === "institutionalActivists")
+    return (
+      Array.isArray(data) &&
+      data.every(
+        (row) =>
+          object(row) &&
+          typeof row.filerName === "string" &&
+          typeof row.ticker === "string" &&
+          dated(row.reportDate) &&
+          ["NEW", "INCREASED"].includes(String(row.changeType)) &&
+          [
+            row.shares,
+            row.valueUsd,
+            row.sharesChange,
+            row.sharesChangePct,
+          ].every((v) => typeof v === "number" && Number.isFinite(v) && v >= 0),
+      )
+    );
+
+  if (dataset === "institutionalFlows")
+    return (
+      object(data) &&
+      dated(data.reportDate) &&
+      typeof data.isPending === "boolean" &&
+      [data.inflows, data.outflows].every(
+        (rows) =>
+          Array.isArray(rows) &&
+          rows.every(
+            (row) =>
+              object(row) &&
+              typeof row.ticker === "string" &&
+              typeof row.netSharesChange === "number" &&
+              Number.isFinite(row.netSharesChange),
+          ),
+      )
+    );
+
+  if (dataset === "etfHoldings")
+    return (
+      object(data) &&
+      typeof data.ticker === "string" &&
+      dated(data.asOfDate) &&
+      Number.isInteger(data.totalHoldings) &&
+      Number(data.totalHoldings) >= 0 &&
+      Array.isArray(data.holdings) &&
+      data.holdings.every(
+        (row) =>
+          object(row) &&
+          typeof row.ticker === "string" &&
+          typeof row.weightPct === "number" &&
+          Number.isFinite(row.weightPct) &&
+          row.weightPct >= 0 &&
+          row.weightPct <= 100,
+      )
+    );
+  if (dataset === "kpiCoverage")
+    return (
+      object(data) &&
+      Number.isInteger(data.count) &&
+      Number(data.count) >= 0 &&
+      Array.isArray(data.tickers) &&
+      data.tickers.every(
+        (row) =>
+          object(row) &&
+          typeof row.ticker === "string" &&
+          sentiSenseTicker(row.ticker) !== null &&
+          typeof row.companyName === "string" &&
+          dated(row.lastUpdated) &&
+          Number.isInteger(row.kpiCount) &&
+          Number(row.kpiCount) >= 0,
+      )
+    );
+  if (dataset === "optionsOverview") {
+    const validRows = (rows: unknown) =>
+      Array.isArray(rows) &&
+      rows.every(
+        (row) =>
+          object(row) &&
+          typeof row.ticker === "string" &&
+          sentiSenseTicker(row.ticker) !== null &&
+          dated(row.asOf),
+      );
+    return (
+      object(data) &&
+      dated(data.asOf) &&
+      validRows(data.rows) &&
+      (!Object.hasOwn(data, "etfRows") || validRows(data.etfRows)) &&
+      Number.isInteger(data.coverageCount) &&
+      Number(data.coverageCount) >= 0
+    );
+  }
+  if (dataset === "etfAnalyst")
+    return (
+      object(data) &&
+      typeof data.ticker === "string" &&
+      dated(data.asOfDate) &&
+      object(data.coverage) &&
+      object(data.weightedConsensus) &&
+      Array.isArray(data.topContributors)
+    );
+
   if (dataset === "trackedStockCoverage")
     return (
       Array.isArray(data) &&
@@ -281,8 +449,9 @@ export function createSentiSenseClient({
     dataset: SentiSenseDataset,
     storyId?: string,
   ): Promise<SentiSenseResult> {
-    const ticker =
-      dataset === "trackedStockCoverage" ? "" : sentiSenseTicker(symbol);
+    const ticker = universeDatasets.has(dataset)
+      ? ""
+      : sentiSenseTicker(symbol);
     const base: SentiSenseResult = {
       symbol: ticker ?? String(symbol),
       dataset,
@@ -302,8 +471,14 @@ export function createSentiSenseClient({
       extra: Partial<SentiSenseResult> = {},
     ): SentiSenseResult => ({ ...base, status, ...extra });
     if (
-      (dataset !== "trackedStockCoverage" && !ticker) ||
+      (!universeDatasets.has(dataset) && !ticker) ||
       !Object.hasOwn(paths, dataset) ||
+      (["institutionProfile", "institutionHistory"].includes(dataset) &&
+        (!storyId || !/^\d{1,10}$/.test(storyId))) ||
+      (dataset === "institutionalActivists" &&
+        (!storyId ||
+          !/^\d{4}-\d{2}-\d{2}$/.test(storyId) ||
+          !dated(storyId))) ||
       (dataset === "storyDetail" &&
         (!storyId || !/^[A-Za-z0-9_-]{1,128}$/.test(storyId)))
     )
@@ -321,7 +496,7 @@ export function createSentiSenseClient({
     const value = (async (): Promise<SentiSenseResult> => {
       try {
         const response = await fetcher(
-          `https://app.sentisense.ai/api/v1${dataset === "storyDetail" ? `/documents/stories/${encodeURIComponent(storyId!)}` : paths[dataset](encodeURIComponent(ticker!))}`,
+          `https://app.sentisense.ai/api/v1${dataset === "storyDetail" ? `/documents/stories/${encodeURIComponent(storyId!)}` : dataset === "institutionalActivists" ? `/institutional/activist?reportDate=${encodeURIComponent(storyId!)}` : dataset === "institutionProfile" ? `/institutional/institution/${storyId}?limit=50&offset=0` : dataset === "institutionHistory" ? `/institutional/institution/${storyId}/history?quarters=8` : paths[dataset](encodeURIComponent(ticker!))}`,
           {
             headers: {
               "X-SentiSense-API-Key": key,
@@ -369,7 +544,8 @@ export function createSentiSenseClient({
           body.isPreview === true
         )
           return empty("preview", { isPreview: true });
-        if (dataset === "options" && data === null) return empty("no-coverage");
+        if (["options", "optionsOverview"].includes(dataset) && data === null)
+          return empty("no-coverage");
         if (!validPayload(dataset, data)) return empty("invalid-response");
         if (
           (dataset === "tickerStories" &&
@@ -389,9 +565,22 @@ export function createSentiSenseClient({
         )
           return empty("subject-mismatch");
         if (
-          !matchesSubject(data, ticker!) ||
+          (!universeDatasets.has(dataset) && !matchesSubject(data, ticker!)) ||
           (typeof body.ticker === "string" &&
             body.ticker.toUpperCase() !== ticker)
+        )
+          return empty("subject-mismatch");
+        if (
+          dataset === "institutionalActivists" &&
+          Array.isArray(data) &&
+          data.some((row) => !object(row) || row.reportDate !== storyId)
+        )
+          return empty("invalid-response");
+        if (
+          ["institutionProfile", "institutionHistory"].includes(dataset) &&
+          (!object(data) ||
+            typeof data.filerCik !== "string" ||
+            data.filerCik.padStart(10, "0") !== storyId?.padStart(10, "0"))
         )
           return empty("subject-mismatch");
         // sampleCompany is a boolean full-access exemption, not another ticker.
@@ -403,7 +592,16 @@ export function createSentiSenseClient({
         const isPreview = body.isPreview === true;
         const asOf =
           [
+            dataset === "institutionalActivists" ? storyId : null,
+            object(data) ? data.latestReportDate : null,
             object(data) ? data.asOf : null,
+            dataset === "institutionalFlows" && object(data)
+              ? data.reportDate
+              : null,
+            (dataset === "etfAnalyst" || dataset === "etfHoldings") &&
+            object(data)
+              ? data.asOfDate
+              : null,
             object(data) ? data.updatedAt : null,
             object(data) ? data.lastUpdated : null,
             body.asOf,
@@ -430,7 +628,18 @@ export function createSentiSenseClient({
       }
     })();
     cache.set(cacheKey, {
-      until: now() + (dataset === "trackedStockCoverage" ? 86400000 : ttlMs),
+      until:
+        now() +
+        ([
+          "trackedStockCoverage",
+          "kpiCoverage",
+          "institutionalQuarters",
+          "institutionalActivists",
+        ].includes(dataset)
+          ? 86400000
+          : ["optionsOverview", "institutionalFlows"].includes(dataset)
+            ? 900000
+            : ttlMs),
       value,
     });
     if (cache.size > 256) cache.delete(cache.keys().next().value!);
@@ -442,14 +651,52 @@ export function createSentiSenseClient({
   const read = (symbol: string, dataset: SentiSenseDataset) =>
     readInternal(
       symbol,
-      dataset === "storyDetail" || dataset === "trackedStockCoverage"
+      dataset === "storyDetail" || universeDatasets.has(dataset)
         ? ("__invalid" as SentiSenseDataset)
         : dataset,
     );
   return Object.assign(read, {
     readStory: (symbol: string, id: string) =>
       readInternal(symbol, "storyDetail", id),
+    institution: (cik: string, history = false) =>
+      readInternal(
+        "",
+        history ? "institutionHistory" : "institutionProfile",
+        cik,
+      ),
     trackedStocks: () => readInternal("", "trackedStockCoverage"),
+    kpiCoverage: () => readInternal("", "kpiCoverage"),
+    optionsOverview: () => readInternal("", "optionsOverview"),
+    institutionalFlows: () => readInternal("", "institutionalFlows"),
+    institutionalActivists: async () => {
+      const quarters = await readInternal("", "institutionalQuarters");
+      if (quarters.status !== "available" || !Array.isArray(quarters.data))
+        return {
+          ...quarters,
+          dataset: "institutionalActivists" as const,
+          data: null,
+        };
+      const eligible = quarters.data
+        .filter(
+          (q: unknown) =>
+            object(q) &&
+            q.pending === false &&
+            q.ownershipEligible !== false &&
+            typeof q.reportDate === "string" &&
+            q.reportDate <= new Date(now()).toISOString().slice(0, 10),
+        )
+        .sort((a, b) =>
+          String(b.reportDate).localeCompare(String(a.reportDate)),
+        )[0];
+      if (!eligible)
+        return {
+          ...quarters,
+          dataset: "institutionalActivists" as const,
+          status: "no-coverage" as const,
+          data: null,
+        };
+      return readInternal("", "institutionalActivists", eligible.reportDate);
+    },
   });
 }
 export const sentisenseEnabled = () =>
@@ -473,4 +720,38 @@ export function sentisenseTrackedStocks() {
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.trackedStocks();
+}
+
+export function sentisenseKpiCoverage() {
+  singleton ??= createSentiSenseClient({
+    key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
+  });
+  return singleton.kpiCoverage();
+}
+export function sentisenseOptionsOverview() {
+  singleton ??= createSentiSenseClient({
+    key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
+  });
+  return singleton.optionsOverview();
+}
+
+export function sentisenseInstitutionalFlows() {
+  singleton ??= createSentiSenseClient({
+    key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
+  });
+  return singleton.institutionalFlows();
+}
+
+export function sentisenseInstitutionalActivists() {
+  singleton ??= createSentiSenseClient({
+    key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
+  });
+  return singleton.institutionalActivists();
+}
+
+export function sentisenseInstitution(cik: string, history = false) {
+  singleton ??= createSentiSenseClient({
+    key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
+  });
+  return singleton.institution(cik, history);
 }

@@ -1,5 +1,4 @@
 "use client";
-import QuickRead from "./QuickRead";
 import SectionIcon from "./SectionIcon";
 import { Help } from "./Ui";
 import layout from "./ResearchMetrics.module.css";
@@ -262,70 +261,29 @@ export default function TechnicalDashboard({
     });
   return (
     <section className={`technical-dashboard depth-technicals ${layout.panel}`}>
-      <header className="technical-desk-heading">
-        <div>
-          <span className="eyebrow">TECHNICALS · COMPLETED DAILY EVIDENCE</span>
-          <h2>
-            {p.tech.trend === "Constructive"
-              ? "Trend constructive. Check momentum."
-              : p.tech.trend === "Weak"
-                ? "Trend weak. Watch participation and support."
-                : "Price signals are mixed. Keep risk in view."}
-          </h2>
-          <p>
-            {a.count} valid completed observations · through {dateLabel(a.asOf)}
-            . Chart interval changes do not alter these daily studies.
-          </p>
-        </div>
-      </header>
-      <QuickRead
-        title="The technical read"
-        items={[
-          ...(last != null && pro.ma200 != null
-            ? [
-                {
-                  label: "Longer-term trend",
-                  value: `${percent((last / pro.ma200 - 1) * 100, true)} vs 200-session average`,
-                  detail:
-                    last >= pro.ma200
-                      ? "Price is above its completed daily trend reference."
-                      : "Price remains below its completed daily trend reference.",
-                  tone:
-                    last >= pro.ma200
-                      ? ("positive" as const)
-                      : ("caution" as const),
-                },
-              ]
-            : []),
-          ...(p.tech.rsi != null
-            ? [
-                {
-                  label: "Momentum · RSI 14",
-                  value: `${p.tech.rsi.toFixed(1)} · ${p.tech.rsi > 70 ? "Overbought" : p.tech.rsi < 30 ? "Oversold" : "Neutral range"}`,
-                  detail:
-                    "Extremes can persist; RSI alone is not an entry signal.",
-                  tone:
-                    p.tech.rsi > 70 || p.tech.rsi < 30
-                      ? ("caution" as const)
-                      : ("neutral" as const),
-                },
-              ]
-            : []),
-          ...(a.relativeVolume != null
-            ? [
-                {
-                  label: "Participation",
-                  value: `${a.relativeVolume.toFixed(2)}× usual volume`,
-                  detail:
-                    "Completed-session volume relative to its recent average.",
-                },
-              ]
-            : []),
-        ]}
-      />
       <div className={layout.technicalWorkbench}>
         {chart && <div className={layout.technicalChart}>{chart}</div>}
         <div className={layout.technicalCurrent}>
+          <header className="technical-desk-heading">
+            <div>
+              <span className="eyebrow">
+                TECHNICALS · COMPLETED DAILY EVIDENCE
+              </span>
+              <h2>
+                {p.tech.trend === "Constructive"
+                  ? "Trend constructive. Check momentum."
+                  : p.tech.trend === "Weak"
+                    ? "Trend weak. Watch participation and support."
+                    : "Price signals are mixed. Keep risk in view."}
+              </h2>
+              <p>
+                {a.count} valid completed observations · through{" "}
+                {dateLabel(a.asOf)}. Chart interval changes do not alter these
+                daily studies.
+              </p>
+            </div>
+          </header>
+
           <div className="technical-summary-strip">
             {[
               [

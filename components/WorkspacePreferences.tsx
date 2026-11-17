@@ -46,7 +46,7 @@ export function useWorkspacePreferences() {
     localOnly: !!demo,
   };
 }
-export default function WorkspacePreferences() {
+export default function WorkspacePreferences({ showConcentration = true }: { showConcentration?: boolean } = {}) {
   const {
     preferences: p,
     save,
@@ -111,7 +111,7 @@ export default function WorkspacePreferences() {
           </label>
         ))}
       </fieldset>
-      <label>
+      {showConcentration && <> <label>
         Single-position attention threshold
         <select
           disabled={disabled}
@@ -134,7 +134,7 @@ export default function WorkspacePreferences() {
       </label>
       <small>
         This is your review threshold, not an allocation recommendation.
-      </small>
+      </small></>}
       {saving && <p role="status">Saving preferences…</p>}
       {error && <p role="alert">{error}</p>}
     </section>

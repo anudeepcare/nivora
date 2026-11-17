@@ -1,5 +1,12 @@
 /* Reference-derived cockpit structure. Data components keep their existing behavior. */
 .root {
+  --research-chrome: #f8fafc;
+  --research-tab-ink: #69768a;
+  --line: #d6dde8;
+  --ink: #172033;
+  --muted: #627086;
+  background: #edf1f6;
+  color: var(--ink);
   --research-gutter: clamp(12px, 2vw, 28px);
   --research-gap: 16px;
   display: flex;
@@ -11,6 +18,7 @@
 }
 .root > header {
   flex: 0 0 auto;
+  background: var(--research-chrome);
   min-height: 88px;
   padding: 12px var(--research-gutter);
 }
@@ -21,7 +29,7 @@
   padding: 0 var(--research-gutter);
   overflow-x: auto;
   border-block: 1px solid var(--line);
-  background: var(--card);
+  background: var(--research-chrome);
   scrollbar-width: thin;
 }
 .lenses button {
@@ -31,9 +39,9 @@
   border-radius: 0;
   background: transparent;
   padding: 0 16px;
-  color: var(--muted);
+  color: var(--research-tab-ink);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
 }
 .lenses button[aria-current="page"] {
@@ -46,7 +54,7 @@
   left: 16px;
   right: 16px;
   height: 2px;
-  background: var(--cyan, #79eadc);
+  background: linear-gradient(90deg, #79eadc, #9b8cff);
 }
 .supporting {
   display: flex;
@@ -242,4 +250,24 @@
     width: calc(100% - 24px);
     padding: 18px 0;
   }
+}
+
+.primaryChart {
+  min-width: 0;
+  margin: 16px var(--research-gutter);
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--card);
+}
+
+:global([data-theme="dark"]) .root {
+  --research-chrome: #0b121f;
+  --research-tab-ink: #718097;
+  --line: #253146;
+  --ink: #eef2f8;
+  --muted: #8c99ac;
+  background: #080d18;
+}
+:global([data-theme="dark"]) .lenses button[aria-current="page"] {
+  color: #fff;
 }

@@ -1,4 +1,5 @@
 "use client";
+import { initialAlertType } from "@/lib/alert-setup";
 import { newRequestId } from "@/lib/client-id";
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -42,9 +43,10 @@ export default function AlertCenter() {
       previewRules,
     ),
     events = useResource<{ events: Event[] }>("alerts", previewEvents);
-  const requestedSymbol = useSearchParams().get("symbol") ?? "";
+  const params = useSearchParams();
+  const requestedSymbol = params.get("symbol") ?? "";
   const [symbol, setSymbol] = useState(requestedSymbol),
-    [type, setType] = useState("new-filing"),
+    [type, setType] = useState(() => initialAlertType(params.get("type"))),
     [threshold, setThreshold] = useState("2"),
     [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false);

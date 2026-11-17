@@ -1,3 +1,4 @@
+import { publicIntelligence } from "@/lib/intelligence-dto";
 import { requestAccess, reserveAccess } from "@/lib/access-server";
 import type { Feature } from "@/lib/access-policy";
 import { account, failure, limit, privateJson, HttpError } from "@/lib/server";
@@ -9,6 +10,8 @@ import {
 } from "@/lib/sentisense-api";
 const features: Partial<Record<SentiSenseDataset, Feature>> = {
   consensus: "analysts",
+  etfAnalyst: "analysts",
+  etfHoldings: "advanced",
   estimates: "analysts",
   consensusHistory: "analysts",
   analystActions: "analysts",
@@ -60,7 +63,9 @@ export async function GET(
         403,
       );
     await reserveAccess(user.id, access, "research", symbol);
-    return privateJson(await sentisenseRead(symbol, section));
+    return privateJson(
+      publicIntelligence(await sentisenseRead(symbol, section)),
+    );
   } catch (error) {
     return failure(error);
   }

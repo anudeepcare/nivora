@@ -113,3 +113,26 @@
     align-items: flex-start;
   }
 }
+
+.root[data-compact] {
+  padding: 0;
+  margin: 12px 0 0;
+}
+.root[data-compact] .rows {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.root[data-compact] .rows article {
+  border-radius: 0;
+  background: transparent;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+.root[data-compact] .rows p {
+  margin: 6px 0;
+  font-size: 12px;
+}
+.root[data-compact] summary {
+  min-height: 32px;
+  padding: 6px 0;
+}

@@ -408,5 +408,42 @@ test("Signal visibility saves account preferences but unavailable delivery stays
 });
 test("Preview cannot claim saved signal visibility",()=>{const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:()=>assert.fail(),saving:false,ready:true,localOnly:true,error:null})});assert.ok(nodes(View(),n=>n.type==="input").every(n=>n.props.disabled));});
 test("guardrail selections persist actual account percentages and support off",()=>{
- const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[],maxLossPercent:null,cashReservePercent:10},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});const selects=nodes(View(),n=>n.type==="select");assert.equal(selects.length,2);selects[0].props.onChange({target:{value:"1"}});selects[1].props.onChange({target:{value:""}});assert.deepEqual(saved,[{maxLossPercent:1},{cashReservePercent:null}]);
+ const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[],maxLossPercent:null,cashReservePercent:10},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});const selects=nodes(View(),n=>n.type==="select");assert.equal(selects.length,3);selects[1].props.onChange({target:{value:"1"}});selects[2].props.onChange({target:{value:""}});assert.deepEqual(saved,[{maxLossPercent:1},{cashReservePercent:null}]);
+});
+
+test("unavailable notification delivery is one clear notice, not five dead controls", () => {
+ const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:()=>{},saving:false,ready:true,localOnly:false,error:null})});
+ const tree=View();
+ assert.equal(nodes(tree,n=>n.type==="button" && n.props.disabled).length,0);
+});
+
+
+test("Settings avoids duplicated preset controls and links directly to important groups", () => {
+ const {tree}=settings({routePrefix:"/preview"});
+ const source=fs.readFileSync("components/SupportingViews.tsx","utf8").split("export function Compare")[0];
+ assert.doesNotMatch(source, /<SettingsExperience/);
+ assert.match(source, /showConcentration=\{false\}/);
+ assert.equal((source.match(/section="policy"/g)||[]).length,1);
+ assert.ok(nodes(tree,n=>n.type==="a" && n.props.href==="#settings-signals").length);
+ assert.ok(nodes(tree,n=>n.type==="a" && n.props.href==="#settings-policy").length);
+});
+test("Settings concentration control persists in the single guardrail section",()=>{
+ const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[],concentrationLimit:20},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});
+ const tree=View({section:"policy"});
+ assert.equal(nodes(tree,n=>n.type==="input").length,0);
+ nodes(tree,n=>n.type==="select" && n.props["aria-label"]==="Single-position attention threshold")[0].props.onChange({target:{value:"25"}});
+ assert.deepEqual(saved,[{concentrationLimit:25}]);
+});
+
+test("Settings offers only supported in-app alert setup without subscribing", () => {
+ const writes=[];
+ const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:p=>writes.push(p),saving:false,ready:true,localOnly:false,error:null})});
+ const tree=View({section:"notifications"});
+ const links=nodes(tree,n=>n.type==="a");
+ assert.deepEqual(links.map(n=>n.props.href),['alerts?type=monthly-zone','alerts?type=earnings-soon','alerts?type=new-filing']);
+ for (const base of ['https://example.test/settings','https://example.test/preview/settings']) {
+   for (const link of links) assert.equal(new URL(link.props.href,base).pathname,base.includes('/preview/')?'/preview/alerts':'/alerts');
+ }
+ assert.equal(nodes(tree,n=>n.type==="select" || n.type==="input").length,0);
+ assert.deepEqual(writes,[]);
 });

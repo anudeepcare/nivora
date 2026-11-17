@@ -1,7 +1,7 @@
 "use client";
 import styles from "./Contact.module.css";
 import { APP_VERSION } from "@/lib/releases";
-import { DocumentBack } from "./ContextLink";
+import { ContextLink, DocumentBack } from "./ContextLink";
 import { newRequestId } from "@/lib/client-id";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { useEffect, useState } from "react";
@@ -112,25 +112,20 @@ export default function Contact() {
       <div className="support-frame">
         <section className="support-introduction">
           <span className="edge-eyebrow">WE’RE LISTENING</span>
-          <h1>
-            How can
-            <br />
-            we help?
-          </h1>
+          <h1>How can we help?</h1>
           <p>
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </p>
-          <p>A question, a concern, or an idea for AURYN. Send it here.</p>
-          <small>
-            App version {APP_VERSION}. Include this version when reporting an
-            issue.
-          </small>
+          <p>Send a question, report an issue, or share an idea.</p>
+          <p>
+            <ContextLink page="help">Browse help</ContextLink>
+          </p>
+          <small>App version {APP_VERSION}</small>
           <div className="support-promise">
             <ShieldCheck size={20} />
             <div>
-              <strong>Your message stays private.</strong>We use your reply
-              email to respond. Please leave out passwords, API keys and payment
-              details.
+              <strong>Protect your private details.</strong> Please leave out
+              passwords, API keys and payment card details.
             </div>
           </div>
         </section>
@@ -244,8 +239,8 @@ export default function Contact() {
               />
             </label>
             <p className="small muted">
-              Please don’t include passwords, API keys or payment card details.
-              We use your email to respond. <Link href="/privacy">Privacy</Link>
+              We use your email to respond.{" "}
+              <ContextLink page="privacy">Privacy</ContextLink>
             </p>
             {error && (
               <p role="alert" className="error">

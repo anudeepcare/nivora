@@ -1,5 +1,12 @@
 /* White navigation shared across all workspace routes. */
 .shell {
+  --nav-ink: #687488;
+  --nav-active: #111827;
+  --nav-surface: rgba(255, 255, 255, 0.94);
+  --nav-line: #d8dee7;
+  --nav-control: #fff;
+  --nav-control-ink: #596579;
+  --nav-control-line: #d7dde7;
   --workspace-gap: 16px;
   --workspace-panel-padding: 20px;
   --workspace-title-size: clamp(30px, 3vw, 44px);
@@ -157,20 +164,42 @@
 .skip:focus {
   top: 10px;
 }
+/* Keep desktop destinations beside the logo at compact desktop widths.
+   Overflow is horizontal and keyboard-focusable, never a second header row. */
 @media (min-width: 768px) and (max-width: 1199px) {
-  .header {
-    gap: 12px;
-    padding: 10px 20px;
-    flex-wrap: wrap;
+  .shell .header {
+    gap: 8px;
+    padding-inline: 16px;
+    flex-wrap: nowrap;
   }
-  .nav {
-    order: 4;
-    flex: 1 0 100%;
+  .shell .header .nav {
+    order: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    border-top: 0;
+  }
+  .shell .header .nav a {
+    flex: 0 0 auto;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .shell .header .brand,
+  .shell .header .actions {
+    flex-shrink: 0;
+  }
+  .shell .header .searchTrigger {
+    flex: 0 0 44px;
+    width: 44px;
+    padding: 0;
     justify-content: center;
-    border-top: 1px solid var(--line);
+    margin-left: 0;
   }
-  .searchTrigger {
-    width: 300px;
+  .shell .header .searchTrigger :is(span, kbd) {
+    display: none;
   }
 }
 :global([data-keyboard-open="true"]) .dock {
@@ -199,7 +228,7 @@
 .shell .header .nav a[aria-current="page"]::after {
   display: block;
   height: 2px;
-  background: var(--ink);
+  background: var(--blue);
   bottom: 0;
 }
 .shell .header .nav a:hover {
@@ -245,7 +274,7 @@
   padding: 0 8px;
 }
 .shell .header .nav a[aria-current="page"]::after {
-  box-shadow: 0 2px 0 #d6f35a;
+  box-shadow: none;
 }
 .shell .actions button:last-child {
   background: transparent;
@@ -392,7 +421,7 @@
   --nav-selected: #647a13;
 }
 :global([data-theme="dark"]) .shell {
-  --nav-selected: #d6f35a;
+  --nav-selected: var(--blue);
 }
 .shell .dock a[aria-current="page"] {
   border: 0;
@@ -913,4 +942,39 @@
   .shell[data-page="research"] .header {
     min-height: calc(62px + env(safe-area-inset-top, 0px));
   }
+}
+
+:global([data-theme="dark"]) .shell {
+  --nav-ink: #7f8da3;
+  --nav-active: #fff;
+  --nav-surface: rgba(8, 13, 24, 0.92);
+  --nav-line: #263247;
+  --nav-control: #101a29;
+  --nav-control-ink: #dfe5ef;
+  --nav-control-line: #263247;
+}
+.shell .header {
+  background: var(--nav-surface);
+  border-bottom-color: var(--nav-line);
+}
+.shell .header .nav a {
+  color: var(--nav-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.shell .header .nav a[aria-current="page"] {
+  color: var(--nav-active);
+}
+.shell .header .nav a[aria-current="page"]::after {
+  background: var(--blue);
+  box-shadow: none;
+}
+.shell .header .searchTrigger,
+.shell .header .actions :is(button, a) {
+  background: var(--nav-control);
+  color: var(--nav-control-ink);
+  border-color: var(--nav-control-line);
+}
+.shell .header .nav a:hover {
+  color: var(--nav-active);
 }

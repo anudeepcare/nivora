@@ -392,3 +392,347 @@ test("tracked stock coverage has daily cache and validates bare string list", as
   });
   assert.equal((await bad.trackedStocks()).status, "invalid-response");
 });
+
+test("ETF analyst aggregate preserves composition coverage and rejects wrong subject", async () => {
+  const data = {
+    ticker: "QQQ",
+    asOfDate: "2026-11-16",
+    computedAt: 1794860000,
+    coverage: {
+      holdingsCount: 100,
+      holdingsCovered: 90,
+      weightCovered: 92,
+      partial: false,
+    },
+    weightedConsensus: {
+      upsidePercent: 12.4,
+      distribution: { BUY: 0.62, HOLD: 0.31, SELL: 0.07 },
+    },
+    topContributors: [{ ticker: "MSFT", contributionPp: 1.2 }],
+  };
+  const read = createSentiSenseClient({
+    key: "x",
+    fetcher: async (url) => {
+      assert.ok(
+        url.endsWith("/etfs/QQQ/aggregates/analyst") ||
+          url.endsWith("/etfs/SPY/aggregates/analyst"),
+      );
+      return response({ isPreview: false, data });
+    },
+  });
+  const r = await read("QQQ", "etfAnalyst");
+  assert.equal(r.status, "available");
+  assert.equal(r.asOf, "2026-11-16");
+  assert.equal(r.data.weightedConsensus.upsidePercent, 12.4);
+  assert.equal((await read("SPY", "etfAnalyst")).status, "subject-mismatch");
+});
+test("KPI coverage uses fixed universe endpoint, daily cache, and validates rows", async () => {
+  let calls = 0,
+    time = 1780000000000;
+  const read = createSentiSenseClient({
+    key: "x",
+    now: () => time,
+    fetcher: async (url) => {
+      calls++;
+      assert.ok(url.endsWith("/stocks/with-kpis"));
+      return response({
+        count: 1,
+        tickers: [
+          {
+            ticker: "AAPL",
+            companyName: "Apple",
+            lastUpdated: "2026-04-30",
+            kpiCount: 0,
+          },
+        ],
+      });
+    },
+  });
+  assert.equal(typeof read.kpiCoverage, "function");
+  const r = await read.kpiCoverage();
+  assert.equal(r.status, "available");
+  assert.equal(r.data.tickers[0].kpiCount, 0);
+  time += 3600000;
+  await read.kpiCoverage();
+  assert.equal(calls, 1);
+  assert.equal((await read("AAPL", "kpiCoverage")).status, "invalid-request");
+  const bad = createSentiSenseClient({
+    key: "x",
+    fetcher: async () =>
+      response({ count: 1, tickers: [{ ticker: "../bad", kpiCount: 2 }] }),
+  });
+  assert.equal((await bad.kpiCoverage()).status, "invalid-response");
+});
+test("options overview keeps separate dated boards, preview and null semantics", async () => {
+  const data = {
+    asOf: "2026-11-16",
+    builtAt: 1794860000,
+    coverageCount: 100,
+    rows: [{ ticker: "AAPL", asOf: "2026-11-16", atmIv: 0.3 }],
+    etfRows: [{ ticker: "SPY", asOf: "2026-11-13", ivRank1y: null }],
+  };
+  const read = createSentiSenseClient({
+    key: "x",
+    fetcher: async (url) => {
+      assert.ok(url.endsWith("/options/overview"));
+      return response({ isPreview: true, totalCount: 100, data });
+    },
+  });
+  assert.equal(typeof read.optionsOverview, "function");
+  const r = await read.optionsOverview();
+  assert.equal(r.status, "preview");
+  assert.equal(r.data.etfRows[0].asOf, "2026-11-13");
+  assert.equal(r.totalCount, 100);
+  assert.equal(
+    (await read("AAPL", "optionsOverview")).status,
+    "invalid-request",
+  );
+  const empty = createSentiSenseClient({
+    key: "x",
+    fetcher: async () => response({ data: null }),
+  });
+  assert.equal((await empty.optionsOverview()).status, "no-coverage");
+  const bad = createSentiSenseClient({
+    key: "x",
+    fetcher: async () =>
+      response({ data: { ...data, rows: [{ ticker: "AAPL", asOf: "bad" }] } }),
+  });
+  assert.equal((await bad.optionsOverview()).status, "invalid-response");
+});
+
+test("ETF holdings preserves partial dated composition and venue-local ticker identity", async () => {
+  const data = {
+    ticker: "VEA",
+    asOfDate: "2026-11-16",
+    totalHoldings: 1,
+    partial: true,
+    totalKnownHoldings: 4000,
+    holdings: [
+      {
+        ticker: "ROP",
+        name: "Roche",
+        weightPct: 2.1,
+        exchange: "SIX Swiss Exchange",
+        linkedTicker: null,
+      },
+    ],
+  };
+  const read = createSentiSenseClient({
+    key: "x",
+    fetcher: async (url) => {
+      assert.match(url, /\/etfs\/(VEA|QQQ)\/holdings$/);
+      return response(data);
+    },
+  });
+  const r = await read("VEA", "etfHoldings");
+  assert.equal(r.status, "available");
+  assert.equal(r.asOf, "2026-11-16");
+  assert.equal(r.data.partial, true);
+  assert.equal(r.data.totalKnownHoldings, 4000);
+  assert.equal(r.data.holdings[0].linkedTicker, null);
+  assert.equal((await read("QQQ", "etfHoldings")).status, "subject-mismatch");
+});
+test("ETF holdings fails closed on missing dates or malformed weights and handles no coverage", async () => {
+  for (const data of [
+    { ticker: "QQQ", totalHoldings: 0, holdings: [] },
+    {
+      ticker: "QQQ",
+      asOfDate: "2026-11-16",
+      totalHoldings: 1,
+      holdings: [{ ticker: "AAPL", weightPct: 101 }],
+    },
+  ]) {
+    const read = createSentiSenseClient({
+      key: "x",
+      fetcher: async () => response(data),
+    });
+    assert.equal((await read("QQQ", "etfHoldings")).status, "invalid-response");
+  }
+  const empty = createSentiSenseClient({
+    key: "x",
+    fetcher: async () => response({ error: "not_found" }, 404),
+  });
+  assert.equal((await empty("QQQ", "etfHoldings")).status, "no-coverage");
+  const zero = createSentiSenseClient({
+    key: "x",
+    fetcher: async () =>
+      response({
+        ticker: "QQQ",
+        asOfDate: "2026-11-16",
+        totalHoldings: 0,
+        holdings: [],
+      }),
+  });
+  assert.equal((await zero("QQQ", "etfHoldings")).status, "available");
+});
+test("institutional flows use one bounded universe endpoint and keep quarter coverage", async () => {
+  let calls = 0;
+  const read = createSentiSenseClient({
+    key: "test",
+    fetcher: async (url) => {
+      calls++;
+      assert.equal(
+        url,
+        "https://app.sentisense.ai/api/v1/institutional/flows?limit=20",
+      );
+      return response({
+        isPreview: true,
+        data: {
+          reportDate: "2026-09-30",
+          isPending: true,
+          filerCount: 100,
+          baselineFilerCount: 200,
+          inflows: [{ ticker: "APP", netSharesChange: 0 }],
+          outflows: [{ ticker: "MSFT", netSharesChange: -10 }],
+        },
+      });
+    },
+  });
+  const result = await read.institutionalFlows();
+  assert.equal(result.status, "preview");
+  assert.equal(result.asOf, "2026-09-30");
+  assert.equal(result.data.isPending, true);
+  assert.equal(result.data.inflows[0].netSharesChange, 0);
+  await read.institutionalFlows();
+  assert.equal(calls, 1);
+  assert.equal(
+    (await read("APP", "institutionalFlows")).status,
+    "invalid-request",
+  );
+});
+test("institutional flows reject missing report dates and malformed changes", async () => {
+  for (const data of [
+    { isPending: false, inflows: [], outflows: [] },
+    {
+      reportDate: "2026-09-30",
+      isPending: false,
+      inflows: [{ ticker: "APP", netSharesChange: "10" }],
+      outflows: [],
+    },
+  ]) {
+    const read = createSentiSenseClient({
+      key: "test",
+      fetcher: async () => response({ data }),
+    });
+    assert.equal((await read.institutionalFlows()).status, "invalid-response");
+  }
+});
+test("activist discovery selects completed quarter, caches two fixed reads, never emits pending quarter", async () => {
+  const urls = [];
+  const read = createSentiSenseClient({
+    key: "test",
+    now: () => Date.parse("2026-11-17"),
+    fetcher: async (url) => {
+      urls.push(url);
+      return response(
+        url.endsWith("/quarters")
+          ? [
+              { reportDate: "2026-09-30", pending: true },
+              {
+                reportDate: "2026-06-30",
+                pending: false,
+                ownershipEligible: true,
+              },
+            ]
+          : {
+              isPreview: true,
+              data: [
+                {
+                  filerName: "Fund",
+                  ticker: "APP",
+                  changeType: "NEW",
+                  shares: 10,
+                  valueUsd: 100,
+                  sharesChange: 10,
+                  sharesChangePct: 0,
+                  reportDate: "2026-06-30",
+                },
+              ],
+            },
+      );
+    },
+  });
+  const result = await read.institutionalActivists();
+  assert.equal(result.status, "preview");
+  assert.equal(result.asOf, "2026-06-30");
+  assert.ok(urls[1].endsWith("/institutional/activist?reportDate=2026-06-30"));
+  await read.institutionalActivists();
+  assert.equal(urls.length, 2);
+});
+test("activist discovery fails closed without eligible quarter or on mismatched response quarter", async () => {
+  let calls = 0;
+  const pending = createSentiSenseClient({
+    key: "test",
+    fetcher: async () => {
+      calls++;
+      return response([{ reportDate: "2026-09-30", pending: true }]);
+    },
+  });
+  assert.equal((await pending.institutionalActivists()).status, "no-coverage");
+  assert.equal(calls, 1);
+  const wrong = createSentiSenseClient({
+    key: "test",
+    fetcher: async (url) =>
+      response(
+        url.endsWith("/quarters")
+          ? [{ reportDate: "2026-06-30", pending: false }]
+          : {
+              data: [
+                {
+                  filerName: "Fund",
+                  ticker: "APP",
+                  changeType: "NEW",
+                  shares: 10,
+                  valueUsd: 100,
+                  sharesChange: 10,
+                  sharesChangePct: 0,
+                  reportDate: "2026-03-31",
+                },
+              ],
+            },
+      ),
+  });
+  assert.equal(
+    (await wrong.institutionalActivists()).status,
+    "invalid-response",
+  );
+});
+test("institution CIK requests use fixed paged profile/history and reject another filer", async () => {
+  const urls = [];
+  const read = createSentiSenseClient({
+    key: "test",
+    fetcher: async (url) => {
+      urls.push(url);
+      return response({
+        data: url.includes("/history")
+          ? { filerCik: "0001067983", quarters: [{ reportDate: "2026-06-30" }] }
+          : {
+              filerCik: "0001067983",
+              latestReportDate: "2026-06-30",
+              holdings: [],
+            },
+      });
+    },
+  });
+  assert.equal((await read.institution("1067983")).status, "available");
+  assert.ok(
+    urls[0].endsWith("/institutional/institution/1067983?limit=50&offset=0"),
+  );
+  assert.equal((await read.institution("1067983", true)).status, "available");
+  assert.ok(
+    urls[1].endsWith("/institutional/institution/1067983/history?quarters=8"),
+  );
+  assert.equal(
+    (await read.institution("../../other")).status,
+    "invalid-request",
+  );
+  assert.equal(urls.length, 2);
+  const other = createSentiSenseClient({
+    key: "test",
+    fetcher: async () =>
+      response({
+        data: { filerCik: "123", latestReportDate: "2026-06-30", holdings: [] },
+      }),
+  });
+  assert.equal((await other.institution("1067983")).status, "subject-mismatch");
+});

@@ -1,3 +1,7 @@
+/* Date badges use a pale accent surface in both themes; pair with dark ink. */
+.home {
+  --date-badge-ink: #171c27;
+}
 .home.home.home :global(.home-evidence-layout) {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
@@ -315,7 +319,7 @@
   padding: 24px;
 }
 .home.home.home :global(.home-evidence-layout) {
-  align-items: start;
+  align-items: stretch;
 }
 .home.home.home :global(.home-news-list),
 .home.home.home :global(.home-event-groups) {
@@ -528,9 +532,6 @@
   padding: 20px 24px;
   margin: 18px 0;
 }
-.home.home.home :global(.home-evidence-panel) {
-  align-self: start;
-}
 .home .history svg {
   color: var(--ink);
 }
@@ -571,7 +572,7 @@
   padding: 8px;
   border-radius: 8px;
   background: var(--blue-soft);
-  color: var(--ink);
+  color: var(--date-badge-ink);
   height: max-content;
   text-align: center;
 }
@@ -906,4 +907,22 @@
   .home.home.home.home :global(.home-evidence-panel) {
     padding: 16px 14px;
   }
+}
+
+.home.home.home :global(.home-evidence-layout) {
+  align-items: stretch;
+}
+.home.home.home :global(.home-evidence-panel) {
+  border: 1px solid var(--line);
+  border-radius: var(--workspace-panel-radius, 14px);
+  box-shadow: none;
+  padding: 20px;
+}
+.home.home.home :global(.home-company) {
+  min-height: 64px;
+  padding: 10px 0;
+}
+.home.home.home :global(.home-events-panel) {
+  display: flex;
+  flex-direction: column;
 }

@@ -7,7 +7,12 @@ import SelectedValuation from "./SelectedValuation";
 import { scenarioHeadline } from "@/lib/scenario-headline";
 import ScenarioLenses from "./ScenarioLenses";
 import SectionIcon from "./SectionIcon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+const ExpectationWorkbench = dynamic(
+  () => import("./ProfessionalWorkbench").then((m) => m.ExpectationWorkbench),
+  { loading: () => <p role="status">Opening assumptions…</p> },
+);
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
 import { percent } from "@/lib/format";
@@ -19,13 +24,8 @@ const display = (m: DeskMetric) =>
     : m.unit === "ratio"
       ? `${m.value.toFixed(1)}×`
       : percent(m.value);
-export default function ValueStudio({
-  research: r,
-  onWorkbench,
-}: {
-  research: Research;
-  onWorkbench: () => void;
-}) {
+export default function ValueStudio({ research: r }: { research: Research }) {
+  const [assumptionsOpen, setAssumptionsOpen] = useState(false);
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
   const headline = useMemo(() => scenarioHeadline(r), [r]);
@@ -44,31 +44,47 @@ export default function ValueStudio({
       className={`${layout.root} value-studio depth-value`}
       data-has-consensus={!!consensusOutlook(r)}
     >
-      <section className={layout.calculator} aria-label="What the price needs">
-        <DecisionInsights
-          research={r}
-          now={Date.parse(r.priceObservedAt ?? r.retrievedAt)}
-          initialTab={1}
-          embedded
-        />
-      </section>
       <div className={layout.scenarios}>
         <SelectedValuation
           research={r}
           headline={headline}
           actions={
-            <button type="button" className="button" onClick={onWorkbench}>
+            <button
+              type="button"
+              className="button"
+              aria-expanded={assumptionsOpen}
+              aria-controls="scenario-assumptions"
+              onClick={() => setAssumptionsOpen((open) => !open)}
+            >
               Test assumptions →
             </button>
           }
         />
         <ScenarioLenses research={r} />
       </div>
+      {assumptionsOpen && (
+        <section
+          id="scenario-assumptions"
+          className={layout.assumptions}
+          aria-label="Test scenario assumptions"
+        >
+          <ExpectationWorkbench research={r} />
+        </section>
+      )}
       {consensusOutlook(r) && (
         <div className={layout.consensus}>
           <AnalystTargets research={r} />
         </div>
       )}
+      <details className={layout.calculator}>
+        <summary>What the price needs</summary>
+        <DecisionInsights
+          research={r}
+          now={Date.parse(r.priceObservedAt ?? r.retrievedAt)}
+          initialTab={1}
+          embedded
+        />
+      </details>
       {available.length > 0 && (
         <section
           className={`valuation-board ${layout.market}`}

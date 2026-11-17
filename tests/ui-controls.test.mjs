@@ -1252,6 +1252,7 @@ test("monthly chart distinguishes unavailable warm-up data from ordinary 1x cond
     "components/AccumulationDesk.tsx",
     "AccumulationDesk",
     {
+      styles: { paceChartFirst: "paceChartFirst", paceReadings: "paceReadings" },
       React,
       useMemo: React.useMemo,
       useState: React.useState,
@@ -1493,6 +1494,7 @@ test("weekly accumulation has its own history, date labels and no misleading mon
     "components/AccumulationDesk.tsx",
     "AccumulationDesk",
     {
+      styles: { paceChartFirst: "paceChartFirst", paceReadings: "paceReadings" },
       React,
       useMemo: React.useMemo,
       useState: (initial) => React.useState(++state === 1 ? "weekly" : initial),
@@ -1659,6 +1661,7 @@ test("technical accumulation shows both periods and anchors calculations to comp
     "components/AccumulationDesk.tsx",
     "AccumulationDesk",
     {
+      styles: { paceChartFirst: "paceChartFirst", paceReadings: "paceReadings" },
       React,
       useMemo: React.useMemo,
       useState: React.useState,

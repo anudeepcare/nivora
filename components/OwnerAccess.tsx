@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import styles from "./OwnerAccess.module.css";
+import Link from "next/link";
 import SupportInbox from "./SupportInbox";
 import OwnerHandbook from "./OwnerHandbook";
 import OwnerEvidenceTools from "./OwnerEvidenceTools";
@@ -103,6 +104,7 @@ export default function OwnerAccess() {
     );
   return (
     <section className={styles.root}>
+      <Link className={styles.back} href="/settings">← Back to settings</Link>
       <header className={styles.heading}>
         <div>
           <h1>Admin controls</h1>
@@ -183,7 +185,7 @@ export default function OwnerAccess() {
           </button>
         ))}
       </nav>
-      {panel === "handbook" && <OwnerHandbook />}
+      {panel === "handbook" && <section id="admin-handbook"><OwnerHandbook /></section>}
       {panel === "evidence" && (
         <section id="admin-evidence">
           <OwnerEvidenceTools />

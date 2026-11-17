@@ -20,6 +20,12 @@ test("portfolio reference hierarchy preserves real positions and transaction con
 });
 
 test("performance panel fails closed without corporate-action and transaction evidence", () => {
-  assert.match(source, /No\s+synthetic\s+performance is shown/);
+  assert.match(source, /<AccountHistory/);
+  const history = readFileSync(
+    new URL("../components/AccountHistory.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(history, /No current-holdings backcast/);
+  assert.match(history, /disabled=\{!confirmed \|\| !reviewed \|\| busy\}/);
   assert.doesNotMatch(source, /<ApprovedPortfolioChart/);
 });

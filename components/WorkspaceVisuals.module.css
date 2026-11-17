@@ -19,10 +19,10 @@
   box-shadow: none;
 }
 .workspaceVisuals.workspaceVisuals.workspaceVisuals :global(.card) {
-  border: 0;
-  border-radius: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--workspace-panel-radius, 14px);
   background: var(--card);
-  box-shadow: 0 10px 36px #112e2208;
+  box-shadow: none;
   padding: 22px;
   margin-bottom: 16px;
 }

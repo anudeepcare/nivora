@@ -67,6 +67,8 @@ function harness(hiddenSignals = []) {
     ],
     intelligenceView,
     IntelligenceTable: loadTable(),
+    OwnershipEvidenceMap: () => null,
+    OptionsPositioningOverview: () => null,
     s: new Proxy({}, { get: (_, key) => key }),
     SentiSenseConsensus: () =>
       React.createElement("p", null, "Analyst consensus"),
@@ -173,4 +175,17 @@ test("shared evidence table keeps full source detail in disclosure without expan
   assert.match(html, /View source citation/);
   assert.ok(html.includes(citation));
   assert.doesNotMatch(html, /<details[^>]*open/);
+});
+test("provider identity stays in closed source details rather than panel branding", () => {
+  const h = harness();
+  const html = h.render({ symbol: "AAPL", group: "ownership" });
+  assert.match(
+    html,
+    /<details[^>]*><summary aria-label="Data source details">ⓘ Source<\/summary><p>Source: SentiSense/,
+  );
+  assert.doesNotMatch(html, /<details[^>]*open/);
+  assert.doesNotMatch(
+    html,
+    /aria-label="SentiSense research"|<span[^>]*>SentiSense<\/span>/,
+  );
 });

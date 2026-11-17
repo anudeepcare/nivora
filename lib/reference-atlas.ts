@@ -1,4 +1,5 @@
 import type { Research } from "./types";
+import { earningsCalendar } from "./earnings-calendar.ts";
 import { researchBrief } from "./research-brief.ts";
 export type AtlasTarget =
   | "Snapshot"
@@ -14,6 +15,7 @@ export type AtlasTarget =
 export type AtlasSignal = {
   label: string;
   value: number | null;
+  valueLabel?: string;
   unit: "percent" | "money" | "number" | "count";
   detail: string;
   target: AtlasTarget;
@@ -23,11 +25,7 @@ const finite = (value: unknown): number | null =>
   typeof value === "number" && Number.isFinite(value) ? value : null;
 export function referenceAtlas(research: Research) {
   const brief = researchBrief(research);
-  const validEvents = (research.evidence?.earnings ?? []).filter(
-    (row) =>
-      /^\d{4}-\d{2}-\d{2}$/.test(row.date) &&
-      Number.isFinite(Date.parse(row.date)),
-  );
+  const catalyst = earningsCalendar(research, Date.parse(research.retrievedAt));
   const holders = (research.evidence?.holders ?? []).filter(
     (row) => row.name && Number.isFinite(Date.parse(row.date)),
   );
@@ -84,20 +82,22 @@ export function referenceAtlas(research: Research) {
     },
     {
       label: "Catalysts",
-      value: validEvents.length || null,
+      value: null,
+      valueLabel: catalyst.next?.date,
       unit: "count",
-      detail: validEvents.length
-        ? `${validEvents.length} dated earnings records are available. Inspect each event and its status.`
-        : "No dated earnings records in the loaded company evidence. Open Events for additional sources.",
+      detail: catalyst.next
+        ? `Next scheduled earnings ${catalyst.next.date}; date may change. Calendar evidence updated ${catalyst.updatedAt}.`
+        : catalyst.status,
       target: "News",
       score: null,
     },
     {
       label: "Ownership",
-      value: holders.length || null,
+      value: null,
+      valueLabel: "Not established",
       unit: "count",
       detail: holders.length
-        ? `${holders.length} dated holder records. Counts do not imply bullish or bearish positioning.`
+        ? `Comparable ownership trend is not established. ${holders.length} dated holder records are available; counts are not a directional signal.`
         : "Open Ownership to request institutional, insider and public filing evidence.",
       target: "Thesis",
       score: null,

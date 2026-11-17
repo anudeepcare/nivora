@@ -28,6 +28,9 @@ import { useRef, useState } from "react";
 import { FeatureGate } from "./Access";
 import AccountBalances from "./AccountBalances";
 import { PositionEditor } from "./ApprovedWorkspaceForms";
+const AccountHistory = dynamic(() => import("./AccountHistory"), {
+  loading: () => <p role="status">Loading account history…</p>,
+});
 const PortfolioCharts = dynamic(() => import("./PortfolioCharts"), {
   loading: () => <p role="status">Loading analysis…</p>,
 });
@@ -158,47 +161,52 @@ export function Portfolio() {
       <WealthStrip state={state} portfolio />
       <Coverage state={state} />
       {quotes.ready && positions.length > 0 && (
-        <QuickRead
-          title="Your portfolio in 30 seconds"
-          items={[
-            ...(model.allocations[0]
-              ? [
-                  {
-                    label: "Largest position",
-                    value: `${model.allocations[0].symbol} · ${percent(model.allocations[0].weight)}`,
-                    detail:
-                      "Share of priced investments, excluding cash and unpriced holdings.",
-                    tone:
-                      model.allocations[0].weight > 30
-                        ? ("caution" as const)
-                        : ("neutral" as const),
-                  },
-                ]
-              : []),
-            {
-              label: "Earnings · next 7 days",
-              value:
-                calendar.data && calendar.data.followed > 0
-                  ? `${positions.filter((p) => p.assetType === "stock" && earnings.has(p.symbol)).length} confirmed holdings`
-                  : "Dates not confirmed",
-              detail:
-                "Review supplied dates before changing position sizes; calendar coverage may be incomplete.",
-            },
-            {
-              label: "Price coverage",
-              value: model.unpriced.length
-                ? `${model.unpriced.length} holdings need a price`
-                : "All holdings priced",
-              detail: model.older
-                ? `${model.older} use older available prices. Check timestamps before acting.`
-                : "Prices are snapshots; totals are not a live account balance.",
-              tone:
-                model.unpriced.length || model.older
-                  ? ("caution" as const)
-                  : ("positive" as const),
-            },
-          ]}
-        />
+        <details className={reference.summaryDetails}>
+          <summary>
+            Portfolio checks · concentration, dates and price coverage
+          </summary>
+          <QuickRead
+            title="Your portfolio in 30 seconds"
+            items={[
+              ...(model.allocations[0]
+                ? [
+                    {
+                      label: "Largest position",
+                      value: `${model.allocations[0].symbol} · ${percent(model.allocations[0].weight)}`,
+                      detail:
+                        "Share of priced investments, excluding cash and unpriced holdings.",
+                      tone:
+                        model.allocations[0].weight > 30
+                          ? ("caution" as const)
+                          : ("neutral" as const),
+                    },
+                  ]
+                : []),
+              {
+                label: "Earnings · next 7 days",
+                value:
+                  calendar.data && calendar.data.followed > 0
+                    ? `${positions.filter((p) => p.assetType === "stock" && earnings.has(p.symbol)).length} confirmed holdings`
+                    : "Dates not confirmed",
+                detail:
+                  "Review supplied dates before changing position sizes; calendar coverage may be incomplete.",
+              },
+              {
+                label: "Price coverage",
+                value: model.unpriced.length
+                  ? `${model.unpriced.length} holdings need a price`
+                  : "All holdings priced",
+                detail: model.older
+                  ? `${model.older} use older available prices. Check timestamps before acting.`
+                  : "Prices are snapshots; totals are not a live account balance.",
+                tone:
+                  model.unpriced.length || model.older
+                    ? ("caution" as const)
+                    : ("positive" as const),
+              },
+            ]}
+          />
+        </details>
       )}
       <div className={reference.grid} data-portfolio-layout="reference">
         <div className={reference.capitalOverview}>
@@ -322,6 +330,7 @@ export function Portfolio() {
         <section className={reference.actions}>
           <span className={reference.eyebrow}>ACTIONS BY IMPACT</span>
           <DecisionAttention
+            compact
             symbols={[
               ...new Set(
                 positions
@@ -348,28 +357,18 @@ export function Portfolio() {
           <section className="card portfolio-trend-panel">
             <SectionHead
               title="What the portfolio actually did"
-              subtitle="PERFORMANCE & CASH FLOWS · Verified records only"
+              subtitle="PERFORMANCE & CASH FLOWS · Saved ledger"
             />
-            <div className={reference.historyUnavailable} role="status">
-              <strong>
-                Verified account performance is not available yet.
-              </strong>
-              <p>
-                Current shares multiplied by old prices are not your account
-                history. A reliable return chart needs dated transactions, cash
-                flows, dividends and split-consistent share quantities. No
-                synthetic performance is shown.
-              </p>
-              <button
-                className="btn"
-                onClick={() => {
-                  setDepthOpen(true);
-                  depth.current?.showModal();
-                }}
-              >
-                Review recorded transactions
-              </button>
-            </div>
+            <AccountHistory />
+            <button
+              className="btn"
+              onClick={() => {
+                setDepthOpen(true);
+                depth.current?.showModal();
+              }}
+            >
+              Review recorded transactions
+            </button>
           </section>
         </div>
         <div className={reference.exposure}>

@@ -1,3 +1,4 @@
+import { publicIntelligence } from "../lib/intelligence-dto.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -14,6 +15,7 @@ function harness({
   enabled = true,
   allowed = true,
   allowance = true,
+  payload = null,
 } = {}) {
   const calls = [];
   const ast = ts.createSourceFile(
@@ -34,6 +36,7 @@ function harness({
   }).outputText;
   const bindings = {
     HttpError,
+    publicIntelligence,
     SENTISENSE_DATASETS,
     account: async () => {
       calls.push("auth");
@@ -65,7 +68,12 @@ function harness({
     researchSymbol: (s) => s,
     sentisenseRead: async (symbol, dataset) => {
       calls.push("provider");
-      return { symbol, dataset, status: "no-coverage" };
+      return {
+        symbol,
+        dataset,
+        status: payload ? "available" : "no-coverage",
+        data: payload,
+      };
     },
     privateJson: (v) =>
       Response.json(v, { headers: { "Cache-Control": "private, no-store" } }),
@@ -146,4 +154,27 @@ test("research integrations cannot contact unrequested financial vendors", () =>
   );
   assert.match(fundamentals, /return eodFundamentals/);
   assert.doesNotMatch(fundamentals, /await secFundamentals/);
+});
+
+test("HTTP intelligence response excludes nested proprietary data while retaining option evidence", async () => {
+  const h = harness({
+    payload: {
+      asOf: "2026-11-17",
+      sentiment: "SECRET",
+      score: 99,
+      latest: { atmIv: 0.4, callVol: 0, sentiment: "SECRET", score: 88 },
+      unusual: [
+        { contract: "APP1", volume: 4, interestScore: 9, secret: { score: 7 } },
+      ],
+    },
+  });
+  const response = await h.get(request("options"), params),
+    body = await response.json();
+  assert.equal(body.data.latest.atmIv, 0.4);
+  assert.equal(body.data.latest.callVol, 0);
+  assert.equal(body.data.unusual[0].volume, 4);
+  assert.doesNotMatch(
+    JSON.stringify(body),
+    /SECRET|sentiment|interestScore|"score"|"secret"/,
+  );
 });

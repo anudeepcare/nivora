@@ -1,4 +1,5 @@
 "use client";
+import InstitutionalFlows from "./InstitutionalFlows";
 import { useState } from "react";
 import Link from "next/link";
 import { useResource } from "./Session";
@@ -15,9 +16,10 @@ export default function SentiSenseCoverage({
   preview?: boolean;
 }) {
   const [open, setOpen] = useState(false),
-    [search, setSearch] = useState("");
+    [search, setSearch] = useState(""),
+    [kind, setKind] = useState("tracked");
   const resource = useResource<TrackedCoverage>(
-    open && !preview ? "research-coverage" : null,
+    open && !preview ? `research-coverage?kind=${kind}` : null,
     undefined,
     86400000,
   );
@@ -29,7 +31,7 @@ export default function SentiSenseCoverage({
     <section className={s.panel} aria-label="Tracked company discovery">
       <header className={s.header}>
         <div>
-          <span className={s.eyebrow}>COVERAGE DISCOVERY · SENTISENSE</span>
+          <span className={s.eyebrow}>COVERAGE DISCOVERY</span>
           <h2>Start with a tracked company</h2>
         </div>
         <button
@@ -45,9 +47,23 @@ export default function SentiSenseCoverage({
         <>
           <p className={s.state}>
             Tracked stocks, not a guarantee of every dataset or paid
-            entitlement. This list is separate from EODHD’s quote universe. No
-            calls are made for individual companies until you open one.
+            entitlement. This list is separate from the quote universe. No calls
+            are made for individual companies until you open one.
           </p>
+          <nav className={s.tabs} aria-label="Coverage type">
+            {[
+              ["tracked", "Tracked stocks"],
+              ["kpis", "Company KPI coverage"],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                aria-pressed={kind === id}
+                onClick={() => setKind(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
           <label htmlFor="tracked-symbol-filter">Filter ticker symbols</label>
           <input
             id="tracked-symbol-filter"
@@ -86,7 +102,7 @@ export default function SentiSenseCoverage({
               {!filtered.length && (
                 <p>
                   No matching ticker in the returned coverage list. This does
-                  not establish EODHD noncoverage.
+                  not establish quote noncoverage.
                 </p>
               )}
               <footer className={s.provenance}>
@@ -103,6 +119,7 @@ export default function SentiSenseCoverage({
           )}
         </>
       )}
+      <InstitutionalFlows />
     </section>
   );
 }

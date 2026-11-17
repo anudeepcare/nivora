@@ -1,0 +1,46 @@
+.details {
+  min-width: 0;
+  margin-top: 6px;
+  font-family: var(--font-ui);
+}
+.details > summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  min-height: 32px;
+  align-content: center;
+}
+.details > summary:hover {
+  color: var(--ink);
+}
+.details > summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.details > p {
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 8px 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.details dl {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0;
+}
+.details dt {
+  font-size: 10px;
+  color: var(--muted);
+}
+.details dd {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--ink);
+}
+@media (pointer: coarse) {
+  .details > summary {
+    min-height: 44px;
+  }
+}

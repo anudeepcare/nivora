@@ -66,7 +66,7 @@
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   gap: 10px !important;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 .desk :global(.compare-search input) {
   min-width: 0;
@@ -156,7 +156,7 @@
 .hero {
   text-align: center;
   min-height: 0;
-  padding: 16px 0 24px;
+  padding: 8px 0 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -171,7 +171,7 @@
   font-size: var(--workspace-title-size, clamp(30px, 3vw, 44px));
   letter-spacing: -0.045em;
   line-height: 1.12;
-  margin: 12px 0;
+  margin: 8px 0;
 }
 .hero p {
   font-size: 15px;
@@ -183,7 +183,7 @@
 @media (max-width: 760px) {
   .hero {
     min-height: 0;
-    padding: 28px 12px 20px;
+    padding: 12px 0;
   }
   .hero h1 {
     font-size: 30px;
@@ -196,4 +196,27 @@
 .desk :global(.table-scroll:focus-visible) {
   outline: 2px solid var(--blue);
   outline-offset: 3px;
+}
+
+.filterPanel {
+  margin: 8px 0 12px;
+  border-block: 1px solid var(--line);
+}
+.filterPanel > summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: list-item;
+  align-content: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+.filterPanel[open] > summary {
+  margin-bottom: 8px;
+}
+.filterPanel :global(.discover-controls) {
+  margin-bottom: 12px;
+}
+.filterPanel > summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }

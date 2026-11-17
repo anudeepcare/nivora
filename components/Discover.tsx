@@ -1,4 +1,5 @@
 "use client";
+import EvidenceDetails from "./EvidenceDetails";
 import DiscoveryPlot from "./DiscoveryPlot";
 import SentiSenseCoverage from "./SentiSenseCoverage";
 import discoverStyles from "./DiscoverWorkspace.module.css";
@@ -240,72 +241,79 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
               {busy ? "Reviewing sources…" : "Screen companies"}
             </button>
           </form>
-          <div className="analyst-controls discover-controls">
-            <div className={mapStyles.filters}>
-              <label>
-                Sector
-                <select
-                  value={criteria.sector}
-                  onChange={(e) => {
-                    setFilter("all");
-                    setCriteria({ ...criteria, sector: e.target.value });
-                  }}
-                >
-                  <option value="all">All sectors</option>
-                  {[...new Set(rows.map((r) => opportunityRow(r).sector))]
-                    .sort()
-                    .map((sector) => (
-                      <option key={sector}>{sector}</option>
+          <details className={discoverStyles.filterPanel}>
+            <summary>Filters &amp; saved screen</summary>
+            <div className="analyst-controls discover-controls">
+              <div className={mapStyles.filters}>
+                <label>
+                  Sector
+                  <select
+                    value={criteria.sector}
+                    onChange={(e) => {
+                      setFilter("all");
+                      setCriteria({ ...criteria, sector: e.target.value });
+                    }}
+                  >
+                    <option value="all">All sectors</option>
+                    {[...new Set(rows.map((r) => opportunityRow(r).sector))]
+                      .sort()
+                      .map((sector) => (
+                        <option key={sector}>{sector}</option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Pace level
+                  <select
+                    value={criteria.pace}
+                    onChange={(e) => {
+                      setFilter("all");
+                      setCriteria({ ...criteria, pace: e.target.value });
+                    }}
+                  >
+                    <option value="all">All Pace readings</option>
+                    {["P0", "P1", "P2", "P3", "P4"].map((p) => (
+                      <option key={p}>{p}</option>
                     ))}
-                </select>
-              </label>
-              <label>
-                Confirmed Pace
-                <select
-                  value={criteria.pace}
-                  onChange={(e) => {
+                    <option value="unavailable">Reading unavailable</option>
+                  </select>
+                </label>
+                <label>
+                  Business evidence
+                  <select
+                    value={criteria.quality}
+                    onChange={(e) => {
+                      setFilter("all");
+                      setCriteria({ ...criteria, quality: e.target.value });
+                    }}
+                  >
+                    <option value="all">All business evidence</option>
+                    <option value="cash">Positive free cash flow</option>
+                    <option value="growth">Positive revenue growth</option>
+                    <option value="profit">Positive operating income</option>
+                  </select>
+                </label>
+                <button
+                  className="button"
+                  type="button"
+                  onClick={() => {
+                    setCriteria(emptyOpportunityFilters);
                     setFilter("all");
-                    setCriteria({ ...criteria, pace: e.target.value });
                   }}
                 >
-                  <option value="all">All Pace readings</option>
-                  {["P0", "P1", "P2", "P3", "P4"].map((p) => (
-                    <option key={p}>{p}</option>
-                  ))}
-                  <option value="unavailable">Reading unavailable</option>
-                </select>
-              </label>
-              <label>
-                Business evidence
-                <select
-                  value={criteria.quality}
-                  onChange={(e) => {
-                    setFilter("all");
-                    setCriteria({ ...criteria, quality: e.target.value });
-                  }}
+                  Reset filters
+                </button>
+                <button
+                  className="button"
+                  disabled={!rows.length}
+                  onClick={save}
                 >
-                  <option value="all">All business evidence</option>
-                  <option value="cash">Positive free cash flow</option>
-                  <option value="growth">Positive revenue growth</option>
-                  <option value="profit">Positive operating income</option>
-                </select>
-              </label>
-              <button
-                className="button"
-                type="button"
-                onClick={() => {
-                  setCriteria(emptyOpportunityFilters);
-                  setFilter("all");
-                }}
-              >
-                Reset filters
-              </button>
-              <button className="button" disabled={!rows.length} onClick={save}>
-                <Save size={16} />
-                Save screen
-              </button>
+                  <Save size={16} />
+                  Save screen
+                </button>
+              </div>
             </div>
-          </div>
+          </details>
           {!!coverage.requested && (
             <p className="context-note">
               Evidence returned for {coverage.returned} of {coverage.requested}{" "}
@@ -390,12 +398,13 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
                           {edge.pacePresentation.actionLabel}
                         </strong>
                         <small className="block">
-                          {edge.decision.contextLabel} · {edge.reason}
+                          {edge.decision.contextLabel}
                         </small>
-                        <small className="block">
-                          New purchase: {edge.decision.actionLabels.entry} ·
-                          Holding: {edge.decision.actionLabels.holding}
-                        </small>
+                        <EvidenceDetails
+                          reason={edge.reason}
+                          entry={edge.decision.actionLabels.entry}
+                          holding={edge.decision.actionLabels.holding}
+                        />
                       </td>
                       <td>
                         {amount(p.last?.fcf, p.last?.currency, true)}

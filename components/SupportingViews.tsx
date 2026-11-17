@@ -1,12 +1,11 @@
 "use client";
+import EvidenceDetails from "./EvidenceDetails";
 import ComparisonCharts from "./ComparisonCharts";
 import ContributionCompare from "./ContributionCompare";
 import decisionStyles from "./DecisionLists.module.css";
 import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
-import SettingsExperience, {
-  SettingsSignalPolicies,
-} from "./SettingsExperience";
+import { SettingsSignalPolicies } from "./SettingsExperience";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { ContextLink } from "./ContextLink";
@@ -176,10 +175,19 @@ export function Settings() {
           <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </div>
+      <nav className="settings-section-links" aria-label="Settings sections">
+        <a href="#settings-signals">Signals</a>
+        <a href="#settings-appearance">Appearance</a>
+        <a href="#settings-research">Research</a>
+        <a href="#settings-policy">Guardrails</a>
+        <a href="#settings-account">Account</a>
+        <Link href={`${prefix}/alerts`}>
+          Price alerts <ArrowUpRight size={14} />
+        </Link>
+      </nav>
       <div className="workspace-settings-groups">
-        <SettingsExperience />
-        <SettingsSignalPolicies />
-        <section className="workspace-setting-group">
+        <SettingsSignalPolicies section="signals" />
+        <section id="settings-appearance" className="workspace-setting-group">
           <header>
             <span>
               <small>APPEARANCE</small>
@@ -190,18 +198,20 @@ export function Settings() {
             <DisplayPreferences />
           </div>
         </section>
-        <section className="workspace-setting-group">
+        <section id="settings-research" className="workspace-setting-group">
           <header>
             <span>
-              <small>DECISION POLICY</small>
-              <strong>Research and portfolio guardrails</strong>
+              <small>RESEARCH</small>
+              <strong>Reading and workspace defaults</strong>
             </span>
           </header>
           <div className="workspace-setting-body">
-            <ResearchPreferenceControls />
+            <ResearchPreferenceControls showConcentration={false} />
           </div>
         </section>
-        <section className="workspace-setting-group">
+        <SettingsSignalPolicies section="policy" />
+        <SettingsSignalPolicies section="notifications" />
+        <section id="settings-account" className="workspace-setting-group">
           <header>
             <span>
               <strong>Account & security</strong>
@@ -272,9 +282,15 @@ export function Settings() {
           <span>What’s new · {APP_VERSION}</span>
           <ChevronRight size={17} />
         </ContextLink>
-        <a href={`mailto:${SUPPORT_EMAIL}`}>
+        <a
+          href={`mailto:${SUPPORT_EMAIL}`}
+          title={`Opens your email app to ${SUPPORT_EMAIL}`}
+        >
           <ShieldCheck size={18} />
-          <span>Email support</span>
+          <span>
+            Email support{" "}
+            <small className="settings-email-hint">Opens your email app</small>
+          </span>
           <ChevronRight size={17} />
         </a>
         <div className="settings-analytics-shortcut">
@@ -425,17 +441,25 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
           </button>
         )}
       </div>
-      <div className="compare-picker">
-        <Search
-          onSelect={(symbol) =>
-            setDraft((current) =>
-              [...new Set([...current.split(/[ ,]+/).filter(Boolean), symbol])]
-                .slice(0, 4)
-                .join(", "),
-            )
-          }
-        />
-      </div>
+      <details className={decisionStyles.lookup}>
+        <summary>Find companies by name</summary>
+        <div className="compare-picker">
+          <Search
+            onSelect={(symbol) =>
+              setDraft((current) =>
+                [
+                  ...new Set([
+                    ...current.split(/[ ,]+/).filter(Boolean),
+                    symbol,
+                  ]),
+                ]
+                  .slice(0, 4)
+                  .join(", "),
+              )
+            }
+          />
+        </div>
+      </details>
       <form className="compare-search" onSubmit={submit}>
         <input
           aria-label="Companies to compare"
@@ -501,7 +525,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
             <thead>
               <tr>
                 <th>Reported metric</th>
-                {values.map(({ r }) => (
+                {values.map(({ r, p }) => (
                   <th key={r.company.symbol}>
                     <Link
                       href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
@@ -509,15 +533,34 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                       <SecurityLogo symbol={r.company.symbol} />
                       {r.company.symbol}
                     </Link>
+                    <small className={decisionStyles.basisDate}>
+                      {p.periodBasis} · {dateLabel(p.last?.end)}
+                    </small>
+                    <details className={decisionStyles.basis}>
+                      <summary>Accounting basis</summary>
+                      <dl>
+                        <div>
+                          <dt>Company</dt>
+                          <dd>{r.company.name}</dd>
+                        </div>
+                        <div>
+                          <dt>Reporting period</dt>
+                          <dd>
+                            {p.periodBasis} · {dateLabel(p.last?.end)}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Reporting currency</dt>
+                          <dd>{p.last?.currency || "Unavailable"}</dd>
+                        </div>
+                      </dl>
+                    </details>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {[
-                "Company",
-                "Reporting period",
-                "Reporting currency",
                 "Revenue",
                 "Revenue growth",
                 "Net income",
@@ -533,16 +576,23 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                     <td key={r.company.symbol}>
                       {
                         [
-                          r.company.name,
-                          `${p.periodBasis} · ${dateLabel(p.last?.end)}`,
-                          p.last?.currency || "—",
                           amount(p.last?.revenue, p.last?.currency, true),
                           percent(p.growth),
                           amount(p.last?.netIncome, p.last?.currency, true),
                           amount(p.last?.fcf, p.last?.currency, true),
                           percent(p.last?.margin),
                           p.tech.trend,
-                          `${edge.decision.contextLabel}: ${edge.pacePresentation.actionLabel} · ${edge.reason} New purchase: ${edge.decision.actionLabels.entry}. Holding: ${edge.decision.actionLabels.holding}.`,
+                          <div key="view">
+                            <strong>{edge.decision.contextLabel}</strong>
+                            <small className="block">
+                              {edge.pacePresentation.actionLabel}
+                            </small>
+                            <EvidenceDetails
+                              reason={edge.reason}
+                              entry={edge.decision.actionLabels.entry}
+                              holding={edge.decision.actionLabels.holding}
+                            />
+                          </div>,
                           <div key="pace">
                             <PaceGuidance
                               view={edge.pacePresentation}

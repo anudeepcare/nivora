@@ -162,6 +162,7 @@ test("a new comparison clears the preceding company set before loading", async (
     Help: empty,
     Link: empty,
     SecurityLogo: empty,
+    EvidenceDetails: empty,
   };
   const Component = new Function(
     ...Object.keys(bindings),

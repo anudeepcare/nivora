@@ -1,4 +1,5 @@
 "use client";
+import EvidenceDetails from "./EvidenceDetails";
 import DecisionAttention from "./DecisionAttention";
 import { customerText } from "@/lib/customer-language";
 import { useHomeFeed } from "./useHomeFeed";
@@ -160,21 +161,32 @@ export function Watchlist() {
           Create a price alert <ArrowUpRight size={16} />
         </Link>
       </div>
-      <DecisionAttention
-        symbols={symbols}
-        held={(workspace?.positions ?? [])
-          .filter((p) => p.assetType !== "cash" && p.quantity > 0)
-          .map((p) => p.symbol)}
-        rows={state.paceScan.rows}
-        allocations={state.model.allocations}
-        concentrationLimit={accountPrefs.preferences.concentrationLimit}
-        prefix={prefix}
-        loading={state.paceScan.loading}
-      />
+      <details className={decisionStyles.reviewDetails}>
+        <summary>Review priorities and risk context</summary>
+        <DecisionAttention
+          symbols={symbols}
+          held={(workspace?.positions ?? [])
+            .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+            .map((p) => p.symbol)}
+          rows={state.paceScan.rows}
+          allocations={state.model.allocations}
+          concentrationLimit={accountPrefs.preferences.concentrationLimit}
+          prefix={prefix}
+          loading={state.paceScan.loading}
+        />
+      </details>
       <section className="card">
         <SectionHead
           title="Your watchlist"
-          subtitle="Prices and confirmed accumulation readings."
+          subtitle={
+            accountPrefs.preferences.watchSort === "change"
+              ? "Latest quoted change · dates shown"
+              : accountPrefs.preferences.watchSort === "event"
+                ? "Next confirmed earnings date · undated companies last"
+                : accountPrefs.preferences.watchSort === "review"
+                  ? "Next review date · undated companies last"
+                  : "Alphabetical order"
+          }
           action={
             <button
               className="icon-button"
@@ -236,6 +248,11 @@ export function Watchlist() {
                 const condition = noteDates.data?.documents.find(
                   (n) => n.key === symbol,
                 )?.body.condition;
+                const evidence =
+                  condition ||
+                  signal?.changeCondition ||
+                  signal?.reason ||
+                  "Evidence unavailable. Open research to check coverage.";
                 return (
                   <li key={symbol}>
                     <Link
@@ -262,12 +279,18 @@ export function Watchlist() {
                       />
                     </Link>
                     <div className={decisionStyles.evidence}>
-                      <p>
-                        {condition ||
-                          signal?.changeCondition ||
-                          signal?.reason ||
-                          "Evidence unavailable. Open research to check coverage."}
-                      </p>
+                      {evidence.length > 140 ? (
+                        <EvidenceDetails
+                          reason={evidence}
+                          summary={
+                            condition
+                              ? "Your next condition"
+                              : "Evidence & next condition"
+                          }
+                        />
+                      ) : (
+                        <p>{evidence}</p>
+                      )}
                       <small>
                         {nextDates.has(symbol)
                           ? `Earnings · ${dateLabel(nextDates.get(symbol))}`

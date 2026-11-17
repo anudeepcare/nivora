@@ -273,3 +273,15 @@
     flex-basis: 75%;
   }
 }
+.inbox h2 { margin: 0 0 6px; font-size: 18px; font-weight: 550; }
+.hint { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 8px 0 12px; }
+.actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inbox :is(button, a, summary, input, select):focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.delivery { background: var(--card); border: 1px solid var(--line); overflow-wrap: anywhere; }
+.body > a { display: inline-flex; align-items: center; min-height: 40px; font-size: 13px; }
+.inbox button { min-height: 40px; }
+@media (max-width: 600px) {
+ .actions { width: 100%; }
+ .actions button { flex: 1; min-height: 44px; white-space: normal; }
+ .search > label:first-child { min-width: 0; }
+}

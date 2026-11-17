@@ -1,3 +1,4 @@
+import { publicIntelligence } from "@/lib/intelligence-dto";
 import { account, failure, limit, privateJson, HttpError } from "@/lib/server";
 import { requestAccess, reserveAccess } from "@/lib/access-server";
 import { researchSymbol } from "@/lib/providers";
@@ -21,7 +22,9 @@ export async function GET(
     )
       throw new HttpError("Company news is not included in your access.", 403);
     await reserveAccess(user.id, access, "research", symbol);
-    return privateJson(await sentisenseStoryRead(symbol, raw.id));
+    return privateJson(
+      publicIntelligence(await sentisenseStoryRead(symbol, raw.id)),
+    );
   } catch (error) {
     return failure(error);
   }

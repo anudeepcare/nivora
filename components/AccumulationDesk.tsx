@@ -1,5 +1,6 @@
 "use client";
 import PaceReadings from "./PaceReadings";
+import styles from "./ResearchLens.module.css";
 import PaceHistoryInsights from "./PaceHistoryInsights";
 import { pacePeriods } from "@/lib/pace-presentation";
 import { useMemo, useState } from "react";
@@ -112,7 +113,7 @@ export default function AccumulationDesk({
     [showEvaluation, r.history, r.retrievedAt, cost, market, weekly],
   );
   return (
-    <section className="accumulation-desk">
+    <section className={`accumulation-desk ${styles.paceChartFirst}`}>
       <header className="accumulation-desk-head">
         <div>
           <span className="eyebrow">
@@ -137,14 +138,26 @@ export default function AccumulationDesk({
           ))}
         </div>
       </header>
+      <div className={styles.paceReadings}>
+        <PaceReadings
+          compact
+          readings={pacePeriods(
+            { ...confirmed, forming: chosen.forming },
+            weekly,
+          )}
+        />
+      </div>
+      <div className="accumulation-chart">
+        <PriceChart
+          bars={monthly}
+          range={weekly ? "weekly-policy-v1" : chosen.version}
+          style="candles"
+          candleColors={candleColors}
+          levels={levels}
+        />
+      </div>
       <div className="accumulation-summary">
         <div>
-          <PaceReadings
-            readings={pacePeriods(
-              { ...confirmed, forming: chosen.forming },
-              weekly,
-            )}
-          />
           <h3>
             {signal
               ? signal.multiplier === 0
@@ -210,15 +223,6 @@ export default function AccumulationDesk({
           </span>
         </div>
       )}
-      <div className="accumulation-chart">
-        <PriceChart
-          bars={monthly}
-          range={weekly ? "weekly-policy-v1" : chosen.version}
-          style="candles"
-          candleColors={candleColors}
-          levels={levels}
-        />
-      </div>
       {!!levels.length && (
         <div className="candidate-levels">
           {levels.map((l) => (

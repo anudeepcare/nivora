@@ -26,7 +26,7 @@ export default function EodEventCalendar({
     <section className={s.panel} aria-label="Corporate events calendar">
       <header className={s.header}>
         <div>
-          <span className={s.eyebrow}>MARKET CALENDAR · EODHD</span>
+          <span className={s.eyebrow}>MARKET CALENDAR</span>
           <h2>What is coming to market?</h2>
         </div>
         <button

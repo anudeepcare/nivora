@@ -16,6 +16,7 @@ export default function DecisionAttention({
   concentrationLimit,
   prefix,
   loading = false,
+  compact = false,
 }: {
   symbols: string[];
   held: string[];
@@ -24,6 +25,7 @@ export default function DecisionAttention({
   concentrationLimit?: number | null;
   prefix: string;
   loading?: boolean;
+  compact?: boolean;
 }) {
   if (!symbols.length) return null;
   const items = decisionAttention({
@@ -61,9 +63,10 @@ export default function DecisionAttention({
           </Link>
           <span>{item.label}</span>
         </div>
-        <p>{item.reason}</p>
+        <p>{compact ? item.reason.split(/(?<=[.!?])\s/)[0] : item.reason}</p>
         <details>
           <summary>What to check next</summary>
+          {compact && <p>{item.reason}</p>}
           {item.sizeReview && item.businessReason && (
             <p>
               <strong>Business assessment · {item.action}:</strong>{" "}
@@ -105,7 +108,11 @@ export default function DecisionAttention({
     );
   };
   return (
-    <section className={s.root} aria-label="Review first">
+    <section
+      className={s.root}
+      data-compact={compact || undefined}
+      aria-label="Review first"
+    >
       <header>
         <div>
           <h2>Review first</h2>

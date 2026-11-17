@@ -1,5 +1,7 @@
 "use client";
 import IntelligenceTable from "./IntelligenceTable";
+import OwnershipEvidenceMap from "./OwnershipEvidenceMap";
+import OptionsPositioningOverview from "./OptionsPositioningOverview";
 import OptionsObservationChart from "./OptionsObservationChart";
 import Link from "next/link";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
@@ -90,7 +92,7 @@ export default function SentiSensePanels({
       </section>
     );
   return (
-    <section className={s.panel} aria-label="SentiSense research">
+    <section className={s.panel} aria-label="Research intelligence">
       <header className={s.header}>
         <div>
           <span className={s.eyebrow}>RESEARCH INTELLIGENCE</span>
@@ -106,7 +108,13 @@ export default function SentiSensePanels({
             }
           </h2>
         </div>
-        <span className={s.provider}>SentiSense</span>
+        <details className={s.provider}>
+          <summary aria-label="Data source details">ⓘ Source</summary>
+          <p>
+            Source: SentiSense. Dataset dates and coverage are shown with each
+            result.
+          </p>
+        </details>
       </header>
       <nav className={s.tabs} aria-label={`${group} intelligence datasets`}>
         {choices.map(([id, label]) => (
@@ -151,6 +159,18 @@ function Dataset({
     result?.status === "available" || result?.status === "preview";
   const view = intelligenceView(dataset, result?.data);
   const count = view.groups.reduce((n, g) => n + g.rows.length, 0);
+  const tables = view.groups.map(
+    (group) =>
+      group.rows.length > 0 && (
+        <section className={s.group} key={group.title}>
+          <div className={s.groupHeading}>
+            <h4>{group.title}</h4>
+            <span>{group.rows.length} displayed</span>
+          </div>
+          <IntelligenceTable rows={group.rows} title={group.title} />
+        </section>
+      ),
+  );
   return (
     <div className={s.content}>
       <div className={s.intro}>
@@ -162,9 +182,17 @@ function Dataset({
           Loading {view.title.toLowerCase()}…
         </p>
       ) : resource.error ? (
-        <p className={s.state} role="status">
-          {resource.error}
-        </p>
+        <div className={s.state}>
+          <p role="status">{resource.error}</p>
+          <button
+            type="button"
+            className="button"
+            onClick={resource.refresh}
+            aria-label={`Retry ${view.title}`}
+          >
+            Retry {view.title}
+          </button>
+        </div>
       ) : !available ? (
         <p className={s.state} role="status">
           This dataset is {result?.status.replaceAll("-", " ") ?? "unavailable"}{" "}
@@ -177,6 +205,12 @@ function Dataset({
               Limited provider preview. Coverage and fields may be reduced.
             </p>
           )}
+          {dataset === "options" && (
+            <OptionsPositioningOverview data={result?.data} />
+          )}
+          {dataset === "holders" && (
+            <OwnershipEvidenceMap symbol={symbol} data={result?.data} />
+          )}
           {(dataset === "optionsHistory" || dataset === "optionsIntraday") && (
             <OptionsObservationChart
               data={result?.data}
@@ -188,19 +222,13 @@ function Dataset({
               No displayable records were returned for this section. This does
               not imply zero activity.
             </p>
+          ) : dataset === "options" ? (
+            <details>
+              <summary>Detailed options observations &amp; contracts</summary>
+              {tables}
+            </details>
           ) : (
-            view.groups.map(
-              (group) =>
-                group.rows.length > 0 && (
-                  <section className={s.group} key={group.title}>
-                    <div className={s.groupHeading}>
-                      <h4>{group.title}</h4>
-                      <span>{group.rows.length} displayed</span>
-                    </div>
-                    <IntelligenceTable rows={group.rows} title={group.title} />
-                  </section>
-                ),
-            )
+            tables
           )}
           <footer className={s.provenance}>
             <span>

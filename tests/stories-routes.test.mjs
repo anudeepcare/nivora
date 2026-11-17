@@ -1,3 +1,4 @@
+import { publicIntelligence } from "../lib/intelligence-dto.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -28,6 +29,7 @@ function route(path, { authenticated = true, allowed = true } = {}) {
   }
   const b = {
     HttpError,
+    publicIntelligence,
     account: async () => {
       calls.push("auth");
       if (!authenticated) throw new HttpError("Sign in", 401);
@@ -43,7 +45,26 @@ function route(path, { authenticated = true, allowed = true } = {}) {
     reserveAccess: async () => calls.push("reserve"),
     sentisenseStoryRead: async (symbol, id) => {
       calls.push("detail");
-      return { symbol, status: "available", data: { id, tickers: [symbol] } };
+      return {
+        symbol,
+        dataset: "storyDetail",
+        status: "available",
+        data: {
+          id,
+          tickers: [symbol],
+          sentiment: "SECRET",
+          score: 99,
+          timeline: [{ content: "Update", sentiment: "SECRET" }],
+        },
+      };
+    },
+    sentisenseKpiCoverage: async () => {
+      calls.push("kpis");
+      return {
+        status: "available",
+        data: { count: 1, tickers: [{ ticker: "APP", kpiCount: 3 }] },
+        retrievedAt: "2026-11-17",
+      };
     },
     sentisenseTrackedStocks: async () => {
       calls.push("coverage");
@@ -90,6 +111,10 @@ test("valid detail reserves existing research allowance and remains private", as
   assert.equal(r.status, 200);
   assert.deepEqual(h.calls, ["auth", "limit", "reserve", "detail"]);
   assert.match(r.headers.get("Cache-Control"), /no-store/);
+  const body = await r.json();
+  assert.equal(body.data.id, "story1");
+  assert.equal(body.data.timeline[0].content, "Update");
+  assert.doesNotMatch(JSON.stringify(body), /SECRET|sentiment|"score"/);
 });
 test("coverage requires authentication and returns only validated tracker data without per-company fanout", async () => {
   const denied = route("app/api/research-coverage/route.ts", {
@@ -102,4 +127,14 @@ test("coverage requires authentication and returns only validated tracker data w
   assert.equal(r.status, 200);
   assert.deepEqual((await r.json()).tickers, ["AAPL", "MSFT"]);
   assert.deepEqual(h.calls, ["auth", "limit", "coverage"]);
+});
+
+test("KPI coverage selects one fixed universe request without ticker probes", async () => {
+  const h = route("app/api/research-coverage/route.ts");
+  const response = await h.get(
+    new Request("https://app.test/api/research-coverage?kind=kpis"),
+  );
+  assert.equal(response.status, 200);
+  assert.deepEqual((await response.json()).tickers, ["APP"]);
+  assert.deepEqual(h.calls, ["auth", "limit", "kpis"]);
 });

@@ -30,3 +30,51 @@ test("Pace has one reading owner, not a duplicated leading reading", () => {
   assert.match(pace, /<DcaResearch/);
   assert.doesNotMatch(pace, /<PaceReadings|<header/);
 });
+test("Atlas keeps its observed price chart outside collapsed secondary evidence", () => {
+  const atlas = source.slice(
+    source.indexOf('<div id="research-overview"'),
+    source.indexOf('{tab === "Snapshot" && evidenceToolbar}'),
+  );
+  assert.match(
+    atlas,
+    /<div className=\{cockpit.primaryChart\}>\{chart\}<\/div>/,
+  );
+  const detail = atlas.slice(atlas.indexOf("<details"));
+  assert.doesNotMatch(detail, /chart=\{chart\}/);
+});
+test("Technicals leads with price studies rather than repeating the Pace desk", () => {
+  const technical = source.slice(
+    source.indexOf('data-retained-panel="Technicals"'),
+    source.indexOf('{tab === "Pace"'),
+  );
+  assert.match(technical, /<TechnicalPicture/);
+  assert.doesNotMatch(technical, /<PaceReadings|<DcaResearch/);
+});
+test("active Technicals does not depend on retained mount state", () => {
+  assert.match(
+    source,
+    /\(tab === "Technicals" \|\|\s*retainedCharts\.includes\("Technicals"\)\)/,
+  );
+  assert.match(source, /Show technical indicators/);
+  assert.match(source, /signal !== "technicals"/);
+  assert.match(source, /workspacePreferences.error &&/);
+});
+test("Technical chart precedes interpretation and supplementary facts", () => {
+  const dashboard = fs.readFileSync(
+    "components/TechnicalDashboard.tsx",
+    "utf8",
+  );
+  assert.ok(
+    dashboard.indexOf("{chart &&") <
+      dashboard.indexOf('<header className="technical-desk-heading">'),
+  );
+  const technical = source.slice(
+    source.indexOf('data-retained-panel="Technicals"'),
+    source.indexOf('{tab === "Pace"'),
+  );
+  assert.doesNotMatch(technical, /<h2>Technicals<\/h2>|Chart interval/);
+  assert.match(
+    source,
+    /tab !== "Snapshot" && tab !== "Technicals" && evidenceToolbar/,
+  );
+});

@@ -1,3 +1,4 @@
+import { intelligenceData } from "../lib/intelligence-dto.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { intelligenceView } from "../lib/sentisense-view.ts";
@@ -130,6 +131,7 @@ test("all expanded documented sections produce meaningful records without generi
   };
   for (const [id, data] of Object.entries(samples)) {
     const v = intelligenceView(id, data);
+    assert.deepEqual(intelligenceView(id, intelligenceData(id, data)), v, id);
     assert.ok(
       v.groups.some((g) => g.rows.length),
       id,
@@ -221,11 +223,17 @@ test("additional nine sections retain financial currencies, distinct short metri
     stockEtfs: [{ etfTicker: "ETF", etfName: "Test ETF", weightPct: 8.5 }],
     kpiTypes: [{ id: "units", name: "Units sold", category: "operational" }],
   };
-  for (const [id, data] of Object.entries(samples))
+  for (const [id, data] of Object.entries(samples)) {
+    assert.deepEqual(
+      intelligenceView(id, intelligenceData(id, data)),
+      intelligenceView(id, data),
+      id,
+    );
     assert.ok(
       intelligenceView(id, data).groups.some((g) => g.rows.length),
       id,
     );
+  }
   assert.match(
     JSON.stringify(
       intelligenceView("fundamentalsQuarterly", samples.fundamentalsQuarterly),

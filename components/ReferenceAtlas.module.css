@@ -3,10 +3,10 @@
   --atlas-violet: #7051c8;
   --atlas-orange: #a6512d;
   --atlas-panel: #fff;
-  --atlas-mid: #f4f7fb;
+  --atlas-mid: #f3f6fa;
   --atlas-line: #d6dde8;
   --atlas-ink: #172033;
-  --atlas-muted: #59687b;
+  --atlas-muted: #627086;
   color: var(--atlas-ink);
 }
 :global([data-theme="dark"]) .atlas {
@@ -17,7 +17,7 @@
   --atlas-mid: #121d2e;
   --atlas-line: #253146;
   --atlas-ink: #eef2f8;
-  --atlas-muted: #9aa9bd;
+  --atlas-muted: #8f9caf;
 }
 .stage {
   display: grid;
@@ -49,7 +49,7 @@
   margin: 18px 0 16px;
   font-size: clamp(25px, 2.35vw, 37px);
   line-height: 1.17;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.045em;
   color: var(--atlas-ink);
 }
@@ -245,9 +245,9 @@
   width: 100%;
   min-height: 44px;
   padding: 10px;
-  border: 1px solid var(--atlas-cyan);
-  color: var(--atlas-cyan);
-  background: transparent;
+  border: 1px solid #79eadc;
+  color: #071312;
+  background: #79eadc;
   border-radius: 7px;
   font-size: 11px;
   font-weight: 600;
@@ -473,4 +473,10 @@
   .evidence {
     padding: 16px;
   }
+}
+
+:global([data-theme="light"]) .stage {
+  background:
+    radial-gradient(circle at 48% 50%, #dff6f4, transparent 35%),
+    linear-gradient(145deg, #fff, #f3f6fa);
 }

@@ -19,3 +19,11 @@ test('reference auth keeps secondary options outside the primary two-field flow'
   assert.match(auth, /Add your name \(optional\)/);
   assert.match(auth, /"Create workspace"/);
 });
+test('product guide uses the public semantic palette, not the discarded lime theme', () => {
+  const css = source('PublicLanding.module.css');
+  const guide = css.slice(css.indexOf('.demo {', css.indexOf('/* A distinct product stage')),
+    css.indexOf('.previewCaption {', css.indexOf('/* A distinct product stage')));
+  assert.doesNotMatch(guide, /#(?:d6f35a|ddf780|c9ec60|202b25|17221c|6ee7bf)\b/);
+  const jsx = source('PublicLanding.tsx');
+  assert.doesNotMatch(jsx, /(?:stroke|fill|stopColor)="#(?:d6f35a|6ee7bf|233631)"/);
+});

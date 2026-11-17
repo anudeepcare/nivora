@@ -133,14 +133,18 @@ export default function SupportInbox() {
   return (
     <section className={s.inbox}>
       <header>
-        <h2>Support inbox</h2>
+        <div><h2>Support inbox</h2><p className={s.hint}>Review requests, assign follow-up, and track email status.</p></div>
+        <div className={s.actions}>
+        <button type="button" className="button" disabled={loading || busy} onClick={() => setRevision(value => value + 1)}>Refresh inbox</button>
         <button
           className="button"
-          disabled={busy}
+          disabled={busy || loading}
+          title="Resubmit pending support receipts and owner notifications to the email provider."
           onClick={() => change({ action: "retry" })}
         >
           Retry pending emails
         </button>
+        </div>
       </header>
       {delivery && (
         <details className={s.delivery}>
@@ -163,6 +167,7 @@ export default function SupportInbox() {
           </a>
         </details>
       )}
+      <p className={s.hint}>Reply opens your email app. Replies are not sent or tracked here. Retry resubmits pending receipts and owner notifications.</p>
       {notice && <p role="status">{notice}</p>}
       <form
         className={s.search}
@@ -186,6 +191,7 @@ export default function SupportInbox() {
         <button className="button" type="submit">
           Search
         </button>
+        {(search || priority !== "all" || filter !== "all") && <button type="button" className="button" onClick={() => { setSearch(""); setSearchDraft(""); setPriority("all"); setFilter("all"); setCursor(null); setPages([]); }}>Clear filters</button>}
         <label>
           Priority
           <select
@@ -299,7 +305,7 @@ export default function SupportInbox() {
               <a
                 href={`mailto:${r.email}?subject=${encodeURIComponent(`AURYN support · ${r.id.slice(0, 8)}`)}`}
               >
-                Reply to {r.email}
+                Reply by email to {r.email}
               </a>
               <p style={{ whiteSpace: "pre-wrap" }}>{r.message}</p>
               <div>
@@ -325,10 +331,10 @@ export default function SupportInbox() {
               </div>
               <small>
                 #{r.id.slice(0, 8)} · {r.page} ·{" "}
-                {r.owner_notified_at ? "Owner notified" : "Owner email pending"}{" "}
+                {r.owner_notified_at ? "Owner email accepted by provider" : "Owner email pending"}{" "}
                 ·{" "}
                 {r.receipt_sent_at
-                  ? "Receipt sent"
+                  ? "Receipt accepted by provider"
                   : r.attempts >= 5
                     ? "Automatic delivery paused · use Retry pending emails"
                     : "Receipt pending"}

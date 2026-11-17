@@ -17,6 +17,7 @@ const coordinates = [
   [38, 86],
 ];
 function reading(signal: AtlasSignal, currency: string) {
+  if (signal.valueLabel) return signal.valueLabel;
   if (signal.value === null) return "—";
   if (signal.unit === "percent") return percent(signal.value);
   if (signal.unit === "money") return amount(signal.value, currency, true);
@@ -162,7 +163,7 @@ export default function ReferenceAtlas({
                 key={item.label}
                 className={s[`orbit${i}`]}
                 aria-pressed={selected === i}
-                aria-label={`${item.label}: ${item.value === null ? "review evidence" : reading(item, b.businessNumbers.currency)}`}
+                aria-label={`${item.label}: ${item.value === null && !item.valueLabel ? "review evidence" : reading(item, b.businessNumbers.currency)}`}
                 onClick={() => setSelected(i)}
               >
                 <span>

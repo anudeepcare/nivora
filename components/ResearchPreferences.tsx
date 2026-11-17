@@ -61,7 +61,7 @@ export function useResearchPreferences() {
     disabled: !account.localOnly && (!account.ready || account.saving),
   };
 }
-export default function ResearchPreferenceControls() {
+export default function ResearchPreferenceControls({ showConcentration = true }: { showConcentration?: boolean } = {}) {
   const {
     preferences: p,
     setPreferences,
@@ -109,7 +109,7 @@ export default function ResearchPreferenceControls() {
         </label>
         {error && <p role="alert">{error}</p>}
       </section>
-      <WorkspacePreferences />
+      <WorkspacePreferences showConcentration={showConcentration} />
     </>
   );
 }

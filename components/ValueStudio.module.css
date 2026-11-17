@@ -155,3 +155,11 @@
     grid-column: span 2;
   }
 }
+
+.root.root.root > .assumptions {
+  grid-column: 1 / -1;
+}
+.calculator > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
