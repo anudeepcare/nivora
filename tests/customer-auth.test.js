@@ -85,4 +85,7 @@ test('customer UI contains account flows and never asks for the local operator k
   assert.match(source,/sessionStorage\.setItem\(RECOVERY_PENDING_KEY/);
   assert.match(source,/location\.reload\(\)/);
   assert.match(source,/settings-button.*authState\.canNavigate\(\)/s);
+  assert.match(source,/revalidateAccountSession/);
+  assert.match(source,/lockAccountMemory/);
+  assert.match(source,/accountSession\.announce\(\)/);
 });
