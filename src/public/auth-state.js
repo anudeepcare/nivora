@@ -1,0 +1,1 @@
+export class AuthUiState {constructor(){this.unlocked=false;this.reason='locked'}unlock(){this.unlocked=true;this.reason=null}expire(){this.unlocked=false;this.reason='session-expired'}canNavigate(){return this.unlocked}}
