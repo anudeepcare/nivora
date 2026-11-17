@@ -136,3 +136,16 @@
   min-height: 32px;
   padding: 6px 0;
 }
+
+.root[data-compact] .evidence p {
+  margin: 6px 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.evidence strong {
+  font-weight: 500;
+}
+.evidence small {
+  display: block;
+  font-size: 11px;
+}

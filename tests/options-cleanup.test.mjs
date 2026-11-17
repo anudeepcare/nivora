@@ -29,3 +29,13 @@ test("contract coverage message does not point above or expose provider names", 
   assert.doesNotMatch(message, /above|SentiSense|EODHD/);
   assert.match(message, /Company positioning/);
 });
+
+test("options and ownership consolidate heading and source into dataset toolbar", () => {
+  const source = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");
+  assert.match(
+    source,
+    /const compact = group === "options" \|\| group === "ownership"/,
+  );
+  assert.match(source, /!compact && \(/);
+  assert.match(source, /className=\{compact \? s.datasetToolbar : undefined\}/);
+});

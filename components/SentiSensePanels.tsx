@@ -1,4 +1,5 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
 import IntelligenceTable from "./IntelligenceTable";
 import OwnershipEvidenceMap from "./OwnershipEvidenceMap";
 import OptionsPositioningOverview from "./OptionsPositioningOverview";
@@ -63,6 +64,7 @@ export default function SentiSensePanels({
   group: SentiSenseGroupName;
   preview?: boolean;
 }) {
+  const compact = group === "options" || group === "ownership";
   const { preferences } = useWorkspacePreferences();
   const hidden = preferences.hiddenSignals ?? [];
   const categories: Partial<Record<SentiSenseDataset, string>> = {
@@ -95,46 +97,59 @@ export default function SentiSensePanels({
     );
   return (
     <section
-      className={group === "options" ? s.optionsPanel : s.panel}
+      className={compact ? s.optionsPanel : s.panel}
       aria-label="Research intelligence"
     >
-      <header className={s.header}>
-        <div>
-          {group !== "options" && (
+      {!compact && (
+        <header className={s.header}>
+          <div>
             <span className={s.eyebrow}>RESEARCH INTELLIGENCE</span>
-          )}
-          <h2>
-            {
+            <h2>
               {
-                analysts: "Analyst evidence",
-                ownership: "Ownership evidence",
-                events: "Stories, filings & earnings",
-                options: "Options evidence",
-                indicators: "Company data library",
-              }[group]
-            }
-          </h2>
-        </div>
-        <details className={s.provider}>
-          <summary aria-label="Data source details">ⓘ Source</summary>
-          <p>
-            Source: SentiSense. Dataset dates and coverage are shown with each
-            result.
-          </p>
-        </details>
-      </header>
-      <nav className={s.tabs} aria-label={`${group} intelligence datasets`}>
-        {choices.map(([id, label]) => (
-          <button
-            type="button"
-            key={id}
-            aria-pressed={dataset === id}
-            onClick={() => setSelection(id)}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
+                {
+                  analysts: "Analyst evidence",
+                  ownership: "Ownership evidence",
+                  events: "Stories, filings & earnings",
+                  options: "Options evidence",
+                  indicators: "Company data library",
+                }[group]
+              }
+            </h2>
+          </div>
+          <details className={s.provider}>
+            <summary aria-label="Data source details">ⓘ Source</summary>
+            <p>
+              Source: SentiSense. Dataset dates and coverage are shown with each
+              result.
+            </p>
+          </details>
+        </header>
+      )}
+      <div className={compact ? s.datasetToolbar : undefined}>
+        <nav className={s.tabs}
+        data-selection-navigation
+        onKeyDown={(event) => navigateSelection(event)} aria-label={`${group} intelligence datasets`}>
+          {choices.map(([id, label]) => (
+            <button
+              type="button"
+              key={id}
+              aria-pressed={dataset === id}
+              onClick={() => setSelection(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+        {compact && (
+          <details className={s.provider}>
+            <summary aria-label="Data source details">ⓘ</summary>
+            <p>
+              Source: SentiSense. Dataset dates and coverage are shown with each
+              result.
+            </p>
+          </details>
+        )}
+      </div>
       {dataset === "aiReport" ? (
         <SentiSenseReport key={symbol} symbol={symbol} />
       ) : dataset === "tickerStories" ? (
@@ -176,7 +191,19 @@ function Dataset({
             <h4>{group.title}</h4>
             <span>{group.rows.length} displayed</span>
           </div>
-          <IntelligenceTable rows={group.rows} title={group.title} />
+          <IntelligenceTable
+            rows={group.rows}
+            title={group.title}
+            dateHeading={
+              dataset === "estimates"
+                ? group.title === "Consensus by period"
+                  ? "Fiscal period ending"
+                  : "Report date"
+                : dataset === "earnings"
+                  ? "Report date"
+                  : "Date"
+            }
+          />
         </section>
       ),
   );
@@ -186,6 +213,14 @@ function Dataset({
         <div className={s.intro}>
           <h3>{view.title}</h3>
           <p>{view.note}</p>
+          {dataset === "estimates" && (
+            <p>
+              Source: SentiSense analyst estimates. Fiscal period endings are
+              not earnings announcement dates. Events uses a separate feed;
+              dates and EPS may differ by reporting basis or update time. Values
+              are not reconciled across feeds.
+            </p>
+          )}
         </div>
       )}
       {resource.loading ? (
@@ -242,6 +277,7 @@ function Dataset({
             tables
           )}
           <footer className={s.provenance}>
+            <span>Source: {result?.source ?? "SentiSense"}</span>
             <span>
               Evidence date {result?.asOf?.slice(0, 10) ?? "not supplied"}
             </span>

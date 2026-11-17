@@ -215,116 +215,118 @@ export function Portfolio() {
               title="Capital allocation"
               subtitle="Priced investments · excludes cash"
             />
-            {model.allocations.length > 0 && (
-              <div className={reference.ring}>
-                <svg
-                  viewBox="0 0 240 240"
-                  role="img"
-                  aria-label="Allocation of priced investments, excluding cash and unpriced holdings"
-                >
-                  <circle
-                    cx="120"
-                    cy="120"
-                    r="92"
-                    fill="none"
-                    stroke="var(--line)"
-                    strokeWidth="22"
-                  />
-                  {model.allocations.map((a, index) => (
+            <div className={reference.allocationBody}>
+              {model.allocations.length > 0 && (
+                <div className={reference.ring}>
+                  <svg
+                    viewBox="0 0 240 240"
+                    role="img"
+                    aria-label="Allocation of priced investments, excluding cash and unpriced holdings"
+                  >
                     <circle
-                      key={a.symbol}
                       cx="120"
                       cy="120"
                       r="92"
                       fill="none"
-                      stroke={companyAccent(a.symbol)}
+                      stroke="var(--line)"
                       strokeWidth="22"
-                      pathLength="100"
-                      strokeDasharray={`${a.weight} ${100 - a.weight}`}
-                      strokeDashoffset={
-                        -model.allocations
-                          .slice(0, index)
-                          .reduce((sum, row) => sum + row.weight, 0)
-                      }
-                      transform="rotate(-90 120 120)"
                     />
-                  ))}
-                </svg>
-                <div>
-                  <strong>{amount(model.invested)}</strong>
-                  <small>priced investments</small>
-                </div>
-              </div>
-            )}
-            {model.allocations.length ? (
-              <>
-                <div
-                  className="allocation-track"
-                  role="img"
-                  aria-label={model.allocations
-                    .map((a) => `${a.symbol} ${percent(a.weight)}`)
-                    .join("; ")}
-                >
-                  {model.allocations.map((a) => (
-                    <i
-                      key={a.symbol}
-                      style={{
-                        width: `${a.weight}%`,
-                        background: companyAccent(a.symbol),
-                      }}
-                    />
-                  ))}
-                </div>
-                {model.allocations.slice(0, 6).map((a) => (
-                  <Link
-                    key={a.symbol}
-                    href={researchLink(a.symbol, prefix)}
-                    className="allocation-row"
-                  >
-                    <span>
-                      <i
-                        className="dot"
-                        style={{ background: companyAccent(a.symbol) }}
-                      />
-                      {a.symbol}
-                    </span>
-                    <strong>{percent(a.weight)}</strong>
-                  </Link>
-                ))}
-                {model.allocations.length > 6 && (
-                  <details className="allocation-more">
-                    <summary>All {model.allocations.length} holdings</summary>
-                    {model.allocations.slice(6).map((a) => (
-                      <Link
+                    {model.allocations.map((a, index) => (
+                      <circle
                         key={a.symbol}
-                        href={researchLink(a.symbol, prefix)}
-                        className="allocation-row"
-                      >
-                        <span>
-                          <i
-                            className="dot"
-                            style={{ background: companyAccent(a.symbol) }}
-                          />
-                          {a.symbol}
-                        </span>
-                        <strong>{percent(a.weight)}</strong>
-                      </Link>
+                        cx="120"
+                        cy="120"
+                        r="92"
+                        fill="none"
+                        stroke={companyAccent(a.symbol)}
+                        strokeWidth="22"
+                        pathLength="100"
+                        strokeDasharray={`${a.weight} ${100 - a.weight}`}
+                        strokeDashoffset={
+                          -model.allocations
+                            .slice(0, index)
+                            .reduce((sum, row) => sum + row.weight, 0)
+                        }
+                        transform="rotate(-90 120 120)"
+                      />
                     ))}
-                  </details>
-                )}
-                <p className="chart-note">
-                  Cash and managed balances excluded. Duplicate ticker positions
-                  combined.
-                  {model.unpriced.length
-                    ? " Unpriced instruments are excluded."
-                    : ""}
-                </p>
-              </>
-            ) : (
-              <Empty title="See how your holdings fit together">
-                Available USD prices will reveal your allocation.
-              </Empty>
-            )}
+                  </svg>
+                  <div>
+                    <strong>{amount(model.invested)}</strong>
+                    <small>priced investments</small>
+                  </div>
+                </div>
+              )}
+              {model.allocations.length ? (
+                <div className={reference.allocationLegend}>
+                  <div
+                    className="allocation-track"
+                    role="img"
+                    aria-label={model.allocations
+                      .map((a) => `${a.symbol} ${percent(a.weight)}`)
+                      .join("; ")}
+                  >
+                    {model.allocations.map((a) => (
+                      <i
+                        key={a.symbol}
+                        style={{
+                          width: `${a.weight}%`,
+                          background: companyAccent(a.symbol),
+                        }}
+                      />
+                    ))}
+                  </div>
+                  {model.allocations.slice(0, 6).map((a) => (
+                    <Link
+                      key={a.symbol}
+                      href={researchLink(a.symbol, prefix)}
+                      className="allocation-row"
+                    >
+                      <span>
+                        <i
+                          className="dot"
+                          style={{ background: companyAccent(a.symbol) }}
+                        />
+                        {a.symbol}
+                      </span>
+                      <strong>{percent(a.weight)}</strong>
+                    </Link>
+                  ))}
+                  {model.allocations.length > 6 && (
+                    <details className="allocation-more">
+                      <summary>All {model.allocations.length} holdings</summary>
+                      {model.allocations.slice(6).map((a) => (
+                        <Link
+                          key={a.symbol}
+                          href={researchLink(a.symbol, prefix)}
+                          className="allocation-row"
+                        >
+                          <span>
+                            <i
+                              className="dot"
+                              style={{ background: companyAccent(a.symbol) }}
+                            />
+                            {a.symbol}
+                          </span>
+                          <strong>{percent(a.weight)}</strong>
+                        </Link>
+                      ))}
+                    </details>
+                  )}
+                  <p className="chart-note">
+                    Cash and managed balances excluded. Duplicate ticker
+                    positions combined.
+                    {model.unpriced.length
+                      ? " Unpriced instruments are excluded."
+                      : ""}
+                  </p>
+                </div>
+              ) : (
+                <Empty title="See how your holdings fit together">
+                  Available USD prices will reveal your allocation.
+                </Empty>
+              )}
+            </div>
           </section>
         </div>
         <section className={reference.actions}>

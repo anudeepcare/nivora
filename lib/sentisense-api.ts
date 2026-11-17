@@ -1,9 +1,11 @@
+import { companyRelationships } from "./company-relationships.ts";
 import { researchReport } from "./sentisense-report.ts";
 /** Server-only SentiSense adapter. No endpoint, host or credential is caller-controlled.
  * Payloads retain provider units/field names; consumers must validate numeric fields.
  * Memory caching is deduplication, NOT a distributed subscription quota ledger.
  */
 export type SentiSenseDataset =
+  | "relationships"
   | "aiReport"
   | "institutionProfile"
   | "institutionHistory"
@@ -69,6 +71,7 @@ export type SentiSenseResult = {
   retryAfterSeconds?: number;
 };
 const paths: Record<SentiSenseDataset, (ticker: string) => string> = {
+  relationships: (t) => `/stocks/${t}/graph?depth=1&cap=30`,
   aiReport: (t) => `/stocks/${t}/ai-summary?depth=deep`,
   institutionProfile: () => "",
   institutionHistory: () => "",
@@ -162,6 +165,7 @@ const universeDatasets = new Set<SentiSenseDataset>([
   "institutionalActivists",
 ]);
 const bareDatasets = new Set<SentiSenseDataset>([
+  "relationships",
   "aiReport",
   "documents",
   "institutionalQuarters",
@@ -182,6 +186,7 @@ const bareDatasets = new Set<SentiSenseDataset>([
   "kpiTypes",
 ]);
 function validPayload(dataset: SentiSenseDataset, data: unknown): boolean {
+  if (dataset === "relationships") return companyRelationships(data) !== null;
   if (dataset === "aiReport") return researchReport(data) !== null;
   if (dataset === "institutionProfile")
     return (

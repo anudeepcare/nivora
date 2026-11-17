@@ -48,14 +48,13 @@ test("Pace chart precedes long interpretation and Indicators opens chart overvie
       pace.indexOf('className="accumulation-summary"'),
   );
   const research = fs.readFileSync("components/Research.tsx", "utf8");
-  assert.ok(
-    research.indexOf("<IndicatorOverview") <
-      research.indexOf("<AdvancedResearch"),
-  );
-  assert.match(
-    research,
-    /title: "Risk & research tools"/,
-  );
+  assert.match(research, /<IndicatorsLens/);
+  const lenses = fs.readFileSync("components/DirectResearchLenses.tsx", "utf8");
+  const indicators = lenses.slice(lenses.indexOf("export function IndicatorsLens"));
+  assert.ok(indicators.indexOf("<IndicatorOverview") >= 0);
+  assert.ok(indicators.indexOf("<IndicatorOverview") < indicators.indexOf("<AdvancedResearch"));
+  assert.match(indicators, /MoreEvidence title="Risk, position & research tools"/);
+
 });
 test("indicator cards render six real charts, dated tables and no invented empty-history chart", async () => {
   const React = await import("react");

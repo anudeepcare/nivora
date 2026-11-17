@@ -748,3 +748,23 @@
 .page :global(.settings-signals) > header p { margin: 6px 0 0; color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.5; }
 
 .page :global(.settings-signals) > header { display: block; }
+
+/* Alerts and security are compact tasks, not mismatched half-page cards. */
+.page :global(.settings-notifications),
+.page :global(#settings-account) { grid-column: 1 / -1; }
+.page :global(.settings-notifications) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 20px; }
+.page :global(.settings-notifications) > header { grid-column: 1; padding-bottom: 4px; }
+.page :global(.settings-notifications) > p { grid-column: 1; margin: 0 0 14px; }
+.page :global(.settings-notifications) > :global(.button-row) { grid-column: 2; grid-row: 1 / 3; margin: 0; padding: 12px 16px 12px 0; gap: 8px; }
+.page :global(#settings-account) :global(.workspace-setting-body) { display: grid; gap: 10px; }
+.page :global(.account-identities) { margin: 0; }
+.page :global(.settings-password-change) { border-top: 1px solid var(--line); }
+.page :global(.settings-password-change) > summary { cursor: pointer; min-height: 44px; padding: 12px 0; color: var(--ink); font-size: 13px; }
+.page :global(.settings-password-change) > summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.page :global(.settings-password-change) :global(.password-form) { max-width: 440px; margin: 0 0 4px; gap: 10px; }
+.page :global(.password-form) > p { margin: 0; font-size: 12px; color: var(--muted); }
+.page :global(.password-form) > button { justify-self: start; min-height: 44px; }
+@media (max-width: 700px) {
+ .page :global(.settings-notifications) { grid-template-columns: minmax(0, 1fr); }
+ .page :global(.settings-notifications) > :global(.button-row) { grid-column: 1; grid-row: auto; padding: 0 16px 16px; flex-wrap: wrap; }
+}

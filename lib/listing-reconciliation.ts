@@ -78,7 +78,7 @@ export function listingReconciliation(r: Research): {
         detail: `Calculated share bridge: ${reported.value.toLocaleString("en-US")} reported ordinary shares at ${reported.asOf}, observed ${reported.observedAt}, paired with the quote at ${r.quote.asOf}. Dates differ; subsequent issuance or buybacks may change the count. This is not market-cap reconciliation or an audit.`,
       };
     return missing(
-      "A recent dated ordinary-share observation with matching listed-share units and currency is unavailable or conflicts with supplied shares. Foreign/ADR ratios, split changes and observations older than 120 days require reconciliation; an undated market-cap/share snapshot is not a substitute.",
+      "No qualifying dated share bridge: matching ordinary-share units, currency and a share count within 120 days are required. Conflicting counts, ADR ratios or splits need reconciliation; undated snapshots are insufficient.",
     );
   }
   if (!positive(cap) || !positive(shares))

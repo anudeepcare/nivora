@@ -1,0 +1,7 @@
+/* Keep amounts and dates intact; the existing scroll region handles wide tables. */
+.atomic.atomic {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  font-variant-numeric: tabular-nums;
+}

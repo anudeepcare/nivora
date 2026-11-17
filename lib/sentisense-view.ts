@@ -209,7 +209,7 @@ export function intelligenceView(
       sorted(
         list(payload).map((x) =>
           row(
-            text(x.headline) ?? text(x.fiscalPeriod) ?? "Earnings report",
+            text(x.fiscalPeriod) ?? "Earnings report",
             x.reportDate,
             [
               ...cell("Fiscal period", text(x.fiscalPeriod)),
@@ -224,7 +224,7 @@ export function intelligenceView(
               ...cell("Guidance", text(x.guidance)),
             ],
             undefined,
-            x.summaryMd,
+            [text(x.headline), text(x.summaryMd)].filter(Boolean).join("\n\n"),
           ),
         ),
       ),

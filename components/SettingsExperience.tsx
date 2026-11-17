@@ -159,8 +159,7 @@ export function SettingsSignalPolicies({
             </span>
           </header>
           <p className="settings-feature-status">
-            Choose a company and condition, then create a rule. Events appear in
-            Alerts after a successful check. No email or push delivery.
+            Create a rule for a company below. Results appear in Alerts after a successful check, not by email or push.
           </p>
           <div className="button-row" aria-label="Set up in-app alerts">
             <a className="button" href="alerts?type=monthly-zone">

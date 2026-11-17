@@ -9,6 +9,7 @@ import {
   type SentiSenseDataset,
 } from "@/lib/sentisense-api";
 const features: Partial<Record<SentiSenseDataset, Feature>> = {
+  relationships: "business",
   aiReport: "business",
   consensus: "analysts",
   etfAnalyst: "analysts",

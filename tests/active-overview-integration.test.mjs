@@ -84,11 +84,7 @@ function find(tree, predicate) {
   }
   return null;
 }
-test("active Research overview exposes contextual company metrics by default", () => {
-  assert.match(
-    fs.readFileSync("components/Research.tsx", "utf8"),
-    /import DecisionOverview from "\.\/IntegratedResearch"/,
-  );
+test("standalone legacy overview preserves contextual company metrics for existing consumers", () => {
   const { render } = setup();
   assert.match(renderToStaticMarkup(render()), /contextual company metrics/);
 });
@@ -267,9 +263,21 @@ test("compact active evidence retains unique context and changes without duplica
   );
 });
 
-test("active Atlas does not conceal unique decision controls under the old evidence accordion",()=>{
- const s=fs.readFileSync("components/Research.tsx","utf8");
- assert.doesNotMatch(s,/Decision context & supporting inputs/);
- assert.match(s,/<DecisionOverview\s+compact/);
- assert.match(s,/Company facts &amp; source dates/);
+test("active Atlas has one leading navigation and no appended legacy decision feed", () => {
+  const s = fs.readFileSync("components/Research.tsx", "utf8");
+  assert.doesNotMatch(
+    s,
+    /<DecisionOverview|Decision context & supporting inputs/,
+  );
+  assert.equal((s.match(/\{evidenceToolbar\}/g) || []).length, 1);
+  assert.ok(
+    s.indexOf("{evidenceToolbar}") < s.indexOf('id="research-overview"'),
+  );
+  assert.match(
+    s,
+    /<Help label="Company facts and source dates">\s*<StockFacts research=\{r\} \/>/,
+  );
+  assert.match(s, /<ReferenceAtlas research=\{r\}/);
+  assert.match(s, /<DecisionWorkspace/);
+  assert.match(s, /<DecisionWatch/);
 });

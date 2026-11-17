@@ -242,3 +242,12 @@
     gap: 8px;
   }
 }
+
+/* Keep actual Pace history beside its dated rationale; no invented allocation simulator. */
+@media (min-width: 1000px) {
+  .paceChartFirst { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 12px 18px; align-items: start; }
+  .paceChartFirst > * { grid-column: 1 / -1; min-width: 0; }
+  .paceChartFirst > :global(.accumulation-chart) { grid-column: 1; margin: 0; }
+  .paceChartFirst > :global(.accumulation-summary) { grid-column: 2; display: flex; flex-direction: column; align-items: stretch; margin: 0; padding: 16px; }
+  .paceChartFirst > :global(.accumulation-summary) dl { display: grid; grid-template-columns: 1fr; gap: 12px; }
+}

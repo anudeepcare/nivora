@@ -41,11 +41,11 @@ export function researchBrief(r: Research) {
       now - stamp <= 4 * 86400000 &&
       !r.quote.stale;
   checks.push({
-    label: "Price observation",
+    label: "Recent quote",
     status: recent ? "available" : "missing",
     detail: recent
       ? r.quote.asOf!
-      : "A current dated quote is needed for an entry assessment.",
+      : "A fresh, non-stale dated quote is required. Historical chart observations do not establish a current entry price.",
   });
   const listing = listingReconciliation(r),
     mismatch = listing.status === "conflicting";

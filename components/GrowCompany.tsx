@@ -113,6 +113,13 @@ export default function GrowCompanyEvents({ symbol }: { symbol: string }) {
         <>
           {dataset === "earnings" && (
             <>
+              <p className={s.caption}>
+                Events earnings feed: {d.source} · retrieved{" "}
+                {dateLabel(d.retrievedAt)}. Dates below are report dates, not
+                fiscal period endings. Analyst estimates uses a separate feed;
+                EPS basis and update times may differ. No cross-feed
+                reconciliation is applied.
+              </p>
               {latest && (
                 <div className={s.stats}>
                   {[

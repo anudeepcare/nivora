@@ -1,4 +1,6 @@
 "use client";
+import { consensusTarget } from "@/lib/analyst-presentation";
+import layout from "./SentiSenseConsensus.module.css";
 import EtfComposition from "./EtfComposition";
 import type { SentiSenseResult } from "@/lib/sentisense-api";
 import { useResource } from "./Session";
@@ -150,7 +152,7 @@ export default function SentiSenseConsensus({
               Limited provider preview. This is not complete analyst coverage.
             </p>
           )}
-          <div className={s.stats}>
+          <div className={`${s.stats} ${layout.stats}`}>
             {[
               [
                 "Consensus",
@@ -158,10 +160,9 @@ export default function SentiSenseConsensus({
                   ? data.consensusLabel
                   : "Not supplied",
               ],
-              ["Mean target", value(data.targetMean)],
-              ["Low target", value(data.targetLow)],
-              ["High target", value(data.targetHigh)],
-              ["Target publishers", value(data.numberOfAnalysts)],
+              ["Mean target", consensusTarget(data.targetMean, data.currency)],
+              ["Low target", consensusTarget(data.targetLow, data.currency)],
+              ["High target", consensusTarget(data.targetHigh, data.currency)],
             ].map(([label, v]) => (
               <div className={s.stat} key={label}>
                 <span>{label}</span>
@@ -170,9 +171,11 @@ export default function SentiSenseConsensus({
             ))}
           </div>
           <p className={s.caption}>
-            Targets in the provider’s quoted currency; not live prices. Evidence
-            date: {result?.asOf ? dateLabel(result.asOf) : "not supplied"}.
-            Retrieved {dateLabel(result?.retrievedAt)}.
+            Target publishers: {value(data.numberOfAnalysts)}. Source:
+            SentiSense analyst consensus. Targets are opinions, not live prices.
+            Evidence date:{" "}
+            {result?.asOf ? dateLabel(result.asOf) : "not supplied"}. Retrieved{" "}
+            {dateLabel(result?.retrievedAt)}.
           </p>
         </>
       )}

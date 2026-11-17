@@ -24,8 +24,9 @@ function loadTable() {
       target: ts.ScriptTarget.ES2022,
     },
   }).outputText;
-  return new Function("React", "s", code + ";return IntelligenceTable;")(
+  return new Function("React", "s", "layout", code + ";return IntelligenceTable;")(
     React,
+    new Proxy({}, { get: (_, k) => k }),
     new Proxy({}, { get: (_, k) => k }),
   );
 }
@@ -104,7 +105,7 @@ function harness(hiddenSignals = []) {
       renderToStaticMarkup(React.createElement(Component, props)),
     click: (props, label) => {
       const tree = Component(props),
-        nav = tree.props.children[1],
+        nav = tree.props.children[1].props.children[0],
         button = nav.props.children.find(
           (child) => child.props.children === label,
         );
@@ -181,11 +182,29 @@ test("provider identity stays in closed source details rather than panel brandin
   const html = h.render({ symbol: "AAPL", group: "ownership" });
   assert.match(
     html,
-    /<details[^>]*><summary aria-label="Data source details">ⓘ Source<\/summary><p>Source: SentiSense/,
+    /<details[^>]*><summary aria-label="Data source details">ⓘ(?: Source)?<\/summary><p>Source: SentiSense/,
   );
   assert.doesNotMatch(html, /<details[^>]*open/);
   assert.doesNotMatch(
     html,
     /aria-label="SentiSense research"|<span[^>]*>SentiSense<\/span>/,
   );
+});
+
+test("evidence table preserves amounts as atomic cells and distinguishes fiscal dates", () => {
+  const Table = loadTable();
+  const html = renderToStaticMarkup(React.createElement(Table, {
+    title: "Consensus by period",
+    dateHeading: "Fiscal period ending",
+    rows: [{ label: "Quarter", date: "2026-12-31", href: null, cells: [
+      {label: "Revenue mean", value: "$12,345,678,901.25"},
+      {label: "EPS", value: "-$1.25"},
+      {label: "Context", value: "Provider reporting basis"}
+    ]}]
+  }));
+  assert.match(html, /scope="col">Fiscal period ending<\/th>/);
+  assert.match(html, /class="atomic">2026-12-31<\/td>/);
+  assert.ok(html.includes('<td class="atomic">$12,345,678,901.25</td>'));
+  assert.ok(html.includes('<td class="atomic">-$1.25</td>'));
+  assert.ok(html.includes('<td>Provider reporting basis</td>'));
 });

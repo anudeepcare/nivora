@@ -57,6 +57,7 @@
   background: linear-gradient(90deg, #79eadc, #9b8cff);
 }
 .supporting {
+  margin: 8px var(--research-gutter);
   display: flex;
   flex: 0 0 auto;
   flex-wrap: wrap;

@@ -3,6 +3,7 @@ export type AttentionSignal = {
   action: DecisionAction;
   contextLabel?: string;
   reason?: string;
+  evidence?: string[];
   risk?: string;
   changeCondition?: string;
   evidenceAsOf?: string | null;
@@ -63,6 +64,9 @@ export function decisionAttention(input: {
         action,
         weight,
         thresholdGap: validLimit && weight != null ? limit - weight : null,
+        evidence: usable
+          ? (signal.evidence ?? []).filter((text) => text.trim())
+          : [],
         businessReason: usable ? signal.reason || signal.view.detail : null,
         label: sizeReview
           ? "Review position size"

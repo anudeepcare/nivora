@@ -1,4 +1,5 @@
 .map {
+  container-type: inline-size;
   background: var(--card);
   padding: 18px;
   border-radius: 14px;
@@ -119,4 +120,11 @@
     grid-column: 2;
     grid-row: 1;
   }
+}
+
+/* React to the actual panel width, including a narrow desktop evidence rail. */
+@container (max-width: 480px) {
+  .levels button { grid-template-columns: minmax(0, 1fr) minmax(96px, auto); gap: 8px; }
+  .levels .track { grid-column: 1 / -1; grid-row: 2; }
+  .levels span:last-child { grid-column: 2; grid-row: 1; }
 }

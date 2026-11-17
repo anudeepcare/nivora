@@ -1,4 +1,5 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
 import { useId, useState, type ReactNode } from "react";
 /** One visible evidence workspace, with every capability reachable in a labelled control. */
 export default function ResearchWorkspace({
@@ -16,6 +17,8 @@ export default function ResearchWorkspace({
     <section aria-label={label}>
       <div
         className="segmented"
+        data-selection-navigation
+        onKeyDown={(event) => navigateSelection(event)}
         role="group"
         aria-label={`${label} views`}
         style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 12 }}

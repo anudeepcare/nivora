@@ -1,3 +1,4 @@
+import { companyRelationships } from "./company-relationships.ts";
 import { researchReport } from "./sentisense-report.ts";
 import type { SentiSenseDataset, SentiSenseResult } from "./sentisense-api";
 /** Closed response schemas. Scalar leaves cannot smuggle nested provider objects. */
@@ -225,6 +226,7 @@ export function intelligenceData(
   data: unknown,
 ): unknown {
   if (data == null) return null;
+  if (dataset === "relationships") return companyRelationships(data);
   if (dataset === "aiReport") return researchReport(data);
   const row = listSchemas[dataset];
   if (row)

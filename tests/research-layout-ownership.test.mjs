@@ -6,7 +6,7 @@ const css = fs.readFileSync("components/ResearchDeskLayout.module.css", "utf8");
 test("research disclosures retain facts without a repeated top-level metric strip", () => {
   assert.match(
     source,
-    /<details className=\{cockpit.facts\}>[\s\S]*?<StockFacts research=\{r\} \/>[\s\S]*?<\/details>/,
+    /<Help label="Company facts and source dates">\s*<StockFacts research=\{r\} \/>\s*<\/Help>/,
   );
   assert.equal((source.match(/<StockFacts/g) || []).length, 1);
 });
@@ -15,7 +15,10 @@ test("Events uses the same direct child grid owner as its source and earnings la
     source.indexOf('{tab === "News"'),
     source.indexOf('{tab === "Advanced"'),
   );
-  assert.match(news, /<CompanyUpdates/);
+  assert.match(news, /<EventsLens/);
+  const direct = fs.readFileSync("components/DirectResearchLenses.tsx", "utf8");
+  assert.match(direct, /<CompanyUpdates/);
+  assert.match(direct, /<CompanyEventCalendar/);
   assert.doesNotMatch(news, /cockpit.eventsGrid/);
   assert.match(css, /\[data-desk="News"\] > :global\(\.depth-news\)/);
 });
@@ -33,7 +36,7 @@ test("Pace has one reading owner, not a duplicated leading reading", () => {
 test("Atlas keeps its observed price chart outside collapsed secondary evidence", () => {
   const atlas = source.slice(
     source.indexOf('<div id="research-overview"'),
-    source.indexOf('{tab === "Snapshot" && evidenceToolbar}'),
+    source.indexOf("className={`signal-research-panel"),
   );
   assert.match(
     atlas,
@@ -73,8 +76,10 @@ test("Technical chart precedes interpretation and supplementary facts", () => {
     source.indexOf('{tab === "Pace"'),
   );
   assert.doesNotMatch(technical, /<h2>Technicals<\/h2>|Chart interval/);
+  assert.equal((source.match(/\{evidenceToolbar\}/g) || []).length, 1);
+  assert.doesNotMatch(source, /<details className=\{cockpit.facts\}>/);
   assert.match(
     source,
-    /tab !== "Snapshot" && tab !== "Technicals" && evidenceToolbar/,
+    /const evidenceToolbar =\s*supportingSections.length > 1/,
   );
 });

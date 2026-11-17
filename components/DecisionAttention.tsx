@@ -63,10 +63,44 @@ export default function DecisionAttention({
           </Link>
           <span>{item.label}</span>
         </div>
-        <p>{compact ? item.reason.split(/(?<=[.!?])\s/)[0] : item.reason}</p>
+        {compact ? (
+          <div className={s.evidence}>
+            {item.sizeReview && <p>{item.reason}</p>}
+            {item.evidence.length > 0 ? (
+              <p>{item.evidence.slice(0, 2).join(" ")}</p>
+            ) : (
+              <p>
+                Dated business metrics not supplied. Open research to verify the
+                assessment.
+              </p>
+            )}
+            <small>
+              {item.businessPeriod
+                ? `Financial period · ${dateLabel(item.businessPeriod)}`
+                : "Financial period not supplied"}
+              {item.owns && item.weight != null
+                ? ` · Position ${item.weight.toFixed(1)}% of priced investments`
+                : ""}
+            </small>
+            {item.changeCondition && (
+              <p>
+                <strong>Reassess:</strong> {item.changeCondition}
+              </p>
+            )}
+            <small>
+              {item.asOf
+                ? `Price reference · ${dateLabel(item.asOf)}`
+                : "Price reference date not supplied"}
+            </small>
+          </div>
+        ) : (
+          <p>{item.reason}</p>
+        )}
         <details>
           <summary>What to check next</summary>
           {compact && <p>{item.reason}</p>}
+          {compact &&
+            item.evidence.slice(2).map((text) => <p key={text}>{text}</p>)}
           {item.sizeReview && item.businessReason && (
             <p>
               <strong>Business assessment · {item.action}:</strong>{" "}

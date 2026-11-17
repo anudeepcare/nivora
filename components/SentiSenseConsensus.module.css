@@ -1,0 +1,19 @@
+.stats.stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 20px;
+}
+.stats strong {
+  font-size: clamp(16px, 1.7vw, 20px);
+  line-height: 1.4;
+  overflow-wrap: normal;
+}
+@media (max-width: 900px) {
+  .stats.stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 420px) {
+  .stats.stats {
+    gap: 0 12px;
+  }
+}

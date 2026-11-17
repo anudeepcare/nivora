@@ -74,8 +74,8 @@
 .ring {
   container-type: inline-size;
   position: relative;
-  width: min(100%, 260px);
-  margin: 8px auto 20px;
+  width: min(100%, 200px);
+  margin: 8px auto 12px;
 }
 .ring svg {
   display: block;
@@ -202,4 +202,29 @@
 }
 .page.page.page.page :global(.wealth-strip.four) > div > strong {
   font-size: clamp(22px, 2.4vw, 32px);
+}
+
+.capitalOverview {
+  container-type: inline-size;
+}
+.allocationBody {
+  display: grid;
+  gap: 12px 20px;
+  align-items: start;
+}
+.allocationLegend {
+  min-width: 0;
+}
+.allocationLegend :global(.allocation-row) {
+  padding-block: 8px;
+}
+.allocationLegend :global(.chart-note) {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+@container (min-width: 480px) {
+  .allocationBody {
+    grid-template-columns: minmax(160px, 0.8fr) minmax(0, 1.2fr);
+  }
 }

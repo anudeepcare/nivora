@@ -1,8 +1,15 @@
 "use client";
+import CompanyRelationships from "./CompanyRelationships";
 import type { Research } from "@/lib/types";
 import { companyClassification } from "@/lib/company-classification";
 import { modelCoverage } from "@/lib/research-depth";
-export default function BusinessMap({ research: r }: { research: Research }) {
+export default function BusinessMap({
+  research: r,
+  preview = false,
+}: {
+  research: Research;
+  preview?: boolean;
+}) {
   const profile = r.evidence?.profile;
   const classification = companyClassification({
     symbol: r.company.symbol,
@@ -30,6 +37,11 @@ export default function BusinessMap({ research: r }: { research: Research }) {
             ))}
         </div>
       </header>
+      <CompanyRelationships
+        key={r.company.symbol}
+        symbol={r.company.symbol}
+        preview={preview}
+      />
       <div className="business-context-layout">
         <details className="business-profile">
           <summary>

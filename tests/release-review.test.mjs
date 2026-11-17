@@ -1,6 +1,6 @@
 import { researchLenses, lensForSection } from "../lib/reference-navigation.ts";
-import { readCompatCss } from './read-compat-css.mjs';
-import {experience} from './helpers/integrated-ui.mjs';
+import { readCompatCss } from "./read-compat-css.mjs";
+import { experience } from "./helpers/integrated-ui.mjs";
 import { customerText } from "../lib/customer-language.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -32,8 +32,8 @@ test("both providers reject same-day future intraday candles at the timestamp bo
 });
 test("financial selected-control styles outrank global button resets", () => {
   const base = postcss.parse(
-    readCompatCss('app/studio-foundation.css') +
-      readCompatCss('app/globals.css'),
+    readCompatCss("app/studio-foundation.css") +
+      readCompatCss("app/globals.css"),
   );
   const module = postcss.parse(
     fs.readFileSync("components/ResearchWorkspace.module.css", "utf8"),
@@ -118,7 +118,11 @@ function researchMarkup(issues = [], options = {}) {
     },
   };
   const empty = () => null;
-  const bindings = { cachedQuotes:()=>({}),publishQuotes:()=>{},subscribeQuotes:()=>()=>{}, experience,
+  const bindings = {
+    cachedQuotes: () => ({}),
+    publishQuotes: () => {},
+    subscribeQuotes: () => () => {},
+    experience,
     customerText,
     useAccess: () => ({
       access: {
@@ -144,17 +148,36 @@ function researchMarkup(issues = [], options = {}) {
     FreeSnapshot: () => null,
     React,
     ...format,
-    tabPresentation: Object.fromEntries(["Snapshot", "Financials", "Valuation", "Technicals", "Thesis", "Analysts", "Options", "News", "Advanced"].map(key => [key, {label:key, icon:empty}])),
+    tabPresentation: Object.fromEntries(
+      [
+        "Snapshot",
+        "Financials",
+        "Valuation",
+        "Technicals",
+        "Thesis",
+        "Analysts",
+        "Options",
+        "News",
+        "Advanced",
+      ].map((key) => [key, { label: key, icon: empty }]),
+    ),
     tabs: ["Snapshot", "Financials", "Valuation", "Technicals", "Thesis"],
     ranges: ["1D", "1W", "1M", "6M", "1Y", "5Y"],
     useState: (v) => [typeof v === "function" ? v() : v, empty],
-    useSearchParams: () => new URLSearchParams(options.tab ? {tab: options.tab} : {}),
+    useSearchParams: () =>
+      new URLSearchParams(options.tab ? { tab: options.tab } : {}),
     useMemo: (f) => f(),
     useRef: (value) => ({ current: value }),
     useLayoutEffect: () => {},
     useEffect: () => {},
     useLivePrices: () => ({ ticks: {}, connected: false }),
-    useWorkspacePreferences:()=>({preferences:{chartRange:"1Y",hiddenSignals:options.hiddenSignals ?? []},ready:true}),
+    useWorkspacePreferences: () => ({
+      preferences: {
+        chartRange: "1Y",
+        hiddenSignals: options.hiddenSignals ?? [],
+      },
+      ready: true,
+    }),
     useResearchPreferences: () => ({ preferences: { detail: "essential" } }),
     ResearchModeSwitch: () => null,
     mergePriceTick: (base) => base,
@@ -213,7 +236,7 @@ function researchMarkup(issues = [], options = {}) {
     format.quoteTime,
     ({ children }) => React.createElement("dialog", {}, children),
     customerText,
-    {backupBadge:"backupBadge"},
+    { backupBadge: "backupBadge" },
   );
   for (const name of [
     "StockFacts",
@@ -270,7 +293,8 @@ function researchMarkup(issues = [], options = {}) {
   bindings.researchLenses = researchLenses;
   bindings.lensForSection = lensForSection;
   bindings.cockpit = new Proxy({}, { get: (_, key) => String(key) });
-  bindings.ReferenceAtlas = () => React.createElement("section", { "data-reference-atlas": true });
+  bindings.ReferenceAtlas = () =>
+    React.createElement("section", { "data-reference-atlas": true });
   bindings.tabVisuals = { root: "research-tab-visuals" };
   bindings.deskLayout = { content: "research-desk-layout" };
   bindings.Help = ({ children }) => React.createElement("div", null, children);
@@ -303,9 +327,10 @@ test("unverified upcoming EPS is never formatted in the listing currency", () =>
   assert.doesNotMatch(html, /Estimated EPS/);
 });
 
-test("Simple overview delegates to Edge without repeating the full evidence panels", () => {
+test("Atlas is the sole active overview without appended legacy evidence panels", () => {
   const html = researchMarkup();
-  assert.match(html, /data-overview-evidence="edge"/);
+  assert.match(html, /data-reference-atlas="true"/);
+  assert.doesNotMatch(html, /data-overview-evidence="edge"/);
   for (const section of ["financials", "lenses", "thresholds"])
     assert.ok(!html.includes(`data-overview-evidence="${section}"`));
 });
@@ -319,10 +344,13 @@ test("coverage details preserve the failure without exposing vendor names", () =
   assert.match(html, /did not authorize this dataset/);
 });
 
-test("technical visibility preference removes the actual panel and provides restore navigation",()=>{
- const html=researchMarkup([], {tab:"Technicals",hiddenSignals:["technicals"]});
- assert.match(html,/Technical indicators are hidden/);
- assert.match(html,/href="\/settings"/);
- assert.doesNotMatch(html,/data-retained-panel="Technicals"/);
- assert.match(html,/separate Pace calculation/);
+test("technical visibility preference removes the actual panel and provides restore navigation", () => {
+  const html = researchMarkup([], {
+    tab: "Technicals",
+    hiddenSignals: ["technicals"],
+  });
+  assert.match(html, /Technical indicators are hidden/);
+  assert.match(html, /href="\/settings"/);
+  assert.doesNotMatch(html, /data-retained-panel="Technicals"/);
+  assert.match(html, /separate Pace calculation/);
 });

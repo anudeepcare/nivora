@@ -1,4 +1,5 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import type { Research } from "@/lib/types";
@@ -57,7 +58,9 @@ export default function AdvancedResearch({
           Research tools · no order execution
         </span>
       </header>
-      <nav className="professional-tabs" aria-label="Advanced sections">
+      <nav className="professional-tabs"
+        data-selection-navigation
+        onKeyDown={(event) => navigateSelection(event)} aria-label="Advanced sections">
         {sections.map(([id, label]) => (
           <button
             key={id}

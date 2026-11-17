@@ -144,6 +144,7 @@ export function workspaceGuidance(
     ]
       .filter(Boolean)
       .join(" "),
+    evidence: edge.decision.reasons,
     businessPeriod: edge.decision.period,
     risk: edge.risk,
     changeCondition: edge.turningPoint,

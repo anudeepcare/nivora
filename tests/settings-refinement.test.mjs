@@ -333,14 +333,17 @@ test("Settings presents compact groups on one page without duplicate account sum
     1,
   );
   assert.equal(nodes(tree, (n) => n.props?.hidden === true).length, 0);
-  assert.equal(nodes(tree, (n) => n.type === "details").length, 0,
-    "Settings sections are directly visible without extra disclosure steps");
+  const disclosures = nodes(tree, (n) => n.type === "details");
+  assert.equal(disclosures.length, 1, "Only the infrequent password action is collapsed");
+  assert.equal(disclosures[0].props.className, "settings-password-change");
+  assert.equal(nodes(disclosures[0], (n) => n.type === "form").length, 1);
+  assert.equal(nodes(disclosures[0], (n) => n.type === "summary")[0].props.children, "Change password");
   assert.equal(nodes(tree, (n) => n.type === "header").length, 3);
   assert.equal(
     nodes(tree, (n) => n.type === "input" && n.props.type === "password")
       .length,
     1,
-    "Account controls remain directly available",
+    "Password controls remain available in the security disclosure",
   );
   assert.equal(
     nodes(tree, (n) => n.type === "Link" && n.props.href === "/preview/plans")

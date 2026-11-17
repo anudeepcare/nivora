@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import type { Research } from "@/lib/types";
 import { calendarEvents, monthCells } from "@/lib/research-visual-evidence";
+import layout from "./DirectResearchLenses.module.css";
 import s from "./ResearchVisualEvidence.module.css";
 export default function CompanyEventCalendar({
   research,
@@ -11,10 +12,14 @@ export default function CompanyEventCalendar({
 }) {
   const events = useMemo(() => calendarEvents(research), [research]);
   const initial = research.retrievedAt.slice(0, 7);
+  const [kind, setKind] = useState("all");
+  const filtered = events.filter(
+    (event) => kind === "all" || event.kind === kind,
+  );
   const [month, setMonth] = useState(initial),
     [selected, setSelected] = useState<string | null>(null);
   const cells = monthCells(month),
-    visible = events.filter((x) =>
+    visible = filtered.filter((x) =>
       selected ? x.date === selected : x.date.startsWith(month),
     );
   const title = cells.length
@@ -31,7 +36,10 @@ export default function CompanyEventCalendar({
     setSelected(null);
   }
   return (
-    <section className={s.panel} aria-label="Company events calendar">
+    <section
+      className={`${s.panel} ${layout.events}`}
+      aria-label="Company events calendar"
+    >
       <header className={s.header}>
         <div>
           <span className={s.eyebrow}>DATED EVIDENCE</span>
@@ -41,8 +49,8 @@ export default function CompanyEventCalendar({
         </div>
         <span className={s.subtle}>{events.length} supplied events</span>
       </header>
-      <div className={s.calendarLayout}>
-        <div>
+      <div className={`${s.calendarLayout} ${layout.eventColumns}`}>
+        <div className={layout.calendarPanel}>
           <div className={s.monthHead}>
             <button
               type="button"
@@ -60,6 +68,27 @@ export default function CompanyEventCalendar({
               <ChevronRight size={16} />
             </button>
           </div>
+          <div
+            className={layout.eventFilters}
+            role="group"
+            aria-label="Event type"
+          >
+            {[
+              ["all", "All"],
+              ["earnings", "Earnings"],
+              ["filing", "Filings"],
+              ["transaction", "Activity"],
+            ].map(([key, label]) => (
+              <button
+                type="button"
+                key={key}
+                aria-pressed={kind === key}
+                onClick={() => setKind(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <div className={s.calendar}>
             {["M", "T", "W", "T", "F", "S", "S"].map((v, i) => (
               <span className={s.weekday} key={i}>
@@ -67,11 +96,11 @@ export default function CompanyEventCalendar({
               </span>
             ))}
             {cells.map((date, i) => {
-              const found = events.filter((x) => x.date === date);
+              const found = filtered.filter((x) => x.date === date);
               return date ? (
                 <button
                   type="button"
-                  className={s.day}
+                  className={`${s.day} ${layout.calendarDay}`}
                   key={date}
                   aria-pressed={selected === date}
                   aria-label={`${date}, ${found.length} supplied events`}
@@ -102,9 +131,9 @@ export default function CompanyEventCalendar({
             ))}
           </div>
         </div>
-        <div className={s.agenda}>
+        <div className={`${s.agenda} ${layout.streamPanel}`}>
           <div className={s.agendaHead}>
-            <strong>{selected ?? "This month"}</strong>
+            <strong>Chronological stream · {selected ?? "this month"}</strong>
             {selected && (
               <button type="button" onClick={() => setSelected(null)}>
                 Show month
@@ -144,7 +173,8 @@ export default function CompanyEventCalendar({
       </div>
       <p className={s.footnote}>
         Supplied earnings, filing and transaction dates only. Forecast periods
-        are not announcement dates.
+        are not announcement dates. Impact rankings are not supplied; no
+        importance scores are inferred.
       </p>
     </section>
   );

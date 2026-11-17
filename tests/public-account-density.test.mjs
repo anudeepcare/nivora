@@ -29,3 +29,10 @@ test('public conversion has one closing section rather than consecutive pricing 
 test('settings spacing selection uses an explicit readable foreground', () => {
  assert.match(read('SettingsPage.module.css'), /density-options.*aria-pressed="true"[\s\S]*?color: #fff/);
 });
+test('security keeps password changes behind an explicit disclosure', () => {
+ const source=read('SupportingViews.tsx').split('export function Compare')[0];
+ assert.match(source, /<details className="settings-password-change">/);
+ assert.match(source, /<summary>Change password<\/summary>/);
+ assert.match(source, /autoComplete="new-password"/);
+ assert.match(source, /onSubmit=\{update\}/);
+});

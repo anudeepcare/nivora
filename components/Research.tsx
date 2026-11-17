@@ -1,11 +1,10 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
 import { researchLenses, lensForSection } from "@/lib/reference-navigation";
 import cockpit from "./ReferenceCockpit.module.css";
 import ReferenceAtlas from "./ReferenceAtlas";
 import ResearchWorkspace from "./ResearchWorkspace";
-import EarningsReview from "./EarningsReview";
-import CompanyEventCalendar from "./CompanyEventCalendar";
-import IndicatorOverview from "./IndicatorOverview";
+import { EventsLens, IndicatorsLens } from "./DirectResearchLenses";
 import SentiSensePanels from "./SentiSensePanels";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
@@ -37,13 +36,6 @@ const ValueStudio = dynamic(() => import("./ValueStudio"), {
 const OptionsMarketOverview = dynamic(() => import("./OptionsMarketOverview"));
 const OptionsDesk = dynamic(() => import("./OptionsDesk"), {
   loading: () => <p role="status">Opening options…</p>,
-});
-const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
-  loading: () => (
-    <p role="status" aria-busy="true">
-      Loading advanced research…
-    </p>
-  ),
 });
 
 const FinancingContext = dynamic(() => import("./FinancingContext"), {
@@ -98,7 +90,6 @@ import { groupHistory } from "@/lib/chart-period";
 const DcaResearch = dynamic(() => import("./DcaResearch"), {
   loading: () => <p role="status">Loading…</p>,
 });
-import DecisionOverview from "./IntegratedResearch";
 import experience from "./IntegratedExperience.module.css";
 import tabVisuals from "./ResearchTabVisuals.module.css";
 import deskLayout from "./ResearchDeskLayout.module.css";
@@ -106,9 +97,7 @@ import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
 import { paceCode } from "@/lib/pace-presentation";
-const EarningsWorkspace = dynamic(() => import("./EarningsWorkspace"), {
-  loading: () => <p role="status">Loading…</p>,
-});
+
 import DecisionBrief from "./DecisionBrief";
 const TargetsEstimates = dynamic(() => import("./TargetsEstimates"), {
   loading: () => <p role="status">Loading…</p>,
@@ -116,9 +105,7 @@ const TargetsEstimates = dynamic(() => import("./TargetsEstimates"), {
 const AnalystRatings = dynamic(() => import("./AnalystRatings"), {
   loading: () => <p role="status">Loading…</p>,
 });
-const CompanyUpdates = dynamic(() => import("./CompanyUpdates"), {
-  loading: () => <p role="status">Loading…</p>,
-});
+
 const CongressDisclosures = dynamic(() => import("./CongressDisclosures"), {
   loading: () => <p role="status">Loading…</p>,
 });
@@ -571,30 +558,25 @@ export default function Research({ symbol }: { symbol: string }) {
     now: demo ? Date.parse(r.retrievedAt) : Date.now(),
   });
   const headerContext = headerMarketContext(r);
-  const evidenceToolbar = (
-    <div className={cockpit.toolbar}>
-      {supportingSections.length > 1 && (
-        <nav
-          className={cockpit.supporting}
-          aria-label={`${activeLens.label} evidence`}
-        >
-          {supportingSections.map((section) => (
-            <button
-              key={section}
-              aria-current={tab === section ? "page" : undefined}
-              onClick={() => switchTab(section)}
-            >
-              {tabPresentation[section].label}
-            </button>
-          ))}
-        </nav>
-      )}
-      <details className={cockpit.facts}>
-        <summary>Company facts &amp; source dates</summary>
-        <StockFacts research={r} />
-      </details>
-    </div>
-  );
+  const evidenceToolbar =
+    supportingSections.length > 1 ? (
+      <nav
+        className={cockpit.supporting}
+        data-selection-navigation
+        onKeyDown={(event) => navigateSelection(event)}
+        aria-label={`${activeLens.label} evidence`}
+      >
+        {supportingSections.map((section) => (
+          <button
+            key={section}
+            aria-current={tab === section ? "page" : undefined}
+            onClick={() => switchTab(section)}
+          >
+            {tabPresentation[section].label}
+          </button>
+        ))}
+      </nav>
+    ) : null;
   return (
     <article
       className={`research-page approved-research-page ${cockpit.root}`}
@@ -609,6 +591,9 @@ export default function Research({ symbol }: { symbol: string }) {
               {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
             </p>
             <div className="security-context">
+              <Help label="Company facts and source dates">
+                <StockFacts research={r} />
+              </Help>
               {headerContext.sector && <span>{headerContext.sector}</span>}
             </div>
           </div>
@@ -707,7 +692,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         ))}
       </nav>
-      {tab !== "Snapshot" && tab !== "Technicals" && evidenceToolbar}
+      {evidenceToolbar}
       <div id="research-overview" hidden={tab !== "Snapshot"}>
         {retainedCharts.includes("Snapshot") && (
           <FeatureGate
@@ -716,16 +701,9 @@ export default function Research({ symbol }: { symbol: string }) {
           >
             <ReferenceAtlas research={r} onTab={switchTab} />
             <div className={cockpit.primaryChart}>{chart}</div>
-            <DecisionOverview
-              compact
-              key={r.company.symbol}
-              research={r}
-              onTab={switchTab}
-            />
           </FeatureGate>
         )}
       </div>
-      {tab === "Snapshot" && evidenceToolbar}
       <section
         className={`signal-research-panel ${tabVisuals.root}`}
         data-research-section={tab}
@@ -759,99 +737,47 @@ export default function Research({ symbol }: { symbol: string }) {
             }
           >
             {tab === "News" && (
-              <ResearchWorkspace
-                key={`${r.company.symbol}-events`}
-                label="Events"
-                views={[
-                  {
-                    title: "Calendar",
-                    content: <CompanyEventCalendar research={r} />,
-                  },
-                  {
-                    title: "News & filings",
-                    content: <CompanyUpdates research={r} preview={!!demo} />,
-                  },
-                  {
-                    title: "Earnings & estimates",
-                    content: (
-                      <>
-                        <EarningsReview research={r} contextOnly />
-                        <EarningsWorkspace research={r} />
-                      </>
-                    ),
-                  },
-                  {
-                    title: "Stories & reactions",
-                    content: (
-                      <SentiSensePanels
-                        symbol={r.company.symbol}
-                        preview={!!demo}
-                        group="events"
-                      />
-                    ),
-                  },
-                ]}
+              <EventsLens
+                key={r.company.symbol}
+                research={r}
+                preview={!!demo}
               />
             )}
             {tab === "Advanced" && (
-              <ResearchWorkspace
-                key={`${r.company.symbol}-indicators`}
-                label="Indicators"
-                views={[
-                  {
-                    title: "Business & market",
-                    content: <IndicatorOverview research={r} />,
-                  },
-                  {
-                    title: "Risk & research tools",
-                    content: (
-                      <AdvancedResearch key={r.company.symbol} research={r} />
-                    ),
-                  },
-                  {
-                    title: "Operating & short-interest evidence",
-                    content: (
-                      <SentiSensePanels
-                        symbol={r.company.symbol}
-                        preview={!!demo}
-                        group="indicators"
-                      />
-                    ),
-                  },
-                ]}
+              <IndicatorsLens
+                key={r.company.symbol}
+                research={r}
+                preview={!!demo}
               />
             )}
             {tab === "Options" && (
-              <ResearchWorkspace
-                key={`${r.company.symbol}-options`}
-                label="Options"
-                views={[
-                  {
-                    title: "Company positioning",
-                    content: (
-                      <SentiSensePanels
-                        symbol={r.company.symbol}
-                        preview={!!demo}
-                        group="options"
-                      />
-                    ),
-                  },
-                  {
-                    title: "Market overview",
-                    content: <OptionsMarketOverview preview={!!demo} />,
-                  },
-                  {
-                    title: "Contract tools & practice",
-                    content: (
-                      <OptionsDesk
-                        key={r.company.symbol}
-                        research={r}
-                        preview={!!demo}
-                      />
-                    ),
-                  },
-                ]}
-              />
+              <section aria-label="Company positioning">
+                <SentiSensePanels
+                  symbol={r.company.symbol}
+                  preview={!!demo}
+                  group="options"
+                />
+                <ResearchWorkspace
+                  key={`${r.company.symbol}-options-tools`}
+                  label="Additional options tools"
+                  views={[
+                    {
+                      title: "Market overview",
+                      content: <OptionsMarketOverview preview={!!demo} />,
+                    },
+                    {
+                      title: "Contract tools & practice",
+                      content: (
+                        <OptionsDesk
+                          key={r.company.symbol}
+                          research={r}
+                          preview={!!demo}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </section>
             )}
             {tab === "Analysts" && (
               <ResearchWorkspace
@@ -971,39 +897,34 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Thesis" && (
               <>
+                <div
+                  className={cockpit.ownershipGrid}
+                  style={
+                    congressionalHidden
+                      ? { gridTemplateColumns: "minmax(0, 1fr)" }
+                      : undefined
+                  }
+                >
+                  <section aria-label="Institutional and insider evidence">
+                    <SentiSensePanels
+                      symbol={r.company.symbol}
+                      preview={!!demo}
+                      group="ownership"
+                    />
+                  </section>
+                  {!congressionalHidden && (
+                    <section aria-label="Congressional activity">
+                      <CongressDisclosures
+                        symbol={r.company.symbol}
+                        preview={!!demo}
+                      />
+                    </section>
+                  )}
+                </div>
                 <ResearchWorkspace
                   key={`${r.company.symbol}-ownership-context`}
-                  label="Ownership"
+                  label="Additional ownership evidence"
                   views={[
-                    {
-                      title: "Dated filings & activity",
-                      content: (
-                        <div
-                          className={cockpit.ownershipGrid}
-                          style={
-                            congressionalHidden
-                              ? { gridTemplateColumns: "minmax(0, 1fr)" }
-                              : undefined
-                          }
-                        >
-                          <section aria-label="Institutional and insider evidence">
-                            <SentiSensePanels
-                              symbol={r.company.symbol}
-                              preview={!!demo}
-                              group="ownership"
-                            />
-                          </section>
-                          {!congressionalHidden && (
-                            <section aria-label="Congressional activity">
-                              <CongressDisclosures
-                                symbol={r.company.symbol}
-                                preview={!!demo}
-                              />
-                            </section>
-                          )}
-                        </div>
-                      ),
-                    },
                     {
                       title: "Reported ownership",
                       content: <OwnershipPicture research={r} />,
@@ -1012,7 +933,11 @@ export default function Research({ symbol }: { symbol: string }) {
                       title: "Business context & assistant",
                       content: (
                         <>
-                          <BusinessMap key={r.company.symbol} research={r} />
+                          <BusinessMap
+                            key={r.company.symbol}
+                            research={r}
+                            preview={!!demo}
+                          />
                           <Analyst research={r} compact />
                         </>
                       ),
@@ -1037,7 +962,6 @@ export default function Research({ symbol }: { symbol: string }) {
           </FeatureGate>
         </div>
       </section>
-      {tab === "Technicals" && evidenceToolbar}
     </article>
   );
 }

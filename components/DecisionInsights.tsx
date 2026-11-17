@@ -1,4 +1,5 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Research } from "@/lib/types";
@@ -121,6 +122,8 @@ function Insights({
       </header>
       <div
         className={s.tabs}
+        data-selection-navigation
+        onKeyDown={(event) => navigateSelection(event)}
         role="group"
         aria-label="Choose a decision question"
       >

@@ -212,8 +212,8 @@ export function Settings() {
         <section id="settings-account" className="workspace-setting-group">
           <header>
             <span>
-              <strong>Account & security</strong>
-              <small>Sign-in methods and password</small>
+              <small>ACCOUNT</small>
+              <strong>Sign-in & security</strong>
             </span>
           </header>
           <div className="workspace-setting-body">
@@ -235,6 +235,8 @@ export function Settings() {
                 ))}
               </div>
             )}
+            <details className="settings-password-change">
+              <summary>Change password</summary>
             <form className="password-form" onSubmit={update}>
               <label>
                 New password
@@ -258,6 +260,7 @@ export function Settings() {
                 {busy ? "Saving…" : "Update password"}
               </button>
             </form>
+            </details>
           </div>
         </section>
       </div>

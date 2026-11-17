@@ -791,3 +791,8 @@
   line-height: 1.5;
   margin: 0;
 }
+
+/* Reference composition: chart leads, dated interpretation stays beside it. */
+@media (min-width: 1101px) {
+  .technicalWorkbench { grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr); }
+}

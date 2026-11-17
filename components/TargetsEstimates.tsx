@@ -82,6 +82,7 @@ export default function TargetsEstimates({
       )}
       <div
         className={styles.tabs}
+        data-selection-navigation
         role="tablist"
         aria-label="Target and estimate views"
       >

@@ -921,9 +921,13 @@ test("the single settings page preserves account, membership and help", () => {
   });
   const html = renderToStaticMarkup(React.createElement(Settings));
   assert.doesNotMatch(html, /href="\/(discover|research-lab|trading)"/);
-  assert.match(html, /Account &amp; security/);
+  assert.match(html, /Sign-in &amp; security/);
   assert.match(html, /href="\/help"/);
-  assert.equal((html.match(/<details/g) || []).length, 0);
+  assert.equal((html.match(/<details/g) || []).length, 1);
+  assert.match(
+    html,
+    /<details class="settings-password-change"><summary>Change password<\/summary>/,
+  );
   assert.equal((html.match(/reader@example.com/g) || []).length, 1);
   assert.doesNotMatch(html, /hidden=""/);
   assert.match(html, /href="\/plans"/);
