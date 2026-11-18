@@ -24,6 +24,26 @@ export default function PaceHistoryInsights({
   );
   const [selected, setSelected] = useState(2);
   const zone = data.zones.find((row) => row.zone === selected)!;
+  if (!data.available)
+    return (
+      <section
+        className={styles.unavailable}
+        aria-label="Pace historical evidence"
+      >
+        <strong>Historical outcomes not available</strong>
+        <span>
+          The supplied price history has no eligible monthly readings.
+        </span>
+        <details>
+          <summary>History requirements</summary>
+          <p>{data.reason}</p>
+          <p>
+            This does not mean a P0 reading or a zero return. Current price
+            evidence remains separate.
+          </p>
+        </details>
+      </section>
+    );
   return (
     <section className={styles.history} aria-label="Pace historical evidence">
       <header>

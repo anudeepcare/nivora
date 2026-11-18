@@ -40,5 +40,8 @@ test("Outcome evidence keeps missing status visible and diagnostics accessible w
     /\.lower\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/,
   );
   assert.match(css, /\.evidenceCheck summary[\s\S]*?min-height: 44px/);
-  assert.match(source, /Forecast-multiple sensitivity · not fair value/);
+  assert.match(source, /\{m.outcome.method\} · \{m.outcome.caveat\}/);
+  const model = fs.readFileSync("lib/reference-atlas.ts", "utf8");
+  assert.match(model, /Forecast-multiple sensitivity/);
+  assert.match(model, /Conditional scenario prices, not independent fair value/);
 });

@@ -302,95 +302,75 @@ export default function ReferenceAtlas({
           </button>
         ))}
       </section>
-      {m.cases.length !== 3 ? (
-        <section
-          className={s.unavailable}
-          aria-label="Model availability and evidence"
-        >
-          <details className={s.availabilityInfo}>
-            <summary aria-label="Model range unavailable: reasons and evidence">
-              ⓘ Valuation inputs need verification
-            </summary>
-            {!b.checks.some(
-              (check) => check.detail && b.value.reason.includes(check.detail),
-            ) && <p>{b.value.reason}</p>}
-            <button onClick={() => onTab("Valuation")}>
-              View conditional scenarios ↗
-            </button>
-            <div className={s.checkGrid}>
-              {b.checks.map((check) => (
-                <div key={check.label}>
-                  <span>{check.label}</span>
-                  <strong data-state={check.status}>{check.status}</strong>
-                  <p>{check.detail}</p>
-                </div>
-              ))}
-            </div>
-          </details>
-        </section>
-      ) : (
-        <div className={s.lower}>
-          <section className={s.scenarios}>
-            <header>
-              <span className={s.eyebrow}>
-                Outcome range{" "}
-                {atlasHorizonLabel(m.horizon)
-                  ? `· ${atlasHorizonLabel(m.horizon)}`
-                  : ""}
-              </span>
-              <button onClick={() => onTab("Valuation")}>Open model ↗</button>
-            </header>
-            {m.cases.length === 3 ? (
-              <>
-                <div className={s.caseGrid}>
-                  {m.cases.map((item) => (
-                    <button
-                      key={item.label}
-                      data-tone={item.tone}
-                      onClick={() => onTab("Valuation")}
-                    >
-                      <span>{item.label}</span>
-                      <strong>
-                        {amount(item.value, b.scenario!.currency)}
-                      </strong>
-                      <small>{percent(item.annual)} annualized</small>
-                    </button>
-                  ))}
-                </div>
-                <p>
-                  Forecast-multiple sensitivity · not fair value. Model dated{" "}
-                  {dateLabel(b.scenario!.asOf)}; ends{" "}
-                  {dateLabel(b.scenario!.end)}.
-                </p>
-              </>
-            ) : (
+      <div className={s.lower}>
+        <section className={s.scenarios}>
+          <header>
+            <span className={s.eyebrow}>
+              Outcome range{" "}
+              {atlasHorizonLabel(m.horizon)
+                ? `· ${atlasHorizonLabel(m.horizon)}`
+                : ""}
+            </span>
+            <button onClick={() => onTab("Valuation")}>Open model ↗</button>
+          </header>
+          {m.cases.length === 3 ? (
+            <>
+              <div className={s.caseGrid}>
+                {m.cases.map((item) => (
+                  <button
+                    key={item.label}
+                    data-tone={item.tone}
+                    onClick={() => onTab("Valuation")}
+                  >
+                    <span>{item.label}</span>
+                    <strong>{amount(item.value, m.outcome.currency)}</strong>
+                    <small>
+                      {item.annual == null
+                        ? "Model value"
+                        : `${percent(item.annual)} annualized`}
+                    </small>
+                  </button>
+                ))}
+              </div>
               <p>
-                {b.checks.some(
-                  (check) =>
-                    check.detail && b.value.reason.includes(check.detail),
-                )
-                  ? "Model range unavailable. The missing evidence is listed alongside."
-                  : b.value.reason}
+                {m.outcome.method} · {m.outcome.caveat}
+                {m.outcome.asOf && (
+                  <> Model dated {dateLabel(m.outcome.asOf)}.</>
+                )}
+                {m.outcome.end && <> Ends {dateLabel(m.outcome.end)}.</>}
               </p>
-            )}
-          </section>
-          <section className={s.evidence}>
-            <header>
-              <span className={s.eyebrow}>Evidence checks</span>
-              <span>Input availability · not confidence</span>
-            </header>
-            {b.checks.map((check) => (
-              <details className={s.evidenceCheck} key={check.label}>
-                <summary>
-                  <span>{check.label}</span>
-                  <strong data-state={check.status}>{check.status}</strong>
-                </summary>
-                <p>{check.detail}</p>
-              </details>
-            ))}
-          </section>
-        </div>
-      )}
+            </>
+          ) : (
+            <>
+              <div className={s.caseGrid}>
+                {["Bear", "Base", "Bull"].map((label) => (
+                  <button key={label} onClick={() => onTab("Valuation")}>
+                    <span>{label}</span>
+                    <strong>—</strong>
+                    <small>Not available</small>
+                  </button>
+                ))}
+              </div>
+              <p>{m.outcome.caveat}</p>
+            </>
+          )}
+        </section>
+        <section className={s.evidence}>
+          <header>
+            <span className={s.eyebrow}>Evidence checks</span>
+            <span>Input availability · not confidence</span>
+          </header>
+          {b.checks.map((check) => (
+            <details className={s.evidenceCheck} key={check.label}>
+              <summary>
+                <span>{check.label}</span>
+                <strong data-state={check.status}>{check.status}</strong>
+              </summary>
+              <p>{check.detail}</p>
+            </details>
+          ))}
+        </section>
+      </div>
       <PaceMonthHistory key={research.company.symbol} research={research} />
     </section>
   );

@@ -4,7 +4,13 @@ import { useProduct } from "./Session";
 import { pricePath } from "@/lib/position-explorer";
 import type { Research, Candle } from "@/lib/types";
 
-export default function CompanySparkline({ symbol }: { symbol: string }) {
+export default function CompanySparkline({
+  symbol,
+  withinLink = false,
+}: {
+  symbol: string;
+  withinLink?: boolean;
+}) {
   const { demo, cache } = useProduct();
   // Reuse already loaded research. Home must not fan out dozens of expensive research requests.
   const cached = cache.get(
@@ -19,6 +25,8 @@ export default function CompanySparkline({ symbol }: { symbol: string }) {
     alternate?.history ??
     [];
   const line = pricePath(history);
+  if (!line && withinLink)
+    return <span className="spark-unavailable">View chart ↗</span>;
   if (!line)
     return (
       <Link

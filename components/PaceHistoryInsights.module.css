@@ -114,3 +114,45 @@
 .history.history table :is(th, td):first-child {
   text-align: left;
 }
+
+/* An unavailable statistic is a compact status, not an empty evidence card. */
+.unavailable {
+  display: grid;
+  gap: 6px;
+  padding: 12px 0;
+  margin: 0;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.unavailable strong {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+.unavailable details {
+  margin: 0;
+}
+.unavailable summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.unavailable summary::before {
+  content: "+";
+}
+.unavailable details[open] summary::before {
+  content: "−";
+}
+.unavailable summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.unavailable p {
+  margin: 6px 0;
+  font-size: 12px;
+  line-height: 1.5;
+}

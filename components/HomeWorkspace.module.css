@@ -980,27 +980,53 @@
   }
 }
 
-/* Preserve name, price and trend without squeezing four columns into a phone. */
+/* Preserve name, price and trend without competing for one narrow row. */
 @media (max-width: 430px) {
-  .home.home.home :global(.home-company) {
-    grid-template-columns: 32px minmax(0, 1fr) auto;
-    gap: 8px;
+  .home.home.home.home :global(.home-company) {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 8px 10px;
+    align-items: start;
   }
-  .home.home.home :global(.home-company) > span { min-width: 0; }
-  .home.home.home :global(.home-company) > span:nth-child(2) strong {
-    overflow-wrap: anywhere;
+  .home.home.home.home :global(.home-company) > span {
+    min-width: 0;
   }
-  .home.home.home :global(.home-company) :global(.row-quote) {
-    grid-column: 3;
+  .home.home.home.home :global(.home-company) > span:nth-child(2) {
+    grid-column: 2;
     grid-row: 1;
   }
-  .home.home.home :global(.home-company) :global(.company-spark),
-  .home.home.home :global(.home-company) :global(.spark-unavailable) {
-    grid-column: 2 / -1;
+  .home.home.home.home :global(.home-company) > span:nth-child(2) strong {
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+  .home.home.home.home :global(.home-company) :global(.row-quote) {
+    grid-column: 2;
     grid-row: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 4px 10px;
+    text-align: left;
+  }
+  .home.home.home.home :global(.home-company) :global(.home-quote-asof) {
+    flex-basis: 100%;
+    white-space: normal;
+    font-size: 11px;
+  }
+  .home.home.home.home :global(.home-company) :global(.company-spark),
+  .home.home.home.home :global(.home-company) :global(.spark-unavailable) {
+    grid-column: 2;
+    grid-row: 3;
     width: 100%;
     max-width: 160px;
     justify-self: start;
+    min-width: 0;
   }
-  .planRow > a { max-width: 100%; white-space: normal; text-align: left; }
+  .planRow > a {
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
+  }
 }

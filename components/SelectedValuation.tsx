@@ -5,6 +5,7 @@ import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
 import { researchOutlook } from "@/lib/outlook";
+import { selectedScenarioProjection } from "@/lib/scenario-projection";
 import { scenarioResearchInput } from "@/lib/scenario-reference";
 import { priceRiskScenarios } from "@/lib/price-risk-scenarios";
 import PriceRiskCases from "./PriceRiskCases";
@@ -51,21 +52,15 @@ export default function SelectedValuation({
     () => selectedEnds.get(key) ?? "",
     () => "",
   );
-  const ordinary = useMemo(
-    () => researchOutlook(input, { fiscalEnd: selected || undefined }),
-    [input, selected],
-  );
   const projection = useMemo(
     () =>
-      ordinary.available
-        ? ordinary
-        : d.valuation && !selected
-          ? ordinary
-          : researchOutlook(input, {
-              fiscalEnd: selected || undefined,
-              priceAnchored: true,
-            }),
-    [input, selected, ordinary, d.valuation],
+      selectedScenarioProjection(
+        input,
+        !!d.valuation,
+        selected,
+        researchOutlook,
+      ),
+    [input, selected, d.valuation],
   );
   const ends = useMemo(
     () =>
@@ -100,11 +95,7 @@ export default function SelectedValuation({
     projection.basis === "revenue" &&
     (projection.cases[1].multiple > 20 ||
       (!!d.reference && projection.cases[1].target > 3 * d.reference.price));
-  const lead =
-    headline &&
-    (!modelled || extreme)
-      ? headline
-      : null;
+  const lead = headline && (!modelled || extreme) ? headline : null;
   const v = lead
     ? {
         label: lead.eyebrow,
@@ -250,8 +241,14 @@ export default function SelectedValuation({
                 : "No suitable model has qualified. Analyst consensus and historical price risk remain separate."}
           </p>
           <details className={s.methodInfo}>
-            <summary aria-label="Why scenario ranges differ">ⓘ Method &amp; comparison</summary>
-            <p>{lead ? lead.detail : "These are conditional business scenarios. Analyst targets are published opinions; historical price-risk cases describe past returns over their stated session horizon. Different methods are not interchangeable."}</p>
+            <summary aria-label="Why scenario ranges differ">
+              ⓘ Method &amp; comparison
+            </summary>
+            <p>
+              {lead
+                ? lead.detail
+                : "These are conditional business scenarios. Analyst targets are published opinions; historical price-risk cases describe past returns over their stated session horizon. Different methods are not interchangeable."}
+            </p>
           </details>
         </div>
         {actions}

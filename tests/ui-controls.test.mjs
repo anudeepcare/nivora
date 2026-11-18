@@ -1,3 +1,4 @@
+import { selectedScenarioProjection } from "../lib/scenario-projection.ts";
 import { scenarioResearchInput } from "../lib/scenario-reference.ts";
 import { earningsCalendar } from "../lib/earnings-calendar.ts";
 import { modelCoverage } from "../lib/research-depth.ts";
@@ -62,6 +63,7 @@ function loadComponent(file, name, bindings) {
     dateLabel: format.dateLabel,
     latestFinancialEvidence,
     scenarioResearchInput,
+    selectedScenarioProjection,
     modelCoverage,
     operatingScenarioSupported,
     headerBusinessMetrics,

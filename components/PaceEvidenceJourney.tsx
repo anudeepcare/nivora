@@ -251,13 +251,17 @@ export default function PaceEvidenceJourney({
         />
       </div>
       <p className={s.note}>
-        Separate scales and accounting bases. Dashed lines connect supplied
-        estimates only, not a continuous forecast or a bridge from reported
-        results. Missing or incompatible periods break the path. Snapshot
-        retrieved {dateLabel(r.retrievedAt)}; forecasts can be revised.
+        Separate scales · dashed paths are supplied estimates, not predictions.
+        Snapshot {dateLabel(r.retrievedAt)}.
       </p>
       <details className={s.explain}>
         <summary>What would change the reading?</summary>
+        <p>
+          Reported results and estimates use separate accounting bases. Dashed
+          lines connect supplied estimates only, not a continuous forecast or a
+          bridge from reported results. Missing or incompatible periods break
+          the path. Estimates can be revised.
+        </p>
         <p>
           Pace’s technical reading changes with price, trend, momentum and
           volatility under its existing model. Reported growth and analyst

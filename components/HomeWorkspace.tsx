@@ -563,7 +563,7 @@ function HomeCompany({
         <strong>{row?.company?.name || symbol}</strong>
         <small>{symbol}</small>
       </span>
-      <CompanySparkline symbol={symbol} />
+      <CompanySparkline symbol={symbol} withinLink />
       <span className="row-quote">
         <strong>{amount(row?.quote?.price, row?.quote?.currency)}</strong>
         <small

@@ -41,3 +41,19 @@ test("inactive heavy research evidence modules are dynamic import boundaries, no
   assert.match(source, /title: "Contract tools & practice"/);
   assert.doesNotMatch(source, /initialSelection=\{-1\}/);
 });
+test("supplemental quote REST and stream wait for initial research evidence", () => {
+  const source = fs.readFileSync("components/Research.tsx", "utf8");
+  assert.match(
+    source,
+    /baseResearch\s*\? `quotes\?symbols=\$\{encodeURIComponent\(symbol\)\}`\s*:\s*null/,
+  );
+  assert.match(
+    source,
+    /useLivePrices\(\[symbol\], !!demo \|\| !baseResearch\)/,
+  );
+  assert.match(source, /if \(demo \|\| !baseResearch\) return/);
+  assert.match(
+    source,
+    /retainResearchQuote\(priorQuote, baseResearch\?\.quote\)/,
+  );
+});

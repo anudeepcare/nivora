@@ -1,3 +1,7 @@
+import { aurynDecision } from "./auryn-decision.ts";
+import { selectedScenarioProjection } from "./scenario-projection.ts";
+import { scenarioResearchInput } from "./scenario-reference.ts";
+import { extremeRevenueModel } from "./scenario-cases.ts";
 import type { Research } from "./types";
 import { adaptiveSettledBars } from "./accumulation-policy-v3.ts";
 import { earningsCalendar } from "./earnings-calendar.ts";
@@ -49,29 +53,59 @@ export function referenceAtlas(research: Research) {
     Number.isFinite(ownershipAt) && ownershipAt <= Date.parse(observedAt)
       ? finite(research.evidence?.ownership?.institutions)
       : null;
-  const cases =
-    brief.scenarioEligible && brief.scenario
-      ? [
-          {
-            label: "Bear",
-            value: brief.scenario.low,
-            annual: brief.scenario.annual.low,
-            tone: "orange",
-          },
-          {
-            label: "Base",
-            value: brief.scenario.base,
-            annual: brief.scenario.annual.base,
-            tone: "cyan",
-          },
-          {
-            label: "Bull",
-            value: brief.scenario.high,
-            annual: brief.scenario.annual.high,
-            tone: "violet",
-          },
-        ].filter((row) => finite(row.value) !== null && row.value > 0)
+  const decision = aurynDecision(research, { now: Date.parse(observedAt) });
+  const projection = selectedScenarioProjection(
+    scenarioResearchInput(research),
+    !!decision.valuation,
+  );
+  const extreme =
+    projection.available &&
+    extremeRevenueModel(projection, decision.reference?.price);
+  const usable =
+    research.company.assetType === "stock" && projection.available && !extreme
+      ? projection
+      : null;
+  const valuation =
+    research.company.assetType === "stock" && !projection.available
+      ? decision.valuation
+      : null;
+  const tones = ["orange", "cyan", "violet"];
+  const cases = usable
+    ? usable.cases.map((item, index) => ({
+        label: item.name,
+        value: item.target,
+        annual: item.annual,
+        tone: tones[index],
+      }))
+    : valuation
+      ? [valuation.bear, valuation.base, valuation.bull].map(
+          (value, index) => ({
+            label: ["Bear", "Base", "Bull"][index],
+            value,
+            annual: null,
+            tone: tones[index],
+          }),
+        )
       : [];
+  const outcome = {
+    currency: usable?.currency ?? research.company.currency,
+    method: usable
+      ? usable.multipleSource === "price-implied"
+        ? "Price-anchored earnings sensitivity"
+        : usable.basis === "revenue"
+          ? "Conditional revenue sensitivity"
+          : "Forecast-multiple sensitivity"
+      : (valuation?.label ?? "Model range unavailable"),
+    caveat: usable
+      ? (usable.caveat ??
+        "Conditional scenario prices, not independent fair value.")
+      : (valuation?.assumptions ??
+        (!projection.available
+          ? projection.reason
+          : "Revenue sensitivity exceeds the model's plausibility limits.")),
+    asOf: usable?.asOf ?? null,
+    end: usable?.end ?? valuation?.end ?? null,
+  };
   const signals: AtlasSignal[] = [
     {
       label: "Business",
@@ -83,7 +117,7 @@ export function referenceAtlas(research: Research) {
     },
     {
       label: "Value",
-      value: cases.find((row) => row.label === "Base")?.value ?? null,
+      value: brief.scenarioEligible ? (brief.scenario?.base ?? null) : null,
       unit: "money",
       detail: brief.value.reason,
       target: "Valuation",
@@ -145,7 +179,8 @@ export function referenceAtlas(research: Research) {
     brief,
     signals,
     cases,
-    horizon: cases.length ? brief.scenario!.years : null,
+    horizon: usable?.years ?? null,
+    outcome,
     pace:
       multiplier !== null &&
       Number.isInteger(multiplier) &&

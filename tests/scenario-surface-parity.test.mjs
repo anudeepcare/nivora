@@ -11,8 +11,8 @@ test('available conditional projection is not replaced by caller-only historical
 });
 test('model unavailable keeps diagnostics in accessible disclosure',()=>{
  const s=read('components/ReferenceAtlas.tsx');
- assert.match(s,/<details className=\{s.availabilityInfo\}>/);
- assert.match(s,/Model range unavailable: reasons and evidence/);
+ assert.match(s,/<details className=\{s.evidenceCheck\}/);
+ assert.match(s,/m.outcome.caveat/);
  assert.match(s,/check.detail/);
 });
 test('editable scenarios preserve semantic bear base bull names and source period',()=>{

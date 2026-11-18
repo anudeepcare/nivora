@@ -9,7 +9,7 @@ import * as trends from "../lib/atlas-trends.ts";
 import * as atlas from "../lib/reference-atlas.ts";
 import * as format from "../lib/format.ts";
 import { demoData } from "./fixtures/demo.ts";
-test("unavailable Atlas uses one status region with all evidence visible, not unequal outcome columns", () => {
+test("unavailable Atlas retains labeled range placeholders and exact evidence reasons", () => {
   const mod = { exports: {} };
   const code = ts.transpileModule(
     fs.readFileSync("components/ReferenceAtlas.tsx", "utf8"),
@@ -54,10 +54,11 @@ test("unavailable Atlas uses one status region with all evidence visible, not un
   const html = renderToStaticMarkup(
     React.createElement(mod.exports.default, { research, onTab: () => {} }),
   );
-  assert.match(html, /aria-label="Model availability and evidence"/);
-  assert.doesNotMatch(html, /class="lower"/);
+  assert.match(html, /class="lower"/);
+  for (const label of ["Bear", "Base", "Bull", "Not available"]) assert.ok(html.includes(label));
+  assert.ok(html.includes(model.outcome.caveat));
   for (const check of model.brief.checks) assert.ok(html.includes(check.label));
-  assert.match(html, /class="checkGrid"/);
+  assert.match(html, /class="evidenceCheck"/);
   assert.doesNotMatch(html, /NaN|Infinity/);
 });
 

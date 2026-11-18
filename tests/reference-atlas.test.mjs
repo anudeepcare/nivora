@@ -2,6 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { referenceAtlas, atlasHorizonLabel } from "../lib/reference-atlas.ts";
 import { demoData } from "./fixtures/demo.ts";
+import { selectedScenarioProjection } from "../lib/scenario-projection.ts";
+import { scenarioResearchInput } from "../lib/scenario-reference.ts";
+import { aurynDecision } from "../lib/auryn-decision.ts";
 import { researchBrief } from "../lib/research-brief.ts";
 const source = demoData.research.MSFT;
 test("Atlas exposes six evidence orbits without synthetic scores", () => {
@@ -35,15 +38,16 @@ test("missing evidence remains unavailable instead of borrowing prototype figure
   assert.deepEqual(m.cases, []);
 });
 test("scenario cases retain model horizon and source values, not a hardcoded five years", () => {
-  const m = referenceAtlas(source),
-    b = researchBrief(source);
-  if (b.scenarioEligible && b.scenario) {
-    assert.equal(m.horizon, b.scenario.years);
-    assert.deepEqual(
-      m.cases.map((x) => x.value),
-      [b.scenario.low, b.scenario.base, b.scenario.high],
-    );
-  } else assert.deepEqual(m.cases, []);
+  for (const source of Object.values(demoData.research)) {
+    const m = referenceAtlas(source);
+    const d = aurynDecision(source, {now: Date.parse(source.priceObservedAt ?? source.retrievedAt)});
+    const p = selectedScenarioProjection(scenarioResearchInput(source), !!d.valuation);
+    if (p.available && m.cases.length) {
+      assert.equal(m.horizon, p.years);
+      assert.deepEqual(m.cases.map(x=>x.value),p.cases.map(x=>x.target));
+      assert.equal(m.outcome.end,p.end);assert.equal(m.outcome.currency,p.currency);
+    } else if (!d.valuation) assert.deepEqual(m.cases, []);
+  }
 });
 test("Catalysts uses next scheduled event rather than count of past reports", () => {
   const r = {

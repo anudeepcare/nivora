@@ -207,7 +207,7 @@ export default function Research({ symbol }: { symbol: string }) {
   const latestQuote = useResource<
     Record<string, { company: Company; quote: Quote }>
   >(
-    `quotes?symbols=${encodeURIComponent(symbol)}`,
+    baseResearch ? `quotes?symbols=${encodeURIComponent(symbol)}` : null,
     demo
       ? ({
           [symbol]: {
@@ -221,10 +221,10 @@ export default function Research({ symbol }: { symbol: string }) {
   const refreshQuote = useRef(latestQuote.refresh);
   refreshQuote.current = latestQuote.refresh;
   useEffect(() => {
-    if (demo) return;
+    if (demo || !baseResearch) return;
     return startQuotePolling(() => refreshQuote.current());
-  }, [symbol, demo]);
-  const live = useLivePrices([symbol], !!demo);
+  }, [symbol, demo, baseResearch]);
+  const live = useLivePrices([symbol], !!demo || !baseResearch);
   const retainedQuote = useRef<{ symbol: string; quote: Quote | undefined }>({
     symbol,
     quote: undefined,
