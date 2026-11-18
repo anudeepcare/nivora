@@ -27,10 +27,21 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
   let cursor = 0;
   let serverRevision = 7;
   const calls = [];
+  const effects = [];
+  let resize;
   const bindings = {
     React,
     styles: new Proxy({}, { get: (_, key) => key }),
-    useEffect: () => {},
+    useEffect: (effect) => {
+      effects.push(effect);
+    },
+    ResizeObserver: class {
+      constructor(callback) {
+        resize = callback;
+      }
+      observe() {}
+      disconnect() {}
+    },
     useRef: (initial) => {
       const i = cursor++;
       if (!(i in state)) state[i] = { current: initial };
@@ -150,6 +161,25 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
     { revision: 8, confirmComplete: true, id: "job1" },
   ]);
   assert.ok(tree.some((n) => n.type === "svg"));
+  // Model content widths inside 320–430px phone layouts; no browser/render claim.
+  tree.find((n) => n.props.className === "chart").props.ref.current = {};
+  effects.at(-1)();
+  for (const width of [232, 287, 342]) {
+    resize([{ contentRect: { width } }]);
+    const sized = nodes();
+    assert.equal(
+      sized.find((n) => n.type === "svg").props.viewBox,
+      `0 0 ${width} 210`,
+    );
+    for (const line of sized.filter((n) => n.type === "polyline")) {
+      for (const point of line.props.points.split(" ")) {
+        const x = Number(point.split(",")[0]);
+        assert.ok(x >= 64 && x <= width - 20, `x=${x} width=${width}`);
+      }
+    }
+  }
+  tree = nodes();
+
   assert.equal(tree.filter((n) => n.type === "polyline").length, 3);
   assert.ok(
     tree.some(

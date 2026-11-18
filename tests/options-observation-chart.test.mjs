@@ -6,6 +6,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   optionObservations,
+  defaultOptionMetric,
   optionObservationMetrics,
 } from "../lib/options-observations.ts";
 test("options chart rerenders actual chosen metric and keyboard observation control", () => {
@@ -32,6 +33,7 @@ test("options chart rerenders actual chosen metric and keyboard observation cont
   const bindings = {
     React,
     optionObservations,
+    defaultOptionMetric,
     optionObservationMetrics,
     styles: new Proxy({}, { get: (_, k) => k }),
     useState: (initial) => {
@@ -56,12 +58,33 @@ test("options chart rerenders actual chosen metric and keyboard observation cont
     cursor = 0;
     return renderToStaticMarkup(React.createElement(C, props));
   };
+  const original = props.data;
+  for (const metric of ["pcVol", "callVol", "putVol"]) {
+    props.data = {
+      series: [
+        { date: "2026-11-16", [metric]: 1e308 },
+        { date: "2026-11-17", [metric]: 1.7e308 },
+      ],
+    };
+    const extreme = render();
+    assert.doesNotMatch(extreme, /Infinity|NaN|∞/);
+    assert.equal((extreme.match(/<circle/g) || []).length, 2);
+  }
+
+  props.data = { series: [{ date: "2026-11-17", callVol: 150 }] };
+  assert.match(render(), /150 contracts/);
+  props.data = { series: [] };
+  assert.match(render(), /No dated observations supplied/);
+  props.data = original;
   assert.match(render(), /50 %/);
   cursor = 0;
   const tree = C(props);
   tree.props.children[0].props.children[1].props.onClick();
   const html = render();
   assert.match(html, /1.1 ×/);
+  props.data = { series: [{ date: "2026-11-17", callVol: 150 }] };
+  assert.match(render(), /No dated observations supplied/);
+  props.data = original;
   assert.doesNotMatch(html, /50 %/);
   assert.match(html, /type="range"/);
   assert.match(html, /not interpolated/);

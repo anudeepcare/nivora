@@ -1,7 +1,7 @@
 "use client";
 import layout from "./ValueStudio.module.css";
+import SentiSenseConsensus from "./SentiSenseConsensus";
 import AnalystTargets from "./AnalystTargets";
-import { consensusOutlook } from "@/lib/outlook";
 import SelectedValuation from "./SelectedValuation";
 import { scenarioHeadline } from "@/lib/scenario-headline";
 import ScenarioLenses from "./ScenarioLenses";
@@ -17,10 +17,19 @@ const display = (m: DeskMetric) =>
     : m.unit === "ratio"
       ? `${m.value.toFixed(1)}×`
       : percent(m.value);
-export default function ValueStudio({ research: r }: { research: Research }) {
+export default function ValueStudio({
+  research: r,
+  preview = false,
+}: {
+  research: Research;
+  preview?: boolean;
+}) {
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
-  const headline = useMemo(() => scenarioHeadline(r), [r]);
+  const headline = useMemo(() => {
+    const range = scenarioHeadline(r);
+    return range?.source === "history" ? range : null;
+  }, [r]);
   const available = d.metrics.filter(
     (m) =>
       m.value != null &&
@@ -34,18 +43,22 @@ export default function ValueStudio({ research: r }: { research: Research }) {
   return (
     <div
       className={`${layout.root} value-studio depth-value`}
-      data-has-consensus={!!consensusOutlook(r)}
+      data-has-consensus={!preview}
     >
       <div className={layout.scenarios}>
         <SelectedValuation research={r} headline={headline} />
       </div>
-      {consensusOutlook(r) && (
+      {!preview && (
         <div className={layout.consensus}>
-          <AnalystTargets research={r} />
+          <SentiSenseConsensus
+            symbol={r.company.symbol}
+            preview={preview}
+            fallback={<AnalystTargets research={r} showUnavailable />}
+          />
         </div>
       )}
       <div className={layout.crosscheck}>
-        <ScenarioLenses research={r} hideSingle />
+        <ScenarioLenses research={r} hideSingle excludeAnalyst />
       </div>
       {available.length > 0 && (
         <section

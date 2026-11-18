@@ -4,7 +4,7 @@
 }
 .home.home.home :global(.home-evidence-layout) {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: stretch;
   gap: 16px;
   margin: 16px 0;
@@ -878,7 +878,7 @@
 }
 @media (min-width: 1100px) {
   .home.home.home :global(.home-evidence-layout) {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 .home.home.home.home :global(.home-evidence-layout) {
@@ -941,11 +941,66 @@
   margin-bottom: 12px;
 }
 .home.home.home .priceDetails {
-  align-self: start;
+  align-self: stretch;
 }
 
 /* A collapsed price list must not strand the events column beside blank space. */
-.home.home.home.home :global(.home-evidence-layout):has(.priceDetails:not([open])) {
+.home.home.home.home
+  :global(.home-evidence-layout):has(.priceDetails:not([open])) {
   grid-template-columns: minmax(0, 1fr);
 }
-.marketRadar > section + section { border-top: 1px solid var(--line); border-radius: 0; }
+.marketRadar > section + section {
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.planRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin: 24px 0 10px;
+}
+.planRow h2 {
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+.planRow p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.planRow > a {
+  flex-shrink: 0;
+}
+@media (max-width: 760px) {
+  .planRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* Preserve name, price and trend without squeezing four columns into a phone. */
+@media (max-width: 430px) {
+  .home.home.home :global(.home-company) {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .home.home.home :global(.home-company) > span { min-width: 0; }
+  .home.home.home :global(.home-company) > span:nth-child(2) strong {
+    overflow-wrap: anywhere;
+  }
+  .home.home.home :global(.home-company) :global(.row-quote) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .home.home.home :global(.home-company) :global(.company-spark),
+  .home.home.home :global(.home-company) :global(.spark-unavailable) {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    width: 100%;
+    max-width: 160px;
+    justify-self: start;
+  }
+  .planRow > a { max-width: 100%; white-space: normal; text-align: left; }
+}

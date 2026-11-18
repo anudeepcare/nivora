@@ -768,3 +768,29 @@
  .page :global(.settings-notifications) { grid-template-columns: minmax(0, 1fr); }
  .page :global(.settings-notifications) > :global(.button-row) { grid-column: 1; grid-row: auto; padding: 0 16px 16px; flex-wrap: wrap; }
 }
+
+/* Last account-row rule: identity gets the full row, actions never squeeze email. */
+@media (max-width: 600px) {
+  .page :global(.workspace-account-row) {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px 12px;
+  }
+  .page :global(.workspace-account-row) > div {
+    grid-column: 2;
+    min-width: 0;
+    width: 100%;
+  }
+  .page :global(.workspace-account-row) > a,
+  .page :global(.workspace-account-row) :global(.settings-signout) {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    justify-content: flex-start;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 0;
+  }
+  .page :global(.workspace-account-row) > a { border-top: 1px solid var(--line); }
+  .page :global(.workspace-account-row) strong { overflow-wrap: anywhere; line-height: 1.5; }
+}

@@ -685,7 +685,7 @@ function Login({ initialError }: { initialError: string }) {
                   disabled={busy || socialProviders.google === false}
                   onClick={() => social("google")}
                 >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
                     <path
                       fill="currentColor"
                       d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.6h3.3c1.9-1.8 2.9-4.4 2.9-7.5ZM12 22c2.7 0 5-1 6.7-2.4l-3.3-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.2H3v2.7A10 10 0 0 0 12 22ZM6.4 13.8a6 6 0 0 1 0-3.6V7.5H3a10 10 0 0 0 0 9l3.4-2.7ZM12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0 0 12 2a10 10 0 0 0-9 5.5l3.4 2.7C7.2 7.8 9.4 6 12 6Z"

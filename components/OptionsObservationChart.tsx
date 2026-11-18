@@ -2,6 +2,7 @@
 import { useState } from "react";
 import {
   optionObservations,
+  defaultOptionMetric,
   optionObservationMetrics,
   type OptionObservationMetric,
 } from "@/lib/options-observations";
@@ -13,8 +14,21 @@ export default function OptionsObservationChart({
   data: unknown;
   intraday: boolean;
 }) {
-  const [metric, setMetric] = useState<OptionObservationMetric>("atmIv");
-  const [selected, setSelected] = useState<number | null>(null);
+  const [chosenMetric, setMetric] = useState<OptionObservationMetric | null>(
+    null,
+  );
+  const metric = chosenMetric ?? defaultOptionMetric(data, intraday);
+  const [selection, setSelection] = useState<{
+    data: unknown;
+    intraday: boolean;
+    index: number;
+  } | null>(null);
+  const selected =
+    selection && selection.data === data && selection.intraday === intraday
+      ? selection.index
+      : null;
+  const setSelected = (index: number | null) =>
+    setSelection(index == null ? null : { data, intraday, index });
   const { points, missing } = optionObservations(data, intraday, metric);
   const spec = optionObservationMetrics[metric];
   const first = points[0]?.timestamp ?? 0,
@@ -73,7 +87,8 @@ export default function OptionsObservationChart({
             role="img"
             aria-label={`${spec.label}, ${points.length} actual observations from ${points[0].label} to ${points.at(-1)!.label}. Missing readings are not interpolated.`}
           >
-            {[low, (low + high) / 2, high]
+            {/* Parser guarantees finite nonnegative values, so high-low cannot overflow. */}
+            {[low, low + (high - low) / 2, high]
               .filter((v, i, a) => a.indexOf(v) === i)
               .map((v) => (
                 <g key={v}>

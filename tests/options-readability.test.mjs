@@ -134,7 +134,14 @@ function render(chain, view = "positioning") {
     React.createElement(mod.exports.default, {
       research: {
         company: { symbol: "TEST" },
-        quote: { price: 100, currency: "USD", asOf: new Date().toISOString() },
+        quote: {
+          price: 100,
+          currency: "USD",
+          asOf: "2026-11-17T20:42:31Z",
+          source: "Synthetic quote source",
+          session: "regular",
+          stale: true,
+        },
       },
       preview: true,
     }),
@@ -214,4 +221,15 @@ test("empty contract tools have no disabled toolbar clutter and guide stays reac
   assert.match(html, /Options guide/);
   const guide = render(null, "learn");
   assert.match(guide, /Options essentials/);
+});
+
+test("Options exposes quote basis and exact time separately from contract dates without changing price", () => {
+  const html = render({ symbol: "TEST", contracts, complete: true });
+  assert.match(html, /Underlying quote/);
+  assert.match(html, /2026-11-17 20:42:31 UTC/);
+  assert.match(html, /Synthetic quote source/);
+  assert.match(html, /stale/);
+  assert.match(html, /Contract observation date/);
+  assert.match(html, /stock header may show a settled close/);
+  assert.match(html, /\$100/);
 });

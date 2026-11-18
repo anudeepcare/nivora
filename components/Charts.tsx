@@ -20,6 +20,7 @@ export function PriceChart({
   levels = EMPTY_LEVELS,
   contrast = false,
   candleColors = EMPTY_COLORS,
+  compactLevelTitles = false,
 }: {
   bars: Candle[];
   range: string;
@@ -27,7 +28,9 @@ export function PriceChart({
   levels?: { label: string; price: number; color?: string }[];
   contrast?: boolean;
   candleColors?: Record<string, string>;
+  compactLevelTitles?: boolean;
 }) {
+  const [compact, setCompact] = useState(false);
   const [hover, setHover] = useState<{ time: string; values: string } | null>(
     null,
   );
@@ -164,6 +167,7 @@ export function PriceChart({
     let fitFrame = 0;
     const observer = new ResizeObserver(([entry]) => {
       const width = entry?.contentRect.width ?? 0;
+      if (width > 0) setCompact(width < 480);
       if (width > 0 && width !== previousWidth) {
         cancelAnimationFrame(fitFrame);
         fitFrame = requestAnimationFrame(() => api.timeScale().fitContent());
@@ -222,7 +226,7 @@ export function PriceChart({
       .map((l, index) =>
         series.current!.createPriceLine({
           price: l.price,
-          title: l.label,
+          title: compactLevelTitles && compact ? "" : l.label,
           color:
             l.color ?? ["#68ae94", "#916bb8", "#809a39", "#b46f5a"][index % 4],
           lineWidth: 1,
@@ -236,7 +240,7 @@ export function PriceChart({
           series.current?.removePriceLine(l);
         } catch {}
     };
-  }, [bars, range, theme, style, levels, contrast, candleColors]);
+  }, [bars, range, theme, style, levels, contrast, candleColors, compactLevelTitles, compact]);
   return (
     <div className="chart-wrap">
       <div className="chart-readout" aria-label="Chart inspection">

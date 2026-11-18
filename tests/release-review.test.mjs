@@ -69,6 +69,17 @@ test("financial selected-control styles outrank global button resets", () => {
     });
   }
 });
+function loadActualHelp(overrides = {}) {
+  const ast = ts.createSourceFile("Ui.tsx", fs.readFileSync("components/Ui.tsx", "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const node = ast.statements.find(n => ts.isFunctionDeclaration(n) && n.name?.text === "Help");
+  const code = ts.transpileModule(node.getText(ast).replace("export ", ""), {
+    compilerOptions: {jsx: ts.JsxEmit.React, target: ts.ScriptTarget.ES2022},
+  }).outputText;
+  const bindings = {React, styles:{}, useRef:React.useRef, useId:React.useId,
+    useState:React.useState, useEffect:React.useEffect, Info:()=>null, X:()=>null,
+    createPortal:child=>child, document:{body:{}}, ...overrides};
+  return new Function(...Object.keys(bindings), code+";return Help;")(...Object.values(bindings));
+}
 function researchMarkup(issues = [], options = {}) {
   const source = fs.readFileSync("components/Research.tsx", "utf8");
   const ast = ts.createSourceFile(
@@ -297,7 +308,12 @@ function researchMarkup(issues = [], options = {}) {
     React.createElement("section", { "data-reference-atlas": true });
   bindings.tabVisuals = { root: "research-tab-visuals" };
   bindings.deskLayout = { content: "research-desk-layout" };
-  bindings.Help = ({ children }) => React.createElement("div", null, children);
+  bindings.Help = (props) => {
+    const Help = loadActualHelp(options.openHelp === true || options.openHelp === props.label ? {
+      useState: () => [true, () => {}],
+    } : {});
+    return React.createElement(Help, props);
+  };
   bindings.DecisionOverview = () =>
     React.createElement("section", { "data-overview-evidence": "edge" });
   bindings.KeyFinancialMetrics = () =>
@@ -315,6 +331,15 @@ function researchMarkup(issues = [], options = {}) {
 test("the actual Snapshot discloses backup data without vendor names", () => {
   assert.match(researchMarkup(), /Backup feed/);
   assert.doesNotMatch(researchMarkup(), /EODHD|Twelve Data/);
+});
+test("source provenance is reachable only in the actual opened info dialog", () => {
+  const closed = researchMarkup();
+  assert.doesNotMatch(closed, /Displayed price source|EODHD/);
+  assert.match(closed, /aria-haspopup="dialog"/);
+  const opened = researchMarkup([], {openHelp:true});
+  assert.match(opened, /<dialog[^>]*>[\s\S]*Displayed price source:[\s\S]*EODHD[\s\S]*<\/dialog>/);
+  const outsideDialogs = opened.replace(/<dialog\b[\s\S]*?<\/dialog>/g, "");
+  assert.doesNotMatch(outsideDialogs, /EODHD|Twelve Data/);
 });
 test("unverified upcoming EPS is never formatted in the listing currency", () => {
   const html = researchMarkup();
@@ -339,7 +364,7 @@ test("coverage details preserve the failure without exposing vendor names", () =
   const html = researchMarkup([
     "EODHD did not authorize this dataset",
     "Twelve Data financial data is temporarily unavailable",
-  ]);
+  ], {openHelp: "Research data status"});
   assert.doesNotMatch(html, /EODHD|Twelve Data/i);
   assert.match(html, /did not authorize this dataset/);
 });
@@ -353,4 +378,14 @@ test("technical visibility preference removes the actual panel and provides rest
   assert.match(html, /href="\/settings"/);
   assert.doesNotMatch(html, /data-retained-panel="Technicals"/);
   assert.match(html, /separate Pace calculation/);
+});
+test('actual source explanation requires the info button activation',()=>{
+ let open=false;
+ const Help=loadActualHelp({useState:()=>[open,value=>{open=value;}],useEffect:()=>{},useId:()=> 'source-info',useRef:()=>({current:null})});
+ const render=()=>Help({label:'Price provenance',children:React.createElement('p',null,'EODHD history')});
+ const first=render();
+ assert.doesNotMatch(renderToStaticMarkup(first),/EODHD/);
+ first.props.children[0].props.onClick();
+ const shown=renderToStaticMarkup(render());
+ assert.match(shown,/<dialog[\s\S]*EODHD history[\s\S]*<\/dialog>/);
 });

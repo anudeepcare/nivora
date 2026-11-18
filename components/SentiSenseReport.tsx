@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { reportContent } from "@/lib/report-content";
+import reportStyles from "./SentiSenseReport.module.css";
 import type { SentiSenseResult } from "@/lib/sentisense-api";
 import type { ResearchReport } from "@/lib/sentisense-report";
 import { useResource } from "./Session";
@@ -65,7 +67,21 @@ export default function SentiSenseReport({ symbol }: { symbol: string }) {
               aria-label={`${section.title} report text`}
               tabIndex={0}
             >
-              {section.text}
+              <div className={reportStyles.blocks}>
+                {reportContent(section.text).map((block, index) =>
+                  block.kind === "metric" ? (
+                    <dl className={reportStyles.metric} key={index}>
+                      <dt>{block.label}</dt>
+                      <dd className={reportStyles.value}>{block.value}</dd>
+                      {block.change && <dd>{block.change}</dd>}
+                    </dl>
+                  ) : (
+                    <p className={reportStyles.paragraph} key={index}>
+                      {block.text}
+                    </p>
+                  ),
+                )}
+              </div>
             </div>
           </article>
           <footer className={s.provenance}>

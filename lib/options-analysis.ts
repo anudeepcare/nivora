@@ -4,6 +4,9 @@ export type OptionContract = {
   strike: number;
   expiry: string;
   observed: string;
+  quoteObservedAt?: string | null;
+  greeksObservedAt?: string | null;
+  oiObservedAt?: string | null;
   bid: number | null;
   ask: number | null;
   oi: number | null;

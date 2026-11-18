@@ -1011,10 +1011,10 @@
 .workflowRows article > span svg {
   box-sizing: content-box;
   padding: 11px;
-  border: 1px solid #9fb97738;
-  border-radius: 12px;
-  color: #648842;
-  background: linear-gradient(140deg, #d6f35a38, #76b6aa19);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--landing-accent);
+  background: var(--surface);
 }
 .workflow {
   gap: 60px;
@@ -1254,13 +1254,9 @@
 .page.page.page .closing {
   margin-block: 32px;
   padding: 32px;
-  border: 1px solid color-mix(in srgb, #438f86 20%, var(--line));
-  border-radius: 22px;
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, #c8e975 22%, var(--card)),
-    color-mix(in srgb, #438f86 12%, var(--card))
-  );
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
   gap: 24px;
 }
 .page.page.page .closing h2 {
@@ -1870,8 +1866,30 @@
 .page.page.page .workflowRows article:last-child {
   border-right: 0;
 }
-.page.page.page .workflowRows p {
+/* Keep each question as one compact reading group, not a tall card. */
+.page.page.page .workflowRows article {
+  gap: 16px;
+  padding: 24px;
+  justify-content: flex-start;
+}
+.page.page.page .workflowRows article > span {
+  flex-direction: row;
+  justify-content: flex-start;
   color: var(--muted);
+}
+.page.page.page .workflowRows article > div {
+  flex: 0 1 auto;
+  gap: 0;
+  justify-content: flex-start;
+}
+.page.page.page .workflowRows h3 {
+  min-height: 0;
+  margin: 0 0 10px;
+}
+.page.page.page .workflowRows p,
+.page.page.page .workflowRows article:last-child p {
+  color: var(--muted);
+  margin: 0;
 }
 .page.page.page .workflowHeading h2,
 .page.page.page .evidence h2,
@@ -2002,4 +2020,14 @@
  .page.page.page .footer > div:first-child { grid-template-columns: 1fr; gap: 12px; }
  .page.page.page .footer > div:first-child nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
  .page.page.page .footer nav a { min-height: 44px; }
+}
+
+@media (max-width: 430px) {
+  .page.page.page .referenceBrief > footer { grid-template-columns: minmax(0, 1fr); }
+  .page.page.page .referenceBrief > footer > .briefStep { min-height: 0; padding: 12px; }
+  .briefConnector { display: none; }
+  .page.page.page .closing { padding: 20px; gap: 16px; }
+  .page.page.page .closing .actions { flex-wrap: wrap; min-width: 0; }
+  .page.page.page .closing .actions a { white-space: normal; max-width: 100%; }
+  .page.page.page .heroCopy h1 { overflow-wrap: anywhere; }
 }

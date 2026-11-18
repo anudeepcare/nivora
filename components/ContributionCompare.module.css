@@ -367,3 +367,18 @@
     transition: none;
   }
 }
+
+@media (max-width: 430px) {
+  .controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .content {
+    padding: 14px;
+  }
+  .grid dl > div {
+    flex-wrap: wrap;
+  }
+  .grid dd {
+    overflow-wrap: anywhere;
+  }
+}

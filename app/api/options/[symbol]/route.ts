@@ -1,3 +1,8 @@
+import {
+  requestAccess,
+  requireFeature,
+  reserveAccess,
+} from "@/lib/access-server";
 import { account, failure, privateJson, HttpError, limit } from "@/lib/server";
 import { loadOptionChain } from "@/lib/options-source";
 export async function GET(
@@ -6,6 +11,10 @@ export async function GET(
 ) {
   try {
     const { user } = await account(request, { market: true });
+    const access = await requestAccess(request, user.id);
+    if (access.sampleOnly)
+      throw new HttpError("Options access is unavailable.", 403);
+    requireFeature(access, "options");
     await limit(`options:${user.id}`, 6);
     const { symbol } = await params;
     const ticker = symbol.toUpperCase().replace(/\.US$/, "");
@@ -14,6 +23,7 @@ export async function GET(
         "Options are supported for eligible US-listed stocks and ETFs.",
       );
     const expiry = new URL(request.url).searchParams.get("expiry");
+    await reserveAccess(user.id, access, "research", ticker);
     return privateJson(await loadOptionChain(ticker, expiry));
   } catch (e) {
     return failure(e);

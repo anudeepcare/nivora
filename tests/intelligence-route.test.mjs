@@ -135,7 +135,6 @@ test("research integrations cannot contact unrequested financial vendors", () =>
   for (const file of [
     "lib/company-profiles.ts",
     "lib/enrichment.ts",
-    "lib/alpaca-options.ts",
     "lib/options-flow-source.ts",
   ]) {
     const source = fs.readFileSync(file, "utf8");

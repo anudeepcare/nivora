@@ -4,8 +4,6 @@ import { researchLenses, lensForSection } from "@/lib/reference-navigation";
 import cockpit from "./ReferenceCockpit.module.css";
 import ReferenceAtlas from "./ReferenceAtlas";
 import ResearchWorkspace from "./ResearchWorkspace";
-import { EventsLens, IndicatorsLens } from "./DirectResearchLenses";
-import SentiSensePanels from "./SentiSensePanels";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
 import { pacePeriods, PACE_LEVELS } from "@/lib/pace-presentation";
@@ -30,6 +28,23 @@ import {
   subscribeQuotes,
 } from "@/lib/shared-quotes";
 import { retainResearchQuote } from "@/lib/research-quote";
+// Only the active lens downloads its evidence UI; no speculative provider requests.
+const SentiSensePanels = dynamic(() => import("./SentiSensePanels"), {
+  loading: () => <p role="status">Opening evidence…</p>,
+});
+const EventsLens = dynamic(
+  () => import("./DirectResearchLenses").then((module) => module.EventsLens),
+  {
+    loading: () => <p role="status">Opening events…</p>,
+  },
+);
+const IndicatorsLens = dynamic(
+  () =>
+    import("./DirectResearchLenses").then((module) => module.IndicatorsLens),
+  {
+    loading: () => <p role="status">Opening indicators…</p>,
+  },
+);
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
 });
@@ -48,9 +63,15 @@ import { headerMarketContext } from "@/lib/business-history";
 const BusinessMap = dynamic(() => import("./BusinessMap"), {
   loading: () => <p role="status">Loading…</p>,
 });
-import TimingContext from "./TimingContext";
-import DecisionWorkspace from "./DecisionWorkspace";
-import DecisionWatch from "./DecisionWatch";
+const TimingContext = dynamic(() => import("./TimingContext"));
+const DecisionWorkspace = dynamic(() => import("./DecisionWorkspace"));
+const DecisionWatch = dynamic(() => import("./DecisionWatch"));
+const ResearchNotes = dynamic(() => import("./ResearchNotes"), {
+  loading: () => <p role="status">Opening saved research…</p>,
+});
+const CompanyBrief = dynamic(() => import("./CompanyBrief"), {
+  loading: () => <p role="status">Opening export tools…</p>,
+});
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -83,9 +104,11 @@ import PriceStudyChart from "./PriceStudyChart";
 const Financials = dynamic(() => import("./FinancialPicture"), {
   loading: () => <p role="status">Loading…</p>,
 });
-import { TechnicalPicture } from "./ResearchDetails";
-import OwnershipPicture from "./OwnershipPicture";
-import Analyst from "./Analyst";
+const TechnicalPicture = dynamic(() =>
+  import("./ResearchDetails").then((module) => module.TechnicalPicture),
+);
+const OwnershipPicture = dynamic(() => import("./OwnershipPicture"));
+const Analyst = dynamic(() => import("./Analyst"));
 import { groupHistory } from "@/lib/chart-period";
 const DcaResearch = dynamic(() => import("./DcaResearch"), {
   loading: () => <p role="status">Loading…</p>,
@@ -587,14 +610,15 @@ export default function Research({ symbol }: { symbol: string }) {
           <SecurityLogo symbol={symbol} size={52} />
           <div>
             <h1>{r.company.name}</h1>
-            <p className="muted small">
-              {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
-            </p>
-            <div className="security-context">
+            <div className={cockpit.identityMeta}>
+              <span>
+                {symbol} · {r.company.exchange || "Listing"} ·{" "}
+                {r.quote.currency}
+              </span>
+              {headerContext.sector && <span>{headerContext.sector}</span>}
               <Help label="Company facts and source dates">
                 <StockFacts research={r} />
               </Help>
-              {headerContext.sector && <span>{headerContext.sector}</span>}
             </div>
           </div>
         </div>
@@ -623,10 +647,23 @@ export default function Research({ symbol }: { symbol: string }) {
                     ? `This change compares completed daily closes${headerMovement.changeFrom ? ` against ${dateLabel(headerMovement.changeFrom)}` : ""}. It does not describe a live trading-session move.`
                     : "This change follows the quote source’s session comparison. The quote’s session and timestamp appear below the price; extended-hours and regular-session comparisons can differ."}
                 </p>
+                <p>
+                  Displayed price source:{" "}
+                  {(headerReference?.basis === "settled-close"
+                    ? r.historySource
+                    : r.quote.source) || "not supplied"}
+                  .
+                  {headerReference?.basis === "settled-close" &&
+                    " This is a completed daily close; its date is not an intraday timestamp."}
+                </p>
               </Help>
             </span>
             <DataStamp
-              source={r.quote.source}
+              source={
+                headerReference?.basis === "settled-close"
+                  ? r.historySource
+                  : r.quote.source
+              }
               asOf={headerReference?.asOf ?? r.quote.asOf}
               status={
                 headerReference?.basis === "settled-close"
@@ -760,6 +797,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 <ResearchWorkspace
                   key={`${r.company.symbol}-options-tools`}
                   label="Additional options tools"
+                  initialSelection={-1}
                   views={[
                     {
                       title: "Market overview",
@@ -815,26 +853,27 @@ export default function Research({ symbol }: { symbol: string }) {
               />
             )}
             {tab === "Financials" && (
-              <ResearchWorkspace
-                key={`${r.company.symbol}-business`}
-                label="Business evidence"
-                views={[
-                  {
-                    title: "Financial statements",
-                    content: <Financials research={r} />,
-                  },
-                  {
-                    title: "Operating history",
-                    content: <BusinessHistory research={r} />,
-                  },
-                  {
-                    title: "Funding & dilution",
-                    content: <FinancingContext research={r} />,
-                  },
-                ]}
-              />
+              <section aria-label="Business evidence">
+                <Financials research={r} />
+                <ResearchWorkspace
+                  key={`${r.company.symbol}-business-support`}
+                  label="Additional business evidence"
+                  views={[
+                    {
+                      title: "Operating history",
+                      content: <BusinessHistory research={r} />,
+                    },
+                    {
+                      title: "Funding & dilution",
+                      content: <FinancingContext research={r} />,
+                    },
+                  ]}
+                />
+              </section>
             )}
-            {tab === "Valuation" && <ValueStudio research={r} />}
+            {tab === "Valuation" && (
+              <ValueStudio research={r} preview={!!demo} />
+            )}
             {tab === "Technicals" && technicalsHidden && (
               <section className={cockpit.preferenceNotice} role="status">
                 <h2>Technical indicators are hidden</h2>
@@ -952,6 +991,17 @@ export default function Research({ symbol }: { symbol: string }) {
                             part="detail"
                           />
                           <DecisionWatch key={r.company.symbol} research={r} />
+                        </>
+                      ),
+                    },
+                    {
+                      title: "Notes & export",
+                      content: (
+                        <>
+                          <FeatureGate feature="advanced">
+                            <ResearchNotes research={r} />
+                          </FeatureGate>
+                          <CompanyBrief research={r} />
                         </>
                       ),
                     },

@@ -5,7 +5,7 @@ test('desktop navigation uses one top header and keeps secondary destinations re
  const source=readFileSync(new URL('../components/Shell.tsx',import.meta.url),'utf8');
  assert.match(source,/aria-label="Main navigation"/);
  assert.match(source,/aria-label="More tools and account"/);
- assert.match(source,/aria-label="More research and workspace tools"/);
+ assert.doesNotMatch(source,/aria-label="More research and workspace tools"/);
  assert.match(source,/aria-label="Account & workspace"/);
  assert.doesNotMatch(source,/<aside/);
  for(const route of ['compare','research-lab','settings','plans','alerts','trading','help']) assert.ok(source.includes('path: "'+route+'"'));

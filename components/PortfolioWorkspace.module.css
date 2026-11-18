@@ -354,21 +354,14 @@
 .portfolio.portfolio.portfolio.portfolio
   :global(.wealth-strip.four)
   > div:first-child {
-  background:
-    radial-gradient(ellipse at 100% 0%, #414c51, transparent 70%),
-    linear-gradient(135deg, #293338, #192126);
-  color: #f3f7ee;
-  --ink: #f3f7ee;
-  --muted: #cbd8cd;
-  --line: #526b5a;
-  --green: #83d8b3;
-  --red: #ffb6af;
+  background: var(--card);
+  color: var(--ink);
 }
 .portfolio.portfolio.portfolio.portfolio
   :global(.wealth-strip.four)
   > div:first-child
   svg {
-  color: #d8edab;
+  color: var(--muted);
 }
 .portfolio.portfolio.portfolio.portfolio
   :global(.wealth-strip.four)
@@ -387,7 +380,7 @@
 .portfolio.portfolio.portfolio.portfolio
   :global(.wealth-strip.four)
   > div[data-tone="green"] {
-  background: linear-gradient(135deg, var(--card), var(--green-soft));
+  background: var(--card);
 }
 .portfolio.portfolio.portfolio.portfolio
   :global(.wealth-strip.four)
@@ -877,21 +870,19 @@
   padding: 24px;
 }
 .portfolio.portfolio.portfolio :global(.wealth-strip.four) > div:first-child {
-  background:
-    radial-gradient(ellipse at 100% 0, #a4d39322, transparent 70%),
-    linear-gradient(130deg, #172d2c, #2a4639);
-  color: #eff7ed;
+  background: var(--card);
+  color: var(--ink);
 }
 .portfolio.portfolio.portfolio
   :global(.wealth-strip.four)
   > div:first-child
   :is(span, small) {
-  color: #c0d3c5;
+  color: var(--muted);
 }
 .portfolio.portfolio.portfolio
   :global(.wealth-strip.four)
   > div:not(:first-child) {
-  background: transparent;
+  background: var(--card);
 }
 .portfolio.portfolio.portfolio :global(.portfolio-grid) {
   gap: 24px;

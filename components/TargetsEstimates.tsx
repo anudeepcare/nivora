@@ -1,8 +1,8 @@
 "use client";
-import QuickRead from "./QuickRead";
 import { useMemo, useState, type ReactNode } from "react";
 import type { Research } from "@/lib/types";
 import { researchOutlook } from "@/lib/outlook";
+import { scenarioResearchInput } from "@/lib/scenario-reference";
 import { targetsEstimates } from "@/lib/targets-estimates";
 import { amount, dateLabel, percent } from "@/lib/format";
 import AnalystTargets from "./AnalystTargets";
@@ -36,7 +36,9 @@ export default function TargetsEstimates({
   const forecast = useMemo(
     () =>
       multipleValue.trim()
-        ? researchOutlook(r, { earningsMultiple: Number(multipleValue) })
+        ? researchOutlook(scenarioResearchInput(r), {
+            earningsMultiple: Number(multipleValue),
+          })
         : model.forecast,
     [r, model.forecast, multipleValue],
   );
@@ -47,39 +49,6 @@ export default function TargetsEstimates({
           <h2>Targets & estimates</h2>
         </div>
       </header>
-      {active === 0 && model.consensus && (
-        <QuickRead
-          title="Expectations at a glance"
-          items={[
-            {
-              label: "Published analyst target",
-              value: amount(model.consensus.target, r.quote.currency),
-              detail: "Analyst opinion, separate from AURYN scenarios.",
-            },
-            ...(model.consensus.referencePrice != null &&
-            model.consensus.referencePrice > 0
-              ? [
-                  {
-                    label: "Versus the reference price",
-                    value: percent(
-                      (model.consensus.target / model.consensus.referencePrice -
-                        1) *
-                        100,
-                      true,
-                    ),
-                    detail: "A price difference, not a forecast return.",
-                  },
-                ]
-              : []),
-            {
-              label: "Annual estimate coverage",
-              value: `${model.estimates.length} fiscal periods`,
-              detail:
-                "Only dated estimates with a known reporting currency are included.",
-            },
-          ]}
-        />
-      )}
       <div
         className={styles.tabs}
         data-selection-navigation

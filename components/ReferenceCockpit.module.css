@@ -255,7 +255,7 @@
 
 .primaryChart {
   min-width: 0;
-  margin: 16px var(--research-gutter);
+  margin: 16px 0;
   padding: 18px;
   border-radius: 16px;
   background: var(--card);
@@ -281,4 +281,65 @@
   background: transparent;
   border: 0;
   box-shadow: none;
+}
+
+.identityMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.identityMeta > span {
+  overflow-wrap: anywhere;
+}
+.identityMeta > button {
+  flex: 0 0 auto;
+}
+@media (max-width: 430px) {
+  .root {
+    max-width: 100%;
+  }
+  .lenses {
+    gap: 0;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .lenses button {
+    padding-inline: 12px;
+  }
+  .primaryChart {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .root :global(.plot-section .chart-head) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .root :global(.plot-section .chart-head h3) {
+    margin: 0;
+    font-size: 14px;
+  }
+  .root :global(.plot-section .chart-head .ranges) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    min-width: 0;
+    gap: 3px;
+  }
+  .root :global(.plot-section .chart-head .ranges button) {
+    flex: 0 0 auto;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 6px 8px;
+  }
 }

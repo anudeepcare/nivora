@@ -131,7 +131,10 @@ export default function PaceHistoryInsights({
             </summary>
             <div className={styles.scroll}>
               <table>
-                <caption>Monthly v5 · available settled observations</caption>
+                <caption>
+                  {data.version} · available settled observations; earlier
+                  readings retain their original policy
+                </caption>
                 <thead>
                   <tr>
                     <th scope="col">Month</th>

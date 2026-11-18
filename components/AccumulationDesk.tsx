@@ -1,4 +1,6 @@
 "use client";
+import detail from "./PaceDeskDetails.module.css";
+import PaceEvidenceJourney from "./PaceEvidenceJourney";
 import PaceReadings from "./PaceReadings";
 import styles from "./ResearchLens.module.css";
 import PaceHistoryInsights from "./PaceHistoryInsights";
@@ -8,20 +10,17 @@ import type { Research, Candle } from "@/lib/types";
 import {
   researchAccumulation,
   adaptiveSettledBars,
-} from "@/lib/accumulation-policy-v6";
+} from "@/lib/accumulation-policy-v7";
 import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
 import PaceHelp from "./PaceHelp";
 import { paceCode } from "@/lib/pace-presentation";
 import { PriceChart } from "./Charts";
-const colours: Record<number, string> = {
-  0: "#d89a20",
-  1: "#7d9db0",
-  2: "#12a28b",
-  3: "#71b337",
-  4: "#ac68e5",
-};
+import {
+  paceChartColours as colours,
+  paceChartLevels,
+} from "@/lib/pace-chart-levels";
 export default function AccumulationDesk({
   research: r,
 }: {
@@ -95,15 +94,8 @@ export default function AccumulationDesk({
     [monthly, chosen, weekly],
   );
   const levels = useMemo(
-    () =>
-      signal
-        ? [
-            { label: "P2 zone", price: signal.buy2 },
-            { label: "P3 zone", price: signal.buy3 },
-            { label: "P4 zone", price: signal.buy4 },
-          ].filter((level) => level.price > 0)
-        : [],
-    [signal],
+    () => paceChartLevels(chosen.forming, confirmed),
+    [chosen.forming, confirmed],
   );
   const evaluation = useMemo(
     () =>
@@ -148,6 +140,28 @@ export default function AccumulationDesk({
             weekly,
           )}
         />
+      </div>
+      <div className={detail.priceBasis} aria-label="Price observation basis">
+        <span>
+          Settled chart close{" "}
+          <strong>{amount(monthly.at(-1)?.close, r.quote.currency)}</strong> ·{" "}
+          {dateLabel(monthly.at(-1)?.time)}
+        </span>
+        <span>
+          Latest quoted price{" "}
+          <strong>{amount(r.quote.price, r.quote.currency)}</strong> ·{" "}
+          {r.quote.asOf && Number.isFinite(Date.parse(r.quote.asOf))
+            ? new Date(r.quote.asOf)
+                .toISOString()
+                .replace("T", " ")
+                .slice(0, 16) + " UTC"
+            : "Observation time not supplied"}
+          {r.quote.stale ? " · stale" : ""}
+        </span>
+        <small>
+          The quote is not used to overwrite settled chart history. Different
+          observation times can produce different prices.
+        </small>
       </div>
       <div className="accumulation-chart">
         <PriceChart
@@ -205,15 +219,19 @@ export default function AccumulationDesk({
           </span>
         </div>
       )}
+      <PaceEvidenceJourney research={r} />
       {!!levels.length && (
-        <div className="candidate-levels">
-          {levels.map((l) => (
-            <div key={l.label}>
-              <span>{l.label}</span>
-              <strong>{amount(l.price, r.quote.currency)}</strong>
-            </div>
-          ))}
-        </div>
+        <details className={detail.levels}>
+          <summary>Conditional zone prices</summary>
+          <dl>
+            {levels.map((l) => (
+              <div key={l.label}>
+                <dt>{l.label}</dt>
+                <dd>{amount(l.price, r.quote.currency)}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
       )}
       <div className="accumulation-legend">
         {[0, 1, 2, 3, 4].map((n) => (
@@ -255,7 +273,7 @@ export default function AccumulationDesk({
         <p>
           {weekly
             ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."
-            : "Monthly v6 uses a fixed technical classifier across monthly price position, daily trend, volatility and momentum. Existing extension rules remain in place. Earlier observations and insufficient-history cases retain v5. Conditional price levels are local transitions, not guarantees for all prices beyond a threshold."}{" "}
+            : "The current monthly model uses a fixed technical classifier across monthly price position, daily trend, volatility and momentum. Existing extension rules remain in place. Earlier observations and insufficient-history cases retain their original policy version. Conditional price levels are local transitions, not guarantees for all prices beyond a threshold."}{" "}
           Weekly and monthly calculations differ. Historical readings do not
           establish future outperformance.
         </p>

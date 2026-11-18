@@ -38,22 +38,19 @@ export default function ReferenceAtlas({
   const signal = m.signals[selected],
     b = m.brief,
     glow = useId();
-  const centerLabel = (
-    {
-      Business: "REV GROWTH",
-      Value: "BASE CASE",
-      Momentum: "RSI · 14",
-      Catalysts: "NEXT EARNINGS",
-      Ownership: "OWNER TREND",
-      Risk: "RISK",
-    } as Record<string, string>
-  )[signal.label];
-  const centerValue =
-    signal.label === "Risk"
-      ? "Review"
-      : signal.label === "Ownership"
-        ? "—"
-        : reading(signal, b.businessNumbers.currency);
+  const centerLabel =
+    signal.metricLabel ??
+    (
+      {
+        Business: "REV GROWTH",
+        Value: "BASE CASE",
+        Momentum: "RSI · 14",
+        Catalysts: "NEXT EARNINGS",
+        Ownership: "OWNER TREND",
+        Risk: "RISK",
+      } as Record<string, string>
+    )[signal.label];
+  const centerValue = reading(signal, b.businessNumbers.currency);
   const values = [
     {
       label: "Revenue",
@@ -90,6 +87,13 @@ export default function ReferenceAtlas({
       tone: "violet",
     },
     {
+      label: "Weighted-share change",
+      value: percent(b.businessNumbers.dilution),
+      detail: "Comparable reported periods; not a price return",
+      target: "Financials" as const,
+      tone: "violet",
+    },
+    {
       label: "RSI · 14",
       value: b.timing.rsi == null ? "—" : b.timing.rsi.toFixed(1),
       detail: "Completed daily prices",
@@ -106,11 +110,7 @@ export default function ReferenceAtlas({
           <p>Select an orbit to inspect the evidence behind this view.</p>
           <div className={s.active} aria-live="polite">
             <small>{signal.label}</small>
-            <strong>
-              {signal.label === "Risk"
-                ? "Review conditions"
-                : reading(signal, b.businessNumbers.currency)}
-            </strong>
+            <strong>{reading(signal, b.businessNumbers.currency)}</strong>
             <p>{signal.detail}</p>
             <button onClick={() => onTab(signal.target)}>
               Explore {signal.label.toLowerCase()}{" "}
@@ -189,27 +189,19 @@ export default function ReferenceAtlas({
                 aria-label={`${item.label}: ${item.value === null && !item.valueLabel ? "review evidence" : reading(item, b.businessNumbers.currency)}`}
                 onClick={() => setSelected(i)}
               >
-                <span>
-                  {item.label === "Risk"
-                    ? "!"
-                    : item.value === null
-                      ? "—"
-                      : item.unit === "count"
-                        ? "≡"
-                        : item.label === "Momentum"
-                          ? "↗"
-                          : item.label === "Value"
-                            ? "◇"
-                            : "◈"}
-                </span>
-                <small>{item.label}</small>
+                <span>{reading(item, b.businessNumbers.currency)}</span>
+                <small>{item.metricLabel ?? item.label}</small>
               </button>
             ))}
           </div>
           <p className={s.graphicNote}>Evidence map · not a synthetic score</p>
         </section>
         <aside className={s.action} aria-label="Pace and decision conditions">
-          <span className={s.eyebrow}>Accumulation condition</span>
+          <span className={s.eyebrow}>
+            {m.paceState === "forming"
+              ? "Current forming Pace"
+              : "Last completed Pace"}
+          </span>
           <strong>{m.pace === null ? "—" : `P${m.pace}`}</strong>
           <h3>
             {m.pace === null
@@ -223,12 +215,30 @@ export default function ReferenceAtlas({
           <p>{m.paceReason}</p>
           <dl>
             <div>
-              <dt>Reading</dt>
+              <dt>
+                {m.paceState === "forming"
+                  ? "Provisional · can change"
+                  : "Completed interval"}
+              </dt>
               <dd>
                 {m.paceState} ·{" "}
                 {m.paceDate ? dateLabel(m.paceDate) : "unavailable"}
               </dd>
             </div>
+            {m.paceState === "forming" && (
+              <div>
+                <dt>Last completed Pace</dt>
+                <dd>
+                  {b.accumulation.multiplier == null
+                    ? "Unavailable"
+                    : `P${b.accumulation.multiplier}`}{" "}
+                  ·{" "}
+                  {b.accumulation.date
+                    ? dateLabel(b.accumulation.date)
+                    : "Date unavailable"}
+                </dd>
+              </div>
+            )}
             <div>
               <dt>Key risk</dt>
               <dd>{b.risk}</dd>

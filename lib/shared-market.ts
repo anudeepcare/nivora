@@ -21,8 +21,18 @@ function database() {
 }
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 const identity = (token: string) => "eodhd:" + hash(token).slice(0, 24);
-let usage: { at: number; value: ReturnType<typeof eodUsage> } | null = null;
+const usageByProvider = new Map<
+  string,
+  { at: number; value: ReturnType<typeof eodUsage> }
+>();
 async function accountUsage(token: string) {
+  const provider = identity(token);
+  const usage = usageByProvider.get(provider);
+  const save = (value: ReturnType<typeof eodUsage>) => {
+    usageByProvider.set(provider, { at: Date.now(), value });
+    if (usageByProvider.size > 80)
+      usageByProvider.delete(usageByProvider.keys().next().value!);
+  };
   if (
     usage &&
     Date.now() - usage.at < (usage.value ? 300000 : 30000) &&
@@ -36,10 +46,10 @@ async function accountUsage(token: string) {
     );
     if (!response.ok) throw Error();
     const value = eodUsage(await response.json());
-    usage = { at: Date.now(), value };
+    save(value);
     return value;
   } catch {
-    usage = { at: Date.now(), value: null };
+    save(null);
     return null;
   }
 }
@@ -50,11 +60,61 @@ export async function sharedEodRead<T>(
   ttl: number,
   read: () => Promise<T>,
 ): Promise<T> {
+  return sharedEodReadCore(token, path, params, ttl, read, false);
+}
+/** Inactive evidence seam: same weighted account budget, isolated cache namespace.
+ * Requires the separately reviewed evidence publisher; no legacy fallback. */
+export async function sharedEodEvidenceRead<T>(
+  token: string,
+  path: string,
+  params: Record<string, string>,
+  ttl: number,
+  read: () => Promise<T>,
+): Promise<T> {
+  if (!sharedMarketEnabled())
+    throw new MarketGuardError(
+      "Shared market protection is required for evidence.",
+    );
+  return sharedEodReadCore(token, path, params, ttl, read, true);
+}
+async function sharedEodReadCore<T>(
+  token: string,
+  path: string,
+  params: Record<string, string>,
+  ttl: number,
+  read: () => Promise<T>,
+  evidence: boolean,
+): Promise<T> {
   if (!sharedMarketEnabled()) return read();
-  const db = database(),
-    remote = await accountUsage(token),
+  const publishRpc = evidence
+    ? "auryn_market_publish_evidence_v1"
+    : "auryn_market_publish";
+  const db = database();
+  if (evidence) {
+    // Read-only capability probe: NULL arguments return before any row mutation.
+    // Missing source-only migration must not spend a provider acquisition first.
+    const probe = await db.rpc(publishRpc, {
+      p_key: null,
+      p_lease: null,
+      p_value: null,
+      p_ttl: 0,
+    });
+    if (
+      probe.error ||
+      probe.data?.stored !== false ||
+      probe.data?.reason !== "invalid-arguments"
+    )
+      throw new MarketGuardError(
+        "Evidence publisher is not available; acquisition is disabled.",
+      );
+  }
+  const remote = await accountUsage(token),
     provider = identity(token),
-    key = hash(provider + ":" + canonicalMarketKey(path, params));
+    key = hash(
+      provider +
+        (evidence ? ":independent-evidence-v1:" : ":") +
+        canonicalMarketKey(path, params),
+    );
   const cap = remote
       ? safeMarketCap(process.env.EODHD_DAILY_BUDGET, remote.limit)
       : 0,
@@ -95,15 +155,19 @@ export async function sharedEodRead<T>(
     );
   try {
     const value = await read();
-    await db.rpc("auryn_market_publish", {
+    const published = await db.rpc(publishRpc, {
       p_key: key,
       p_lease: lease,
       p_value: value,
       p_ttl: Math.max(1, Math.min(86400, Math.ceil(ttl / 1000))),
     });
+    if (evidence && (published.error || published.data?.stored !== true))
+      throw new MarketGuardError(
+        "Evidence publication failed; no published observation is certified.",
+      );
     return value;
   } catch (error) {
-    await db.rpc("auryn_market_publish", {
+    await db.rpc(publishRpc, {
       p_key: key,
       p_lease: lease,
       p_value: null,

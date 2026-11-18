@@ -5,8 +5,8 @@ const source = name => readFileSync(new URL('../components/' + name, import.meta
 test('public home never redirects an authenticated visitor away from the requested page', () => {
   assert.doesNotMatch(source('PublicLanding.tsx'), /router\.replace\("\/overview"\)/);
 });
-test('workspace brand returns to public home, distinct from Today navigation', () => {
-  assert.match(source('Shell.tsx'), /href="\/"\s+className=\{experience\.brand\}/);
+test('workspace brand returns to Today within the current workspace', () => {
+  assert.match(source('Shell.tsx'), /href=\{`\$\{prefix\}\/overview`\}\s+className=\{experience\.brand\}/);
 });
 test('new public theme overrides the legacy carbon opening and green navigation CTA at equal specificity', () => {
   const css = source('PublicLanding.module.css');

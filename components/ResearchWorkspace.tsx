@@ -6,12 +6,14 @@ export default function ResearchWorkspace({
   label,
   views,
   preserveState = false,
+  initialSelection = 0,
 }: {
   label: string;
   preserveState?: boolean;
+  initialSelection?: number;
   views: { title: string; content: ReactNode }[];
 }) {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(initialSelection);
   const id = useId();
   return (
     <section aria-label={label}>

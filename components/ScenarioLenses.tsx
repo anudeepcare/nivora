@@ -14,11 +14,13 @@ export default function ScenarioLenses({
   research: r,
   decision,
   hideSingle = false,
+  excludeAnalyst = false,
 }: {
   research: Research;
   decision?: Decision;
   /** Skip the section when only one method qualifies and it is already shown above. */
   hideSingle?: boolean;
+  excludeAnalyst?: boolean;
 }) {
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
   const d = useMemo(
@@ -80,8 +82,11 @@ export default function ScenarioLenses({
     [r, model, now],
   );
   if (!view.available) return null;
-  if (hideSingle && view.lenses.length < 2) return null;
-  const { currency, reference, lenses } = view;
+  const { currency, reference } = view;
+  const lenses = excludeAnalyst
+    ? view.lenses.filter((lens) => lens.kind !== "analyst")
+    : view.lenses;
+  if (!lenses.length || (hideSingle && lenses.length < 2)) return null;
   const prices = [
     reference.price,
     ...lenses.flatMap((x) =>

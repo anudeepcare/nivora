@@ -1,4 +1,5 @@
 import test from "node:test";
+import { reportContent } from "../lib/report-content.ts";
 import assert from "node:assert/strict";
 import { createSentiSenseClient } from "../lib/sentisense-api.ts";
 import { intelligenceData } from "../lib/intelligence-dto.ts";
@@ -86,7 +87,10 @@ test("reader shows one selected section safely, keeps timestamp and retries", as
           ...base,
           sections: {
             ...base.sections,
-            Thesis: { content: "<script>alert(1)</script>" },
+            Thesis: {
+              content:
+                '<script>alert(1)</script>\n\n::metric{label="Q3 2026 Revenue" value="$2.18B" change="+55% YoY"}',
+            },
           },
         }),
       },
@@ -94,6 +98,8 @@ test("reader shows one selected section safely, keeps timestamp and retries", as
     requested;
   const bindings = {
     React,
+    reportContent,
+    reportStyles: new Proxy({}, { get: (_, k) => k }),
     useState: () => [selected, (n) => (selected = n)],
     useResource: (key) => {
       requested = key;
@@ -113,6 +119,10 @@ test("reader shows one selected section safely, keeps timestamp and retries", as
   assert.doesNotMatch(html, /<script>/);
   assert.doesNotMatch(html, /Risk narrative/);
   assert.match(html, /Report updated/);
+  assert.match(html, /<dt>Q3 2026 Revenue<\/dt>/);
+  assert.match(html, /\$2.18B/);
+  assert.match(html, /\+55% YoY/);
+  assert.doesNotMatch(html, /::metric/);
   assert.match(html, /class="reportText"/);
   assert.match(html, /role="region"/);
   assert.match(html, /tabindex="0"/);

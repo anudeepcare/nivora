@@ -1,4 +1,5 @@
 import type { Research } from "./types";
+import { scenarioResearchInput } from "./scenario-reference.ts";
 import {
   perspective,
   latestFinancialEvidence,
@@ -13,7 +14,7 @@ import { listingReconciliation } from "./listing-reconciliation.ts";
 export function researchBrief(r: Research) {
   const p = perspective(r),
     d = researchDecision(r),
-    outlook = researchOutlook(r),
+    outlook = researchOutlook(scenarioResearchInput(r)),
     consensus = consensusOutlook(r),
     coverage = modelCoverage(r.company.symbol, r.company.assetType, {
       sector: r.evidence?.profile?.sector || r.company.sector,

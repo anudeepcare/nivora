@@ -1,11 +1,10 @@
 import type { Research } from "./types";
 import { scenarioLenses } from "./scenario-lenses.ts";
-import { consensusOutlook } from "./outlook.ts";
 import { expectedRange } from "./scenario-calibration.ts";
 import { MARKET_STUDY } from "./market-study.ts";
 
 export type ScenarioHeadline = {
-  source: "analyst" | "analyst-history" | "history";
+  source: "analyst" | "history";
   eyebrow: string;
   detail: string;
   note: string;
@@ -37,23 +36,6 @@ export function scenarioHeadline(r: Research): ScenarioHeadline | null {
         volatility: risk.volatility,
       }
     : null;
-  const consensus = consensusOutlook(r);
-  if (
-    consensus &&
-    consensus.low == null &&
-    span &&
-    span.bear < consensus.target &&
-    consensus.target < span.bull
-  )
-    return {
-      source: "analyst-history",
-      eyebrow: "Analyst consensus with a one-year volatility range",
-      detail: `Base is the analyst consensus target. Bear and bull are a poor and a strong year for a stock that moves as much as this one (about ${span.volatility.toFixed(0)}% a year): in a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, about one year in five finished below a bear case built this way and one in five above the bull case. Not AURYN fair value or a forecast.`,
-      note: "Base: analyst consensus. Bear and bull: 0.859 times the past year's daily volatility, scaled to one year, either side of today's price. No direction is assumed.",
-      bear: span.bear,
-      base: consensus.target,
-      bull: span.bull,
-    };
   if (!view.lenses.some((x) => x.kind === "analyst" && x.bear != null) && span)
     return {
       source: "history",

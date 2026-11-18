@@ -177,3 +177,64 @@ export async function POST(request: Request) {
     );
   }
 }
+
+/** Restore already-confirmed evidence only. This endpoint never creates or advances a job. */
+export async function GET(request: Request) {
+  try {
+    const { user, db } = await account(request, { market: true });
+    const saved = await db
+      .from("auryn_transaction_ledgers")
+      .select("rows,revision")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (saved.error)
+      throw new HttpError("Transaction storage unavailable.", 503);
+    if (!saved.data) return privateJson({ result: null });
+    const found = await db
+      .from("auryn_account_history_jobs")
+      .select("revision,state,result,expires_at,algorithm_version")
+      .eq("user_id", user.id)
+      .eq("revision", saved.data.revision)
+      .eq("algorithm_version", HISTORY_JOB_VERSION)
+      .gt("expires_at", new Date().toISOString())
+      .not("result", "is", null)
+      .order("through", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (found.error)
+      throw new HttpError(
+        "Saved history requires the account-history database migration.",
+        503,
+      );
+    const job = found.data;
+    if (
+      !job ||
+      !job.result ||
+      job.revision !== saved.data.revision ||
+      job.algorithm_version !== HISTORY_JOB_VERSION ||
+      !Number.isFinite(Date.parse(job.expires_at)) ||
+      Date.parse(job.expires_at) <= Date.now() ||
+      job.state?.ledgerDigest !== historyLedgerDigest(saved.data.rows)
+    ) {
+      return privateJson({ result: null });
+    }
+    // Do not publish an earlier revision if the ledger changed during this read.
+    const current = await db
+      .from("auryn_transaction_ledgers")
+      .select("rows,revision")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (current.error)
+      throw new HttpError("Transaction storage unavailable.", 503);
+    if (
+      !current.data ||
+      current.data.revision !== saved.data.revision ||
+      historyLedgerDigest(current.data.rows) !== job.state.ledgerDigest
+    ) {
+      return privateJson({ result: null });
+    }
+    return privateJson({ result: job.result });
+  } catch (error) {
+    return failure(error);
+  }
+}

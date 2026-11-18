@@ -198,25 +198,12 @@ export default function Shell({
         Skip to content
       </a>
       <header className={experience.header}>
-        <Link href="/" className={experience.brand} aria-label="AURYN home">
+        <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN workspace home">
           <img src="/icon.svg" width="32" height="32" alt="" />
           <span>AURYN</span>
         </Link>
         <nav className={experience.nav} aria-label="Main navigation">
           {primary.map(nav)}
-          <button
-            className={experience.moreTrigger}
-            data-active={
-              ["discover", "compare", "research-lab", "trading"].includes(page)
-                ? "true"
-                : undefined
-            }
-            aria-label="More research and workspace tools"
-            aria-haspopup="dialog"
-            onClick={() => tools.current?.showModal()}
-          >
-            More
-          </button>
         </nav>
         <button
           className={experience.searchTrigger}

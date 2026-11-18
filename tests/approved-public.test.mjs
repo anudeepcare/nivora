@@ -174,10 +174,10 @@ test("public home leads with the benefit and an account action without fabricate
   assert.doesNotMatch(html, /class="ap-benefits/);
   assert.match(html, /href="\/track-record"/);
   assert.match(html, /href="\/portfolio-check"/);
-  assert.match(html, /Turn the price into the earnings it would require/);
-  assert.match(html, /horizon and/);
-  assert.match(html, /future multiple/);
-  assert.match(html, /Is this a sensible time to add/);
+  assert.match(html, /What does this price need to be true/);
+  assert.match(html, /growth, margins, horizon, and exit multiple/);
+  assert.match(html, /Pace separates business qualification from price conditions/);
+  assert.doesNotMatch(html, /Three questions before every contribution/);
   assert.match(html, /Turn earnings into questions/);
   assert.match(html, /alerts for supported conditions/);
   assert.match(html, /updates from the companies you follow/);

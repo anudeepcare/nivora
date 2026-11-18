@@ -123,27 +123,31 @@ export function Portfolio() {
     <section
       className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals} ${reference.page}`}
     >
-      <span className={reference.eyebrow}>CAPITAL MAP</span>
       <Heading
-        title="Where conviction and exposure disagree."
-        subtitle="Your portfolio translated into decisions, concentration, and available capacity."
+        title="Portfolio"
+        subtitle="Value, decisions and exposure."
         actions={
           <>
-            <button
-              className="btn"
-              onClick={() => {
-                setDepthOpen(true);
-                depth.current?.showModal();
-              }}
-            >
-              Record transaction
-            </button>
-            <button
-              className="btn"
-              onClick={() => balances.current?.showModal()}
-            >
-              Cash & balances
-            </button>
+            <details className={reference.manage}>
+              <summary>Manage</summary>
+              <div>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    setDepthOpen(true);
+                    depth.current?.showModal();
+                  }}
+                >
+                  Record transaction
+                </button>
+                <button
+                  className="btn"
+                  onClick={() => balances.current?.showModal()}
+                >
+                  Cash & balances
+                </button>
+              </div>
+            </details>
             <button
               className="btn primary"
               onClick={() => {
@@ -209,6 +213,24 @@ export function Portfolio() {
         </details>
       )}
       <div className={reference.grid} data-portfolio-layout="reference">
+        <div className={reference.history}>
+          <section className="card portfolio-trend-panel">
+            <SectionHead
+              title="Portfolio over time"
+              subtitle="Account value · cash flows · S&P 500 / QQQ comparison"
+            />
+            <AccountHistory />
+            <button
+              className="btn"
+              onClick={() => {
+                setDepthOpen(true);
+                depth.current?.showModal();
+              }}
+            >
+              Review recorded transactions
+            </button>
+          </section>
+        </div>
         <div className={reference.capitalOverview}>
           <section className="card portfolio-allocation-panel">
             <SectionHead
@@ -355,24 +377,6 @@ export function Portfolio() {
             </Empty>
           )}
         </section>
-        <div className={reference.history}>
-          <section className="card portfolio-trend-panel">
-            <SectionHead
-              title="What the portfolio actually did"
-              subtitle="PERFORMANCE & CASH FLOWS · Saved ledger"
-            />
-            <AccountHistory />
-            <button
-              className="btn"
-              onClick={() => {
-                setDepthOpen(true);
-                depth.current?.showModal();
-              }}
-            >
-              Review recorded transactions
-            </button>
-          </section>
-        </div>
         <div className={reference.exposure}>
           <section className="card portfolio-exposure-panel">
             <SectionHead

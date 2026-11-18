@@ -74,3 +74,108 @@
     align-items: flex-start;
   }
 }
+
+.comparisonSummary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.comparisonSummary > div {
+  border-top: 1px solid var(--line);
+  padding: 12px 0;
+  min-width: 0;
+}
+.comparisonSummary h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.comparisonSummary strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.comparisonSummary small,
+.comparisonSummary p {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 12px;
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend span::before {
+  content: "";
+  width: 20px;
+  border-top: 3px solid var(--blue);
+}
+.legend [data-series="contributions"]::before {
+  border-color: var(--muted);
+  border-top-style: dashed;
+}
+.legend [data-series="SPY"]::before {
+  border-color: var(--purple, #9b7ede);
+  border-top-style: dashed;
+}
+.legend [data-series="QQQ"]::before {
+  border-color: var(--amber, #bd7b17);
+  border-top-style: dotted;
+}
+@media (max-width: 540px) {
+  .comparisonSummary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+
+.history > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.history :global(.table-scroll) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.history :global(.table-scroll) table {
+  min-width: 640px;
+}
+.history :is(p, small, summary, output) {
+  overflow-wrap: anywhere;
+}
+.history button {
+  max-width: 100%;
+  min-height: 44px;
+  white-space: normal;
+}
+.readout > * {
+  min-width: 0;
+}
+@media (max-width: 430px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .actions button,
+  .setup button {
+    width: 100%;
+  }
+  .legend {
+    gap: 8px 12px;
+    font-size: 11px;
+  }
+  .legend span::before {
+    flex-shrink: 0;
+  }
+}

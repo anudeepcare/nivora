@@ -17,12 +17,16 @@ function harness({
   result = null,
   expired = false,
   claimed = true,
+  version = "test",
+  changedDuringRead = false,
 } = {}) {
   const calls = [];
+  let ledgerReads = 0;
   const rows = ["server"];
   const job = {
     id,
     revision: 2,
+    algorithm_version: version,
     state: { now: Date.now(), ledgerDigest: digest, tasks: [{ done: false }] },
     result,
     expires_at: new Date(Date.now() + (expired ? -1000 : 100000)).toISOString(),
@@ -44,6 +48,18 @@ function harness({
       calls.push([k, v]);
       return this;
     },
+    gt() {
+      return this;
+    },
+    not() {
+      return this;
+    },
+    order() {
+      return this;
+    },
+    limit() {
+      return this;
+    },
     lte() {
       return this;
     },
@@ -52,7 +68,16 @@ function harness({
     },
     async maybeSingle() {
       return {
-        data: table === "auryn_transaction_ledgers" ? { revision, rows } : job,
+        data:
+          table === "auryn_transaction_ledgers"
+            ? {
+                revision:
+                  changedDuringRead && ++ledgerReads > 1
+                    ? revision + 1
+                    : revision,
+                rows,
+              }
+            : job,
       };
     },
     async single() {
@@ -128,6 +153,9 @@ function harness({
   };
   return {
     calls,
+    get: new Function(...Object.keys(bindings), code + ";return GET;")(
+      ...Object.values(bindings),
+    ),
     post: new Function(...Object.keys(bindings), code + ";return POST;")(
       ...Object.values(bindings),
     ),
@@ -171,4 +199,39 @@ test("auth,revision,snapshot and failed commit never return completed performanc
     assert.equal(r.status, status);
     assert.equal((await r.json()).result, undefined);
   }
+});
+
+test("GET restores only authenticated matching unexpired completed results without calculation", async () => {
+  const complete = {
+    status: "available",
+    points: [{ date: "2026-11-16", equity: 100 }],
+  };
+  const h = harness({ result: complete });
+  const response = await h.get(
+    new Request("https://test/api/account-history/jobs"),
+  );
+  assert.equal(response.status, 200);
+  assert.deepEqual((await response.json()).result, complete);
+  assert.ok(h.calls.some((x) => JSON.stringify(x) === '["user_id","owner"]'));
+  assert.ok(!h.calls.includes("advance"));
+  assert.ok(!h.calls.includes("delete"));
+  for (const opts of [
+    { revision: 3 },
+    { digest: "changed" },
+    { expired: true },
+    { version: "old" },
+    { changedDuringRead: true },
+    { result: null },
+  ]) {
+    const other = harness({ result: complete, ...opts });
+    const r = await other.get(
+      new Request("https://test/api/account-history/jobs"),
+    );
+    assert.equal(r.status, 200);
+    assert.equal((await r.json()).result, null);
+  }
+  const denied = await harness({ auth: false }).get(
+    new Request("https://test/api/account-history/jobs"),
+  );
+  assert.equal(denied.status, 401);
 });

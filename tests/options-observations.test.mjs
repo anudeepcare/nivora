@@ -44,3 +44,27 @@ test("ambiguous duplicate timestamps and negative or numeric-string metrics are 
   assert.equal(p.points.length, 0);
   assert.equal(p.missing, 4);
 });
+
+test("first populated metric uses actual volume when IV and ratio absent", async () => {
+  const { defaultOptionMetric } = await import(
+    "../lib/options-observations.ts"
+  );
+  assert.equal(typeof defaultOptionMetric, "function");
+  assert.equal(
+    defaultOptionMetric(
+      { series: [{ date: "2026-11-17", callVol: 0, putVol: 200 }] },
+      false,
+    ),
+    "callVol",
+  );
+  assert.equal(defaultOptionMetric({ series: [] }, false), "atmIv");
+});
+test("overflow after percent conversion is missing, never an infinite chart coordinate", () => {
+  const r = optionObservations(
+    { series: [{ date: "2026-11-17", atmIv: Number.MAX_VALUE }] },
+    false,
+    "atmIv",
+  );
+  assert.equal(r.points.length, 0);
+  assert.equal(r.missing, 1);
+});

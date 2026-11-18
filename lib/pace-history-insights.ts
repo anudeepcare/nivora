@@ -190,5 +190,11 @@ export function paceHistoryInsights(
       outcomes,
     };
   });
-  return { available: rows.length > 0, reason: policy.reason, rows, zones };
+  return {
+    available: rows.length > 0,
+    reason: policy.reason,
+    version: policy.version,
+    rows,
+    zones,
+  };
 }

@@ -1,4 +1,5 @@
 import type { Research } from "./types";
+import { adaptiveSettledBars } from "./accumulation-policy-v3.ts";
 import { earningsCalendar } from "./earnings-calendar.ts";
 import { researchBrief } from "./research-brief.ts";
 export type AtlasTarget =
@@ -20,6 +21,7 @@ export type AtlasSignal = {
   detail: string;
   target: AtlasTarget;
   score: null;
+  metricLabel?: string;
 };
 const finite = (value: unknown): number | null =>
   typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -29,6 +31,24 @@ export function referenceAtlas(research: Research) {
   const holders = (research.evidence?.holders ?? []).filter(
     (row) => row.name && Number.isFinite(Date.parse(row.date)),
   );
+  const observedAt = research.priceObservedAt ?? research.retrievedAt;
+  const riskBars = adaptiveSettledBars(
+    research.history,
+    observedAt,
+    research.company.assetType === "crypto" ? "crypto" : "us-equity",
+  ).slice(-252);
+  const peak =
+    riskBars.length >= 20
+      ? Math.max(...riskBars.map((bar) => bar.close))
+      : null;
+  const drawdown =
+    peak && peak > 0 ? (riskBars.at(-1)!.close / peak - 1) * 100 : null;
+  const ownershipDate = research.evidence?.updatedAt;
+  const ownershipAt = Date.parse(ownershipDate ?? "");
+  const institutions =
+    Number.isFinite(ownershipAt) && ownershipAt <= Date.parse(observedAt)
+      ? finite(research.evidence?.ownership?.institutions)
+      : null;
   const cases =
     brief.scenarioEligible && brief.scenario
       ? [
@@ -93,20 +113,28 @@ export function referenceAtlas(research: Research) {
     },
     {
       label: "Ownership",
-      value: null,
-      valueLabel: "Not established",
-      unit: "count",
-      detail: holders.length
-        ? `Comparable ownership trend is not established. ${holders.length} dated holder records are available; counts are not a directional signal.`
-        : "Open Ownership to request institutional, insider and public filing evidence.",
+      metricLabel: "INSTITUTIONAL %",
+      value: institutions != null && institutions >= 0 ? institutions : null,
+      unit: "percent",
+      detail:
+        institutions != null && institutions >= 0
+          ? `Reported institutional ownership; evidence updated ${ownershipDate}. Snapshot, not ownership trend or conviction. Reporting periods may differ; ownership can exceed 100%.`
+          : holders.length
+            ? `${holders.length} dated holder records are available, but an aggregate institutional percentage is not supplied. Counts are not a directional signal.`
+            : "A dated aggregate institutional ownership percentage is unavailable. Open Ownership for supplied filing evidence.",
       target: "Thesis",
       score: null,
     },
     {
       label: "Risk",
-      value: null,
-      unit: "number",
-      detail: brief.risk,
+      metricLabel: "DRAWDOWN",
+      value: drawdown,
+      unit: "percent",
+      detail:
+        drawdown == null
+          ? "At least 20 completed observations are needed for drawdown. " +
+            brief.risk
+          : `Latest settled close below the highest close in ${riskBars.length} supplied sessions, ${riskBars[0].time} to ${riskBars.at(-1)!.time}. Not maximum historical drawdown or a loss forecast.`,
       target: "Advanced",
       score: null,
     },

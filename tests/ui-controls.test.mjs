@@ -1,3 +1,4 @@
+import { scenarioResearchInput } from "../lib/scenario-reference.ts";
 import { earningsCalendar } from "../lib/earnings-calendar.ts";
 import { modelCoverage } from "../lib/research-depth.ts";
 import {
@@ -32,6 +33,7 @@ import {
   ArrowUpRight,
   Minus,
 } from "lucide-react";
+import { paceChartColours as colours, paceChartLevels } from "../lib/pace-chart-levels.ts";
 import { paceCode, pacePeriods } from "../lib/pace-presentation.ts";
 import * as format from "../lib/format.ts";
 import { homeComposition } from "../lib/home-presentation.ts";
@@ -58,6 +60,7 @@ function loadComponent(file, name, bindings) {
       ),
     dateLabel: format.dateLabel,
     latestFinancialEvidence,
+    scenarioResearchInput,
     modelCoverage,
     operatingScenarioSupported,
     headerBusinessMetrics,
@@ -82,6 +85,9 @@ function loadComponent(file, name, bindings) {
     PrivacyChoices: () => null,
     paceCode,
     pacePeriods,
+    colours,
+    paceChartLevels,
+    detail: { levels: "pace-levels-module" },
     PaceGuidance: ({ view }) =>
       React.createElement("div", null, view.actionLabel, view.effectiveCode),
     PaceReadings: ({ readings }) =>
@@ -101,6 +107,7 @@ function loadComponent(file, name, bindings) {
         ),
       ),
     PaceHelp: () => null,
+    PaceEvidenceJourney: () => null,
     CompanySparkline: () => null,
     ...bindings,
   };
@@ -1667,7 +1674,7 @@ test("overview leads with the forming DCA period and keeps the confirmed result 
   assert.match(closed, /Confirmed baseline reason/);
 });
 
-test("technical accumulation shows both periods and anchors calculations to completed observations", () => {
+test("technical accumulation keeps confirmed rationale while price bands use the forming window", () => {
   const confirmed = {
     multiplier: 1,
     month: "2026-09",
@@ -1729,7 +1736,8 @@ test("technical accumulation shows both periods and anchors calculations to comp
   assert.match(html, /Confirmed baseline/);
 
   assert.match(html, /1 of 1 eligible months/);
-  assert.match(html, /data-first-level="30"/);
+  // Current conditional levels use the forming window, not older confirmed thresholds.
+  assert.match(html, /data-first-level="31"/);
 });
 
 test("News leads with company coverage before earnings and transaction records", () => {
@@ -2843,6 +2851,10 @@ test("selected valuation reference does not inherit the discarded quote stale fl
       selectedEnds: new Map(),
       listeners: new Set(),
       aurynDecision: () => ({ valuation: null, reference }),
+      scenarioResearchInput: (r) =>
+        reference
+          ? { ...r, quote: { ...r.quote, ...reference, stale: false } }
+          : r,
       researchOutlook: (r) => {
         seen.push(r.quote);
         return { available: false, reason: "Unavailable" };

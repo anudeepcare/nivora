@@ -53,7 +53,7 @@ test("Pace chart precedes long interpretation and Indicators opens chart overvie
   const indicators = lenses.slice(lenses.indexOf("export function IndicatorsLens"));
   assert.ok(indicators.indexOf("<IndicatorOverview") >= 0);
   assert.ok(indicators.indexOf("<IndicatorOverview") < indicators.indexOf("<AdvancedResearch"));
-  assert.match(indicators, /MoreEvidence title="Risk, position & research tools"/);
+  assert.doesNotMatch(indicators, /MoreEvidence|<details/);
 
 });
 test("indicator cards render six real charts, dated tables and no invented empty-history chart", async () => {
@@ -74,13 +74,17 @@ test("indicator cards render six real charts, dated tables and no invented empty
       },
     },
   ).outputText;
+  let projectedBusiness = null;
   const mod = { exports: {} };
   new Function("require", "module", "exports", source)(
     (name) => {
       if (name === "react") return React;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "@/lib/indicator-overview") return logic;
-      if (name === "@/lib/business-indicator-overview") return business;
+      if (name === "@/lib/business-indicator-overview") return {
+        ...business,
+        businessIndicatorOverview: research => projectedBusiness ?? business.businessIndicatorOverview(research),
+      };
       if (name === "@/lib/format") return format;
       if (name.endsWith(".module.css"))
         return {
@@ -104,6 +108,28 @@ test("indicator cards render six real charts, dated tables and no invented empty
   assert.equal((html.match(/role="region"/g) || []).length, 6);
   assert.match(html, /About 20-session momentum/);
   assert.match(html, /Apr 10/);
+  const latestDates = [...html.matchAll(/<small class="basis">([\s\S]*?)<\/small>/g)];
+  assert.equal(latestDates.length, 6);
+  for (const [, basis] of latestDates) {
+    assert.match(basis, /Completed session/);
+    assert.match(basis, /<time dateTime="2025-04-10">/);
+    assert.doesNotMatch(basis, /2025-05-01/);
+  }
+  assert.equal((render([]).match(/Observation date unavailable/g) || []).length, 6);
+  assert.doesNotMatch(render([]), /<time/);
+  projectedBusiness = business.businessIndicatorPeriods([
+    {end:"2023-12-31", currency:"USD", basis:"annual", revenue:100, operatingIncome:20, fcf:10, weightedShares:10},
+    {end:"2024-12-31", currency:"USD", basis:"annual", revenue:120, operatingIncome:24, fcf:12, weightedShares:11, filed:"2025-02-10"},
+  ]);
+  const annualHtml = render([]);
+  const annualDates = [...annualHtml.matchAll(/<small class="basis">([\s\S]*?)<\/small>/g)].slice(0,4);
+  assert.equal(annualDates.length,4);
+  for (const [, basis] of annualDates) {
+    assert.match(basis, /Period ended/);
+    assert.match(basis, /<time dateTime="2024-12-31">/);
+    assert.doesNotMatch(basis, /2025-02-10|2025-05-01/);
+  }
+  projectedBusiness = null;
   assert.doesNotMatch(render([]), /<svg/);
   assert.equal(
     (render([]).match(/Insufficient completed history/g) || []).length,

@@ -126,9 +126,12 @@ export default function SentiSensePanels({
         </header>
       )}
       <div className={compact ? s.datasetToolbar : undefined}>
-        <nav className={s.tabs}
-        data-selection-navigation
-        onKeyDown={(event) => navigateSelection(event)} aria-label={`${group} intelligence datasets`}>
+        <nav
+          className={s.tabs}
+          data-selection-navigation
+          onKeyDown={(event) => navigateSelection(event)}
+          aria-label={`${group} intelligence datasets`}
+        >
           {choices.map(([id, label]) => (
             <button
               type="button"
@@ -276,7 +279,8 @@ function Dataset({
           ) : (
             tables
           )}
-          <footer className={s.provenance}>
+          <details className={s.provenance}>
+            <summary>Evidence dates & coverage</summary>
             <span>Source: {result?.source ?? "SentiSense"}</span>
             <span>
               Evidence date {result?.asOf?.slice(0, 10) ?? "not supplied"}
@@ -291,7 +295,7 @@ function Dataset({
                 this view may be a subset
               </span>
             )}
-          </footer>
+          </details>
         </>
       )}
     </div>

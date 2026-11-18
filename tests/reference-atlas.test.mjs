@@ -65,11 +65,51 @@ test("Catalysts uses next scheduled event rather than count of past reports", ()
   assert.equal(m.signals[3].valueLabel, "2026-11-25");
   assert.match(m.signals[3].detail, /scheduled/);
   assert.equal(m.signals[4].value, null);
-  assert.equal(m.signals[4].valueLabel, "Not established");
+  assert.equal(m.signals[4].metricLabel, "INSTITUTIONAL %");
+  assert.match(m.signals[4].detail, /not supplied|unavailable/);
 });
 
 test("Atlas horizon rounds presentation without changing modeled duration", () => {
- assert.equal(atlasHorizonLabel(1.6157771480404086), "1.6 years");
- assert.equal(atlasHorizonLabel(2), "2 years");
- for (const missing of [null, undefined, NaN, Infinity, 0, -1]) assert.equal(atlasHorizonLabel(missing), "");
+  assert.equal(atlasHorizonLabel(1.6157771480404086), "1.6 years");
+  assert.equal(atlasHorizonLabel(2), "2 years");
+  for (const missing of [null, undefined, NaN, Infinity, 0, -1])
+    assert.equal(atlasHorizonLabel(missing), "");
+});
+
+test("ownership node is a reported dated percentage, never a trend score", () => {
+  const r = {
+    ...source,
+    evidence: {
+      ...source.evidence,
+      updatedAt: source.retrievedAt,
+      ownership: { ...source.evidence?.ownership, institutions: 71.25 },
+    },
+  };
+  const signal = referenceAtlas(r).signals[4];
+  assert.equal(signal.value, 71.25);
+  assert.equal(signal.unit, "percent");
+  assert.equal(signal.score, null);
+  assert.match(signal.detail, /not ownership trend or conviction/);
+  assert.equal(
+    referenceAtlas({
+      ...r,
+      evidence: { ...r.evidence, updatedAt: "2099-01-01" },
+    }).signals[4].value,
+    null,
+  );
+});
+test("risk node exposes measured drawdown with an explicit bounded observation period", () => {
+  const risk = referenceAtlas(source).signals[5];
+  assert.equal(risk.metricLabel, "DRAWDOWN");
+  assert.equal(risk.score, null);
+  assert.ok(risk.value <= 0 && risk.value > -100);
+  assert.match(risk.detail, /supplied sessions/);
+  assert.match(
+    risk.detail,
+    /Not maximum historical drawdown or a loss forecast/,
+  );
+  assert.equal(
+    referenceAtlas({ ...source, history: [] }).signals[5].value,
+    null,
+  );
 });

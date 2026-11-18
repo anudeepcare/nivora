@@ -89,6 +89,17 @@ export default function IndicatorOverview({
                   {group.label
                     .replace("Business evidence · ", "")
                     .replace("Market evidence · ", "")}
+                  {" · "}
+                  {last?.date && Number.isFinite(Date.parse(last.date)) ? (
+                    <>
+                      {"currency" in last
+                        ? "Period ended "
+                        : "Completed session "}
+                      <time dateTime={last.date}>{dateLabel(last.date)}</time>
+                    </>
+                  ) : (
+                    "Observation date unavailable"
+                  )}
                 </small>
                 {values.length > 1 ? (
                   <svg

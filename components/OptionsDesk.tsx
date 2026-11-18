@@ -24,6 +24,9 @@ import {
 } from "@/lib/options-analysis";
 import {
   listedExpiries,
+  contractSnapshotRows,
+  replaceChainSnapshot,
+  optionsObservationTime,
   leapsExpiry,
   displayedContracts,
 } from "@/lib/options-presentation";
@@ -174,16 +177,11 @@ export default function OptionsDesk({
           ...data,
           symbol: research.company.symbol,
           loadedExpiry: expiry || null,
-          contracts: [
-            ...new Map(
-              [
-                ...(old?.symbol === research.company.symbol
-                  ? old.contracts
-                  : []),
-                ...data.contracts,
-              ].map((c) => [c.id, c]),
-            ).values(),
-          ],
+          contracts: replaceChainSnapshot(
+            old?.symbol === research.company.symbol ? old.contracts : [],
+            data.contracts,
+            expiry || null,
+          ),
         }));
         setKnownExpiries((old) =>
           listedExpiries(data.contracts, [
@@ -226,15 +224,19 @@ export default function OptionsDesk({
     () => optionsLiquidity(summary.rows, active),
     [summary.rows, active],
   );
+  const displaySnapshot = useMemo(
+    () => contractSnapshotRows(contracts, active),
+    [contracts, active],
+  );
   const filteredRows = useMemo(
     () =>
       displayedContracts(
-        summary.rows,
+        displaySnapshot,
         kind,
         onlyLiquid,
         (c) => liquidity(c).eligible,
       ),
-    [summary.rows, kind, onlyLiquid],
+    [displaySnapshot, kind, onlyLiquid],
   );
   const rows = useMemo(
     () =>
@@ -492,6 +494,17 @@ export default function OptionsDesk({
           </button>
         </p>
       )}
+      {!!contracts.length && chain?.message && (
+        <p className={deskStyles.options_notice}>{chain.message}</p>
+      )}
+      {!!contracts.length && displaySnapshot.some((c) => !c.standard) && (
+        <p className={deskStyles.options_notice}>
+          Reported contract Greeks are available under Calls &amp; puts. Their
+          independent observation time is not supplied. Unverified deliverables
+          are excluded from position sizing, payoff and gamma-exposure
+          calculations.
+        </p>
+      )}
       {busy && (
         <p role="status" className={deskStyles.options_loading}>
           Loading contract prices…
@@ -521,7 +534,7 @@ export default function OptionsDesk({
               {
                 label: "Selected expiration",
                 value: expiryLabel(active),
-                detail: `${days} days · ${summary.rows.length} contracts in this snapshot.`,
+                detail: `${days} days · ${displaySnapshot.length} contracts in this snapshot.`,
               },
               ...(summary.straddle !== null && spot > 0
                 ? [
@@ -548,9 +561,22 @@ export default function OptionsDesk({
           >
             <strong>
               {research.company.symbol}{" "}
-              <span>{spot > 0 ? amount(spot) : "Not priced"}</span>
+              <span>
+                {spot > 0
+                  ? amount(spot, research.quote.currency)
+                  : "Not priced"}
+              </span>
             </strong>
-            <small>Options · {observed}</small>
+            <small>
+              Underlying quote · {optionsObservationTime(research.quote.asOf)} ·{" "}
+              {research.quote.source || "Source not supplied"} ·{" "}
+              {research.quote.session || "Session not supplied"}
+              {research.quote.stale ? " · stale" : ""}
+            </small>
+            <small>
+              Contract observation date · {observed}. The stock header may show
+              a settled close; this workspace uses the research quote above.
+            </small>
             <details className={deskStyles.dataHelp}>
               <summary>Data & definitions</summary>
               <div>
@@ -559,10 +585,8 @@ export default function OptionsDesk({
                   {!chain?.complete &&
                     "Partial chain; totals cover only returned contracts."}{" "}
                   Underlying observation:{" "}
-                  {research.quote.asOf
-                    ? dateLabel(research.quote.asOf)
-                    : "unavailable"}
-                  . Confirm execution prices with your broker.
+                  {optionsObservationTime(research.quote.asOf)}. Confirm
+                  execution prices with your broker.
                 </p>
                 <p>
                   Quote quality · {quoteQuality.twoSided}/
@@ -935,6 +959,9 @@ export default function OptionsDesk({
                             "Open interest",
                             "IV",
                             "Delta",
+                            "Gamma",
+                            "Theta",
+                            "Vega",
                             "Spread",
                             "Explore",
                           ].map((h) => (
@@ -960,6 +987,9 @@ export default function OptionsDesk({
                                   {c.type}
                                 </span>
                                 <small>{expiryLabel(c.expiry)}</small>
+                                {c.quoteObservedAt && (
+                                  <small>Quote {c.quoteObservedAt}</small>
+                                )}
                               </th>
                               <td>{amount(c.strike)}</td>
                               <td>
@@ -967,15 +997,23 @@ export default function OptionsDesk({
                                 {c.ask === null ? "—" : amount(c.ask)}
                               </td>
                               <td>
-                                {c.ask === null ? "—" : amount(c.ask * 100)}
+                                {c.ask === null || !c.standard
+                                  ? "Not verified"
+                                  : amount(c.ask * c.multiplier)}
                               </td>
                               <td>
                                 {c.oi === null ? "Not supplied" : fmt(c.oi, 0)}
+                                {c.oiObservedAt && (
+                                  <small>OI {dateLabel(c.oiObservedAt)}</small>
+                                )}
                               </td>
                               <td>
                                 {c.iv === null ? "—" : fmt(c.iv * 100, 1) + "%"}
                               </td>
                               <td>{fmt(c.delta, 2)}</td>
+                              <td>{fmt(c.gamma, 4)}</td>
+                              <td>{fmt(c.theta, 4)}</td>
+                              <td>{fmt(c.vega, 4)}</td>
                               <td>
                                 {liquidity(c).spread === null
                                   ? "—"

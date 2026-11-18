@@ -62,14 +62,20 @@ export default function TodaySequence({
       </article>
       <article>
         <span>EXPOSURE</span>
-        <h3>
-          {concentration
-            ? `${concentration.symbol} is your largest priced position.`
-            : "Make room for portfolio context."}
-        </h3>
+        {concentration ? (
+          <>
+            <div className={styles.exposureMetric}>
+              {concentration.weight.toFixed(1)}
+              <small>%</small>
+            </div>
+            <h3>{concentration.symbol} · Largest priced position</h3>
+          </>
+        ) : (
+          <h3>Make room for portfolio context.</h3>
+        )}
         <p>
           {concentration
-            ? `${concentration.weight.toFixed(1)}% of the priced portfolio. Review missing quotes and cash before judging concentration; this is not a policy breach alert.`
+            ? "Of the priced portfolio. Review missing quotes and cash before judging concentration; this is not a policy breach alert."
             : "Record your holdings to see portfolio weights alongside your research. Unpriced positions are never treated as zero risk."}
         </p>
         <Link href={`${prefix}/portfolio`}>

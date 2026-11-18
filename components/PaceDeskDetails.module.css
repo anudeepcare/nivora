@@ -1,0 +1,59 @@
+.levels {
+  margin: 10px 0;
+  font-size: 12px;
+}
+.levels summary {
+  cursor: pointer;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+}
+.levels summary::before {
+  content: "+";
+  margin-right: 8px;
+}
+.levels[open] summary::before {
+  content: "−";
+}
+.levels summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.levels dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0;
+}
+.levels dl > div {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.levels dt {
+  color: var(--muted);
+}
+.levels dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.priceBasis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin: 10px 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.priceBasis strong {
+  color: var(--ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.priceBasis small {
+  flex-basis: 100%;
+  font-size: 11px;
+}

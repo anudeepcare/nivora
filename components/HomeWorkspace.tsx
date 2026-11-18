@@ -95,7 +95,7 @@ function EarningsNumbers({
 }
 
 function HomeOverview() {
-  const [radarOpen, setRadarOpen] = useState(false);
+  const [radarOpen, setRadarOpen] = useState(true);
   const state = useWorkspaceData(),
     { workspace, quotes, model, prefix, demo, pace } = state;
   const today = new Date(
@@ -229,6 +229,21 @@ function HomeOverview() {
         />
       </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
+      {!!workspace?.positions.length && (
+        <PortfolioDay
+          positions={workspace.positions}
+          quotes={quotes.data}
+          prefix={prefix}
+          now={today.getTime()}
+        />
+      )}
+      {symbols.length > 0 && <Coverage state={state} />}
+      <HomeMarketCards
+        symbols={symbols}
+        quotes={quotes.data}
+        research={loadedResearch}
+        prefix={prefix}
+      />
       <TodaySequence
         prefix={prefix}
         decision={
@@ -243,26 +258,18 @@ function HomeOverview() {
         headline={headlines[0] ?? null}
         concentration={largest ?? null}
       />
-      {!!workspace?.positions.length && (
-        <PortfolioDay
-          positions={workspace.positions}
-          quotes={quotes.data}
-          prefix={prefix}
-          now={today.getTime()}
-        />
-      )}
-      <ContributionCompare symbols={symbols} prefix={prefix} />
-      <HomeMarketCards
-        symbols={symbols}
-        quotes={quotes.data}
-        research={loadedResearch}
-        prefix={prefix}
-      />
-      <p>
-        <Link className="btn primary" href={`${prefix}/monthly-plan`}>
+      <div className={homeStyles.planRow}>
+        <div>
+          <h2>Your next contribution</h2>
+          <p>
+            Compare the evidence and your position limits before setting a plan.
+          </p>
+        </div>
+        <Link className="btn" href={`${prefix}/monthly-plan`}>
           Build this month’s research plan →
         </Link>
-      </p>
+      </div>
+      <ContributionCompare symbols={symbols} prefix={prefix} />
       <ResearchInbox
         today={day}
         events={feed.data?.events ?? []}
@@ -296,10 +303,10 @@ function HomeOverview() {
       )}
       {symbols.length > 0 && (
         <>
-          <Coverage state={state} />
           <div className="home-evidence-layout">
             <details
               className={`home-evidence-panel ${homeStyles.priceDetails}`}
+              open
             >
               <summary>Followed company prices</summary>
               <Link className="text-link" href={`${prefix}/watchlist`}>

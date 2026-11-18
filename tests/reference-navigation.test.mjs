@@ -49,10 +49,10 @@ test("eight reference lenses preserve all existing evidence sections", () => {
   assert.equal(lensForSection("unknown"), undefined);
 });
 
-test("secondary research tools remain discoverable through desktop More and mobile account tools", async () => {
+test("secondary research tools remain discoverable through account tools without a duplicate More menu", async () => {
   const fs = await import("node:fs");
   const s = fs.readFileSync("components/Shell.tsx", "utf8");
-  assert.match(s, /More research and workspace tools/);
+  assert.doesNotMatch(s, /More research and workspace tools|experience\.moreTrigger/);
   assert.match(s, /More tools and account/);
   for (const path of ["discover", "compare"])
     assert.ok(s.includes('path: "' + path + '"'));

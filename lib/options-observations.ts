@@ -39,7 +39,10 @@ export function optionObservations(
         return [];
       const raw = r[metric];
       const value =
-        typeof raw === "number" && Number.isFinite(raw) && raw >= 0
+        typeof raw === "number" &&
+        Number.isFinite(raw) &&
+        raw >= 0 &&
+        Number.isFinite(raw * optionObservationMetrics[metric].scale)
           ? raw * optionObservationMetrics[metric].scale
           : null;
       return [
@@ -65,4 +68,16 @@ export function optionObservations(
     ),
     missing: input.length - unique.filter((p) => p.value !== null).length,
   };
+}
+
+/** Prefer a populated metric only until the person explicitly chooses one. */
+export function defaultOptionMetric(
+  data: unknown,
+  intraday: boolean,
+): OptionObservationMetric {
+  return (
+    (Object.keys(optionObservationMetrics) as OptionObservationMetric[]).find(
+      (metric) => optionObservations(data, intraday, metric).points.length > 0,
+    ) ?? "atmIv"
+  );
 }

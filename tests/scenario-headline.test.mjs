@@ -6,7 +6,7 @@ import { universe } from "./helpers/market-universe.mjs";
 
 const market = universe(8);
 const pick = (kind) => market.find((m) => m.kind === kind).research;
-test("supplied analyst range leads; otherwise consensus with a historical bear and bull; otherwise named history", () => {
+test("supplied complete analyst range leads; a target without bounds never replaces the historical base", () => {
   const full = scenarioHeadline(pick("analyst-full"));
   assert.equal(full.source, "analyst");
   assert.ok(full.bear < full.base && full.base < full.bull);
@@ -19,8 +19,8 @@ test("supplied analyst range leads; otherwise consensus with a historical bear a
     ...r,
     evidence: { ...r.evidence, consensus: { target: mid } },
   });
-  assert.equal(h.source, "analyst-history");
-  assert.equal(h.base, mid);
+  assert.equal(h.source, "history");
+  assert.equal(h.base, plain.base);
   assert.equal(h.bear, plain.bear);
   assert.equal(h.bull, plain.bull);
   assert.ok(
@@ -159,11 +159,9 @@ test("historical scenario headlines identify volatility, not expected forecasts"
       consensus: { target: (plain.base + plain.bull) / 2 },
     },
   });
-  assert.equal(
-    combined.eyebrow,
-    "Analyst consensus with a one-year volatility range",
-  );
-  assert.match(combined.detail, /Not AURYN fair value or a forecast/);
+  assert.equal(combined.eyebrow, "One-year volatility range");
+  assert.equal(combined.base, plain.base);
+  assert.match(combined.detail, /Not fair value or a forecast/);
   assert.equal(combined.bear, plain.bear);
   assert.equal(combined.bull, plain.bull);
 });

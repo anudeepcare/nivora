@@ -26,26 +26,12 @@
 }
 .supporting {
   margin-top: 20px;
-  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
 }
-.more {
+.supporting > * {
   min-width: 0;
-  border-bottom: 1px solid var(--line);
-}
-.more > summary {
-  min-height: 48px;
-  padding: 14px 0;
-  cursor: pointer;
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 500;
-}
-.more > summary:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 3px;
-}
-.more[open] {
-  padding-bottom: 16px;
 }
 .events.events {
   padding: 0;

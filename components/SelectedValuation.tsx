@@ -5,6 +5,7 @@ import type { Research } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
 import { amount, dateLabel, percent } from "@/lib/format";
 import { researchOutlook } from "@/lib/outlook";
+import { scenarioResearchInput } from "@/lib/scenario-reference";
 import { priceRiskScenarios } from "@/lib/price-risk-scenarios";
 import PriceRiskCases from "./PriceRiskCases";
 import s from "./SelectedValuation.module.css";
@@ -41,23 +42,7 @@ export default function SelectedValuation({
       aurynDecision(r, { now: Date.parse(r.priceObservedAt ?? r.retrievedAt) }),
     [r],
   );
-  const input = useMemo(
-    () =>
-      d.reference
-        ? {
-            ...r,
-            quote: {
-              ...r.quote,
-              price: d.reference.price,
-              asOf: d.reference.asOf,
-              currency: d.reference.currency,
-              // This usable reference was selected independently of the discarded quote.
-              stale: false,
-            },
-          }
-        : r,
-    [r, d.reference],
-  );
+  const input = useMemo(() => scenarioResearchInput(r), [r]);
   const { access } = useAccess();
   const key = r.company.symbol;
   const [fundingOpen, setFundingOpen] = useState(false);

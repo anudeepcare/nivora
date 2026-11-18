@@ -6,7 +6,7 @@ const source = readFileSync(
   "utf8",
 );
 test("portfolio reference hierarchy preserves real positions and transaction controls", () => {
-  assert.match(source, /Where conviction and exposure disagree/);
+  assert.match(source, /title="Portfolio"/);
   assert.match(source, /Record transaction/);
   assert.match(source, /Columns & metrics/);
   assert.match(source, /role="region"/);

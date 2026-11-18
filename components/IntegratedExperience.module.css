@@ -1523,3 +1523,40 @@
   display: grid;
   gap: 14px;
 }
+
+/* Research identity and quote must shrink within a narrow viewport. */
+.stockIdentity {
+  min-width: 0;
+}
+.stockIdentity > div {
+  min-width: 0;
+}
+.stockIdentity h1 {
+  overflow-wrap: anywhere;
+}
+.stockPrice {
+  min-width: 0;
+}
+.stockPrice > div {
+  min-width: 0;
+}
+.stockPrice :global(.data-stamp) {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 430px) {
+  .stockHeader {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .stockIdentity {
+    width: 100%;
+    gap: 8px;
+  }
+  .stockIdentity h1 {
+    font-size: 19px;
+  }
+  .stockPrice strong {
+    font-size: 23px;
+  }
+}

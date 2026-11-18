@@ -30,7 +30,7 @@ function load() {
     HttpError,
     alpacaOptions: async () => {
       calls++;
-      throw Error("Forbidden");
+      return { contracts: [], complete: false, status: "available" };
     },
     eodRequest: async () => {
       calls++;
@@ -45,14 +45,14 @@ function load() {
     calls: () => calls,
   };
 }
-test("legacy enable/provider flags never authorize Alpaca or Marketplace option-chain calls", async () => {
+test("only explicitly enabled existing Alpaca selection runs; Marketplace never auto-enabled", async () => {
   const old = {
     enabled: process.env.AURYN_OPTIONS_ENABLED,
     provider: process.env.AURYN_OPTIONS_PROVIDER,
   };
   try {
     process.env.AURYN_OPTIONS_ENABLED = "true";
-    for (const provider of ["alpaca", "eodhd", "unicornbay", ""]) {
+    for (const provider of ["eodhd", "unicornbay"]) {
       process.env.AURYN_OPTIONS_PROVIDER = provider;
       const h = load();
       const result = await h.read("AAPL", null);
@@ -62,6 +62,14 @@ test("legacy enable/provider flags never authorize Alpaca or Marketplace option-
       assert.match(result.message, /Company positioning/);
       assert.equal(h.calls(), 0);
     }
+    process.env.AURYN_OPTIONS_PROVIDER = "alpaca";
+    const allowed = load();
+    assert.equal((await allowed.read("AAPL", null)).status, "available");
+    assert.equal(allowed.calls(), 1);
+    process.env.AURYN_OPTIONS_ENABLED = "false";
+    const denied = load();
+    assert.equal((await denied.read("AAPL", null)).status, "unavailable");
+    assert.equal(denied.calls(), 0);
   } finally {
     for (const [key, value] of [
       ["AURYN_OPTIONS_ENABLED", old.enabled],

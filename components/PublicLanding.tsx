@@ -773,6 +773,7 @@ export default function PublicLanding({
       {sampleOnly && <ProductWalkthrough />}
       <section
         className={landing.referenceStory}
+        id="how-it-works"
         aria-labelledby="reference-story-title"
       >
         <span className={landing.eyebrow}>
@@ -785,61 +786,6 @@ export default function PublicLanding({
           Five connected views. Open the evidence behind each conclusion.
         </p>
         {sampleOnly ? <InvestmentDemo /> : <ReferenceProductTour />}
-      </section>
-
-      <section
-        className={`${landing.workflow} ap-container`}
-        id="how-it-works"
-        aria-labelledby="ap-workflow-heading"
-      >
-        <div className={landing.workflowHeading}>
-          <span className={landing.eyebrow}>PUT YOUR RESEARCH TO WORK</span>
-          <h2 id="ap-workflow-heading">
-            Three questions before every contribution.
-          </h2>
-          <p>Move from an interesting company to a decision you can explain.</p>
-        </div>
-        <div className={landing.workflowRows}>
-          <article>
-            <span>
-              <Layers3 size={21} aria-hidden="true" />
-              01 / COMPARE
-            </span>
-            <div>
-              <h3>Is the business strong?</h3>
-              <p>
-                Read revenue, margins and cash generation together. Check
-                funding and risks in the same report.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>
-              <Scale size={21} aria-hidden="true" />
-              02 / CHALLENGE
-            </span>
-            <div>
-              <h3>What does the price assume?</h3>
-              <p>
-                Turn the price into the earnings it would require. Adjust the
-                horizon and future multiple to test your assumptions.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>
-              <ChartNoAxesCombined size={21} aria-hidden="true" />
-              03 / SEPARATE
-            </span>
-            <div>
-              <h3>Is this a sensible time to add?</h3>
-              <p>
-                Use five price zones after business checks. Plan contributions
-                within your budget and position limits.
-              </p>
-            </div>
-          </article>
-        </div>
       </section>
 
       <section

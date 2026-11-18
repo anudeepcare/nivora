@@ -163,7 +163,7 @@ test("user-facing market errors are neutral while source provenance is retained"
   assert.match(source, /source: "EODHD"/);
 });
 test("market overview keeps stock and ETF boards distinct with source units", () => {
-  let states = ["stocks"],
+  let states = ["stocks", ""],
     index = 0;
   const rows = [];
   const View = load(
@@ -172,6 +172,7 @@ test("market overview keeps stock and ETF boards distinct with source units", ()
     {
       React,
       Link: ({ children, ...p }) => React.createElement("a", p, children),
+      picker: {},
       s: {},
       useState: () => [states[index++], () => {}],
       useResource: () => ({
@@ -195,11 +196,26 @@ test("market overview keeps stock and ETF boards distinct with source units", ()
   assert.equal(rows[0].cells[0].value, "25.00%");
   assert.equal(rows[0].cells[1].value, "0.00×");
   assert.ok(!rows.some((r) => r.label === "QQQ"));
-  states = ["funds"];
+  states = ["funds", ""];
   index = 0;
   rows.length = 0;
   renderToStaticMarkup(React.createElement(View));
   assert.equal(rows[0].label, "QQQ");
+  states = ["stocks", "missing"];
+  index = 0;
+  rows.length = 0;
+  const empty = renderToStaticMarkup(React.createElement(View));
+  assert.equal(rows.length, 0);
+  assert.match(empty, /No instruments match/);
+  assert.match(empty, /Search covered instruments/);
+  states = ["stocks", "  aaPl  "];
+  index = 0;
+  rows.length = 0;
+  const matched = renderToStaticMarkup(React.createElement(View));
+  assert.equal(rows[0].label, "AAPL");
+  assert.match(matched, /href="\/research\/AAPL\?tab=Options"/);
+  assert.match(matched, /aria-label="Open AAPL options research"/);
+  assert.match(matched, /aria-label="Covered instrument links" tabindex="0"/);
 });
 test("ETF holdings only requests its endpoint after composition is opened", () => {
   let state = [false, ""],
@@ -270,4 +286,81 @@ test("large fund holdings render in bounded batches without additional requests"
   index = 0;
   renderToStaticMarkup(View({ symbol: "QQQ" }));
   assert.equal(rendered.at(-1), 100);
+});
+
+test("Scenarios analyst source fallback appears only when the primary stock dataset is unavailable", () => {
+  let available = false;
+  const View = load(
+    "components/SentiSenseConsensus.tsx",
+    "SentiSenseConsensus",
+    {
+      React,
+      EtfComposition: () => null,
+      Help: () => null,
+      s: {},
+      layout: {},
+      dateLabel: (v) => v ?? "",
+      consensusTarget: (v, c) => `${c ?? "unknown"} ${v}`,
+      useResource: (key) => ({
+        loading: false,
+        data: key?.includes("profile")
+          ? { status: "available", data: { kind: "STOCK" } }
+          : available
+            ? {
+                status: "available",
+                asOf: "2026-11-17",
+                retrievedAt: "2026-11-17",
+                data: {
+                  targetLow: 80,
+                  targetMean: 100,
+                  targetHigh: 120,
+                  numberOfAnalysts: 12,
+                  currency: "USD",
+                },
+              }
+            : { status: "unavailable", data: null },
+      }),
+    },
+  );
+  const render = () =>
+    renderToStaticMarkup(
+      React.createElement(View, {
+        symbol: "TEST",
+        preview: false,
+        fallback: React.createElement("p", null, "Alternate evidence"),
+      }),
+    );
+  assert.match(render(), /Alternate evidence/);
+  assert.match(render(), /not merged/);
+  available = true;
+  const html = render();
+  assert.doesNotMatch(html, /Alternate evidence/);
+  for (const value of ["USD 80", "USD 100", "USD 120", "12", "2026-11-17"])
+    assert.ok(html.includes(value));
+});
+
+test('failed analyst evidence has explicit scoped retry without bypassing classification',()=>{
+ for(const kind of [null,'STOCK','ETF']){
+  const refreshed=[]; const requested=[];
+  const View=load('components/SentiSenseConsensus.tsx','SentiSenseConsensus',{
+   React,EtfComposition:()=>null,s:{},layout:{},dateLabel:v=>v,
+   useResource:key=>{
+    requested.push(key);
+    return {loading:false,error:key?.includes('profile')&&kind?null:'Temporary outage',
+     data:key?.includes('profile')&&kind?{status:'available',data:{kind}}:undefined,
+     refresh:()=>refreshed.push(key)};
+   },
+  });
+  const tree=View({symbol:'TEST',preview:false,fallback:React.createElement('p',null,'Alternate dated evidence')});
+  const buttons=[];
+  function walk(n){if(!n||typeof n!=='object')return;if(n.type==='button')buttons.push(n);React.Children.forEach(n.props?.children,walk);}
+  walk(tree);
+  const retry=buttons.find(n=>String(n.props.children).startsWith('Retry'));
+  assert.ok(retry,'failed '+(kind??'classification')+' exposes retry');
+  assert.equal(refreshed.length,0,'no automatic retry loop');
+  retry.props.onClick();
+  assert.equal(refreshed.length,1);
+  assert.match(refreshed[0],new RegExp('dataset='+(kind===null?'profile':kind==='ETF'?'etfAnalyst':'consensus')));
+  if(kind===null)assert.equal(requested[1],null,'unknown identity cannot request targets');
+ }
 });

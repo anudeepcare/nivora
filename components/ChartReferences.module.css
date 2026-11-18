@@ -63,3 +63,21 @@
   cursor: pointer;
   padding: 6px 0;
 }
+
+/* One swipeable phone toolbar rather than multiple rows above the plot. */
+@media (max-width: 600px) {
+  .tools.tools {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    padding-block: 4px;
+    scrollbar-width: thin;
+  }
+  .tools.tools > * { flex-shrink: 0; }
+  .tools.tools > button { min-height: 44px; white-space: nowrap; }
+  .tools.tools :global(.segments) { flex-wrap: nowrap; }
+  .tools.tools :global(.segments) button { min-height: 44px; }
+  .references { gap: 6px 12px; }
+  .references > span { padding: 2px 0; background: transparent; font-size: 11px; white-space: normal; }
+  .referenceDetails summary { min-height: 44px; align-content: center; }
+}

@@ -12,7 +12,7 @@ const props = (file, selector) => {
 };
 test("Today priorities share a single desktop row and retain natural height and mobile stacking", () => {
   const css = read("components/TodaySequence.module.css");
-  assert.match(css, /grid-template-columns: 1\.2fr 1fr 1fr/);
+  assert.match(css, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.doesNotMatch(css, /grid-row: 1\/3/);
   assert.match(css, /flex-direction: column/);
   assert.equal(

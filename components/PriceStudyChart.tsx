@@ -111,10 +111,11 @@ export default function PriceStudyChart({
         range={range}
         style={style}
         contrast={contrast}
+        compactLevelTitles={!overlay}
         levels={overlay ? levels : showReferences ? references : []}
       />
       {!overlay && references.length > 0 && (
-        <details className={s.referenceDetails}>
+        <details className={s.referenceDetails} open>
           <summary>Reference prices</summary>
           <div className={s.references} aria-label="Chart references">
             {references.map((row) => (

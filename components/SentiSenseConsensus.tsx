@@ -5,6 +5,8 @@ import EtfComposition from "./EtfComposition";
 import type { SentiSenseResult } from "@/lib/sentisense-api";
 import { useResource } from "./Session";
 import { dateLabel } from "@/lib/format";
+import { Help } from "./Ui";
+import type { ReactNode } from "react";
 import s from "./ResearchWorkspace.module.css";
 const value = (v: unknown) =>
   typeof v === "number" && Number.isFinite(v)
@@ -14,9 +16,11 @@ const value = (v: unknown) =>
 export default function SentiSenseConsensus({
   symbol,
   preview,
+  fallback,
 }: {
   symbol: string;
   preview: boolean;
+  fallback?: ReactNode;
 }) {
   const profile = useResource<SentiSenseResult>(
     preview
@@ -40,11 +44,18 @@ export default function SentiSenseConsensus({
   if (preview) return null;
   if (!classified)
     return (
-      <p role="status">
-        {profile.loading
-          ? "Checking instrument type…"
-          : "Instrument type is not confirmed. Analyst evidence is withheld rather than treating a fund as a company."}
-      </p>
+      <div>
+        <p role="status">
+          {profile.loading
+            ? "Checking instrument type…"
+            : "Instrument type is not confirmed. Analyst evidence is withheld rather than treating a fund as a company."}
+        </p>
+        {!profile.loading && (
+          <button type="button" className="button" onClick={profile.refresh}>
+            Retry instrument check
+          </button>
+        )}
+      </div>
     );
   const result = r.data;
   const data =
@@ -125,20 +136,33 @@ export default function SentiSenseConsensus({
             </p>
           </>
         )}
+        {!r.loading && (r.error || !available || !aggregate) && (
+          <button type="button" className="button" onClick={r.refresh}>
+            Retry constituent evidence
+          </button>
+        )}
         <EtfComposition symbol={symbol} />
       </section>
     );
   }
   return (
     <section className={s.workspace} aria-label="Analyst consensus">
-      <h3>Analyst perspective</h3>
+      <h3>Analyst target range</h3>
       <p className={s.caption}>
         Provider consensus is separate from AURYN’s calculated scenarios.
       </p>
       {r.loading ? (
         <p role="status">Loading analyst coverage…</p>
-      ) : r.error ? (
+      ) : r.error && !fallback ? (
         <p role="status">{r.error}</p>
+      ) : (r.error || !available || !data) && fallback ? (
+        <div>
+          <p className={s.caption}>
+            Primary analyst coverage is unavailable. The separately dated
+            alternate source below is not merged with it.
+          </p>
+          {fallback}
+        </div>
       ) : !available || !data ? (
         <p role="status">
           Analyst coverage is{" "}
@@ -171,13 +195,23 @@ export default function SentiSenseConsensus({
             ))}
           </div>
           <p className={s.caption}>
-            Target publishers: {value(data.numberOfAnalysts)}. Source:
-            SentiSense analyst consensus. Targets are opinions, not live prices.
-            Evidence date:{" "}
+            Target publishers: {value(data.numberOfAnalysts)}. Targets are
+            opinions, not live prices. Evidence date:{" "}
             {result?.asOf ? dateLabel(result.asOf) : "not supplied"}. Retrieved{" "}
             {dateLabel(result?.retrievedAt)}.
+            <Help label="Analyst range source and comparability">
+              SentiSense analyst consensus. Compare low, mean and high only with
+              the same provider cohort, evidence date and target currency. AURYN
+              conditional models and historical price ranges are different
+              measures; matching another service is not established.
+            </Help>
           </p>
         </>
+      )}
+      {!r.loading && (r.error || !available || !data) && (
+        <button type="button" className="button" onClick={r.refresh}>
+          Retry analyst evidence
+        </button>
       )}
     </section>
   );

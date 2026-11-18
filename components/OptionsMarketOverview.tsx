@@ -5,6 +5,7 @@ import { useResource } from "./Session";
 import type { SentiSenseResult } from "@/lib/sentisense-api";
 import IntelligenceTable from "./IntelligenceTable";
 import s from "./SentiSensePanels.module.css";
+import picker from "./OptionsMarketOverview.module.css";
 const finite = (v: unknown, percent = false) =>
   typeof v === "number" && Number.isFinite(v)
     ? `${(v * (percent ? 100 : 1)).toFixed(2)}${percent ? "%" : "×"}`
@@ -15,6 +16,7 @@ export default function OptionsMarketOverview({
   preview?: boolean;
 }) {
   const [board, setBoard] = useState("stocks");
+  const [query, setQuery] = useState("");
   const resource = useResource<SentiSenseResult>(
     !preview ? "options-overview" : null,
     undefined,
@@ -28,6 +30,16 @@ export default function OptionsMarketOverview({
     etfRows?: Record<string, unknown>[];
   } | null;
   const records = (board === "stocks" ? data?.rows : data?.etfRows) ?? [];
+  const visible = records.filter(
+    (record) =>
+      typeof record.ticker === "string" &&
+      record.ticker.toLowerCase().includes(query.trim().toLowerCase()),
+  );
+  const instruments = [
+    ...new Set(visible.map((record) => String(record.ticker))),
+  ]
+    .filter((ticker) => /^[A-Z0-9.\-]+$/.test(ticker))
+    .sort();
   return (
     <section className={s.optionsPanel}>
       <header className={s.header}>
@@ -70,9 +82,25 @@ export default function OptionsMarketOverview({
                 ? "Limited preview; absent symbols do not establish noncoverage."
                 : ""}
             </p>
+            <label className={picker.search}>
+              Search covered instruments
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Ticker, e.g. AAPL"
+              />
+            </label>
+            <p role="status">
+              {visible.length} of {records.length} observations shown. Select a
+              ticker below to open its options research.
+            </p>
+            {visible.length === 0 && (
+              <p>No instruments match “{query}”. Try another ticker.</p>
+            )}
             <IntelligenceTable
               title={`${board} options observations`}
-              rows={records
+              rows={visible
                 .filter((r) => typeof r.ticker === "string")
                 .map((r) => ({
                   label: String(r.ticker),
@@ -88,28 +116,32 @@ export default function OptionsMarketOverview({
                   ],
                 }))}
             />
-            <details>
-              <summary>Open a covered instrument</summary>
+            <section
+              aria-label="Open a covered instrument"
+              className={picker.picker}
+            >
+              <h4>Open a covered instrument</h4>
               <div
-                className={s.tabs}
-                style={{ maxHeight: 240, overflow: "auto", flexWrap: "wrap" }}
+                role="region"
+                aria-label="Covered instrument links"
+                tabIndex={0}
+                className={picker.scroll}
               >
-                {records
-                  .filter(
-                    (r) =>
-                      typeof r.ticker === "string" &&
-                      /^[A-Z0-9.\-]+$/.test(r.ticker),
-                  )
-                  .map((r) => (
-                    <Link
-                      key={String(r.ticker)}
-                      href={`/research/${encodeURIComponent(String(r.ticker))}?tab=Options`}
-                    >
-                      {String(r.ticker)}
-                    </Link>
+                <ul className={picker.list}>
+                  {instruments.map((ticker) => (
+                    <li key={ticker}>
+                      <Link
+                        href={`/research/${encodeURIComponent(ticker)}?tab=Options`}
+                        aria-label={`Open ${ticker} options research`}
+                      >
+                        {ticker}
+                        <span aria-hidden="true">↗</span>
+                      </Link>
+                    </li>
                   ))}
+                </ul>
               </div>
-            </details>
+            </section>
           </>
         )}
       </>

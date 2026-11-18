@@ -84,7 +84,9 @@ test("Pace preserves readings, chart, levels and historical tools with rules con
   const s = fs.readFileSync("components/AccumulationDesk.tsx", "utf8");
   for (const component of ["PaceReadings", "PriceChart", "PaceHistoryInsights"])
     assert.match(s, new RegExp("<" + component + "[ \\n]"));
-  assert.match(s, /candidate-levels/);
+  assert.match(s, /<details className=\{detail.levels\}>/);
+  assert.match(s, /<summary>Conditional zone prices<\/summary>/);
+  assert.match(s, /amount\(l.price, r.quote.currency\)/);
   assert.match(s, /View legacy-policy backtest/);
   const summary = s.slice(
     s.indexOf('<div className="accumulation-summary">'),
@@ -121,7 +123,53 @@ test("Options, analyst sources and Business retain default evidence and unique s
   for (const name of ["Financials", "BusinessHistory", "FinancingContext"])
     assert.match(business, new RegExp("<" + name + "[ \\n]"));
   assert.ok(
-    business.indexOf("Financial statements") <
-      business.indexOf("Operating history"),
+    business.indexOf("<Financials") < business.indexOf("Operating history"),
+  );
+});
+
+test("optional market tools mount neither dataset until explicit selection", () => {
+  let state;
+  const hooks = {
+    useId: () => "optional",
+    useState: (value) => [
+      state === undefined ? (state = value) : state,
+      (value) => {
+        state = value;
+      },
+    ],
+  };
+  const mod = { exports: {} };
+  const code = ts.transpileModule(
+    fs.readFileSync("components/ResearchWorkspace.tsx", "utf8"),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.ReactJSX,
+        module: ts.ModuleKind.CommonJS,
+      },
+    },
+  ).outputText;
+  new Function("require", "module", "exports", code)(
+    (name) => (name === "react" ? hooks : jsx),
+    mod,
+    mod.exports,
+  );
+  const views = [
+    { title: "Market", content: "market-dataset" },
+    { title: "Practice", content: "practice-tool" },
+  ];
+  const render = () =>
+    mod.exports.default({
+      label: "Optional tools",
+      views,
+      initialSelection: -1,
+    });
+  let tree = render();
+  assert.equal(tree.props.children[1].props.children, undefined);
+  tree.props.children[0].props.children[0].props.onClick();
+  tree = render();
+  assert.equal(tree.props.children[1].props.children, "market-dataset");
+  assert.match(
+    fs.readFileSync("components/Research.tsx", "utf8"),
+    /label="Additional options tools"\s+initialSelection=\{-1\}/,
   );
 });

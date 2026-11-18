@@ -191,11 +191,23 @@
   gap: 10px;
 }
 .auth .main :global(.mp-social-button) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
   min-height: 45px;
   border-radius: 8px;
   background: var(--bg);
   color: var(--ink);
   border: 1px solid var(--line);
+}
+/* Self-contained icon sizing: do not depend on optional legacy panel CSS. */
+.auth .main :global(.mp-social-button) > svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
 }
 .auth .main :global(.mp-form-divider) {
   margin: 22px 0;

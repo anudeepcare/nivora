@@ -17,6 +17,8 @@ type History = {
 };
 export default function AccountHistory() {
   const controller = useRef<AbortController | null>(null);
+  const chartRef = useRef<HTMLDivElement | null>(null);
+  const [chartWidth, setChartWidth] = useState(800);
   useEffect(() => () => controller.current?.abort(), []);
   const [progress, setProgress] = useState("");
   const [inspection, setInspection] = useState<number | null>(null);
@@ -28,7 +30,36 @@ export default function AccountHistory() {
       revision: number;
       rows: Transaction[];
     } | null>(null);
+  const [restoring, setRestoring] = useState(true);
+  const [restoreNotice, setRestoreNotice] = useState("");
+  useEffect(() => {
+    const abort = new AbortController();
+    controller.current = abort;
+    api<{ result: History | null }>(
+      "account-history/jobs",
+      undefined,
+      abort.signal,
+    )
+      .then((saved) => {
+        if (!abort.signal.aborted) setResult(saved.result);
+      })
+      .catch((error) => {
+        if (!abort.signal.aborted)
+          setRestoreNotice(
+            error instanceof Error
+              ? error.message
+              : "Saved comparison could not be loaded.",
+          );
+      })
+      .finally(() => {
+        if (!abort.signal.aborted) setRestoring(false);
+      });
+    return () => abort.abort();
+  }, []);
   async function review() {
+    controller.current?.abort();
+    setRestoring(false);
+    setRestoreNotice("");
     setInspection(null);
     setConfirmed(false);
     setReviewed(null);
@@ -120,11 +151,21 @@ export default function AccountHistory() {
     low = Math.min(0, ...values),
     high = Math.max(1, ...values),
     span = high - low || 1;
+  useEffect(() => {
+    const node = chartRef.current;
+    if (!node || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry.contentRect.width > 0)
+        setChartWidth(Math.max(200, entry.contentRect.width));
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [points.length]);
   const x = (date: string) =>
     64 +
     ((Date.parse(date) - Date.parse(points[0].date)) /
       Math.max(86400000, Date.parse(last!.date) - Date.parse(points[0].date))) *
-      696;
+      (chartWidth - 84);
   const line = (key: "equity" | "netContributions") =>
     points
       .map((p) => `${x(p.date)},${180 - ((p[key] - low) / span) * 160}`)
@@ -132,17 +173,40 @@ export default function AccountHistory() {
   return (
     <div className={styles.history}>
       <p className={styles.intro}>
-        Reconstruct account equity from your saved transactions, cash flows and
-        dated closing prices. No current-holdings backcast.
+        Track account value and net contributions against S&amp;P 500 (SPY) and
+        Nasdaq-100 (QQQ), using the same dated deposits and withdrawals.
+        Benchmarks are hypothetical balances, not percentage returns.{" "}
+        {"No current-holdings backcast."}
       </p>
       <div className={styles.actions}>
         <button className="btn" disabled={busy} onClick={review}>
-          Load saved ledger for review
+          {result
+            ? "Review ledger & rebuild"
+            : "Review ledger to build comparison"}
         </button>
         <span className={styles.scope}>
-          USD · Up to 50 US instruments · 1-year inception ledger
+          Complete USD ledger · up to 50 US-listed instruments · from inception,
+          up to 1 year
         </span>
       </div>
+      {restoring && (
+        <p role="status" className={styles.scope}>
+          Checking for your saved comparison…
+        </p>
+      )}
+      {restoreNotice && (
+        <p role="status" className={styles.scope}>
+          {restoreNotice}
+        </p>
+      )}
+      {!result && !reviewed && !restoring && (
+        <p className={styles.scope}>
+          Positions alone cannot show actual account performance. Review the
+          saved ledger, confirm it is complete, then build the chart. Crypto and
+          non-US instruments are not supported; unsupported or incomplete
+          accounts are not shown as partial portfolios.
+        </p>
+      )}
       {progress && <p role="status">{progress}</p>}
       {reviewed && (
         <details open>
@@ -225,6 +289,44 @@ export default function AccountHistory() {
       </p>
       {error && <p role="alert">{error}</p>}
       {result && <p role="status">{result.reason}</p>}
+      {result && (
+        <div
+          className={styles.comparisonSummary}
+          aria-label="Market comparison results"
+        >
+          {(["SPY", "QQQ"] as const).map((symbol) => {
+            const benchmark = result.benchmarks?.find(
+              (b) => b.symbol === symbol,
+            );
+            const end =
+              benchmark?.status === "available"
+                ? benchmark.points.find((point) => point.date === last?.date)
+                : undefined;
+            return (
+              <div key={symbol}>
+                <h3>
+                  {symbol === "SPY" ? "S&P 500 (SPY)" : "Nasdaq-100 (QQQ)"}
+                </h3>
+                {end && last ? (
+                  <>
+                    <strong>{amount(end.value)}</strong>
+                    <small>Hypothetical balance · {end.date}</small>
+                    <p>
+                      Account minus benchmark: {amount(last.equity - end.value)}
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    {benchmark?.status === "unavailable"
+                      ? benchmark.reason
+                      : "No comparison result supplied. Build complete account history to compare."}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
       {last && (
         <>
           <p>
@@ -232,25 +334,41 @@ export default function AccountHistory() {
             {amount(last.netContributions)} net contributions ·{" "}
             {amount(last.gain)} gain/loss · through {last.date}
           </p>
-          <div className={styles.chart}>
+          <div className={styles.legend} aria-label="Chart series">
+            <span data-series="equity">Account value</span>
+            <span data-series="contributions">Net contributions</span>
+            {benchmarks.map((b) => (
+              <span key={b.symbol} data-series={b.symbol}>
+                {b.symbol === "SPY" ? "S&P 500 (SPY)" : "Nasdaq-100 (QQQ)"} ·
+                hypothetical
+              </span>
+            ))}
+          </div>
+          <div className={styles.chart} ref={chartRef}>
             <svg
-              viewBox="0 0 800 210"
+              viewBox={`0 0 ${chartWidth} 210`}
               role="img"
               aria-label={`Account equity and net contributions from ${points[0].date} to ${last.date}`}
               style={{ width: "100%", maxHeight: 260 }}
             >
               <text x="60" y="20" textAnchor="end">
-                {amount(high)}
+                {amount(high, "USD", true)}
               </text>
               <text x="60" y="180" textAnchor="end">
-                {amount(low)}
+                {amount(low, "USD", true)}
               </text>
-              <line x1="64" x2="760" y1="180" y2="180" stroke="var(--border)" />
+              <line
+                x1="64"
+                x2={chartWidth - 20}
+                y1="180"
+                y2="180"
+                stroke="var(--border)"
+              />
               <text x="64" y="204">
                 {points[0].date}
               </text>
               {points.length > 1 && (
-                <text x="760" y="204" textAnchor="end">
+                <text x={chartWidth - 20} y="204" textAnchor="end">
                   {last.date}
                 </text>
               )}

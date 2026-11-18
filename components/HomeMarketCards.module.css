@@ -321,11 +321,7 @@
 }
 
 .card {
-  background: linear-gradient(
-    140deg,
-    color-mix(in srgb, var(--company-accent, #527cb8) 12%, var(--card)),
-    color-mix(in srgb, var(--company-accent, #527cb8) 3%, var(--card))
-  );
+  background: var(--card);
   --muted: color-mix(in srgb, var(--ink) 80%, var(--card));
   color: var(--ink);
   border: 0;
@@ -385,11 +381,7 @@
   opacity: 1;
 }
 :global(html[data-theme="dark"]) .card {
-  background: linear-gradient(
-    140deg,
-    color-mix(in srgb, var(--company-accent, #527cb8) 16%, var(--card)),
-    color-mix(in srgb, var(--company-accent, #527cb8) 5%, var(--card))
-  );
+  background: var(--card);
 }
 .historyLabel {
   min-height: 38px;
@@ -464,4 +456,12 @@
     grid-column: 1/-1;
     margin-top: 6px;
   }
+}
+
+/* Keep chart labels, quotes and touch targets legible on all phone widths. */
+@media (max-width: 430px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .card { padding: 16px; }
+  .company h3 { white-space: normal; overflow-wrap: anywhere; }
+  .open { min-width: 44px; height: 44px; }
 }

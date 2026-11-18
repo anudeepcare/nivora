@@ -21,7 +21,7 @@
 }
 .stage {
   display: grid;
-  grid-template-columns: 0.88fr 1.2fr 0.72fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   min-height: 400px;
   border: 1px solid var(--atlas-line);
   border-radius: 14px;
@@ -161,7 +161,7 @@
   display: grid;
   place-items: center;
   height: 42px;
-  font: 500 18px var(--font-mono, monospace);
+  font: 500 11px var(--font-mono, monospace);
   color: var(--atlas-ink);
 }
 .orbitButtons button small {
@@ -212,7 +212,7 @@
 }
 .action > strong {
   display: block;
-  font: 500 48px/1 var(--font-mono, monospace);
+  font: 500 36px/1 var(--font-mono, monospace);
   letter-spacing: -4px;
   color: var(--atlas-cyan);
   margin: 20px 0 14px;
@@ -245,9 +245,9 @@
   width: 100%;
   min-height: 44px;
   padding: 10px;
-  border: 1px solid #79eadc;
-  color: #071312;
-  background: #79eadc;
+  border: 1px solid var(--atlas-line);
+  color: var(--atlas-ink);
+  background: var(--atlas-panel);
   border-radius: 7px;
   font-size: 11px;
   font-weight: 600;
@@ -262,7 +262,7 @@
 }
 .tape {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   border: 1px solid var(--atlas-line);
   border-radius: 12px;
   overflow: hidden;
@@ -270,7 +270,7 @@
   background: var(--atlas-panel);
 }
 .tape > button {
-  padding: 20px;
+  padding: 14px;
   min-width: 0;
   border: 0;
   border-right: 1px solid var(--atlas-line);
@@ -394,7 +394,7 @@
 }
 @media (max-width: 1000px) {
   .stage {
-    grid-template-columns: 0.85fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .action {
     grid-column: 1/-1;
@@ -450,13 +450,12 @@
     display: block;
   }
   .tape {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .tape > button {
-    flex: 0 0 160px;
-    scroll-snap-align: start;
+    padding: 12px;
+    border-bottom: 1px solid var(--atlas-line);
   }
   .lower {
     grid-template-columns: 1fr;
@@ -558,5 +557,84 @@
   }
   .unavailable {
     padding: 14px;
+  }
+}
+
+@media (max-width: 430px) {
+  .atlas,
+  .stage,
+  .graphic {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .copy {
+    padding: 18px 14px;
+  }
+  .copy h2 {
+    font-size: 24px;
+  }
+  .action {
+    padding: 18px 14px;
+  }
+  .graphic {
+    min-height: 260px;
+    padding: 10px;
+  }
+  .orbitButtons {
+    width: calc(100% - 20px);
+  }
+  .orbitButtons button {
+    width: 60px;
+    margin-left: -30px;
+  }
+  .orbitButtons button span {
+    font-size: 10px;
+  }
+  .orbitButtons button small {
+    font-size: 7px;
+    letter-spacing: 0;
+  }
+  .caseGrid strong {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 430px) {
+  /* Put the actual evidence readings before the explanatory prose on phones. */
+  .stage {
+    min-height: 0;
+  }
+  .graphic {
+    order: 0;
+  }
+  .copy {
+    order: 1;
+  }
+  .action {
+    order: 2;
+  }
+  .copy h2 {
+    margin: 8px 0;
+    font-size: 21px;
+  }
+  .copy > p {
+    margin: 6px 0;
+  }
+}
+
+.action button:hover {
+  background: var(--atlas-mid);
+  border-color: var(--atlas-cyan);
+}
+.action button:focus-visible {
+  outline: 2px solid var(--atlas-cyan);
+  outline-offset: 3px;
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .tape {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .tape > button {
+    border-bottom: 1px solid var(--atlas-line);
   }
 }
