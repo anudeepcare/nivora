@@ -1067,12 +1067,12 @@
   cursor: wait;
 }
 
-/* Daily snapshot: existing holdings beside the two most relevant review prompts. */
+/* Two independent content-height columns; no stretched blank priority panel. */
 .home.home.home .dayOverview {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
-  align-items: stretch;
+  align-items: start;
 }
 .home.home.home .dayOverview > :only-child {
   grid-column: 1/-1;
@@ -1081,14 +1081,24 @@
   margin: 0;
   min-width: 0;
 }
+.home.home.home .attentionColumn {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+}
+.home.home.home .attentionColumn > section {
+  margin: 0;
+  min-width: 0;
+}
 .home.home.home
-  .dayOverview
+  .attentionColumn
   > section[aria-label="Today's research priorities"] {
   display: flex;
   flex-direction: column;
 }
 .home.home.home
-  .dayOverview
+  .attentionColumn
   > section[aria-label="Today's research priorities"]
   article
   + article {

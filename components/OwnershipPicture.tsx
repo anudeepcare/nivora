@@ -4,8 +4,10 @@ import type { Research } from "@/lib/types";
 import { percent, dateLabel } from "@/lib/format";
 export default function OwnershipPicture({
   research: r,
+  sourceRecords = false,
 }: {
   research: Research;
+  sourceRecords?: boolean;
 }) {
   const e = r.evidence;
   if (
@@ -15,6 +17,65 @@ export default function OwnershipPicture({
       !e.holders.length)
   )
     return null;
+  if (sourceRecords)
+    return (
+      <section
+        className="ownership-picture"
+        aria-label="Additional dated ownership source records"
+      >
+        <header className="section-head">
+          <h3>Additional source records</h3>
+        </header>
+        <p className="small muted">
+          Source: {e.source || "not supplied"}. These records may use different
+          reporting dates and share bases from the institutional comparison
+          above. They are not a second current ownership estimate.
+        </p>
+        <dl className="ownership-source-aggregates">
+          <div>
+            <dt>Institutional aggregate</dt>
+            <dd>{percent(e.ownership.institutions)}</dd>
+          </div>
+          <div>
+            <dt>Insider aggregate</dt>
+            <dd>{percent(e.ownership.insiders)}</dd>
+          </div>
+        </dl>
+        <p className="small muted">
+          Aggregate reporting date not supplied. Provider retrieval is not the
+          reporting date; aggregates are not summed or reconciled with the other
+          source.
+        </p>
+        {e.holders.length > 0 && (
+          <div className="table-scroll">
+            <table>
+              <caption>
+                Source-specific dated positions · delayed disclosures, not live
+                buying or selling
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Holder</th>
+                  <th scope="col">Reported date</th>
+                  <th scope="col">Shares</th>
+                  <th scope="col">Reported ownership</th>
+                </tr>
+              </thead>
+              <tbody>
+                {e.holders.map((h, i) => (
+                  <tr key={h.name + h.date + i}>
+                    <th scope="row">{h.name}</th>
+                    <td>{dateLabel(h.date)}</td>
+                    <td>{h.shares?.toLocaleString() ?? "—"}</td>
+                    <td>{percent(h.percent)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    );
   const largest = e.holders.reduce<(typeof e.holders)[number] | null>(
     (best, holder) =>
       holder.percent != null &&

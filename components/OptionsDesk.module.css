@@ -77,6 +77,10 @@
   flex-wrap: wrap;
   gap: 4px;
 }
+.views button {
+  min-height: 44px;
+  white-space: normal;
+}
 .views button[aria-pressed="true"],
 .options_segment button[aria-pressed="true"],
 .options_strategies button[aria-pressed="true"] {
@@ -387,7 +391,7 @@
     width: 100%;
   }
   .views button {
-    flex: 1;
+    flex: 1 1 140px;
     padding: 8px;
   }
   .advancedControl {
@@ -467,7 +471,7 @@
     width: 100%;
   }
   .views button {
-    flex: 1;
+    flex: 1 1 140px;
     padding-inline: 8px;
     font-size: 12px;
   }
@@ -596,11 +600,13 @@
   justify-self: start;
   align-self: end;
   max-width: 100%;
-  width: max-content;
-  flex-wrap: nowrap;
+  width: 100%;
+  flex-wrap: wrap;
 }
 .desk .views button {
-  white-space: nowrap;
+  white-space: normal;
+  min-height: 44px;
+  min-width: 0;
 }
 @media (max-width: 1000px) {
   .desk .commandBar {
@@ -611,7 +617,7 @@
     grid-column: 1/-1;
     grid-row: 2;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     width: 100%;
     justify-self: stretch;
   }

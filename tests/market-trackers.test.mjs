@@ -296,3 +296,31 @@ test("media tracker documented omission shape survives real transport; invalid r
       !e.message.includes("private-secret-marker"),
   );
 });
+
+test("only documented ticker row identities receive Research navigation", () => {
+  for (const id of [
+    "media-darlings",
+    "reddit-picks",
+    "sentiment-leaderboard",
+    "sentiment-movers",
+    "market-heatmap",
+    "market-session",
+  ]) {
+    const x = fixture();
+    x.data.trackerId = id;
+    x.data.rows = [{ rowId: "BRK.B", name: "Berkshire", metrics: [] }];
+    assert.equal(trackerSnapshot(x, id).rows[0].researchSymbol, "BRK.B");
+  }
+  for (const [id, rowId] of [
+    ["trending-products", "AAPL"],
+    ["institution-aum", "AAPL"],
+    ["media-darlings", "../../AAPL"],
+    ["media-darlings", undefined],
+    ["media-darlings", "https://evil.test"],
+  ]) {
+    const x = fixture();
+    x.data.trackerId = id;
+    x.data.rows = [{ rowId, name: "AAPL", metrics: [] }];
+    assert.equal(trackerSnapshot(x, id).rows[0].researchSymbol, undefined);
+  }
+});

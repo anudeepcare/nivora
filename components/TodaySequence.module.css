@@ -182,3 +182,35 @@
 .sequence a {
   font-weight: 500;
 }
+
+/* Compact research prompts: the metric is content, not a full-height tile. */
+.sequence article {
+  padding: 14px 16px;
+}
+.sequence h2,
+.sequence h3 {
+  font-size: 16px;
+  line-height: 1.35;
+  margin: 8px 0;
+}
+.sequence article > span {
+  font-family: inherit;
+  letter-spacing: 0.035em;
+}
+.reading {
+  gap: 10px;
+  margin-top: 8px;
+}
+.reading > b {
+  font-size: 20px;
+}
+.reading > span {
+  padding-left: 10px;
+}
+.exposureMetric {
+  font-size: 30px;
+  margin: 8px 0;
+}
+.sequence p {
+  font-size: 12px;
+}

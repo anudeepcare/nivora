@@ -806,7 +806,7 @@ export default function Research({ symbol }: { symbol: string }) {
                       ),
                     },
                     {
-                      title: "Contract tools & practice",
+                      title: "Chain, gamma & practice",
                       content: (
                         <OptionsDesk
                           key={r.company.symbol}
@@ -951,7 +951,9 @@ export default function Research({ symbol }: { symbol: string }) {
                       symbol={r.company.symbol}
                       preview={!!demo}
                       group="ownership"
+                      supplementalOwnership={r}
                     />
+                    {demo && <OwnershipPicture research={r} />}
                   </section>
                   {!congressionalHidden && (
                     <section aria-label="Congressional activity">
@@ -966,10 +968,6 @@ export default function Research({ symbol }: { symbol: string }) {
                   key={`${r.company.symbol}-ownership-context`}
                   label="Additional ownership evidence"
                   views={[
-                    {
-                      title: "Reported ownership",
-                      content: <OwnershipPicture research={r} />,
-                    },
                     {
                       title: "Business context & assistant",
                       content: (

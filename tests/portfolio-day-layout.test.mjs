@@ -9,7 +9,7 @@ test("session movers reserve intrinsic amounts and wrap long symbols instead of 
   assert.doesNotMatch(css, /grid-template-columns:\s*56px/);
   assert.match(
     css,
-    /\.movers li\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) max-content max-content/s,
+    /\.movers li\s*\{[^}]*grid-template-columns:\s*minmax\(60px, 0.65fr\) minmax\(70px, 1.5fr\) max-content/s,
   );
   assert.match(css, /\.movers a\s*\{[^}]*overflow-wrap:\s*anywhere/s);
   assert.match(

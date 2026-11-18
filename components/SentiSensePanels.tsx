@@ -1,4 +1,6 @@
 "use client";
+import OwnershipPicture from "./OwnershipPicture";
+import type { Research } from "@/lib/types";
 import CompanyKpiChart from "./CompanyKpiChart";
 import AnalystMarketActivity from "./AnalystMarketActivity";
 import PoliticianActivity from "./PoliticianActivity";
@@ -70,10 +72,12 @@ export default function SentiSensePanels({
   symbol,
   group,
   preview = false,
+  supplementalOwnership,
 }: {
   symbol: string;
   group: SentiSenseGroupName;
   preview?: boolean;
+  supplementalOwnership?: Research;
 }) {
   const compact = group === "options" || group === "ownership";
   const { preferences } = useWorkspacePreferences();
@@ -182,6 +186,9 @@ export default function SentiSensePanels({
           symbol={symbol}
           dataset={dataset}
         />
+      )}
+      {dataset === "holders" && supplementalOwnership && (
+        <OwnershipPicture research={supplementalOwnership} sourceRecords />
       )}
       {dataset === "analystActions" && <AnalystMarketActivity />}
       {dataset === "politicians" && (

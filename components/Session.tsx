@@ -817,6 +817,8 @@ function Login({ initialError }: { initialError: string }) {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     <svg
+                      width="20"
+                      height="20"
                       className="mp-icon"
                       viewBox="0 0 24 24"
                       fill="none"

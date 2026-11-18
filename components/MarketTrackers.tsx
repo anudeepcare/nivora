@@ -1,4 +1,5 @@
 "use client";
+import TrackerPriceTiles from "./TrackerPriceTiles";
 import MarketSessionDashboard from "./MarketSessionDashboard";
 import ProductLookup from "./ProductLookup";
 import { useState } from "react";
@@ -122,13 +123,17 @@ export default function MarketTrackers() {
           )}
           {data.id === "market-heatmap" && (
             <p>
-              This is the heatmap’s price table, not an area-scaled heatmap.
+              This is a price-change tile board, not an area-scaled heatmap.
               Quotes are delayed. Proprietary sentiment/options overlays are not
               displayed here.
             </p>
           )}
           {data.id === "market-session" ? (
             <MarketSessionDashboard data={data} />
+          ) : data.id === "market-heatmap" ? (
+            <TrackerPriceTiles
+              rows={data.rows.slice(page * 25, (page + 1) * 25)}
+            />
           ) : (
             <>
               <div className={styles.headlines}>
@@ -154,7 +159,19 @@ export default function MarketTrackers() {
                 {data.rows.slice(page * 25, (page + 1) * 25).map((row) => (
                   <article key={row.id}>
                     <header>
-                      <h3>{row.name}</h3>
+                      <h3>
+                        {row.researchSymbol ? (
+                          <a
+                            className={styles.researchLink}
+                            href={`/research/${encodeURIComponent(row.researchSymbol)}`}
+                          >
+                            {row.name}
+                            <span>Research {row.researchSymbol} ↗</span>
+                          </a>
+                        ) : (
+                          row.name
+                        )}
+                      </h3>
                       <span>{row.category}</span>
                     </header>
                     <dl>

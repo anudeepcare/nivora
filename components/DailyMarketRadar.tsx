@@ -126,7 +126,8 @@ export default function DailyMarketRadar({
     : [];
   const error = current?.error;
   const setupRequired =
-    !!error && /database migration|storage is not configured/i.test(error);
+    !!error &&
+    /database migration|database schema|storage is not configured/i.test(error);
   return (
     <section
       className={s.daily}
@@ -144,7 +145,7 @@ export default function DailyMarketRadar({
             </strong>
             <p>
               {setupRequired
-                ? "The daily cache is not configured yet. Your saved holdings, watchlist and existing research are unchanged."
+                ? "Daily radar storage needs an administrator check. Your saved holdings, watchlist and existing research are unchanged."
                 : error}
             </p>
             <button

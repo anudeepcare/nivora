@@ -37,7 +37,7 @@ test("inactive heavy research evidence modules are dynamic import boundaries, no
   assert.match(source, /loading: \(\) => <p role="status">Opening evidence/);
   assert.match(source, /label="Options research"/);
   assert.match(source, /title: "Positioning & history"/);
-  assert.match(source, /title: "Contract tools & practice"/);
+  assert.match(source, /title: "Chain, gamma & practice"/);
   assert.doesNotMatch(source, /initialSelection=\{-1\}/);
 });
 test("supplemental quote REST and stream wait for initial research evidence", () => {
@@ -58,8 +58,17 @@ test("supplemental quote REST and stream wait for initial research evidence", ()
 });
 
 test("market-wide overview remains exclusive to the Screener workspace", () => {
- const research=fs.readFileSync("components/Research.tsx","utf8");
- assert.doesNotMatch(research,/OptionsMarketOverview|title: "Market overview"/);
- assert.match(fs.readFileSync("components/OptionsMarketPage.tsx","utf8"),/<OptionsMarketOverview/);
- assert.match(fs.readFileSync("lib/reference-navigation.ts","utf8"),/path: "options", label: "Screener"/);
+  const research = fs.readFileSync("components/Research.tsx", "utf8");
+  assert.doesNotMatch(
+    research,
+    /OptionsMarketOverview|title: "Market overview"/,
+  );
+  assert.match(
+    fs.readFileSync("components/OptionsMarketPage.tsx", "utf8"),
+    /<OptionsMarketOverview/,
+  );
+  assert.match(
+    fs.readFileSync("lib/reference-navigation.ts", "utf8"),
+    /path: "options", label: "Screener"/,
+  );
 });

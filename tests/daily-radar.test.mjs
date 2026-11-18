@@ -10,6 +10,7 @@ function harness({
   sampleOnly = false,
   eligible = true,
   fail = false,
+  radarError = null,
   databaseCap = 500,
   bulk = false,
   positions = [{ symbol: "AAA", asset_type: "stock" }],
@@ -82,6 +83,8 @@ function harness({
                 ),
               }),
             );
+          if (table === "auryn_daily_radar" && radarError)
+            return Promise.resolve(resolve({ error: radarError }));
           if (op === "update") {
             const symbol = filters.find(([k]) => k === "symbol")[1];
             rows.set(symbol, { ...rows.get(symbol), ...patch });
@@ -517,5 +520,33 @@ test("opt-in bulk route takes universe only from authorized saved rows and retai
       new Request("https://example.test/api/daily-radar", { method: "POST" }),
     );
     assert.equal(locked.calls.filter((c) => c.bulkUniverse).length, 0);
+  }
+});
+
+test("radar storage errors distinguish missing schema, permissions and transient failure without raw details", async () => {
+  for (const [code, pattern] of [
+    ["42P01", /database schema.*migration and schema cache/],
+    ["PGRST205", /database schema.*migration and schema cache/],
+    ["42501", /storage access is unavailable/],
+    ["08006", /storage is temporarily unavailable/],
+    [undefined, /storage is temporarily unavailable/],
+  ]) {
+    const h = harness({
+      radarError: {
+        code,
+        message: "SECRET database credentials host internal",
+        details: "SECRET",
+      },
+    });
+    const reply = await h.route.GET(new Request("http://local"));
+    assert.equal(reply.status, 503);
+    assert.match(reply.error, pattern);
+    assert.doesNotMatch(reply.error, /SECRET|credentials|internal/);
+    if (code !== "42P01" && code !== "PGRST205")
+      assert.doesNotMatch(reply.error, /migration/);
+    assert.equal(
+      h.calls.filter((x) => x.history || x.rpc || x.allowance).length,
+      0,
+    );
   }
 });

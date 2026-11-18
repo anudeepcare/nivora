@@ -89,11 +89,18 @@ async function run(request: Request, advance: boolean) {
           .in("symbol", symbols.length ? symbols : [""])
           .order("symbol")
           .range(from, to);
-        if (result.error)
-          throw new HttpError(
-            "Daily radar requires its database migration.",
-            503,
-          );
+        if (result.error) {
+          // Recognized relation/cache errors require a schema check, not a migration diagnosis.
+          // Never echo database messages, details, credentials or host names.
+          const code = result.error.code;
+          const message =
+            code === "42P01" || code === "PGRST205"
+              ? "Daily radar database schema is unavailable. An administrator must check its migration and schema cache."
+              : code === "42501"
+                ? "Daily radar storage access is unavailable. An administrator must check its permissions."
+                : "Daily radar storage is temporarily unavailable. Please retry; if this continues, contact the administrator.";
+          throw new HttpError(message, 503);
+        }
         return (result.data ?? []) as unknown as StoredRow[];
       });
       return data.map(

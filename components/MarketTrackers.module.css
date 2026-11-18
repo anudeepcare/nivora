@@ -219,3 +219,24 @@
 .trackerInfo p {
   max-width: 80ch;
 }
+
+.researchLink {
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 44px;
+  justify-content: center;
+}
+.researchLink > span {
+  color: var(--blue);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.researchLink:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 4px;
+}

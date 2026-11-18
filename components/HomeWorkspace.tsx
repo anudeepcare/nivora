@@ -146,7 +146,6 @@ function HomeOverview() {
     newsReady: readiness.newsReady && !feed.error,
     hasHoldings: !!workspace?.positions.length,
   });
-  const largest = model.allocations[0];
   const signals = symbols
     .map((symbol) => ({ symbol, signal: pace(symbol) }))
     .filter(
@@ -229,44 +228,33 @@ function HomeOverview() {
       </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
       <div className={homeStyles.dayOverview}>
-        {!!workspace?.positions.length && (
-          <PortfolioDay
-            positions={workspace.positions}
-            quotes={quotes.data}
-            prefix={prefix}
-            now={today.getTime()}
+        <div className={homeStyles.attentionColumn}>
+          <ResearchInbox
+            today={day}
+            events={(feed.data?.events ?? []).filter(
+              (event) => event.date <= day,
+            )}
+            coverageIssue={!!feed.error || !readiness.eventsReady}
           />
-        )}
-        <TodaySequence
-          prefix={prefix}
-          decision={
-            best?.signal
-              ? {
-                  symbol: best.symbol,
-                  action: best.signal.view.actionLabel.replace(
-                    / · P[0-4]$/,
-                    "",
-                  ),
-                  code: best.signal.view.code,
-                }
-              : null
-          }
-          headline={null}
-          concentration={largest ?? null}
-        />
+          <TodaySequence
+            prefix={prefix}
+            decision={
+              best?.signal
+                ? {
+                    symbol: best.symbol,
+                    action: best.signal.view.actionLabel.replace(
+                      / · P[0-4]$/,
+                      "",
+                    ),
+                    code: best.signal.view.code,
+                  }
+                : null
+            }
+            headline={null}
+            concentration={null}
+          />
+        </div>
       </div>
-      <ResearchInbox
-        today={day}
-        events={feed.data?.events ?? []}
-        coverageIssue={!!feed.error || !readiness.eventsReady}
-      />
-      {symbols.length > 0 && <Coverage state={state} />}
-      <HomeMarketCards
-        symbols={symbols}
-        quotes={quotes.data}
-        research={loadedResearch}
-        prefix={prefix}
-      />
       {symbols.length > 0 && (
         <>
           <div className="home-evidence-layout">
@@ -479,6 +467,21 @@ function HomeOverview() {
           </div>
           <PaceBoard {...state.paceScan} prefix={prefix} />
         </>
+      )}
+      {symbols.length > 0 && <Coverage state={state} />}
+      <HomeMarketCards
+        symbols={symbols}
+        quotes={quotes.data}
+        research={loadedResearch}
+        prefix={prefix}
+      />
+      {!!workspace?.positions.length && (
+        <PortfolioDay
+          positions={workspace.positions}
+          quotes={quotes.data}
+          prefix={prefix}
+          now={today.getTime()}
+        />
       )}
       <div className={homeStyles.planRow}>
         <div>

@@ -185,3 +185,32 @@
     padding: 16px;
   }
 }
+
+.axisSummary,
+.dateAxis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.axisSummary {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.axisSummary strong {
+  font-weight: 500;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.dateAxis {
+  margin: 0 4% 12px;
+}
+.axisText {
+  fill: var(--muted);
+  font-size: 10px;
+}

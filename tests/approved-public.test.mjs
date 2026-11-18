@@ -773,6 +773,7 @@ test("help and methodology show their publication date without internal release 
     documents,
     legalConfiguration,
     styles: { document: "legal-document-owned" },
+    PublicHomeLink: ({children,...props}) => React.createElement("a", {...props,href:"/"},children),
     DocumentBack: () => null,
   });
   for (const id of ["help", "methodology", "terms"]) {

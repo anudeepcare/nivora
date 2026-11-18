@@ -61,6 +61,15 @@ function EvidencePath({
       </div>
       {plot.dots.length ? (
         <>
+          <div className={s.axisSummary} aria-label="Chart scale">
+            <span>
+              Chart scale · {selected?.currency}{" "}
+              {metric === "eps" ? "per share" : "revenue"}
+            </span>
+            <strong>
+              {money(plot.domain.low)} to {money(plot.domain.high)}
+            </strong>
+          </div>
           <svg
             viewBox="0 0 400 160"
             role="group"
@@ -73,6 +82,13 @@ function EvidencePath({
               y2={plot.zeroY}
               className={s.baseline}
             />
+            <text
+              x="18"
+              y={Math.max(12, plot.zeroY - 5)}
+              className={s.axisText}
+            >
+              0
+            </text>
             {plot.segments
               .filter((p) => p.length > 1)
               .map((p, i) => (
@@ -108,6 +124,16 @@ function EvidencePath({
               </g>
             ))}
           </svg>
+          <div className={s.dateAxis} aria-label="Date extent">
+            <time dateTime={plot.domain.start ?? undefined}>
+              {dateLabel(plot.domain.start)}
+            </time>
+            {plot.domain.end !== plot.domain.start && (
+              <time dateTime={plot.domain.end ?? undefined}>
+                {dateLabel(plot.domain.end)}
+              </time>
+            )}
+          </div>
           <label className={s.select}>
             Inspect period
             <select

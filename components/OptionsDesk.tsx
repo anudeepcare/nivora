@@ -426,7 +426,8 @@ export default function OptionsDesk({
             <nav className={deskStyles.views} aria-label="Options sections">
               {[
                 ["positioning", "Price levels"],
-                ["chain", "Calls & puts"],
+                ["chain", "Calls & puts chain"],
+                ["diagnostics", "Volatility & gamma"],
                 ["simulation", "Practice"],
                 ["learn", "Guide"],
               ].map(([id, label]) => (
@@ -447,13 +448,7 @@ export default function OptionsDesk({
                 aria-label="Advanced options tools"
                 disabled={!contracts.length}
                 value={
-                  [
-                    "vanna",
-                    "flow",
-                    "leaps",
-                    "strategy",
-                    "diagnostics",
-                  ].includes(view)
+                  ["vanna", "flow", "leaps", "strategy"].includes(view)
                     ? view
                     : ""
                 }
@@ -462,7 +457,6 @@ export default function OptionsDesk({
                 <option value="" disabled>
                   Choose a tool
                 </option>
-                <option value="diagnostics">Volatility & gamma</option>
                 <option value="vanna">Vanna exposure</option>
                 <option value="flow">Trade tape</option>
                 <option value="leaps">Long-term contracts</option>

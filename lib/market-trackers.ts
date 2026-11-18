@@ -46,6 +46,7 @@ export type TrackerSnapshot = {
   headline: TrackerMetric[];
   rows: {
     id: string;
+    researchSymbol?: string;
     name: string;
     category: string | null;
     metrics: TrackerMetric[];
@@ -209,6 +210,20 @@ export function trackerSnapshot(
       return reject("duplicate row identity");
     rows.push({
       id: rowId,
+      // Only these documented boards use a ticker as their public row handle.
+      // Never infer from company names, generic row fallbacks, CIKs or product slugs.
+      ...([
+        "reddit-picks",
+        "media-darlings",
+        "sentiment-leaderboard",
+        "sentiment-movers",
+        "market-heatmap",
+        "market-session",
+      ].includes(id) &&
+      typeof x.rowId === "string" &&
+      /^[A-Z][A-Z0-9]{0,9}(?:[.-][A-Z0-9]{1,4})?$/.test(x.rowId)
+        ? { researchSymbol: x.rowId }
+        : {}),
       name: x.name,
       category: optional(x.category),
       metrics,

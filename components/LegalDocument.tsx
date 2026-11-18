@@ -2,7 +2,7 @@
 import { ContextLink, DocumentBack } from "./ContextLink";
 import { PrivacyChoices } from "./AnalyticsConsent";
 import { useState } from "react";
-import Link from "next/link";
+import PublicHomeLink from "./PublicHomeLink";
 import styles from "./LegalDocument.module.css";
 import {
   documents,
@@ -23,9 +23,9 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
       data-document={id}
     >
       <header>
-        <Link href="/" className="legal-brand">
+        <PublicHomeLink className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
-        </Link>
+        </PublicHomeLink>
         <div className={styles.documentActions}>
           <ContextLink page="contact">Contact support</ContextLink>
           <DocumentBack />

@@ -112,3 +112,15 @@ test("bulk source outage remains visible even when cold account has no retained 
   assert.match(html, /2026-11-18T13:00:00Z/);
   assert.doesNotMatch(html, /Checking today/);
 });
+test("schema cache absence offers setup check without asserting missing configuration", () => {
+  const { html } = render({
+    error:
+      "Daily radar database schema is unavailable. An administrator must check its migration and schema cache.",
+  });
+  assert.match(html, /Check setup again/);
+  assert.match(html, /schema cache/);
+  assert.doesNotMatch(
+    html,
+    /cache is not configured yet|requires its database migration/,
+  );
+});

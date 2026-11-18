@@ -67,7 +67,7 @@ export function IndicatorsLens({
         preview={preview}
       />
       <div className={s.supporting}>
-        <AdvancedResearch research={research} />
+        <AdvancedResearch research={research} overviewPresent />
         <SentiSensePanels
           symbol={research.company.symbol}
           preview={preview}

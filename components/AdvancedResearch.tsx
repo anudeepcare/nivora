@@ -25,9 +25,11 @@ const HistoryWorkbench = dynamic(
 export default function AdvancedResearch({
   research: r,
   initialSection = "risk",
+  overviewPresent = false,
 }: {
   research: Research;
   initialSection?: string;
+  overviewPresent?: boolean;
 }) {
   const s = useMemo(
     () => advancedStudies(r.history, r.retrievedAt),
@@ -80,7 +82,7 @@ export default function AdvancedResearch({
         ))}
       </nav>
       <section id="professional-risk" hidden={active !== "risk"}>
-        <AdvancedDashboard research={r} />
+        <AdvancedDashboard research={r} overviewPresent={overviewPresent} />
       </section>
       {visited.includes("position") && (
         <section id="professional-position" hidden={active !== "position"}>

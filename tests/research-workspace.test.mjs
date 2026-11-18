@@ -107,11 +107,11 @@ test("Options, analyst sources and Business retain default evidence and unique s
   const options = section("Options", "Analysts");
   assert.match(options, /Company positioning/);
   assert.doesNotMatch(options, /Market overview|OptionsMarketOverview/);
-  assert.match(fs.readFileSync("components/OptionsMarketPage.tsx", "utf8"), /<OptionsMarketOverview/);
-  for (const name of [
-    "SentiSensePanels",
-    "OptionsDesk",
-  ])
+  assert.match(
+    fs.readFileSync("components/OptionsMarketPage.tsx", "utf8"),
+    /<OptionsMarketOverview/,
+  );
+  for (const name of ["SentiSensePanels", "OptionsDesk"])
     assert.match(options, new RegExp("<" + name + "[ \\n]"));
   assert.doesNotMatch(options, /<details/);
   const analysts = section("Analysts", "Financials");
@@ -174,9 +174,18 @@ test("optional market tools mount neither dataset until explicit selection", () 
 });
 
 test("Options tools sit above evidence and mount only the selected workspace", () => {
- const source=fs.readFileSync("components/Research.tsx","utf8");
- const options=source.slice(source.indexOf('{tab === "Options" && ('),source.indexOf('{tab === "Analysts" && ('));
- assert.ok(options.indexOf("<ResearchWorkspace")<options.indexOf("<SentiSensePanels"));
- assert.ok(options.indexOf('title: "Positioning & history"')<options.indexOf('title: "Contract tools & practice"'));
- assert.doesNotMatch(options,/preserveState|initialSelection/);
+  const source = fs.readFileSync("components/Research.tsx", "utf8");
+  const options = source.slice(
+    source.indexOf('{tab === "Options" && ('),
+    source.indexOf('{tab === "Analysts" && ('),
+  );
+  assert.ok(
+    options.indexOf("<ResearchWorkspace") <
+      options.indexOf("<SentiSensePanels"),
+  );
+  assert.ok(
+    options.indexOf('title: "Positioning & history"') <
+      options.indexOf('title: "Chain, gamma & practice"'),
+  );
+  assert.doesNotMatch(options, /preserveState|initialSelection/);
 });

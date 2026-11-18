@@ -2,8 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 const home = readFileSync("components/HomeWorkspace.tsx", "utf8");
-test("Today leads with actual portfolio and followed price graphs before editorial priorities", () => {
-  assert.ok(home.indexOf("<PortfolioDay") < home.indexOf("<HomeMarketCards"));
+test("Today leads with attention and dated events before followed trends and portfolio context", () => {
+  assert.ok(home.indexOf("<PortfolioDay") > home.indexOf("<HomeMarketCards"));
+  assert.ok(
+    home.indexOf('id="home-earnings"') < home.indexOf("<HomeMarketCards"),
+  );
+  assert.match(home, /concentration=\{null\}/);
   assert.ok(home.indexOf("<TodaySequence") < home.indexOf("<HomeMarketCards"));
   assert.ok(home.indexOf("<ResearchInbox") < home.indexOf("<HomeMarketCards"));
   assert.doesNotMatch(home, /<summary>Followed company prices<\/summary>/);

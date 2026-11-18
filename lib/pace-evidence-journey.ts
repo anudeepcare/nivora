@@ -87,5 +87,15 @@ export function journeyPlot(points: JourneyPoint[]) {
     segment.push(`${x},${y}`);
   });
   breakPath();
-  return { dots, segments, zeroY: 132 - ((0 - low) / spread) * 108 };
+  return {
+    dots,
+    segments,
+    zeroY: 132 - ((0 - low) / spread) * 108,
+    domain: {
+      low,
+      high: low + spread,
+      start: dated.length ? new Date(start).toISOString().slice(0, 10) : null,
+      end: dated.length ? new Date(end).toISOString().slice(0, 10) : null,
+    },
+  };
 }

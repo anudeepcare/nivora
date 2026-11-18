@@ -29,7 +29,7 @@ test('evidence chart renders accessible dated facts separately from estimates an
  },mod,mod.exports);
  const r={company:{symbol:'TEST',assetType:'stock'},retrievedAt:'2026-11-17',facts:[{end:'2024-12-31',revenue:100,currency:'USD',basis:'GAAP',filed:'2025-02-01',sourceUrl:'https://example.com/filing'},{end:'2025-12-31',revenue:120,currency:'USD',basis:'GAAP',filed:'2026-02-01',sourceUrl:'https://example.com/latest'}],evidence:{estimates:[{date:'2026-12-31',revenue:140,currency:'USD',revenueLow:130,revenueHigh:150,analysts:4}]}};
  const render=r=>renderToStaticMarkup(React.createElement(mod.exports.default,{research:r}));const html=render(r);
- assert.equal((html.match(/<svg/g)||[]).length,2);assert.match(html,/PAST → CURRENT/);assert.match(html,/FORWARD · ANALYST ESTIMATES/);
+ assert.equal((html.match(/<svg/g)||[]).length,2);assert.match(html,/Chart scale/);assert.match(html,/Date extent/);assert.match(html,/PAST → CURRENT/);assert.match(html,/FORWARD · ANALYST ESTIMATES/);
  assert.match(html,/role="button" tabindex="0"/);assert.match(html,/Inspect period/);assert.match(html,/Supplied range/);assert.match(html,/accounting bases/);assert.match(html,/No revision trend is inferred/);assert.match(html,/Read reported source/);
  const missing=render({...r,facts:[],evidence:{estimates:[]}});assert.doesNotMatch(missing,/<svg|NaN|Infinity/);assert.match(missing,/No projection is drawn/);
 });
@@ -42,4 +42,10 @@ test('sparse annual dates break paths and elapsed time determines spacing',()=>{
 });
 test('unknown currency never produces plotted numeric estimates',()=>{
  assert.equal(journeyPlot([point('2025-12-31',100,null),point('2026-12-31',200,null)]).dots.length,0);
+});
+
+test('chart exposes the actual numeric domain and date extents used by its coordinates',()=>{
+ const p=journeyPlot([point('2023-12-31',-5),point('2024-12-31',null),point('2025-12-31',15)]);
+ assert.deepEqual(p.domain,{low:-5,high:15,start:'2023-12-31',end:'2025-12-31'});
+ assert.deepEqual(journeyPlot([point('2025-12-31',0)]).domain,{low:0,high:1,start:'2025-12-31',end:'2025-12-31'});
 });

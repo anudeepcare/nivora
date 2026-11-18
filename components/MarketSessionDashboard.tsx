@@ -141,7 +141,18 @@ export default function MarketSessionDashboard({
                 <header>
                   <div>
                     <strong>{row.id}</strong>
-                    <h4>{row.name}</h4>
+                    <h4>
+                      {row.researchSymbol ? (
+                        <a
+                          href={`/research/${encodeURIComponent(row.researchSymbol)}`}
+                          aria-label={`Research ${row.researchSymbol}`}
+                        >
+                          {row.name} ↗
+                        </a>
+                      ) : (
+                        row.name
+                      )}
+                    </h4>
                     <p>{row.category}</p>
                   </div>
                   <div className={s.value}>

@@ -415,3 +415,66 @@
   color: var(--muted);
   max-width: 52ch;
 }
+
+/* Auth must remain complete without the optional legacy panel stylesheet. */
+.auth .main :global(.mp-field-label) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.auth .main :global(.mp-inline-link) {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--blue);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 0;
+  min-height: 44px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.auth .main :global(.mp-inline-link):disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.auth .main :global(.mp-password-field) {
+  position: relative;
+}
+.auth .main :global(.mp-password-field) > button {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.auth .main :global(.mp-password-field) > button:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+.auth .main :global(.mp-password-field) svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.auth .main :global(.mp-switch-auth) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}

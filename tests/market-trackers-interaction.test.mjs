@@ -4,7 +4,7 @@ import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { trackerGroups } from "../lib/market-trackers.ts";
+import { trackerGroups, trackerSnapshot } from "../lib/market-trackers.ts";
 const dashboardModule = { exports: {} };
 new Function(
   "require",
@@ -24,6 +24,27 @@ new Function(
   () => ({ default: new Proxy({}, { get: (_, k) => String(k) }) }),
   dashboardModule,
   dashboardModule.exports,
+  React,
+);
+const tilesModule = { exports: {} };
+new Function(
+  "require",
+  "module",
+  "exports",
+  "React",
+  ts.transpileModule(
+    fs.readFileSync("components/TrackerPriceTiles.tsx", "utf8"),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.React,
+        module: ts.ModuleKind.CommonJS,
+      },
+    },
+  ).outputText,
+)(
+  () => ({ default: new Proxy({}, { get: (_, k) => String(k) }) }),
+  tilesModule,
+  tilesModule.exports,
   React,
 );
 function harness() {
@@ -60,6 +81,7 @@ function harness() {
     "styles",
     "ProductLookup",
     "MarketSessionDashboard",
+    "TrackerPriceTiles",
     js + ";return MarketTrackers",
   )(
     React,
@@ -96,6 +118,7 @@ function harness() {
     new Proxy({}, { get: (_, k) => k }),
     () => null,
     dashboardModule.exports.default,
+    tilesModule.exports.default,
   );
   return {
     render() {
@@ -154,4 +177,67 @@ test("tracker selection requests only selected board and gives adjacent loading,
     /Volume/,
     "old board must not appear under new choice",
   );
+});
+
+test("selected heatmap renders the real tile branch without extra requests", () => {
+  const h = harness();
+  h.state[0] = "market-heatmap";
+  h.setReply({
+    loading: false,
+    data: {
+      data: {
+        id: "market-heatmap",
+        name: "Price map",
+        description: "",
+        asOf: "2026-11-18",
+        preview: false,
+        headline: [],
+        rows: [
+          {
+            id: "A",
+            name: "A",
+            metrics: [
+              {
+                label: "Price change",
+                unit: "percent",
+                value: -2,
+                asOf: "2026-11-18",
+              },
+            ],
+          },
+        ],
+        totalCount: 1,
+        withheld: [],
+      },
+    },
+  });
+  const html = renderToStaticMarkup(h.render());
+  assert.match(html, /Delayed price-change tiles/);
+  assert.match(html, /-2%/);
+  assert.match(html, /not market-cap weights/);
+});
+
+test("actual ticker projection renders Research links, opaque records remain plain", () => {
+  const h = harness();
+  h.state[0] = "media-darlings";
+  const data = trackerSnapshot(
+    {
+      isPreview: false,
+      data: {
+        trackerId: "media-darlings",
+        displayName: "Media",
+        viewType: "table",
+        rows: [
+          { rowId: "BRK.B", name: "Berkshire", metrics: [] },
+          { name: "AAPL", metrics: [] },
+        ],
+      },
+    },
+    "media-darlings",
+  );
+  h.setReply({ loading: false, data: { data } });
+  const html = renderToStaticMarkup(h.render());
+  assert.match(html, /href="\/research\/BRK.B"/);
+  assert.match(html, /Research BRK.B/);
+  assert.doesNotMatch(html, /href="\/research\/(AAPL|row-2)"/);
 });

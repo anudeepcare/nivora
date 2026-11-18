@@ -685,6 +685,7 @@ test("public legal and help documents render all cross-links and readable sectio
     {
       React,
       styles: { document: "document-owned" },
+      PublicHomeLink: ({children,...props}) => React.createElement("a", {...props,href:"/"},children),
       useState: React.useState,
       ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {
         React,

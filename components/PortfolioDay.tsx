@@ -89,7 +89,9 @@ export default function PortfolioDay({
                     {m.symbol}
                   </Link>
                   <span>{signed(m.move)}</span>
-                  <small>{percent(m.changePct, true)}</small>
+                  <small className={s.changePercent}>
+                    {percent(m.changePct, true)}
+                  </small>
                   <svg
                     className={s.contributionBar}
                     viewBox="0 0 100 16"
