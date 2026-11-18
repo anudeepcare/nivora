@@ -386,3 +386,73 @@
     min-width: 44px;
   }
 }
+
+/* Ownership reading grid: blue identifies institutions, not bullish sentiment. */
+.panel[aria-label="Reported institutional relationships"] .network {
+  grid-template-columns: 140px minmax(0, 1fr);
+  align-items: start;
+}
+.panel[aria-label="Reported institutional relationships"] .hub {
+  border-color: color-mix(in srgb, #4b7fce 40%, var(--line));
+  background: color-mix(in srgb, #4b7fce 9%, var(--card));
+}
+.panel[aria-label="Reported institutional relationships"] .branches {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-height: none;
+  overflow: visible;
+  gap: 10px;
+}
+.panel[aria-label="Reported institutional relationships"] .holder {
+  padding: 14px 12px;
+}
+.panel[aria-label="Reported institutional relationships"] .holder strong {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.panel[aria-label="Reported institutional relationships"] .holder small,
+.panel[aria-label="Reported institutional relationships"] .hub span {
+  font-size: 11px;
+}
+.panel[aria-label="Reported institutional relationships"] .holderIcon {
+  color: #4b7fce;
+}
+.panel[aria-label="Reported institutional relationships"] .weight {
+  font-size: 16px;
+  font-weight: 500;
+}
+.panel[aria-label="Reported institutional relationships"] .subtle,
+.panel[aria-label="Reported institutional relationships"] .footnote {
+  font-size: 12px;
+}
+.panel[aria-label="Reported institutional relationships"] .expand {
+  min-height: 44px;
+  font-size: 13px;
+}
+@media (max-width: 1000px) {
+  .panel[aria-label="Reported institutional relationships"] .branches {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 650px) {
+  .panel[aria-label="Reported institutional relationships"] .network {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .panel[aria-label="Reported institutional relationships"] .hub {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px;
+  }
+  .panel[aria-label="Reported institutional relationships"] .hub:after,
+  .panel[aria-label="Reported institutional relationships"] .holder:before {
+    content: none;
+  }
+  .panel[aria-label="Reported institutional relationships"] .branches {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .panel[aria-label="Reported institutional relationships"] .header {
+    flex-wrap: wrap;
+  }
+}

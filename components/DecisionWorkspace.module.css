@@ -24,3 +24,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Selected evidence remains legible; category hue lives in the dot and bar. */
+.root.root :global(.lens-list button[aria-pressed="true"]) {
+  background: color-mix(in srgb, var(--ink) 5%, var(--card));
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink);
+  font-weight: 500;
+}
+.root.root :global(.lens-list button) {
+  min-height: 44px;
+}
+.root.root :global(.selected-lens dd) {
+  color: var(--ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}

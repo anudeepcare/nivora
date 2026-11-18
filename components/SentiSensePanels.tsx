@@ -273,7 +273,7 @@ function Dataset({
             </p>
           ) : dataset === "options" ? (
             <details>
-              <summary>Detailed options observations &amp; contracts</summary>
+              <summary>Detailed positioning observations</summary>
               {tables}
             </details>
           ) : (

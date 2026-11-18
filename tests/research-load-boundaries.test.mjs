@@ -23,6 +23,8 @@ test("inactive heavy research evidence modules are dynamic import boundaries, no
     "TimingContext",
     "OwnershipPicture",
     "Analyst",
+    "OptionsDesk",
+    "OptionsMarketOverview",
   ]) {
     assert.ok(
       !staticImports.includes("./" + name),
@@ -34,5 +36,8 @@ test("inactive heavy research evidence modules are dynamic import boundaries, no
     );
   }
   assert.match(source, /loading: \(\) => <p role="status">Opening evidence/);
-  assert.match(source, /initialSelection=\{-1\}/);
+  assert.match(source, /label="Options research"/);
+  assert.match(source, /title: "Positioning & history"/);
+  assert.match(source, /title: "Contract tools & practice"/);
+  assert.doesNotMatch(source, /initialSelection=\{-1\}/);
 });

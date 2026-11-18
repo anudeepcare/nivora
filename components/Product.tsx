@@ -26,6 +26,9 @@ const ResearchLab = dynamic(() => import("./ResearchLab"), {
   loading: opening,
 });
 const Alerts = dynamic(() => import("./AlertCenter"), { loading: opening });
+const OptionsMarketPage = dynamic(() => import("./OptionsMarketPage"), {
+  loading: opening,
+});
 const Discover = dynamic(() => import("./Discover"), { loading: opening });
 const PasswordRecovery = dynamic(() => import("./PasswordRecovery"), {
   loading: opening,
@@ -148,6 +151,8 @@ export default function Product({
       <ResearchLab />
     ) : page === "trading" ? (
       <Trading />
+    ) : page === "options" ? (
+      <OptionsMarketPage />
     ) : page === "discover" ? (
       <Discover />
     ) : page === "help" ? (

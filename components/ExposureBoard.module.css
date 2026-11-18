@@ -528,3 +528,77 @@
     font-size: 19px;
   }
 }
+
+/* Workspace chrome is neutral; the map retains its signed-estimate legend. */
+.board .heading {
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.board .heading h3 {
+  font-size: 18px;
+  font-weight: 500;
+}
+.board .tabs {
+  margin-left: 0;
+}
+.board .tabs button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.board button[aria-pressed="true"] {
+  outline: none;
+  border-color: color-mix(in srgb, var(--ink) 28%, var(--line));
+  background: color-mix(in srgb, var(--ink) 6%, var(--card));
+  color: var(--ink);
+}
+.board :is(button, input, select, summary):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.board .toolbar {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  gap: 12px;
+}
+.board .toolbar label {
+  font-size: 12px;
+}
+.board .summary {
+  gap: 12px;
+  margin: 16px 0;
+}
+.board .summary article {
+  border: 1px solid var(--line);
+  border-top: 3px solid #8b75bc;
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--card);
+}
+.board .summary article[data-location="below"] {
+  border-top-color: #4b7fce;
+}
+.board .summary article[data-location="above"] {
+  border-top-color: #bb883d;
+}
+.board .summary strong {
+  font-size: 22px;
+  font-weight: 500;
+}
+.board .summary span,
+.board .summary small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 650px) {
+  .board .summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .board .summary article {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .board .toolbar {
+    padding: 10px;
+  }
+}

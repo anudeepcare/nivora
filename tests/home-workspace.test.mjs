@@ -35,7 +35,7 @@ function load(name, bindings) {
       ),
     HomeMarketCards: () => null,
     OpportunityMap: () => null,
-    MarketRadar: () => null,
+    HomeRadar: () => null,
     PortfolioDay: () => null,
     SearchIcon: () => null,
     ...bindings,
@@ -122,7 +122,7 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   const loaded = { company: { symbol: symbols[0] } };
   const Home = load("HomeOverview", {
     useState: () => [true, () => {}],
-    MarketRadar: (props) => {
+    HomeRadar: (props) => {
       radarProps = props;
       return null;
     },

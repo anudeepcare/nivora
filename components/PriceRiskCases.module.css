@@ -126,3 +126,6 @@
     text-align: right;
   }
 }
+.rangeGraphic { display: block; width: 100%; height: 54px; color: var(--ink); margin-top: 8px; }
+.root .cases article[data-case="midpoint"] { --case-color: #a38232; }
+@media (max-width: 600px) { .rangeGraphic { height: 36px; } }

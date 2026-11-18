@@ -150,6 +150,7 @@ function loadComponent(file, name, bindings) {
     useEffect: () => {},
     useState: React.useState,
     PaceHistoryInsights: () => null,
+    PaceMonthHistory: () => null,
     ComparisonCharts: () => null,
     DecisionInsights: () => null,
     ...bindings,
@@ -164,8 +165,9 @@ function loadComponent(file, name, bindings) {
   const declaration = ast.statements.find(
     (node) => ts.isFunctionDeclaration(node) && node.name?.text === name,
   );
+  const localConstants = ast.statements.filter((node) => ts.isVariableStatement(node) && node.declarationList.declarations.some((d) => d.name.getText(ast) === "lensColors")).map((node) => node.getText(ast)).join("\n");
   const code = ts.transpileModule(
-    declaration
+    localConstants + "\n" + declaration
       .getText(ast)
       .replace("export default ", "")
       .replace("export ", ""),

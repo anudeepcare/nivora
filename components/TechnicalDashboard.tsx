@@ -204,7 +204,7 @@ export default function TechnicalDashboard({
     },
     {
       title: "Participation",
-      tone: "green",
+      tone: "teal",
       note: "Volume measures do not identify institutions or prove buying pressure. Reported volume quality matters.",
       rows: [
         [

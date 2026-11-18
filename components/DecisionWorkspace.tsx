@@ -18,6 +18,17 @@ import { amount, percent, dateLabel } from "@/lib/format";
 import { openingAssessment } from "@/lib/connected-product";
 import { useResearchPreferences } from "./ResearchPreferences";
 import layout from "./DecisionWorkspace.module.css";
+// Stable category colors link the radar and its evidence rows, not good/bad scores.
+const lensColors: Record<string, string> = {
+  value: "#4b7fce",
+  profit: "#9775c4",
+  growth: "#398f9a",
+  health: "#bb883d",
+  cash: "#608cbb",
+  returns: "#b77392",
+  moat: "#8b83b2",
+  sentiment: "#697f9b",
+};
 export function evidenceValue(m: EvidenceMetric, currency: string) {
   if (m.value == null) return "—";
   return m.unit === "money"
@@ -189,9 +200,9 @@ export default function DecisionWorkspace({
                           cx={point(i, l.score)[0]}
                           cy={point(i, l.score)[1]}
                           r={selected === l.id ? 6 : 4}
-                          fill={
-                            selected === l.id ? "var(--ink)" : "var(--blue)"
-                          }
+                          fill={lensColors[l.id]}
+                          stroke={selected === l.id ? "var(--ink)" : "none"}
+                          strokeWidth={1.5}
                         />
                       )}
                     </g>
@@ -240,7 +251,12 @@ export default function DecisionWorkspace({
                   >
                     <span>{l.name}</span>
                     <i>
-                      <b style={{ width: `${(l.score ?? 0) * 10}%` }} />
+                      <b
+                        style={{
+                          width: `${(l.score ?? 0) * 10}%`,
+                          background: lensColors[l.id],
+                        }}
+                      />
                     </i>
                     <strong>
                       {l.score == null ? "Unscored" : l.score.toFixed(1)}

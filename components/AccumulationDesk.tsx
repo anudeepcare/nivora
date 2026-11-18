@@ -1,6 +1,7 @@
 "use client";
 import detail from "./PaceDeskDetails.module.css";
 import PaceEvidenceJourney from "./PaceEvidenceJourney";
+import PaceMonthHistory from "./PaceMonthHistory";
 import PaceReadings from "./PaceReadings";
 import styles from "./ResearchLens.module.css";
 import PaceHistoryInsights from "./PaceHistoryInsights";
@@ -105,7 +106,9 @@ export default function AccumulationDesk({
     [showEvaluation, r.history, r.retrievedAt, cost, market, weekly],
   );
   return (
-    <section className={`accumulation-desk ${styles.paceChartFirst} ${detail.desk}`}>
+    <section
+      className={`accumulation-desk ${styles.paceChartFirst} ${detail.desk}`}
+    >
       <header className="accumulation-desk-head">
         <div>
           <span className="eyebrow">
@@ -113,7 +116,10 @@ export default function AccumulationDesk({
               ? "Weekly conditions · separate time horizon"
               : "Cycle-relative · monthly discipline"}
           </span>
-          <h2>AURYN Pace <span className={detail.titleNote}>The price in perspective</span></h2>
+          <h2>
+            AURYN Pace{" "}
+            <span className={detail.titleNote}>The price in perspective</span>
+          </h2>
           <div className={styles.paceMeta}>
             <small>Model {chosen.version} · settled prices</small>
             <PaceHelp trigger="What does P mean?" />
@@ -133,42 +139,45 @@ export default function AccumulationDesk({
         </div>
       </header>
       <div className={detail.observations}>
-      <div className={styles.paceReadings}>
-        <PaceReadings
-          compact
-          readings={pacePeriods(
-            { ...confirmed, forming: chosen.forming },
-            weekly,
-          )}
-        />
-      </div>
-      <div className={detail.priceBasis} aria-label="Price observation basis">
-        <span>
-          Settled chart close{" "}
-          <strong>{amount(monthly.at(-1)?.close, r.quote.currency)}</strong> ·{" "}
-          {dateLabel(monthly.at(-1)?.time)}
-        </span>
-        <span>
-          Latest quoted price{" "}
-          <strong>{amount(r.quote.price, r.quote.currency)}</strong> ·{" "}
-          {r.quote.asOf && Number.isFinite(Date.parse(r.quote.asOf))
-            ? new Date(r.quote.asOf)
-                .toISOString()
-                .replace("T", " ")
-                .slice(0, 16) + " UTC"
-            : "Observation time not supplied"}
-          {r.quote.stale ? " · stale" : ""}
-        </span>
-        <small>
-          The quote is not used to overwrite settled chart history. Different
-          observation times can produce different prices.
-        </small>
-      </div>
+        <div className={styles.paceReadings}>
+          <PaceReadings
+            compact
+            readings={pacePeriods(
+              { ...confirmed, forming: chosen.forming },
+              weekly,
+            )}
+          />
+        </div>
+        <div className={detail.priceBasis} aria-label="Price observation basis">
+          <span>
+            Settled chart close{" "}
+            <strong>{amount(monthly.at(-1)?.close, r.quote.currency)}</strong> ·{" "}
+            {dateLabel(monthly.at(-1)?.time)}
+          </span>
+          <span>
+            Latest quoted price{" "}
+            <strong>{amount(r.quote.price, r.quote.currency)}</strong> ·{" "}
+            {r.quote.asOf && Number.isFinite(Date.parse(r.quote.asOf))
+              ? new Date(r.quote.asOf)
+                  .toISOString()
+                  .replace("T", " ")
+                  .slice(0, 16) + " UTC"
+              : "Observation time not supplied"}
+            {r.quote.stale ? " · stale" : ""}
+          </span>
+          <small>
+            The quote is not used to overwrite settled chart history. Different
+            observation times can produce different prices.
+          </small>
+        </div>
       </div>
       <div className="accumulation-chart">
         <div className={detail.chartHeading}>
           <span>{weekly ? "Weekly" : "Monthly"} price landscape</span>
-          <small>{monthly.length} displayed {weekly ? "weeks" : "months"} · zone-colored candles</small>
+          <small>
+            {monthly.length} displayed {weekly ? "weeks" : "months"} ·
+            zone-colored candles
+          </small>
         </div>
         <PriceChart
           bars={monthly}
@@ -178,6 +187,7 @@ export default function AccumulationDesk({
           levels={levels}
         />
       </div>
+      {!weekly && <PaceMonthHistory key={r.company.symbol} research={r} />}
       <div className="accumulation-summary">
         <div>
           <small>
@@ -232,7 +242,14 @@ export default function AccumulationDesk({
           <dl>
             {levels.map((l) => (
               <div key={l.label}>
-                <dt>{l.label}</dt>
+                <dt>
+                  <i
+                    className={detail.zoneSwatch}
+                    style={{ background: l.color }}
+                    aria-hidden="true"
+                  />
+                  {l.label}
+                </dt>
                 <dd>{amount(l.price, r.quote.currency)}</dd>
               </div>
             ))}

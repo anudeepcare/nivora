@@ -26,6 +26,7 @@ test("unavailable Atlas uses one status region with all evidence visible, not un
       if (name === "react/jsx-runtime") return jsx;
       if (name === "@/lib/reference-atlas") return atlas;
       if (name === "@/lib/format") return format;
+      if (name === "./PaceMonthHistory") return {__esModule:true,default:()=>React.createElement("section",{"data-pace-month-history":true})};
       if (name.endsWith(".module.css"))
         return {
           __esModule: true,

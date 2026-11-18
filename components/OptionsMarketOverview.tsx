@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useResource } from "./Session";
 import type { SentiSenseResult } from "@/lib/sentisense-api";
-import IntelligenceTable from "./IntelligenceTable";
+
 import s from "./SentiSensePanels.module.css";
 import picker from "./OptionsMarketOverview.module.css";
 const finite = (v: unknown, percent = false) =>
@@ -17,6 +17,7 @@ export default function OptionsMarketOverview({
 }) {
   const [board, setBoard] = useState("stocks");
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(0);
   const resource = useResource<SentiSenseResult>(
     !preview ? "options-overview" : null,
     undefined,
@@ -35,15 +36,18 @@ export default function OptionsMarketOverview({
       typeof record.ticker === "string" &&
       record.ticker.toLowerCase().includes(query.trim().toLowerCase()),
   );
-  const instruments = [
-    ...new Set(visible.map((record) => String(record.ticker))),
-  ]
-    .filter((ticker) => /^[A-Z0-9.\-]+$/.test(ticker))
-    .sort();
+  const pageSize = 25;
+  const pages = Math.max(1, Math.ceil(visible.length / pageSize));
+  const currentPage = Math.min(page, pages - 1);
+  const pageRows = visible.slice(
+    currentPage * pageSize,
+    (currentPage + 1) * pageSize,
+  );
   return (
     <section className={s.optionsPanel}>
       <header className={s.header}>
         <h3>Options across the market</h3>
+        <Link href="/options">Open market workspace ↗</Link>
       </header>
       <>
         <p>
@@ -55,7 +59,10 @@ export default function OptionsMarketOverview({
             <button
               key={id}
               aria-pressed={board === id}
-              onClick={() => setBoard(id)}
+              onClick={() => {
+                setBoard(id);
+                setPage(0);
+              }}
             >
               {id === "stocks" ? "Stocks" : "ETFs"}
             </button>
@@ -87,61 +94,81 @@ export default function OptionsMarketOverview({
               <input
                 type="search"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setPage(0);
+                }}
                 placeholder="Ticker, e.g. AAPL"
               />
             </label>
             <p role="status">
-              {visible.length} of {records.length} observations shown. Select a
-              ticker below to open its options research.
+              {visible.length} matching observations · {records.length}{" "}
+              returned. Select a ticker to open its options research.
             </p>
             {visible.length === 0 && (
               <p>No instruments match “{query}”. Try another ticker.</p>
             )}
-            <IntelligenceTable
-              title={`${board} options observations`}
-              rows={visible
-                .filter((r) => typeof r.ticker === "string")
-                .map((r) => ({
-                  label: String(r.ticker),
-                  href: null,
-                  date:
-                    typeof r.asOf === "string" ? r.asOf : (data?.asOf ?? null),
-                  cells: [
-                    {
-                      label: "ATM implied volatility",
-                      value: finite(r.atmIv, true),
-                    },
-                    { label: "Put/call volume", value: finite(r.pcVol) },
-                  ],
-                }))}
-            />
-            <section
-              aria-label="Open a covered instrument"
-              className={picker.picker}
+            <nav
+              className={picker.pagination}
+              aria-label="Market observations pages"
             >
-              <h4>Open a covered instrument</h4>
-              <div
-                role="region"
-                aria-label="Covered instrument links"
-                tabIndex={0}
-                className={picker.scroll}
+              <button
+                disabled={currentPage === 0}
+                onClick={() => setPage(currentPage - 1)}
               >
-                <ul className={picker.list}>
-                  {instruments.map((ticker) => (
-                    <li key={ticker}>
-                      <Link
-                        href={`/research/${encodeURIComponent(ticker)}?tab=Options`}
-                        aria-label={`Open ${ticker} options research`}
-                      >
-                        {ticker}
-                        <span aria-hidden="true">↗</span>
-                      </Link>
-                    </li>
+                Previous
+              </button>
+              <span role="status">
+                Page {currentPage + 1} of {pages} · {pageRows.length} rows
+              </span>
+              <button
+                disabled={currentPage + 1 >= pages}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                Next
+              </button>
+            </nav>
+            <div
+              className={picker.tableScroll}
+              role="region"
+              aria-label="Market options observations"
+              tabIndex={0}
+            >
+              <table className={picker.table}>
+                <caption className="sr-only">
+                  End-of-day options observations. Missing values are not
+                  supplied.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Instrument</th>
+                    <th scope="col">Observed date</th>
+                    <th scope="col">ATM implied volatility</th>
+                    <th scope="col">Put/call volume</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageRows.map((record, index) => (
+                    <tr key={`${record.ticker}:${index}`}>
+                      <th scope="row">
+                        <Link
+                          href={`/research/${encodeURIComponent(String(record.ticker))}?tab=Options`}
+                        >
+                          {String(record.ticker)} ↗
+                        </Link>
+                      </th>
+                      <td>
+                        {typeof record.asOf === "string"
+                          ? record.asOf
+                          : (data?.asOf ?? "Not supplied")}
+                      </td>
+                      <td>{finite(record.atmIv, true)}</td>
+                      <td>{finite(record.pcVol)}</td>
+                    </tr>
                   ))}
-                </ul>
-              </div>
-            </section>
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </>

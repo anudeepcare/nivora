@@ -4,8 +4,7 @@ import todayStyles from "./TodaySequence.module.css";
 import TodaySequence from "./TodaySequence";
 import ContributionCompare from "./ContributionCompare";
 import HomeMarketCards from "./HomeMarketCards";
-import { MarketRadar } from "./MarketRadar";
-import OpportunityMap from "./OpportunityMap";
+import HomeRadar from "./HomeRadar";
 import ResearchInbox from "./ResearchInbox";
 import { useHomeFeed } from "./useHomeFeed";
 import { PaceBoard } from "./WorkspacePace";
@@ -258,49 +257,11 @@ function HomeOverview() {
         headline={headlines[0] ?? null}
         concentration={largest ?? null}
       />
-      <div className={homeStyles.planRow}>
-        <div>
-          <h2>Your next contribution</h2>
-          <p>
-            Compare the evidence and your position limits before setting a plan.
-          </p>
-        </div>
-        <Link className="btn" href={`${prefix}/monthly-plan`}>
-          Build this month’s research plan →
-        </Link>
-      </div>
-      <ContributionCompare symbols={symbols} prefix={prefix} />
       <ResearchInbox
         today={day}
         events={feed.data?.events ?? []}
         coverageIssue={!!feed.error || !readiness.eventsReady}
       />
-      {loadedResearch.length > 0 && (
-        <details
-          className={homeStyles.marketRadar}
-          open={radarOpen}
-          onToggle={(event) => setRadarOpen(event.currentTarget.open)}
-        >
-          <summary>
-            Market radar{" "}
-            <span>
-              {loadedResearch.length} loaded companies · historical breadth &
-              rotation
-            </span>
-          </summary>
-          {radarOpen && (
-            <>
-              <OpportunityMap
-                research={loadedResearch}
-                requested={symbols}
-                prefix={prefix}
-                demo={!!demo}
-              />
-              <MarketRadar research={loadedResearch} asOf={day} />
-            </>
-          )}
-        </details>
-      )}
       {symbols.length > 0 && (
         <>
           <div className="home-evidence-layout">
@@ -546,6 +507,42 @@ function HomeOverview() {
             <PaceBoard {...state.paceScan} prefix={prefix} />
           </div>
         </>
+      )}
+      <div className={homeStyles.planRow}>
+        <div>
+          <h2>Your next contribution</h2>
+          <p>
+            Compare the evidence and your position limits before setting a plan.
+          </p>
+        </div>
+        <Link className="btn" href={`${prefix}/monthly-plan`}>
+          Build this month’s research plan →
+        </Link>
+      </div>
+      <ContributionCompare symbols={symbols} prefix={prefix} />
+      {loadedResearch.length > 0 && (
+        <details
+          className={homeStyles.marketRadar}
+          open={radarOpen}
+          onToggle={(event) => setRadarOpen(event.currentTarget.open)}
+        >
+          <summary>
+            Market radar{" "}
+            <span>
+              {loadedResearch.length} loaded of {symbols.length} held or watched
+              companies · historical breadth & rotation
+            </span>
+          </summary>
+          {radarOpen && (
+            <HomeRadar
+              research={loadedResearch}
+              requested={symbols}
+              prefix={prefix}
+              demo={!!demo}
+              asOf={day}
+            />
+          )}
+        </details>
       )}
     </section>
   );

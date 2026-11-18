@@ -633,3 +633,12 @@
     font-size: 16px;
   }
 }
+
+.desk .views button[aria-pressed="true"],
+.desk .options_segment button[aria-pressed="true"],
+.desk .options_strategies button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--ink) 6%, var(--card));
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink) 28%, var(--line));
+  font-weight: 500;
+}

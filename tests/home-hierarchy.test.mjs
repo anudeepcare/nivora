@@ -11,7 +11,9 @@ test('Today leads with actual portfolio and followed price graphs before editori
 test('loaded breadth and rotation metrics open by default without removing collapse controls',()=>{
  assert.match(home,/\[radarOpen, setRadarOpen\] = useState\(true\)/);
  assert.match(home,/onToggle=\{\(event\) => setRadarOpen\(event.currentTarget.open\)\}/);
- assert.match(home,/<OpportunityMap/); assert.match(home,/<MarketRadar/);
+ assert.match(home,/<HomeRadar/);
+ const radar=readFileSync("components/HomeRadar.tsx","utf8");
+ assert.match(radar,/<OpportunityMap/); assert.match(radar,/<MarketRadar/);
 });
 test('public Product navigation targets the actual connected tour, without repeating the same three questions',()=>{
  const source=readFileSync('components/PublicLanding.tsx','utf8');
@@ -24,4 +26,12 @@ test('exposure highlights the existing actual portfolio weight, never a syntheti
  const source=readFileSync('components/TodaySequence.tsx','utf8');
  assert.match(source,/className=\{styles.exposureMetric\}[\s\S]*?concentration.weight.toFixed\(1\)/);
  assert.match(source,/Of the priced portfolio/);
+});
+
+test('contribution planning and market radar follow all primary Today evidence',()=>{
+ const body=home.slice(home.indexOf('function HomeOverview()'));
+ assert.ok(body.indexOf('Your next contribution')>body.indexOf('<PaceBoard'));
+ assert.ok(body.indexOf('<ContributionCompare')>body.indexOf('<PaceBoard'));
+ assert.ok(body.indexOf('Market radar')>body.indexOf('<ContributionCompare'));
+ assert.match(body,/onToggle=\{\(event\) => setRadarOpen\(event.currentTarget.open\)\}/);
 });

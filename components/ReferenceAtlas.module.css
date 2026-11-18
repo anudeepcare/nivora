@@ -638,3 +638,7 @@
     border-bottom: 1px solid var(--atlas-line);
   }
 }
+.availabilityInfo { color: var(--muted); font-size: 12px; }
+.availabilityInfo > summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; gap: 6px; width: fit-content; color: var(--ink); }
+.availabilityInfo > summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.availabilityInfo > p { max-width: 90ch; line-height: 1.6; }

@@ -63,7 +63,11 @@
   padding: clamp(16px, 2.2vw, 28px);
   border: 0;
   border-radius: 20px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--blue) 5%, var(--card)), var(--card) 45%);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--blue) 5%, var(--card)),
+    var(--card) 45%
+  );
   box-shadow: 0 10px 36px color-mix(in srgb, var(--ink) 4%, transparent);
   gap: 20px 28px;
 }
@@ -79,7 +83,7 @@
   gap: 8px 14px;
   font-size: clamp(20px, 2vw, 27px);
   font-weight: 500;
-  letter-spacing: -.045em;
+  letter-spacing: -0.045em;
 }
 .titleNote {
   font-size: 13px;
@@ -97,12 +101,12 @@
 }
 .desk .observations :global(.pace-readings) {
   display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 .desk .observations :global(.pace-period) {
   display: grid;
-  grid-template-columns: auto minmax(0,1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: baseline;
   gap: 3px 10px;
   padding: 0;
@@ -120,7 +124,7 @@
   font-size: 29px;
   line-height: 1.3;
   font-weight: 500;
-  letter-spacing: -.05em;
+  letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
 }
 .desk .observations :global(.pace-period) > b {
@@ -132,9 +136,18 @@
   font-size: 11px;
   color: var(--muted);
 }
-.observations .priceBasis { margin: 0; gap: 4px 12px; font-size: 11px; }
-.observations .priceBasis > span { flex-basis: 100%; }
-.observations .priceBasis small { font-size: 10px; line-height: 1.5; }
+.observations .priceBasis {
+  margin: 0;
+  gap: 4px 12px;
+  font-size: 11px;
+}
+.observations .priceBasis > span {
+  flex-basis: 100%;
+}
+.observations .priceBasis small {
+  font-size: 10px;
+  line-height: 1.5;
+}
 .desk.desk > :global(.accumulation-chart) {
   border: 0;
   padding: 0;
@@ -153,7 +166,11 @@
   font-size: 13px;
   font-weight: 500;
 }
-.chartHeading small { color: var(--muted); font-size: 11px; font-weight: 400; }
+.chartHeading small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
 .desk.desk > :global(.accumulation-summary) {
   border: 0;
   border-left: 1px solid var(--line);
@@ -163,27 +180,98 @@
   border-radius: 0;
   gap: 20px;
 }
-.desk :global(.accumulation-summary) p { font-size: 15px; line-height: 1.65; margin: 8px 0 0; }
+.desk :global(.accumulation-summary) p {
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 8px 0 0;
+}
 .desk :global(.accumulation-summary) small,
-.desk :global(.accumulation-summary) dt { font-size: 11px; color: var(--muted); }
-.desk :global(.accumulation-summary) dd { font-size: 13px; line-height: 1.6; margin: 5px 0 0; }
-.desk .levels { border-block: 1px solid var(--line); padding: 8px 0 16px; margin: 0; }
-.desk .levels dl { gap: 12px 28px; }
-.desk .levels dl > div { flex-direction: column; align-items: start; gap: 4px; }
-.desk .levels dd { font-size: 17px; font-weight: 500; }
+.desk :global(.accumulation-summary) dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+.desk :global(.accumulation-summary) dd {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 5px 0 0;
+}
+.desk .levels {
+  border-block: 1px solid var(--line);
+  padding: 8px 0 16px;
+  margin: 0;
+}
+.desk .levels dl {
+  gap: 12px 28px;
+}
+.desk .levels dl > div {
+  flex-direction: column;
+  align-items: start;
+  gap: 4px;
+}
+.desk .levels dd {
+  font-size: 17px;
+  font-weight: 500;
+}
 @media (max-width: 1000px) {
-  .observations { grid-template-columns: 1fr; gap: 14px; }
-  .observations .priceBasis > span { flex-basis: auto; }
+  .observations {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .observations .priceBasis > span {
+    flex-basis: auto;
+  }
 }
 @media (max-width: 700px) {
-  .desk.desk { padding: 16px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 18px; }
-  .desk.desk > * { width: 100%; min-width: 0; }
-  .desk.desk > :global(.accumulation-desk-head) { flex-wrap: wrap; align-items: start; }
-  .desk :global(.segments) { min-height: 44px; }
-  .observations { padding: 14px 0; }
-  .desk .observations :global(.pace-readings) { gap: 12px; }
-  .desk .observations :global(.pace-period) > strong { font-size: 25px; }
-  .desk.desk > :global(.accumulation-summary) { border-left: 0; border-top: 1px solid var(--line); padding: 16px 0 0; }
-  .desk :global(.accumulation-summary) p { font-size: 14px; }
-  .desk .levels dl { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .desk.desk {
+    padding: 16px 12px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .desk.desk > * {
+    width: 100%;
+    min-width: 0;
+  }
+  .desk.desk > :global(.accumulation-desk-head) {
+    flex-wrap: wrap;
+    align-items: start;
+  }
+  .desk :global(.segments) {
+    min-height: 44px;
+  }
+  .observations {
+    padding: 14px 0;
+  }
+  .desk .observations :global(.pace-readings) {
+    gap: 12px;
+  }
+  .desk .observations :global(.pace-period) > strong {
+    font-size: 25px;
+  }
+  .desk.desk > :global(.accumulation-summary) {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 16px 0 0;
+  }
+  .desk :global(.accumulation-summary) p {
+    font-size: 14px;
+  }
+  .desk .levels dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.desk .levels dt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.zoneSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
 }

@@ -9,6 +9,7 @@ import {
 } from "@/lib/reference-atlas";
 import { amount, percent, dateLabel } from "@/lib/format";
 import s from "./ReferenceAtlas.module.css";
+import PaceMonthHistory from "./PaceMonthHistory";
 const coordinates = [
   [150, 34],
   [255, 89],
@@ -278,18 +279,23 @@ export default function ReferenceAtlas({
               View scenario evidence ↗
             </button>
           </header>
-          {!b.checks.some(
-            (check) => check.detail && b.value.reason.includes(check.detail),
-          ) && <p>{b.value.reason}</p>}
-          <div className={s.checkGrid}>
-            {b.checks.map((check) => (
-              <div key={check.label}>
-                <span>{check.label}</span>
-                <strong data-state={check.status}>{check.status}</strong>
-                <p>{check.detail}</p>
-              </div>
-            ))}
-          </div>
+          <details className={s.availabilityInfo}>
+            <summary aria-label="Model range unavailable: reasons and evidence">
+              ⓘ Why this range is unavailable
+            </summary>
+            {!b.checks.some(
+              (check) => check.detail && b.value.reason.includes(check.detail),
+            ) && <p>{b.value.reason}</p>}
+            <div className={s.checkGrid}>
+              {b.checks.map((check) => (
+                <div key={check.label}>
+                  <span>{check.label}</span>
+                  <strong data-state={check.status}>{check.status}</strong>
+                  <p>{check.detail}</p>
+                </div>
+              ))}
+            </div>
+          </details>
         </section>
       ) : (
         <div className={s.lower}>
@@ -352,6 +358,7 @@ export default function ReferenceAtlas({
           </section>
         </div>
       )}
+      <PaceMonthHistory key={research.company.symbol} research={research} />
     </section>
   );
 }

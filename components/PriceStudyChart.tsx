@@ -38,10 +38,10 @@ export default function PriceStudyChart({
     const target = consensusOutlook(research);
     return [
       ...(target
-        ? [{ label: "Analyst target", price: target.target, color: "#427bd7" }]
+        ? [{ label: "Analyst target", price: target.target, color: "#8b6bc1" }]
         : []),
       ...(tech.ma50 != null
-        ? [{ label: "50-session", price: tech.ma50, color: "#879b83" }]
+        ? [{ label: "50-session", price: tech.ma50, color: "#328b94" }]
         : []),
       ...(tech.ma200 != null
         ? [{ label: "200-session", price: tech.ma200, color: "#b87b23" }]

@@ -22,6 +22,7 @@ import {
   Sun,
   Moon,
   Compass,
+  SlidersHorizontal,
   FlaskConical,
   Scale,
   HelpCircle,
@@ -50,6 +51,7 @@ function LinkProgress() {
 const navigationIcons = {
   overview: Home,
   research: ChartNoAxesCombined,
+  options: SlidersHorizontal,
   discover: Compass,
   compare: Scale,
   watchlist: Bookmark,
@@ -198,7 +200,11 @@ export default function Shell({
         Skip to content
       </a>
       <header className={experience.header}>
-        <Link href={`${prefix}/overview`} className={experience.brand} aria-label="AURYN workspace home">
+        <Link
+          href={`${prefix}/overview`}
+          className={experience.brand}
+          aria-label="AURYN workspace home"
+        >
           <img src="/icon.svg" width="32" height="32" alt="" />
           <span>AURYN</span>
         </Link>
@@ -260,9 +266,7 @@ export default function Shell({
       <nav className={experience.dock} aria-label="Mobile navigation">
         {primary
           .filter((item) =>
-            ["overview", "research", "watchlist", "portfolio"].includes(
-              item.path,
-            ),
+            mobileNavigation.some((entry) => entry.path === item.path),
           )
           .map((r) => nav(r))}
       </nav>

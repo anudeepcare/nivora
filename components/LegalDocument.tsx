@@ -13,10 +13,15 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
   const [query, setQuery] = useState(""),
     d = documents[id],
     sections = d.sections.filter((s) =>
-      (s.title + " " + s.text).toLowerCase().includes(query.trim().toLowerCase()),
+      (s.title + " " + s.text)
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()),
     );
   return (
-    <main className={`legal-document atlas-document ${styles.document}`} data-document={id}>
+    <main
+      className={`legal-document atlas-document ${styles.document}`}
+      data-document={id}
+    >
       <header>
         <Link href="/" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
@@ -51,6 +56,18 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
             Updated {legalConfiguration.updated}
           </p>
           {id === "help" && (
+            <div className={styles.helpContact}>
+              <div>
+                <strong>Need a hand?</strong>
+                <p>
+                  For account, billing or technical issues, send a support
+                  request.
+                </p>
+              </div>
+              <ContextLink page="contact">Contact support ↗</ContextLink>
+            </div>
+          )}
+          {id === "help" && (
             <label className="help-search">
               Find a topic
               <input
@@ -61,28 +78,64 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
               />
             </label>
           )}
-          {id === "help" && query && <div className="help-search-result" role="status"><span>{sections.length} matching {sections.length === 1 ? "topic" : "topics"}</span><button type="button" onClick={() => setQuery("")}>Clear search</button></div>}
+          {id === "help" && query && (
+            <div className="help-search-result" role="status">
+              <span>
+                {sections.length} matching{" "}
+                {sections.length === 1 ? "topic" : "topics"}
+              </span>
+              <button type="button" onClick={() => setQuery("")}>
+                Clear search
+              </button>
+            </div>
+          )}
           {id === "methodology" && (
-            <section className={styles.methodologyIntro} aria-label="Method at a glance">
+            <section
+              className={styles.methodologyIntro}
+              aria-label="Method at a glance"
+            >
               <h2>Business. Price. Pace.</h2>
-              <p>{d.sections.find((s) => s.title === "Three separate questions")?.text}</p>
-              <p>Model conditions support research, not orders or personalized advice. Open a topic below for the exact rules, assumptions and limitations.</p>
+              <p>
+                {
+                  d.sections.find((s) => s.title === "Three separate questions")
+                    ?.text
+                }
+              </p>
+              <p>
+                Model conditions support research, not orders or personalized
+                advice. Open a topic below for the exact rules, assumptions and
+                limitations.
+              </p>
             </section>
           )}
           <div className="document-sections">
-            {sections.filter((s) => id !== "methodology" || s.title !== "Three separate questions").map((s) => (
-              id === "methodology" ? (
-                <details key={s.title} className={styles.methodologyDetails}>
-                  <summary>{s.title}</summary>
-                  <p>{s.text}</p>
-                </details>
-              ) : (
-                <section key={s.title}>
-                  <h2>{s.title}</h2>
-                  <p>{s.text}</p>
-                </section>
+            {sections
+              .filter(
+                (s) =>
+                  id !== "methodology" ||
+                  s.title !== "Three separate questions",
               )
-            ))}
+              .map((s) =>
+                id === "methodology" || id === "help" ? (
+                  <details
+                    key={s.title}
+                    className={
+                      id === "help"
+                        ? styles.helpTopic
+                        : styles.methodologyDetails
+                    }
+                    open={id === "help" && !!query.trim() ? true : undefined}
+                  >
+                    <summary>{s.title}</summary>
+                    <p>{s.text}</p>
+                  </details>
+                ) : (
+                  <section key={s.title}>
+                    <h2>{s.title}</h2>
+                    <p>{s.text}</p>
+                  </section>
+                ),
+              )}
             {!sections.length && (
               <p>No matching topic. Try a shorter search.</p>
             )}

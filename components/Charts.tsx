@@ -47,7 +47,8 @@ export function PriceChart({
     const ink =
       palette.getPropertyValue("--muted").trim() ||
       (theme === "dark" ? "#a8b9c5" : "#5e6e79");
-    const accent = palette.getPropertyValue("--ink").trim() || "#24272b";
+    // Blue identifies observed price, not a bullish/bearish judgment.
+    const accent = theme === "dark" ? "#75a7ff" : "#3268c8";
     const grid =
       palette.getPropertyValue("--line").trim() ||
       (theme === "dark" ? "#2a3b47" : "#e2e7ec");
@@ -240,7 +241,17 @@ export function PriceChart({
           series.current?.removePriceLine(l);
         } catch {}
     };
-  }, [bars, range, theme, style, levels, contrast, candleColors, compactLevelTitles, compact]);
+  }, [
+    bars,
+    range,
+    theme,
+    style,
+    levels,
+    contrast,
+    candleColors,
+    compactLevelTitles,
+    compact,
+  ]);
   return (
     <div className="chart-wrap">
       <div className="chart-readout" aria-label="Chart inspection">

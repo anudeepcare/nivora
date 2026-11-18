@@ -90,8 +90,8 @@ export default function SelectedValuation({
           projection.caveat ?? "Conditional market-multiple sensitivity.",
       }
     : d.valuation;
-  // A price-anchored sensitivity has a base equal to today's price by
-  // construction, so a named analyst or historical range leads instead.
+  // Available conditional cases lead consistently on every research surface.
+  // Historical context is a fallback, never a replacement merely because a caller supplies it.
   // A revenue model that carries a multiple above 20x forward, or lands above
   // three times the price, is applying a trailing multiple to a much larger
   // forecast. It is withheld (same rule as lib/scenario-cases.ts).
@@ -102,7 +102,7 @@ export default function SelectedValuation({
       (!!d.reference && projection.cases[1].target > 3 * d.reference.price));
   const lead =
     headline &&
-    (!modelled || extreme || (projection.available && !ordinary.available))
+    (!modelled || extreme)
       ? headline
       : null;
   const v = lead
@@ -219,7 +219,7 @@ export default function SelectedValuation({
           <span className={s.eyebrow}>
             {lead ? lead.eyebrow : "AURYN valuation"}
           </span>
-          <h2>Bear, base &amp; bull</h2>
+          <h2>{lead ? "Historical volatility range" : "Bear, base & bull"}</h2>
           {!lead && projection.available && ends.length > 1 && (
             <div
               className={s.years}
@@ -242,13 +242,17 @@ export default function SelectedValuation({
           )}
           <p>
             {lead
-              ? lead.detail
+              ? "One-year price variability · not an earnings valuation."
               : v
                 ? v.basis === "cash-flow"
                   ? "Present model values from a ten-year cash-flow projection."
                   : `${projection.available && projection.basis === "revenue" ? "Conditional revenue sensitivity" : projection.available && projection.multipleSource === "price-implied" ? "Price-anchored earnings" : "Conditional earnings"} · ${dateLabel(v.end)} · scenario prices, not independent fair value.`
                 : "No suitable model has qualified. Analyst consensus and historical price risk remain separate."}
           </p>
+          <details className={s.methodInfo}>
+            <summary aria-label="Why scenario ranges differ">ⓘ Method &amp; comparison</summary>
+            <p>{lead ? lead.detail : "These are conditional business scenarios. Analyst targets are published opinions; historical price-risk cases describe past returns over their stated session horizon. Different methods are not interchangeable."}</p>
+          </details>
         </div>
         {actions}
       </header>

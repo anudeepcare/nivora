@@ -162,60 +162,25 @@ test("user-facing market errors are neutral while source provenance is retained"
   );
   assert.match(source, /source: "EODHD"/);
 });
-test("market overview keeps stock and ETF boards distinct with source units", () => {
-  let states = ["stocks", ""],
-    index = 0;
-  const rows = [];
-  const View = load(
-    "components/OptionsMarketOverview.tsx",
-    "OptionsMarketOverview",
-    {
-      React,
-      Link: ({ children, ...p }) => React.createElement("a", p, children),
-      picker: {},
-      s: {},
-      useState: () => [states[index++], () => {}],
-      useResource: () => ({
-        data: {
-          status: "available",
-          data: {
-            asOf: "2026-11-16",
-            rows: [{ ticker: "AAPL", atmIv: 0.25, pcVol: 0 }],
-            etfRows: [{ ticker: "QQQ", atmIv: 0.2, pcVol: 1 }],
-          },
-        },
-      }),
-      IntelligenceTable: ({ rows: r }) => {
-        rows.push(...r);
-        return null;
-      },
-    },
-  );
-  renderToStaticMarkup(React.createElement(View));
-  assert.equal(rows[0].label, "AAPL");
-  assert.equal(rows[0].cells[0].value, "25.00%");
-  assert.equal(rows[0].cells[1].value, "0.00×");
-  assert.ok(!rows.some((r) => r.label === "QQQ"));
-  states = ["funds", ""];
-  index = 0;
-  rows.length = 0;
-  renderToStaticMarkup(React.createElement(View));
-  assert.equal(rows[0].label, "QQQ");
-  states = ["stocks", "missing"];
-  index = 0;
-  rows.length = 0;
-  const empty = renderToStaticMarkup(React.createElement(View));
-  assert.equal(rows.length, 0);
-  assert.match(empty, /No instruments match/);
-  assert.match(empty, /Search covered instruments/);
-  states = ["stocks", "  aaPl  "];
-  index = 0;
-  rows.length = 0;
-  const matched = renderToStaticMarkup(React.createElement(View));
-  assert.equal(rows[0].label, "AAPL");
-  assert.match(matched, /href="\/research\/AAPL\?tab=Options"/);
-  assert.match(matched, /aria-label="Open AAPL options research"/);
-  assert.match(matched, /aria-label="Covered instrument links" tabindex="0"/);
+test("market overview pages stock and ETF observations with exact units, search and links", () => {
+  let states = ["stocks", "", 0], index = 0;
+  const records = [{ticker:"AAPL",atmIv:0.25,pcVol:0}, ...Array.from({length:50},(_,i)=>({ticker:`S${i}`,atmIv:null,pcVol:null}))];
+  const View = load("components/OptionsMarketOverview.tsx", "OptionsMarketOverview", {
+    React, Link: ({children,...p})=>React.createElement("a",p,children), picker:{}, s:{},
+    useState: (initial)=>[states[index++] ?? initial,()=>{}],
+    useResource:()=>({data:{status:"available",data:{asOf:"2026-11-16",rows:records,etfRows:[{ticker:"QQQ",atmIv:0.2,pcVol:1}]}}}),
+  });
+  const render=(next)=>{states=next;index=0;return renderToStaticMarkup(React.createElement(View));};
+  const first=render(["stocks","",0]);
+  assert.match(first,/25.00%/); assert.match(first,/0.00×/); assert.doesNotMatch(first,/QQQ/);
+  assert.equal((first.match(/<tr>/g)||[]).length,26); assert.match(first,/Page 1 of 3/);
+  assert.match(first,/Not supplied/); assert.match(first,/2026-11-16/);
+  const last=render(["stocks","",2]); assert.match(last,/S49/); assert.doesNotMatch(last,/href="\/research\/AAPL/); assert.match(last,/Page 3 of 3/);
+  const fund=render(["funds","",0]); assert.match(fund,/QQQ/); assert.doesNotMatch(fund,/href="\/research\/AAPL/);
+  const empty=render(["stocks","missing",0]); assert.match(empty,/No instruments match/); assert.match(empty,/Search covered instruments/);
+  const matched=render(["stocks","  aaPl  ",0]); assert.match(matched,/href="\/research\/AAPL\?tab=Options"/); assert.match(matched,/25.00%/);
+  assert.match(matched,/aria-label="Market options observations" tabindex="0"/);
+  assert.equal((matched.match(/<table/g)||[]).length,1);
 });
 test("ETF holdings only requests its endpoint after composition is opened", () => {
   let state = [false, ""],
@@ -363,4 +328,12 @@ test('failed analyst evidence has explicit scoped retry without bypassing classi
   assert.match(refreshed[0],new RegExp('dataset='+(kind===null?'profile':kind==='ETF'?'etfAnalyst':'consensus')));
   if(kind===null)assert.equal(requested[1],null,'unknown identity cannot request targets');
  }
+});
+test("paged market surface has one horizontal scroller without nested vertical traps",()=>{
+ const css=fs.readFileSync("components/OptionsMarketOverview.module.css","utf8");
+ assert.match(css,/overflow-x: auto/); assert.doesNotMatch(css,/max-height:|overflow-y:|overscroll-behavior: contain/);
+ const source=fs.readFileSync("components/OptionsMarketOverview.tsx","utf8");
+ assert.match(source,/const pageSize = 25/); assert.doesNotMatch(source,/IntelligenceTable|picker.scroll/);
+ assert.match(source,/setQuery\(event.target.value\);\s+setPage\(0\)/);
+ assert.match(source,/setBoard\(id\);\s+setPage\(0\)/);
 });

@@ -9,11 +9,11 @@ import {
 test("reference desktop and mobile navigation preserve actual routes", () => {
   assert.deepEqual(
     desktopNavigation.map((x) => x.label),
-    ["Today", "Research", "Watchlist", "Portfolio"],
+    ["Today", "Research", "Options", "Watchlist", "Portfolio"],
   );
   assert.deepEqual(
     mobileNavigation.map((x) => x.label),
-    ["Today", "Research", "Watchlist", "Portfolio"],
+    ["Today", "Research", "Options", "Watchlist", "Portfolio"],
   );
   assert.equal(desktopNavigation[0].path, "overview");
 });
@@ -57,4 +57,17 @@ test("secondary research tools remain discoverable through account tools without
   for (const path of ["discover", "compare"])
     assert.ok(s.includes('path: "' + path + '"'));
   assert.match(s, /aria-haspopup="dialog"/);
+});
+
+test("market options has its own lazy route without removing ticker options", async () => {
+  const fs = await import("node:fs");
+  const product = fs.readFileSync("components/Product.tsx", "utf8");
+  const page = fs.readFileSync("components/OptionsMarketPage.tsx", "utf8");
+  const shell = fs.readFileSync("components/Shell.tsx", "utf8");
+  assert.match(product, /page === "options"/);
+  assert.match(product, /import\("\.\/OptionsMarketPage"\)/);
+  assert.match(page, /<OptionsMarketOverview \/>/);
+  assert.match(page, /not included in this design\s+preview/);
+  assert.match(shell, /mobileNavigation.some/);
+  assert.equal(lensForSection("Options").label, "Options");
 });

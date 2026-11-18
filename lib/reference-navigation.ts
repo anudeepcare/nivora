@@ -1,11 +1,14 @@
 export const desktopNavigation = [
   { path: "overview", label: "Today" },
   { path: "research", label: "Research" },
+  { path: "options", label: "Options" },
   { path: "watchlist", label: "Watchlist" },
   { path: "portfolio", label: "Portfolio" },
 ] as const;
 export const mobileNavigation = desktopNavigation.filter((item) =>
-  ["overview", "research", "watchlist", "portfolio"].includes(item.path),
+  ["overview", "research", "options", "watchlist", "portfolio"].includes(
+    item.path,
+  ),
 );
 export const researchLenses = [
   { label: "Atlas", sections: ["Snapshot", "Financials", "Analysts"] },

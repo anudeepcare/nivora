@@ -789,19 +789,19 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Options" && (
               <section aria-label="Company positioning">
-                <SentiSensePanels
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                  group="options"
-                />
                 <ResearchWorkspace
                   key={`${r.company.symbol}-options-tools`}
-                  label="Additional options tools"
-                  initialSelection={-1}
+                  label="Options research"
                   views={[
                     {
-                      title: "Market overview",
-                      content: <OptionsMarketOverview preview={!!demo} />,
+                      title: "Positioning & history",
+                      content: (
+                        <SentiSensePanels
+                          symbol={r.company.symbol}
+                          preview={!!demo}
+                          group="options"
+                        />
+                      ),
                     },
                     {
                       title: "Contract tools & practice",
@@ -812,6 +812,10 @@ export default function Research({ symbol }: { symbol: string }) {
                           preview={!!demo}
                         />
                       ),
+                    },
+                    {
+                      title: "Market overview",
+                      content: <OptionsMarketOverview preview={!!demo} />,
                     },
                   ]}
                 />

@@ -5,11 +5,12 @@ import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
+import { mobileNavigation } from "../lib/reference-navigation.ts";
 import { settingsHref } from "../lib/settings-navigation.ts";
 
 function component(file, name, bindings) {
   bindings={LinkProgress:()=>null,ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
-  bindings = { experience, PaceInstrument, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
+  bindings = { mobileNavigation, experience, PaceInstrument, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   bindings={DocumentScrollReturn:()=>null,AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,

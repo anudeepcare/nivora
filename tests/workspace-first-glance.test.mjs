@@ -41,12 +41,12 @@ test("Compare keeps the ticker form visible and secondary company lookup collaps
   assert.match(s, /<summary>Find companies by name<\/summary>/);
   assert.match(s, /aria-label="Companies to compare"/);
 });
-test("Portfolio starts with compact metrics and keeps explanations behind disclosure", () => {
+test("Portfolio starts with compact metrics and keeps coverage warnings visible", () => {
   const s = read("components/PortfolioPage.tsx");
-  assert.match(s, /<details className=\{reference.summaryDetails\}>/);
+  assert.match(s, /<section className=\{reference.checks\} aria-label="Portfolio checks">/);
   assert.doesNotMatch(
     s,
-    /<details className=\{reference.summaryDetails\} open/,
+    /reference.summaryDetails|Your portfolio in 30 seconds/,
   );
   assert.match(
     read("components/PortfolioReference.module.css"),

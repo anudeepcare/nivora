@@ -794,5 +794,73 @@
 
 /* Reference composition: chart leads, dated interpretation stays beside it. */
 @media (min-width: 1101px) {
-  .technicalWorkbench { grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr); }
+  .technicalWorkbench {
+    grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr);
+  }
+}
+
+/* Categorical study accents identify the measurement family, never a trade verdict. */
+.panel.panel.panel.panel :global(.technical-desk-groups) > section {
+  --study-accent: #4b7fce;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--study-accent);
+  background: var(--card);
+  min-width: 0;
+}
+.panel.panel.panel.panel
+  :global(.technical-desk-groups)
+  > section[data-tone="blue"] {
+  --study-accent: #4b7fce;
+}
+.panel.panel.panel.panel
+  :global(.technical-desk-groups)
+  > section[data-tone="violet"] {
+  --study-accent: #9775c4;
+}
+.panel.panel.panel.panel
+  :global(.technical-desk-groups)
+  > section[data-tone="amber"] {
+  --study-accent: #bb883d;
+}
+.panel.panel.panel.panel
+  :global(.technical-desk-groups)
+  > section[data-tone="teal"] {
+  --study-accent: #398f9a;
+}
+.panel.panel.panel.panel :global(.technical-desk-groups) h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+.panel.panel.panel.panel :global(.technical-desk-groups) h3 svg {
+  color: var(--study-accent);
+}
+.panel.panel.panel.panel :global(.technical-desk-groups) dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  padding: 10px 0;
+}
+.panel.panel.panel.panel :global(.technical-desk-groups) dd {
+  font-weight: 500;
+  font-size: 15px;
+}
+.panel.panel.panel .technicalCurrent :global(.technical-summary-strip > *) {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, #4b7fce 6%, var(--card));
+}
+.panel.panel.panel .technicalCurrent :global(.technical-summary-strip strong) {
+  font-weight: 500;
+}
+@media (max-width: 650px) {
+  .panel.panel.panel.panel :global(.technical-desk-groups) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .panel.panel.panel.panel :global(.technical-desk-groups) dl > div {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .panel.panel.panel.panel :global(.technical-desk-groups) dd {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }

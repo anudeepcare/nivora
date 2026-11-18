@@ -12,6 +12,6 @@ test('Help search trims input and offers a working reset without changing legal 
  const bindings={useState:()=>[' Pace ',v=>saved=v],documents:{help:{title:'Help',intro:'Guide',sections:[{title:'Pace',text:'Price context'},{title:'Portfolio',text:'Holdings'}]}},legalConfiguration:{version:'1',updated:'Today',operator:'Operator',contact:'support@example.com'},styles:{document:'document'},Link:noop,ContextLink:noop,DocumentBack:noop,PrivacyChoices:noop};
  const View=new Function('React',...Object.keys(bindings),code+';return LegalDocument;')(React,...Object.values(bindings));
  const tree=View({id:'help'});assert.equal(tree.props['data-document'],'help');
- assert.equal(nodes(tree,n=>n.type==='section').length,1);
+ const topics=nodes(tree,n=>n.type==='details');assert.equal(topics.length,1);assert.equal(topics[0].props.open,true);assert.equal(nodes(topics[0],n=>n.type==='summary')[0].props.children,'Pace');
  const reset=nodes(tree,n=>n.type==='button')[0];assert.equal(reset.props.children,'Clear search');reset.props.onClick();assert.equal(saved,'');
 });

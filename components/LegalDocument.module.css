@@ -241,19 +241,152 @@
 }
 
 /* Searchable help uses a compact reading list; legal document copy stays intact. */
-.document.document.document[data-document="help"] :global(.document-sections) { display: grid; gap: 0; }
-.document.document.document[data-document="help"] :global(.document-sections) > section { padding: 18px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; }
-.document.document.document[data-document="help"] :global(.document-sections) h2 { font-size: 17px; font-weight: 500; margin: 0 0 8px; }
-.document.document.document[data-document="help"] :global(.document-sections) p { font-size: 14px; line-height: 1.7; margin: 0; }
-.document :global(.help-search-result) { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }
-.document :global(.help-search-result) button { min-height: 40px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+.document.document.document[data-document="help"] :global(.document-sections) {
+  display: grid;
+  gap: 0;
+}
+.document.document.document[data-document="help"]
+  :global(.document-sections)
+  > section {
+  padding: 18px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.document.document.document[data-document="help"]
+  :global(.document-sections)
+  h2 {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+.document.document.document[data-document="help"]
+  :global(.document-sections)
+  p {
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+}
+.document :global(.help-search-result) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.document :global(.help-search-result) button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+}
 
 /* Methodology: a readable overview, with exact policy details available on demand. */
-.document[data-document="methodology"] :global(.document-sections) { display: grid; gap: 0; }
-.methodologyIntro { padding: 0 0 20px; }
-.methodologyIntro h2 { font-size: 20px; font-weight: 500; margin: 0 0 12px; }
-.methodologyIntro p, .methodologyDetails p { font-size: 14px; line-height: 1.7; color: var(--muted); }
-.methodologyDetails { border-top: 1px solid var(--line); padding: 0; }
-.methodologyDetails summary { cursor: pointer; padding: 16px 0; min-height: 44px; font-size: 15px; font-weight: 500; color: var(--ink); }
-.methodologyDetails summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
-.methodologyDetails p { margin: 0 0 20px; max-width: 78ch; }
+.document[data-document="methodology"] :global(.document-sections) {
+  display: grid;
+  gap: 0;
+}
+.methodologyIntro {
+  padding: 0 0 20px;
+}
+.methodologyIntro h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.methodologyIntro p,
+.methodologyDetails p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.methodologyDetails {
+  border-top: 1px solid var(--line);
+  padding: 0;
+}
+.methodologyDetails summary {
+  cursor: pointer;
+  padding: 16px 0;
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.methodologyDetails summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.methodologyDetails p {
+  margin: 0 0 20px;
+  max-width: 78ch;
+}
+
+.helpContact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--blue) 7%, var(--card));
+  border-left: 3px solid var(--blue);
+}
+.helpContact strong {
+  font-size: 15px;
+  font-weight: 550;
+}
+.helpContact p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.helpContact a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--blue);
+}
+.helpTopic {
+  border-bottom: 1px solid var(--line);
+  padding: 0;
+}
+.helpTopic summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 16px 4px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.helpTopic[open] summary {
+  color: var(--blue);
+}
+.document .helpTopic p {
+  margin: 0 4px 20px;
+  max-width: 78ch;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.helpTopic summary:focus-visible,
+.helpContact a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .helpContact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 14px;
+  }
+}

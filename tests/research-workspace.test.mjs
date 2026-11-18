@@ -84,7 +84,7 @@ test("Pace preserves readings, chart, levels and historical tools with rules con
   const s = fs.readFileSync("components/AccumulationDesk.tsx", "utf8");
   for (const component of ["PaceReadings", "PriceChart", "PaceHistoryInsights"])
     assert.match(s, new RegExp("<" + component + "[ \\n]"));
-  assert.match(s, /<details className=\{detail.levels\}>/);
+  assert.match(s, /<details(?: open)? className=\{detail.levels\}>/);
   assert.match(s, /<summary>Conditional zone prices<\/summary>/);
   assert.match(s, /amount\(l.price, r.quote.currency\)/);
   assert.match(s, /View legacy-policy backtest/);
@@ -170,6 +170,14 @@ test("optional market tools mount neither dataset until explicit selection", () 
   assert.equal(tree.props.children[1].props.children, "market-dataset");
   assert.match(
     fs.readFileSync("components/Research.tsx", "utf8"),
-    /label="Additional options tools"\s+initialSelection=\{-1\}/,
+    /label="Options research"/,
   );
+});
+
+test("Options tools sit above evidence and mount only the selected workspace", () => {
+ const source=fs.readFileSync("components/Research.tsx","utf8");
+ const options=source.slice(source.indexOf('{tab === "Options" && ('),source.indexOf('{tab === "Analysts" && ('));
+ assert.ok(options.indexOf("<ResearchWorkspace")<options.indexOf("<SentiSensePanels"));
+ assert.ok(options.indexOf('title: "Positioning & history"')<options.indexOf('title: "Contract tools & practice"'));
+ assert.doesNotMatch(options,/preserveState|initialSelection/);
 });
