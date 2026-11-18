@@ -15,7 +15,9 @@ type History = {
   requestedThrough: string;
   lastValuationDate: string | null;
 };
-export default function AccountHistory() {
+export default function AccountHistory({
+  readOnly = false,
+}: { readOnly?: boolean } = {}) {
   const controller = useRef<AbortController | null>(null);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const [chartWidth, setChartWidth] = useState(800);
@@ -170,123 +172,129 @@ export default function AccountHistory() {
     points
       .map((p) => `${x(p.date)},${180 - ((p[key] - low) / span) * 160}`)
       .join(" ");
+  if (readOnly && (result?.status !== "available" || !last)) return null;
   return (
-    <div className={styles.history}>
+    <div className={styles.history} data-read-only={readOnly || undefined}>
+      {readOnly && <h2>Account value & market comparison</h2>}
       <p className={styles.intro}>
         Track account value and net contributions against S&amp;P 500 (SPY) and
         Nasdaq-100 (QQQ), using the same dated deposits and withdrawals.
         Benchmarks are hypothetical balances, not percentage returns.{" "}
         {"No current-holdings backcast."}
       </p>
-      <div className={styles.actions}>
-        <button className="btn" disabled={busy} onClick={review}>
-          {result
-            ? "Review ledger & rebuild"
-            : "Review ledger to build comparison"}
-        </button>
-        <span className={styles.scope}>
-          Complete USD ledger · up to 50 US-listed instruments · from inception,
-          up to 1 year
-        </span>
-      </div>
-      {restoring && (
-        <p role="status" className={styles.scope}>
-          Checking for your saved comparison…
-        </p>
-      )}
-      {restoreNotice && (
-        <p role="status" className={styles.scope}>
-          {restoreNotice}
-        </p>
-      )}
-      {!result && !reviewed && !restoring && (
-        <p className={styles.scope}>
-          Positions alone cannot show actual account performance. Review the
-          saved ledger, confirm it is complete, then build the chart. Crypto and
-          non-US instruments are not supported; unsupported or incomplete
-          accounts are not shown as partial portfolios.
-        </p>
-      )}
-      {progress && <p role="status">{progress}</p>}
-      {reviewed && (
-        <details open>
-          <summary>
-            Review saved revision {reviewed.revision} · {reviewed.rows.length}{" "}
-            transactions
-          </summary>
-          <div
-            className="table-scroll"
-            tabIndex={0}
-            role="region"
-            aria-label="Saved transactions to confirm"
-            style={{ maxHeight: 360, overflow: "auto" }}
-          >
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Account</th>
-                  <th>Type</th>
-                  <th>Symbol</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  <th>Amount</th>
-                  <th>Fee</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reviewed.rows.map((t) => (
-                  <tr key={t.id}>
-                    <td>{t.date}</td>
-                    <td>{t.account}</td>
-                    <td>{t.type}</td>
-                    <td>{t.symbol}</td>
-                    <td>{t.quantity}</td>
-                    <td>{amount(t.price)}</td>
-                    <td>{amount(t.amount)}</td>
-                    <td>{amount(t.fee)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </details>
-      )}
-      {reviewed && (
-        <div className={styles.setup}>
-          <label className={styles.confirmation}>
-            <input
-              type="checkbox"
-              checked={confirmed}
-              disabled={busy || !reviewed}
-              onChange={(e) => {
-                setConfirmed(e.target.checked);
-                setResult(null);
-              }}
-            />
-            <span>
-              I have reviewed this saved revision: it contains every deposit,
-              withdrawal, trade, dividend, fee and split for these accounts from
-              inception.
+      {!readOnly && (
+        <>
+          <div className={styles.actions}>
+            <button className="btn" disabled={busy} onClick={review}>
+              {result
+                ? "Review ledger & rebuild"
+                : "Review ledger to build comparison"}
+            </button>
+            <span className={styles.scope}>
+              Complete USD ledger · up to 50 US-listed instruments · from
+              inception, up to 1 year
             </span>
-          </label>
-          <button
-            className="btn"
-            disabled={!confirmed || !reviewed || busy}
-            onClick={calculate}
-          >
-            {busy
-              ? "Checking ledger & prices…"
-              : error
-                ? "Retry history"
-                : "Build account history"}
-          </button>
-        </div>
+          </div>
+          {restoring && (
+            <p role="status" className={styles.scope}>
+              Checking for your saved comparison…
+            </p>
+          )}
+          {restoreNotice && (
+            <p role="status" className={styles.scope}>
+              {restoreNotice}
+            </p>
+          )}
+          {!result && !reviewed && !restoring && (
+            <p className={styles.scope}>
+              Positions alone cannot show actual account performance. Review the
+              saved ledger, confirm it is complete, then build the chart. Crypto
+              and non-US instruments are not supported; unsupported or
+              incomplete accounts are not shown as partial portfolios.
+            </p>
+          )}
+          {progress && <p role="status">{progress}</p>}
+          {reviewed && (
+            <details open>
+              <summary>
+                Review saved revision {reviewed.revision} ·{" "}
+                {reviewed.rows.length} transactions
+              </summary>
+              <div
+                className="table-scroll"
+                tabIndex={0}
+                role="region"
+                aria-label="Saved transactions to confirm"
+                style={{ maxHeight: 360, overflow: "auto" }}
+              >
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Account</th>
+                      <th>Type</th>
+                      <th>Symbol</th>
+                      <th>Quantity</th>
+                      <th>Price</th>
+                      <th>Amount</th>
+                      <th>Fee</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reviewed.rows.map((t) => (
+                      <tr key={t.id}>
+                        <td>{t.date}</td>
+                        <td>{t.account}</td>
+                        <td>{t.type}</td>
+                        <td>{t.symbol}</td>
+                        <td>{t.quantity}</td>
+                        <td>{amount(t.price)}</td>
+                        <td>{amount(t.amount)}</td>
+                        <td>{amount(t.fee)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          )}
+          {reviewed && (
+            <div className={styles.setup}>
+              <label className={styles.confirmation}>
+                <input
+                  type="checkbox"
+                  checked={confirmed}
+                  disabled={busy || !reviewed}
+                  onChange={(e) => {
+                    setConfirmed(e.target.checked);
+                    setResult(null);
+                  }}
+                />
+                <span>
+                  I have reviewed this saved revision: it contains every
+                  deposit, withdrawal, trade, dividend, fee and split for these
+                  accounts from inception.
+                </span>
+              </label>
+              <button
+                className="btn"
+                disabled={!confirmed || !reviewed || busy}
+                onClick={calculate}
+              >
+                {busy
+                  ? "Checking ledger & prices…"
+                  : error
+                    ? "Retry history"
+                    : "Build account history"}
+              </button>
+            </div>
+          )}
+          <p className={styles.scope}>
+            Larger or incomplete ledgers are not shown as partial performance.
+            Confirmation does not change your records.
+          </p>
+        </>
       )}
-      <p className={styles.scope}>
-        Larger or incomplete ledgers are not shown as partial performance.
-        Confirmation does not change your records.
-      </p>
       {error && <p role="alert">{error}</p>}
       {result && <p role="status">{result.reason}</p>}
       {result && (
@@ -319,7 +327,9 @@ export default function AccountHistory() {
                   <p>
                     {benchmark?.status === "unavailable"
                       ? benchmark.reason
-                      : "No comparison result supplied. Build complete account history to compare."}
+                      : readOnly
+                        ? "No validated comparison available for this saved history."
+                        : "No comparison result supplied. Build complete account history to compare."}
                   </p>
                 )}
               </div>

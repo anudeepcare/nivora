@@ -7,7 +7,7 @@ import s from "./SentiSensePanels.module.css";
 const price = (n: number | null, currency: string | null) =>
   n === null
     ? "Not set"
-    : `${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}${currency ? ` ${currency}` : " (currency not supplied)"}`;
+    : `${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}${currency ? ` ${currency}` : ""}`;
 export default function EodEventCalendar({
   preview = false,
 }: {

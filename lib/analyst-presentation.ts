@@ -7,5 +7,5 @@ export function consensusTarget(value: unknown, currency: unknown): string {
       ? currency.toUpperCase()
       : null;
   const number = value.toLocaleString("en-US", { maximumFractionDigits: 2 });
-  return code ? `${code} ${number}` : `${number} (currency not supplied)`;
+  return code ? `${code} ${number}` : number;
 }

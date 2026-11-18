@@ -391,3 +391,45 @@
   border-color: var(--accent-solid);
   color: #fff;
 }
+
+.checks {
+  margin: 12px 0 20px;
+  border-block: 1px solid var(--line);
+}
+.checks dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 14px 0;
+}
+.checks dl > div {
+  min-width: 0;
+}
+.checks dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.checks dd {
+  margin: 5px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.checks small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.grid > [data-read-only] {
+  grid-column: 1/-1;
+}
+@media (max-width: 600px) {
+  .checks dl {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .checks dl > div + div {
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+}

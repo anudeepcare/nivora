@@ -11,7 +11,7 @@ test("history leads portfolio and names its supported comparison before setup", 
   );
   assert.match(h, /S&P 500 \(SPY\)/);
   assert.match(h, /Nasdaq-100 \(QQQ\)/);
-  assert.match(h, /Crypto and\s+non-US instruments\s+are not supported/);
+  assert.match(h, /Crypto\s+and\s+non-US instruments\s+are not supported/);
 });
 test("benchmark summaries expose missing evidence and distinguish hypothetical balances", () => {
   const s = read("AccountHistory.tsx");

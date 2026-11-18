@@ -22,6 +22,18 @@ test('consensus uses supplied currency and keeps publisher count out of price gr
 test('target currency is explicit without guessing USD for missing units',async()=>{
  const {consensusTarget}=await import('../lib/analyst-presentation.ts');
  assert.equal(consensusTarget(148.25,'cad'),'CAD 148.25');
- assert.equal(consensusTarget(148.25,null),'148.25 (currency not supplied)');
+ assert.equal(consensusTarget(148.25,null),'148.25');
  assert.equal(consensusTarget(null,'USD'),'Not supplied');
+});
+
+test('unknown currency stays unassigned without repeated missing-currency prose',()=>{
+ for (const dataset of ['fundamentalsCurrent','fundamentalsAnnual']) {
+  const payload = dataset === 'fundamentalsCurrent'
+   ? {revenueTTM:123, reportedCurrency:null}
+   : {periods:[{revenue:123,reportedCurrency:null,fiscalPeriod:'FY',fiscalYear:2025}]};
+  const rendered=JSON.stringify(intelligenceView(dataset,payload));
+  assert.match(rendered,/123/);
+  assert.doesNotMatch(rendered,/currency not supplied|USD|\$/);
+ }
+ assert.doesNotMatch(read('components/EodEventCalendar.tsx'),/currency not supplied/);
 });

@@ -105,7 +105,7 @@ export default function AccumulationDesk({
     [showEvaluation, r.history, r.retrievedAt, cost, market, weekly],
   );
   return (
-    <section className={`accumulation-desk ${styles.paceChartFirst}`}>
+    <section className={`accumulation-desk ${styles.paceChartFirst} ${detail.desk}`}>
       <header className="accumulation-desk-head">
         <div>
           <span className="eyebrow">
@@ -113,7 +113,7 @@ export default function AccumulationDesk({
               ? "Weekly conditions · separate time horizon"
               : "Cycle-relative · monthly discipline"}
           </span>
-          <h2>AURYN Pace · price history</h2>
+          <h2>AURYN Pace <span className={detail.titleNote}>The price in perspective</span></h2>
           <div className={styles.paceMeta}>
             <small>Model {chosen.version} · settled prices</small>
             <PaceHelp trigger="What does P mean?" />
@@ -132,6 +132,7 @@ export default function AccumulationDesk({
           ))}
         </div>
       </header>
+      <div className={detail.observations}>
       <div className={styles.paceReadings}>
         <PaceReadings
           compact
@@ -163,7 +164,12 @@ export default function AccumulationDesk({
           observation times can produce different prices.
         </small>
       </div>
+      </div>
       <div className="accumulation-chart">
+        <div className={detail.chartHeading}>
+          <span>{weekly ? "Weekly" : "Monthly"} price landscape</span>
+          <small>{monthly.length} displayed {weekly ? "weeks" : "months"} · zone-colored candles</small>
+        </div>
         <PriceChart
           bars={monthly}
           range={weekly ? "weekly-policy-v1" : chosen.version}
@@ -221,7 +227,7 @@ export default function AccumulationDesk({
       )}
       <PaceEvidenceJourney research={r} />
       {!!levels.length && (
-        <details className={detail.levels}>
+        <details open className={detail.levels}>
           <summary>Conditional zone prices</summary>
           <dl>
             {levels.map((l) => (

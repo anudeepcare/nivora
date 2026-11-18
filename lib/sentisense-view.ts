@@ -520,7 +520,7 @@ export function intelligenceView(
       "Separate provider evidence, not inputs silently substituted into AURYN's model. Trailing figures retain their reported currency and period count.";
     const money = (v: unknown) =>
       finite(v)
-        ? `${number(v)} ${text(d.reportedCurrency) ?? "(currency not supplied)"}`
+        ? `${number(v)}${text(d.reportedCurrency) ? ` ${text(d.reportedCurrency)}` : ""}`
         : null;
     add("Current trailing profile", [
       row(text(d.ticker) ?? "Company", d.fetchedAt, [
@@ -553,7 +553,7 @@ export function intelligenceView(
         rows(d.periods).map((x) => {
           const money = (v: unknown) =>
             finite(v)
-              ? `${number(v)} ${text(x.reportedCurrency) ?? "(currency not supplied)"}`
+              ? `${number(v)}${text(x.reportedCurrency) ? ` ${text(x.reportedCurrency)}` : ""}`
               : null;
           return row(
             `${text(x.fiscalPeriod) ?? "Period"} ${text(x.fiscalYear) ?? ""}`.trim(),

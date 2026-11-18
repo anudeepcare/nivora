@@ -2,7 +2,6 @@
 import DecisionAttention from "./DecisionAttention";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import dynamic from "next/dynamic";
-import QuickRead from "./QuickRead";
 import { companyAccent } from "@/lib/visual-signals";
 import reference from "./PortfolioReference.module.css";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
@@ -165,72 +164,45 @@ export function Portfolio() {
       <WealthStrip state={state} portfolio />
       <Coverage state={state} />
       {quotes.ready && positions.length > 0 && (
-        <details className={reference.summaryDetails}>
-          <summary>
-            Portfolio checks · concentration, dates and price coverage
-          </summary>
-          <QuickRead
-            title="Your portfolio in 30 seconds"
-            items={[
-              ...(model.allocations[0]
-                ? [
-                    {
-                      label: "Largest position",
-                      value: `${model.allocations[0].symbol} · ${percent(model.allocations[0].weight)}`,
-                      detail:
-                        "Share of priced investments, excluding cash and unpriced holdings.",
-                      tone:
-                        model.allocations[0].weight > 30
-                          ? ("caution" as const)
-                          : ("neutral" as const),
-                    },
-                  ]
-                : []),
-              {
-                label: "Earnings · next 7 days",
-                value:
-                  calendar.data && calendar.data.followed > 0
-                    ? `${positions.filter((p) => p.assetType === "stock" && earnings.has(p.symbol)).length} confirmed holdings`
-                    : "Dates not confirmed",
-                detail:
-                  "Review supplied dates before changing position sizes; calendar coverage may be incomplete.",
-              },
-              {
-                label: "Price coverage",
-                value: model.unpriced.length
-                  ? `${model.unpriced.length} holdings need a price`
-                  : "All holdings priced",
-                detail: model.older
-                  ? `${model.older} use older available prices. Check timestamps before acting.`
-                  : "Prices are snapshots; totals are not a live account balance.",
-                tone:
-                  model.unpriced.length || model.older
-                    ? ("caution" as const)
-                    : ("positive" as const),
-              },
-            ]}
-          />
-        </details>
+        <section className={reference.checks} aria-label="Portfolio checks">
+          <dl>
+            {model.allocations[0] && (
+              <div>
+                <dt>Largest position</dt>
+                <dd>
+                  {model.allocations[0].symbol} ·{" "}
+                  {percent(model.allocations[0].weight)}
+                </dd>
+                <small>Of priced investments, excluding cash.</small>
+              </div>
+            )}
+            <div>
+              <dt>Earnings · next 7 days</dt>
+              <dd>
+                {calendar.data && calendar.data.followed > 0
+                  ? `${positions.filter((p) => p.assetType === "stock" && earnings.has(p.symbol)).length} holdings with supplied dates`
+                  : "Dates not confirmed"}
+              </dd>
+              <small>Calendar coverage may be incomplete.</small>
+            </div>
+            <div>
+              <dt>Price coverage</dt>
+              <dd>
+                {model.unpriced.length
+                  ? `${model.unpriced.length} holdings unpriced`
+                  : "All holdings priced"}
+              </dd>
+              <small>
+                {model.older
+                  ? `${model.older} use older prices. Check timestamps.`
+                  : "Snapshot values, not a live account balance."}
+              </small>
+            </div>
+          </dl>
+        </section>
       )}
       <div className={reference.grid} data-portfolio-layout="reference">
-        <div className={reference.history}>
-          <section className="card portfolio-trend-panel">
-            <SectionHead
-              title="Portfolio over time"
-              subtitle="Account value · cash flows · S&P 500 / QQQ comparison"
-            />
-            <AccountHistory />
-            <button
-              className="btn"
-              onClick={() => {
-                setDepthOpen(true);
-                depth.current?.showModal();
-              }}
-            >
-              Review recorded transactions
-            </button>
-          </section>
-        </div>
+        <AccountHistory readOnly />
         <div className={reference.capitalOverview}>
           <section className="card portfolio-allocation-panel">
             <SectionHead
