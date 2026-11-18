@@ -47,6 +47,19 @@ test('consolidated compatibility preserves the ordered cascade after exact dupli
   before.walkRules(rule => {
     if (retiredMetricSelectors.has(rule.selector)) rule.remove();
   });
+  // Explicit user-requested removal of decorative card-top rails. Preserve
+  // every selector/order and every non-rail declaration in this archive check.
+  before.walkDecls(declaration => {
+    const {prop, value} = declaration;
+    const selector = declaration.parent.selector;
+    if (prop === 'border-top' && /^3px solid /.test(value)) declaration.value = '1px solid var(--line)';
+    if (prop === 'border-top' && value === '2px solid var(--blue)' && selector !== '.timeline .step') declaration.value = '1px solid var(--line)';
+    if (prop === 'border-top-color' && selector !== '.au-dca-scale span.active' && declaration.parent.nodes.every(node => !(node.prop === 'animation' && /spin/.test(node.value)))) {
+      // The loading spinner is a functional rotating stroke, not a card rail.
+      const isSpinner = declaration.parent.nodes.some(node => node.prop === 'border' && node.value === '2px solid var(--line)');
+      if (!isSpinner) declaration.value = 'var(--line)';
+    }
+  });
   deduplicateRules(before);
   assert.deepEqual(semantic(after), semantic(before));
   let rules = 0;

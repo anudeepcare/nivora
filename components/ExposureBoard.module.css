@@ -571,16 +571,16 @@
 }
 .board .summary article {
   border: 1px solid var(--line);
-  border-top: 3px solid #8b75bc;
+  border-top: 1px solid var(--line);
   border-radius: 10px;
   padding: 14px;
   background: var(--card);
 }
 .board .summary article[data-location="below"] {
-  border-top-color: #4b7fce;
+  border-top-color: var(--line);
 }
 .board .summary article[data-location="above"] {
-  border-top-color: #bb883d;
+  border-top-color: var(--line);
 }
 .board .summary strong {
   font-size: 22px;

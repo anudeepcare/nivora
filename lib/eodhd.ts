@@ -1,3 +1,4 @@
+import { readBoundedMarketJson } from "./market-response";
 import {
   sharedEodRead,
   MarketGuardError,
@@ -52,6 +53,7 @@ export async function eodRequest(
           ? { cache: "no-store" as const }
           : { next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) } }),
         signal: AbortSignal.timeout(15000),
+        redirect: "error",
       },
     );
     if (response.status === 402 && path.startsWith("mp/unicornbay/options/"))
@@ -101,7 +103,12 @@ export async function eodRequest(
               : "The data source could not return this dataset. Retry shortly.",
         503,
       );
-    const data = await response.json();
+    const data = await readBoundedMarketJson(
+      response,
+      /^(ust\/|economic-events$|calendar\/dividends$)/.test(path)
+        ? 2 * 1024 * 1024
+        : 16 * 1024 * 1024,
+    );
     if (data?.error || data?.errors)
       throw new HttpError(
         "The data source returned a dataset error. Check coverage and subscription access.",

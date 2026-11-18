@@ -28,7 +28,7 @@ test('initial lens render mounts high-value evidence without an opening action',
  const ts=(await import('typescript')).default;
  const source=read('DirectResearchLenses.tsx');
  const ast=ts.createSourceFile('lens.tsx',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
- const names=['CompanyEventCalendar','CompanyUpdates','EarningsWorkspace','EarningsReview','SentiSensePanels','IndicatorOverview','AdvancedResearch'];
+ const names=['EconomicContext','CompanyEventCalendar','CompanyUpdates','EarningsWorkspace','EarningsReview','SentiSensePanels','IndicatorOverview','AdvancedResearch'];
  const children=names.map(name=>props=>React.createElement('div',{'data-evidence':name,'data-group':props.group},name));
  for(const [name,expected] of [
   ['EventsLens',['CompanyEventCalendar','CompanyUpdates','EarningsWorkspace','EarningsReview','SentiSensePanels']],

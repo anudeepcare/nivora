@@ -736,7 +736,6 @@ export default function Research({ symbol }: { symbol: string }) {
             }
             onClick={() => switchTab(lens.sections[0])}
           >
-            <ResearchTabIcon section={lens.sections[0]} />
             {lens.label}
           </button>
         ))}

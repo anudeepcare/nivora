@@ -127,7 +127,7 @@
 .metric.metric {
   --metric-accent: #4b7fce;
   border: 1px solid var(--line);
-  border-top: 3px solid var(--metric-accent);
+  border-top: 1px solid var(--line);
   border-radius: 12px;
   padding: 16px;
 }
@@ -145,8 +145,35 @@
   font-weight: 500;
 }
 .calendarPanel {
-  border-top: 3px solid #ba8743;
+  border-top: 1px solid var(--line);
 }
 .streamPanel {
-  border-top: 3px solid #4b7fce;
+  border-top: 1px solid var(--line);
+}
+
+/* Compact evidence cards: actual trends, not fabricated strength gauges. */
+.metric.metric {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.metric.metric header {
+  align-items: start;
+}
+.metric.metric h3 {
+  font-size: 13px;
+  line-height: 1.4;
+}
+.metric.metric > strong {
+  font-size: clamp(22px, 2vw, 28px);
+  margin: 0;
+}
+.metric.metric > svg {
+  height: 48px;
+  width: 100%;
+  margin: 0;
+}
+.metric.metric > details {
+  margin-top: auto;
 }

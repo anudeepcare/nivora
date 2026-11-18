@@ -1,4 +1,5 @@
 "use client";
+import InsiderAnalystEvidence from "./InsiderAnalystEvidence";
 import { navigateSelection } from "@/lib/selection-navigation";
 import IntelligenceTable from "./IntelligenceTable";
 import OwnershipEvidenceMap from "./OwnershipEvidenceMap";
@@ -164,6 +165,20 @@ export default function SentiSensePanels({
           key={`${symbol}:${dataset}`}
           symbol={symbol}
           dataset={dataset}
+        />
+      )}
+      {dataset === "insiders" && (
+        <InsiderAnalystEvidence
+          key={`${symbol}-clusters`}
+          symbol={symbol}
+          kind="clusters"
+        />
+      )}
+      {dataset === "analystCoverage" && (
+        <InsiderAnalystEvidence
+          key={`${symbol}-calls`}
+          symbol={symbol}
+          kind="calls"
         />
       )}
     </section>

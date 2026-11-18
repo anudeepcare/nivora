@@ -803,7 +803,7 @@
 .panel.panel.panel.panel :global(.technical-desk-groups) > section {
   --study-accent: #4b7fce;
   border: 1px solid var(--line);
-  border-top: 3px solid var(--study-accent);
+  border-top: 1px solid var(--line);
   background: var(--card);
   min-width: 0;
 }

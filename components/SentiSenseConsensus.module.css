@@ -1,11 +1,12 @@
 .stats.stats {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
   gap: 0 20px;
 }
 .stats strong {
   font-size: clamp(16px, 1.7vw, 20px);
   line-height: 1.4;
-  overflow-wrap: normal;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 @media (max-width: 900px) {
   .stats.stats {
@@ -28,19 +29,15 @@
 }
 .stats [data-target="Mean target"] {
   background: color-mix(in srgb, var(--blue) 7%, transparent);
-  border-bottom: 3px solid var(--blue);
 }
 .stats [data-target="Low target"] {
-  border-bottom: 3px solid #c65b51;
 }
 .stats [data-target="High target"] {
-  border-bottom: 3px solid #278a97;
 }
 .stats [data-target="Consensus"] {
-  border-bottom: 3px solid var(--line);
 }
 .stats strong {
   font-variant-numeric: tabular-nums;
-  font-size: clamp(20px, 2vw, 28px);
+  font-size: clamp(18px, 1.7vw, 24px);
   font-weight: 500;
 }

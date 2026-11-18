@@ -369,51 +369,10 @@
 .root[data-active-lens="Valuation"] {
   --workspace-accent: #a6814e;
 }
-.lenses {
-  gap: 8px;
-  padding-block: 8px;
-  flex-basis: auto;
-}
+/* Primary lenses remain a compact text tab bar, not individual icon cards. */
 .lenses button {
-  --tab-accent: #4b7fce;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   min-height: 44px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 14px;
   font-weight: 500;
-  font-size: 13px;
-  color: var(--ink);
-  background: var(--card);
-}
-.lenses button[data-section="Thesis"] {
-  --tab-accent: #8275b8;
-}
-.lenses button[data-section="News"] {
-  --tab-accent: #ba8743;
-}
-.lenses button[data-section="Advanced"] {
-  --tab-accent: #398f9a;
-}
-.lenses button[data-section="Options"] {
-  --tab-accent: #9b73b1;
-}
-.lenses button[data-section="Valuation"] {
-  --tab-accent: #a6814e;
-}
-.lenses button svg {
-  color: var(--tab-accent);
-  flex: none;
-}
-.lenses button[aria-current="page"] {
-  border-color: var(--tab-accent);
-  background: color-mix(in srgb, var(--tab-accent) 10%, var(--card));
-  box-shadow: 0 2px 6px #00000008;
-}
-.lenses button[aria-current="page"]::after {
-  content: none;
 }
 .lenses button:focus-visible {
   outline: 2px solid var(--blue);

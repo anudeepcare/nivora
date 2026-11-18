@@ -69,6 +69,7 @@ function harness(hiddenSignals = []) {
     intelligenceView,
     IntelligenceTable: loadTable(),
     OwnershipEvidenceMap: () => null,
+    InsiderAnalystEvidence: () => null,
     OptionsPositioningOverview: () => null,
     s: new Proxy({}, { get: (_, key) => key }),
     SentiSenseConsensus: () =>

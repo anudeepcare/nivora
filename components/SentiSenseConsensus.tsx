@@ -182,6 +182,9 @@ export default function SentiSenseConsensus({
                 "Consensus",
                 typeof data.consensusLabel === "string"
                   ? data.consensusLabel
+                      .replaceAll("_", " ")
+                      .toLowerCase()
+                      .replace(/^./, (letter: string) => letter.toUpperCase())
                   : "Not supplied",
               ],
               ["Mean target", consensusTarget(data.targetMean, data.currency)],

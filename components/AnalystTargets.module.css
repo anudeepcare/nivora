@@ -2,7 +2,7 @@
   --target-color: #a38232;
   padding: 16px;
   border: 1px solid color-mix(in srgb, var(--target-color) 28%, var(--line));
-  border-top: 3px solid var(--target-color);
+  border-top: 1px solid var(--line);
   border-radius: 14px;
   background: color-mix(in srgb, var(--target-color) 6%, var(--surface));
 }

@@ -103,3 +103,14 @@
     font-size: 20px;
   }
 }
+
+/* Headers and cells share alignment despite global numeric-table defaults. */
+.history.history table :is(th, td) {
+  text-align: right;
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+
+.history.history table :is(th, td):first-child {
+  text-align: left;
+}

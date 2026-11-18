@@ -27,8 +27,27 @@ test('radar categories match row bars and preserve missing scores',()=>{
  assert.match(s,/l.score != null &&/);
  assert.match(s,/l.score == null \? "Unscored"/);
 });
-test('research sections pair category icons and subdued selected cards without bright underline',()=>{
- const source=read('components/Research.tsx');assert.match(source,/data-active-lens=/);assert.match(source,/ResearchTabIcon section=\{lens.sections\[0\]\}/);
- const css=read('components/ReferenceCockpit.module.css').split('/* Research navigation hierarchy')[1];
- assert.match(css,/font-weight: 500/);assert.match(css,/min-height: 44px/);assert.match(css,/content: none/);assert.match(css,/outline: 2px/);
+test('primary research lenses use text tabs with selection and keyboard focus',()=>{
+ const source=read('components/Research.tsx');
+ assert.match(source,/data-active-lens=/);
+ assert.doesNotMatch(source,/ResearchTabIcon section=\{lens.sections\[0\]\}/);
+ const css=read('components/ReferenceCockpit.module.css');
+ assert.match(css,/font-weight: 500/);assert.match(css,/min-height: 44px/);
+ assert.match(css,/button\[aria-current="page"\]::after/);assert.match(css,/outline: 2px/);
+ assert.doesNotMatch(css,/--tab-accent/);
+});
+test('metric and event cards have no decorative colored top rails; chart legends retain their keys',()=>{
+ for(const name of ['DirectResearchLenses','ExposureBoard','ResearchMetrics','WorkspacePace','AnalystTargets']) {
+  const css=read(`components/${name}.module.css`);
+  assert.doesNotMatch(css,/border-top: [234]px/);
+  for(const match of css.matchAll(/border-top(?:-color)?: ([^;]+);/g)) assert.ok(match[1].includes('var(--line)')||match[1]==='0',`${name}: ${match[0]}`);
+ }
+ assert.match(read('components/DirectResearchLenses.module.css'),/stroke: var\(--metric-accent\)/);
+ assert.match(read('components/AccountHistory.module.css'),/border-top: 3px solid var\(--blue\)/);
+});
+test('legacy card rails are neutral without changing the Pace scale or loading spinner',()=>{
+ const css=read('app/core/legacy-panels.css');
+ assert.doesNotMatch(css,/border-top: 3px solid/);
+ assert.match(css,/\.au-dca-scale span\.active\s*\{\s*border-top-color: var\(--green\)/);
+ assert.match(css,/border: 2px solid var\(--line\);\s*border-top-color: var\(--blue\)/);
 });

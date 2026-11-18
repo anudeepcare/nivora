@@ -6,11 +6,11 @@ test('technical levels respond to their panel width instead of desktop viewport 
  assert.match(css('TechnicalLevelMap'),/container-type: inline-size/);
  assert.match(css('TechnicalLevelMap'),/@container \(max-width: 480px\)/);
 });
-test('desktop chart and real Pace rationale share a row without hiding controls',()=>{
+test('desktop chart and real Pace rationale span the canvas without a vacant column',()=>{
  const styles=css('ResearchLens');
  assert.match(styles,/@media \(min-width: 1000px\)/);
- assert.match(styles,/accumulation-chart\) \{ grid-column: 1/);
- assert.match(styles,/accumulation-summary\) \{ grid-column: 2/);
+ assert.match(styles,/accumulation-chart\)\s*\{\s*grid-column: 1 \/ -1/);
+ assert.match(styles,/accumulation-summary\)\s*\{\s*grid-column: 1 \/ -1/);
  const source=fs.readFileSync('components/AccumulationDesk.tsx','utf8');
  assert.match(source,/PaceReadings/); assert.match(source,/PriceChart/); assert.match(source,/showEvaluation/);
 });

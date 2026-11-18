@@ -8,6 +8,7 @@ import IndicatorOverview from "./IndicatorOverview";
 import SentiSensePanels from "./SentiSensePanels";
 
 import EarningsReview from "./EarningsReview";
+import EconomicContext from "./EconomicContext";
 import s from "./DirectResearchLenses.module.css";
 
 const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
@@ -27,6 +28,7 @@ export function EventsLens({
   return (
     <section className={s.lens} aria-label="Events lens">
       <CompanyEventCalendar research={research} />
+      <EconomicContext symbol={research.company.symbol} preview={preview} />
       <div className={s.supporting}>
         <CompanyUpdates research={research} preview={preview} />
         <EarningsWorkspace research={research} />
