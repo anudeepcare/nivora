@@ -27,10 +27,10 @@ test('radar categories match row bars and preserve missing scores',()=>{
  assert.match(s,/l.score != null &&/);
  assert.match(s,/l.score == null \? "Unscored"/);
 });
-test('primary research lenses use text tabs with selection and keyboard focus',()=>{
+test('primary research lenses use flat icon and text tabs with selection and keyboard focus',()=>{
  const source=read('components/Research.tsx');
  assert.match(source,/data-active-lens=/);
- assert.doesNotMatch(source,/ResearchTabIcon section=\{lens.sections\[0\]\}/);
+ assert.match(source,/ResearchTabIcon section=\{lens.sections\[0\]\}/);
  const css=read('components/ReferenceCockpit.module.css');
  assert.match(css,/font-weight: 500/);assert.match(css,/min-height: 44px/);
  assert.match(css,/button\[aria-current="page"\]::after/);assert.match(css,/outline: 2px/);
@@ -50,4 +50,9 @@ test('legacy card rails are neutral without changing the Pace scale or loading s
  assert.doesNotMatch(css,/border-top: 3px solid/);
  assert.match(css,/\.au-dca-scale span\.active\s*\{\s*border-top-color: var\(--green\)/);
  assert.match(css,/border: 2px solid var\(--line\);\s*border-top-color: var\(--blue\)/);
+});
+test('reference polish uses neutral evidence surfaces and legible metadata without decorative rails',()=>{
+ const metric=read('components/ResearchMetrics.module.css').split('/* Quiet reference surfaces')[1];assert.match(metric,/background: transparent/);assert.match(metric,/font-weight: 500/);
+ const map=read('components/TechnicalLevelMap.module.css').split('/* Reference-aligned level')[1];assert.match(map,/border-color: var\(--blue\)/);assert.doesNotMatch(map,/var\(--green\)/);
+ const events=read('components/DirectResearchLenses.module.css').split('/* Reference evidence rhythm')[1];assert.match(events,/min-height: 44px/);assert.match(events,/font-size: 12px/);assert.doesNotMatch(events,/border-top: 3px/);
 });

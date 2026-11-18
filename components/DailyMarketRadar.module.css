@@ -1,0 +1,79 @@
+.daily {
+  min-width: 0;
+  padding: 18px 22px;
+  color: var(--ink);
+}
+.summary {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.summary strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.summary p {
+  margin: 6px 0;
+  max-width: 880px;
+}
+.summary small,
+.progress {
+  color: var(--muted);
+}
+.summary button {
+  min-height: 40px;
+  padding: 6px 0;
+  margin-right: 16px;
+}
+.summary details {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--muted);
+}
+.summary summary,
+.fallback summary {
+  cursor: pointer;
+}
+.fallback {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.fallback summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fallback summary::before {
+  content: "›";
+}
+.fallback[open] summary::before {
+  content: "⌄";
+}
+.fallback p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+.daily > section,
+.fallback > section {
+  margin: 12px 0 0;
+  border: 0;
+  border-radius: 0;
+  padding: 12px 0;
+}
+.daily > details > ul {
+  max-height: 340px;
+  overflow: auto;
+}
+@media (max-width: 600px) {
+  .daily {
+    padding: 14px;
+  }
+  .summary details {
+    display: block;
+  }
+  .summary button {
+    min-height: 44px;
+  }
+}

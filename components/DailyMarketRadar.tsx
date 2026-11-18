@@ -7,6 +7,7 @@ import type { RadarResearch } from "../lib/market-radar";
 import { api } from "../lib/client";
 import { useProduct } from "./Session";
 import { MarketRadar } from "./MarketRadar";
+import s from "./DailyMarketRadar.module.css";
 
 export default function DailyMarketRadar({
   research,
@@ -26,6 +27,7 @@ export default function DailyMarketRadar({
     error: string;
   }>({ key, cache, snapshot: null, error: "" });
   const [retry, setRetry] = useState(0);
+  const [sampleOpen, setSampleOpen] = useState(false);
   useEffect(() => {
     let active = true,
       timer: ReturnType<typeof setTimeout> | undefined;
@@ -118,31 +120,79 @@ export default function DailyMarketRadar({
             history: row.history,
           };
         })
-    : research;
+    : [];
+  const error = current?.error;
+  const setupRequired =
+    !!error && /database migration|storage is not configured/i.test(error);
   return (
-    <section aria-label="Daily holdings and watchlist radar">
-      <p role="status">
-        {snapshot
-          ? `${rows.length} histories shown · ${snapshot.ready} of ${snapshot.eligible} eligible held or watched instruments ready · ${snapshot.pending} pending · ${snapshot.excluded} unsupported. Daily snapshot ${snapshot.day} (UTC).`
-          : "Checking today's saved holdings and watchlist history…"}
-      </p>
-      <p className="hint">
-        Completed daily prices only. Price histories refresh once per UTC day
-        while this page is open, in small batches; progress resumes on your next
-        visit. Names and sectors use existing company evidence, otherwise remain
-        unclassified. This is your selected universe, not the whole market.
-      </p>
-      {current?.error && (
-        <p role="alert">
-          {current.error}{" "}
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => setRetry((n) => n + 1)}
-          >
-            Retry daily radar
-          </button>
-        </p>
+    <section
+      className={s.daily}
+      aria-label="Daily holdings and watchlist radar"
+    >
+      <div className={s.summary}>
+        {error ? (
+          <div role="alert">
+            <strong>
+              {setupRequired
+                ? "Daily radar setup required"
+                : snapshot
+                  ? "Refresh paused"
+                  : "Daily radar unavailable"}
+            </strong>
+            <p>
+              {setupRequired
+                ? "The daily cache is not configured yet. Your saved holdings, watchlist and existing research are unchanged."
+                : error}
+            </p>
+            <button
+              type="button"
+              className="text-button"
+              onClick={() => setRetry((n) => n + 1)}
+            >
+              {setupRequired ? "Check setup again" : "Retry daily radar"}
+            </button>
+            {setupRequired && (
+              <details>
+                <summary>Setup detail</summary>
+                <p>{error}</p>
+              </details>
+            )}
+          </div>
+        ) : !snapshot ? (
+          <p role="status">
+            Checking today's saved holdings and watchlist history…
+          </p>
+        ) : null}
+        {snapshot && (
+          <p className={s.progress} role={error ? undefined : "status"}>
+            {rows.length} histories shown · {snapshot.ready} of{" "}
+            {snapshot.eligible} supported instruments cached ·{" "}
+            {snapshot.pending} pending · {snapshot.excluded} unsupported.
+            Snapshot {snapshot.day} (UTC).
+          </p>
+        )}
+        {snapshot && (
+          <small>
+            Completed prices only · resumes while this page is open ·
+            observation dates remain on the chart.
+          </small>
+        )}
+      </div>
+      {!snapshot && error && research.length > 0 && (
+        <details
+          className={s.fallback}
+          open={sampleOpen}
+          onToggle={(event) => setSampleOpen(event.currentTarget.open)}
+        >
+          <summary>
+            View locally loaded sample ({research.length} of {requested.length})
+          </summary>
+          <p>
+            This sample is not the daily holdings/watchlist snapshot. It
+            includes only company histories already loaded in this account.
+          </p>
+          {sampleOpen && <MarketRadar research={research} asOf={asOf} />}
+        </details>
       )}
       {rows.length > 0 && (
         <MarketRadar research={rows} asOf={snapshot?.day ?? asOf} />

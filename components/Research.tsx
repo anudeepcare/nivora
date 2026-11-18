@@ -629,6 +629,17 @@ export default function Research({ symbol }: { symbol: string }) {
               {headerContext.sector && <span>{headerContext.sector}</span>}
               <Help label="Company facts and source dates">
                 <StockFacts research={r} />
+                {r.issues.map((issue) => (
+                  <p key={issue}>{customerText(issue)}</p>
+                ))}
+                <button
+                  className="button"
+                  disabled={resource.loading}
+                  onClick={resource.refresh}
+                >
+                  <RefreshCw size={17} aria-hidden="true" />
+                  Refresh research data
+                </button>
               </Help>
             </div>
           </div>
@@ -699,26 +710,6 @@ export default function Research({ symbol }: { symbol: string }) {
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
-      {r.issues.length > 0 && (
-        <div className="coverage-note">
-          <span>
-            Source coverage{" "}
-            <Help label="Research data status" trigger="Details">
-              {r.issues.map((issue) => (
-                <p key={issue}>{customerText(issue)}</p>
-              ))}
-            </Help>
-          </span>
-          <button
-            className="icon-button"
-            aria-label="Retry data sources"
-            disabled={resource.loading}
-            onClick={resource.refresh}
-          >
-            <RefreshCw size={17} />
-          </button>
-        </div>
-      )}
       <nav
         className={cockpit.lenses}
         aria-label="Research sections"
@@ -736,6 +727,7 @@ export default function Research({ symbol }: { symbol: string }) {
             }
             onClick={() => switchTab(lens.sections[0])}
           >
+            <ResearchTabIcon section={lens.sections[0]} />
             {lens.label}
           </button>
         ))}

@@ -602,3 +602,39 @@
     padding: 10px;
   }
 }
+
+/* Keep the exposure map primary; controls and summaries are supporting evidence. */
+.board .toolbar {
+  background: transparent;
+  border: 0;
+  padding: 10px 0;
+  border-block: 1px solid var(--line);
+  border-radius: 0;
+}
+.board .summary article {
+  border: 0;
+  border-radius: 0;
+  border-inline-start: 1px solid var(--line);
+  background: transparent;
+  padding: 8px 14px;
+}
+.board .summary article:first-child {
+  border-inline-start: 0;
+}
+.board .summary article[data-location="below"],
+.board .summary article[data-location="above"] {
+  border-top: 0;
+}
+.board .summary strong {
+  font-size: 21px;
+}
+@media (max-width: 650px) {
+  .board .summary article {
+    border-inline-start: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 0;
+  }
+  .board .summary article:last-child {
+    border-bottom: 0;
+  }
+}

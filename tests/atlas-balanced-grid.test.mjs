@@ -26,3 +26,19 @@ test("Atlas price chart uses the same outer gutter rather than double horizontal
   assert.match(css, /\.primaryChart\s*\{[\s\S]*?margin: 16px 0/);
   assert.match(css, /padding: 16px var\(--research-gutter\)/);
 });
+
+test("Outcome evidence keeps missing status visible and diagnostics accessible without tall prose rows", () => {
+  const source = fs.readFileSync("components/ReferenceAtlas.tsx", "utf8");
+  const css = fs.readFileSync("components/ReferenceAtlas.module.css", "utf8");
+  assert.match(
+    source,
+    /<details className=\{s.evidenceCheck\} key=\{check.label\}>[\s\S]*?<summary>[\s\S]*?data-state=\{check.status\}>\{check.status\}<\/strong>[\s\S]*?<\/summary>\s*<p>\{check.detail\}<\/p>/,
+  );
+  assert.match(source, /Input availability · not confidence/);
+  assert.match(
+    css,
+    /grid-template-columns: minmax\(0, 1.15fr\) minmax\(0, 1fr\)/,
+  );
+  assert.match(css, /\.evidenceCheck summary[\s\S]*?min-height: 44px/);
+  assert.match(source, /Forecast-multiple sensitivity · not fair value/);
+});

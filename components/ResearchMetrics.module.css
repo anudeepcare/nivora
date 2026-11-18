@@ -864,3 +864,30 @@
     overflow-wrap: anywhere;
   }
 }
+
+/* Quiet reference surfaces: metric values lead, not another row of colored boxes. */
+.panel.panel.panel .technicalCurrent :global(.technical-summary-strip) {
+  gap: 0;
+  padding: 4px 0;
+  border-block: 1px solid var(--line);
+}
+.panel.panel.panel .technicalCurrent :global(.technical-summary-strip > *) {
+  border: 0;
+  border-radius: 0;
+  padding: 12px 10px;
+  background: transparent;
+}
+.panel.panel.panel .technicalCurrent :global(.technical-summary-strip strong) {
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.panel.panel.panel.panel :global(.technical-desk-groups) > section {
+  border-radius: 12px;
+}
+.panel.panel.panel.panel :global(.technical-desk-groups) header p {
+  max-width: 62ch;
+}
+.panel.panel.panel.panel :global(.technical-desk-groups) dl > div:last-child {
+  border-bottom: 0;
+}

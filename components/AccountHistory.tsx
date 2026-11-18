@@ -17,8 +17,7 @@ type History = {
 };
 export default function AccountHistory({
   readOnly = false,
-  onReviewRecords,
-}: { readOnly?: boolean; onReviewRecords?: () => void } = {}) {
+}: { readOnly?: boolean } = {}) {
   const controller = useRef<AbortController | null>(null);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const [chartWidth, setChartWidth] = useState(800);
@@ -188,33 +187,9 @@ export default function AccountHistory({
     points
       .map((p) => `${x(p.date)},${180 - ((p[key] - low) / span) * 160}`)
       .join(" ");
-  if (readOnly && (result?.status !== "available" || !last))
-    return (
-      <section
-        className={styles.empty}
-        data-read-only
-        aria-label="Portfolio performance availability"
-      >
-        <h2>Portfolio vs S&amp;P 500 &amp; QQQ</h2>
-        <p role="status">
-          {restoring
-            ? "Checking saved account history…"
-            : restoreNotice ||
-              result?.reason ||
-              "No validated account history is available yet."}
-        </p>
-        <small>
-          Current holdings alone cannot reconstruct past returns. This chart
-          needs dated cash flows and complete transaction history; no simulated
-          performance is shown.
-        </small>
-        {onReviewRecords && !restoring && (
-          <button className="btn" type="button" onClick={onReviewRecords}>
-            Open transactions
-          </button>
-        )}
-      </section>
-    );
+  // A missing saved comparison is not useful content on Portfolio.
+  // Keep the complete review/build workflow available in its own workspace.
+  if (readOnly && (result?.status !== "available" || !last)) return null;
   return (
     <div className={styles.history} data-read-only={readOnly || undefined}>
       <header className={styles.chartHeader}>

@@ -177,3 +177,55 @@
 .metric.metric > details {
   margin-top: auto;
 }
+
+/* Reference evidence rhythm: readable dates and compact real-data charts. */
+.basis {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.metric.metric {
+  gap: 7px;
+}
+.metric.metric > details summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+.calendarPanel,
+.streamPanel {
+  padding: 18px;
+}
+.events.events .calendarPanel .calendarDay {
+  border-radius: 6px;
+}
+.eventFilters {
+  gap: 4px;
+  padding: 4px;
+  border-radius: 9px;
+  background: var(--surface);
+  width: fit-content;
+}
+.eventFilters button {
+  min-height: 44px;
+  border-color: transparent;
+  font-size: 12px;
+}
+.eventFilters button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.eventFilters button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+@media (max-width: 650px) {
+  .calendarPanel,
+  .streamPanel {
+    padding: 14px;
+  }
+  .basis {
+    font-size: 11px;
+  }
+}

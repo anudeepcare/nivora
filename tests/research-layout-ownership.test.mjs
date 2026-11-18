@@ -6,7 +6,7 @@ const css = fs.readFileSync("components/ResearchDeskLayout.module.css", "utf8");
 test("research disclosures retain facts without a repeated top-level metric strip", () => {
   assert.match(
     source,
-    /<Help label="Company facts and source dates">\s*<StockFacts research=\{r\} \/>\s*<\/Help>/,
+    /<Help label="Company facts and source dates">\s*<StockFacts research=\{r\} \/>[\s\S]*?<\/Help>/,
   );
   assert.equal((source.match(/<StockFacts/g) || []).length, 1);
 });

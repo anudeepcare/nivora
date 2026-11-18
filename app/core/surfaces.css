@@ -1350,18 +1350,45 @@ body [data-selection-navigation] > button:focus-visible {
   outline-offset: 3px;
 }
 
-/* Secondary research navigation is a grouped control, not loose text links. */
+/* Secondary research navigation is one quiet segmented surface below plain lenses. */
 body .research-page [data-selection-navigation] {
-  padding: 6px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
+  --selection-fill: #ffffff;
+  --selection-idle-fill: transparent;
+  --selection-border: #d1d9e6;
+  display: flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  max-width: 100%;
+  gap: 3px;
+  padding: 4px;
+  border: 0;
+  border-radius: 9px;
+  background: #e5e9f0;
   align-items: center;
+}
+[data-theme="dark"] body .research-page [data-selection-navigation] {
+  --selection-fill: #26344b;
+  --selection-border: #53647e;
+  background: #111b2b;
 }
 body .research-page [data-selection-navigation] > button {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+body .research-page [data-selection-navigation] > button svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 }
 body
   .research-page
@@ -1371,6 +1398,17 @@ body
     [aria-selected="true"],
     [aria-current="page"]
   ) {
-  border-color: var(--workspace-accent, var(--selection-border));
-  box-shadow: 0 2px 5px #00000008;
+  border-color: var(--selection-border);
+  box-shadow: 0 1px 3px #0000000a;
+}
+@media (max-width: 600px) {
+  body .research-page [data-selection-navigation] {
+    gap: 2px;
+  }
+  body .research-page [data-selection-navigation] > button {
+    padding: 8px 10px;
+  }
+}
+body .research-page > [data-selection-navigation] {
+  max-width: calc(100% - 2 * var(--research-gutter, 12px));
 }

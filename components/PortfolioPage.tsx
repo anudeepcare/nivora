@@ -28,7 +28,7 @@ import { FeatureGate } from "./Access";
 import AccountBalances from "./AccountBalances";
 import { PositionEditor } from "./ApprovedWorkspaceForms";
 const AccountHistory = dynamic(() => import("./AccountHistory"), {
-  loading: () => <p role="status">Loading account history…</p>,
+  loading: () => null,
 });
 const PortfolioCharts = dynamic(() => import("./PortfolioCharts"), {
   loading: () => <p role="status">Loading analysis…</p>,
@@ -202,13 +202,7 @@ export function Portfolio() {
         </section>
       )}
       <div className={reference.grid} data-portfolio-layout="reference">
-        <AccountHistory
-          readOnly
-          onReviewRecords={() => {
-            setDepthOpen(true);
-            depth.current?.showModal();
-          }}
-        />
+        <AccountHistory readOnly />
         <div className={reference.capitalOverview}>
           <section className="card portfolio-allocation-panel">
             <SectionHead

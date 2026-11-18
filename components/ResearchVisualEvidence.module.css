@@ -456,3 +456,27 @@
     flex-wrap: wrap;
   }
 }
+
+/* Ownership matches the quiet reference: a neutral issuer and readable disclosures. */
+.panel[aria-label="Reported institutional relationships"] .header h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+.panel[aria-label="Reported institutional relationships"] .hub {
+  background: var(--surface);
+  border-color: var(--line);
+}
+.panel[aria-label="Reported institutional relationships"] .hub strong {
+  font-weight: 500;
+}
+.panel[aria-label="Reported institutional relationships"] .holder {
+  border-radius: 8px;
+}
+.panel[aria-label="Reported institutional relationships"] .weight {
+  min-width: 62px;
+}
+.panel[aria-label="Reported institutional relationships"] .eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+}

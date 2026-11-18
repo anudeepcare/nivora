@@ -194,9 +194,10 @@ export default function EconomicContext({
                   <time dateTime={result.checkedAt}>
                     {new Date(result.checkedAt).toLocaleString()}
                   </time>
-                  . This check may reuse cached source data up to{" "}
-                  {result.cacheMaxAgeSeconds / 3600} hours old. It is not a new
-                  source retrieval or observation.
+                  . Configured cache interval:
+                  {result.cacheMaxAgeSeconds / 3600} hours; cached source data
+                  may be older. This check is not a new source retrieval or
+                  observation.
                 </small>
               </>
             )

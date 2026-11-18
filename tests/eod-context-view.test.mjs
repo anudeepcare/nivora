@@ -61,7 +61,7 @@ test("actual Treasury observation and units shown without injecting them into co
   assert.match(rendered.html, /observation 2026-11-17/);
   assert.match(rendered.html, /3.2%/);
   assert.match(rendered.html, /Checked/);
-  assert.match(rendered.html, /up to.*6.*hours old/);
+  assert.match(rendered.html, /Configured cache interval:.*6.*hours/);
   assert.doesNotMatch(rendered.html, /Retrieved/);
   assert.doesNotMatch(rendered.html, /discount rate/);
 });

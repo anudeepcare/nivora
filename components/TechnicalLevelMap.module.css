@@ -124,7 +124,57 @@
 
 /* React to the actual panel width, including a narrow desktop evidence rail. */
 @container (max-width: 480px) {
-  .levels button { grid-template-columns: minmax(0, 1fr) minmax(96px, auto); gap: 8px; }
-  .levels .track { grid-column: 1 / -1; grid-row: 2; }
-  .levels span:last-child { grid-column: 2; grid-row: 1; }
+  .levels button {
+    grid-template-columns: minmax(0, 1fr) minmax(96px, auto);
+    gap: 8px;
+  }
+  .levels .track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .levels span:last-child {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/* Reference-aligned level inspection: blue identifies a selected measurement, not a buy. */
+.map {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.map h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+.map header > span strong {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.levels button {
+  min-height: 44px;
+  background: transparent;
+  border-color: var(--line);
+  border-radius: 8px;
+}
+.levels button[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: color-mix(in srgb, var(--blue) 5%, var(--card));
+}
+.levels button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.levels strong,
+.levels b {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.track i {
+  background: var(--blue);
+}
+.detail {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  line-height: 1.6;
 }

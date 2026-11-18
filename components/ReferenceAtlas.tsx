@@ -377,14 +377,16 @@ export default function ReferenceAtlas({
           <section className={s.evidence}>
             <header>
               <span className={s.eyebrow}>Evidence checks</span>
-              <span>No hidden assumptions</span>
+              <span>Input availability · not confidence</span>
             </header>
             {b.checks.map((check) => (
-              <div key={check.label}>
-                <span>{check.label}</span>
-                <strong data-state={check.status}>{check.status}</strong>
-                <small>{check.detail}</small>
-              </div>
+              <details className={s.evidenceCheck} key={check.label}>
+                <summary>
+                  <span>{check.label}</span>
+                  <strong data-state={check.status}>{check.status}</strong>
+                </summary>
+                <p>{check.detail}</p>
+              </details>
             ))}
           </section>
         </div>

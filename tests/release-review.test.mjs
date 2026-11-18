@@ -365,7 +365,7 @@ test("coverage details preserve the failure without exposing vendor names", () =
   const html = researchMarkup([
     "EODHD did not authorize this dataset",
     "Twelve Data financial data is temporarily unavailable",
-  ], {openHelp: "Research data status"});
+  ], {openHelp: "Company facts and source dates"});
   assert.doesNotMatch(html, /EODHD|Twelve Data/i);
   assert.match(html, /did not authorize this dataset/);
 });

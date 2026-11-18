@@ -1,7 +1,7 @@
 export const desktopNavigation = [
   { path: "overview", label: "Today" },
   { path: "research", label: "Research" },
-  { path: "options", label: "Options" },
+  { path: "options", label: "Screener" },
   { path: "watchlist", label: "Watchlist" },
   { path: "portfolio", label: "Portfolio" },
 ] as const;
