@@ -421,7 +421,7 @@
 .card {
   padding: 16px;
 }
-.price {
+.quote {
   margin-top: 12px;
 }
 .history {
@@ -444,7 +444,7 @@
   .history {
     grid-column: 1/-1;
   }
-  .price {
+  .quote {
     grid-column: 1;
   }
   .change {
@@ -473,5 +473,101 @@
   .open {
     min-width: 44px;
     height: 44px;
+  }
+}
+
+/* Price cards: restrained hierarchy, factual signed accents, no decorative rails. */
+.grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+.card {
+  border: 1px solid var(--line);
+  box-shadow: none;
+  padding: 18px;
+}
+.heading h2 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.4px;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+.symbol {
+  font-size: 13px;
+  font-weight: 600;
+}
+.company h3 {
+  font-size: 12px;
+  line-height: 1.4;
+}
+.quote strong {
+  font-size: clamp(24px, 2vw, 30px);
+  font-weight: 500;
+  letter-spacing: -0.7px;
+}
+.currency {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 1;
+  color: var(--muted);
+}
+.change {
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+.changeValue {
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  padding: 4px 8px;
+}
+.changeValue[data-direction="flat"] {
+  color: var(--muted);
+  background: var(--surface);
+}
+.asOf {
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.card .window,
+.card .historyLabel {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.open {
+  min-width: 44px;
+  height: 44px;
+}
+@media (min-width: 1000px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .company,
+  .quote,
+  .change,
+  .asOf,
+  .history,
+  .unavailable {
+    grid-column: 1 / -1;
+  }
+  .change {
+    margin-top: 8px;
+  }
+}
+@media (max-width: 540px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .company h3 {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .heading {
+    align-items: flex-start;
+    gap: 12px;
   }
 }

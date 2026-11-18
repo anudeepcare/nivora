@@ -26,6 +26,13 @@ type HistoryState = {
   pending: string[];
 };
 const DAY = 86400000;
+function quoteDirection(value: number | null | undefined) {
+  return value == null || !Number.isFinite(value) || value === 0
+    ? "flat"
+    : value < 0
+      ? "down"
+      : "up";
+}
 
 /** Never fill missing observations or render a stale/malformed series as a current trend. */
 function usableHistory(history: Candle[] | undefined, now: number): Candle[] {
@@ -438,13 +445,13 @@ export default function HomeMarketCards({
                     <>
                       <span
                         className={styles.changeValue}
-                        data-direction={quote.changePct < 0 ? "down" : "up"}
+                        data-direction={quoteDirection(quote.changePct)}
                       >
                         {quote.changePct < 0 ? (
                           <ArrowDownRight size={15} aria-hidden="true" />
-                        ) : (
+                        ) : quote.changePct > 0 ? (
                           <ArrowUpRight size={15} aria-hidden="true" />
-                        )}
+                        ) : null}
                         {percent(quote.changePct, true)}
                       </span>
                       <span>daily change</span>

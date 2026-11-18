@@ -1,3 +1,4 @@
+import { analystRangePosition } from "../lib/analyst-range-geometry.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -5,6 +6,7 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 function load(file, name, bindings) {
+  bindings = { analystRangePosition, ...bindings };
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -347,6 +349,12 @@ test("Scenarios analyst source fallback appears only when the primary stock data
   available = true;
   const html = render();
   assert.doesNotMatch(html, /Alternate evidence/);
+  assert.match(
+    html,
+    /role="img" aria-label="Analyst target range: low USD 80, mean USD 100, high USD 120/,
+  );
+  assert.match(html, /left:50%/);
+  assert.match(html, /Analyst consensus/);
   for (const value of ["USD 80", "USD 100", "USD 120", "12", "2026-11-17"])
     assert.ok(html.includes(value));
 });

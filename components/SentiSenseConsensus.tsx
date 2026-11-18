@@ -1,4 +1,5 @@
 "use client";
+import { analystRangePosition } from "@/lib/analyst-range-geometry";
 import { consensusTarget } from "@/lib/analyst-presentation";
 import layout from "./SentiSenseConsensus.module.css";
 import EtfAggregateEvidence from "./EtfAggregateEvidence";
@@ -65,6 +66,11 @@ export default function SentiSenseConsensus({
     !Array.isArray(result.data)
       ? (result.data as Record<string, unknown>)
       : null;
+  const rangePosition = analystRangePosition(
+    data?.targetLow,
+    data?.targetMean,
+    data?.targetHigh,
+  );
   const available =
     result?.status === "available" || result?.status === "preview";
   if (kind === "ETF") {
@@ -181,10 +187,34 @@ export default function SentiSenseConsensus({
               Limited provider preview. This is not complete analyst coverage.
             </p>
           )}
+          {rangePosition !== null ? (
+            <div
+              className={layout.rangeFigure}
+              role="img"
+              aria-label={`Analyst target range: low ${consensusTarget(data.targetLow, data.currency)}, mean ${consensusTarget(data.targetMean, data.currency)}, high ${consensusTarget(data.targetHigh, data.currency)}. ${data.targetLow === data.targetHigh ? "All three targets are equal." : "Marker position shows the mean within the supplied range."}`}
+            >
+              <div className={layout.rangeTrack} aria-hidden="true">
+                <span style={{ left: `${rangePosition}%` }} />
+              </div>
+              <div className={layout.rangeLabels} aria-hidden="true">
+                <span>Low</span>
+                <span>Mean marker</span>
+                <span>High</span>
+              </div>
+            </div>
+          ) : (
+            <p className={s.caption}>
+              Range visualization unavailable: ordered low, mean and high
+              targets are required. Supplied readings remain below.
+            </p>
+          )}
           <div className={`${s.stats} ${layout.stats}`}>
             {[
+              ["Low target", consensusTarget(data.targetLow, data.currency)],
+              ["Mean target", consensusTarget(data.targetMean, data.currency)],
+              ["High target", consensusTarget(data.targetHigh, data.currency)],
               [
-                "Consensus",
+                "Analyst consensus",
                 typeof data.consensusLabel === "string"
                   ? data.consensusLabel
                       .replaceAll("_", " ")
@@ -192,9 +222,6 @@ export default function SentiSenseConsensus({
                       .replace(/^./, (letter: string) => letter.toUpperCase())
                   : "Not supplied",
               ],
-              ["Mean target", consensusTarget(data.targetMean, data.currency)],
-              ["Low target", consensusTarget(data.targetLow, data.currency)],
-              ["High target", consensusTarget(data.targetHigh, data.currency)],
             ].map(([label, v]) => (
               <div
                 className={s.stat}
@@ -223,7 +250,7 @@ export default function SentiSenseConsensus({
                     aria-hidden="true"
                     focusable="false"
                   >
-                    {label === "Consensus" ? (
+                    {label === "Analyst consensus" ? (
                       <>
                         <circle cx="9" cy="7" r="3" />
                         <path d="M3 21v-2a6 6 0 0 1 12 0v2M16 4a3 3 0 0 1 0 6M21 21v-2a6 6 0 0 0-3-5" />

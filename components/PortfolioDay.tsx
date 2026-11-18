@@ -22,6 +22,10 @@ export default function PortfolioDay({
 }) {
   const d = portfolioDay(positions, quotes, now);
   if (!d.priced) return null;
+  const largestMove = Math.max(
+    1,
+    ...[...d.gainers, ...d.decliners].map((m) => Math.abs(m.move)),
+  );
   const direction =
     d.move == null || d.move === 0 ? "flat" : d.move > 0 ? "up" : "down";
   const signed = (v: number) =>
@@ -84,6 +88,25 @@ export default function PortfolioDay({
                         </Link>
                         <span>{signed(m.move)}</span>
                         <small>{percent(m.changePct, true)}</small>
+                        <svg
+                          className={s.contributionBar}
+                          viewBox="0 0 100 8"
+                          preserveAspectRatio="none"
+                          aria-hidden="true"
+                        >
+                          <line x1="50" x2="50" y1="0" y2="8" />
+                          <rect
+                            x={
+                              m.move < 0
+                                ? 50 - (Math.abs(m.move) / largestMove) * 50
+                                : 50
+                            }
+                            y="2"
+                            width={(Math.abs(m.move) / largestMove) * 50}
+                            height="4"
+                            rx="2"
+                          />
+                        </svg>
                         <time className={s.observed} dateTime={m.asOf}>
                           Quote {quoteTime(m.asOf, true)}
                         </time>
@@ -98,6 +121,11 @@ export default function PortfolioDay({
       <footer className={s.basis}>
         <Clock3 size={14} aria-hidden="true" />
         <div>
+          {(d.gainers.length > 0 || d.decliners.length > 0) && (
+            <span className={s.barBasis}>
+              Bar lengths compare the displayed dollar contributions.
+            </span>
+          )}{" "}
           {d.covered} of {d.holdings} holdings with dated reported changes.
           {d.oldestAsOf && d.asOf && (
             <>

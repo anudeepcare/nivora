@@ -161,3 +161,61 @@
   color: var(--ink);
   border-color: var(--line);
 }
+
+/* The selected board stays immediately below its compact chooser. */
+.trackerHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+}
+.trackerHeader span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.trackerPicker {
+  display: grid;
+  gap: 6px;
+  max-width: 540px;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.trackerPicker select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+.trackerPicker select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.trackerStatus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+.trackerStatus button {
+  min-height: 44px;
+  padding: 8px 14px;
+}
+.trackerInfo {
+  margin: 8px 0 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.trackerInfo summary {
+  cursor: pointer;
+  min-height: 32px;
+  display: list-item;
+}
+.trackerInfo p {
+  max-width: 80ch;
+}

@@ -178,3 +178,35 @@
   background: var(--surface);
   line-height: 1.6;
 }
+
+/* Compact reference rows preserve a shared measured scale, without nested cards. */
+.levels {
+  gap: 0;
+  margin: 10px 0;
+}
+.levels button {
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+}
+.levels button:last-child {
+  border-bottom: 0;
+}
+.levels button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--blue) 7%, var(--card));
+}
+.levels small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.levels b {
+  color: var(--blue);
+  font-size: 15px;
+}
+.levels .track {
+  height: 16px;
+}
+.track i {
+  top: 3px;
+}

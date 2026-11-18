@@ -1,4 +1,6 @@
 .root {
+  --option-call: #2563b8;
+  --option-put: #a65b0b;
   min-width: 0;
   margin: 10px 0;
 }
@@ -80,10 +82,10 @@
   margin-top: 12px;
 }
 .split i {
-  background: var(--blue);
+  background: var(--option-call);
 }
 .split b {
-  background: #9b8cff;
+  background: var(--option-put);
 }
 .scroll {
   max-height: 340px;
@@ -152,7 +154,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--blue);
+  background: var(--option-call);
 }
 .wall strong {
   text-align: right;
@@ -223,4 +225,31 @@
 :global([data-theme="dark"]) .metrics [data-family="volatility"] svg,
 :global([data-theme="dark"]) .metrics [data-family="range"] svg {
   color: #bea5ed;
+}
+
+/* Contract categories, not sentiment or buyer/seller direction. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--option-call);
+  flex: 0 0 auto;
+}
+.legend [data-side="Put"] i,
+.wall[data-side="Put"] .wallMeter > span {
+  background: var(--option-put);
+}
+:global([data-theme="dark"]) .root {
+  --option-call: #72afff;
+  --option-put: #edb35e;
 }

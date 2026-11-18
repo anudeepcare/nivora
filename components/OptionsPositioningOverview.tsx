@@ -64,8 +64,15 @@ export default function OptionsPositioningOverview({
       >
         <header>
           <h4>Reported volume</h4>
-          <span>
-            Calls {number(p.call)} · Puts {number(p.put)}
+          <span className={styles.legend}>
+            <span data-side="Call">
+              <i aria-hidden="true" />
+              Calls {number(p.call)}
+            </span>
+            <span data-side="Put">
+              <i aria-hidden="true" />
+              Puts {number(p.put)}
+            </span>
           </span>
         </header>
         {p.callShare != null ? (
@@ -106,6 +113,7 @@ export default function OptionsPositioningOverview({
             {p.walls.rows.map((wall, index) => (
               <div
                 className={styles.wall}
+                data-side={wall.side}
                 key={`${wall.side}-${wall.strike}-${index}`}
               >
                 <span>
@@ -139,8 +147,9 @@ export default function OptionsPositioningOverview({
           {p.walls.maxPain != null && (
             <>Reported max pain ${number(p.walls.maxPain)} · </>
           )}
-          Reported subset, not the full chain. Open interest is not dealer gamma
-          or trade direction.
+          Colors distinguish contract types, not trade direction. Reported
+          subset, not the full chain. Open interest is not dealer gamma or trade
+          direction.
         </p>
       </section>
       <section

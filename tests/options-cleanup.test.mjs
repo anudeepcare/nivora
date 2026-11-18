@@ -13,7 +13,9 @@ test("open interest uses accessible themed bar rather than native meter colors",
     "components/OptionsPositioningOverview.module.css",
     "utf8",
   );
-  assert.match(css, /\.wallMeter[^}]*\{[^}]*background: var\(--blue\)/s);
+  assert.match(css, /\.wallMeter > span\s*\{[^}]*background: var\(--option-call\)/s);
+  assert.match(css, /\.wall\[data-side="Put"\] \.wallMeter > span\s*\{[^}]*background: var\(--option-put\)/s);
+  assert.match(source, /data-side=\{wall.side\}/);
 });
 test("market overview opens with real loading state rather than a second browse action", () => {
   const source = fs.readFileSync(

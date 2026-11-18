@@ -2,7 +2,9 @@ import type { HomeFeed } from "./home-feed";
 export async function loadPortfolioCalendar(
   symbols: string[],
   read: (batch: string[]) => Promise<HomeFeed>,
+  signal?: AbortSignal,
 ) {
+  if (signal?.aborted) throw Error("Calendar request cancelled.");
   const result = {
     events: [] as HomeFeed["events"],
     issues: [] as string[],
@@ -11,9 +13,11 @@ export async function loadPortfolioCalendar(
     eventsReady: true,
   };
   for (let offset = 0; offset < symbols.length; offset += 30) {
+    if (signal?.aborted) throw Error("Calendar request cancelled.");
     const batch = symbols.slice(offset, offset + 30);
     try {
       const data = await read(batch);
+      if (signal?.aborted) throw Error("Calendar request cancelled.");
       result.events.push(...data.events);
       result.followed += data.followed;
       result.issues.push(...data.issues);
@@ -26,6 +30,7 @@ export async function loadPortfolioCalendar(
         break;
       }
     } catch {
+      if (signal?.aborted) throw Error("Calendar request cancelled.");
       result.eventsReady = false;
       break;
     }

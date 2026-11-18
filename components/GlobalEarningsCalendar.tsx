@@ -44,9 +44,7 @@ export default function GlobalEarningsCalendar() {
       <header>
         <h2>Earnings calendar</h2>
         <p>
-          Upcoming reports across the provider’s curated US equity universe, not
-          the whole market or just the company you are researching. Dates may
-          change.
+          Upcoming US reports · selected company coverage · dates may change.
         </p>
       </header>
       <div className={s.controls} role="group" aria-label="Earnings view">
@@ -170,21 +168,50 @@ function CalendarWindow({ days, day }: { days: number; day: string }) {
         </div>
       ) : data ? (
         <>
-          <p className={s.note}>
-            {data.windowStart}–{data.windowEnd} · calendar day boundary:
-            America/New_York. Session labels follow the provider; exact release
-            times are not inferred. Snapshot received{" "}
-            {data.retrievedAt.replace("T", " ").replace(/\.\d+Z$/, " UTC")}.
-          </p>
-          <p className={s.note}>
-            Provider snapshot built{" "}
-            {data.generatedAt
-              ? data.generatedAt.replace("T", " ")
-              : "at an unavailable time"}
-            . Server snapshots are cached for 24 hours; this loaded view can be
-            older. Check the receipt date above. Schedules may change between
-            updates.
-          </p>
+          <div className={s.summaryRow} aria-label="Loaded calendar summary">
+            <div>
+              <span>Loaded reports</span>
+              <strong>{filtered.length}</strong>
+            </div>
+            <div>
+              <span>Confirmed dates</span>
+              <strong>{filtered.filter((e) => e.confirmed).length}</strong>
+            </div>
+            <div className={s.windowLabel}>
+              <span>Window</span>
+              <strong>
+                {data.windowStart} – {data.windowEnd}
+              </strong>
+            </div>
+          </div>
+          <details className={s.disclosure}>
+            <summary>Data &amp; coverage</summary>
+            <p className={s.note}>
+              The provider’s curated US equity universe, not the whole market.
+              Estimates are provider calendar figures, not AURYN forecasts;
+              currency and accounting basis are not supplied per row.
+            </p>
+            <p className={s.note}>
+              {data.windowStart}–{data.windowEnd} · calendar day boundary:
+              America/New_York. Session labels follow the provider; exact
+              release times are not inferred. Snapshot received{" "}
+              {data.retrievedAt.replace("T", " ").replace(/\.\d+Z$/, " UTC")}.
+            </p>
+            <p className={s.note}>
+              Provider snapshot built{" "}
+              {data.generatedAt
+                ? data.generatedAt.replace("T", " ")
+                : "at an unavailable time"}
+              . Server snapshots are cached for 24 hours; this loaded view can
+              be older. Check the receipt date above. Schedules may change
+              between updates.
+            </p>
+            <p className={s.note}>
+              {data.events.filter((e) => e.reported).length} rows already
+              carrying results excluded from upcoming reports. {data.omitted}{" "}
+              unsupported rows omitted.
+            </p>
+          </details>
           {data.preview && (
             <p className={s.notice}>
               Limited provider preview: only the first week of the requested
@@ -195,17 +222,6 @@ function CalendarWindow({ days, day }: { days: number; day: string }) {
               This is not complete global coverage.
             </p>
           )}
-          <p className={s.note}>
-            {filtered.length} upcoming loaded events match these filters.{" "}
-            {data.events.filter((e) => e.reported).length > 0
-              ? `${data.events.filter((e) => e.reported).length} rows already carrying results are excluded from upcoming reports.`
-              : ""}{" "}
-            {data.omitted > 0
-              ? `${data.omitted} unsupported rows omitted.`
-              : ""}{" "}
-            Estimates are provider calendar figures, not AURYN forecasts;
-            currency and accounting basis are not supplied per row.
-          </p>
           {shown.length ? (
             <div
               className={s.scroll}
@@ -247,8 +263,22 @@ function CalendarWindow({ days, day }: { days: number; day: string }) {
                           {e.quarter ?? "Fiscal quarter not supplied"}
                         </small>
                       </td>
-                      <td>{figure(e.eps)}</td>
-                      <td>{figure(e.revenue)}</td>
+                      <td>
+                        <span
+                          className={e.eps === null ? s.missing : s.metricValue}
+                        >
+                          {figure(e.eps)}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          className={
+                            e.revenue === null ? s.missing : s.metricValue
+                          }
+                        >
+                          {figure(e.revenue)}
+                        </span>
+                      </td>
                       <td>
                         {e.callTime ? (
                           <time dateTime={e.callTime}>

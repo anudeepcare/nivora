@@ -12,6 +12,7 @@ import {
   type ScreenInput,
 } from "@/lib/stock-screener";
 import s from "./OptionsMarketOverview.module.css";
+import ui from "./StockScreener.module.css";
 type Result = {
   withheld: string[];
   matched: number;
@@ -25,6 +26,16 @@ const value = (n: number | null, suffix = "") =>
   n === null
     ? "Not supplied"
     : n.toLocaleString("en-US", { maximumFractionDigits: 2 }) + suffix;
+const direction = (n: number | null) =>
+  n == null || !Number.isFinite(n) || n === 0 ? "flat" : n > 0 ? "up" : "down";
+const units = (field: ScreenField) =>
+  field === "MARKET_CAP"
+    ? "USD"
+    : field === "PRICE"
+      ? "quote units"
+      : field === "ANALYST_COUNT"
+        ? "whole analysts"
+        : "%";
 export default function StockScreener() {
   const [field, setField] = useState<ScreenField>("MARKET_CAP"),
     [op, setOp] = useState<"GTE" | "LTE">("GTE"),
@@ -76,10 +87,25 @@ export default function StockScreener() {
       setBusy(false);
     }
   };
+  const edited =
+    !!result &&
+    (field !== result.screen.field ||
+      op !== result.screen.op ||
+      threshold.trim() === "" ||
+      Number(threshold) !== result.screen.value ||
+      secondEnabled !== !!result.screen.second ||
+      (secondEnabled &&
+        (secondField !== result.screen.second?.field ||
+          secondOp !== result.screen.second?.op ||
+          secondThreshold.trim() === "" ||
+          Number(secondThreshold) !== result.screen.second?.value)));
   const rows = result?.results.slice(page * 25, (page + 1) * 25) ?? [],
     pages = Math.max(1, Math.ceil((result?.results.length ?? 0) / 25));
   return (
-    <section className={s.screener} aria-labelledby="stock-screener-title">
+    <section
+      className={`${s.screener} ${ui.root}`}
+      aria-labelledby="stock-screener-title"
+    >
       <h2 id="stock-screener-title">Stock screener</h2>
       <p>
         Combine up to two factual conditions across the tracked stocks. This is
@@ -87,49 +113,51 @@ export default function StockScreener() {
         a filter. Both conditions must match; sorting uses the first
         measurement.
       </p>
-      <ScreenerCatalog universe="STOCK" />
-      <form onSubmit={run} className={s.pagination}>
-        <label className={s.search}>
-          Measurement
-          <select
-            value={field}
-            onChange={(e) => {
-              setField(e.target.value as ScreenField);
-              setThreshold("");
-            }}
-          >
-            {Object.entries(screenerFields).map(([key, v]) => (
-              <option key={key} value={key}>
-                {v.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={s.search}>
-          Comparison
-          <select
-            value={op}
-            onChange={(e) => setOp(e.target.value as "GTE" | "LTE")}
-          >
-            <option value="GTE">At least</option>
-            <option value="LTE">At most</option>
-          </select>
-        </label>
-        <label className={s.search}>
-          Value
-          <input
-            type="number"
-            required
-            min={screenerFields[field].min}
-            step={field === "ANALYST_COUNT" ? "1" : "any"}
-            value={threshold}
-            onChange={(e) => setThreshold(e.target.value)}
-          />
-        </label>
+      <form onSubmit={run} className={ui.form}>
+        <fieldset disabled={busy} className={ui.condition}>
+          <legend>Condition 1</legend>
+          <label className={s.search}>
+            Measurement
+            <select
+              value={field}
+              onChange={(e) => {
+                setField(e.target.value as ScreenField);
+                setThreshold("");
+              }}
+            >
+              {Object.entries(screenerFields).map(([key, v]) => (
+                <option key={key} value={key}>
+                  {v.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={s.search}>
+            Comparison
+            <select
+              value={op}
+              onChange={(e) => setOp(e.target.value as "GTE" | "LTE")}
+            >
+              <option value="GTE">At least</option>
+              <option value="LTE">At most</option>
+            </select>
+          </label>
+          <label className={s.search}>
+            Value · {units(field)}
+            <input
+              type="number"
+              required
+              min={screenerFields[field].min}
+              step={field === "ANALYST_COUNT" ? "1" : "any"}
+              value={threshold}
+              onChange={(e) => setThreshold(e.target.value)}
+            />
+          </label>
+        </fieldset>
         <div
           role="group"
           aria-label="Additional condition"
-          className={s.pagination}
+          className={ui.additional}
         >
           {!secondEnabled ? (
             <button
@@ -141,6 +169,7 @@ export default function StockScreener() {
             </button>
           ) : (
             <>
+              <span className={ui.conditionLabel}>Condition 2 · AND</span>
               <label>
                 And measurement
                 <select
@@ -170,7 +199,7 @@ export default function StockScreener() {
                 </select>
               </label>
               <label>
-                And value
+                Value · {units(secondField)}
                 <input
                   type="number"
                   required
@@ -191,13 +220,28 @@ export default function StockScreener() {
             </>
           )}
         </div>
-        <button type="submit" disabled={busy || threshold.trim() === ""}>
+        <button
+          className={ui.run}
+          type="submit"
+          disabled={
+            busy ||
+            threshold.trim() === "" ||
+            (secondEnabled && secondThreshold.trim() === "")
+          }
+        >
           {busy ? "Running screen…" : "Run screen"}
         </button>
       </form>
+      <ScreenerCatalog universe="STOCK" />
+      {edited && (
+        <p className={ui.changed} role="status">
+          Filters changed. Run screen to apply them; the results below still use
+          the last applied conditions.
+        </p>
+      )}
       {error && <p role="alert">{error}</p>}
       {result && (
-        <>
+        <div className={ui.results}>
           {result.withheld.length > 0 && (
             <p>
               {result.withheld.join(" and ")} is withheld under your current app
@@ -250,7 +294,11 @@ export default function StockScreener() {
               role="region"
               aria-label="Stock screener results"
             >
-              <table className={s.table}>
+              <table className={`${s.table} ${ui.table}`}>
+                <caption>
+                  Returned stock observations · {result.results.length} of{" "}
+                  {result.matched} matches
+                </caption>
                 <thead>
                   <tr>
                     <th>Stock</th>
@@ -283,11 +331,15 @@ export default function StockScreener() {
                               .replace("T", " ")
                               .replace(".000Z", "")}
                       </td>
-                      <td>{value(r.changePercent, "%")}</td>
+                      <td data-direction={direction(r.changePercent)}>
+                        {value(r.changePercent, "%")}
+                      </td>
                       <td>{value(r.marketCap)}</td>
                       <td>{value(r.analystCount)}</td>
                       <td>{value(r.analystTargetUpsidePct, "%")}</td>
-                      <td>{value(r.return1Y, "%")}</td>
+                      <td data-direction={direction(r.return1Y)}>
+                        {value(r.return1Y, "%")}
+                      </td>
                       <td>{value(r.volatility30D, "%")}</td>
                     </tr>
                   ))}
@@ -300,7 +352,7 @@ export default function StockScreener() {
             analyst counts and target-price coverage may differ. Non-price
             metric observation dates are not supplied by this view.
           </p>
-        </>
+        </div>
       )}
     </section>
   );

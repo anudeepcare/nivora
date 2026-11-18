@@ -1030,3 +1030,39 @@
     text-align: left;
   }
 }
+
+/* Data-quality actions must not read like a faint inline link. */
+.home.home.home :global(.approved-data-note) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 12px 14px;
+  margin: 12px 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--amber-soft);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.home.home.home :global(.approved-data-note) button {
+  min-height: 44px;
+  padding: 8px 14px;
+  margin-left: auto;
+  border: 1px solid var(--ink);
+  border-radius: 9px;
+  color: var(--card);
+  background: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.home.home.home :global(.approved-data-note) button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.home.home.home :global(.approved-data-note) button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}

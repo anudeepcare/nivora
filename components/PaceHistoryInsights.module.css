@@ -156,3 +156,46 @@
   font-size: 12px;
   line-height: 1.5;
 }
+
+.returnValue {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.returnValue[data-direction="positive"] {
+  color: var(--green);
+}
+.returnValue[data-direction="negative"],
+.downside {
+  color: var(--red);
+}
+.limited {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--amber) 12%, var(--card));
+  border-radius: 5px;
+  padding: 4px 6px;
+  display: inline-block;
+}
+.outcomeBar {
+  display: block;
+  position: relative;
+  height: 12px;
+  max-width: 180px;
+  margin-top: 6px;
+  background: linear-gradient(
+    90deg,
+    transparent 49.5%,
+    var(--line) 49.5%,
+    var(--line) 50.5%,
+    transparent 50.5%
+  );
+}
+.outcomeBar i {
+  position: absolute;
+  top: 3px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--green);
+}
+.outcomeBar i[data-direction="negative"] {
+  background: var(--red);
+}

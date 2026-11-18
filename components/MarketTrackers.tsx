@@ -30,67 +30,86 @@ export default function MarketTrackers() {
   const data = snapshot.data?.data;
   return (
     <section className={styles.root} aria-label="Market trackers">
-      <header>
+      <header className={styles.trackerHeader}>
         <h2>Market trackers</h2>
-        <p>
-          Choose one board. Observations and reported activity, not trade
-          recommendations. No background loading of other boards.
-        </p>
+        <span>Dated observations · one board at a time</span>
       </header>
       {catalog.loading ? (
         <p role="status">Loading available trackers…</p>
       ) : catalog.error ? (
-        <p role="status">{catalog.error}</p>
+        <div className={styles.trackerStatus} role="status">
+          <p>{catalog.error}</p>
+          <button onClick={catalog.refresh}>Retry trackers</button>
+        </div>
       ) : (
-        <nav aria-label="Tracker categories">
-          {Object.entries(trackerGroups).map(([group, ids]) => {
-            const items = (catalog.data?.data ?? []).filter((x) =>
-              (ids as readonly string[]).includes(x.id),
-            );
-            return items.length ? (
-              <section key={group}>
-                <h3>{group}</h3>
-                <div className={styles.choices}>
+        <label className={styles.trackerPicker}>
+          Open a tracker
+          <select
+            value={selected ?? ""}
+            onChange={(event) => {
+              setSelected(event.target.value || null);
+              setPage(0);
+            }}
+          >
+            <option value="">Choose a board…</option>
+            {Object.entries(trackerGroups).map(([group, ids]) => {
+              const items = (catalog.data?.data ?? []).filter((item) =>
+                (ids as readonly string[]).includes(item.id),
+              );
+              return items.length ? (
+                <optgroup key={group} label={group}>
                   {items.map((item) => (
-                    <button
-                      key={item.id}
-                      aria-pressed={selected === item.id}
-                      onClick={() => {
-                        setSelected(item.id);
-                        setPage(0);
-                      }}
-                    >
-                      <strong>{item.name}</strong>
-                      <span>{item.description}</span>
-                      <small>
-                        {item.tier === "pro"
-                          ? "Provider PRO / preview"
-                          : "Provider free tier"}
-                      </small>
-                    </button>
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                      {item.id.startsWith("institution-")
+                        ? " · hedge funds"
+                        : item.id === "market-heatmap"
+                          ? " · S&P 500 prices"
+                          : ""}
+                    </option>
                   ))}
-                </div>
-              </section>
-            ) : null;
-          })}
-        </nav>
+                </optgroup>
+              ) : null;
+            })}
+          </select>
+        </label>
       )}
       {!selected ? (
         <p>Select a tracker to request its current snapshot.</p>
       ) : snapshot.loading ? (
         <p role="status">Loading selected snapshot…</p>
       ) : snapshot.error ? (
-        <p role="status">{snapshot.error}</p>
+        <div className={styles.trackerStatus} role="status">
+          <p>{snapshot.error}</p>
+          <button onClick={snapshot.refresh}>Retry snapshot</button>
+        </div>
       ) : data && data.id === selected ? (
         <section aria-label={data.name} className={styles.board}>
           <header>
             <h2>{data.name}</h2>
-            <p>{data.description}</p>
             <p>
-              Provider data as of {data.asOf ?? "not supplied"}. Retrieved{" "}
-              {snapshot.data?.retrievedAt}. Snapshot dates are not a live-feed
-              guarantee.
+              As of {data.asOf ?? "not supplied"} · {data.rows.length} returned
+              rows
+              {data.totalCount !== null
+                ? ` of ${data.totalCount} reported`
+                : ""}
             </p>
+            <details className={styles.trackerInfo}>
+              <summary>About this board &amp; source</summary>
+              <p>{data.description}</p>
+              <p>
+                SentiSense snapshot retrieved{" "}
+                {snapshot.data?.retrievedAt ?? "at an unavailable time"}. Dates
+                are not a live-feed guarantee. Observations are not trade
+                recommendations. Missing readings remain unavailable.
+              </p>
+              {data.id.startsWith("institution-") && (
+                <p>
+                  Default hedge-fund category; this is not an all-institutions
+                  ranking.
+                </p>
+              )}
+            </details>
           </header>
           {data.preview && (
             <p role="note">
@@ -126,11 +145,6 @@ export default function MarketTrackers() {
               </div>
             ))}
           </div>
-          <p>
-            {data.rows.length} returned rows
-            {data.totalCount !== null ? ` of ${data.totalCount} reported` : ""}.
-            Missing readings remain unavailable.
-          </p>
           <div className={styles.rows}>
             {data.rows.slice(page * 25, (page + 1) * 25).map((row) => (
               <article key={row.id}>
@@ -190,7 +204,12 @@ export default function MarketTrackers() {
             Provider methodology ↗
           </a>
         </section>
-      ) : null}
+      ) : (
+        <p role="status">
+          No matching snapshot is available.{" "}
+          <button onClick={snapshot.refresh}>Retry snapshot</button>
+        </p>
+      )}
       <ProductLookup />
     </section>
   );

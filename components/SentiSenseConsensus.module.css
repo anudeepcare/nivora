@@ -90,3 +90,37 @@
 .stats [data-target="Mean target"] strong {
   color: var(--blue);
 }
+
+.rangeFigure {
+  margin: 20px 12px 8px;
+}
+.rangeTrack {
+  position: relative;
+  height: 8px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--blue) 18%, var(--card)),
+    color-mix(in srgb, var(--blue) 55%, var(--card))
+  );
+  border: 1px solid var(--line);
+}
+.rangeTrack span {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 2px solid var(--card);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.rangeLabels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}

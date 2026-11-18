@@ -1,3 +1,4 @@
+import { accountHistoryWindow } from "../lib/account-history-window.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -30,6 +31,7 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
   const effects = [];
   let resize;
   const bindings = {
+    accountHistoryWindow,
     React,
     styles: new Proxy({}, { get: (_, key) => key }),
     useEffect: (effect) => {
@@ -124,7 +126,8 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
     return out;
   };
   let tree = nodes();
-  const buttons = () => nodes().filter((n) => n.type === "button" && n.props.className === "btn");
+  const buttons = () =>
+    nodes().filter((n) => n.type === "button" && n.props.className === "btn");
   assert.equal(calls.length, 0);
   assert.ok(tree.some((n) => n.props.className === "actions"));
   assert.ok(!tree.some((n) => n.props.className === "confirmation"));

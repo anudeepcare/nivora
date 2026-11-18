@@ -1,0 +1,125 @@
+.root {
+  color: var(--ink);
+}
+.form {
+  display: grid;
+  gap: 14px;
+  margin: 20px 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.condition,
+.additional {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: end;
+  min-width: 0;
+}
+.condition {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.condition legend,
+.conditionLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 0 0 10px;
+}
+.conditionLabel {
+  grid-column: 1/-1;
+}
+.form label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.form :is(input, select) {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+}
+.form button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--surface);
+  justify-self: start;
+}
+.form .run {
+  color: var(--card);
+  background: var(--ink);
+  border-color: var(--ink);
+  min-width: 150px;
+}
+.form :is(button, input, select):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.form :disabled {
+  opacity: 0.65;
+}
+.changed {
+  background: var(--amber-soft);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 12px;
+}
+.results {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.table {
+  font-variant-numeric: tabular-nums;
+}
+.table caption {
+  text-align: left;
+  padding: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.table tbody th {
+  position: sticky;
+  left: 0;
+  background: var(--card);
+  z-index: 1;
+}
+.table [data-direction="up"] {
+  color: var(--green);
+}
+.table [data-direction="down"] {
+  color: var(--red);
+}
+.table [data-direction="flat"] {
+  color: var(--ink);
+}
+@media (max-width: 620px) {
+  .condition,
+  .additional {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .form {
+    padding: 14px;
+  }
+  .form :is(input, select) {
+    font-size: 16px;
+  }
+  .form .run {
+    width: 100%;
+  }
+}

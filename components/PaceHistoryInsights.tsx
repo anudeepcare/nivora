@@ -24,6 +24,10 @@ export default function PaceHistoryInsights({
   );
   const [selected, setSelected] = useState(2);
   const zone = data.zones.find((row) => row.zone === selected)!;
+  const returnScale = Math.max(
+    1,
+    ...zone.outcomes.map((o) => Math.abs(o.medianReturn ?? 0)),
+  );
   if (!data.available)
     return (
       <section
@@ -72,6 +76,10 @@ export default function PaceHistoryInsights({
               ))}
             </select>
           </div>
+          <p className={styles.note}>
+            Exploring {zoneLabel(selected)}, not the current zone. Historical
+            observations, not a forecast.
+          </p>
           <dl className={styles.stats}>
             <div>
               <dt>Observed visits</dt>
@@ -123,11 +131,50 @@ export default function PaceHistoryInsights({
                 {zone.outcomes.map((outcome) => (
                   <tr key={outcome.months}>
                     <th scope="row">{outcome.months} months</th>
-                    <td>{pct(outcome.medianReturn)}</td>
-                    <td>{pct(outcome.worstDownside)}</td>
                     <td>
-                      {outcome.count}
-                      {outcome.count < 5 ? " · limited" : ""}
+                      <span
+                        className={styles.returnValue}
+                        data-direction={
+                          outcome.medianReturn === null
+                            ? "missing"
+                            : outcome.medianReturn > 0
+                              ? "positive"
+                              : outcome.medianReturn < 0
+                                ? "negative"
+                                : "flat"
+                        }
+                      >
+                        {pct(outcome.medianReturn)}
+                      </span>
+                      {outcome.count > 0 && outcome.medianReturn !== null && (
+                        <span className={styles.outcomeBar} aria-hidden="true">
+                          <i
+                            style={{
+                              left: `${outcome.medianReturn < 0 ? 50 - (Math.abs(outcome.medianReturn) / returnScale) * 48 : 50}%`,
+                              width: `${(Math.abs(outcome.medianReturn) / returnScale) * 48}%`,
+                            }}
+                            data-direction={
+                              outcome.medianReturn < 0 ? "negative" : "positive"
+                            }
+                          />
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      <span className={styles.downside}>
+                        {pct(outcome.worstDownside)}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          outcome.count < 5 ? styles.limited : undefined
+                        }
+                      >
+                        {outcome.count}{" "}
+                        {outcome.count === 1 ? "sample" : "samples"}
+                        {outcome.count < 5 ? " · limited" : ""}
+                      </span>
                     </td>
                   </tr>
                 ))}

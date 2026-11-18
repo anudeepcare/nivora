@@ -6,7 +6,10 @@ import { portfolioRiskSummary } from "@/lib/product-attention";
 import { amount, percent } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
-import { readResource, invalidateResource } from "@/lib/resource-cache";
+import {
+  readPortfolioCalendar,
+  invalidatePortfolioCalendar,
+} from "@/lib/portfolio-calendar-resource";
 import { loadPortfolioCalendar } from "@/lib/portfolio-calendar";
 export function usePortfolioCalendar(positions: Position[]) {
   const { demo, workspace, cache } = useProduct(),
@@ -33,13 +36,19 @@ export function usePortfolioCalendar(positions: Position[]) {
   useEffect(() => {
     if (demo) return;
     let active = true;
+    const abort = new AbortController();
     setState({ key: resourceKey, data: null, loading: !!key, error: "" });
-    readResource<Calendar>(cache, resourceKey, 300000, () =>
-      loadPortfolioCalendar(key ? key.split(",") : [], (batch) => {
-        return api<HomeFeed>(
+    readPortfolioCalendar(
+      cache,
+      resourceKey,
+      key ? key.split(",") : [],
+      (batch, signal) =>
+        api<HomeFeed>(
           `home-feed?kind=events&symbols=${encodeURIComponent(batch.join(","))}`,
-        );
-      }),
+          undefined,
+          signal,
+        ),
+      abort.signal,
     )
       .then((data) => {
         if (active)
@@ -56,6 +65,7 @@ export function usePortfolioCalendar(positions: Position[]) {
       });
     return () => {
       active = false;
+      abort.abort();
     };
   }, [demo, key, resourceKey, cache, revision]);
   const calendar = {
@@ -75,7 +85,7 @@ export function usePortfolioCalendar(positions: Position[]) {
         ? state
         : { data: null, loading: !!key, error: "" }),
     refresh: () => {
-      invalidateResource(cache, resourceKey);
+      invalidatePortfolioCalendar(cache, resourceKey);
       setRevision((r) => r + 1);
     },
   };

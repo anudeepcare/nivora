@@ -1,4 +1,5 @@
 "use client";
+import CompanyKpiChart from "./CompanyKpiChart";
 import AnalystMarketActivity from "./AnalystMarketActivity";
 import PoliticianActivity from "./PoliticianActivity";
 import PoliticianMembers from "./PoliticianMembers";
@@ -330,11 +331,17 @@ function Dataset({
               intraday={dataset === "optionsIntraday"}
             />
           )}
+          {dataset === "kpis" && <CompanyKpiChart data={result?.data} />}
           {!count ? (
             <p className={s.state}>
               No displayable records were returned for this section. This does
               not imply zero activity.
             </p>
+          ) : dataset === "kpis" ? (
+            <details>
+              <summary>All source metric records</summary>
+              {tables}
+            </details>
           ) : dataset === "options" ? (
             <details>
               <summary>Detailed positioning observations</summary>

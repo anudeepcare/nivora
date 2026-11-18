@@ -1,3 +1,4 @@
+import { accountHistoryWindow } from "../lib/account-history-window.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -24,6 +25,7 @@ const code = ts.transpileModule(
 function render(result, period = "ALL", restoring = false) {
   let i = 0;
   const bindings = {
+    accountHistoryWindow,
     React,
     useRef: (v) => ({ current: v }),
     useState: (v) => {

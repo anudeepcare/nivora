@@ -5,6 +5,7 @@ import type { Transaction } from "@/lib/transaction-ledger";
 import type { AccountPerformancePoint } from "@/lib/account-performance";
 import styles from "./AccountHistory.module.css";
 import { amount } from "@/lib/format";
+import { accountHistoryWindow } from "@/lib/account-history-window";
 import type { BenchmarkResult } from "@/lib/account-benchmark";
 type History = {
   benchmarks?: BenchmarkResult[];
@@ -141,16 +142,11 @@ export default function AccountHistory({
     }
   }
   const allPoints = result?.points ?? [];
-  const endDate = allPoints.at(-1)?.date;
-  const end = endDate ? Date.parse(endDate) : NaN;
-  const cutoff =
-    period === "1M"
-      ? end - 31 * 86400000
-      : period === "1Y"
-        ? end - 365 * 86400000
-        : period === "YTD" && endDate
-          ? Date.parse(`${endDate.slice(0, 4)}-01-01`)
-          : -Infinity;
+  const coverage = accountHistoryWindow(
+    allPoints.map((p) => p.date),
+    period,
+  );
+  const cutoff = coverage.cutoff;
   const points = allPoints.filter((point) => Date.parse(point.date) >= cutoff),
     last = points.at(-1),
     inspected =
@@ -195,7 +191,7 @@ export default function AccountHistory({
       <header className={styles.chartHeader}>
         <h2>Account value &amp; market comparison</h2>
         <div className={styles.periods} aria-label="Account history period">
-          {["1M", "YTD", "1Y", "ALL"].map((value) => (
+          {["1M", "6M", "YTD", "1Y", "ALL"].map((value) => (
             <button
               key={value}
               type="button"
@@ -333,10 +329,29 @@ export default function AccountHistory({
       {result && <p role="status">{result.reason}</p>}
       {last && (
         <>
+          <p className={styles.scope}>
+            Displayed evidence: {coverage.actualStart}–{coverage.actualEnd}.
+            {coverage.requestedStart && (
+              <>
+                {" "}
+                Requested window starts {coverage.requestedStart}, ending at the
+                latest validated observation, not necessarily today.
+              </>
+            )}
+            {coverage.shortHistory && (
+              <>
+                {" "}
+                Available history starts later than the requested window.
+                Earlier account values are not reconstructed.
+              </>
+            )}{" "}
+            Balances and cumulative gain/loss retain their inception basis;
+            changing the window does not calculate a period return.
+          </p>
           <p>
             <strong>{amount(last.equity)}</strong> account equity ·{" "}
             {amount(last.netContributions)} net contributions ·{" "}
-            {amount(last.gain)} gain/loss · through {last.date}
+            {amount(last.gain)} cumulative gain/loss · through {last.date}
           </p>
           <div className={styles.legend} aria-label="Chart series">
             <span data-series="equity">Account value</span>

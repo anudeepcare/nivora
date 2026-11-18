@@ -1,3 +1,4 @@
+import { accountHistoryWindow } from "../lib/account-history-window.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -49,6 +50,7 @@ for (const late of [false, true])
         ],
       };
       const bindings = {
+        accountHistoryWindow,
         React,
         styles: new Proxy({}, { get: (_, key) => key }),
         amount: String,
@@ -113,7 +115,9 @@ for (const late of [false, true])
           false,
         );
         assert.equal(
-          tree.filter((n) => n.type === "button" && n.props.className === "btn")[1].props.disabled,
+          tree.filter(
+            (n) => n.type === "button" && n.props.className === "btn",
+          )[1].props.disabled,
           true,
         );
         cleanup.forEach((f) => f?.());

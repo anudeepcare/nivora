@@ -51,3 +51,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Evidence already assigns these tones; do not infer sentiment from magnitude. */
+.metrics :global(.metric-tone-caution) {
+  color: var(--amber);
+}
+.metrics :global(.metric-tone-neutral) {
+  color: var(--ink);
+}
