@@ -29,6 +29,13 @@ const reports = new Map<string, { until: number; value: Promise<Report> }>();
 export async function GET(request: Request) {
   try {
     const { user } = await account(request, { market: true });
+    const access = await requestAccess(request, user.id);
+    requireFeature(access, "ai");
+    if (access.sampleOnly)
+      throw new HttpError(
+        "Market data is not enabled for this deployment.",
+        403,
+      );
     return privateJson(
       analystStatus(
         process.env,

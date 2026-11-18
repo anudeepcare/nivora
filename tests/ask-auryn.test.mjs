@@ -93,9 +93,10 @@ test("fact-only citations remain linked and ticker changes remount question stat
   assert.match(ui, /href={f.url}/);
   assert.equal(
     (analyst.match(/key={research.company.symbol}/g) || []).length,
-    2,
+    1,
   );
-  assert.equal((analyst.match(/<AskAurynQuestion/g) || []).length, 2);
+  assert.equal((analyst.match(/<AskAurynQuestion/g) || []).length, 1);
+  assert.equal((analyst.match(/\{questionPane\}/g) || []).length, 2);
 });
 
 test("arbitrary prose is not publishable even with valid revenue citation", () => {

@@ -214,3 +214,25 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Secondary holdings context: keep totals and contribution evidence together,
+   rather than stretching each row across an ultrawide monitor. */
+@media (min-width: 1100px) {
+  .root {
+    grid-template-columns: minmax(240px, 0.65fr) minmax(0, 1fr);
+    gap: 12px 28px;
+  }
+  .heading,
+  .basis {
+    grid-column: 1 / -1;
+  }
+  .total {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .movers li {
+    grid-template-columns: 72px minmax(70px, 1fr) max-content;
+  }
+}

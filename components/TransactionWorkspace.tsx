@@ -25,16 +25,18 @@ type Ledger = {
 export default function TransactionWorkspace({
   quotes,
   positions,
+  comparisonFirst = false,
 }: {
   quotes: Record<string, Quote>;
   positions: Position[];
+  comparisonFirst?: boolean;
 }) {
   const { demo } = useProduct(),
     resource = useResource<Ledger>(
       "transactions",
       demo ? { rows: [], revision: 0, updated_at: null } : undefined,
     );
-  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(comparisonFirst);
   const [draft, setDraft] = useState<Transaction[] | null>(null),
     [base, setBase] = useState<number | null>(null),
     [errors, setErrors] = useState<string[]>([]),
@@ -179,6 +181,29 @@ export default function TransactionWorkspace({
           .join(","),
       ),
     ].join("\n");
+  const comparison =
+    !demo && resource.data?.rows.length ? (
+      <details
+        open={historyOpen}
+        data-account-comparison
+        onToggle={(event) => setHistoryOpen(event.currentTarget.open)}
+      >
+        <summary>Build dated account comparison · SPY / QQQ</summary>
+        <p>
+          This uses the complete saved ledger across all accounts, not the
+          current account filter or an unsaved import. Review and explicitly
+          confirm completeness before calculating.
+        </p>
+        {draft || busy || resource.loading ? (
+          <p>
+            Save or finish reviewing your transaction changes before building
+            account history.
+          </p>
+        ) : historyOpen ? (
+          <AccountHistory key={resource.data.revision} />
+        ) : null}
+      </details>
+    ) : null;
   return (
     <section className={s.root}>
       <header>
@@ -205,6 +230,17 @@ export default function TransactionWorkspace({
           </select>
         </label>
       </header>
+      {comparisonFirst && (
+        <>
+          <p>
+            1. Import dated deposits, withdrawals and trades. 2. Review and save
+            the complete ledger. 3. Confirm completeness and build the
+            comparison. Current holdings alone cannot establish past account
+            returns.
+          </p>
+          {comparison}
+        </>
+      )}
       <label>
         Import action
         <select
@@ -419,27 +455,7 @@ export default function TransactionWorkspace({
           </footer>
         </>
       )}
-      {!demo && resource.data?.rows.length ? (
-        <details
-          data-account-comparison
-          onToggle={(event) => setHistoryOpen(event.currentTarget.open)}
-        >
-          <summary>Build dated account comparison · SPY / QQQ</summary>
-          <p>
-            This uses the complete saved ledger across all accounts, not the
-            current account filter or an unsaved import. Review and explicitly
-            confirm completeness before calculating.
-          </p>
-          {draft || busy || resource.loading ? (
-            <p>
-              Save or finish reviewing your transaction changes before building
-              account history.
-            </p>
-          ) : historyOpen ? (
-            <AccountHistory key={resource.data.revision} />
-          ) : null}
-        </details>
-      ) : null}
+      {!comparisonFirst && comparison}
       {!rows.length && !resource.loading && (
         <p>
           Start with the template, then import your transaction history to see

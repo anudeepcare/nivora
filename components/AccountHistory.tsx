@@ -200,7 +200,7 @@ export default function AccountHistory({
         </div>
         {!restoring && onReviewRecords && (
           <button type="button" className="btn" onClick={onReviewRecords}>
-            Review history
+            Set up comparison
           </button>
         )}
       </div>

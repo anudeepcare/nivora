@@ -73,6 +73,8 @@ export function Portfolio() {
   const [expandedMetrics, setExpandedMetrics] = useState(true);
   const [paceFilter, setPaceFilter] = useState("all");
   const [historyVersion, setHistoryVersion] = useState(0);
+  const [comparisonOpen, setComparisonOpen] = useState(false);
+  const comparisonSetup = useRef<HTMLDialogElement>(null);
   const balances = useRef<HTMLDialogElement>(null),
     depth = useRef<HTMLDialogElement>(null);
   const calendar = usePortfolioCalendar(positions);
@@ -207,8 +209,8 @@ export function Portfolio() {
           readOnly
           key={historyVersion}
           onReviewRecords={() => {
-            setDepthOpen(true);
-            depth.current?.showModal();
+            setComparisonOpen(true);
+            comparisonSetup.current?.showModal();
           }}
         />
         <div className={reference.capitalOverview}>
@@ -589,6 +591,40 @@ export function Portfolio() {
         >
           Record or edit cash
         </button>
+      </dialog>
+      <dialog
+        ref={comparisonSetup}
+        className={reference.historySetup}
+        aria-labelledby="comparison-setup-title"
+        onClose={() => {
+          setComparisonOpen(false);
+          setHistoryVersion((v) => v + 1);
+        }}
+      >
+        <header>
+          <div>
+            <h2 id="comparison-setup-title">Set up your market comparison</h2>
+            <p>
+              Account history versus SPY and QQQ, using actual dated
+              transactions.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Close market comparison setup"
+            onClick={() => comparisonSetup.current?.close()}
+          >
+            <X size={22} />
+          </button>
+        </header>
+        {comparisonOpen && (
+          <TransactionWorkspace
+            quotes={q}
+            positions={positions}
+            comparisonFirst
+          />
+        )}
       </dialog>
       <dialog
         ref={depth}

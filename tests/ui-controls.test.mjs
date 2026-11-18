@@ -34,7 +34,7 @@ import {
   ArrowUpRight,
   Minus,
 } from "lucide-react";
-import { paceChartColours as colours, paceChartLevels } from "../lib/pace-chart-levels.ts";
+import { paceChartColours as colours, paceChartLevels, paceUnavailableColour, paceExtensionColour } from "../lib/pace-chart-levels.ts";
 import { paceCode, pacePeriods } from "../lib/pace-presentation.ts";
 import * as format from "../lib/format.ts";
 import { homeComposition } from "../lib/home-presentation.ts";
@@ -90,6 +90,8 @@ function loadComponent(file, name, bindings) {
     pacePeriods,
     colours,
     paceChartLevels,
+    paceUnavailableColour,
+    paceExtensionColour,
     detail: { levels: "pace-levels-module" },
     PaceGuidance: ({ view }) =>
       React.createElement("div", null, view.actionLabel, view.effectiveCode),
@@ -1319,7 +1321,8 @@ test("monthly chart distinguishes unavailable warm-up data from ordinary 1x cond
     React.createElement(Desk, { research: demoData.research.MSFT }),
   );
   assert.match(html, /No eligible signal/);
-  assert.match(html, /#b0b5bd/);
+  assert.ok(html.includes(paceUnavailableColour));
+  assert.notEqual(paceUnavailableColour, colours[1]);
   assert.match(html, /Cycle-relative/);
   assert.match(html, /confirmed/);
   assert.match(html, /forming/);

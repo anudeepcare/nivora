@@ -17,7 +17,7 @@ import OptionsPositioningOverview from "./OptionsPositioningOverview";
 import OptionsObservationChart from "./OptionsObservationChart";
 import Link from "next/link";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { SentiSenseDataset, SentiSenseResult } from "@/lib/sentisense-api";
 import { intelligenceView } from "@/lib/sentisense-view";
 import { useResource } from "./Session";
@@ -73,11 +73,13 @@ export default function SentiSensePanels({
   group,
   preview = false,
   supplementalOwnership,
+  supplementalCongress,
 }: {
   symbol: string;
   group: SentiSenseGroupName;
   preview?: boolean;
   supplementalOwnership?: Research;
+  supplementalCongress?: ReactNode;
 }) {
   const compact = group === "options" || group === "ownership";
   const { preferences } = useWorkspacePreferences();
@@ -193,6 +195,7 @@ export default function SentiSensePanels({
       {dataset === "analystActions" && <AnalystMarketActivity />}
       {dataset === "politicians" && (
         <>
+          {supplementalCongress}
           <PoliticianMembers />
           <PoliticianActivity />
         </>

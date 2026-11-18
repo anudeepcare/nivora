@@ -107,6 +107,32 @@ export default function Analyst({
     a.click();
     URL.revokeObjectURL(url);
   }
+  const questionPane =
+    availability.data?.available && !demo ? (
+      <AskAurynQuestion
+        key={research.company.symbol}
+        symbol={research.company.symbol}
+      />
+    ) : (
+      <div className="analyst-availability" role="status">
+        <p>
+          {availability.loading
+            ? "Checking AI availability…"
+            : availability.error ||
+              availability.data?.message ||
+              "AI availability could not be confirmed."}
+        </p>
+        {!availability.loading && !demo && (
+          <button
+            type="button"
+            className="button"
+            onClick={availability.refresh}
+          >
+            Check AI availability
+          </button>
+        )}
+      </div>
+    );
   const evidence = perspective(research);
   if (compact) {
     const prompts = [
@@ -146,10 +172,8 @@ export default function Analyst({
     };
     return (
       <section className="ask-auryn">
-        <AskAurynQuestion
-          key={research.company.symbol}
-          symbol={research.company.symbol}
-        />
+        <h2>Ask AURYN</h2>
+        {questionPane}
         <p className="analyst-context">
           <strong>{research.company.symbol}</strong> · Evidence through{" "}
           {dateLabel(research.retrievedAt)} · Answers use this company’s
@@ -157,8 +181,16 @@ export default function Analyst({
         </p>
         <header className="section-head">
           <div>
-            <h2>Ask AURYN</h2>
-            <p>Choose a question to review the available company evidence.</p>
+            <h3>
+              {availability.data?.available
+                ? "Guided AI questions"
+                : "Local evidence guide"}
+            </h3>
+            <p>
+              {availability.data?.available
+                ? "Choose a question for source-linked AI review."
+                : "Prepared explanations of supplied evidence, not an AI conversation."}
+            </p>
           </div>
         </header>
         <div className="prompt-row">
@@ -221,31 +253,7 @@ export default function Analyst({
         </div>
         <Sparkles size={26} className="violet" />
       </header>
-      <AskAurynQuestion
-        key={research.company.symbol}
-        symbol={research.company.symbol}
-      />
-      <div className="analyst-availability" role="status">
-        <span
-          className={`status-pill ${availability.data?.available ? "green" : "amber"}`}
-        >
-          {availability.loading
-            ? "Checking AI"
-            : availability.data?.available
-              ? "AI ready"
-              : "AI unavailable"}
-        </span>
-        <p>
-          {availability.error ||
-            availability.data?.message ||
-            "Checking whether generation is available…"}
-        </p>
-        {availability.error && (
-          <button className="button" onClick={availability.refresh}>
-            Retry
-          </button>
-        )}
-      </div>
+      {questionPane}
       {availability.data?.available && (
         <div className="analyst-controls">
           <div className="segment">

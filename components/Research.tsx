@@ -938,32 +938,25 @@ export default function Research({ symbol }: { symbol: string }) {
             )}
             {tab === "Thesis" && (
               <>
-                <div
-                  className={cockpit.ownershipGrid}
-                  style={
-                    congressionalHidden
-                      ? { gridTemplateColumns: "minmax(0, 1fr)" }
-                      : undefined
-                  }
-                >
-                  <section aria-label="Institutional and insider evidence">
-                    <SentiSensePanels
-                      symbol={r.company.symbol}
-                      preview={!!demo}
-                      group="ownership"
-                      supplementalOwnership={r}
-                    />
-                    {demo && <OwnershipPicture research={r} />}
-                  </section>
-                  {!congressionalHidden && (
-                    <section aria-label="Congressional activity">
-                      <CongressDisclosures
-                        symbol={r.company.symbol}
-                        preview={!!demo}
-                      />
-                    </section>
-                  )}
-                </div>
+                <section aria-label="Institutional and insider evidence">
+                  <SentiSensePanels
+                    symbol={r.company.symbol}
+                    preview={!!demo}
+                    group="ownership"
+                    supplementalOwnership={r}
+                    supplementalCongress={
+                      !congressionalHidden && (
+                        <section aria-label="Congressional activity">
+                          <CongressDisclosures
+                            symbol={r.company.symbol}
+                            preview={!!demo}
+                          />
+                        </section>
+                      )
+                    }
+                  />
+                  {demo && <OwnershipPicture research={r} />}
+                </section>
                 <ResearchWorkspace
                   key={`${r.company.symbol}-ownership-context`}
                   label="Additional ownership evidence"

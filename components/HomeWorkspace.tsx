@@ -257,7 +257,10 @@ function HomeOverview() {
       </div>
       {symbols.length > 0 && (
         <>
-          <div className="home-evidence-layout">
+          <div
+            className="home-evidence-layout"
+            data-calendar-empty={!eventGroups.length && !brief.reported.length}
+          >
             <section
               className="home-evidence-panel home-events-panel"
               id="home-earnings"

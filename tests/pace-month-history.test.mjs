@@ -33,7 +33,7 @@ test('history view exposes genuine dated levels, gaps and keyboard native inspec
  },mod,mod.exports);
  const render=()=>mod.exports.default({research:{history:[],retrievedAt:'2026-11-17',company:{assetType:'stock',currency:'USD'}}});
  let tree=render();let html=renderToStaticMarkup(tree);
- assert.equal((html.match(/<button/g)||[]).length,12);assert.match(html,/2 of 12/);assert.match(html,/monthly-v6/);assert.match(html,/USD 104/);assert.match(html,/--zone:#ac68e5/);
+ assert.equal((html.match(/<button/g)||[]).length,12);assert.match(html,/2 of 12/);assert.match(html,/monthly-v6/);assert.match(html,/USD 104/);assert.match(html,/--zone:#8566b0/);
  const all=(n)=>!n||typeof n!=='object'?[]:[n,...React.Children.toArray(n.props?.children).flatMap(all)];
  all(tree).find(n=>n.type==='button'&&n.props['aria-label'].includes('Dec 25')).props.onClick();
  html=renderToStaticMarkup(render());assert.match(html,/P0/);assert.match(html,/Completed 2025-12-28/);assert.match(html,/USD 100/);

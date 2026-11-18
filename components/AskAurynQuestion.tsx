@@ -93,7 +93,7 @@ export default function AskAurynQuestion({ symbol }: { symbol: string }) {
               })
             }
           />
-          Search SentiSense for a public news topic about {symbol}
+          <span>Search SentiSense for a public news topic about {symbol}</span>
         </label>
         {search.enabled && (
           <div className={styles.publicSearch}>

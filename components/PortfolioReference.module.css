@@ -458,3 +458,37 @@
 .page.page.page.page .holdingsScroll td:not(:first-child):not(:last-child) {
   white-space: nowrap;
 }
+.historySetup {
+  width: min(960px, calc(100% - 32px));
+  max-height: 85dvh;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+  overflow: auto;
+}
+.historySetup::backdrop {
+  background: #0007;
+}
+.historySetup > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.historySetup h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+}
+.historySetup > header p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.historySetup > header button {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+}

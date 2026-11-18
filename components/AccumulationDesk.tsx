@@ -21,6 +21,8 @@ import { PriceChart } from "./Charts";
 import {
   paceChartColours as colours,
   paceChartLevels,
+  paceExtensionColour,
+  paceUnavailableColour,
 } from "@/lib/pace-chart-levels";
 export default function AccumulationDesk({
   research: r,
@@ -85,10 +87,10 @@ export default function AccumulationDesk({
           return [
             b.time,
             s && "trimTier" in s && s.trimTier === "strong"
-              ? "#bd4660"
+              ? paceExtensionColour
               : s
                 ? colours[s.multiplier]
-                : "#b0b5bd",
+                : paceUnavailableColour,
           ];
         }),
       ),
@@ -179,8 +181,8 @@ export default function AccumulationDesk({
         <div className={detail.chartHeading}>
           <span>{weekly ? "Weekly" : "Monthly"} price landscape</span>
           <small>
-            {monthly.length} displayed {weekly ? "weeks" : "months"} ·
-            zone-colored candles
+            {monthly.length} displayed {weekly ? "weeks" : "months"} · Pace
+            colors, not price direction
           </small>
         </div>
         <PriceChart
@@ -199,7 +201,11 @@ export default function AccumulationDesk({
           </span>
         ))}
         <span>
-          <i style={{ background: "#b0b5bd" }} />
+          <i style={{ background: paceExtensionColour }} />
+          Price-extension review
+        </span>
+        <span>
+          <i style={{ background: paceUnavailableColour }} />
           No eligible signal
         </span>
       </div>

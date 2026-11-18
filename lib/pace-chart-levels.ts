@@ -1,9 +1,12 @@
+/** Muted categorical signals, not daily gain/loss colors. */
+export const paceExtensionColour = "#ad5968";
+export const paceUnavailableColour = "#7c828c";
 export const paceChartColours: Record<number, string> = {
-  0: "#d89a20",
-  1: "#7d9db0",
-  2: "#12a28b",
-  3: "#71b337",
-  4: "#ac68e5",
+  0: "#a66d20",
+  1: "#64748b",
+  2: "#348579",
+  3: "#437eae",
+  4: "#8566b0",
 };
 type Bands = { buy2: number; buy3: number; buy4: number };
 /** Forming-window boundaries take precedence, including intentionally absent v7 bands. */

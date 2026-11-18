@@ -17,7 +17,7 @@ const row = {
   fee: 0,
   currency: "USD",
 };
-function harness() {
+function harness(comparisonFirst = false) {
   const file = "components/TransactionWorkspace.tsx",
     ast = ts.createSourceFile(
       file,
@@ -82,7 +82,7 @@ function harness() {
       out.push(n);
       React.Children.forEach(n.props?.children, walk);
     };
-    walk(View({ quotes: {}, positions: [] }));
+    walk(View({ quotes: {}, positions: [], comparisonFirst }));
     return out;
   };
   return { nodes, resource, flags, AccountHistory };
@@ -142,4 +142,16 @@ test("unsaved import suppresses mounted comparison and empty saved ledgers do no
 });
 test("cash-event valuation algorithm invalidates pre-fix saved result version", () => {
   assert.notEqual(HISTORY_JOB_VERSION, "raw-ledger-v1");
+});
+
+test("dedicated comparison entry opens saved controls immediately and empty accounts retain import path",()=>{
+ const h=harness(true);
+ const nodes=h.nodes();
+ const details=nodes.find(n=>n.type==="details" && n.props["data-account-comparison"]);
+ assert.equal(details.props.open,true);
+ assert.ok(nodes.some(n=>n.type===h.AccountHistory));
+ assert.ok(nodes.indexOf(details)<nodes.findIndex(n=>n.type==="input"&&n.props.type==="file"));
+ const empty=harness(true);empty.resource.data.rows=[];
+ assert.equal(empty.nodes().some(n=>n.type===empty.AccountHistory),false);
+ assert.ok(empty.nodes().some(n=>n.type==="input"&&n.props.type==="file"&&!n.props.disabled));
 });
