@@ -1,0 +1,145 @@
+.root {
+  min-width: 0;
+  margin: 18px 0;
+  color: var(--ink);
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.header > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.header svg {
+  color: var(--blue);
+  flex: none;
+}
+.header h3 {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 0;
+}
+.header > span,
+.description,
+.footnote {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.description {
+  margin: 8px 0 14px;
+}
+.axis {
+  display: grid;
+  grid-template-columns: minmax(0, 34fr) minmax(0, 66fr) 70px;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.axis > div {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 34fr) minmax(0, 66fr) 70px;
+  align-items: center;
+  gap: 14px;
+  min-height: 62px;
+  border-bottom: 1px solid var(--line);
+  padding: 10px 0;
+}
+.identity {
+  min-width: 0;
+}
+.identity strong {
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.identity small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.plot {
+  min-width: 0;
+}
+.track {
+  height: 12px;
+  background: color-mix(in srgb, var(--blue) 9%, var(--surface));
+  border-radius: 4px;
+  overflow: hidden;
+}
+.track > span {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  border-radius: 4px;
+}
+.value {
+  text-align: right;
+  font-weight: 500;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  color: var(--blue);
+}
+.missing {
+  font-size: 12px;
+  color: var(--muted);
+}
+.expand {
+  margin: 12px 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.expand:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.footnote {
+  margin: 12px 0 0;
+}
+@media (max-width: 650px) {
+  .axis {
+    display: block;
+  }
+  .row {
+    grid-template-columns: minmax(0, 1fr) 70px;
+    gap: 8px 12px;
+  }
+  .plot {
+    grid-row: 2;
+    grid-column: 1/-1;
+  }
+  .value {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .identity strong {
+    font-size: 14px;
+  }
+  .track {
+    height: 10px;
+  }
+}
+@media (forced-colors: active) {
+  .track {
+    border: 1px solid CanvasText;
+  }
+  .track > span {
+    background: Highlight;
+  }
+}

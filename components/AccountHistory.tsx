@@ -18,7 +18,8 @@ type History = {
 };
 export default function AccountHistory({
   readOnly = false,
-}: { readOnly?: boolean } = {}) {
+  onReviewRecords,
+}: { readOnly?: boolean; onReviewRecords?: () => void } = {}) {
   const controller = useRef<AbortController | null>(null);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const [chartWidth, setChartWidth] = useState(800);
@@ -183,9 +184,27 @@ export default function AccountHistory({
     points
       .map((p) => `${x(p.date)},${180 - ((p[key] - low) / span) * 160}`)
       .join(" ");
-  // A missing saved comparison is not useful content on Portfolio.
-  // Keep the complete review/build workflow available in its own workspace.
-  if (readOnly && (result?.status !== "available" || !last)) return null;
+  // Keep missing/error states discoverable without restoring a verbose empty panel.
+  if (readOnly && (result?.status !== "available" || !last))
+    return (
+      <div className={styles.availability}>
+        <div>
+          <strong>Market comparison · S&amp;P 500 / QQQ</strong>
+          <p role="status">
+            {restoring
+              ? "Loading saved market comparison…"
+              : restoreNotice ||
+                result?.reason ||
+                "Build a dated comparison from your complete transaction history."}
+          </p>
+        </div>
+        {!restoring && onReviewRecords && (
+          <button type="button" className="btn" onClick={onReviewRecords}>
+            Review history
+          </button>
+        )}
+      </div>
+    );
   return (
     <div className={styles.history} data-read-only={readOnly || undefined}>
       <header className={styles.chartHeader}>

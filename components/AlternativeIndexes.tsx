@@ -7,11 +7,53 @@ import type {
   IndexHistory,
 } from "@/lib/alternative-indexes";
 import styles from "./MarketTrackers.module.css";
+import visual from "./AlternativeIndexes.module.css";
 type Reply<T> = { data: T; source: string; retrievedAt: string };
 const number = (v: number | null) =>
   v === null
     ? "Not supplied"
     : v.toLocaleString(undefined, { maximumFractionDigits: 3 });
+function ReadingGauge({
+  value,
+  scale,
+  label,
+}: {
+  value: number | null;
+  scale: string;
+  label: string;
+}) {
+  const signed = scale === "SENTIMENT",
+    min = signed ? -1 : 0,
+    max = signed ? 1 : 100;
+  return (
+    <div className={visual.gauge}>
+      {value !== null ? (
+        <div
+          className={visual.track}
+          role="meter"
+          aria-label={label}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={value}
+          aria-valuetext={`${number(value)} on ${min} to ${max} scale`}
+        >
+          <span className={visual.midpoint} />
+          <i
+            className={visual.marker}
+            style={{ left: `${((value - min) / (max - min)) * 100}%` }}
+          />
+        </div>
+      ) : (
+        <p>Not supplied</p>
+      )}
+      <div className={visual.axis}>
+        <span>{signed ? "−1 · Negative tone" : "0 · Lower composite"}</span>
+        <span>{signed ? "0" : "50"}</span>
+        <span>{signed ? "+1 · Positive tone" : "100 · Higher composite"}</span>
+      </div>
+    </div>
+  );
+}
 export default function AlternativeIndexes() {
   const catalog = useResource<Reply<IndexCatalogItem[]>>(
     "alternative-indexes",
@@ -33,7 +75,10 @@ export default function AlternativeIndexes() {
   const start = history?.points.length ? Date.parse(history.points[0].date) : 0,
     end = history?.points.length ? Date.parse(history.points.at(-1)!.date) : 0;
   return (
-    <section className={styles.root} aria-label="Alternative indexes">
+    <section
+      className={`${styles.root} ${visual.root}`}
+      aria-label="Alternative indexes"
+    >
       <header>
         <h2>Alternative indexes</h2>
         <p>
@@ -70,7 +115,7 @@ export default function AlternativeIndexes() {
       )}
       {selected && (
         <div
-          className={styles.paging}
+          className={`${styles.paging} ${visual.modes}`}
           role="group"
           aria-label="Selected index evidence"
         >
@@ -108,7 +153,14 @@ export default function AlternativeIndexes() {
               <div className={styles.headlines}>
                 <div>
                   <span>Latest reading</span>
-                  <strong>{number(detail.value)}</strong>
+                  <strong className={visual.reading}>
+                    {number(detail.value)}
+                  </strong>
+                  <ReadingGauge
+                    value={detail.value}
+                    scale={detail.scale}
+                    label="Latest index reading"
+                  />
                   <small>
                     As of {detail.asOf ?? "not supplied"}; weekly dates mark the
                     start of the bucket.
@@ -128,7 +180,10 @@ export default function AlternativeIndexes() {
                   </small>
                 </div>
               </div>
-              <p>{detail.methodology}</p>
+              <details className={visual.method}>
+                <summary>Methodology &amp; interpretation</summary>
+                <p>{detail.methodology}</p>
+              </details>
               {detail.constituents !== null && (
                 <>
                   <p>
@@ -136,30 +191,39 @@ export default function AlternativeIndexes() {
                     out-of-segment rows are not current contributors. Reserved
                     contribution values are not calculated here.
                   </p>
-                  <div className={styles.rows}>
+                  <section
+                    className={visual.constituents}
+                    aria-label="Constituent readings"
+                  >
+                    <h4>Constituent readings</h4>
                     {detail.constituents.map((c, i) => (
-                      <article key={`${c.name}-${i}`}>
-                        <h3>{c.name}</h3>
-                        <p>
-                          {c.role} · {c.state.replaceAll("_", " ")}
-                        </p>
-                        <dl>
-                          <div>
-                            <dt>Reported reading</dt>
-                            <dd>{number(c.value)}</dd>
-                          </div>
-                          <div>
-                            <dt>Role weight</dt>
-                            <dd>{number(c.weight)}</dd>
-                          </div>
-                          <div>
-                            <dt>Mentions</dt>
-                            <dd>{number(c.mentions)}</dd>
-                          </div>
-                        </dl>
+                      <article
+                        className={visual.constituent}
+                        key={`${c.name}-${i}`}
+                      >
+                        <div>
+                          <strong>{c.name}</strong>
+                          <small>
+                            {c.role} · {c.state.replaceAll("_", " ")}
+                          </small>
+                        </div>
+                        <div>
+                          <ReadingGauge
+                            value={c.value}
+                            scale={detail.scale}
+                            label={`${c.name} reported reading; ${c.state.replaceAll("_", " ")}`}
+                          />
+                        </div>
+                        <div className={visual.value}>
+                          <strong>{number(c.value)}</strong>
+                          <small>
+                            {number(c.mentions)} mentions · weight{" "}
+                            {number(c.weight)}
+                          </small>
+                        </div>
                       </article>
                     ))}
-                  </div>
+                  </section>
                 </>
               )}
             </>
@@ -193,6 +257,31 @@ export default function AlternativeIndexes() {
                       y2="190"
                       stroke="var(--line)"
                     />
+                    <line
+                      x1="48"
+                      x2="585"
+                      y1="105"
+                      y2="105"
+                      stroke="var(--muted)"
+                      strokeDasharray="4 4"
+                    />
+                    <text x="50" y="99" fill="currentColor" fontSize="11">
+                      {min === -1 ? "0 · Neutral" : "50 · Scale midpoint"}
+                    </text>
+                    <text x="50" y="214" fill="currentColor" fontSize="12">
+                      {history.points[0].date}
+                    </text>
+                    {history.points.length > 1 && (
+                      <text
+                        x="580"
+                        y="214"
+                        textAnchor="end"
+                        fill="currentColor"
+                        fontSize="12"
+                      >
+                        {history.points.at(-1)!.date}
+                      </text>
+                    )}
                     {history.points.map((p) =>
                       p.value === null ? null : (
                         <circle

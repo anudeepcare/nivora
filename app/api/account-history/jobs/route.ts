@@ -62,10 +62,12 @@ export async function POST(request: Request) {
     if (!body.id) {
       const state = createHistoryJob(saved.data.rows),
         through = new Date(state.now - 86400000).toISOString().slice(0, 10);
-      // Expired evidence is discarded, never silently reused with a new snapshot.
+      // Expire unfinished work, not completed dated account snapshots.
+      // Completed results remain tied to their ledger digest and algorithm version.
       const expired = await admin
         .from("auryn_account_history_jobs")
         .delete()
+        .is("result", null)
         .eq("user_id", user.id)
         .lte("expires_at", new Date().toISOString());
       if (expired.error)
@@ -120,7 +122,7 @@ export async function POST(request: Request) {
       throw new HttpError("History job storage unavailable.", 503);
     if (!found.data) throw new HttpError("History job not found.", 404);
     const job = found.data as Job;
-    if (Date.parse(job.expires_at) <= Date.now())
+    if (!job.result && Date.parse(job.expires_at) <= Date.now())
       throw new HttpError(
         "History evidence expired. Review the ledger and restart.",
         409,
@@ -196,7 +198,6 @@ export async function GET(request: Request) {
       .eq("user_id", user.id)
       .eq("revision", saved.data.revision)
       .eq("algorithm_version", HISTORY_JOB_VERSION)
-      .gt("expires_at", new Date().toISOString())
       .not("result", "is", null)
       .order("through", { ascending: false })
       .limit(1)
@@ -212,8 +213,6 @@ export async function GET(request: Request) {
       !job.result ||
       job.revision !== saved.data.revision ||
       job.algorithm_version !== HISTORY_JOB_VERSION ||
-      !Number.isFinite(Date.parse(job.expires_at)) ||
-      Date.parse(job.expires_at) <= Date.now() ||
       job.state?.ledgerDigest !== historyLedgerDigest(saved.data.rows)
     ) {
       return privateJson({ result: null });

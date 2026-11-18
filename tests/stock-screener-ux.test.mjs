@@ -90,6 +90,13 @@ test("rendered edited filter keeps original applied results and factual signed c
     React,
   );
   const html = renderToStaticMarkup(React.createElement(out.default));
+  assert.match(
+    html,
+    /0 positive, 1 negative, 0 unchanged, 0 not supplied among returned stocks/,
+  );
+  assert.match(html, /Observed day change comparisons/);
+  assert.match(html, /not market-wide breadth/);
+  assert.match(html, /left:0%;width:50%/);
   assert.match(html, /Filters changed/);
   assert.match(html, /Applied: Market capitalization \(USD\).*1/);
   assert.match(html, /data-direction="down">-2%/);

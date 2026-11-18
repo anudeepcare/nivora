@@ -242,3 +242,31 @@
     padding: 14px;
   }
 }
+
+.availability {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-block: 12px;
+  min-width: 0;
+}
+.availability > div {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.availability strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.availability p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.availability button {
+  min-height: 44px;
+}

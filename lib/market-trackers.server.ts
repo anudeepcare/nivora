@@ -71,8 +71,16 @@ export async function readMarketTracker(
   } catch {
     throw new HttpError("Tracker response could not be read safely.", 502);
   }
-  const data = id ? trackerSnapshot(raw, id) : trackerCatalog(raw);
+  let issue = "catalog";
+  const data = id
+    ? trackerSnapshot(raw, id, (reason) => {
+        issue = reason;
+      })
+    : trackerCatalog(raw);
   if (!data)
-    throw new HttpError("Tracker schema or identity is unsupported.", 502);
+    throw new HttpError(
+      `Selected tracker data could not be validated (${issue}). No substitute values are shown. Retry later.`,
+      502,
+    );
   return { data, source: "SentiSense", retrievedAt: new Date().toISOString() };
 }

@@ -1,4 +1,5 @@
 "use client";
+import MarketSessionDashboard from "./MarketSessionDashboard";
 import ProductLookup from "./ProductLookup";
 import { useState } from "react";
 import { useResource } from "./Session";
@@ -126,54 +127,64 @@ export default function MarketTrackers() {
               displayed here.
             </p>
           )}
-          <div className={styles.headlines}>
-            {data.headline.map((m, i) => (
-              <div key={`${m.label}-${i}`}>
-                <span>{m.label}</span>
-                <strong>{show(m)}</strong>
-                {m.asOf && <small>{m.asOf}</small>}
-                {m.period && <small>Period: {m.period}</small>}
-                {m.flags.length > 0 && (
-                  <small>Provider flags: {m.flags.join(", ")}</small>
-                )}
-                {m.note && <small>{m.note}</small>}
-                {m.sourceUrl && (
-                  <a href={m.sourceUrl} target="_blank" rel="noreferrer">
-                    Evidence source ↗
-                  </a>
-                )}
+          {data.id === "market-session" ? (
+            <MarketSessionDashboard data={data} />
+          ) : (
+            <>
+              <div className={styles.headlines}>
+                {data.headline.map((m, i) => (
+                  <div key={`${m.label}-${i}`}>
+                    <span>{m.label}</span>
+                    <strong>{show(m)}</strong>
+                    {m.asOf && <small>{m.asOf}</small>}
+                    {m.period && <small>Period: {m.period}</small>}
+                    {m.flags.length > 0 && (
+                      <small>Provider flags: {m.flags.join(", ")}</small>
+                    )}
+                    {m.note && <small>{m.note}</small>}
+                    {m.sourceUrl && (
+                      <a href={m.sourceUrl} target="_blank" rel="noreferrer">
+                        Evidence source ↗
+                      </a>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className={styles.rows}>
-            {data.rows.slice(page * 25, (page + 1) * 25).map((row) => (
-              <article key={row.id}>
-                <header>
-                  <h3>{row.name}</h3>
-                  <span>{row.category}</span>
-                </header>
-                <dl>
-                  {row.metrics.map((m, i) => (
-                    <div key={`${m.label}-${i}`}>
-                      <dt>{m.label}</dt>
-                      <dd>{show(m)}</dd>
-                      {m.asOf && <small>As of {m.asOf}</small>}
-                      {m.period && <small>Period: {m.period}</small>}
-                      {m.flags.length > 0 && (
-                        <small>Provider flags: {m.flags.join(", ")}</small>
-                      )}
-                      {m.note && <small>{m.note}</small>}
-                      {m.sourceUrl && (
-                        <a href={m.sourceUrl} target="_blank" rel="noreferrer">
-                          Evidence source ↗
-                        </a>
-                      )}
-                    </div>
-                  ))}
-                </dl>
-              </article>
-            ))}
-          </div>
+              <div className={styles.rows}>
+                {data.rows.slice(page * 25, (page + 1) * 25).map((row) => (
+                  <article key={row.id}>
+                    <header>
+                      <h3>{row.name}</h3>
+                      <span>{row.category}</span>
+                    </header>
+                    <dl>
+                      {row.metrics.map((m, i) => (
+                        <div key={`${m.label}-${i}`}>
+                          <dt>{m.label}</dt>
+                          <dd>{show(m)}</dd>
+                          {m.asOf && <small>As of {m.asOf}</small>}
+                          {m.period && <small>Period: {m.period}</small>}
+                          {m.flags.length > 0 && (
+                            <small>Provider flags: {m.flags.join(", ")}</small>
+                          )}
+                          {m.note && <small>{m.note}</small>}
+                          {m.sourceUrl && (
+                            <a
+                              href={m.sourceUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              Evidence source ↗
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
           {!data.rows.length && (
             <p>
               No rows returned. This does not establish that no activity

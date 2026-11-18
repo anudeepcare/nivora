@@ -162,3 +162,23 @@
   color: var(--muted);
   margin-left: 3px;
 }
+.weightBar {
+  height: 10px;
+  background: var(--surface);
+  border-radius: 6px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+.weightBar > span {
+  height: 100%;
+  display: block;
+  background: var(--blue);
+  border-radius: 6px;
+}
+.sequence h2,
+.sequence h3 {
+  font-weight: 500;
+}
+.sequence a {
+  font-weight: 500;
+}

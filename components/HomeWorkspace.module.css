@@ -1066,3 +1066,37 @@
   opacity: 0.65;
   cursor: wait;
 }
+
+/* Daily snapshot: existing holdings beside the two most relevant review prompts. */
+.home.home.home .dayOverview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.home.home.home .dayOverview > :only-child {
+  grid-column: 1/-1;
+}
+.home.home.home .dayOverview > section {
+  margin: 0;
+  min-width: 0;
+}
+.home.home.home
+  .dayOverview
+  > section[aria-label="Today's research priorities"] {
+  display: flex;
+  flex-direction: column;
+}
+.home.home.home
+  .dayOverview
+  > section[aria-label="Today's research priorities"]
+  article
+  + article {
+  border-left: 0;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 900px) {
+  .home.home.home .dayOverview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

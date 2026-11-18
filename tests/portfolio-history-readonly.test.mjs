@@ -53,11 +53,11 @@ function render(result, period = "ALL", restoring = false) {
     View({ readOnly: true, onReviewRecords: () => {} }),
   );
 }
-test("portfolio hides missing history without recreating ledger review workflow", () => {
-  assert.equal(render(null, "ALL", true), "");
+test("portfolio exposes loading without recreating ledger review workflow", () => {
+  assert.match(render(null, "ALL", true), /Loading saved market comparison/);
   assert.doesNotMatch(render({ status: "unavailable", points: [] }), /<svg/);
   const page = fs.readFileSync("components/PortfolioPage.tsx", "utf8");
-  assert.match(page, /<AccountHistory\s+readOnly/);
+  assert.match(page, /<AccountHistory[\s\S]*?readOnly/);
   assert.doesNotMatch(
     page,
     /Portfolio over time|Your portfolio in 30 seconds|reference.summaryDetails|Review recorded transactions/,
@@ -99,13 +99,17 @@ test("date ranges clip actual saved observations without fabricating returns", (
   assert.doesNotMatch(month, /14.8%|9.2%/);
 });
 
-test("missing or invalid history renders no panel or action", () => {
+test("missing history explains absence without a fabricated graph or verbose panel", () => {
   for (const result of [
     null,
     { status: "unavailable", points: [], reason: "Incomplete ledger" },
     { status: "available", points: [] },
   ]) {
-    assert.equal(render(result), "");
+    assert.match(render(result), /Market comparison/);
+    assert.doesNotMatch(
+      render(result),
+      /<svg|No validated account history|Current holdings alone/,
+    );
   }
 });
 test("holdings expose shares and cost by default with separate value and return columns", () => {
@@ -116,4 +120,13 @@ test("holdings expose shares and cost by default with separate value and return 
   );
   assert.match(source, /<th>Value<\/th>\s*<th>Return<\/th>/);
   assert.match(source, /!expandedMetrics &&/);
+});
+
+test("closing the history workspace reloads the saved portfolio comparison", () => {
+  const page = fs.readFileSync("components/PortfolioPage.tsx", "utf8");
+  assert.match(page, /key=\{historyVersion\}/);
+  assert.match(
+    page,
+    /onClose=\{\(\) => \{\s*setDepthOpen\(false\);\s*setHistoryVersion\(\(version\) => version \+ 1\)/,
+  );
 });

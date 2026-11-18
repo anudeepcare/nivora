@@ -113,9 +113,10 @@ function load(file, bindings, name) {
       .join("\n"),
     { compilerOptions: { target: ts.ScriptTarget.ES2022 } },
   ).outputText;
-  return providerFixtureFunction(...Object.keys(bindings), code + ";return " + name)(
-    ...Object.values(bindings),
-  );
+  return providerFixtureFunction(
+    ...Object.keys(bindings),
+    code + ";return " + name,
+  )(...Object.values(bindings));
 }
 class HttpError extends Error {
   constructor(message, status) {
@@ -232,4 +233,66 @@ test("UI only fetches selected snapshot, preserves preview and dates, avoids fan
   assert.match(ui, /data.asOf/);
   assert.match(ui, /data.rows.slice/);
   assert.match(ui, /not an area-scaled heatmap/);
+});
+
+test("documented full tracker envelopes may omit version, headlines and total count without invented defaults", () => {
+  const v = fixture();
+  v.isPreview = false;
+  v.data.trackerId = "media-darlings";
+  delete v.data.schemaVersion;
+  delete v.data.headline;
+  delete v.totalCount;
+  const d = trackerSnapshot(v, "media-darlings");
+  assert.ok(d);
+  assert.equal(d.totalCount, null);
+  assert.deepEqual(d.headline, []);
+  assert.equal(d.rows[0].metrics[0].value, 0);
+  for (const change of [
+    (x) => (x.data.schemaVersion = "2.0"),
+    (x) => (x.data.headline = null),
+    (x) => (x.totalCount = "1"),
+    (x) => (x.data.trackerId = "reddit-picks"),
+  ]) {
+    const bad = structuredClone(v);
+    change(bad);
+    assert.equal(trackerSnapshot(bad, "media-darlings"), null);
+  }
+});
+
+test("media tracker documented omission shape survives real transport; invalid response reports only static diagnostic", async () => {
+  const run = load(
+    "lib/market-trackers.server.ts",
+    {
+      trackerIds,
+      trackerCatalog,
+      trackerSnapshot,
+      HttpError,
+      limit: async () => {},
+    },
+    "readMarketTracker",
+  );
+  const raw = fixture();
+  raw.isPreview = false;
+  raw.data.trackerId = "media-darlings";
+  delete raw.data.schemaVersion;
+  delete raw.data.headline;
+  delete raw.totalCount;
+  const result = await run("media-darlings", {
+    key: "synthetic",
+    fetcher: async () => new Response(JSON.stringify(raw)),
+  });
+  assert.equal(result.data.id, "media-darlings");
+  assert.equal(result.data.totalCount, null);
+  assert.deepEqual(result.data.headline, []);
+  raw.data.trackerId = "private-secret-marker";
+  await assert.rejects(
+    run("media-darlings", {
+      key: "synthetic",
+      fetcher: async () => new Response(JSON.stringify(raw)),
+    }),
+    (e) =>
+      e.status === 502 &&
+      e.message.includes("snapshot metadata or rows") &&
+      !e.message.includes("private-secret-marker"),
+  );
 });

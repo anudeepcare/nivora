@@ -1,4 +1,5 @@
 "use client";
+import UsMacro from "./UsMacro";
 import { useState } from "react";
 import { useResource } from "./Session";
 import { Help } from "./Ui";
@@ -204,6 +205,7 @@ export default function EconomicContext({
           )}
         </div>
       )}
+      <UsMacro />
     </section>
   );
 }

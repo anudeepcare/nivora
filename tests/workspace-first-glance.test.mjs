@@ -57,7 +57,8 @@ test("Portfolio starts with compact metrics and keeps coverage warnings visible"
 test('Today removes nav duplication and generic decision promotion while preserving dated company trends',()=>{
  const home=read('components/HomeWorkspace.tsx');
  assert.doesNotMatch(home,/className=\{homeStyles.quickLinks\}/);
- assert.match(home,/Followed company prices/);
+ assert.equal((home.match(/<HomeMarketCards\b/g)||[]).length,1);
+ assert.doesNotMatch(home,/<summary>Followed company prices<\/summary>/);
  const cards=read('components/HomeMarketCards.tsx');
  assert.match(cards,/Followed company trends/);assert.doesNotMatch(cards,/"Market pulse"|"THE BIG PICTURE"/);
  assert.match(cards,/daily change/);assert.match(cards,/Daily closes/);

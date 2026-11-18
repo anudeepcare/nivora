@@ -44,78 +44,77 @@ export default function PortfolioDay({
         </Link>
       </header>
       <div className={s.total}>
-        <span className={s.valueLabel}>Priced holdings value · USD</span>
-        <strong>{amount(d.value, "USD", d.value >= 1e7)}</strong>
-        <span className={s.changeLabel}>Sum of reported quote changes</span>
-        <p data-direction={direction}>
-          {d.move == null ? (
-            "Quoted changes not available"
-          ) : (
-            <>
-              {direction === "down" ? (
-                <ArrowDownRight size={16} aria-hidden="true" />
-              ) : direction === "up" ? (
-                <ArrowUpRight size={16} aria-hidden="true" />
-              ) : null}
-              {signed(d.move)} · {percent(d.movePct, true)}
-            </>
-          )}
-        </p>
+        <div>
+          <span className={s.valueLabel}>Priced holdings value · USD</span>
+          <strong>{amount(d.value, "USD", d.value >= 1e7)}</strong>
+        </div>
+        <div>
+          <span className={s.changeLabel}>Sum of reported quote changes</span>
+          <p data-direction={direction}>
+            {d.move == null ? (
+              "Quoted changes not available"
+            ) : (
+              <>
+                {direction === "down" ? (
+                  <ArrowDownRight size={16} aria-hidden="true" />
+                ) : direction === "up" ? (
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                ) : null}
+                {signed(d.move)} · {percent(d.movePct, true)}
+              </>
+            )}
+          </p>
+        </div>
         <small>
           {d.priced} of {d.holdings} holdings priced · excludes cash
         </small>
       </div>
       {(d.gainers.length > 0 || d.decliners.length > 0) && (
         <div className={s.movers}>
-          {(
-            [
-              ["Helped most", d.gainers, "up"],
-              ["Hurt most", d.decliners, "down"],
-            ] as const
-          ).map(
-            ([title, rows, tone]) =>
-              rows.length > 0 && (
-                <div key={title} data-direction={tone}>
-                  <h3>{title}</h3>
-                  <ul>
-                    {rows.map((m) => (
-                      <li key={m.symbol}>
-                        <Link
-                          href={researchLink(m.symbol, prefix)}
-                          title={`Quote observed ${m.asOf}`}
-                        >
-                          {m.symbol}
-                        </Link>
-                        <span>{signed(m.move)}</span>
-                        <small>{percent(m.changePct, true)}</small>
-                        <svg
-                          className={s.contributionBar}
-                          viewBox="0 0 100 8"
-                          preserveAspectRatio="none"
-                          aria-hidden="true"
-                        >
-                          <line x1="50" x2="50" y1="0" y2="8" />
-                          <rect
-                            x={
-                              m.move < 0
-                                ? 50 - (Math.abs(m.move) / largestMove) * 50
-                                : 50
-                            }
-                            y="2"
-                            width={(Math.abs(m.move) / largestMove) * 50}
-                            height="4"
-                            rx="2"
-                          />
-                        </svg>
-                        <time className={s.observed} dateTime={m.asOf}>
-                          Quote {quoteTime(m.asOf, true)}
-                        </time>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ),
-          )}
+          <h3>Largest quoted-dollar contributions</h3>
+          <ul>
+            {[...d.gainers, ...d.decliners]
+              .sort((a, b) => Math.abs(b.move) - Math.abs(a.move))
+              .map((m) => (
+                <li
+                  key={m.symbol}
+                  data-direction={
+                    m.move < 0 ? "down" : m.move > 0 ? "up" : "flat"
+                  }
+                >
+                  <Link
+                    href={researchLink(m.symbol, prefix)}
+                    title={`Quote observed ${m.asOf}`}
+                  >
+                    {m.symbol}
+                  </Link>
+                  <span>{signed(m.move)}</span>
+                  <small>{percent(m.changePct, true)}</small>
+                  <svg
+                    className={s.contributionBar}
+                    viewBox="0 0 100 16"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <line x1="50" x2="50" y1="0" y2="16" />
+                    <rect
+                      x={
+                        m.move < 0
+                          ? 50 - (Math.abs(m.move) / largestMove) * 50
+                          : 50
+                      }
+                      y="2"
+                      width={(Math.abs(m.move) / largestMove) * 50}
+                      height="12"
+                      rx="2"
+                    />
+                  </svg>
+                  <time className={s.observed} dateTime={m.asOf}>
+                    Quote {quoteTime(m.asOf, true)}
+                  </time>
+                </li>
+              ))}
+          </ul>
         </div>
       )}
       <footer className={s.basis}>

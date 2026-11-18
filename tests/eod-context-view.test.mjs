@@ -27,9 +27,11 @@ function view(kind, preview = false, data = null) {
                 return { data, loading: false, refresh: () => {} };
               },
             }
-          : name === "./Ui"
-            ? { Help: () => null }
-            : { default: new Proxy({}, { get: (_, k) => k }) },
+          : name === "./UsMacro"
+            ? { default: () => null }
+            : name === "./Ui"
+              ? { Help: () => null }
+              : { default: new Proxy({}, { get: (_, k) => k }) },
     exports,
     React,
   );

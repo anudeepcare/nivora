@@ -12,7 +12,11 @@ test("session movers reserve intrinsic amounts and wrap long symbols instead of 
     /\.movers li\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) max-content max-content/s,
   );
   assert.match(css, /\.movers a\s*\{[^}]*overflow-wrap:\s*anywhere/s);
-  assert.match(css, /repeat\(auto-fit, minmax\(min\(100%, 260px\), 1fr\)\)/);
+  assert.match(
+    css,
+    /\.root\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\)/s,
+  );
+  assert.doesNotMatch(css, /repeat\(auto-fit/);
 });
 test("mixed observations cannot be presented as a single latest session", () => {
   const source = readFileSync(
@@ -109,5 +113,7 @@ test("rendered mover bars put losses left and gains right on a shared dollar sca
   assert.match(html, /<rect x="50" y="2" width="25"/);
   assert.match(html, /<rect x="0" y="2" width="50"/);
   assert.match(html, /Mixed quote dates, not one session/);
+  assert.equal((html.match(/<ul/g) || []).length, 1);
+  assert.ok(html.indexOf(">DOWN<") < html.indexOf(">UP<"));
   assert.match(html, /dateTime="2026-11-17"|datetime="2026-11-17"/i);
 });

@@ -101,6 +101,23 @@ export default function StockScreener() {
           Number(secondThreshold) !== result.screen.second?.value)));
   const rows = result?.results.slice(page * 25, (page + 1) * 25) ?? [],
     pages = Math.max(1, Math.ceil((result?.results.length ?? 0) / 25));
+  const breadth = result?.results.reduce(
+    (a, r) => {
+      if (r.changePercent === null) a.missing++;
+      else if (r.changePercent > 0) a.positive++;
+      else if (r.changePercent < 0) a.negative++;
+      else a.unchanged++;
+      return a;
+    },
+    { positive: 0, negative: 0, unchanged: 0, missing: 0 },
+  );
+  const comparison = rows.slice(0, 8);
+  const maxChange = Math.max(
+    0,
+    ...comparison.map((r) =>
+      r.changePercent === null ? 0 : Math.abs(r.changePercent),
+    ),
+  );
   return (
     <section
       className={`${s.screener} ${ui.root}`}
@@ -271,6 +288,85 @@ export default function StockScreener() {
             mean previous-close fallback; retrieval time is not quote time.
             Analyst upside is an estimate, not a forecast from Auryn.
           </p>
+          {breadth && result.results.length > 0 && (
+            <section
+              className={ui.visualSummary}
+              aria-label="Returned-set day changes"
+            >
+              <div>
+                <h3>Returned-set day changes</h3>
+                <div
+                  className={ui.breadthBar}
+                  role="img"
+                  aria-label={`${breadth.positive} positive, ${breadth.negative} negative, ${breadth.unchanged} unchanged, ${breadth.missing} not supplied among returned stocks`}
+                >
+                  {(
+                    ["positive", "negative", "unchanged", "missing"] as const
+                  ).map((kind) => (
+                    <span
+                      key={kind}
+                      data-kind={kind}
+                      style={{
+                        width: `${(breadth[kind] / result.results.length) * 100}%`,
+                      }}
+                    />
+                  ))}
+                </div>
+                <dl className={ui.breadthLegend}>
+                  {(
+                    ["positive", "negative", "unchanged", "missing"] as const
+                  ).map((kind) => (
+                    <div key={kind} data-kind={kind}>
+                      <dt>{kind === "missing" ? "Not supplied" : kind}</dt>
+                      <dd>{breadth[kind]}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p>
+                  Only the {result.results.length} returned stocks, not
+                  market-wide breadth. Delayed observations may have different
+                  timestamps; see the table.
+                </p>
+              </div>
+              <div>
+                <h3>Observed day change comparisons</h3>
+                <p>
+                  First {comparison.length} rows on this page, in the applied
+                  sort order. Not a performance ranking.
+                </p>
+                {comparison.map((r) => (
+                  <div
+                    className={ui.comparisonRow}
+                    key={r.ticker}
+                    data-direction={direction(r.changePercent)}
+                  >
+                    <span>{r.ticker}</span>
+                    <div className={ui.comparisonTrack} aria-hidden="true">
+                      <i className={ui.zeroGuide} />
+                      {r.changePercent === null ? null : (
+                        <span
+                          className={ui.comparisonBar}
+                          style={{
+                            left:
+                              r.changePercent < 0
+                                ? `${50 - (maxChange ? (Math.abs(r.changePercent) / maxChange) * 50 : 0)}%`
+                                : "50%",
+                            width: `${maxChange ? (Math.abs(r.changePercent) / maxChange) * 50 : 0}%`,
+                          }}
+                        />
+                      )}
+                    </div>
+                    <strong>{value(r.changePercent, "%")}</strong>
+                  </div>
+                ))}
+                <div className={ui.comparisonAxis}>
+                  <span>−{value(maxChange)}%</span>
+                  <span>0</span>
+                  <span>+{value(maxChange)}%</span>
+                </div>
+              </div>
+            </section>
+          )}
           <nav className={s.pagination} aria-label="Screen result pages">
             <button disabled={page === 0} onClick={() => setPage(page - 1)}>
               Previous

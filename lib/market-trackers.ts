@@ -121,34 +121,40 @@ export function trackerCatalog(raw: unknown): TrackerCatalogItem[] | null {
 export function trackerSnapshot(
   raw: unknown,
   id: string,
+  onInvalid?: (reason: string) => void,
 ): TrackerSnapshot | null {
+  const reject = (reason: string) => {
+    onInvalid?.(reason);
+    return null;
+  };
   if (
     !trackerIds.includes(id) ||
     !obj(raw) ||
     typeof raw.isPreview !== "boolean" ||
     !obj(raw.data)
   )
-    return null;
+    return reject("envelope");
   const d = raw.data;
   if (
     d.trackerId !== id ||
-    d.schemaVersion !== "1.0" ||
+    (d.schemaVersion !== undefined && d.schemaVersion !== "1.0") ||
     !["table", "heatmap"].includes(String(d.viewType)) ||
     !text(d.displayName) ||
     !Array.isArray(d.rows) ||
     d.rows.length > 2000 ||
-    !Array.isArray(d.headline) ||
-    d.headline.length > 30
+    (d.headline !== undefined &&
+      (!Array.isArray(d.headline) || d.headline.length > 30))
   )
-    return null;
+    return reject("snapshot metadata or rows");
   if (
+    raw.totalCount !== undefined &&
     raw.totalCount !== null &&
     (!Number.isInteger(raw.totalCount) ||
       Number(raw.totalCount) < d.rows.length)
   )
-    return null;
-  const headline = d.headline.map(metric);
-  if (headline.some((m) => !m)) return null;
+    return reject("row count");
+  const headline = (Array.isArray(d.headline) ? d.headline : []).map(metric);
+  if (headline.some((m) => !m)) return reject("headline metrics");
   const meta = obj(d.meta) ? d.meta : {};
   if (
     meta.previewWithheld !== undefined &&
@@ -156,7 +162,7 @@ export function trackerSnapshot(
       meta.previewWithheld.length > 30 ||
       !meta.previewWithheld.every((x) => text(x, 100)))
   )
-    return null;
+    return reject("preview metadata");
   const rows: TrackerSnapshot["rows"] = [];
   for (const [index, x] of d.rows.entries()) {
     if (
@@ -164,12 +170,12 @@ export function trackerSnapshot(
       !text(x.name, 500) ||
       (x.metrics !== undefined && !Array.isArray(x.metrics))
     )
-      return null;
+      return reject("row identity or metrics");
     let metrics: TrackerMetric[] = [];
     if (Array.isArray(x.metrics)) {
-      if (x.metrics.length > 40) return null;
+      if (x.metrics.length > 40) return reject("row metric count");
       const parsed = x.metrics.map(metric);
-      if (parsed.some((m) => !m)) return null;
+      if (parsed.some((m) => !m)) return reject("row metrics");
       metrics = parsed as TrackerMetric[];
     }
     if (id === "market-heatmap") {
@@ -185,7 +191,7 @@ export function trackerSnapshot(
           v !== null &&
           (typeof v !== "number" || !Number.isFinite(v))
         )
-          return null;
+          return reject("heatmap numeric fields");
         metrics.push({
           label,
           value: typeof v === "number" ? v : null,
@@ -199,7 +205,8 @@ export function trackerSnapshot(
       }
     }
     const rowId = optional(x.rowId, 200) ?? `row-${index + 1}`;
-    if (rows.some((r) => r.id === rowId)) return null;
+    if (rows.some((r) => r.id === rowId))
+      return reject("duplicate row identity");
     rows.push({
       id: rowId,
       name: x.name,
@@ -213,7 +220,7 @@ export function trackerSnapshot(
     description: optional(d.description, 1500) ?? "",
     asOf: optional(d.asOf, 100),
     preview: raw.isPreview,
-    totalCount: raw.totalCount as number | null,
+    totalCount: typeof raw.totalCount === "number" ? raw.totalCount : null,
     withheld: (meta.previewWithheld as string[] | undefined) ?? [],
     headline: headline as TrackerMetric[],
     rows,

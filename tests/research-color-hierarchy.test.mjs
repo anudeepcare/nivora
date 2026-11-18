@@ -18,7 +18,7 @@ test('institutional map uses a readable responsive grid, without fabricated weig
  assert.match(s,/repeat\(2, minmax\(0, 1fr\)\)/);
  assert.match(s,/font-size: 13px/); assert.match(s,/min-height: 44px/);
  assert.match(s,/max-width: 650px/);
- assert.match(read('components/OwnershipEvidenceMap.tsx'),/Equal links indicate reported holdings/);
+ assert.match(read('components/OwnershipEvidenceMap.tsx'),/Bar length compares\s+ownership, not buying activity/);
 });
 test('radar categories match row bars and preserve missing scores',()=>{
  const s=read('components/DecisionWorkspace.tsx');

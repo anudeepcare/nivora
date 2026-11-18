@@ -72,6 +72,7 @@ export function Portfolio() {
     [currencyError, setCurrencyError] = useState("");
   const [expandedMetrics, setExpandedMetrics] = useState(true);
   const [paceFilter, setPaceFilter] = useState("all");
+  const [historyVersion, setHistoryVersion] = useState(0);
   const balances = useRef<HTMLDialogElement>(null),
     depth = useRef<HTMLDialogElement>(null);
   const calendar = usePortfolioCalendar(positions);
@@ -202,7 +203,14 @@ export function Portfolio() {
         </section>
       )}
       <div className={reference.grid} data-portfolio-layout="reference">
-        <AccountHistory readOnly />
+        <AccountHistory
+          readOnly
+          key={historyVersion}
+          onReviewRecords={() => {
+            setDepthOpen(true);
+            depth.current?.showModal();
+          }}
+        />
         <div className={reference.capitalOverview}>
           <section className="card portfolio-allocation-panel">
             <SectionHead
@@ -586,7 +594,10 @@ export function Portfolio() {
         ref={depth}
         className="detail-drawer approved-depth-dialog"
         aria-labelledby="approved-depth-title"
-        onClose={() => setDepthOpen(false)}
+        onClose={() => {
+          setDepthOpen(false);
+          setHistoryVersion((version) => version + 1);
+        }}
       >
         <header>
           <div>

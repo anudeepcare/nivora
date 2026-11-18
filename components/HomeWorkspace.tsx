@@ -209,8 +209,8 @@ function HomeOverview() {
     >
       <div className={todayStyles.hero}>
         <Heading
-          title="Your research today."
-          subtitle="Decisions, changes and exposure. Everything in context."
+          title="Today"
+          subtitle="Your holdings, the next checkpoints, and what deserves a closer look."
           actions={
             <span className="date-chip">
               {today.toLocaleDateString(undefined, {
@@ -228,14 +228,38 @@ function HomeOverview() {
         />
       </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      {!!workspace?.positions.length && (
-        <PortfolioDay
-          positions={workspace.positions}
-          quotes={quotes.data}
+      <div className={homeStyles.dayOverview}>
+        {!!workspace?.positions.length && (
+          <PortfolioDay
+            positions={workspace.positions}
+            quotes={quotes.data}
+            prefix={prefix}
+            now={today.getTime()}
+          />
+        )}
+        <TodaySequence
           prefix={prefix}
-          now={today.getTime()}
+          decision={
+            best?.signal
+              ? {
+                  symbol: best.symbol,
+                  action: best.signal.view.actionLabel.replace(
+                    / · P[0-4]$/,
+                    "",
+                  ),
+                  code: best.signal.view.code,
+                }
+              : null
+          }
+          headline={null}
+          concentration={largest ?? null}
         />
-      )}
+      </div>
+      <ResearchInbox
+        today={day}
+        events={feed.data?.events ?? []}
+        coverageIssue={!!feed.error || !readiness.eventsReady}
+      />
       {symbols.length > 0 && <Coverage state={state} />}
       <HomeMarketCards
         symbols={symbols}
@@ -243,60 +267,9 @@ function HomeOverview() {
         research={loadedResearch}
         prefix={prefix}
       />
-      <TodaySequence
-        prefix={prefix}
-        decision={
-          best?.signal
-            ? {
-                symbol: best.symbol,
-                action: best.signal.view.actionLabel.replace(/ · P[0-4]$/, ""),
-                code: best.signal.view.code,
-              }
-            : null
-        }
-        headline={headlines[0] ?? null}
-        concentration={largest ?? null}
-      />
-      <ResearchInbox
-        today={day}
-        events={feed.data?.events ?? []}
-        coverageIssue={!!feed.error || !readiness.eventsReady}
-      />
       {symbols.length > 0 && (
         <>
           <div className="home-evidence-layout">
-            <details
-              className={`home-evidence-panel ${homeStyles.priceDetails}`}
-              open
-            >
-              <summary>Followed company prices</summary>
-              <Link className="text-link" href={`${prefix}/watchlist`}>
-                View all followed companies <ArrowUpRight size={16} />
-              </Link>
-              {symbols.length ? (
-                symbols
-                  .slice(0, 5)
-                  .map((symbol) => (
-                    <HomeCompany
-                      key={symbol}
-                      symbol={symbol}
-                      row={quotes.data[symbol]}
-                      prefix={prefix}
-                    />
-                  ))
-              ) : (
-                <Empty
-                  title="Begin with one company"
-                  action={
-                    <Link className="btn" href={`${prefix}/research`}>
-                      Find a company
-                    </Link>
-                  }
-                >
-                  Save an idea or record a holding to make this space yours.
-                </Empty>
-              )}
-            </details>
             <section
               className="home-evidence-panel home-events-panel"
               id="home-earnings"
@@ -435,8 +408,7 @@ function HomeOverview() {
                 </button>
               )}
             </section>
-          </div>
-          <div className="home-evidence-layout home-secondary-layout">
+
             <section
               className="home-evidence-panel home-news-panel"
               aria-label="What changed"
@@ -504,8 +476,8 @@ function HomeOverview() {
                 </button>
               )}
             </section>
-            <PaceBoard {...state.paceScan} prefix={prefix} />
           </div>
+          <PaceBoard {...state.paceScan} prefix={prefix} />
         </>
       )}
       <div className={homeStyles.planRow}>

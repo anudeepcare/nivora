@@ -48,7 +48,12 @@ function harness({
       calls.push([k, v]);
       return this;
     },
-    gt() {
+    gt(k, v) {
+      calls.push(["gt", k, v]);
+      return this;
+    },
+    is(k, v) {
+      calls.push(["is", k, v]);
       return this;
     },
     not() {
@@ -201,7 +206,7 @@ test("auth,revision,snapshot and failed commit never return completed performanc
   }
 });
 
-test("GET restores only authenticated matching unexpired completed results without calculation", async () => {
+test("GET restores only authenticated matching dated completed results without calculation", async () => {
   const complete = {
     status: "available",
     points: [{ date: "2026-11-16", equity: 100 }],
@@ -218,7 +223,6 @@ test("GET restores only authenticated matching unexpired completed results witho
   for (const opts of [
     { revision: 3 },
     { digest: "changed" },
-    { expired: true },
     { version: "old" },
     { changedDuringRead: true },
     { result: null },
@@ -234,4 +238,29 @@ test("GET restores only authenticated matching unexpired completed results witho
     new Request("https://test/api/account-history/jobs"),
   );
   assert.equal(denied.status, 401);
+});
+
+test("completed dated snapshots survive job TTL; expired unfinished evidence is never advanced", async () => {
+  const complete = {
+    status: "available",
+    points: [{ date: "2026-11-01", equity: 100 }],
+  };
+  const h = harness({ result: complete, expired: true });
+  assert.deepEqual(
+    (
+      await (
+        await h.get(new Request("https://test/api/account-history/jobs"))
+      ).json()
+    ).result,
+    complete,
+  );
+  assert.ok(!h.calls.some((x) => x?.[0] === "gt" && x?.[1] === "expires_at"));
+  const posted = await h.post(req({ id, revision: 2, confirmComplete: true }));
+  assert.equal(posted.status, 200);
+  assert.ok(!h.calls.includes("advance"));
+  const creating = harness();
+  await creating.post(req({ revision: 2, confirmComplete: true }));
+  assert.ok(
+    creating.calls.some((x) => JSON.stringify(x) === '["is","result",null]'),
+  );
 });

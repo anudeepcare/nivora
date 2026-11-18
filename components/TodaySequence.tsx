@@ -21,7 +21,7 @@ export default function TodaySequence({
     >
       {decision && (
         <article className={styles.primary}>
-          <span>DECISION</span>
+          <span>RESEARCH TO REVIEW</span>
           <h2>
             {decision.symbol}: {decision.action}
           </h2>
@@ -54,12 +54,22 @@ export default function TodaySequence({
       )}
       {concentration && (
         <article>
-          <span>EXPOSURE</span>
+          <span>POSITION TO WATCH</span>
           <div className={styles.exposureMetric}>
             {concentration.weight.toFixed(1)}
             <small>%</small>
           </div>
           <h3>{concentration.symbol} · Largest priced position</h3>
+          {Number.isFinite(concentration.weight) &&
+            concentration.weight >= 0 &&
+            concentration.weight <= 100 && (
+              <div
+                className={styles.weightBar}
+                aria-label={`${concentration.weight.toFixed(1)}% of priced portfolio`}
+              >
+                <span style={{ width: `${concentration.weight}%` }} />
+              </div>
+            )}
           <p>
             Of the priced portfolio; missing quotes and cash affect
             concentration. Not a breach alert.

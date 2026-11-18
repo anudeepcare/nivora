@@ -5,6 +5,27 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { trackerGroups } from "../lib/market-trackers.ts";
+const dashboardModule = { exports: {} };
+new Function(
+  "require",
+  "module",
+  "exports",
+  "React",
+  ts.transpileModule(
+    fs.readFileSync("components/MarketSessionDashboard.tsx", "utf8"),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.React,
+        module: ts.ModuleKind.CommonJS,
+      },
+    },
+  ).outputText,
+)(
+  () => ({ default: new Proxy({}, { get: (_, k) => String(k) }) }),
+  dashboardModule,
+  dashboardModule.exports,
+  React,
+);
 function harness() {
   const src = fs.readFileSync("components/MarketTrackers.tsx", "utf8");
   const ast = ts.createSourceFile(
@@ -38,6 +59,7 @@ function harness() {
     "trackerGroups",
     "styles",
     "ProductLookup",
+    "MarketSessionDashboard",
     js + ";return MarketTrackers",
   )(
     React,
@@ -73,6 +95,7 @@ function harness() {
     trackerGroups,
     new Proxy({}, { get: (_, k) => k }),
     () => null,
+    dashboardModule.exports.default,
   );
   return {
     render() {

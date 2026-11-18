@@ -355,8 +355,9 @@ export default function HomeMarketCards({
               : "Follow a company to see its reported price history here."}
           </p>
         </div>
-        <Link href={`${prefix}/discover`} className={styles.explore}>
-          Explore companies <ArrowRight size={17} aria-hidden="true" />
+        <Link href={`${prefix}/watchlist`} className={styles.explore}>
+          View all followed companies{" "}
+          <ArrowRight size={17} aria-hidden="true" />
         </Link>
       </div>
       {!selected.length ? (
