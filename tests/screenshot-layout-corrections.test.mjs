@@ -6,7 +6,7 @@ test('consensus labels wrap and use readable words rather than raw enum delimite
  assert.match(read('SentiSenseConsensus.tsx'),/consensusLabel\s*\.replaceAll\("_", " "\)/);
  const css=read('SentiSenseConsensus.module.css');
  assert.match(css,/overflow-wrap: anywhere/);assert.match(css,/white-space: normal/);
- assert.match(css,/auto-fit, minmax\(min\(100%, 140px\), 1fr\)/);
+ assert.match(css,/repeat\(2, minmax\(0, 1fr\)\)/);
  assert.doesNotMatch(css,/border-(top|bottom): 3px/);
 });
 test('Pace chart spans the canvas and history headers align with their cells',()=>{

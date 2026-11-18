@@ -1354,7 +1354,9 @@ body [data-selection-navigation] > button:focus-visible {
 body .research-page [data-selection-navigation] {
   --selection-fill: #ffffff;
   --selection-idle-fill: transparent;
-  --selection-border: #d1d9e6;
+  --selection-border: #acb9d0;
+  --selection-ink: #172744;
+  --selection-idle: #44516a;
   display: flex;
   flex-wrap: wrap;
   width: fit-content;
@@ -1368,22 +1370,26 @@ body .research-page [data-selection-navigation] {
 }
 [data-theme="dark"] body .research-page [data-selection-navigation] {
   --selection-fill: #26344b;
-  --selection-border: #53647e;
+  --selection-border: #7184a3;
+  --selection-ink: #f1f5ff;
+  --selection-idle: #c8d2e2;
   background: #111b2b;
 }
 body .research-page [data-selection-navigation] > button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 1 auto;
   gap: 7px;
   min-width: 0;
   max-width: 100%;
   min-height: 44px;
   padding: 8px 12px;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 14px;
   white-space: normal;
   overflow-wrap: anywhere;
+  text-align: center;
 }
 body .research-page [data-selection-navigation] > button svg {
   flex-shrink: 0;
@@ -1411,4 +1417,17 @@ body
 }
 body .research-page > [data-selection-navigation] {
   max-width: calc(100% - 2 * var(--research-gutter, 12px));
+}
+
+body
+  .research-page
+  [data-selection-navigation]
+  > button:hover:not([aria-current="page"]):not([aria-selected="true"]):not(
+    [aria-pressed="true"]
+  ) {
+  background: color-mix(in srgb, var(--selection-ink) 6%, transparent);
+  color: var(--selection-ink);
+}
+body .research-page [data-selection-navigation] > button:focus-visible {
+  outline-offset: -2px;
 }

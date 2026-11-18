@@ -56,3 +56,15 @@ test('reference polish uses neutral evidence surfaces and legible metadata witho
  const map=read('components/TechnicalLevelMap.module.css').split('/* Reference-aligned level')[1];assert.match(map,/border-color: var\(--blue\)/);assert.doesNotMatch(map,/var\(--green\)/);
  const events=read('components/DirectResearchLenses.module.css').split('/* Reference evidence rhythm')[1];assert.match(events,/min-height: 44px/);assert.match(events,/font-size: 12px/);assert.doesNotMatch(events,/border-top: 3px/);
 });
+
+test("research readability uses categorical icons and explicit dark-theme contrast without changing readings", () => {
+  const options = readFileSync("components/OptionsPositioningOverview.tsx", "utf8");
+  const styles = readFileSync("components/OptionsPositioningOverview.module.css", "utf8");
+  assert.match(options, /data-family=\{family\}/);
+  assert.match(options, /<Icon size=\{16\} aria-hidden="true"/);
+  assert.match(options, /\{number\(value\)\}/);
+  assert.match(options, /not executable prices/);
+  assert.match(styles, /data-theme="dark"/);
+  assert.match(styles, /font-size: 13px/);
+  assert.doesNotMatch(styles, /border-top:\s*[3-9]px/);
+});

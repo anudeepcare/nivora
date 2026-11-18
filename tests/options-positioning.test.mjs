@@ -54,6 +54,7 @@ test("overview renders metric units and subset disclaimer, never a synthetic cha
   const jsx = await import("react/jsx-runtime");
   const { renderToStaticMarkup } = await import("react-dom/server");
   const ts = (await import("typescript")).default;
+  const icons = await import("lucide-react");
   const logic = await import("../lib/options-positioning.ts");
   const format = await import("../lib/format.ts");
   const source = ts.transpileModule(
@@ -70,6 +71,7 @@ test("overview renders metric units and subset disclaimer, never a synthetic cha
   new Function("require", "module", "exports", source)(
     (name) => {
       if (name === "react") return React;
+      if (name === "lucide-react") return icons;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "@/lib/options-positioning") return logic;
       if (name === "@/lib/format") return format;

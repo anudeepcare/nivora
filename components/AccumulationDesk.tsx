@@ -157,12 +157,16 @@ export default function AccumulationDesk({
           <span>
             Latest quoted price{" "}
             <strong>{amount(r.quote.price, r.quote.currency)}</strong> ·{" "}
-            {r.quote.asOf && Number.isFinite(Date.parse(r.quote.asOf))
+            {r.quote.asOf &&
+            !/^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf) &&
+            Number.isFinite(Date.parse(r.quote.asOf))
               ? new Date(r.quote.asOf)
                   .toISOString()
                   .replace("T", " ")
                   .slice(0, 16) + " UTC"
-              : "Observation time not supplied"}
+              : r.quote.asOf && /^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf)
+                ? `${dateLabel(r.quote.asOf)} · time not supplied`
+                : "Observation time not supplied"}
             {r.quote.stale ? " · stale" : ""}
           </span>
           <small>
@@ -187,8 +191,52 @@ export default function AccumulationDesk({
           levels={levels}
         />
       </div>
+      <div className="accumulation-legend" aria-label="Chart zone legend">
+        {[0, 1, 2, 3, 4].map((n) => (
+          <span key={n}>
+            <i style={{ background: colours[n] }} />
+            {n === 0 ? "P0 · Pause" : paceCode(n)}
+          </span>
+        ))}
+        <span>
+          <i style={{ background: "#b0b5bd" }} />
+          No eligible signal
+        </span>
+      </div>
+      {!!levels.length && (
+        <details open className={detail.levels}>
+          <summary>Conditional zone prices</summary>
+          <dl>
+            {levels.map((l) => (
+              <div key={l.label}>
+                <dt>
+                  <i
+                    className={detail.zoneSwatch}
+                    style={{ background: l.color }}
+                    aria-hidden="true"
+                  />
+                  {l.label}
+                </dt>
+                <dd>{amount(l.price, r.quote.currency)}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      )}
       {!weekly && <PaceMonthHistory key={r.company.symbol} research={r} />}
       <div className="accumulation-summary">
+        {chosen.forming && confirmed && (
+          <div className={detail.formingContext}>
+            <small>
+              Current forming context · {dateLabel(chosen.forming.date)}
+            </small>
+            <p>{chosen.forming.reason}</p>
+            <small>
+              Provisional until the interval closes. Not a buy or sell
+              instruction.
+            </small>
+          </div>
+        )}
         <div>
           <small>
             {confirmed
@@ -236,38 +284,6 @@ export default function AccumulationDesk({
         </div>
       )}
       <PaceEvidenceJourney research={r} />
-      {!!levels.length && (
-        <details open className={detail.levels}>
-          <summary>Conditional zone prices</summary>
-          <dl>
-            {levels.map((l) => (
-              <div key={l.label}>
-                <dt>
-                  <i
-                    className={detail.zoneSwatch}
-                    style={{ background: l.color }}
-                    aria-hidden="true"
-                  />
-                  {l.label}
-                </dt>
-                <dd>{amount(l.price, r.quote.currency)}</dd>
-              </div>
-            ))}
-          </dl>
-        </details>
-      )}
-      <div className="accumulation-legend">
-        {[0, 1, 2, 3, 4].map((n) => (
-          <span key={n}>
-            <i style={{ background: colours[n] }} />
-            {n === 0 ? "Pause" : paceCode(n)}
-          </span>
-        ))}
-        <span>
-          <i style={{ background: "#b0b5bd" }} />
-          No eligible signal
-        </span>
-      </div>
       {weekly && (
         <p className="small muted">
           Weekly v1 is a separate, shorter-horizon price policy. The available

@@ -229,3 +229,43 @@
     font-size: 11px;
   }
 }
+
+/* Readable evidence dates and controls at phone widths; preserve real sparklines. */
+.metric.metric h3 {
+  color: var(--ink);
+  font-size: 14px;
+}
+.metric.metric header {
+  gap: 8px;
+}
+.metric.metric > strong {
+  letter-spacing: -0.025em;
+}
+.metric.metric > details summary {
+  color: var(--ink);
+}
+.metric.metric > details summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.basis {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+:global([data-theme="dark"]) .metric {
+  --metric-accent: #8db6ed;
+}
+:global([data-theme="dark"]) .metric[data-evidence-family="business"] {
+  --metric-accent: #bea5ed;
+}
+@media (max-width: 650px) {
+  .basis {
+    font-size: 12px;
+  }
+  .eventFilters {
+    width: 100%;
+  }
+  .eventFilters button {
+    flex: 1 1 auto;
+  }
+}

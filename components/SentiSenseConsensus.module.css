@@ -1,5 +1,5 @@
 .stats.stats {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 20px;
 }
 .stats strong {
@@ -30,14 +30,63 @@
 .stats [data-target="Mean target"] {
   background: color-mix(in srgb, var(--blue) 7%, transparent);
 }
-.stats [data-target="Low target"] {
-}
-.stats [data-target="High target"] {
-}
-.stats [data-target="Consensus"] {
-}
 .stats strong {
   font-variant-numeric: tabular-nums;
   font-size: clamp(18px, 1.7vw, 24px);
   font-weight: 500;
+}
+
+/* Container width, not viewport width, determines four versus balanced two-by-two. */
+.stats.stats {
+  container-type: normal;
+  gap: 0;
+}
+@supports (container-type: inline-size) {
+  .container {
+    container-type: inline-size;
+  }
+}
+.stats.stats > div {
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+@container (min-width: 680px) {
+  .stats.stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.metricLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.metricLabel svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+.stats [data-target="Mean target"] {
+  --metric-tone: var(--blue);
+}
+.stats [data-target="Low target"] {
+  --metric-tone: #ad6239;
+}
+.stats [data-target="High target"] {
+  --metric-tone: #7054b3;
+}
+.stats [data-target] .metricLabel svg {
+  color: var(--metric-tone, var(--muted));
+}
+:global([data-theme="dark"]) .stats [data-target="Low target"] {
+  --metric-tone: #e1a27d;
+}
+:global([data-theme="dark"]) .stats [data-target="High target"] {
+  --metric-tone: #b6a1ed;
+}
+.stats [data-target="Mean target"] strong {
+  color: var(--blue);
 }

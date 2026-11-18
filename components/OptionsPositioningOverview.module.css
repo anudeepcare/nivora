@@ -169,3 +169,58 @@
     overflow-wrap: anywhere;
   }
 }
+
+/* Categorical icons distinguish measurements, not bullish/bearish advice. */
+.metrics article {
+  min-width: 0;
+  background: var(--card);
+}
+.metrics span {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+  min-height: 2.9em;
+}
+.metrics span svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--blue);
+}
+.metrics [data-family="volatility"] svg,
+.metrics [data-family="range"] svg {
+  color: #8971bd;
+}
+.metrics strong {
+  margin-top: 8px;
+  font-size: clamp(18px, 2vw, 23px);
+  overflow-wrap: anywhere;
+}
+.root h3 {
+  font-size: 16px;
+}
+.root h4 {
+  font-size: 14px;
+}
+.root header > span,
+.root p,
+.activity small {
+  font-size: 12px;
+}
+.root header summary {
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+}
+.root summary:focus-visible,
+.scroll:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+:global([data-theme="dark"]) .metrics [data-family="volatility"] svg,
+:global([data-theme="dark"]) .metrics [data-family="range"] svg {
+  color: #bea5ed;
+}

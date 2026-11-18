@@ -299,8 +299,8 @@
 }
 .lower {
   display: grid;
-  align-items: start;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: stretch;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin-top: 14px;
 }
@@ -708,4 +708,57 @@
 }
 .tape small {
   display: block;
+}
+
+/* Equal peer panels; semantic scenario tint is not an extra colored rail. */
+.lower > :is(.scenarios, .evidence) {
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+.scenarios {
+  display: flex;
+  flex-direction: column;
+}
+.scenarios > p:last-child {
+  margin-top: auto;
+}
+.caseGrid button {
+  --case-tint: var(--atlas-cyan);
+  background: color-mix(in srgb, var(--case-tint) 5%, var(--atlas-panel));
+  min-width: 0;
+}
+.caseGrid button[data-tone="orange"] {
+  --case-tint: var(--atlas-orange);
+}
+.caseGrid button[data-tone="violet"] {
+  --case-tint: var(--atlas-violet);
+}
+.caseGrid button > span {
+  width: fit-content;
+  padding: 3px 6px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--case-tint) 9%, transparent);
+  font-size: 11px;
+}
+.caseGrid button > strong {
+  font-size: clamp(20px, 2vw, 26px);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.caseGrid button > small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.caseGrid button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+@media (max-width: 500px) {
+  .caseGrid button > strong {
+    font-size: 18px;
+  }
+  .caseGrid button > small {
+    font-size: 11px;
+  }
 }

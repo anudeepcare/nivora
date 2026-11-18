@@ -480,3 +480,21 @@
   font-weight: 500;
   letter-spacing: 0.09em;
 }
+
+/* Ownership names, periods and percentages retain a readable hierarchy. */
+.panel[aria-label="Reported institutional relationships"] .holder strong {
+  font-size: 14px;
+}
+.panel[aria-label="Reported institutional relationships"] .holder small,
+.panel[aria-label="Reported institutional relationships"] .hub span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.panel[aria-label="Reported institutional relationships"] .weight {
+  font-variant-numeric: tabular-nums;
+}
+:global([data-theme="dark"])
+  .panel[aria-label="Reported institutional relationships"]
+  .holderIcon {
+  color: #8db6ed;
+}

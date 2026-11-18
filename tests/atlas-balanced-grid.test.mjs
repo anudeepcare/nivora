@@ -37,7 +37,7 @@ test("Outcome evidence keeps missing status visible and diagnostics accessible w
   assert.match(source, /Input availability · not confidence/);
   assert.match(
     css,
-    /grid-template-columns: minmax\(0, 1.15fr\) minmax\(0, 1fr\)/,
+    /\.lower\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/,
   );
   assert.match(css, /\.evidenceCheck summary[\s\S]*?min-height: 44px/);
   assert.match(source, /Forecast-multiple sensitivity · not fair value/);

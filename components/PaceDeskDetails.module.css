@@ -173,8 +173,8 @@
 }
 .desk.desk > :global(.accumulation-summary) {
   border: 0;
-  border-left: 1px solid var(--line);
-  padding: 4px 0 4px 24px;
+  border-left: 0;
+  padding: 4px 0;
   background: transparent;
   box-shadow: none;
   border-radius: 0;
@@ -274,4 +274,56 @@
   height: 10px;
   border-radius: 3px;
   flex: none;
+}
+
+/* Keep explanations and keys with the observation they explain, without card rails. */
+.desk.desk > :global(.accumulation-legend) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.desk.desk > :global(.accumulation-summary) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 18px 28px;
+  align-items: start;
+}
+.desk :global(.accumulation-summary) p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.formingContext {
+  min-width: 0;
+}
+.formingContext > small:last-child {
+  display: block;
+  margin-top: 8px;
+}
+.desk .observations :global([data-pace-level="0"]) > strong::before {
+  background: #d89a20;
+}
+.desk .observations :global([data-pace-level="1"]) > strong::before {
+  background: #7d9db0;
+}
+.desk .observations :global([data-pace-level="2"]) > strong::before {
+  background: #12a28b;
+}
+.desk .observations :global([data-pace-level="3"]) > strong::before {
+  background: #71b337;
+}
+.desk .observations :global([data-pace-level="4"]) > strong::before {
+  background: #ac68e5;
+}
+
+.desk .observations :global(.pace-period) > strong::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 7px;
+  border-radius: 50%;
+  vertical-align: middle;
 }

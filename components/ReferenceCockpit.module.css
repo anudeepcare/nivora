@@ -41,7 +41,7 @@
   background: transparent;
   padding: 0 16px;
   color: var(--research-tab-ink);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -99,7 +99,7 @@
   }
   .lenses button {
     padding: 0 11px;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .root > :global(#research-overview),
@@ -425,4 +425,20 @@
 }
 :global([data-theme="dark"]) .lenses button[data-section="Advanced"] svg {
   color: #7bbec5;
+}
+
+/* Main navigation stays flat, with a readable hover target and a stable underline. */
+.lenses button:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.lenses button svg {
+  stroke-width: 1.8;
+}
+.lenses button:focus-visible {
+  outline-offset: -3px;
+}
+.supporting button svg {
+  color: currentColor;
+  opacity: 0.9;
 }

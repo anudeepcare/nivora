@@ -146,7 +146,10 @@ export default function SentiSenseConsensus({
     );
   }
   return (
-    <section className={s.workspace} aria-label="Analyst consensus">
+    <section
+      className={`${s.workspace} ${layout.container}`}
+      aria-label="Analyst consensus"
+    >
       <h3>Analyst target range</h3>
       <p className={s.caption}>
         Provider consensus is separate from AURYN’s calculated scenarios.
@@ -191,8 +194,55 @@ export default function SentiSenseConsensus({
               ["Low target", consensusTarget(data.targetLow, data.currency)],
               ["High target", consensusTarget(data.targetHigh, data.currency)],
             ].map(([label, v]) => (
-              <div className={s.stat} key={label} data-target={label}>
-                <span>{label}</span>
+              <div
+                className={s.stat}
+                key={label}
+                data-target={label}
+                data-kind={
+                  label === "Mean target"
+                    ? "mean"
+                    : label === "Low target"
+                      ? "low"
+                      : label === "High target"
+                        ? "high"
+                        : "consensus"
+                }
+              >
+                <span className={layout.metricLabel}>
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    {label === "Consensus" ? (
+                      <>
+                        <circle cx="9" cy="7" r="3" />
+                        <path d="M3 21v-2a6 6 0 0 1 12 0v2M16 4a3 3 0 0 1 0 6M21 21v-2a6 6 0 0 0-3-5" />
+                      </>
+                    ) : label === "Mean target" ? (
+                      <>
+                        <circle cx="12" cy="12" r="8" />
+                        <circle cx="12" cy="12" r="3" />
+                      </>
+                    ) : label === "Low target" ? (
+                      <>
+                        <path d="M4 5v14h16M8 15h8M8 15l3-3M8 15l3 3" />
+                      </>
+                    ) : (
+                      <>
+                        <path d="M4 5v14h16M8 8h8M16 8l-3-3M16 8l-3 3" />
+                      </>
+                    )}
+                  </svg>
+                  {label}
+                </span>
                 <strong>{v}</strong>
               </div>
             ))}

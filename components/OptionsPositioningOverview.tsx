@@ -1,5 +1,6 @@
 "use client";
 import { useMemo } from "react";
+import { Activity, ArrowLeftRight, Layers, MoveHorizontal } from "lucide-react";
 import { optionsPositioning } from "@/lib/options-positioning";
 import { dateLabel } from "@/lib/format";
 import styles from "./OptionsPositioningOverview.module.css";
@@ -18,10 +19,16 @@ export default function OptionsPositioningOverview({
     ...p.contracts.flatMap((c) => (c.volume == null ? [] : [c.volume])),
   );
   const tiles = [
-    ["ATM implied volatility", p.metrics.atmIv, "%"],
-    ["Put / call volume", p.metrics.pcVol, "×"],
-    ["Put / call open interest", p.metrics.pcOi, "×"],
-    ["1-day expected move · 90% range", p.metrics.expectedMove, "%"],
+    ["ATM implied volatility", p.metrics.atmIv, "%", Activity, "volatility"],
+    ["Put / call volume", p.metrics.pcVol, "×", ArrowLeftRight, "volume"],
+    ["Put / call open interest", p.metrics.pcOi, "×", Layers, "interest"],
+    [
+      "1-day expected move · 90% range",
+      p.metrics.expectedMove,
+      "%",
+      MoveHorizontal,
+      "range",
+    ],
   ] as const;
   return (
     <section className={styles.root} aria-label="Options positioning overview">
@@ -38,9 +45,12 @@ export default function OptionsPositioningOverview({
         </details>
       </header>
       <div className={styles.metrics}>
-        {tiles.map(([label, value, unit]) => (
-          <article key={label}>
-            <span>{label}</span>
+        {tiles.map(([label, value, unit, Icon, family]) => (
+          <article key={label} data-family={family}>
+            <span>
+              <Icon size={16} aria-hidden="true" />
+              {label}
+            </span>
             <strong>
               {number(value)}
               {value != null ? unit : ""}

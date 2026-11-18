@@ -8,7 +8,7 @@ import { amount, percent, quoteTime } from "@/lib/format";
 import { researchLink } from "@/lib/approved-workspace";
 import s from "./PortfolioDay.module.css";
 
-/** Home summary of how the user's own holdings moved in the latest session. */
+/** Quoted price changes, with their actual observation range rather than a session claim. */
 export default function PortfolioDay({
   positions,
   quotes,
@@ -29,14 +29,14 @@ export default function PortfolioDay({
   return (
     <section
       className={s.root}
-      aria-label="Your holdings in the latest session"
+      aria-label="Your holdings and quoted price changes"
     >
       <div className={s.total}>
-        <span className={s.eyebrow}>Your holdings · latest session</span>
+        <span className={s.eyebrow}>Your holdings · quoted price changes</span>
         <strong>{amount(d.value, "USD", d.value >= 1e7)}</strong>
         <p data-direction={direction}>
           {d.move == null ? (
-            "Session change not available"
+            "Quoted changes not available"
           ) : (
             <>
               {direction === "down" ? (
@@ -49,9 +49,31 @@ export default function PortfolioDay({
           )}
         </p>
         <small>
-          {d.covered} of {d.holdings} holdings with a dated session change
-          {d.asOf ? ` · ${quoteTime(d.asOf, true)}` : ""}. Price moves on
-          today&rsquo;s quantities, not account performance.
+          {d.covered} of {d.holdings} holdings with dated reported changes.
+          {d.oldestAsOf && d.asOf && (
+            <>
+              {" "}
+              Quotes:{" "}
+              <time dateTime={d.oldestAsOf} title={d.oldestAsOf}>
+                {quoteTime(d.oldestAsOf, true)}
+              </time>
+              {d.oldestAsOf !== d.asOf && (
+                <>
+                  {" "}
+                  to{" "}
+                  <time dateTime={d.asOf} title={d.asOf}>
+                    {quoteTime(d.asOf, true)}
+                  </time>
+                </>
+              )}
+              .
+            </>
+          )}
+          {d.mixedQuoteDates
+            ? " Mixed quote dates, not one session."
+            : " Reported changes may cover different sessions."}{" "}
+          Sum of quoted changes on today&rsquo;s quantities, not account
+          performance.
         </small>
       </div>
       {(d.gainers.length > 0 || d.decliners.length > 0) && (
@@ -69,7 +91,10 @@ export default function PortfolioDay({
                   <ul>
                     {rows.map((m) => (
                       <li key={m.symbol}>
-                        <Link href={researchLink(m.symbol, prefix)}>
+                        <Link
+                          href={researchLink(m.symbol, prefix)}
+                          title={`Quote observed ${m.asOf}`}
+                        >
                           {m.symbol}
                         </Link>
                         <span>{signed(m.move)}</span>

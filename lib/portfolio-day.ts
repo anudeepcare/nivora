@@ -6,13 +6,14 @@ export type DayMover = {
   value: number;
   move: number;
   changePct: number;
+  asOf: string;
 };
 export type PortfolioDay = {
   /** Non-cash holdings with a usable USD price, at those prices. */
   value: number;
   priced: number;
   holdings: number;
-  /** Holdings whose quote carries a current session change. */
+  /** Holdings whose quote carries a dated reported change. */
   covered: number;
   coveredValue: number;
   /** Dollar and percent move of the covered holdings only; null when none qualify. */
@@ -21,12 +22,14 @@ export type PortfolioDay = {
   gainers: DayMover[];
   decliners: DayMover[];
   asOf: string | null;
+  oldestAsOf: string | null;
+  mixedQuoteDates: boolean;
 };
 const DAY = 86400000;
 const finite = (x: unknown): x is number =>
   typeof x === "number" && Number.isFinite(x);
 
-/** Latest-session move of today's holdings from each quote's own reported change.
+/** Sum of quoted price changes on current holdings, not a synchronized session return.
  * Quotes older than four days, missing changes and non-USD prices are left out and counted, never assumed flat.
  * This is a price move on current quantities, not account performance: trades, cash and deposits are excluded. */
 export function portfolioDay(
@@ -45,7 +48,9 @@ export function portfolioDay(
     priced = 0,
     coveredValue = 0,
     prior = 0,
-    newest = -Infinity;
+    newest = -Infinity,
+    oldest = Infinity;
+  const quoteDates = new Set<string>();
   const movers: DayMover[] = [];
   for (const [symbol, quantity] of quantities) {
     const q = quotes[symbol]?.quote;
@@ -70,11 +75,14 @@ export function portfolioDay(
     coveredValue += worth;
     prior += before;
     newest = Math.max(newest, at);
+    oldest = Math.min(oldest, at);
+    quoteDates.add(new Date(at).toISOString().slice(0, 10));
     movers.push({
       symbol,
       value: worth,
       move: worth - before,
       changePct: q.changePct,
+      asOf: q.asOf!,
     });
   }
   const move = movers.length ? coveredValue - prior : null;
@@ -94,6 +102,8 @@ export function portfolioDay(
       .filter((m) => m.move < 0)
       .sort((a, b) => a.move - b.move)
       .slice(0, limit),
+    oldestAsOf: Number.isFinite(oldest) ? new Date(oldest).toISOString() : null,
+    mixedQuoteDates: quoteDates.size > 1,
     asOf: Number.isFinite(newest) ? new Date(newest).toISOString() : null,
   };
 }
