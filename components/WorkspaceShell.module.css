@@ -1011,12 +1011,23 @@
 
 /* Four 44px utilities plus the full wordmark cannot fit a 320px header. */
 @media (max-width: 360px) {
-  .shell .brand span { display: none; }
-  .shell .brand { flex: 0 0 32px; min-width: 32px; }
+  .shell .brand span {
+    display: none;
+  }
+  .shell .brand {
+    flex: 0 0 32px;
+    min-width: 32px;
+  }
 }
 
 /* Opaque mobile chrome prevents scrolled headings bleeding through controls. */
 @media (max-width: 767px) {
-  .shell .header { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  :global([data-theme="dark"]) .shell .header { background: #080d18; }
+  .shell .header {
+    background: #fff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  :global([data-theme="dark"]) .shell .header {
+    background: #080d18;
+  }
 }

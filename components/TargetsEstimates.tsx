@@ -201,7 +201,11 @@ export default function TargetsEstimates({
                 </div>
                 <div>
                   <dt>Estimate horizon</dt>
-                  <dd>{forecast.available ? `${forecast.period} · ${dateLabel(forecast.end)}` : "See selected scenario period"}</dd>
+                  <dd>
+                    {forecast.available
+                      ? `${forecast.period} · ${dateLabel(forecast.end)}`
+                      : "See selected scenario period"}
+                  </dd>
                 </div>
                 <div>
                   <dt>Dataset updated</dt>
@@ -255,9 +259,7 @@ export default function TargetsEstimates({
                 <div className={styles.cases}>
                   {forecast.cases.map((c) => (
                     <article key={c.name} data-case={c.name.toLowerCase()}>
-                      <span>
-                        {c.name} scenario
-                      </span>
+                      <span>{c.name} scenario</span>
                       <strong>{amount(c.target, forecast.currency)}</strong>
                       <b>{percent(c.change, true)} vs reference</b>
                       <small>

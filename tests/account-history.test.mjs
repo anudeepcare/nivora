@@ -133,3 +133,43 @@ test("reports requested evidence end separately from actual last priced valuatio
   assert.equal(result.requestedThrough, "2026-01-04");
   assert.equal(result.lastValuationDate, "2026-01-03");
 });
+
+test("cash-only history retains every dated cash event rather than only endpoints", async () => {
+  const cashRows = [
+    row("initial", "deposit", { date: "2026-01-02", amount: 1000 }),
+    row("add", "deposit", { date: "2026-01-05", amount: 500 }),
+    row("take", "withdrawal", { date: "2026-01-06", amount: 200 }),
+  ];
+  const result = await accountHistory(
+    cashRows,
+    true,
+    async (path) =>
+      path.startsWith("fundamentals/")
+        ? {
+            Code: path.includes("SPY") ? "SPY" : "QQQ",
+            CurrencyCode: "USD",
+            Type: "ETF",
+          }
+        : [
+            { date: "2026-01-02", adjusted_close: 100 },
+            { date: "2026-01-05", adjusted_close: 110 },
+            { date: "2026-01-06", adjusted_close: 120 },
+            { date: "2026-01-07", adjusted_close: 121 },
+          ],
+    Date.parse("2026-01-08T12:00:00Z"),
+  );
+  assert.deepEqual(
+    result.points.map((p) => [p.date, p.equity, p.netContributions, p.gain]),
+    [
+      ["2026-01-02", 1000, 1000, 0],
+      ["2026-01-05", 1500, 1500, 0],
+      ["2026-01-06", 1300, 1300, 0],
+      ["2026-01-07", 1300, 1300, 0],
+    ],
+  );
+  assert.ok(
+    result.benchmarks.every(
+      (b) => b.status === "available" && b.points.length === 4,
+    ),
+  );
+});

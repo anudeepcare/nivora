@@ -1,6 +1,9 @@
 import { providerSymbol, providerIdentity } from "./provider-symbol.ts";
 import type { Candle } from "./types";
 export type DailyRadarRow = {
+  stale?: boolean;
+  historyAcquiredAt?: string;
+  actionsAcquiredAt?: string;
   symbol: string;
   status: "ready" | "unavailable" | "pending";
   history: Candle[];
@@ -10,6 +13,10 @@ export type DailyRadarRow = {
   issue: string | null;
 };
 export type DailyRadarSnapshot = {
+  sourceStatus?: "unavailable" | "ready";
+  sourceRetryAt?: string | null;
+  mode?: "bulk-opt-in";
+  limitations?: string[];
   incremental?: boolean;
   nextCursor?: number | null;
   day: string;

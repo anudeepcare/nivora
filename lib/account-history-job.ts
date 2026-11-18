@@ -4,7 +4,7 @@ import {
   historyScope,
   AccountHistoryError,
 } from "./account-history.ts";
-export const HISTORY_JOB_VERSION = "raw-ledger-v1";
+export const HISTORY_JOB_VERSION = "raw-ledger-v2-cash-events";
 export type HistoryTask = {
   path: string;
   params: Record<string, string>;

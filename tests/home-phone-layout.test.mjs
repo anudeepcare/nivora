@@ -5,7 +5,7 @@ const css = (name) => readFileSync(`components/${name}.module.css`, "utf8");
 test("320px shell preserves all utilities, reducing only the wordmark", () => {
   assert.match(
     css("WorkspaceShell"),
-    /@media \(max-width: 360px\)[\s\S]*\.shell \.brand span \{ display: none;/,
+    /@media \(max-width: 360px\)[\s\S]*\.shell \.brand span \{\s*display: none;/,
   );
   assert.doesNotMatch(
     css("WorkspaceShell").split("/* Four 44px utilities")[1],
@@ -24,7 +24,7 @@ test("phone graph cards remain legible across 320 through 430 widths", () => {
   const phone = css("HomeMarketCards").split("/* Keep chart labels")[1];
   assert.match(phone, /max-width: 430px/);
   assert.match(phone, /grid-template-columns: minmax\(0, 1fr\)/);
-  assert.match(phone, /min-width: 44px; height: 44px/);
+  assert.match(phone, /min-width: 44px;\s*height: 44px/);
 });
 test("public phone workflow and conversion controls can reflow without fixed height", () => {
   const phone = css("PublicLanding").slice(

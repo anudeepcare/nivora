@@ -58,12 +58,10 @@ export function indicatorOverview(input: Candle[], asOf: string) {
     ).values(),
   ].sort((a, b) => a.time.localeCompare(b.time));
   const offset = Math.max(0, bars.length - 60);
-  const snapshots = bars
-    .slice(offset)
-    .map((bar, index) => ({
-      date: bar.time,
-      studies: advancedStudies(bars.slice(0, offset + index + 1), asOf),
-    }));
+  const snapshots = bars.slice(offset).map((bar, index) => ({
+    date: bar.time,
+    studies: advancedStudies(bars.slice(0, offset + index + 1), asOf),
+  }));
   return indicators.map((indicator) => ({
     ...indicator,
     points: snapshots.map((snapshot) => ({

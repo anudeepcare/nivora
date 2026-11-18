@@ -528,9 +528,31 @@
   font-size: 11px;
   line-height: 1.5;
 }
-.methodInfo { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
-.methodInfo summary { cursor: pointer; width: fit-content; min-height: 32px; display: flex; align-items: center; gap: 6px; color: var(--ink); }
-.methodInfo summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
-.methodInfo p { padding: 8px 0; }
-.root .reasons { margin-top: 20px; }
-.root .heading h2 { font-size: clamp(23px, 2.5vw, 30px); font-weight: 500; }
+.methodInfo {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.methodInfo summary {
+  cursor: pointer;
+  width: fit-content;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+}
+.methodInfo summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.methodInfo p {
+  padding: 8px 0;
+}
+.root .reasons {
+  margin-top: 20px;
+}
+.root .heading h2 {
+  font-size: clamp(23px, 2.5vw, 30px);
+  font-weight: 500;
+}

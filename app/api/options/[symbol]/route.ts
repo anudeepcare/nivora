@@ -5,6 +5,7 @@ import {
 } from "@/lib/access-server";
 import { account, failure, privateJson, HttpError, limit } from "@/lib/server";
 import { loadOptionChain } from "@/lib/options-source";
+export const maxDuration = 60;
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ symbol: string }> },
@@ -24,7 +25,7 @@ export async function GET(
       );
     const expiry = new URL(request.url).searchParams.get("expiry");
     await reserveAccess(user.id, access, "research", ticker);
-    return privateJson(await loadOptionChain(ticker, expiry));
+    return privateJson(await loadOptionChain(ticker, expiry, request.signal));
   } catch (e) {
     return failure(e);
   }

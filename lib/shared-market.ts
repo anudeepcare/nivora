@@ -62,6 +62,20 @@ export async function sharedEodRead<T>(
 ): Promise<T> {
   return sharedEodReadCore(token, path, params, ttl, read, false);
 }
+/** Opt-in bulk payloads use compact JSON strings and require acknowledged publication. */
+export async function sharedEodBoundedRead<T>(
+  token: string,
+  path: string,
+  params: Record<string, string>,
+  ttl: (value: T) => number,
+  read: () => Promise<T>,
+): Promise<T> {
+  if (!sharedMarketEnabled())
+    throw new MarketGuardError(
+      "Shared market protection is required for bulk radar.",
+    );
+  return sharedEodReadCore(token, path, params, ttl, read, false, true);
+}
 /** Inactive evidence seam: same weighted account budget, isolated cache namespace.
  * Requires the separately reviewed evidence publisher; no legacy fallback. */
 export async function sharedEodEvidenceRead<T>(
@@ -81,9 +95,10 @@ async function sharedEodReadCore<T>(
   token: string,
   path: string,
   params: Record<string, string>,
-  ttl: number,
+  ttl: number | ((value: T) => number),
   read: () => Promise<T>,
   evidence: boolean,
+  requirePublication = false,
 ): Promise<T> {
   if (!sharedMarketEnabled()) return read();
   const publishRpc = evidence
@@ -155,12 +170,25 @@ async function sharedEodReadCore<T>(
     );
   try {
     const value = await read();
+    if (
+      requirePublication &&
+      new TextEncoder().encode(JSON.stringify(value)).byteLength >
+        4 * 1024 * 1024
+    )
+      throw new MarketGuardError(
+        "Bulk cache payload exceeds its safe publication bound.",
+      );
+    const effectiveTtl = typeof ttl === "function" ? ttl(value) : ttl;
     const published = await db.rpc(publishRpc, {
       p_key: key,
       p_lease: lease,
       p_value: value,
-      p_ttl: Math.max(1, Math.min(86400, Math.ceil(ttl / 1000))),
+      p_ttl: Math.max(1, Math.min(86400, Math.ceil(effectiveTtl / 1000))),
     });
+    if (requirePublication && (published.error || published.data !== true))
+      throw new MarketGuardError(
+        "Bulk cache publication was not acknowledged; no acquisition result is certified.",
+      );
     if (evidence && (published.error || published.data?.stored !== true))
       throw new MarketGuardError(
         "Evidence publication failed; no published observation is certified.",

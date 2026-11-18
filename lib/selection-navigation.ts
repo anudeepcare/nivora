@@ -12,7 +12,11 @@ export function nextSelectionIndex(key: string, index: number, count: number) {
 /** Move focus only. Enter/Space keeps the button's existing activation behavior. */
 export function navigateSelection(event: KeyboardEvent<HTMLElement>) {
   if (event.altKey || event.ctrlKey || event.metaKey) return;
-  const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>(":scope > button:not(:disabled)"));
+  const buttons = Array.from(
+    event.currentTarget.querySelectorAll<HTMLButtonElement>(
+      ":scope > button:not(:disabled)",
+    ),
+  );
   const index = buttons.indexOf(event.target as HTMLButtonElement);
   const next = nextSelectionIndex(event.key, index, buttons.length);
   if (next == null) return;

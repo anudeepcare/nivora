@@ -92,3 +92,23 @@ test("loading, completed partial evidence, and paused progress have truthful dis
   assert.doesNotMatch(paused.html, /Checking today/);
   assert.equal(paused.charts, 1);
 });
+
+test("bulk source outage remains visible even when cold account has no retained histories", () => {
+  const { html } = render({
+    snapshot: {
+      day: "2026-11-18",
+      mode: "bulk-opt-in",
+      eligible: 500,
+      ready: 0,
+      pending: 500,
+      excluded: 0,
+      rows: [],
+      sourceStatus: "unavailable",
+      sourceRetryAt: "2026-11-18T13:00:00Z",
+    },
+  });
+  assert.match(html, /Bulk source refresh paused/);
+  assert.match(html, /500 pending/);
+  assert.match(html, /2026-11-18T13:00:00Z/);
+  assert.doesNotMatch(html, /Checking today/);
+});

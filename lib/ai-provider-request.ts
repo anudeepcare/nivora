@@ -5,13 +5,18 @@ export async function aiProviderRequest(
   model: string,
   body: Record<string, unknown>,
   fallback?: string,
+  timeoutMs?: number,
+  signal?: AbortSignal,
 ) {
   const models = [model, ...(fallback && fallback !== model ? [fallback] : [])];
   let response: Response | undefined;
   for (let i = 0; i < models.length; i++) {
     response = await fetcher("https://api.openai.com/v1/responses", {
       method: "POST",
-      signal: AbortSignal.timeout(i === 0 ? 35000 : 15000),
+      signal: AbortSignal.any([
+        AbortSignal.timeout(timeoutMs ?? (i === 0 ? 35000 : 15000)),
+        ...(signal ? [signal] : []),
+      ]),
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",

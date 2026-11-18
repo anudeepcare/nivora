@@ -2,12 +2,9 @@
 
 import { api } from "@/lib/client";
 import type { HomeFeed } from "@/lib/home-feed";
+import { acquireHomeFeed, invalidateHomeFeed } from "@/lib/home-feed-flight";
 import { loadHomeFeed } from "@/lib/home-feed";
-import {
-  invalidateResource,
-  readResource,
-  resourceSnapshot,
-} from "@/lib/resource-cache";
+import { resourceSnapshot } from "@/lib/resource-cache";
 import { useEffect, useState } from "react";
 import { useProduct } from "./Session";
 
@@ -32,15 +29,23 @@ export function useHomeFeed(symbols: string[]) {
     let active = true;
     const old = resourceSnapshot<HomeFeed>(cache, key);
     setState({ key, data: old, loading: true, error: "" });
-    readResource(cache, key, old?.issues.length ? 30000 : 300000, () =>
-      loadHomeFeed(
-        key.slice("home-feed:all:".length).split(",").filter(Boolean),
-        (batch) =>
-          api<HomeFeed>(
-            `home-feed?symbols=${encodeURIComponent(batch.join(","))}`,
-          ),
-      ),
-    )
+    const flight = acquireHomeFeed(
+      cache,
+      key,
+      old?.issues.length ? 30000 : 300000,
+      (signal) =>
+        loadHomeFeed(
+          key.slice("home-feed:all:".length).split(",").filter(Boolean),
+          (batch) =>
+            api<HomeFeed>(
+              `home-feed?symbols=${encodeURIComponent(batch.join(","))}`,
+              undefined,
+              signal,
+            ),
+          signal,
+        ),
+    );
+    flight.promise
       .then((data) => {
         if (active) setState({ key, data, loading: false, error: "" });
       })
@@ -58,6 +63,7 @@ export function useHomeFeed(symbols: string[]) {
       });
     return () => {
       active = false;
+      flight.release();
     };
   }, [cache, demo, key, revision]);
   useEffect(() => {
@@ -82,7 +88,7 @@ export function useHomeFeed(symbols: string[]) {
     };
   }, [demo, key, symbols.length]);
   const refresh = () => {
-    invalidateResource(cache, key);
+    invalidateHomeFeed(cache, key);
     setRevision((value) => value + 1);
   };
   if (demo) return { data: emptyFeed, loading: false, error: "", refresh };

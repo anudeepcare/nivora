@@ -820,7 +820,7 @@
 .review {
   color: var(--muted);
   background: var(--line);
-  border-color: var(--muted)22;
+  border-color: var(--muted) 22;
   white-space: nowrap;
   font-size: 8px;
 }
@@ -1962,72 +1962,301 @@
   background: transparent;
   cursor: pointer;
 }
-.themeToggle:hover { color: var(--ink); background: var(--surface); }
-.themeToggle:focus-visible { outline: 2px solid var(--landing-accent); outline-offset: 3px; }
-.productTour { margin-top: 30px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--card); }
-.tourTabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
-.tourTabs button { min-width: 0; padding: 18px 14px; display: flex; gap: 8px; align-items: center; color: var(--muted); background: transparent; border: 0; border-bottom: 2px solid transparent; text-align: left; font-size: 12px; cursor: pointer; }
-.tourTabs button span { font-family: "DM Mono", monospace; font-size: 10px; }
-.tourTabs button[aria-selected="true"] { color: var(--landing-accent); border-bottom-color: var(--landing-accent); background: var(--surface); }
-.tourPanel { padding: 32px; }
-.tourPanel[hidden] { display: none; }
-.tourPanel h3 { margin: 12px 0; font-size: clamp(24px, 3vw, 36px); line-height: 1.15; font-weight: 500; letter-spacing: -1px; }
-.tourPanel p { max-width: 680px; color: var(--muted); font-size: 14px; line-height: 1.7; }
-.tourPanel small { display: block; color: var(--muted); font-size: 11px; }
-.tourPanel a { display: inline-flex; align-items: center; gap: 12px; margin-top: 22px; color: var(--landing-accent); font-size: 13px; }
-.tourTabs button:focus-visible, .tourPanel a:focus-visible { outline: 2px solid var(--landing-accent); outline-offset: -3px; }
-@media (max-width: 760px) { .tourTabs { display: flex; overflow-x: auto; } .tourTabs button { flex: 0 0 155px; } .tourPanel { padding: 22px; } }
-/* Framework graphics explain the product without simulating market readings. */
-.researchDiagram { width: 100%; max-width: 420px; margin: 0 auto; min-width: 0; }
-.researchDiagram svg { display: block; width: 100%; height: auto; overflow: visible; }
-.researchDiagram :is(circle, rect) { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
-.researchDiagram :is(path, line) { fill: none; stroke: var(--landing-accent); stroke-width: 1.5; stroke-opacity: .45; }
-.researchDiagram text { fill: var(--ink); font: 13px Manrope, system-ui, sans-serif; }
-.researchDiagram .diagramDetail { fill: var(--muted); font-size: 11px; }
-.researchDiagram .orbitRing { fill: none; stroke-dasharray: 3 6; }
-.researchDiagram .diagramCore { fill: var(--landing-accent); stroke: var(--landing-accent); }
-.researchDiagram .diagramCoreText { fill: white; font-size: 12px; letter-spacing: .04em; }
-.researchDiagram .scenario0 { stroke: #cc6677; }
-.researchDiagram .scenario1, .researchDiagram .paceStep { stroke: var(--landing-accent); }
-.researchDiagram .scenario2 { stroke: #399c93; }
-.researchDiagram figcaption { margin: 6px 0 0; text-align: center; color: var(--muted); font-size: 10px; line-height: 1.5; }
-.tourPanel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 36px; padding: 28px 32px; }
-.tourReadout { min-width: 0; }
-.tourReadout > small { margin-top: 14px; }
-.referenceBrief > footer > .briefStep { position: relative; min-height: 158px; background: transparent; padding: 14px 18px; }
-.briefIcon { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 12px; color: var(--landing-accent); background: var(--surface); margin-bottom: 16px; }
-.briefStep strong { font-size: clamp(16px, 1.8vw, 22px); margin-top: 8px; }
-.briefStep em { color: var(--muted); font-style: normal; font-size: 12px; margin-top: 7px; }
-.briefConnector { position: absolute; right: -17px; top: 32px; color: var(--muted); }
+.themeToggle:hover {
+  color: var(--ink);
+  background: var(--surface);
+}
+.themeToggle:focus-visible {
+  outline: 2px solid var(--landing-accent);
+  outline-offset: 3px;
+}
+.productTour {
+  margin-top: 30px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card);
+}
+.tourTabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+.tourTabs button {
+  min-width: 0;
+  padding: 18px 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+.tourTabs button span {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+}
+.tourTabs button[aria-selected="true"] {
+  color: var(--landing-accent);
+  border-bottom-color: var(--landing-accent);
+  background: var(--surface);
+}
+.tourPanel {
+  padding: 32px;
+}
+.tourPanel[hidden] {
+  display: none;
+}
+.tourPanel h3 {
+  margin: 12px 0;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+.tourPanel p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.tourPanel small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+.tourPanel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  color: var(--landing-accent);
+  font-size: 13px;
+}
+.tourTabs button:focus-visible,
+.tourPanel a:focus-visible {
+  outline: 2px solid var(--landing-accent);
+  outline-offset: -3px;
+}
 @media (max-width: 760px) {
-  .tourPanel { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 22px; }
-  .researchDiagram { max-width: 380px; }
-  .briefStep:nth-child(2) .briefConnector { display: none; }
+  .tourTabs {
+    display: flex;
+    overflow-x: auto;
+  }
+  .tourTabs button {
+    flex: 0 0 155px;
+  }
+  .tourPanel {
+    padding: 22px;
+  }
+}
+/* Framework graphics explain the product without simulating market readings. */
+.researchDiagram {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  min-width: 0;
+}
+.researchDiagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.researchDiagram :is(circle, rect) {
+  fill: var(--card);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.researchDiagram :is(path, line) {
+  fill: none;
+  stroke: var(--landing-accent);
+  stroke-width: 1.5;
+  stroke-opacity: 0.45;
+}
+.researchDiagram text {
+  fill: var(--ink);
+  font:
+    13px Manrope,
+    system-ui,
+    sans-serif;
+}
+.researchDiagram .diagramDetail {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.researchDiagram .orbitRing {
+  fill: none;
+  stroke-dasharray: 3 6;
+}
+.researchDiagram .diagramCore {
+  fill: var(--landing-accent);
+  stroke: var(--landing-accent);
+}
+.researchDiagram .diagramCoreText {
+  fill: white;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.researchDiagram .scenario0 {
+  stroke: #cc6677;
+}
+.researchDiagram .scenario1,
+.researchDiagram .paceStep {
+  stroke: var(--landing-accent);
+}
+.researchDiagram .scenario2 {
+  stroke: #399c93;
+}
+.researchDiagram figcaption {
+  margin: 6px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.tourPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 36px;
+  padding: 28px 32px;
+}
+.tourReadout {
+  min-width: 0;
+}
+.tourReadout > small {
+  margin-top: 14px;
+}
+.referenceBrief > footer > .briefStep {
+  position: relative;
+  min-height: 158px;
+  background: transparent;
+  padding: 14px 18px;
+}
+.briefIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--landing-accent);
+  background: var(--surface);
+  margin-bottom: 16px;
+}
+.briefStep strong {
+  font-size: clamp(16px, 1.8vw, 22px);
+  margin-top: 8px;
+}
+.briefStep em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12px;
+  margin-top: 7px;
+}
+.briefConnector {
+  position: absolute;
+  right: -17px;
+  top: 32px;
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  .tourPanel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 22px;
+  }
+  .researchDiagram {
+    max-width: 380px;
+  }
+  .briefStep:nth-child(2) .briefConnector {
+    display: none;
+  }
 }
 @media (max-width: 420px) {
-  .referenceBrief > footer { gap: 8px; padding: 8px; }
-  .referenceBrief > footer > .briefStep { padding: 12px 8px; }
-  .briefConnector { display: none; }
+  .referenceBrief > footer {
+    gap: 8px;
+    padding: 8px;
+  }
+  .referenceBrief > footer > .briefStep {
+    padding: 12px 8px;
+  }
+  .briefConnector {
+    display: none;
+  }
 }
 
 /* Footer links stay accessible, arranged as a quiet directory. */
-.page.page.page .footer > div:first-child { display: grid; grid-template-columns: minmax(140px, 1fr) minmax(0, 3fr); align-items: start; gap: 24px; }
-.page.page.page .footer > div:first-child nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 20px; align-items: start; }
-.page.page.page .footer nav a { min-height: 36px; display: inline-flex; align-items: center; overflow-wrap: anywhere; font-size: 12px; line-height: 1.45; }
-.page.page.page .footer > div:last-of-type { border-top: 1px solid var(--line); margin-top: 12px; }
-.page.page.page .footer p { max-width: 85ch; color: var(--muted); }
+.page.page.page .footer > div:first-child {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(0, 3fr);
+  align-items: start;
+  gap: 24px;
+}
+.page.page.page .footer > div:first-child nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 20px;
+  align-items: start;
+}
+.page.page.page .footer nav a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.page.page.page .footer > div:last-of-type {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+}
+.page.page.page .footer p {
+  max-width: 85ch;
+  color: var(--muted);
+}
 @media (max-width: 700px) {
- .page.page.page .footer > div:first-child { grid-template-columns: 1fr; gap: 12px; }
- .page.page.page .footer > div:first-child nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
- .page.page.page .footer nav a { min-height: 44px; }
+  .page.page.page .footer > div:first-child {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .page.page.page .footer > div:first-child nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .page.page.page .footer nav a {
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 430px) {
-  .page.page.page .referenceBrief > footer { grid-template-columns: minmax(0, 1fr); }
-  .page.page.page .referenceBrief > footer > .briefStep { min-height: 0; padding: 12px; }
-  .briefConnector { display: none; }
-  .page.page.page .closing { padding: 20px; gap: 16px; }
-  .page.page.page .closing .actions { flex-wrap: wrap; min-width: 0; }
-  .page.page.page .closing .actions a { white-space: normal; max-width: 100%; }
-  .page.page.page .heroCopy h1 { overflow-wrap: anywhere; }
+  .page.page.page .referenceBrief > footer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page.page.page .referenceBrief > footer > .briefStep {
+    min-height: 0;
+    padding: 12px;
+  }
+  .briefConnector {
+    display: none;
+  }
+  .page.page.page .closing {
+    padding: 20px;
+    gap: 16px;
+  }
+  .page.page.page .closing .actions {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .page.page.page .closing .actions a {
+    white-space: normal;
+    max-width: 100%;
+  }
+  .page.page.page .heroCopy h1 {
+    overflow-wrap: anywhere;
+  }
 }

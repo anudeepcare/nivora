@@ -1,5 +1,9 @@
 "use client";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+const AccountHistory = dynamic(() => import("./AccountHistory"), {
+  loading: () => <p role="status">Loading account comparison controls…</p>,
+});
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
 import {
@@ -30,6 +34,7 @@ export default function TransactionWorkspace({
       "transactions",
       demo ? { rows: [], revision: 0, updated_at: null } : undefined,
     );
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [draft, setDraft] = useState<Transaction[] | null>(null),
     [base, setBase] = useState<number | null>(null),
     [errors, setErrors] = useState<string[]>([]),
@@ -414,6 +419,27 @@ export default function TransactionWorkspace({
           </footer>
         </>
       )}
+      {!demo && resource.data?.rows.length ? (
+        <details
+          data-account-comparison
+          onToggle={(event) => setHistoryOpen(event.currentTarget.open)}
+        >
+          <summary>Build dated account comparison · SPY / QQQ</summary>
+          <p>
+            This uses the complete saved ledger across all accounts, not the
+            current account filter or an unsaved import. Review and explicitly
+            confirm completeness before calculating.
+          </p>
+          {draft || busy || resource.loading ? (
+            <p>
+              Save or finish reviewing your transaction changes before building
+              account history.
+            </p>
+          ) : historyOpen ? (
+            <AccountHistory key={resource.data.revision} />
+          ) : null}
+        </details>
+      ) : null}
       {!rows.length && !resource.loading && (
         <p>
           Start with the template, then import your transaction history to see

@@ -446,3 +446,22 @@ test("provider estimates without evidence dates or fiscal endpoints never become
   consensusOnly.evidence.consensus = { low: 80, target: 100, high: 120 };
   assert.equal(researchOutlook(consensusOnly).available, false);
 });
+
+test("scenario prices require an explicit matching listing and quote currency, not missing-unit equality", () => {
+  for (const currency of [null, undefined, "", "usd", "USD/share"]) {
+    const r = research();
+    r.company.symbol = "GOOG";
+    r.company.currency = currency;
+    r.quote.currency = currency;
+    r.evidence.estimates.forEach((e) => {
+      e.currency = currency;
+    });
+    const result = outlook.researchOutlook(r);
+    assert.equal(result.available, false, `must withhold currency ${currency}`);
+    assert.match(result.reason, /currency/i);
+  }
+  const mismatch = research();
+  mismatch.company.currency = "EUR";
+  assert.equal(outlook.researchOutlook(mismatch).available, false);
+  assert.equal(outlook.researchOutlook(research()).available, true);
+});

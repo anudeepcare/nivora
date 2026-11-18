@@ -152,6 +152,14 @@ export function researchOutlook(
     return unavailable(
       "Corporate earnings scenarios do not apply to this asset.",
     );
+  if (
+    typeof r.quote.currency !== "string" ||
+    !/^[A-Z]{3}$/.test(r.quote.currency) ||
+    r.company.currency !== r.quote.currency
+  )
+    return unavailable(
+      "Scenario prices require a matching, explicit listing and quote currency; no currency conversion is inferred.",
+    );
   const e = r.evidence;
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
   if (!e || !Number.isFinite(now))

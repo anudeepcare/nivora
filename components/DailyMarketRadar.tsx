@@ -98,7 +98,10 @@ export default function DailyMarketRadar({
   const snapshot = current?.snapshot;
   const rows: RadarResearch[] = snapshot
     ? snapshot.rows
-        .filter((row) => row.status === "ready")
+        .filter(
+          (row) =>
+            row.status === "ready" || (row.stale && row.history.length > 0),
+        )
         .map((row) => {
           const full = research.find((r) => {
             try {
@@ -170,6 +173,54 @@ export default function DailyMarketRadar({
             {snapshot.pending} pending · {snapshot.excluded} unsupported.
             Snapshot {snapshot.day} (UTC).
           </p>
+        )}
+        {snapshot?.mode === "bulk-opt-in" &&
+          snapshot.sourceStatus === "unavailable" && (
+            <p role="status">
+              Bulk source refresh paused. Cached observations remain available;
+              pending instruments are not current.
+              {snapshot.sourceRetryAt && (
+                <>
+                  {" "}
+                  Next source check no earlier than{" "}
+                  <time dateTime={snapshot.sourceRetryAt}>
+                    {new Date(snapshot.sourceRetryAt).toLocaleString()}
+                  </time>
+                  .
+                </>
+              )}
+            </p>
+          )}
+        {snapshot?.mode === "bulk-opt-in" && (
+          <div>
+            <p>
+              {snapshot.rows.filter((row) => row.stale).length} retained
+              histories are awaiting refresh; latest price dates and historical
+              acquisition dates are different.
+            </p>
+            <details>
+              <summary>History freshness and limitations</summary>
+              {snapshot.limitations?.map((text) => (
+                <p key={text}>{text}</p>
+              ))}
+              <ul
+                className={s.freshness}
+                tabIndex={0}
+                aria-label="Dated radar history sources"
+              >
+                {snapshot.rows
+                  .filter((row) => row.historyAcquiredAt)
+                  .map((row) => (
+                    <li key={row.symbol}>
+                      {row.symbol}: latest bar {row.observedThrough}; history
+                      acquired {row.historyAcquiredAt?.slice(0, 10)}; split
+                      history acquired {row.actionsAcquiredAt?.slice(0, 10)}
+                      {row.stale ? " · refresh pending" : ""}
+                    </li>
+                  ))}
+              </ul>
+            </details>
+          </div>
         )}
         {snapshot && (
           <small>

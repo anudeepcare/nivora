@@ -23,18 +23,27 @@ import {
 function PublicThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   useEffect(() => {
-    setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    setTheme(
+      document.documentElement.dataset.theme === "light" ? "light" : "dark",
+    );
   }, []);
   return (
-    <button type="button" className={landing.themeToggle}
+    <button
+      type="button"
+      className={landing.themeToggle}
       aria-label={`Use ${theme === "dark" ? "day" : "night"} theme`}
       onClick={() => {
         const next = theme === "dark" ? "light" : "dark";
         document.documentElement.dataset.theme = next;
         document.documentElement.style.colorScheme = next;
-        try { localStorage.setItem("auryn-product-theme", next); } catch { /* Optional preference. */ }
+        try {
+          localStorage.setItem("auryn-product-theme", next);
+        } catch {
+          /* Optional preference. */
+        }
         setTheme(next);
-      }}>
+      }}
+    >
       {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
     </button>
   );
@@ -294,8 +303,16 @@ export function InvestmentDemo() {
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="0%" stopColor="var(--landing-accent)" stopOpacity=".23" />
-                    <stop offset="100%" stopColor="var(--landing-accent)" stopOpacity="0" />
+                    <stop
+                      offset="0%"
+                      stopColor="var(--landing-accent)"
+                      stopOpacity=".23"
+                    />
+                    <stop
+                      offset="100%"
+                      stopColor="var(--landing-accent)"
+                      stopOpacity="0"
+                    />
                   </linearGradient>
                 </defs>
                 <g
@@ -411,106 +428,361 @@ function ResearchDiagram({ lens = 0 }: { lens?: number }) {
     "Company ownership connected to institutions, insiders and public filings",
     "Five Pace conditions from pause to deeper accumulation, checked against business and portfolio limits",
   ];
-  return <figure className={landing.researchDiagram}>
-    <svg viewBox="0 0 420 340" role="img" aria-label={labels[lens]}>
-      {lens === 0 && <>
-        {[118, 80, 43].map(radius => <circle key={radius} cx="210" cy="162" r={radius} className={landing.orbitRing} />)}
-        {([
-          ["Business", "Evidence", 210, 35], ["Value", "Assumptions", 340, 95],
-          ["Change", "Events", 340, 235], ["Pace", "Conditions", 210, 290],
-          ["Risk", "Limits", 80, 235], ["Ownership", "Filings", 80, 95],
-        ] as const).map(([title, detail, x, y]) => <g key={title}>
-          <line x1="210" y1="162" x2={x} y2={y} />
-          <circle cx={x} cy={y} r="34" />
-          <text x={x} y={y - 2} textAnchor="middle">{title}</text>
-          <text x={x} y={y + 15} textAnchor="middle" className={landing.diagramDetail}>{detail}</text>
-        </g>)}
-        <circle cx="210" cy="162" r="44" className={landing.diagramCore} />
-        <text x="210" y="157" textAnchor="middle" className={landing.diagramCoreText}>YOUR</text>
-        <text x="210" y="177" textAnchor="middle" className={landing.diagramCoreText}>REVIEW</text>
-      </>}
-      {lens === 1 && <>
-        <text x="210" y="33" textAnchor="middle">Growth · margins · future multiple</text>
-        <path d="M105 170 C190 170 180 80 270 80 M105 170H270 M105 170 C190 170 180 260 270 260" />
-        <rect x="25" y="140" width="115" height="60" rx="12" />
-        <text x="82" y="166" textAnchor="middle">Your</text><text x="82" y="184" textAnchor="middle">assumptions</text>
-        {([['Bear', 'Lower case', 55], ['Base', 'Central case', 145], ['Bull', 'Upper case', 235]] as const).map(([title, detail, y], index) => <g key={title}>
-          <rect x="270" y={y} width="120" height="50" rx="10" className={landing[`scenario${index}`]} />
-          <text x="330" y={y + 21} textAnchor="middle">{title}</text>
-          <text x="330" y={y + 38} textAnchor="middle" className={landing.diagramDetail}>{detail}</text>
-        </g>)}
-        <text x="210" y="325" textAnchor="middle" className={landing.diagramDetail}>Scenarios are conditional, not forecasts.</text>
-      </>}
-      {lens === 2 && <>
-        <line x1="55" y1="155" x2="365" y2="155" />
-        {([['Results', 'What changed?', 70], ['Filings', 'What is new?', 210], ['News', 'Why it matters', 350]] as const).map(([title, detail, x]) => <g key={title}>
-          <circle cx={x} cy="155" r="12" className={landing.diagramCore} />
-          <line x1={x} y1="168" x2={x} y2="205" />
-          <text x={x} y="120" textAnchor="middle">{title}</text>
-          <text x={x} y="230" textAnchor="middle" className={landing.diagramDetail}>{detail}</text>
-        </g>)}
-        <text x="210" y="55" textAnchor="middle">Keep the sequence in view</text>
-        <text x="210" y="290" textAnchor="middle" className={landing.diagramDetail}>Each available item retains its source and date.</text>
-      </>}
-      {lens === 3 && <>
-        {([['Insiders', 75, 70], ['Institutions', 345, 70], ['Transactions', 75, 260], ['Holdings', 345, 260]] as const).map(([title, x, y]) => <g key={title}>
-          <line x1="210" y1="165" x2={x} y2={y} />
-          <rect x={x - 57} y={y - 24} width="114" height="48" rx="12" />
-          <text x={x} y={y + 5} textAnchor="middle">{title}</text>
-        </g>)}
-        <circle cx="210" cy="165" r="51" className={landing.diagramCore} />
-        <text x="210" y="161" textAnchor="middle" className={landing.diagramCoreText}>COMPANY</text>
-        <text x="210" y="180" textAnchor="middle" className={landing.diagramCoreText}>FILINGS</text>
-        <text x="210" y="320" textAnchor="middle" className={landing.diagramDetail}>Reporting delays remain visible.</text>
-      </>}
-      {lens === 4 && <>
-        <text x="210" y="45" textAnchor="middle">Price conditions, not position sizes</text>
-        {['Pause', 'Watch', 'Initial', 'Deeper', 'Deep'].map((title, index) => <g key={title}>
-          <rect x={22 + index * 78} y={155 - index * 15} width="66" height={70 + index * 15} rx="8" className={landing.paceStep} />
-          <text x={55 + index * 78} y={184 - index * 15} textAnchor="middle">P{index}</text>
-          <text x={55 + index * 78} y="247" textAnchor="middle" className={landing.diagramDetail}>{title}</text>
-        </g>)}
-        <text x="210" y="292" textAnchor="middle" className={landing.diagramDetail}>Business checks → cash → concentration limits</text>
-      </>}
-    </svg>
-    <figcaption>Framework illustration · not live company data</figcaption>
-  </figure>;
+  return (
+    <figure className={landing.researchDiagram}>
+      <svg viewBox="0 0 420 340" role="img" aria-label={labels[lens]}>
+        {lens === 0 && (
+          <>
+            {[118, 80, 43].map((radius) => (
+              <circle
+                key={radius}
+                cx="210"
+                cy="162"
+                r={radius}
+                className={landing.orbitRing}
+              />
+            ))}
+            {(
+              [
+                ["Business", "Evidence", 210, 35],
+                ["Value", "Assumptions", 340, 95],
+                ["Change", "Events", 340, 235],
+                ["Pace", "Conditions", 210, 290],
+                ["Risk", "Limits", 80, 235],
+                ["Ownership", "Filings", 80, 95],
+              ] as const
+            ).map(([title, detail, x, y]) => (
+              <g key={title}>
+                <line x1="210" y1="162" x2={x} y2={y} />
+                <circle cx={x} cy={y} r="34" />
+                <text x={x} y={y - 2} textAnchor="middle">
+                  {title}
+                </text>
+                <text
+                  x={x}
+                  y={y + 15}
+                  textAnchor="middle"
+                  className={landing.diagramDetail}
+                >
+                  {detail}
+                </text>
+              </g>
+            ))}
+            <circle cx="210" cy="162" r="44" className={landing.diagramCore} />
+            <text
+              x="210"
+              y="157"
+              textAnchor="middle"
+              className={landing.diagramCoreText}
+            >
+              YOUR
+            </text>
+            <text
+              x="210"
+              y="177"
+              textAnchor="middle"
+              className={landing.diagramCoreText}
+            >
+              REVIEW
+            </text>
+          </>
+        )}
+        {lens === 1 && (
+          <>
+            <text x="210" y="33" textAnchor="middle">
+              Growth · margins · future multiple
+            </text>
+            <path d="M105 170 C190 170 180 80 270 80 M105 170H270 M105 170 C190 170 180 260 270 260" />
+            <rect x="25" y="140" width="115" height="60" rx="12" />
+            <text x="82" y="166" textAnchor="middle">
+              Your
+            </text>
+            <text x="82" y="184" textAnchor="middle">
+              assumptions
+            </text>
+            {(
+              [
+                ["Bear", "Lower case", 55],
+                ["Base", "Central case", 145],
+                ["Bull", "Upper case", 235],
+              ] as const
+            ).map(([title, detail, y], index) => (
+              <g key={title}>
+                <rect
+                  x="270"
+                  y={y}
+                  width="120"
+                  height="50"
+                  rx="10"
+                  className={landing[`scenario${index}`]}
+                />
+                <text x="330" y={y + 21} textAnchor="middle">
+                  {title}
+                </text>
+                <text
+                  x="330"
+                  y={y + 38}
+                  textAnchor="middle"
+                  className={landing.diagramDetail}
+                >
+                  {detail}
+                </text>
+              </g>
+            ))}
+            <text
+              x="210"
+              y="325"
+              textAnchor="middle"
+              className={landing.diagramDetail}
+            >
+              Scenarios are conditional, not forecasts.
+            </text>
+          </>
+        )}
+        {lens === 2 && (
+          <>
+            <line x1="55" y1="155" x2="365" y2="155" />
+            {(
+              [
+                ["Results", "What changed?", 70],
+                ["Filings", "What is new?", 210],
+                ["News", "Why it matters", 350],
+              ] as const
+            ).map(([title, detail, x]) => (
+              <g key={title}>
+                <circle
+                  cx={x}
+                  cy="155"
+                  r="12"
+                  className={landing.diagramCore}
+                />
+                <line x1={x} y1="168" x2={x} y2="205" />
+                <text x={x} y="120" textAnchor="middle">
+                  {title}
+                </text>
+                <text
+                  x={x}
+                  y="230"
+                  textAnchor="middle"
+                  className={landing.diagramDetail}
+                >
+                  {detail}
+                </text>
+              </g>
+            ))}
+            <text x="210" y="55" textAnchor="middle">
+              Keep the sequence in view
+            </text>
+            <text
+              x="210"
+              y="290"
+              textAnchor="middle"
+              className={landing.diagramDetail}
+            >
+              Each available item retains its source and date.
+            </text>
+          </>
+        )}
+        {lens === 3 && (
+          <>
+            {(
+              [
+                ["Insiders", 75, 70],
+                ["Institutions", 345, 70],
+                ["Transactions", 75, 260],
+                ["Holdings", 345, 260],
+              ] as const
+            ).map(([title, x, y]) => (
+              <g key={title}>
+                <line x1="210" y1="165" x2={x} y2={y} />
+                <rect x={x - 57} y={y - 24} width="114" height="48" rx="12" />
+                <text x={x} y={y + 5} textAnchor="middle">
+                  {title}
+                </text>
+              </g>
+            ))}
+            <circle cx="210" cy="165" r="51" className={landing.diagramCore} />
+            <text
+              x="210"
+              y="161"
+              textAnchor="middle"
+              className={landing.diagramCoreText}
+            >
+              COMPANY
+            </text>
+            <text
+              x="210"
+              y="180"
+              textAnchor="middle"
+              className={landing.diagramCoreText}
+            >
+              FILINGS
+            </text>
+            <text
+              x="210"
+              y="320"
+              textAnchor="middle"
+              className={landing.diagramDetail}
+            >
+              Reporting delays remain visible.
+            </text>
+          </>
+        )}
+        {lens === 4 && (
+          <>
+            <text x="210" y="45" textAnchor="middle">
+              Price conditions, not position sizes
+            </text>
+            {["Pause", "Watch", "Initial", "Deeper", "Deep"].map(
+              (title, index) => (
+                <g key={title}>
+                  <rect
+                    x={22 + index * 78}
+                    y={155 - index * 15}
+                    width="66"
+                    height={70 + index * 15}
+                    rx="8"
+                    className={landing.paceStep}
+                  />
+                  <text
+                    x={55 + index * 78}
+                    y={184 - index * 15}
+                    textAnchor="middle"
+                  >
+                    P{index}
+                  </text>
+                  <text
+                    x={55 + index * 78}
+                    y="247"
+                    textAnchor="middle"
+                    className={landing.diagramDetail}
+                  >
+                    {title}
+                  </text>
+                </g>
+              ),
+            )}
+            <text
+              x="210"
+              y="292"
+              textAnchor="middle"
+              className={landing.diagramDetail}
+            >
+              Business checks → cash → concentration limits
+            </text>
+          </>
+        )}
+      </svg>
+      <figcaption>Framework illustration · not live company data</figcaption>
+    </figure>
+  );
 }
 
 function ReferenceProductTour() {
   const [active, setActive] = useState(0);
   const lenses = [
-    ["Decision Atlas", "THE ANSWER", "See the business before the price.", "Bring business evidence, valuation and your investment case into one connected view.", "Snapshot"],
-    ["Scenario engine", "THE ASSUMPTIONS", "Make the future explicit.", "Compare bear, base and bull cases. Inspect the assumptions rather than treating a model as a promise.", "Valuation"],
-    ["Catalyst calendar", "WHAT CHANGED", "Keep the next event in context.", "Review dated company news and events alongside your research, with sources and coverage visible.", "News"],
-    ["Ownership network", "WHO IS ACTING", "Follow the filings, not the noise.", "Inspect available ownership and insider evidence with reporting dates and filing delays in view.", "Thesis"],
-    ["Pace simulator", "YOUR NEXT CONTRIBUTION", "Build at your own pace.", "Explore accumulation conditions after business checks, within your cash and position limits.", "Pace"],
+    [
+      "Decision Atlas",
+      "THE ANSWER",
+      "See the business before the price.",
+      "Bring business evidence, valuation and your investment case into one connected view.",
+      "Snapshot",
+    ],
+    [
+      "Scenario engine",
+      "THE ASSUMPTIONS",
+      "Make the future explicit.",
+      "Compare bear, base and bull cases. Inspect the assumptions rather than treating a model as a promise.",
+      "Valuation",
+    ],
+    [
+      "Catalyst calendar",
+      "WHAT CHANGED",
+      "Keep the next event in context.",
+      "Review dated company news and events alongside your research, with sources and coverage visible.",
+      "News",
+    ],
+    [
+      "Ownership network",
+      "WHO IS ACTING",
+      "Follow the filings, not the noise.",
+      "Inspect available ownership and insider evidence with reporting dates and filing delays in view.",
+      "Thesis",
+    ],
+    [
+      "Pace simulator",
+      "YOUR NEXT CONTRIBUTION",
+      "Build at your own pace.",
+      "Explore accumulation conditions after business checks, within your cash and position limits.",
+      "Pace",
+    ],
   ];
-  return <div className={landing.productTour}>
-    <div role="tablist" aria-label="Explore the research workspace" className={landing.tourTabs}>
-      {lenses.map(([title], index) => <button key={title} type="button" role="tab"
-        id={`tour-tab-${index}`} aria-controls={`tour-panel-${index}`} aria-selected={active === index}
-        tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)}
-        onKeyDown={event => {
-          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
-          event.preventDefault();
-          const next = event.key === "Home" ? 0 : event.key === "End" ? 4 : (index + (event.key === "ArrowRight" ? 1 : 4)) % 5;
-          setActive(next);
-          event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
-        }}><span>0{index + 1}</span>{title}</button>)}
-    </div>
-    {lenses.map(([title, kicker, headline, detail, tab], index) => <div key={title}
-      role="tabpanel" id={`tour-panel-${index}`} aria-labelledby={`tour-tab-${index}`} hidden={active !== index}
-      className={landing.tourPanel}>
-      <ResearchDiagram lens={index} />
-      <div className={landing.tourReadout}>
-      <span className={landing.eyebrow}>{kicker}</span>
-      <h3>{headline}</h3><p>{detail}</p>
-      <small>Product guide. Live coverage, dates and missing evidence appear in research.</small>
-      <Link href={`/research/APP?tab=${tab}`}>Open the live workspace <ArrowRight size={16} /></Link>
+  return (
+    <div className={landing.productTour}>
+      <div
+        role="tablist"
+        aria-label="Explore the research workspace"
+        className={landing.tourTabs}
+      >
+        {lenses.map(([title], index) => (
+          <button
+            key={title}
+            type="button"
+            role="tab"
+            id={`tour-tab-${index}`}
+            aria-controls={`tour-panel-${index}`}
+            aria-selected={active === index}
+            tabIndex={active === index ? 0 : -1}
+            onClick={() => setActive(index)}
+            onKeyDown={(event) => {
+              if (
+                !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)
+              )
+                return;
+              event.preventDefault();
+              const next =
+                event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? 4
+                    : (index + (event.key === "ArrowRight" ? 1 : 4)) % 5;
+              setActive(next);
+              event.currentTarget.parentElement
+                ?.querySelectorAll<HTMLButtonElement>("button")
+                [next]?.focus();
+            }}
+          >
+            <span>0{index + 1}</span>
+            {title}
+          </button>
+        ))}
       </div>
-    </div>)}
-  </div>;
+      {lenses.map(([title, kicker, headline, detail, tab], index) => (
+        <div
+          key={title}
+          role="tabpanel"
+          id={`tour-panel-${index}`}
+          aria-labelledby={`tour-tab-${index}`}
+          hidden={active !== index}
+          className={landing.tourPanel}
+        >
+          <ResearchDiagram lens={index} />
+          <div className={landing.tourReadout}>
+            <span className={landing.eyebrow}>{kicker}</span>
+            <h3>{headline}</h3>
+            <p>{detail}</p>
+            <small>
+              Product guide. Live coverage, dates and missing evidence appear in
+              research.
+            </small>
+            <Link href={`/research/APP?tab=${tab}`}>
+              Open the live workspace <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function ProductWalkthrough() {
@@ -614,7 +886,6 @@ export default function PublicLanding({
       });
   }, [sampleOnly]);
 
-
   return (
     <main
       className={`mp-public ap-public ${experience.public} ${landing.page} ${sampleOnly ? "ap-sample-page" : ""}`}
@@ -671,11 +942,21 @@ export default function PublicLanding({
               className="ap-mobile-navigation"
               aria-label="More public navigation"
             >
-              <Link href="/#how-it-works" onClick={() => setMenu(false)}>Product</Link>
-              <Link href="/#pace-public" onClick={() => setMenu(false)}>Pace</Link>
-              <Link href="/#use-cases" onClick={() => setMenu(false)}>Use cases</Link>
-              <Link href="/pricing" onClick={() => setMenu(false)}>Pricing</Link>
-              <Link href="/methodology" onClick={() => setMenu(false)}>Method</Link>
+              <Link href="/#how-it-works" onClick={() => setMenu(false)}>
+                Product
+              </Link>
+              <Link href="/#pace-public" onClick={() => setMenu(false)}>
+                Pace
+              </Link>
+              <Link href="/#use-cases" onClick={() => setMenu(false)}>
+                Use cases
+              </Link>
+              <Link href="/pricing" onClick={() => setMenu(false)}>
+                Pricing
+              </Link>
+              <Link href="/methodology" onClick={() => setMenu(false)}>
+                Method
+              </Link>
               <Link href="/login" onClick={() => setMenu(false)}>
                 Sign in
               </Link>
@@ -743,31 +1024,66 @@ export default function PublicLanding({
                 <small>THE QUESTIONS THAT MATTER</small>
                 <h2>
                   Understand the business.
-                  <br />Test the price. Plan your pace.
+                  <br />
+                  Test the price. Plan your pace.
                 </h2>
-                <p>Financials, scenarios, events and ownership, connected to your next contribution.</p>
+                <p>
+                  Financials, scenarios, events and ownership, connected to your
+                  next contribution.
+                </p>
               </div>
               <footer>
                 {[
-                  ["Business", "Read evidence", "Growth · profit · cash", Layers3],
-                  ["Expectations", "Test assumptions", "Bear · base · bull", Scale],
-                  ["Change", "Track the case", "News · events · filings", ChartNoAxesCombined],
-                  ["Pace", "Plan additions", "Price zones · your limits", ShieldCheck],
+                  [
+                    "Business",
+                    "Read evidence",
+                    "Growth · profit · cash",
+                    Layers3,
+                  ],
+                  [
+                    "Expectations",
+                    "Test assumptions",
+                    "Bear · base · bull",
+                    Scale,
+                  ],
+                  [
+                    "Change",
+                    "Track the case",
+                    "News · events · filings",
+                    ChartNoAxesCombined,
+                  ],
+                  [
+                    "Pace",
+                    "Plan additions",
+                    "Price zones · your limits",
+                    ShieldCheck,
+                  ],
                 ].map(([name, action, detail, Icon], index) => {
                   const StepIcon = Icon as typeof Layers3;
-                  return <span key={name as string} className={landing.briefStep}>
-                    <span className={landing.briefIcon}><StepIcon size={24} aria-hidden="true" /></span>
-                    <small>0{index + 1} / {name as string}</small>
-                    <strong>{action as string}</strong>
-                    <em>{detail as string}</em>
-                    {index < 3 && <ArrowRight className={landing.briefConnector} size={18} aria-hidden="true" />}
-                  </span>;
+                  return (
+                    <span key={name as string} className={landing.briefStep}>
+                      <span className={landing.briefIcon}>
+                        <StepIcon size={24} aria-hidden="true" />
+                      </span>
+                      <small>
+                        0{index + 1} / {name as string}
+                      </small>
+                      <strong>{action as string}</strong>
+                      <em>{detail as string}</em>
+                      {index < 3 && (
+                        <ArrowRight
+                          className={landing.briefConnector}
+                          size={18}
+                          aria-hidden="true"
+                        />
+                      )}
+                    </span>
+                  );
                 })}
               </footer>
             </section>
           </div>
         </section>
-
       </div>
 
       {sampleOnly && <ProductWalkthrough />}
@@ -782,9 +1098,7 @@ export default function PublicLanding({
         <h2 id="reference-story-title">
           Stop rebuilding the decision in your head.
         </h2>
-        <p>
-          Five connected views. Open the evidence behind each conclusion.
-        </p>
+        <p>Five connected views. Open the evidence behind each conclusion.</p>
         {sampleOnly ? <InvestmentDemo /> : <ReferenceProductTour />}
       </section>
 
@@ -927,7 +1241,10 @@ export default function PublicLanding({
         <div>
           <span className={landing.eyebrow}>YOUR RESEARCH. YOUR PACE.</span>
           <h2 id="ap-closing-heading">A clearer view starts here.</h2>
-          <p>Compare Free and Pro features, availability, and billing terms before choosing.</p>
+          <p>
+            Compare Free and Pro features, availability, and billing terms
+            before choosing.
+          </p>
         </div>
         <div className={landing.actions}>
           <Link className={landing.primary} href="/login?mode=signup">

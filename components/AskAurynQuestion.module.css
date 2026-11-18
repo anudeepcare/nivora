@@ -77,3 +77,40 @@
     gap: 10px;
   }
 }
+
+.searchOptIn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.searchOptIn input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+}
+.publicSearch {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  min-width: 0;
+}
+.publicSearch :is(input, select) {
+  min-height: 44px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+}
+.publicSearch small {
+  overflow-wrap: anywhere;
+}
+.ask :is(input, select):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}

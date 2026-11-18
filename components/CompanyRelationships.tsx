@@ -1,4 +1,5 @@
 "use client";
+import ProductLookup from "./ProductLookup";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { useState } from "react";
 import { useResource } from "./Session";
@@ -29,6 +30,7 @@ export default function CompanyRelationships({
   if (preview) return null;
   return (
     <section aria-label="Company relationships">
+      <ProductLookup key={symbol} companySymbol={symbol} />
       <button type="button" aria-expanded={open} onClick={() => setOpen(!open)}>
         Company relationships {open ? "−" : "+"}
       </button>

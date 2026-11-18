@@ -41,8 +41,8 @@ export default function EntityMetricBreakdown({
   if (!supported)
     return (
       <p>
-        No per-source breakdown is available for this metric. Select Mentions
-        or Sentiment polarity to explore source evidence.
+        No per-source breakdown is available for this metric. Select Mentions or
+        Sentiment polarity to explore source evidence.
       </p>
     );
   return (

@@ -61,7 +61,9 @@ export function useResearchPreferences() {
     disabled: !account.localOnly && (!account.ready || account.saving),
   };
 }
-export default function ResearchPreferenceControls({ showConcentration = true }: { showConcentration?: boolean } = {}) {
+export default function ResearchPreferenceControls({
+  showConcentration = true,
+}: { showConcentration?: boolean } = {}) {
   const {
     preferences: p,
     setPreferences,

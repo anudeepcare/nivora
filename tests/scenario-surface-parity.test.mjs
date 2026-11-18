@@ -26,5 +26,5 @@ test('historical risk graphic uses actual cases and reference on one scale',()=>
  assert.match(s,/cases.map\(\(c\) => c.target\), s.reference/);
  assert.match(s,/cx=\{position\(c.target\)\}/);
  assert.match(s,/x1=\{position\(s.reference\)\}/);
- assert.match(s,/role="img" aria-label="Historical downside/);
+ assert.match(s,/role="img"\s+aria-label="Historical downside/);
 });

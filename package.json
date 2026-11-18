@@ -13,7 +13,8 @@
     "test:acceptance": "npm run verify && npm run test:api",
     "prebuild": "node scripts/generate-policy-fingerprint.mjs",
     "lint": "eslint app components lib --max-warnings 0",
-    "format:check": "prettier --check \"app/**/*.{ts,tsx,css}\" \"components/**/*.{ts,tsx,css}\" \"lib/**/*.{ts,tsx}\" eslint.config.mjs next.config.ts"
+    "format:check": "prettier --check \"app/**/*.{ts,tsx,css}\" \"components/**/*.{ts,tsx,css}\" \"lib/**/*.{ts,tsx}\" eslint.config.mjs next.config.ts",
+    "test:applicable": "node scripts/test-applicable.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.6.1",

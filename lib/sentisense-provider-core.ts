@@ -141,7 +141,9 @@ export function createProviderFetch(deps: {
       let seconds = retrySeconds(response.headers.get("retry-after"));
       if (
         !response.headers.has("retry-after") &&
-        (await quotaExceeded(response))
+        // Body inspection only selects a longer quota cooldown. A broken or
+        // already-consumed body must never skip the default 429 cooldown.
+        (await quotaExceeded(response).catch(() => false))
       )
         seconds = 3600;
       try {

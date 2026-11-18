@@ -22,17 +22,108 @@ export const askTopics = {
     feature: "analysts",
     dataset: "consensus",
   },
+  analystChanges: {
+    match:
+      /\b(upgrades?|downgrades?|analysts? (?:upgrades?|downgrades?|actions?|changes?|initiations?)|coverage initiations?)\b/i,
+    feature: "analysts",
+    dataset: "analystActions",
+  },
   options: {
-    match: /\b(options?|volatility|open interest|puts?|calls?)\b/i,
+    match:
+      /\b(options?|volatility|open interest|put\/?call|call volume|put volume|puts?)\b/i,
     feature: "options",
     dataset: "options",
   },
 } as const;
 export type AskTopic = keyof typeof askTopics;
-export function selectedAskTopics(question: string) {
-  return (Object.keys(askTopics) as AskTopic[]).filter((t) =>
-    askTopics[t].match.test(question),
+/** Bounded lexical planner: explicit focus first, otherwise request order. No inferred company resolution. */
+export function selectedAskTopics(question: string): AskTopic[] {
+  // Negate only directly named topic phrases, never the rest of a sentence.
+  const topicPhrase = Object.values(askTopics)
+    .map(({ match }) => `(?:${match.source})`)
+    .sort((a, b) => b.length - a.length)
+    .join("|");
+  const negative = new RegExp(
+    `\\b(?:not|no|excluding|exclude|ignore|skip|without)\\s+(?!only\\b)(?:${topicPhrase})(?:\\s+(?:and|or)\\s+(?:${topicPhrase}))*`,
+    "gi",
   );
+  const scoped = question.replace(negative, (match) =>
+    " ".repeat(match.length),
+  );
+  const focus =
+    /\b(?:focus on|prioriti[sz]e|mainly|primarily|especially)\s+(?:the\s+)?/gi;
+  const focusList = new RegExp(
+    `^(?:${topicPhrase})(?:\\s+(?:and|or)\\s+(?:${topicPhrase}))*`,
+    "i",
+  );
+  const focusRanges = [...scoped.matchAll(focus)].flatMap((match) => {
+    const start = match.index! + match[0].length;
+    const list = focusList.exec(scoped.slice(start));
+    return list ? [{ start, end: start + list[0].length }] : [];
+  });
+  const matches = (Object.keys(askTopics) as AskTopic[]).flatMap((topic) => {
+    const pattern =
+      topic === "analysts" && askTopics.analystChanges.match.test(scoped)
+        ? /\b(consensus|price targets?|targets?)\b/i
+        : askTopics[topic].match;
+    const occurrences = [...scoped.matchAll(new RegExp(pattern.source, "gi"))];
+    if (!occurrences.length) return [];
+    const focused = occurrences.find((match) =>
+      focusRanges.some(
+        ({ start, end }) => match.index! >= start && match.index! < end,
+      ),
+    );
+    return [
+      { topic, index: (focused ?? occurrences[0]).index!, focus: !!focused },
+    ];
+  });
+  return matches
+    .sort((a, b) => Number(b.focus) - Number(a.focus) || a.index - b.index)
+    .map((m) => m.topic);
+}
+export type AskEvidencePlan = {
+  symbol: string;
+  topics: AskTopic[];
+  omitted: AskTopic[];
+  limitations: string[];
+  error: string | null;
+};
+export function askEvidencePlan(
+  question: string,
+  symbol: string,
+): AskEvidencePlan {
+  const explicit = [...question.matchAll(/\$([A-Z][A-Z0-9.-]{0,14})\b/gi)].map(
+    (m) => m[1].toUpperCase(),
+  );
+  const error = !/^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol)
+    ? "Select one supported company before asking a question."
+    : explicit.some((s) => s !== symbol)
+      ? "This question names another ticker. Open that company or ask about the selected company only."
+      : /\b(?:my|our) (?:portfolio|holdings|account)|\b(?:all stocks|all companies|whole market|entire market|market-wide)\b/i.test(
+            question,
+          )
+        ? "This Ask view retrieves evidence for one selected company, not private holdings or the whole market."
+        : null;
+  const requested = selectedAskTopics(question),
+    topics = error ? [] : requested.slice(0, 2),
+    omitted = error ? [] : requested.slice(2);
+  return {
+    symbol,
+    topics,
+    omitted,
+    error,
+    limitations: [
+      `Evidence subject: ${symbol || "not selected"}. Topic routing uses bounded text matches, not unrestricted research or company-name resolution.`,
+      topics.length
+        ? `Selected additional evidence: ${topics.join(", ")}; explicit focus takes precedence, then question order.`
+        : "No supported extra topic was identified; only existing dated financial evidence is considered.",
+      ...(omitted.length
+        ? [
+            `Not retrieved in this answer: ${omitted.join(", ")}. Ask separately to keep retrieval bounded.`,
+          ]
+        : []),
+    ],
+  };
 }
 const object = (x: unknown): Record<string, unknown> =>
   x && typeof x === "object" && !Array.isArray(x)
@@ -78,10 +169,12 @@ export async function askTopicEvidence(
     ) => Promise<SentiSenseResult>;
     news: (symbol: string) => Promise<EodNews>;
     now: () => string;
+    signal?: AbortSignal;
   },
 ) {
   const evidence: Evidence[] = [];
   const limitations: string[] = [];
+  deps.signal?.throwIfAborted();
   const selected = topics.slice(0, 2);
   if (topics.length > 2)
     limitations.push(
@@ -99,6 +192,7 @@ export async function askTopicEvidence(
   }
   let profile: SentiSenseResult;
   try {
+    deps.signal?.throwIfAborted();
     profile = await deps.read(symbol, "profile");
   } catch {
     limitations.push(
@@ -146,6 +240,7 @@ export async function askTopicEvidence(
       ...(passage ? { passage } : {}),
     });
   };
+  deps.signal?.throwIfAborted();
   const publisherNews = selected.includes("news")
     ? deps.news(symbol).catch(() => null)
     : null;
@@ -154,6 +249,7 @@ export async function askTopicEvidence(
       const dataset = askTopics[topic].dataset;
       let r: SentiSenseResult;
       try {
+        deps.signal?.throwIfAborted();
         r = await deps.read(symbol, dataset);
       } catch {
         limitations.push(
@@ -190,7 +286,7 @@ export async function askTopicEvidence(
       const d = object(r.data),
         filed = day(r.retrievedAt, now),
         asOf = day(r.asOf, now);
-      const url = `https://sentisense.ai/docs/api/${topic === "analysts" ? "analyst-ratings" : topic === "ownership" ? "institutional-flows" : topic === "options" ? "options" : "stocks"}/`;
+      const url = `https://sentisense.ai/docs/api/${topic === "analysts" || topic === "analystChanges" ? "analyst-ratings" : topic === "ownership" ? "institutional-flows" : topic === "options" ? "options" : topic === "news" ? "documents" : "stocks"}/`;
       const before = evidence.filter((e) =>
         e.id.startsWith(`T-${topic}-`),
       ).length;
@@ -212,20 +308,24 @@ export async function askTopicEvidence(
         );
         return;
       }
+      if (topic === "news")
+        limitations.push(
+          "Story titles are provider-generated editorial summaries. Undated stories are withheld; cluster assembly time is not treated as the story event date.",
+        );
       if (topic === "news" && Array.isArray(r.data))
         for (const item of r.data.slice(0, 8)) {
           const row = object(item),
             cluster = object(row.cluster);
           if (!Array.isArray(row.tickers) || !row.tickers.includes(symbol))
             continue;
-          const epoch = number(row.brokeAt) ?? number(cluster.clusteredAt);
+          const epoch = number(row.brokeAt);
           const date =
             epoch !== null && epoch > 0 && epoch < 8640000000000
               ? day(new Date(epoch * 1000).toISOString(), now)
               : null;
           add(
             topic,
-            "Reported story headline",
+            "Provider-generated story title (not independently verified)",
             null,
             "headline only",
             date,
@@ -269,6 +369,43 @@ export async function askTopicEvidence(
         }
         limitations.push(
           "Ownership is a returned filing subset, not a complete ownership register or evidence of conviction.",
+        );
+      }
+      if (topic === "analystChanges" && Array.isArray(r.data)) {
+        for (const item of r.data.slice(0, 50)) {
+          const row = object(item),
+            date = day(row.actionDate, now),
+            firm = text(row.firm, 100),
+            action = text(row.actionType, 40);
+          if (
+            !date ||
+            Date.parse(now) - Date.parse(date) > 90 * 86400000 ||
+            !firm ||
+            ![
+              "UPGRADE",
+              "DOWNGRADE",
+              "INITIATE",
+              "REITERATE",
+              "OTHER",
+            ].includes(action) ||
+            (row.ticker !== undefined && row.ticker !== symbol)
+          )
+            continue;
+          const previous = text(row.fromGrade, 100),
+            next = text(row.toGrade, 100);
+          add(
+            topic,
+            "Published analyst action",
+            null,
+            "attributed rating text",
+            date,
+            filed,
+            url,
+            `${firm}: ${action}${previous ? `; previous rating: ${previous}` : ""}${next ? `; published rating: ${next}` : ""}`,
+          );
+        }
+        limitations.push(
+          "Analyst actions are a bounded published-note subset, not consensus changes or company recommendations. Target amounts are not used in this action view; missing currency or split basis is not inferred.",
         );
       }
       if (topic === "analysts") {

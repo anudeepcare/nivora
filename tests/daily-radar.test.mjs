@@ -1,3 +1,4 @@
+import { readRadarPages } from "../lib/radar-pagination.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -9,6 +10,8 @@ function harness({
   sampleOnly = false,
   eligible = true,
   fail = false,
+  databaseCap = 500,
+  bulk = false,
   positions = [{ symbol: "AAA", asset_type: "stock" }],
   watched = [{ symbol: "BBB" }, { symbol: "CCC" }],
 } = {}) {
@@ -18,13 +21,23 @@ function harness({
     from(table) {
       let op = "read",
         patch,
-        filters = [];
+        filters = [],
+        bounds = [0, 499],
+        ordering;
       const query = {
         select() {
           return this;
         },
         eq(k, v) {
           filters.push([k, v]);
+          return this;
+        },
+        order(key) {
+          ordering = key;
+          return this;
+        },
+        range(from, to) {
+          bounds = [from, to];
           return this;
         },
         limit() {
@@ -50,11 +63,25 @@ function harness({
           return this;
         },
         then(resolve) {
-          calls.push({ table, op, filters });
+          calls.push({ table, op, filters, bounds, ordering });
           if (table === "portfolio_positions")
-            return Promise.resolve(resolve({ data: positions }));
+            return Promise.resolve(
+              resolve({
+                data: positions.slice(
+                  bounds[0],
+                  Math.min(bounds[1] + 1, bounds[0] + databaseCap),
+                ),
+              }),
+            );
           if (table === "watchlist_items")
-            return Promise.resolve(resolve({ data: watched }));
+            return Promise.resolve(
+              resolve({
+                data: watched.slice(
+                  bounds[0],
+                  Math.min(bounds[1] + 1, bounds[0] + databaseCap),
+                ),
+              }),
+            );
           if (op === "update") {
             const symbol = filters.find(([k]) => k === "symbol")[1];
             rows.set(symbol, { ...rows.get(symbol), ...patch });
@@ -63,15 +90,21 @@ function harness({
             resolve({
               data:
                 table === "auryn_daily_radar"
-                  ? [...rows.values()].filter(
-                      (row) =>
-                        !filters.some(
-                          ([k, v]) =>
-                            k === "symbol" &&
-                            Array.isArray(v) &&
-                            !v.includes(row.symbol),
-                        ),
-                    )
+                  ? [...rows.values()]
+                      .filter(
+                        (row) =>
+                          !filters.some(
+                            ([k, v]) =>
+                              k === "symbol" &&
+                              Array.isArray(v) &&
+                              !v.includes(row.symbol),
+                          ),
+                      )
+                      .sort((a, b) => a.symbol.localeCompare(b.symbol))
+                      .slice(
+                        bounds[0],
+                        Math.min(bounds[1] + 1, bounds[0] + databaseCap),
+                      )
                   : [],
             }),
           );
@@ -102,6 +135,24 @@ function harness({
     }
   }
   const bindings = {
+    process: {
+      env: {
+        NEXT_PUBLIC_SUPABASE_URL: "https://example.invalid",
+        SUPABASE_SERVICE_ROLE_KEY: "synthetic",
+        AURYN_BULK_RADAR_ENABLED: bulk ? "true" : "false",
+      },
+    },
+    require: (name) =>
+      name.endsWith("bulk-radar-provider.server")
+        ? { bulkRadarProvider: () => ({ scope: "synthetic" }) }
+        : name.endsWith("bulk-radar-store.server")
+          ? { createBulkRadarStore: () => ({}) }
+          : {
+              runBulkRadar: async (universe, advance, cursor) => {
+                calls.push({ bulkUniverse: universe, advance, cursor });
+                return { mode: "bulk-opt-in", requested: universe.requested };
+              },
+            },
     createClient: () => db,
     requestAccess: async () => ({ sampleOnly }),
     requireFeature: () => {
@@ -119,6 +170,7 @@ function harness({
     HttpError,
     limit: async () => {},
     privateJson: (x) => x,
+    readRadarPages,
     radarUniverse,
     dailyRadarSnapshot,
     eodHistory: async (symbol, range) => {
@@ -267,7 +319,7 @@ test("foreign listings and explicit crypto positions never enter US weekday hist
 });
 
 test("cached large-universe history responses are paginated, never resent in each continuation", async () => {
-  const watched = Array.from({ length: 45 }, (_, i) => ({
+  const watched = Array.from({ length: 105 }, (_, i) => ({
     symbol: `T${String(i).padStart(3, "0")}`,
   }));
   const h = harness({ positions: [], watched });
@@ -288,18 +340,18 @@ test("cached large-universe history responses are paginated, never resent in eac
       observed_through: "2026-01-02",
     });
   const first = await h.route.GET(new Request("http://local/api/daily-radar"));
-  assert.equal(first.ready, 45);
-  assert.equal(first.rows.length, 20);
-  assert.equal(first.nextCursor, 20);
+  assert.equal(first.ready, 105);
+  assert.equal(first.rows.length, 50);
+  assert.equal(first.nextCursor, 50);
   assert.equal(first.incremental, false);
   const second = await h.route.GET(
-    new Request("http://local/api/daily-radar?cursor=20"),
+    new Request("http://local/api/daily-radar?cursor=50"),
   );
-  assert.equal(second.rows.length, 20);
-  assert.equal(second.nextCursor, 40);
+  assert.equal(second.rows.length, 50);
+  assert.equal(second.nextCursor, 100);
   assert.equal(second.incremental, true);
   const last = await h.route.GET(
-    new Request("http://local/api/daily-radar?cursor=40"),
+    new Request("http://local/api/daily-radar?cursor=100"),
   );
   assert.equal(last.rows.length, 5);
   assert.equal(last.nextCursor, null);
@@ -331,4 +383,139 @@ test("supported US aliases share one snapshot/benchmark weight; explicit venue s
     radarUniverse([], [{ symbol: "VOD.L" }, { symbol: "VOD" }]),
     { symbols: ["VOD"], requested: 2, excluded: 1 },
   );
+});
+
+test("route reads 750 account rows and metadata through ordered bounded pages, rejects overflow", async () => {
+  const watched = Array.from({ length: 750 }, (_, i) => ({
+    symbol: `T${String(i).padStart(4, "0")}`,
+  }));
+  const h = harness({ positions: [], watched });
+  for (const { symbol } of watched)
+    h.rows.set(symbol, { symbol, status: "ready", history: [] });
+  const result = await h.route.GET(new Request("http://local"));
+  assert.equal(result.eligible, 750);
+  assert.equal(result.ready, 750);
+  assert.equal(result.rows.length, 50);
+  assert.ok(
+    h.calls.some(
+      (c) =>
+        c.table === "watchlist_items" &&
+        c.bounds[0] === 500 &&
+        c.ordering === "id",
+    ),
+  );
+  assert.ok(
+    h.calls.some(
+      (c) =>
+        c.table === "auryn_daily_radar" &&
+        c.bounds[0] === 500 &&
+        c.ordering === "symbol",
+    ),
+  );
+  assert.ok(
+    h.calls
+      .filter((c) => c.table)
+      .every((c) =>
+        c.filters.some(([k, v]) => k === "user_id" && v === "owner"),
+      ),
+  );
+  const over = harness({
+    positions: [],
+    watched: Array.from({ length: 1001 }, (_, i) => ({ symbol: `T${i}` })),
+  });
+  assert.equal((await over.route.GET(new Request("http://local"))).status, 422);
+  assert.equal(over.calls.filter((c) => c.history).length, 0);
+});
+
+test("cached hydration uses50 histories per response for750/1000, honors returned cursors without provider work", async () => {
+  for (const count of [750, 1000]) {
+    const watched = Array.from({ length: count }, (_, i) => ({
+      symbol: `T${String(i).padStart(4, "0")}`,
+    }));
+    const h = harness({ positions: [], watched });
+    for (const { symbol } of watched)
+      h.rows.set(symbol, { symbol, status: "ready", history: [] });
+    let cursor = 0,
+      pages = 0;
+    const seen = new Set();
+    do {
+      const result = await h.route.GET(
+        new Request(`http://local?cursor=${cursor}`),
+      );
+      assert.equal(result.ready, count);
+      assert.ok(result.rows.length <= 50);
+      for (const row of result.rows) seen.add(row.symbol);
+      assert.equal(result.incremental, cursor > 0);
+      cursor = result.nextCursor;
+      pages++;
+    } while (cursor !== null);
+    assert.equal(pages, Math.ceil(count / 50));
+    assert.equal(seen.size, count);
+    assert.equal(h.calls.filter((c) => c.history || c.allowance).length, 0);
+  }
+});
+test("cached paging preserves missing coverage and accepts legacy arbitrary cursors", async () => {
+  const watched = Array.from({ length: 80 }, (_, i) => ({
+    symbol: `T${String(i).padStart(4, "0")}`,
+  }));
+  const h = harness({ positions: [], watched });
+  for (const { symbol } of watched.slice(0, 65))
+    h.rows.set(symbol, { symbol, status: "ready", history: [] });
+  h.rows.set(watched[65].symbol, {
+    symbol: watched[65].symbol,
+    status: "unavailable",
+    history: [],
+    issue: "No history",
+  });
+  const first = await h.route.GET(new Request("http://local"));
+  assert.equal(first.ready, 65);
+  assert.equal(first.pending, 14);
+  assert.equal(first.rows.filter((r) => r.status === "ready").length, 50);
+  assert.equal(first.rows.filter((r) => r.status === "unavailable").length, 1);
+  assert.equal(first.nextCursor, 50);
+  const legacy = await h.route.GET(new Request("http://local?cursor=20"));
+  assert.equal(legacy.rows.length, 45);
+  assert.equal(legacy.nextCursor, null);
+});
+
+test("actual route retains full cached coverage with lower database cap", async () => {
+  const watched = Array.from({ length: 750 }, (_, i) => ({
+    symbol: `T${String(i).padStart(4, "0")}`,
+  }));
+  const h = harness({ positions: [], watched, databaseCap: 100 });
+  for (const { symbol } of watched)
+    h.rows.set(symbol, { symbol, status: "ready", history: [] });
+  const result = await h.route.GET(new Request("http://local"));
+  assert.equal(result.eligible, 750);
+  assert.equal(result.ready, 750);
+  assert.equal(result.rows.length, 50);
+  assert.equal(h.calls.filter((c) => c.history || c.allowance).length, 0);
+});
+
+test("opt-in bulk route takes universe only from authorized saved rows and retains access gates", async () => {
+  const h = harness({ bulk: true });
+  const out = await h.route.POST(
+    new Request("https://example.test/api/daily-radar", {
+      method: "POST",
+      body: JSON.stringify({ symbols: ["PRIVATE_OTHER"] }),
+    }),
+  );
+  assert.equal(out.mode, "bulk-opt-in");
+  assert.deepEqual(h.calls.find((c) => c.bulkUniverse).bulkUniverse.symbols, [
+    "AAA",
+    "BBB",
+    "CCC",
+  ]);
+  assert.equal(h.calls.filter((c) => c.history).length, 0);
+  for (const config of [
+    { auth: false },
+    { sampleOnly: true },
+    { eligible: false },
+  ]) {
+    const locked = harness({ bulk: true, ...config });
+    await locked.route.POST(
+      new Request("https://example.test/api/daily-radar", { method: "POST" }),
+    );
+    assert.equal(locked.calls.filter((c) => c.bulkUniverse).length, 0);
+  }
 });

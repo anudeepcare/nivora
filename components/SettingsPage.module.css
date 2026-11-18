@@ -684,55 +684,206 @@
 }
 
 /* Compact settings: one owner for each preference, signals visible first. */
-.page { padding-top: 12px; }
-.page :global(.page-heading) { margin-bottom: 16px; }
-.page :global(.page-heading) h1 { font-size: clamp(24px, 3vw, 32px); }
-.page :global(.workspace-account-row) { padding: 12px 16px; margin-bottom: 12px; gap: 12px; }
-.page :global(.settings-profile-avatar) { width: 36px; height: 36px; font-size: 16px; }
-.page :global(.settings-section-links) { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.page :global(.settings-section-links) a { display: inline-flex; align-items: center; gap: 5px; padding: 9px 12px; min-height: 40px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--card); font-size: 13px; }
-.page :global(.workspace-settings-groups) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
-.page :global(.workspace-setting-group) { min-width: 0; scroll-margin-top: 16px; }
-.page :global(.workspace-setting-group) > header { padding: 14px 16px; }
-.page :global(.workspace-setting-group) > header strong { font-size: 15px; }
-.page :global(.workspace-setting-body) { padding: 0 16px 12px; }
-.page :global(.settings-signals), .page :global(.settings-policy) { grid-column: 1/-1; }
-.page :global(.settings-signals) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.page :global(.settings-signals) > header, .page :global(.settings-signals) > p { grid-column: 1/-1; }
-.page :global(.settings-feature-status) { margin: 8px 0 12px; padding: 0 16px; }
-.page :global(.settings-policy-row) { padding: 10px 16px; min-height: 58px; gap: 12px; }
-.page :global(.settings-policy-row) b { font-size: 13px; font-weight: 500; }
-.page :global(.settings-policy-row) small { line-height: 1.45; }
-.page :global(.settings-policy-row) select { max-width: 52%; }
-.page :global(.settings-info) { display: inline-grid; place-items: center; margin-left: 6px; border: 1px solid var(--muted); border-radius: 50%; width: 14px; height: 14px; color: var(--muted); font: 10px Georgia, serif; cursor: help; }
-.page :global(.research-preferences) { margin: 0; padding: 12px 0; border: 0; background: none; }
-.page :global(.research-preferences) h3 { display: none; }
-.page :global(.research-preferences) > p { margin: 0 0 10px; font-size: 12px; }
-.page :global(.research-preferences) > label { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; margin: 8px 0; }
-.page :global(.research-preferences) select { width: auto; max-width: 60%; min-height: 36px; }
-.page :global(.research-preferences) fieldset { margin: 12px 0; padding: 10px; }
-.page :global(.research-preferences) fieldset label { display: inline-flex; align-items: center; gap: 5px; margin: 5px 12px 5px 0; font-size: 12px; }
-.page :global(.setting-row) { min-height: 48px; gap: 8px; padding: 8px 0; }
-.page :global(.appearance-controls) { padding-top: 10px; }
-.page :global(.accent-options) { margin-bottom: 12px; }
-@media (max-width: 700px) {
-  .page :global(.workspace-settings-groups), .page :global(.settings-signals) { grid-template-columns: 1fr; }
-  .page :global(.settings-policy-row) { flex-wrap: nowrap; }
-  .page :global(.settings-policy-row) > span { min-width: 0; }
-  .page :global(.settings-section-links) a { min-height: 44px; }
-  .page :global(.setting-row) { flex-direction: row; flex-wrap: wrap; align-items: center; }
-  .page :global(.segments) button { padding: 7px 10px; }
+.page {
+  padding-top: 12px;
 }
-.page :global(.settings-email-hint) { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+.page :global(.page-heading) {
+  margin-bottom: 16px;
+}
+.page :global(.page-heading) h1 {
+  font-size: clamp(24px, 3vw, 32px);
+}
+.page :global(.workspace-account-row) {
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+.page :global(.settings-profile-avatar) {
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+.page :global(.settings-section-links) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.page :global(.settings-section-links) a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 12px;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--card);
+  font-size: 13px;
+}
+.page :global(.workspace-settings-groups) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.page :global(.workspace-setting-group) {
+  min-width: 0;
+  scroll-margin-top: 16px;
+}
+.page :global(.workspace-setting-group) > header {
+  padding: 14px 16px;
+}
+.page :global(.workspace-setting-group) > header strong {
+  font-size: 15px;
+}
+.page :global(.workspace-setting-body) {
+  padding: 0 16px 12px;
+}
+.page :global(.settings-signals),
+.page :global(.settings-policy) {
+  grid-column: 1/-1;
+}
+.page :global(.settings-signals) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.page :global(.settings-signals) > header,
+.page :global(.settings-signals) > p {
+  grid-column: 1/-1;
+}
+.page :global(.settings-feature-status) {
+  margin: 8px 0 12px;
+  padding: 0 16px;
+}
+.page :global(.settings-policy-row) {
+  padding: 10px 16px;
+  min-height: 58px;
+  gap: 12px;
+}
+.page :global(.settings-policy-row) b {
+  font-size: 13px;
+  font-weight: 500;
+}
+.page :global(.settings-policy-row) small {
+  line-height: 1.45;
+}
+.page :global(.settings-policy-row) select {
+  max-width: 52%;
+}
+.page :global(.settings-info) {
+  display: inline-grid;
+  place-items: center;
+  margin-left: 6px;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  color: var(--muted);
+  font:
+    10px Georgia,
+    serif;
+  cursor: help;
+}
+.page :global(.research-preferences) {
+  margin: 0;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+}
+.page :global(.research-preferences) h3 {
+  display: none;
+}
+.page :global(.research-preferences) > p {
+  margin: 0 0 10px;
+  font-size: 12px;
+}
+.page :global(.research-preferences) > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  margin: 8px 0;
+}
+.page :global(.research-preferences) select {
+  width: auto;
+  max-width: 60%;
+  min-height: 36px;
+}
+.page :global(.research-preferences) fieldset {
+  margin: 12px 0;
+  padding: 10px;
+}
+.page :global(.research-preferences) fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 12px 5px 0;
+  font-size: 12px;
+}
+.page :global(.setting-row) {
+  min-height: 48px;
+  gap: 8px;
+  padding: 8px 0;
+}
+.page :global(.appearance-controls) {
+  padding-top: 10px;
+}
+.page :global(.accent-options) {
+  margin-bottom: 12px;
+}
+@media (max-width: 700px) {
+  .page :global(.workspace-settings-groups),
+  .page :global(.settings-signals) {
+    grid-template-columns: 1fr;
+  }
+  .page :global(.settings-policy-row) {
+    flex-wrap: nowrap;
+  }
+  .page :global(.settings-policy-row) > span {
+    min-width: 0;
+  }
+  .page :global(.settings-section-links) a {
+    min-height: 44px;
+  }
+  .page :global(.setting-row) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .page :global(.segments) button {
+    padding: 7px 10px;
+  }
+}
+.page :global(.settings-email-hint) {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
 
 /* Keep account identifiers and controls within their shared column. */
-.page :global(.workspace-account-row) > div { min-width: 0; }
-.page :global(.workspace-account-row) strong { overflow-wrap: anywhere; }
-.page :global(.settings-policy-row) > span { min-width: 0; }
-.page :global(.settings-policy-row) select { min-height: 44px; }
+.page :global(.workspace-account-row) > div {
+  min-width: 0;
+}
+.page :global(.workspace-account-row) strong {
+  overflow-wrap: anywhere;
+}
+.page :global(.settings-policy-row) > span {
+  min-width: 0;
+}
+.page :global(.settings-policy-row) select {
+  min-height: 44px;
+}
 @media (max-width: 480px) {
-  .page :global(.settings-policy) :global(.settings-policy-row) { flex-direction: column; align-items: stretch; }
-  .page :global(.settings-policy-row) select { width: 100%; max-width: 100%; }
+  .page :global(.settings-policy) :global(.settings-policy-row) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .page :global(.settings-policy-row) select {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* The shared pale blue token is not a suitable selected fill with dark-theme ink. */
@@ -741,28 +892,91 @@
   border-color: var(--blue);
   color: #fff;
 }
-.page :global(.settings-signals) > header p { margin: 6px 0 0; color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.5; }
+.page :global(.settings-signals) > header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
 
-.page :global(.settings-signals) > header { display: block; }
+.page :global(.settings-signals) > header {
+  display: block;
+}
 
 /* Alerts and security are compact tasks, not mismatched half-page cards. */
 .page :global(.settings-notifications),
-.page :global(#settings-account) { grid-column: 1 / -1; }
-.page :global(.settings-notifications) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 20px; }
-.page :global(.settings-notifications) > header { grid-column: 1; padding-bottom: 4px; border-bottom: 0; }
-.page :global(.settings-notifications) > p { grid-column: 1; margin: 0 0 14px; }
-.page :global(.settings-notifications) > :global(.button-row) { grid-column: 2; grid-row: 1 / 3; margin: 0; padding: 12px 16px 12px 0; gap: 8px; }
-.page :global(#settings-account) :global(.workspace-setting-body) { display: grid; gap: 10px; padding-top: 12px; }
-.page :global(.account-identities) { margin: 0; }
-.page :global(.settings-password-change) { border-top: 1px solid var(--line); }
-.page :global(.settings-password-change) > summary { cursor: pointer; min-height: 44px; padding: 12px 0; color: var(--ink); font-size: 13px; }
-.page :global(.settings-password-change) > summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.page :global(.settings-password-change) :global(.password-form) { max-width: 440px; margin: 0 0 4px; gap: 10px; }
-.page :global(.password-form) > p { margin: 0; font-size: 12px; color: var(--muted); }
-.page :global(.password-form) > button { justify-self: start; min-height: 44px; }
+.page :global(#settings-account) {
+  grid-column: 1 / -1;
+}
+.page :global(.settings-notifications) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 20px;
+}
+.page :global(.settings-notifications) > header {
+  grid-column: 1;
+  padding-bottom: 4px;
+  border-bottom: 0;
+}
+.page :global(.settings-notifications) > p {
+  grid-column: 1;
+  margin: 0 0 14px;
+}
+.page :global(.settings-notifications) > :global(.button-row) {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  margin: 0;
+  padding: 12px 16px 12px 0;
+  gap: 8px;
+}
+.page :global(#settings-account) :global(.workspace-setting-body) {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+}
+.page :global(.account-identities) {
+  margin: 0;
+}
+.page :global(.settings-password-change) {
+  border-top: 1px solid var(--line);
+}
+.page :global(.settings-password-change) > summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+  color: var(--ink);
+  font-size: 13px;
+}
+.page :global(.settings-password-change) > summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.page :global(.settings-password-change) :global(.password-form) {
+  max-width: 440px;
+  margin: 0 0 4px;
+  gap: 10px;
+}
+.page :global(.password-form) > p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.page :global(.password-form) > button {
+  justify-self: start;
+  min-height: 44px;
+}
 @media (max-width: 700px) {
- .page :global(.settings-notifications) { grid-template-columns: minmax(0, 1fr); }
- .page :global(.settings-notifications) > :global(.button-row) { grid-column: 1; grid-row: auto; padding: 0 16px 16px; flex-wrap: wrap; }
+  .page :global(.settings-notifications) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page :global(.settings-notifications) > :global(.button-row) {
+    grid-column: 1;
+    grid-row: auto;
+    padding: 0 16px 16px;
+    flex-wrap: wrap;
+  }
 }
 
 /* Last account-row rule: identity gets the full row, actions never squeeze email. */
@@ -787,6 +1001,11 @@
     margin: 0;
     padding: 8px 0;
   }
-  .page :global(.workspace-account-row) > a { border-top: 1px solid var(--line); }
-  .page :global(.workspace-account-row) strong { overflow-wrap: anywhere; line-height: 1.5; }
+  .page :global(.workspace-account-row) > a {
+    border-top: 1px solid var(--line);
+  }
+  .page :global(.workspace-account-row) strong {
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
 }

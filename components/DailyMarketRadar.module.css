@@ -77,3 +77,10 @@
     min-height: 44px;
   }
 }
+
+.freshness {
+  max-height: 16rem;
+  overflow: auto;
+  padding-inline-start: 1.2rem;
+  overflow-wrap: anywhere;
+}

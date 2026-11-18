@@ -19,9 +19,12 @@ export default function PriceRiskCases({
           ? `Historical downside · ${c.percentile}th percentile`
           : `Historical upside · ${c.percentile}th percentile`,
   }));
-  const extent = [...cases.map((c) => c.target), s.reference].filter(Number.isFinite);
-  const lo = Math.min(...extent), hi = Math.max(...extent);
-  const position = (value: number) => 5 + 90 * (value - lo) / (hi - lo || 1);
+  const extent = [...cases.map((c) => c.target), s.reference].filter(
+    Number.isFinite,
+  );
+  const lo = Math.min(...extent),
+    hi = Math.max(...extent);
+  const position = (value: number) => 5 + (90 * (value - lo)) / (hi - lo || 1);
   return (
     <div className={`price-risk-cases ${styles.root}`} data-compact={compact}>
       <div className="price-risk-label">
@@ -68,10 +71,44 @@ export default function PriceRiskCases({
           );
         })}
       </div>
-      <svg className={styles.rangeGraphic} viewBox="0 0 100 12" role="img" aria-label="Historical downside, midpoint and upside on a common price scale; vertical tick marks the reference price">
-        <line x1="5" x2="95" y1="5" y2="5" stroke="currentColor" strokeOpacity=".2" strokeWidth=".6" />
-        {cases.map((c) => <circle key={c.percentile} cx={position(c.target)} cy="5" r="1" fill={c.percentile < 50 ? "#c65050" : c.percentile > 50 ? "#00866b" : "#a38232"} />)}
-        <line x1={position(s.reference)} x2={position(s.reference)} y1="2.5" y2="7.5" stroke="currentColor" strokeWidth=".4" />
+      <svg
+        className={styles.rangeGraphic}
+        viewBox="0 0 100 12"
+        role="img"
+        aria-label="Historical downside, midpoint and upside on a common price scale; vertical tick marks the reference price"
+      >
+        <line
+          x1="5"
+          x2="95"
+          y1="5"
+          y2="5"
+          stroke="currentColor"
+          strokeOpacity=".2"
+          strokeWidth=".6"
+        />
+        {cases.map((c) => (
+          <circle
+            key={c.percentile}
+            cx={position(c.target)}
+            cy="5"
+            r="1"
+            fill={
+              c.percentile < 50
+                ? "#c65050"
+                : c.percentile > 50
+                  ? "#00866b"
+                  : "#a38232"
+            }
+          />
+        ))}
+        <line
+          x1={position(s.reference)}
+          x2={position(s.reference)}
+          y1="2.5"
+          y2="7.5"
+          stroke="currentColor"
+          strokeWidth=".4"
+        />
       </svg>
       <p className="price-risk-selected">
         Reference {amount(s.reference, s.currency)} ·{" "}

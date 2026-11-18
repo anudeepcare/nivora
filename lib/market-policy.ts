@@ -3,6 +3,13 @@ export function eodCallCost(path: string, params: Record<string, string> = {}) {
   const clean = path.replace(/^v1\.1\//, "");
   if (clean === "user") return 0;
   const root = clean.split("/")[0];
+  if (root === "eod-bulk-last-day")
+    return (
+      100 +
+      String(params.symbols ?? params.s ?? "")
+        .split(",")
+        .filter(Boolean).length
+    );
   const base = [
     "fundamentals",
     "insider-transactions",

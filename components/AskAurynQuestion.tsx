@@ -5,7 +5,12 @@ import { useProduct } from "./Session";
 import type { Evidence } from "@/lib/report";
 import styles from "./AskAurynQuestion.module.css";
 type Answer = {
-  claims: { text: string; evidenceIds: string[] }[];
+  publicNewsSearch?: { status: string; days: number; observations: number };
+  claims: {
+    text: string;
+    evidenceIds: string[];
+    kind?: "answer" | "interpretation";
+  }[];
   facts: Evidence[];
   sources: Evidence[];
   limitations: string[];
@@ -17,6 +22,16 @@ export default function AskAurynQuestion({ symbol }: { symbol: string }) {
     [busy, setBusy] = useState(false),
     [answer, setAnswer] = useState<Answer | null>(null),
     [error, setError] = useState("");
+  const [publicSearch, setPublicSearch] = useState({
+    symbol,
+    enabled: false,
+    topic: "",
+    days: 7 as 7 | 14,
+  });
+  const search =
+    publicSearch.symbol === symbol
+      ? publicSearch
+      : { symbol, enabled: false, topic: "", days: 7 as 7 | 14 };
   return (
     <section className={styles.ask} aria-label="Ask a stock question">
       <form
@@ -30,6 +45,15 @@ export default function AskAurynQuestion({ symbol }: { symbol: string }) {
             setAnswer(
               await api<Answer>(`ask/${encodeURIComponent(symbol)}`, {
                 question,
+                ...(search.enabled
+                  ? {
+                      publicNewsSearch: {
+                        enabled: true,
+                        topic: search.topic,
+                        days: search.days,
+                      },
+                    }
+                  : {}),
               }),
             );
           } catch (e) {
@@ -55,15 +79,81 @@ export default function AskAurynQuestion({ symbol }: { symbol: string }) {
           rows={3}
           placeholder="What supports the growth case, and what evidence is missing?"
         />
+        <label className={styles.searchOptIn}>
+          <input
+            type="checkbox"
+            checked={search.enabled}
+            disabled={busy || !!demo}
+            onChange={(e) =>
+              setPublicSearch({
+                symbol,
+                enabled: e.target.checked,
+                topic: "",
+                days: 7,
+              })
+            }
+          />
+          Search SentiSense for a public news topic about {symbol}
+        </label>
+        {search.enabled && (
+          <div className={styles.publicSearch}>
+            <label htmlFor={`public-topic-${symbol}`}>Public topic only</label>
+            <input
+              id={`public-topic-${symbol}`}
+              name="public-topic"
+              value={search.topic}
+              required
+              minLength={2}
+              maxLength={239 - symbol.length}
+              disabled={busy || !!demo}
+              onChange={(e) =>
+                setPublicSearch({ ...search, topic: e.target.value })
+              }
+              placeholder="e.g. product launch"
+            />
+            <label htmlFor={`public-days-${symbol}`}>News window</label>
+            <select
+              id={`public-days-${symbol}`}
+              value={search.days}
+              disabled={busy || !!demo}
+              onChange={(e) =>
+                setPublicSearch({
+                  ...search,
+                  days: Number(e.target.value) as 7 | 14,
+                })
+              }
+            >
+              <option value={7}>Past 7 days</option>
+              <option value={14}>Past 14 days</option>
+            </select>
+            <small>
+              Sent to SentiSense when you submit: {symbol}
+              {search.topic.trim()
+                ? ` ${search.topic.trim()}`
+                : " + your public topic"}
+              ; {search.days} days, up to 20 story summaries. Your question and
+              portfolio are not sent to SentiSense. Do not enter private details
+              in this topic. Automated privacy checks are limited. This replaces
+              the ordinary news feed for this question.
+            </small>
+          </div>
+        )}
         <div className={styles.actions}>
           <small>
             Your question and selected company evidence are sent to the
-            configured AI provider. Do not include private financial details.
-            Account AI limits apply.
+            configured AI provider. Do not include private financial details. AI
+            answers and their automated review can be wrong. This is limited
+            company research, not personal trading advice. Account AI limits
+            apply.
           </small>
           <button
             type="submit"
-            disabled={busy || !!demo || question.trim().length < 3}
+            disabled={
+              busy ||
+              !!demo ||
+              question.trim().length < 3 ||
+              (search.enabled && search.topic.trim().length < 2)
+            }
           >
             {busy ? "Reviewing evidence…" : "Ask AURYN"}
           </button>
@@ -76,8 +166,20 @@ export default function AskAurynQuestion({ symbol }: { symbol: string }) {
       {error && <p role="alert">{error}</p>}
       {answer && (
         <div aria-live="polite">
+          {answer.publicNewsSearch && (
+            <p>
+              Public-topic search: {answer.publicNewsSearch.status} ·{" "}
+              {answer.publicNewsSearch.observations} eligible observations in
+              the past {answer.publicNewsSearch.days} days.
+            </p>
+          )}
           {answer.claims.map((claim, index) => (
             <div key={index}>
+              <strong>
+                {claim.kind === "interpretation"
+                  ? "AI interpretation"
+                  : "Short answer"}
+              </strong>
               <p>{claim.text}</p>
               <small>
                 {claim.evidenceIds.map((id) => {

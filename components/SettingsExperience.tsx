@@ -90,7 +90,10 @@ export function SettingsSignalPolicies({
               <small>DATA &amp; SIGNALS</small>
               <strong>Research panels</strong>
             </span>
-            <p>Choose visible panels. Your data coverage and permissions stay unchanged.</p>
+            <p>
+              Choose visible panels. Your data coverage and permissions stay
+              unchanged.
+            </p>
           </header>
           {[
             [
@@ -116,10 +119,7 @@ export function SettingsSignalPolicies({
           ].map(([label, detail], index) => (
             <label className="settings-policy-row" key={label}>
               <span>
-                <b>
-                  {label}
-
-                </b>
+                <b>{label}</b>
                 <small>{detail}</small>
               </span>
               <input
@@ -159,7 +159,8 @@ export function SettingsSignalPolicies({
             </span>
           </header>
           <p className="settings-feature-status">
-            Create a rule for a company below. Results appear in Alerts after a successful check, not by email or push.
+            Create a rule for a company below. Results appear in Alerts after a
+            successful check, not by email or push.
           </p>
           <div className="button-row" aria-label="Set up in-app alerts">
             <a className="button" href="alerts?type=monthly-zone">
@@ -233,10 +234,7 @@ export function SettingsSignalPolicies({
           ).map(([key, label, detail]) => (
             <label className="settings-policy-row" key={key}>
               <span>
-                <b>
-                  {label}
-
-                </b>
+                <b>{label}</b>
                 <small>{detail}</small>
               </span>
               <select

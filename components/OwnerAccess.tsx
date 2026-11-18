@@ -104,7 +104,9 @@ export default function OwnerAccess() {
     );
   return (
     <section className={styles.root}>
-      <Link className={styles.back} href="/settings">← Back to settings</Link>
+      <Link className={styles.back} href="/settings">
+        ← Back to settings
+      </Link>
       <header className={styles.heading}>
         <div>
           <h1>Admin controls</h1>
@@ -185,7 +187,11 @@ export default function OwnerAccess() {
           </button>
         ))}
       </nav>
-      {panel === "handbook" && <section id="admin-handbook"><OwnerHandbook /></section>}
+      {panel === "handbook" && (
+        <section id="admin-handbook">
+          <OwnerHandbook />
+        </section>
+      )}
       {panel === "evidence" && (
         <section id="admin-evidence">
           <OwnerEvidenceTools />

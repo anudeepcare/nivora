@@ -1,4 +1,5 @@
 "use client";
+import type { CompanyProducts } from "@/lib/company-products";
 import ProductAppHistory from "./ProductAppHistory";
 import { useState } from "react";
 import { useResource } from "./Session";
@@ -8,25 +9,49 @@ import {
   type ProductDetail,
 } from "@/lib/product-entities";
 import s from "./ProductLookup.module.css";
-type Query = { mode: "search" | "detail"; value: string };
+type Query = { mode: "search" | "detail" | "company"; value: string };
 type Reply =
+  | {
+      mode: "company";
+      value: string;
+      data: CompanyProducts;
+      retrievedAt: string;
+    }
   | { mode: "search"; value: string; data: ProductMatch[]; retrievedAt: string }
   | { mode: "detail"; value: string; data: ProductDetail; retrievedAt: string };
-export default function ProductLookup() {
+export default function ProductLookup({
+  companySymbol,
+}: { companySymbol?: string } = {}) {
   const [input, setInput] = useState("");
   const [request, setRequest] = useState<Query | null>(null);
-  const resource = useResource<Reply>(
+  const resource = useResource<Reply | CompanyProducts>(
     request
-      ? `product-entities?mode=${request.mode}&value=${encodeURIComponent(request.value)}`
+      ? request.mode === "company"
+        ? `company-products?symbol=${encodeURIComponent(request.value)}`
+        : `product-entities?mode=${request.mode}&value=${encodeURIComponent(request.value)}`
       : null,
     undefined,
     3600000,
   );
-  const reply =
-    resource.data?.mode === request?.mode &&
-    resource.data?.value === request?.value
-      ? resource.data
-      : null;
+  const received = resource.data;
+  const reply: Reply | null =
+    request?.mode === "company" &&
+    received &&
+    "symbol" in received &&
+    received.symbol === request.value &&
+    received.symbol === companySymbol
+      ? {
+          mode: "company",
+          value: received.symbol,
+          data: received,
+          retrievedAt: received.retrievedAt,
+        }
+      : received &&
+          "mode" in received &&
+          received.mode === request?.mode &&
+          received.value === request?.value
+        ? received
+        : null;
   const product = reply?.mode === "detail" ? reply.data : null;
   const value = (n: number | null) =>
     n === null
@@ -34,7 +59,28 @@ export default function ProductLookup() {
       : n.toLocaleString(undefined, { maximumFractionDigits: 3 });
   return (
     <details className={s.root}>
-      <summary>Product lookup · makers &amp; conversation</summary>
+      <summary>
+        {companySymbol
+          ? `${companySymbol} · linked products & apps`
+          : "Product lookup · makers & conversation"}
+      </summary>
+      {companySymbol && (
+        <>
+          <button
+            type="button"
+            disabled={resource.loading}
+            onClick={() =>
+              setRequest({ mode: "company", value: companySymbol })
+            }
+          >
+            Load linked products
+          </button>
+          <p>
+            Provider-curated associations, not ownership or a complete product
+            catalog. App tracking does not establish usage or revenue.
+          </p>
+        </>
+      )}
       <p>
         Research a known product by name. Products are not tickers; a maker or
         associated company is a separate entity. Enter public product names
@@ -76,6 +122,60 @@ export default function ProductLookup() {
             Retry lookup
           </button>
         </div>
+      ) : reply?.mode === "company" ? (
+        <>
+          <p>
+            {reply.data.products.length} matching products among{" "}
+            {reply.data.returnedEntities} returned related entities. Source
+            observation date is not supplied.
+          </p>
+          <ul className={s.matches}>
+            {reply.data.products.map((item) => (
+              <li key={item.handle}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRequest({ mode: "detail", value: item.handle })
+                  }
+                >
+                  {item.name}
+                </button>
+                <span>
+                  {item.trackedApp ? "Tracked iOS app" : "Product"} ·{" "}
+                  {item.handle}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {!reply.data.products.length && (
+            <p>
+              No matching products were returned in this limited relationship
+              sample. This does not mean the company has no products.
+            </p>
+          )}
+          {reply.data.omittedHandles > 0 && (
+            <p>
+              {reply.data.omittedHandles} product records lacked a public handle
+              and cannot be opened.
+            </p>
+          )}
+          {reply.data.truncated && (
+            <p>Showing the first 50 returned product matches, not a ranking.</p>
+          )}
+          <button type="button" onClick={() => resource.refresh()}>
+            Refresh linked products
+          </button>
+          <details data-info-disclosure>
+            <summary>Source &amp; coverage</summary>
+            <p>
+              SentiSense entity relationships for {reply.data.symbol}. Retrieved{" "}
+              {new Date(reply.retrievedAt).toLocaleString()}. Session reuse is
+              one hour; this is not a product observation date. Only exact
+              associated-ticker matches are shown. Selecting a product loads its
+              verified public handle; history stays opt-in.
+            </p>
+          </details>
+        </>
       ) : reply?.mode === "search" ? (
         <>
           <p>

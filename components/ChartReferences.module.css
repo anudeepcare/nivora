@@ -73,11 +73,30 @@
     padding-block: 4px;
     scrollbar-width: thin;
   }
-  .tools.tools > * { flex-shrink: 0; }
-  .tools.tools > button { min-height: 44px; white-space: nowrap; }
-  .tools.tools :global(.segments) { flex-wrap: nowrap; }
-  .tools.tools :global(.segments) button { min-height: 44px; }
-  .references { gap: 6px 12px; }
-  .references > span { padding: 2px 0; background: transparent; font-size: 11px; white-space: normal; }
-  .referenceDetails summary { min-height: 44px; align-content: center; }
+  .tools.tools > * {
+    flex-shrink: 0;
+  }
+  .tools.tools > button {
+    min-height: 44px;
+    white-space: nowrap;
+  }
+  .tools.tools :global(.segments) {
+    flex-wrap: nowrap;
+  }
+  .tools.tools :global(.segments) button {
+    min-height: 44px;
+  }
+  .references {
+    gap: 6px 12px;
+  }
+  .references > span {
+    padding: 2px 0;
+    background: transparent;
+    font-size: 11px;
+    white-space: normal;
+  }
+  .referenceDetails summary {
+    min-height: 44px;
+    align-content: center;
+  }
 }

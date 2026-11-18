@@ -81,6 +81,7 @@ export function homeFeedReadiness(
 export async function loadHomeFeed(
   symbols: string[],
   read: (batch: string[]) => Promise<HomeFeed>,
+  signal?: AbortSignal,
 ): Promise<HomeFeed> {
   const stocks = [
     ...new Set(
@@ -98,6 +99,7 @@ export async function loadHomeFeed(
     newsReady: true,
   };
   for (let offset = 0; offset < stocks.length; offset += 30) {
+    signal?.throwIfAborted();
     const batch = stocks.slice(offset, offset + 30);
     try {
       const data = await read(batch),

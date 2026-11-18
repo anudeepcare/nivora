@@ -123,7 +123,7 @@ export async function accountHistory(
   );
   const dates = prices.length
     ? [...new Set(prices.flatMap((p) => p.closes.map((c) => c.date)))].sort()
-    : [from, through].filter((d, i, a) => a.indexOf(d) === i);
+    : [...new Set([from, ...transactions.map((t) => t.date), through])].sort();
   const lastValuationDate = dates.at(-1) ?? null;
   if (
     !lastValuationDate ||

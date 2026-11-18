@@ -486,7 +486,22 @@
     justify-self: start;
   }
 }
-.cases > article[data-case] { --case-accent: #a38232; background: linear-gradient(135deg,color-mix(in srgb,var(--case-accent) 7%,var(--card)),var(--card)); border: 0; }
-.cases > article[data-case="bear"] { --case-accent: #c65050; }
-.cases > article[data-case="bull"] { --case-accent: #00866b; }
-.cases > article[data-case] > span { color: var(--case-accent); font-weight: 500; }
+.cases > article[data-case] {
+  --case-accent: #a38232;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--case-accent) 7%, var(--card)),
+    var(--card)
+  );
+  border: 0;
+}
+.cases > article[data-case="bear"] {
+  --case-accent: #c65050;
+}
+.cases > article[data-case="bull"] {
+  --case-accent: #00866b;
+}
+.cases > article[data-case] > span {
+  color: var(--case-accent);
+  font-weight: 500;
+}

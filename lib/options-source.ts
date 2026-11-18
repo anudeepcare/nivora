@@ -36,6 +36,7 @@ export function validateOptionScope(
 export async function loadOptionChain(
   _ticker: string,
   expiry: string | null = null,
+  signal?: AbortSignal,
 ) {
   if (
     expiry &&
@@ -49,7 +50,7 @@ export async function loadOptionChain(
     [undefined, "", "alpaca"].includes(process.env.AURYN_OPTIONS_PROVIDER)
   ) {
     try {
-      const chain = await alpacaOptions(_ticker, expiry);
+      const chain = await alpacaOptions(_ticker, expiry, signal);
       validateOptionScope(chain.contracts, _ticker, expiry);
       return chain;
     } catch (error) {

@@ -9,6 +9,10 @@ const source = fs
     JSON.stringify(new URL("../lib/options-analysis.ts", import.meta.url).href),
   )
   .replace(
+    '"./market-response"',
+    JSON.stringify(new URL("../lib/market-response.ts", import.meta.url).href),
+  )
+  .replace(
     '"./options-analysis"',
     JSON.stringify(new URL("../lib/options-analysis.ts", import.meta.url).href),
   );

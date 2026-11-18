@@ -1,3 +1,4 @@
+import { readRadarPages } from "@/lib/radar-pagination";
 import { requestAccess, requireFeature } from "@/lib/access-server";
 import { allowMarketUser } from "@/lib/shared-market";
 import { createClient } from "@supabase/supabase-js";
@@ -41,27 +42,35 @@ async function run(request: Request, advance: boolean) {
       );
     requireFeature(access, "overview");
     await limit(`daily-radar:${user.id}`, 30);
-    const [p, w] = await Promise.all([
-      db
-        .from("portfolio_positions")
-        .select("symbol,asset_type")
-        .eq("user_id", user.id)
-        .limit(1001),
-      db
-        .from("watchlist_items")
-        .select("symbol")
-        .eq("user_id", user.id)
-        .limit(1001),
+    const saved = async (table: "portfolio_positions" | "watchlist_items") =>
+      readRadarPages(async (from, to) => {
+        const result = await db
+          .from(table)
+          .select(
+            "symbol, id" +
+              (table === "portfolio_positions" ? ",asset_type" : ""),
+          )
+          .eq("user_id", user.id)
+          .order("id")
+          .range(from, to);
+        if (result.error)
+          throw new HttpError(
+            "Saved holdings and watchlist could not be read.",
+            503,
+          );
+        return (result.data ?? []) as unknown as {
+          symbol: string;
+          asset_type?: string;
+        }[];
+      });
+    const [positions, watchlist] = await Promise.all([
+      saved("portfolio_positions"),
+      saved("watchlist_items"),
     ]);
-    if (p.error || w.error)
-      throw new HttpError(
-        "Saved holdings and watchlist could not be read.",
-        503,
-      );
-    const universe = radarUniverse(p.data ?? [], w.data ?? []);
+    const universe = radarUniverse(positions, watchlist);
     if (
-      (p.data?.length ?? 0) > 1000 ||
-      (w.data?.length ?? 0) > 1000 ||
+      positions.length > 1000 ||
+      watchlist.length > 1000 ||
       universe.symbols.length > 1000
     )
       throw new HttpError(
@@ -71,19 +80,23 @@ async function run(request: Request, advance: boolean) {
     const day = new Date().toISOString().slice(0, 10),
       admin = storage();
     const read = async (symbols = universe.symbols, history = false) => {
-      const result = await admin
-        .from("auryn_daily_radar")
-        .select(history ? columns : columns.replace("history,", ""))
-        .eq("user_id", user.id)
-        .eq("day", day)
-        .in("symbol", symbols.length ? symbols : [""])
-        .limit(1000);
-      if (result.error)
-        throw new HttpError(
-          "Daily radar requires its database migration.",
-          503,
-        );
-      return ((result.data ?? []) as unknown as StoredRow[]).map(
+      const data = await readRadarPages(async (from, to) => {
+        const result = await admin
+          .from("auryn_daily_radar")
+          .select(history ? columns : columns.replace("history,", ""))
+          .eq("user_id", user.id)
+          .eq("day", day)
+          .in("symbol", symbols.length ? symbols : [""])
+          .order("symbol")
+          .range(from, to);
+        if (result.error)
+          throw new HttpError(
+            "Daily radar requires its database migration.",
+            503,
+          );
+        return (result.data ?? []) as unknown as StoredRow[];
+      });
+      return data.map(
         (r): DailyRadarRow => ({
           symbol: r.symbol,
           status: r.status,
@@ -98,6 +111,51 @@ async function run(request: Request, advance: boolean) {
         }),
       );
     };
+    if (process.env.AURYN_BULK_RADAR_ENABLED === "true") {
+      const cursor = Number(
+        new URL(request.url).searchParams.get("cursor") ?? 0,
+      );
+      const [
+        { bulkRadarProvider },
+        { createBulkRadarStore },
+        { runBulkRadar },
+      ] = await Promise.all([
+        import("@/lib/bulk-radar-provider.server"),
+        import("@/lib/bulk-radar-store.server"),
+        import("@/lib/bulk-radar-worker"),
+      ]);
+      const signal = AbortSignal.any([
+        request.signal,
+        AbortSignal.timeout(45000),
+      ]);
+      let abort: (() => void) | undefined;
+      const stopped = new Promise<never>((_, reject) => {
+        abort = () =>
+          reject(
+            new HttpError(
+              "Bulk radar refresh timed out; retained observations remain available.",
+              503,
+            ),
+          );
+        signal.addEventListener("abort", abort, { once: true });
+      });
+      try {
+        signal.throwIfAborted();
+        return privateJson(
+          await Promise.race([
+            runBulkRadar(universe, advance, cursor, {
+              store: createBulkRadarStore(admin),
+              provider: bulkRadarProvider(signal),
+              allow: () => allowMarketUser(user.id),
+              signal,
+            }),
+            stopped,
+          ]),
+        );
+      } finally {
+        if (abort) signal.removeEventListener("abort", abort);
+      }
+    }
     let rows = await read();
     let changed: string[] = [];
     if (advance) {
@@ -194,14 +252,14 @@ async function run(request: Request, advance: boolean) {
     }
     const snapshot = dailyRadarSnapshot(day, universe, rows);
     // Never send a multi-megabyte universe repeatedly during continuation.
-    // GET pages up to 20 cached histories; POST returns only its changed rows.
+    // GET pages up to 50 cached histories; POST returns only its changed rows.
     const cursor = Number(new URL(request.url).searchParams.get("cursor") ?? 0);
     if (!Number.isSafeInteger(cursor) || cursor < 0 || cursor > 1000)
       throw new HttpError("Invalid radar page.", 400);
     const ready = snapshot.rows
       .filter((row) => row.status === "ready")
       .map((row) => row.symbol);
-    const selected = advance ? changed : ready.slice(cursor, cursor + 20);
+    const selected = advance ? changed : ready.slice(cursor, cursor + 50);
     const histories = selected.length ? await read(selected, true) : [];
     return privateJson({
       ...snapshot,
@@ -214,7 +272,7 @@ async function run(request: Request, advance: boolean) {
               : []),
           ],
       incremental: advance || cursor > 0,
-      nextCursor: !advance && cursor + 20 < ready.length ? cursor + 20 : null,
+      nextCursor: !advance && cursor + 50 < ready.length ? cursor + 50 : null,
     });
   } catch (e) {
     return failure(e);

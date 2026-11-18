@@ -85,9 +85,10 @@ function load(file, bindings, name) {
       .join("\n"),
     { compilerOptions: { target: ts.ScriptTarget.ES2022 } },
   ).outputText;
-  return providerFixtureFunction(...Object.keys(bindings), code + ";return " + name)(
-    ...Object.values(bindings),
-  );
+  return providerFixtureFunction(
+    ...Object.keys(bindings),
+    code + ";return " + name,
+  )(...Object.values(bindings));
 }
 class HttpError extends Error {
   constructor(message, status) {
@@ -161,7 +162,7 @@ test("fixed URL and bounded response; UI source is opt-in, identity keyed", () =
   assert.match(server, /readBoundedMarketJson\(response,\s*2000000\)/);
   const ui = fs.readFileSync("components/PublicationFeeds.tsx", "utf8");
   assert.match(ui, /useState<PublicationSource\s*\|\s*null>\(null\)/);
-  assert.match(ui, /source\s*\?\s*`publications/);
+  assert.match(ui, /source && !search\s*\?\s*`publications/);
   assert.doesNotMatch(ui, /dangerouslySetInnerHTML|iframe|setInterval/);
   assert.match(
     fs.readFileSync("components/SentiSensePanels.tsx", "utf8"),

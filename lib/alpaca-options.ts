@@ -1,4 +1,5 @@
 import { normalizeOptions } from "./options-analysis";
+import { readBoundedMarketJson } from "./market-response";
 
 type Row = Record<string, any>;
 const finiteLeaf = (v: unknown): number | null =>
@@ -112,8 +113,46 @@ export function joinAlpacaOptions(
   })); // Missing proof withholds sizing, while reported Greeks remain displayable.
 }
 const cache = new Map<string, { until: number; value: any }>();
-const pending = new Map<string, Promise<any>>();
-export async function alpacaOptions(symbol: string, expiry: string | null) {
+const OPTIONS_BUDGET_MS = 45000;
+type PendingChain = {
+  controller: AbortController;
+  promise: Promise<any>;
+  waiters: number;
+  settled: boolean;
+};
+const pending = new Map<string, PendingChain>();
+async function abortable<T>(task: Promise<T>, signal: AbortSignal): Promise<T> {
+  if (signal.aborted) throw Error("Options request cancelled or timed out.");
+  let abort: (() => void) | undefined;
+  const stopped = new Promise<never>((_, reject) => {
+    abort = () => reject(Error("Options request cancelled or timed out."));
+    signal.addEventListener("abort", abort, { once: true });
+  });
+  try {
+    return await Promise.race([task, stopped]);
+  } finally {
+    if (abort) signal.removeEventListener("abort", abort);
+  }
+}
+async function waitForChain(entry: PendingChain, signal?: AbortSignal) {
+  if (signal?.aborted) throw Error("Options request cancelled.");
+  entry.waiters++;
+  try {
+    return signal
+      ? await abortable(entry.promise, signal)
+      : await entry.promise;
+  } finally {
+    entry.waiters--;
+    // A cancelled viewer must not terminate another viewer's shared request.
+    if (!entry.waiters && !entry.settled) entry.controller.abort();
+  }
+}
+export async function alpacaOptions(
+  symbol: string,
+  expiry: string | null,
+  signal?: AbortSignal,
+) {
+  if (signal?.aborted) throw Error("Options request cancelled.");
   if (
     process.env.AURYN_OPTIONS_ENABLED !== "true" ||
     ![undefined, "", "alpaca"].includes(process.env.AURYN_OPTIONS_PROVIDER)
@@ -139,15 +178,32 @@ export async function alpacaOptions(symbol: string, expiry: string | null) {
   const hit = cache.get(cacheKey);
   if (hit && hit.until > Date.now()) return hit.value;
   const existing = pending.get(cacheKey);
-  if (existing) return existing;
+  if (existing) return waitForChain(existing, signal);
+  const controller = new AbortController();
+  const entry: PendingChain = {
+    controller,
+    promise: Promise.resolve(null),
+    waiters: 0,
+    settled: false,
+  };
+  const deadline = setTimeout(() => controller.abort(), OPTIONS_BUDGET_MS);
   const run = (async () => {
     const get = async (base: string, path: string, params: URLSearchParams) => {
-      const r = await fetch(`${base}${path}?${params}`, {
-        headers: { "APCA-API-KEY-ID": key, "APCA-API-SECRET-KEY": secret },
-        signal: AbortSignal.timeout(12000),
-        cache: "no-store",
-        redirect: "error",
-      });
+      if (controller.signal.aborted)
+        throw Error("Options request cancelled or timed out.");
+      const pageSignal = AbortSignal.any([
+        controller.signal,
+        AbortSignal.timeout(12000),
+      ]);
+      const r = await abortable(
+        fetch(`${base}${path}?${params}`, {
+          headers: { "APCA-API-KEY-ID": key, "APCA-API-SECRET-KEY": secret },
+          signal: pageSignal,
+          cache: "no-store",
+          redirect: "error",
+        }),
+        pageSignal,
+      );
       if (!r.ok)
         throw new Error(
           r.status === 401 || r.status === 403
@@ -156,7 +212,10 @@ export async function alpacaOptions(symbol: string, expiry: string | null) {
               ? "Options requests are temporarily limited. Please try again shortly."
               : "Options data is temporarily unavailable. Please try again.",
         );
-      const data = await r.json();
+      const data = await abortable(
+        readBoundedMarketJson(r, 2000000),
+        pageSignal,
+      );
       return data;
     };
     const today = new Date().toISOString().slice(0, 10);
@@ -224,6 +283,7 @@ export async function alpacaOptions(symbol: string, expiry: string | null) {
     const metadata: Row[] = [];
     token = "";
     let metadataComplete = false;
+    let metadataFailed = false;
     // Contract metadata supplies dated open interest. Do not replace it with trade size.
     try {
       for (let page = 0; page < 4; page++) {
@@ -245,8 +305,10 @@ export async function alpacaOptions(symbol: string, expiry: string | null) {
         if (
           !Array.isArray(data.option_contracts) ||
           data.option_contracts.length > 1000
-        )
+        ) {
+          metadataFailed = true;
           break;
+        }
         metadata.push(...data.option_contracts);
         if (
           data.next_page_token != null &&
@@ -260,6 +322,7 @@ export async function alpacaOptions(symbol: string, expiry: string | null) {
         }
       }
     } catch {
+      metadataFailed = true;
       /* Chain remains useful; GEX is withheld without open interest. */
     }
     const value = {
@@ -283,22 +346,27 @@ export async function alpacaOptions(symbol: string, expiry: string | null) {
           : "OPRA snapshot. Open interest updates separately; modeled positioning is not actual dealer inventory.",
     };
     if (cache.size >= 100) cache.delete(cache.keys().next().value!);
-    cache.set(cacheKey, { until: Date.now() + 300000, value });
+    // A timeout may leave useful quotes but must not cache a cancelled/partial run.
+    if (!controller.signal.aborted && !metadataFailed)
+      cache.set(cacheKey, { until: Date.now() + 300000, value });
     return value;
   })();
-  pending.set(cacheKey, run);
-  try {
-    return await run;
-  } catch (error) {
-    const message =
-      error instanceof Error &&
-      /^The options connection was not authorized|^Options requests are temporarily limited|^Options contract identities|^Duplicate options contract|^Invalid options pagination/.test(
-        error.message,
-      )
-        ? error.message
-        : "Options data is temporarily unavailable. Please try again.";
-    throw new Error(message);
-  } finally {
-    pending.delete(cacheKey);
-  }
+  entry.promise = run
+    .catch((error) => {
+      const message =
+        error instanceof Error &&
+        /^The options connection was not authorized|^Options requests are temporarily limited|^Options contract identities|^Duplicate options contract|^Invalid options pagination/.test(
+          error.message,
+        )
+          ? error.message
+          : "Options data is temporarily unavailable. Please try again.";
+      throw new Error(message);
+    })
+    .finally(() => {
+      entry.settled = true;
+      clearTimeout(deadline);
+      if (pending.get(cacheKey) === entry) pending.delete(cacheKey);
+    });
+  pending.set(cacheKey, entry);
+  return waitForChain(entry, signal);
 }
