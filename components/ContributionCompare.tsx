@@ -23,9 +23,11 @@ import s from "./ContributionCompare.module.css";
 export default function ContributionCompare({
   symbols,
   prefix = "",
+  defaultOpen = false,
 }: {
   symbols: string[];
   prefix?: string;
+  defaultOpen?: boolean;
 }) {
   const { owner } = useProduct();
   const choices = useMemo(
@@ -40,10 +42,25 @@ export default function ContributionCompare({
       ),
     [symbols],
   );
-  return <Workbench key={owner} choices={choices} prefix={prefix} />;
+  return (
+    <Workbench
+      key={owner}
+      choices={choices}
+      prefix={prefix}
+      defaultOpen={defaultOpen}
+    />
+  );
 }
-function Workbench({ choices, prefix }: { choices: string[]; prefix: string }) {
-  const [open, setOpen] = useState(false),
+function Workbench({
+  choices,
+  prefix,
+  defaultOpen,
+}: {
+  choices: string[];
+  prefix: string;
+  defaultOpen: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen),
     [selection, setSelection] = useState<string[]>([]),
     [addition, setAddition] = useState("");
   const contentId = useId();
@@ -213,6 +230,18 @@ function Candidate({
           <GuardrailReview cashSpend={addition} />
           <dl>
             <div>
+              <dt>Current assessment</dt>
+              <dd>{d.actionLabel}</dd>
+            </div>
+            <div>
+              <dt>Current eligible Pace</dt>
+              <dd>
+                {d.pace.eligibleLevel == null
+                  ? "Unavailable"
+                  : `P${d.pace.eligibleLevel}`}
+              </dd>
+            </div>
+            <div>
               <dt>
                 Business{" "}
                 <Help label="Business comparison">
@@ -280,13 +309,22 @@ function Candidate({
               </div>
             )}
           </dl>
-          <p className={s.reason}>
-            {fit.atLimit
-              ? "Your chosen position threshold is reached."
-              : priceReady
-                ? d.explanation.detail
+          {(fit.atLimit || !priceReady) && (
+            <p className={s.reason}>
+              {fit.atLimit
+                ? "Your chosen position threshold is reached."
                 : "A recent USD quote is needed before considering an addition."}
-          </p>
+            </p>
+          )}
+          <details className={s.evidenceDetails}>
+            <summary>Evidence and limitations</summary>
+            <p>{d.explanation.detail}</p>
+            <p>
+              The completed monthly reading is historical. Current eligible Pace
+              and the business assessment can differ; a deeper historical zone
+              is not an instruction to add.
+            </p>
+          </details>
           {addition != null &&
             addition > 0 &&
             fit.limit != null &&

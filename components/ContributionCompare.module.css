@@ -382,3 +382,30 @@
     overflow-wrap: anywhere;
   }
 }
+
+/* Keep the first pass comparable; retain the complete dated rationale on demand. */
+.grid h3 {
+  font-size: 19px;
+  font-weight: 550;
+}
+.grid dl {
+  margin: 12px 0;
+}
+.grid dl > div {
+  padding: 8px 0;
+}
+.evidenceDetails {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 4px 0 10px;
+}
+.evidenceDetails summary {
+  cursor: pointer;
+  min-height: 36px;
+  padding: 8px 0;
+  color: var(--ink);
+}
+.evidenceDetails p {
+  font-size: 12px;
+  line-height: 1.6;
+}

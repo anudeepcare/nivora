@@ -93,7 +93,7 @@ export default function PaceMonthHistory({ research }: { research: Research }) {
               Completed {dateLabel(active.reading.date)} · close{" "}
               {amount(active.reading.close, research.company.currency)}
               {active.reading.policyVersion
-                ? ` · ${active.reading.policyVersion}`
+                ? ` · Historical policy ${active.reading.policyVersion}`
                 : ""}
             </span>
             <p>{active.reading.reason}</p>
@@ -112,8 +112,10 @@ export default function PaceMonthHistory({ research }: { research: Research }) {
         )}
       </div>
       <small className={s.note}>
-        Historical price zones, not executed purchases or returns. Current
-        forming month is separate; business and risk checks still apply.
+        Historical readings retain their original policy version; newer models
+        are not backfilled into earlier months. Historical price zones are not
+        executed purchases or returns. Current forming month is separate;
+        business and risk checks still apply.
       </small>
     </section>
   );

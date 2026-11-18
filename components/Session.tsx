@@ -17,7 +17,7 @@ import {
   useState,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { api, authClient } from "@/lib/client";
+import { api, authClient, setRememberSession } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
 import LaunchScreen, { LaunchSequence } from "./LaunchScreen";
@@ -452,6 +452,7 @@ function Login({ initialError }: { initialError: string }) {
     [error, setError] = useState(initialError),
     [busy, setBusy] = useState(false),
     [mode, setMode] = useState<"login" | "signup" | "reset">("login"),
+    [remember, setRemember] = useState(true),
     [notice, setNotice] = useState(""),
     [resendPending, setResendPending] = useState(false),
     [resendUntil, setResendUntil] = useState(0);
@@ -532,6 +533,7 @@ function Login({ initialError }: { initialError: string }) {
     setError("");
     setNotice("");
     try {
+      setRememberSession(remember);
       const { error } = await authClient().auth.signInWithOAuth({
         provider,
         options: {
@@ -553,6 +555,7 @@ function Login({ initialError }: { initialError: string }) {
     setError("");
     setNotice("");
     try {
+      if (mode !== "reset") setRememberSession(remember);
       const auth = authClient().auth;
       const result =
         mode === "login"
@@ -672,6 +675,23 @@ function Login({ initialError }: { initialError: string }) {
                   : "Continue your research and saved decisions."}
             </p>
           </div>
+          {mode === "login" && (
+            <div className={experience.remember}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  disabled={busy}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />{" "}
+                Remember me on this browser
+              </label>
+              <small>
+                Unchecked uses browser-session cookies. Browser restore can
+                retain them; sign out on shared devices.
+              </small>
+            </div>
+          )}
           {mode !== "reset" && (
             <>
               <div
@@ -685,7 +705,12 @@ function Login({ initialError }: { initialError: string }) {
                   disabled={busy || socialProviders.google === false}
                   onClick={() => social("google")}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       fill="currentColor"
                       d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.6h3.3c1.9-1.8 2.9-4.4 2.9-7.5ZM12 22c2.7 0 5-1 6.7-2.4l-3.3-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.2H3v2.7A10 10 0 0 0 12 22ZM6.4 13.8a6 6 0 0 1 0-3.6V7.5H3a10 10 0 0 0 0 9l3.4-2.7ZM12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0 0 12 2a10 10 0 0 0-9 5.5l3.4 2.7C7.2 7.8 9.4 6 12 6Z"
@@ -693,15 +718,10 @@ function Login({ initialError }: { initialError: string }) {
                   </svg>
                   <span>Continue with Google</span>
                 </button>
-
               </div>
-              {(socialProviders.google === false ||
-                socialProviders.x === false) && (
+              {socialProviders.google === false && (
                 <p className="mp-provider-note" role="status">
-                  {socialProviders.google === false &&
-                  socialProviders.x === false
-                    ? "Social sign-in is not enabled yet. Continue securely with email below."
-                    : `${socialProviders.google === false ? "Google" : "X"} sign-in is not enabled yet. Use an available option below.`}
+                  Google sign-in is not enabled yet. Continue with email below.
                 </p>
               )}
               <div className="mp-form-divider">
@@ -713,22 +733,22 @@ function Login({ initialError }: { initialError: string }) {
             {mode === "signup" && (
               <details className={experience.secondaryOptions}>
                 <summary>Add your name (optional)</summary>
-              <div className="mp-form-field">
-                <label htmlFor="auryn-signup-name">
-                  Full name{" "}
-                  <span className="mp-field-optional">(optional)</span>
-                </label>
-                <input
-                  id="auryn-signup-name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="Your name"
-                  maxLength={100}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
+                <div className="mp-form-field">
+                  <label htmlFor="auryn-signup-name">
+                    Full name{" "}
+                    <span className="mp-field-optional">(optional)</span>
+                  </label>
+                  <input
+                    id="auryn-signup-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    maxLength={100}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
               </details>
             )}
             <div className="mp-form-field">
@@ -854,21 +874,6 @@ function Login({ initialError }: { initialError: string }) {
               <span aria-hidden="true">→</span>
             </button>
           </form>
-          {mode !== "reset" && (
-            <details className={experience.secondaryOptions}>
-              <summary>More sign-in options</summary>
-                <button
-                  type="button"
-                  className="mp-social-button mp-social-x"
-                  aria-label="Continue with X"
-                  disabled={busy || socialProviders.x === false}
-                  onClick={() => social("x")}
-                >
-                  <span aria-hidden="true">𝕏</span>
-                  <span className="mp-social-x-label">Continue with X</span>
-                </button>
-            </details>
-          )}
           <p className="mp-switch-auth">
             {mode === "reset"
               ? "Remember your password?"

@@ -44,6 +44,7 @@ import { demoData } from "./fixtures/demo.ts";
 
 function loadComponent(file, name, bindings) {
   bindings = {
+    businessLayout: { root: "business-root" },
     revenueSensitivity: () => ({ available: false }),
     RevenueSensitivityCases: () => null,
     QuickRead: () => null,
@@ -830,6 +831,7 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
       "",
       false,
       mode,
+      true, // Remember-session checkbox precedes notice state.
       mode === "signup" ? "Confirm your email" : "",
       false,
       0,
@@ -857,7 +859,7 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
       React.createElement(Login, { initialError: "" }),
     );
     if (mode !== "reset") {
-      assert.match(html, /Social sign-in is not enabled yet/);
+      assert.match(html, /Google sign-in is not enabled yet/);
       assert.match(html, /disabled=""/);
     }
     if (mode === "signup") assert.match(html, /Resend confirmation email/);

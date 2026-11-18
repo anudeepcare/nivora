@@ -15,7 +15,9 @@ test('new public theme overrides the legacy carbon opening and green navigation 
 });
 test('reference auth keeps secondary options outside the primary two-field flow', () => {
   const auth = source('Session.tsx');
-  assert.match(auth, /More sign-in options/);
+  assert.doesNotMatch(auth, /More sign-in options/);
+  assert.match(auth, /Remember me on this browser/);
+  assert.match(auth, /Continue with Google/);
   assert.match(auth, /Add your name \(optional\)/);
   assert.match(auth, /"Create workspace"/);
 });

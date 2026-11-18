@@ -56,7 +56,8 @@ test("a failed research-lab request clears the previous instrument result", asyn
   const bindings = {
     ComparisonCharts: () => null,
     ContributionCompare: () => null,
-    decisionStyles: new Proxy({}, {get: (_, key) => String(key)}),
+    decisionStyles: new Proxy({}, { get: (_, key) => String(key) }),
+    compareStyles: new Proxy({}, { get: (_, key) => String(key) }),
     PaceHelp: () => null,
     providerSymbol,
     sameProviderSymbol,
@@ -129,7 +130,8 @@ test("a new comparison clears the preceding company set before loading", async (
   const bindings = {
     ComparisonCharts: () => null,
     ContributionCompare: () => null,
-    decisionStyles: new Proxy({}, {get: (_, key) => String(key)}),
+    decisionStyles: new Proxy({}, { get: (_, key) => String(key) }),
+    compareStyles: new Proxy({}, { get: (_, key) => String(key) }),
     React,
     ...format,
     useState: () => {
@@ -155,7 +157,8 @@ test("a new comparison clears the preceding company set before loading", async (
     sameProviderSymbol,
     Search: empty,
     PaceHelp: empty,
-    PaceGuidance: () => null, PaceReadings: empty,
+    PaceGuidance: () => null,
+    PaceReadings: empty,
     PageHeading: empty,
     Notice: empty,
     Empty: empty,

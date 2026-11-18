@@ -27,3 +27,8 @@ test('radar categories match row bars and preserve missing scores',()=>{
  assert.match(s,/l.score != null &&/);
  assert.match(s,/l.score == null \? "Unscored"/);
 });
+test('research sections pair category icons and subdued selected cards without bright underline',()=>{
+ const source=read('components/Research.tsx');assert.match(source,/data-active-lens=/);assert.match(source,/ResearchTabIcon section=\{lens.sections\[0\]\}/);
+ const css=read('components/ReferenceCockpit.module.css').split('/* Research navigation hierarchy')[1];
+ assert.match(css,/font-weight: 500/);assert.match(css,/min-height: 44px/);assert.match(css,/content: none/);assert.match(css,/outline: 2px/);
+});

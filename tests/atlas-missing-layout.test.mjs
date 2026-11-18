@@ -5,6 +5,7 @@ import ts from "typescript";
 import React from "react";
 import * as jsx from "react/jsx-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
+import * as trends from "../lib/atlas-trends.ts";
 import * as atlas from "../lib/reference-atlas.ts";
 import * as format from "../lib/format.ts";
 import { demoData } from "./fixtures/demo.ts";
@@ -25,6 +26,7 @@ test("unavailable Atlas uses one status region with all evidence visible, not un
       if (name === "react") return React;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "@/lib/reference-atlas") return atlas;
+      if (name === "@/lib/atlas-trends") return trends;
       if (name === "@/lib/format") return format;
       if (name === "./PaceMonthHistory") return {__esModule:true,default:()=>React.createElement("section",{"data-pace-month-history":true})};
       if (name.endsWith(".module.css"))

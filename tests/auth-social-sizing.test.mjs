@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 test('Google icon has intrinsic dimensions even before auth styles arrive',()=>{
  const source=readFileSync('components/Session.tsx','utf8');
  const button=source.slice(source.indexOf('aria-label="Continue with Google"'),source.indexOf('<span>Continue with Google'));
- assert.match(button,/<svg width="20" height="20"/);
+ assert.match(button,/<svg\s+width="20"\s+height="20"/);
 });
 test('auth owns horizontal social-button layout and bounded icon instead of depending on legacy styles',()=>{
  const css=readFileSync('components/Session.module.css','utf8');

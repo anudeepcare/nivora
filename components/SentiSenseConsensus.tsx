@@ -188,7 +188,7 @@ export default function SentiSenseConsensus({
               ["Low target", consensusTarget(data.targetLow, data.currency)],
               ["High target", consensusTarget(data.targetHigh, data.currency)],
             ].map(([label, v]) => (
-              <div className={s.stat} key={label}>
+              <div className={s.stat} key={label} data-target={label}>
                 <span>{label}</span>
                 <strong>{v}</strong>
               </div>

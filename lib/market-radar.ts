@@ -1,4 +1,12 @@
 import type { Candle, Research } from "./types";
+export type RadarResearch = {
+  company: Pick<
+    Research["company"],
+    "symbol" | "name" | "assetType" | "sector"
+  >;
+  history: Candle[];
+  demo?: boolean;
+};
 
 export type RadarQuadrant =
   | "Leading"
@@ -81,19 +89,19 @@ function cutoffDate(asOf?: string): string | null {
   const yesterday = new Date(Date.now() - dayMs).toISOString().slice(0, 10);
   return asOf && asOf < yesterday ? asOf : yesterday;
 }
-function unique(research: Research[]) {
+function unique(research: RadarResearch[]) {
   return [
     ...new Map(
       research.map((item) => [item.company.symbol.trim().toUpperCase(), item]),
     ).values(),
   ];
 }
-function usable(item: Research) {
+function usable(item: RadarResearch) {
   return !item.demo && item.company.assetType === "stock";
 }
 /** Available completed weekday checkpoints from supplied stock history; no fetching. */
 export function radarCheckpoints(
-  research: Research[],
+  research: RadarResearch[],
   asOf?: string,
 ): string[] {
   const cutoff = cutoffDate(asOf);
@@ -154,7 +162,7 @@ function mean(values: number[]) {
 
 /** Equal-weight price comparisons within the loaded sample, never market-wide breadth. */
 export function buildMarketRadar(
-  research: Research[],
+  research: RadarResearch[],
   asOf?: string,
 ): MarketRadarModel {
   const items = unique(research);

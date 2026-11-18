@@ -258,6 +258,7 @@ function researchMarkup(issues = [], options = {}) {
     "PriceChart",
     "PriceStudyChart",
     "LineChart",
+    "ResearchTabIcon",
     "ChartCandlestick",
     "Financials",
     "InvestmentCase",

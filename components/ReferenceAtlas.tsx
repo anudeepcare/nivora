@@ -1,5 +1,6 @@
 "use client";
 import { useId, useMemo, useState } from "react";
+import { atlasTrends } from "@/lib/atlas-trends";
 import type { Research } from "@/lib/types";
 import {
   referenceAtlas,
@@ -20,7 +21,8 @@ const coordinates = [
 ];
 function reading(signal: AtlasSignal, currency: string) {
   if (signal.valueLabel) return signal.valueLabel;
-  if (signal.value === null) return "—";
+  if (signal.value === null)
+    return signal.label === "Value" ? "Unverified" : "—";
   if (signal.unit === "percent") return percent(signal.value);
   if (signal.unit === "money") return amount(signal.value, currency, true);
   return signal.unit === "count"
@@ -35,6 +37,7 @@ export default function ReferenceAtlas({
   onTab: (tab: AtlasTarget) => void;
 }) {
   const m = useMemo(() => referenceAtlas(research), [research]);
+  const trends = useMemo(() => atlasTrends(research), [research]);
   const [selected, setSelected] = useState(0);
   const signal = m.signals[selected],
     b = m.brief,
@@ -112,7 +115,15 @@ export default function ReferenceAtlas({
           <div className={s.active} aria-live="polite">
             <small>{signal.label}</small>
             <strong>{reading(signal, b.businessNumbers.currency)}</strong>
-            <p>{signal.detail}</p>
+            {signal.label === "Value" && signal.value === null ? (
+              <p>
+                A verified valuation range is not available from the supplied
+                inputs. See the evidence checks below; conditional scenarios
+                remain separate.
+              </p>
+            ) : (
+              <p>{signal.detail}</p>
+            )}
             <button onClick={() => onTab(signal.target)}>
               Explore {signal.label.toLowerCase()}{" "}
               <span aria-hidden="true">↗</span>
@@ -265,6 +276,29 @@ export default function ReferenceAtlas({
             <span>{item.label}</span>
             <strong>{item.value}</strong>
             <small>{item.detail}</small>
+            {trends[item.label] && (
+              <>
+                <svg
+                  className={s.metricTrend}
+                  viewBox="0 0 200 48"
+                  role="img"
+                  aria-label={`${item.label}: ${trends[item.label]!.observations}`}
+                >
+                  <title>{trends[item.label]!.observations}</title>
+                  <polyline
+                    points={trends[item.label]!.points}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+                <small>
+                  {trends[item.label]!.basis} · {trends[item.label]!.from}–
+                  {trends[item.label]!.to}
+                </small>
+              </>
+            )}
           </button>
         ))}
       </section>
@@ -273,19 +307,16 @@ export default function ReferenceAtlas({
           className={s.unavailable}
           aria-label="Model availability and evidence"
         >
-          <header>
-            <h3>Model range unavailable</h3>
-            <button onClick={() => onTab("Valuation")}>
-              View scenario evidence ↗
-            </button>
-          </header>
           <details className={s.availabilityInfo}>
             <summary aria-label="Model range unavailable: reasons and evidence">
-              ⓘ Why this range is unavailable
+              ⓘ Valuation inputs need verification
             </summary>
             {!b.checks.some(
               (check) => check.detail && b.value.reason.includes(check.detail),
             ) && <p>{b.value.reason}</p>}
+            <button onClick={() => onTab("Valuation")}>
+              View conditional scenarios ↗
+            </button>
             <div className={s.checkGrid}>
               {b.checks.map((check) => (
                 <div key={check.label}>

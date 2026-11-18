@@ -202,7 +202,13 @@ export function Portfolio() {
         </section>
       )}
       <div className={reference.grid} data-portfolio-layout="reference">
-        <AccountHistory readOnly />
+        <AccountHistory
+          readOnly
+          onReviewRecords={() => {
+            setDepthOpen(true);
+            depth.current?.showModal();
+          }}
+        />
         <div className={reference.capitalOverview}>
           <section className="card portfolio-allocation-panel">
             <SectionHead
@@ -699,7 +705,8 @@ function HoldingsTable({
             )}
             <th>Weight</th>
             <th>Price</th>
-            <th>Value / return</th>
+            <th>Value</th>
+            <th>Return</th>
             <th>
               <span className="sr-only">Edit holding</span>
             </th>
@@ -735,15 +742,19 @@ function HoldingsTable({
                         <small>
                           {quotes.data[p.symbol]?.company?.name ||
                             "Open research"}
-                          <br />
-                          {p.quantity.toLocaleString(undefined, {
-                            maximumFractionDigits: 6,
-                          })}{" "}
-                          {p.assetType === "crypto" ? "units" : "shares"} ·{" "}
-                          {p.currency
-                            ? amount(p.cost, p.currency)
-                            : "Unknown currency"}{" "}
-                          cost
+                          {!expandedMetrics && (
+                            <>
+                              <br />
+                              {p.quantity.toLocaleString(undefined, {
+                                maximumFractionDigits: 6,
+                              })}{" "}
+                              {p.assetType === "crypto" ? "units" : "shares"} ·{" "}
+                              {p.currency
+                                ? amount(p.cost, p.currency)
+                                : "Unknown currency"}{" "}
+                              cost
+                            </>
+                          )}
                         </small>
                         {p.assetType !== "crypto" && (
                           <PaceBadge
@@ -794,6 +805,8 @@ function HoldingsTable({
                 </td>
                 <td>
                   <strong>{amount(row.value)}</strong>
+                </td>
+                <td>
                   <small
                     className={
                       row.pnl == null

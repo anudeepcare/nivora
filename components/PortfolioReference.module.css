@@ -433,3 +433,28 @@
     border-top: 1px solid var(--line);
   }
 }
+
+/* Explicit holdings columns keep units, value and return independently scannable. */
+.page.page.page.page .holdingsScroll :global(table.holdings-table) {
+  min-width: 900px;
+}
+.page.page.page.page .holdingsScroll :is(th, td) {
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+.page.page.page.page .holdingsScroll th {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.025em;
+}
+.page.page.page.page .holdingsScroll tbody td {
+  border-bottom: 1px solid var(--line);
+  padding: 14px 12px;
+}
+.page.page.page.page .holdingsScroll td:first-child {
+  min-width: 210px;
+}
+.page.page.page.page .holdingsScroll td:not(:first-child):not(:last-child) {
+  white-space: nowrap;
+}

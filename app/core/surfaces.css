@@ -63,7 +63,8 @@ body :is(.segments, .segment) :is(button.active, button[aria-pressed="true"]) {
   color: var(--text);
   font-weight: 500;
   text-decoration: none;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 30%, var(--surface));
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--text) 30%, var(--surface));
 }
 body :is(th, td) {
   vertical-align: middle;
@@ -1330,7 +1331,13 @@ body [data-selection-navigation] > button {
   line-height: 1.4;
   box-shadow: none;
 }
-body [data-selection-navigation] > button:is([aria-pressed="true"], [aria-selected="true"], [aria-current="page"]) {
+body
+  [data-selection-navigation]
+  > button:is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    [aria-current="page"]
+  ) {
   background: var(--selection-fill);
   border-color: var(--selection-border);
   color: var(--selection-ink);
@@ -1341,4 +1348,29 @@ body [data-selection-navigation] > button:is([aria-pressed="true"], [aria-select
 body [data-selection-navigation] > button:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 3px;
+}
+
+/* Secondary research navigation is a grouped control, not loose text links. */
+body .research-page [data-selection-navigation] {
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  align-items: center;
+}
+body .research-page [data-selection-navigation] > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+body
+  .research-page
+  [data-selection-navigation]
+  > button:is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    [aria-current="page"]
+  ) {
+  border-color: var(--workspace-accent, var(--selection-border));
+  box-shadow: 0 2px 5px #00000008;
 }

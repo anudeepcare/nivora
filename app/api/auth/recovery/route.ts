@@ -1,3 +1,4 @@
+import { authCookieOptions, persistenceCookie } from "@/lib/auth-persistence";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -26,6 +27,7 @@ async function recovery(request: Request, update: boolean) {
     );
   try {
     const client = createServerClient(url, key, {
+      cookieOptions: { secure: new URL(request.url).protocol === "https:" },
       cookies: {
         getAll: () => store.getAll(),
         setAll: (values: typeof writes) => {
@@ -84,7 +86,15 @@ async function recovery(request: Request, update: boolean) {
       );
     const response = result({ ok: true });
     for (const { name, value, options } of writes)
-      response.cookies.set(name, value, options);
+      response.cookies.set(
+        name,
+        value,
+        authCookieOptions(
+          name,
+          options,
+          store.get(persistenceCookie)?.value !== "session",
+        ),
+      );
     response.cookies.set(recoveryCookieName, "", {
       httpOnly: true,
       secure: new URL(request.url).protocol === "https:",

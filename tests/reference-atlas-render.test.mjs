@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import ts from 'typescript';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import * as trends from '../lib/atlas-trends.ts';
 import * as atlas from '../lib/reference-atlas.ts';
 import * as format from '../lib/format.ts';
 import { demoData } from './fixtures/demo.ts';
@@ -15,6 +16,7 @@ function load(react=React){
    if(name==='react')return react;
    if(name==='react/jsx-runtime')return jsx;
    if(name==='@/lib/reference-atlas')return atlas;
+   if(name==='@/lib/atlas-trends')return trends;
    if(name==='@/lib/format')return format;
       if (name === "./PaceMonthHistory") return {__esModule:true,default:()=>React.createElement("section",{"data-pace-month-history":true})};
    if(name.endsWith('.module.css'))return {__esModule:true,default:new Proxy({},{get:(_,key)=>String(key)})};

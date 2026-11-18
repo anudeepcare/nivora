@@ -520,7 +520,7 @@ function HomeOverview() {
         </Link>
       </div>
       <ContributionCompare symbols={symbols} prefix={prefix} />
-      {loadedResearch.length > 0 && (
+      {symbols.length > 0 && (
         <details
           className={homeStyles.marketRadar}
           open={radarOpen}
@@ -529,8 +529,7 @@ function HomeOverview() {
           <summary>
             Market radar{" "}
             <span>
-              {loadedResearch.length} loaded of {symbols.length} held or watched
-              companies · historical breadth & rotation
+              {symbols.length} held or watched companies · daily price history
             </span>
           </summary>
           {radarOpen && (

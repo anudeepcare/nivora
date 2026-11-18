@@ -3,6 +3,7 @@ import { memo, useEffect, useState } from "react";
 import type { Research } from "../lib/types";
 import OpportunityMap from "./OpportunityMap";
 import { MarketRadar } from "./MarketRadar";
+import DailyMarketRadar from "./DailyMarketRadar";
 
 type Props = {
   research: Research[];
@@ -36,7 +37,15 @@ function HomeRadar(props: Props) {
         prefix={props.prefix}
         demo={props.demo}
       />
-      <MarketRadar research={props.research} asOf={props.asOf} />
+      {props.demo ? (
+        <MarketRadar research={props.research} asOf={props.asOf} />
+      ) : (
+        <DailyMarketRadar
+          research={props.research}
+          requested={props.requested}
+          asOf={props.asOf}
+        />
+      )}
     </>
   );
 }

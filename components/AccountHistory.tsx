@@ -17,7 +17,8 @@ type History = {
 };
 export default function AccountHistory({
   readOnly = false,
-}: { readOnly?: boolean } = {}) {
+  onReviewRecords,
+}: { readOnly?: boolean; onReviewRecords?: () => void } = {}) {
   const controller = useRef<AbortController | null>(null);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const [chartWidth, setChartWidth] = useState(800);
@@ -34,6 +35,7 @@ export default function AccountHistory({
     } | null>(null);
   const [restoring, setRestoring] = useState(true);
   const [restoreNotice, setRestoreNotice] = useState("");
+  const [period, setPeriod] = useState("ALL");
   useEffect(() => {
     const abort = new AbortController();
     controller.current = abort;
@@ -139,13 +141,27 @@ export default function AccountHistory({
       setBusy(false);
     }
   }
-  const points = result?.points ?? [],
+  const allPoints = result?.points ?? [];
+  const endDate = allPoints.at(-1)?.date;
+  const end = endDate ? Date.parse(endDate) : NaN;
+  const cutoff =
+    period === "1M"
+      ? end - 31 * 86400000
+      : period === "1Y"
+        ? end - 365 * 86400000
+        : period === "YTD" && endDate
+          ? Date.parse(`${endDate.slice(0, 4)}-01-01`)
+          : -Infinity;
+  const points = allPoints.filter((point) => Date.parse(point.date) >= cutoff),
     last = points.at(-1),
     inspected =
       points[Math.min(inspection ?? points.length - 1, points.length - 1)],
-    benchmarks = (result?.benchmarks ?? []).filter(
-      (b) => b.status === "available",
-    ),
+    benchmarks = (result?.benchmarks ?? [])
+      .filter((b) => b.status === "available")
+      .map((b) => ({
+        ...b,
+        points: b.points.filter((point) => Date.parse(point.date) >= cutoff),
+      })),
     values = [
       ...points.flatMap((p) => [p.equity, p.netContributions]),
       ...benchmarks.flatMap((b) => b.points.map((p) => p.value)),
@@ -172,10 +188,53 @@ export default function AccountHistory({
     points
       .map((p) => `${x(p.date)},${180 - ((p[key] - low) / span) * 160}`)
       .join(" ");
-  if (readOnly && (result?.status !== "available" || !last)) return null;
+  if (readOnly && (result?.status !== "available" || !last))
+    return (
+      <section
+        className={styles.empty}
+        data-read-only
+        aria-label="Portfolio performance availability"
+      >
+        <h2>Portfolio vs S&amp;P 500 &amp; QQQ</h2>
+        <p role="status">
+          {restoring
+            ? "Checking saved account history…"
+            : restoreNotice ||
+              result?.reason ||
+              "No validated account history is available yet."}
+        </p>
+        <small>
+          Current holdings alone cannot reconstruct past returns. This chart
+          needs dated cash flows and complete transaction history; no simulated
+          performance is shown.
+        </small>
+        {onReviewRecords && !restoring && (
+          <button className="btn" type="button" onClick={onReviewRecords}>
+            Open transactions
+          </button>
+        )}
+      </section>
+    );
   return (
     <div className={styles.history} data-read-only={readOnly || undefined}>
-      {readOnly && <h2>Account value & market comparison</h2>}
+      <header className={styles.chartHeader}>
+        <h2>Account value &amp; market comparison</h2>
+        <div className={styles.periods} aria-label="Account history period">
+          {["1M", "YTD", "1Y", "ALL"].map((value) => (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={period === value}
+              onClick={() => {
+                setPeriod(value);
+                setInspection(null);
+              }}
+            >
+              {value}
+            </button>
+          ))}
+        </div>
+      </header>
       <p className={styles.intro}>
         Track account value and net contributions against S&amp;P 500 (SPY) and
         Nasdaq-100 (QQQ), using the same dated deposits and withdrawals.
@@ -297,46 +356,6 @@ export default function AccountHistory({
       )}
       {error && <p role="alert">{error}</p>}
       {result && <p role="status">{result.reason}</p>}
-      {result && (
-        <div
-          className={styles.comparisonSummary}
-          aria-label="Market comparison results"
-        >
-          {(["SPY", "QQQ"] as const).map((symbol) => {
-            const benchmark = result.benchmarks?.find(
-              (b) => b.symbol === symbol,
-            );
-            const end =
-              benchmark?.status === "available"
-                ? benchmark.points.find((point) => point.date === last?.date)
-                : undefined;
-            return (
-              <div key={symbol}>
-                <h3>
-                  {symbol === "SPY" ? "S&P 500 (SPY)" : "Nasdaq-100 (QQQ)"}
-                </h3>
-                {end && last ? (
-                  <>
-                    <strong>{amount(end.value)}</strong>
-                    <small>Hypothetical balance · {end.date}</small>
-                    <p>
-                      Account minus benchmark: {amount(last.equity - end.value)}
-                    </p>
-                  </>
-                ) : (
-                  <p>
-                    {benchmark?.status === "unavailable"
-                      ? benchmark.reason
-                      : readOnly
-                        ? "No validated comparison available for this saved history."
-                        : "No comparison result supplied. Build complete account history to compare."}
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
       {last && (
         <>
           <p>
@@ -358,8 +377,38 @@ export default function AccountHistory({
             <svg
               viewBox={`0 0 ${chartWidth} 210`}
               role="img"
+              onPointerMove={(event) => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const ratio = Math.max(
+                  0,
+                  Math.min(
+                    1,
+                    (((event.clientX - rect.left) / rect.width) * chartWidth -
+                      64) /
+                      (chartWidth - 84),
+                  ),
+                );
+                const time =
+                  Date.parse(points[0].date) +
+                  ratio * (Date.parse(last.date) - Date.parse(points[0].date));
+                setInspection(
+                  points.reduce(
+                    (best, point, i) =>
+                      Math.abs(Date.parse(point.date) - time) <
+                      Math.abs(Date.parse(points[best].date) - time)
+                        ? i
+                        : best,
+                    0,
+                  ),
+                );
+              }}
               aria-label={`Account equity and net contributions from ${points[0].date} to ${last.date}`}
-              style={{ width: "100%", maxHeight: 260 }}
+              style={{
+                width: "100%",
+                minHeight: 220,
+                maxHeight: 340,
+                touchAction: "pan-y",
+              }}
             >
               <text x="60" y="20" textAnchor="end">
                 {amount(high, "USD", true)}
@@ -548,6 +597,46 @@ export default function AccountHistory({
             </div>
           </details>
         </>
+      )}
+      {result && (
+        <div
+          className={styles.comparisonSummary}
+          aria-label="Market comparison results"
+        >
+          {(["SPY", "QQQ"] as const).map((symbol) => {
+            const benchmark = result.benchmarks?.find(
+              (b) => b.symbol === symbol,
+            );
+            const end =
+              benchmark?.status === "available"
+                ? benchmark.points.find((point) => point.date === last?.date)
+                : undefined;
+            return (
+              <div key={symbol}>
+                <h3>
+                  {symbol === "SPY" ? "S&P 500 (SPY)" : "Nasdaq-100 (QQQ)"}
+                </h3>
+                {end && last ? (
+                  <>
+                    <strong>{amount(end.value)}</strong>
+                    <small>Hypothetical balance · {end.date}</small>
+                    <p>
+                      Account minus benchmark: {amount(last.equity - end.value)}
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    {benchmark?.status === "unavailable"
+                      ? benchmark.reason
+                      : readOnly
+                        ? "No validated comparison available for this saved history."
+                        : "No comparison result supplied. Build complete account history to compare."}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );

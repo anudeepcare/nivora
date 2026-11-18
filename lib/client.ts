@@ -1,7 +1,12 @@
 "use client";
 import { fetchWithDeadline, settleWithDeadline } from "./request-deadline";
 import { customerText } from "./customer-language";
-import { createBrowserClient } from "@supabase/ssr";
+import { authCookieOptions, persistenceCookie } from "./auth-persistence";
+import {
+  createBrowserClient,
+  parseCookieHeader,
+  serializeCookieHeader,
+} from "@supabase/ssr";
 import { completeSignOut } from "./auth-actions";
 import { clearAccountCache } from "./account-cache";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -13,7 +18,49 @@ export function authClient() {
     throw Error(
       "Sign-in is temporarily unavailable. Please try again or contact support.",
     );
-  return (client ??= createBrowserClient(url, key));
+  return (client ??= createBrowserClient(url, key, {
+    cookieOptions: {
+      secure:
+        typeof window !== "undefined" && window.location.protocol === "https:",
+    },
+    cookies: {
+      getAll: () =>
+        parseCookieHeader(document.cookie).map(({ name, value }) => ({
+          name,
+          value: value ?? "",
+        })),
+      setAll: (
+        writes: {
+          name: string;
+          value: string;
+          options: import("@supabase/ssr").CookieOptions;
+        }[],
+      ) => {
+        const remember =
+          parseCookieHeader(document.cookie).find(
+            (c) => c.name === persistenceCookie,
+          )?.value !== "session";
+        for (const { name, value, options } of writes)
+          document.cookie = serializeCookieHeader(
+            name,
+            value,
+            authCookieOptions(name, options, remember),
+          );
+      },
+    },
+  }));
+}
+export function setRememberSession(remember: boolean) {
+  document.cookie = serializeCookieHeader(
+    persistenceCookie,
+    remember ? "remember" : "session",
+    {
+      path: "/",
+      sameSite: "lax",
+      secure: window.location.protocol === "https:",
+      maxAge: 31536000,
+    },
+  );
 }
 export class ApiError extends Error {
   constructor(

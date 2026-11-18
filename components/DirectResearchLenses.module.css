@@ -116,3 +116,37 @@
     min-height: 44px;
   }
 }
+
+/* Business and market observations stay distinct without implying good or bad. */
+.grid {
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.metric.metric {
+  --metric-accent: #4b7fce;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--metric-accent);
+  border-radius: 12px;
+  padding: 16px;
+}
+.metric[data-evidence-family="business"] {
+  --metric-accent: #9775c4;
+}
+.metric.metric > strong {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.metric.metric svg polyline {
+  stroke: var(--metric-accent);
+}
+.metric.metric h3 {
+  font-weight: 500;
+}
+.calendarPanel {
+  border-top: 3px solid #ba8743;
+}
+.streamPanel {
+  border-top: 3px solid #4b7fce;
+}

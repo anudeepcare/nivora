@@ -1,4 +1,5 @@
 "use client";
+import businessLayout from "./FinancialPicture.module.css";
 import QuickRead from "./QuickRead";
 import MarketCapHistory from "./MarketCapHistory";
 import layout from "./ResearchMetrics.module.css";
@@ -209,7 +210,9 @@ export default function FinancialPicture({
   const bridgeY = (value: number) =>
     115 - ((value - bridgeLow) / Math.max(1e-9, bridgeHigh - bridgeLow)) * 80;
   return (
-    <section className={`financial-picture depth-financial ${layout.panel}`}>
+    <section
+      className={`financial-picture depth-financial ${layout.panel} ${businessLayout.root}`}
+    >
       <header className="section-head">
         <div>
           <h2>Business performance</h2>
@@ -232,9 +235,6 @@ export default function FinancialPicture({
           ))}
         </div>
       </header>
-      {r.company.assetType === "stock" && (
-        <MarketCapHistory key={r.company.symbol} symbol={r.company.symbol} />
-      )}
       {p && (
         <QuickRead
           title="The business in 30 seconds"
@@ -278,6 +278,9 @@ export default function FinancialPicture({
               : []),
           ]}
         />
+      )}
+      {r.company.assetType === "stock" && (
+        <MarketCapHistory key={r.company.symbol} symbol={r.company.symbol} />
       )}
       {p ? (
         <>

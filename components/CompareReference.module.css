@@ -1,0 +1,194 @@
+.page.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 0 32px;
+  min-width: 0;
+}
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+.eyebrow {
+  display: block;
+  color: var(--accent-solid);
+  font: 500 10px/1.5 var(--font-mono, monospace);
+  letter-spacing: 0.08em;
+}
+.page .heading h1 {
+  margin: 18px 0 12px;
+  font-size: clamp(26px, 3.2vw, 42px);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1.15;
+}
+.heading p,
+.contribution > p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.heading > button {
+  flex-shrink: 0;
+  min-height: 44px;
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
+  color: white;
+}
+.editor {
+  padding: 18px;
+  margin-bottom: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.editor[hidden] {
+  display: none;
+}
+.editor :global(.compare-search) {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0 0;
+}
+.editor input {
+  min-width: 0;
+  flex: 1;
+  font-size: 16px;
+}
+.page .command {
+  margin: 0 0 14px;
+  border-radius: 10px;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+.page .command > div {
+  padding: 20px 18px;
+}
+.page .command > div > strong {
+  font-size: 16px;
+  margin-top: 16px;
+  font-weight: 550;
+}
+.page .command > div > b {
+  font-size: 14px;
+  color: var(--accent-solid);
+}
+.page [data-reference="true"] {
+  background: color-mix(in srgb, var(--accent-solid) 9%, var(--card));
+}
+.page .matrix {
+  margin-top: 0;
+  max-height: none;
+  border-radius: 9px;
+  scrollbar-gutter: auto;
+  max-width: 100%;
+  min-width: 0;
+  overscroll-behavior-x: contain;
+}
+.page .matrix table {
+  table-layout: fixed;
+  min-width: 760px;
+}
+.page .matrix :is(th, td) {
+  padding: 15px 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+}
+.page .matrix thead th {
+  font-size: 11px;
+}
+.page .matrix tbody th {
+  text-align: left;
+}
+.page .matrix td {
+  font-variant-numeric: tabular-nums;
+}
+.page .matrix :global(.footnote) {
+  padding: 10px 16px;
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.referenceButton {
+  display: block;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 10px;
+  text-align: left;
+  cursor: pointer;
+  min-height: 32px;
+}
+.referenceButton[aria-pressed="true"] {
+  color: var(--accent-solid);
+}
+.referenceButton:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: 2px;
+}
+.tools {
+  margin: 12px 0;
+}
+.tools > details {
+  padding: 14px 18px;
+  margin: 10px 0;
+}
+.contribution {
+  margin-top: 14px;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.contribution h2 {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 8px 0;
+}
+@media (max-width: 700px) {
+  .page.page {
+    padding-top: 16px;
+  }
+  .heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .heading > button {
+    align-self: flex-start;
+  }
+  .page .heading h1 {
+    margin: 12px 0 8px;
+    letter-spacing: -0.035em;
+  }
+  .editor,
+  .contribution {
+    padding: 14px;
+  }
+  .editor :global(.compare-search) {
+    flex-direction: column;
+  }
+  .editor input {
+    width: 100%;
+  }
+  .page .matrix table {
+    min-width: 680px;
+  }
+  .page .matrix :is(th, td) {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 700px) {
+  .referenceButton {
+    min-height: 44px;
+  }
+}

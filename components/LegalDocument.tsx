@@ -26,7 +26,10 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
         <Link href="/" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN
         </Link>
-        <DocumentBack />
+        <div className={styles.documentActions}>
+          <ContextLink page="contact">Contact support</ContextLink>
+          <DocumentBack />
+        </div>
       </header>
       <div className="document-layout">
         <nav aria-label="Help and legal documents">
@@ -41,9 +44,6 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
                 : k[0].toUpperCase() + k.slice(1)}
             </ContextLink>
           ))}
-          <ContextLink page="contact" className="document-contact-link">
-            Contact AURYN →
-          </ContextLink>
         </nav>
         <article
           className="document-reading"

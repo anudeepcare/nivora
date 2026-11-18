@@ -14,6 +14,7 @@ import { priceStudies } from "../lib/price-studies.ts";
 import { perspective } from "../lib/analysis.ts";
 function component(file, name, bindings) {
   bindings = {
+    businessLayout: { root: "business-root" },
     QuickRead: () => null,
     SectionIcon: () => null,
     Help: ({ label, children }) =>

@@ -124,7 +124,7 @@ test("history is explicit, confirmed, revision-bound and renders actual returned
     return out;
   };
   let tree = nodes();
-  const buttons = () => nodes().filter((n) => n.type === "button");
+  const buttons = () => nodes().filter((n) => n.type === "button" && n.props.className === "btn");
   assert.equal(calls.length, 0);
   assert.ok(tree.some((n) => n.props.className === "actions"));
   assert.ok(!tree.some((n) => n.props.className === "confirmation"));

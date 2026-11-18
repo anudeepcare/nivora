@@ -3,6 +3,7 @@ import EvidenceDetails from "./EvidenceDetails";
 import ComparisonCharts from "./ComparisonCharts";
 import ContributionCompare from "./ContributionCompare";
 import decisionStyles from "./DecisionLists.module.css";
+import compareStyles from "./CompareReference.module.css";
 import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
 import { SettingsSignalPolicies } from "./SettingsExperience";
@@ -237,29 +238,29 @@ export function Settings() {
             )}
             <details className="settings-password-change">
               <summary>Change password</summary>
-            <form className="password-form" onSubmit={update}>
-              <label>
-                New password
-                <input
-                  type="password"
-                  minLength={8}
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </label>
-              <p>
-                Use at least 8 characters and a password you don’t use
-                elsewhere.
-              </p>
-              <button
-                className="button primary"
-                disabled={busy || (!!demo && demo.routePrefix !== "")}
-              >
-                {busy ? "Saving…" : "Update password"}
-              </button>
-            </form>
+              <form className="password-form" onSubmit={update}>
+                <label>
+                  New password
+                  <input
+                    type="password"
+                    minLength={8}
+                    autoComplete="new-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </label>
+                <p>
+                  Use at least 8 characters and a password you don’t use
+                  elsewhere.
+                </p>
+                <button
+                  className="button primary"
+                  disabled={busy || (!!demo && demo.routePrefix !== "")}
+                >
+                  {busy ? "Saving…" : "Update password"}
+                </button>
+              </form>
             </details>
           </div>
         </section>
@@ -312,7 +313,11 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     [rows, setRows] = useState<Research[]>([]),
     [success, setSuccess] = useState(""),
     [error, setError] = useState(""),
-    [loading, setLoading] = useState(false);
+    [loading, setLoading] = useState(false),
+    [editing, setEditing] = useState(!initialSymbols),
+    [referenceSymbol, setReferenceSymbol] = useState(
+      initialSymbols.split(",")[0] ?? "",
+    );
   useEffect(() => {
     if (!symbols) {
       setRows([]);
@@ -388,6 +393,8 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         throw Error("Choose two to four companies.");
       setSuccess("");
       setSymbols(list.join(","));
+      setEditing(false);
+      setReferenceSymbol(list[0]);
       setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Check the symbols");
@@ -412,61 +419,87 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     })),
   );
   return (
-    <section className={decisionStyles.compare}>
-      <span className={decisionStyles.eyebrow}>CONTRIBUTION COMPARISON</span>
-      <PageHeading
-        title="Your companies. One next dollar."
-        subtitle="Compare business evidence, expectations, Pace and portfolio capacity."
-      />
-      <div className="source-line">
-        {saved.data?.documents.map((d) => (
-          <button
-            className="text-button"
-            key={d.key}
-            onClick={() => {
-              setDraft(d.body.symbols.join(","));
-              setSymbols(d.body.symbols.join(","));
-            }}
-          >
-            {d.body.name}
-          </button>
-        ))}
-        {rows.length >= 2 && (
-          <button className="text-button" onClick={saveComparison}>
-            Save comparison
-          </button>
-        )}
-      </div>
-      <details className={decisionStyles.lookup}>
-        <summary>Find companies by name</summary>
-        <div className="compare-picker">
-          <Search
-            onSelect={(symbol) =>
-              setDraft((current) =>
-                [
-                  ...new Set([
-                    ...current.split(/[ ,]+/).filter(Boolean),
-                    symbol,
-                  ]),
-                ]
-                  .slice(0, 4)
-                  .join(", "),
-              )
-            }
-          />
+    <section className={`${decisionStyles.compare} ${compareStyles.page}`}>
+      <header className={compareStyles.heading}>
+        <div>
+          <span className={compareStyles.eyebrow}>CONTRIBUTION COMPARISON</span>
+          <h1>
+            {values.length === 3
+              ? "Three companies."
+              : values.length === 2
+                ? "Two companies."
+                : values.length === 4
+                  ? "Four companies."
+                  : "Your companies."}{" "}
+            One next dollar.
+          </h1>
+          <p>
+            Compare business evidence, expectations, Pace and portfolio capacity
+            on the same scale.
+          </p>
         </div>
-      </details>
-      <form className="compare-search" onSubmit={submit}>
-        <input
-          aria-label="Companies to compare"
-          placeholder="MSFT, AAPL — up to four tickers"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value.toUpperCase())}
-        />
-        <button className="button primary" disabled={loading}>
-          {loading ? "Loading evidence…" : "Compare companies"}
+        <button
+          className="button primary"
+          type="button"
+          aria-expanded={editing}
+          onClick={() => setEditing(!editing)}
+        >
+          + Change companies
         </button>
-      </form>
+      </header>
+      <div className={compareStyles.editor} hidden={!editing}>
+        <div className="source-line">
+          {saved.data?.documents.map((d) => (
+            <button
+              className="text-button"
+              key={d.key}
+              onClick={() => {
+                setDraft(d.body.symbols.join(","));
+                setSymbols(d.body.symbols.join(","));
+                setReferenceSymbol(d.body.symbols[0] ?? "");
+                setEditing(false);
+              }}
+            >
+              {d.body.name}
+            </button>
+          ))}
+          {rows.length >= 2 && (
+            <button className="text-button" onClick={saveComparison}>
+              Save comparison
+            </button>
+          )}
+        </div>
+        <details className={decisionStyles.lookup}>
+          <summary>Find companies by name</summary>
+          <div className="compare-picker">
+            <Search
+              onSelect={(symbol) =>
+                setDraft((current) =>
+                  [
+                    ...new Set([
+                      ...current.split(/[ ,]+/).filter(Boolean),
+                      symbol,
+                    ]),
+                  ]
+                    .slice(0, 4)
+                    .join(", "),
+                )
+              }
+            />
+          </div>
+        </details>
+        <form className="compare-search" onSubmit={submit}>
+          <input
+            aria-label="Companies to compare"
+            placeholder="MSFT, AAPL — up to four tickers"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value.toUpperCase())}
+          />
+          <button className="button primary" disabled={loading}>
+            {loading ? "Loading evidence…" : "Compare companies"}
+          </button>
+        </form>
+      </div>
       {error && <Notice error>{error}</Notice>}
       {success && <Notice>{success}</Notice>}
       {compatibility.length > 0 && (
@@ -475,60 +508,87 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
       {values.length > 0 && (
         <>
           <section
-            className={decisionStyles.command}
+            className={`${decisionStyles.command} ${compareStyles.command}`}
             aria-label="Decision comparison"
             style={{
-              gridTemplateColumns: `1.25fr repeat(${values.length}, minmax(140px, .75fr))`,
+              gridTemplateColumns: `minmax(220px, 1.65fr) repeat(${values.length}, minmax(160px, 1fr))`,
             }}
           >
             <div className={decisionStyles.commandLabel}>
               <span>DECISION</span>
-              <strong>Compare the evidence</strong>
+              <strong>Decision context</strong>
               <p>
                 Each company retains its own context. No automatic winner or
                 allocation is inferred.
               </p>
             </div>
             {values.map(({ r, edge }) => (
-              <div key={r.company.symbol}>
+              <div
+                key={r.company.symbol}
+                data-reference={
+                  r.company.symbol === referenceSymbol || undefined
+                }
+              >
                 <Link
                   href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
                 >
                   <SecurityLogo symbol={r.company.symbol} />
                   {r.company.symbol}
                 </Link>
-                <strong>{edge.decision.contextLabel}</strong>
-                <b>{edge.pacePresentation.code}</b>
-                <small>{edge.pacePresentation.actionLabel}</small>
+                <strong>
+                  {edge.pacePresentation.actionLabel || "Unavailable"}
+                </strong>
+                <b>{edge.pacePresentation.code || "Pace unavailable"}</b>
+                <small>{edge.decision.contextLabel}</small>
               </div>
             ))}
           </section>
-          <details className={decisionStyles.details}>
-            <summary>Price and financial charts</summary>
-            <ComparisonCharts research={values.map(({ r }) => r)} />
-          </details>
         </>
       )}
-      <PaceHelp trigger="Understand AURYN Pace" />
+
       {values.length ? (
         <div
-          className="table-scroll"
+          className={`table-scroll ${compareStyles.matrix}`}
           role="region"
           aria-label="Company comparison, scroll for more metrics and columns"
           tabIndex={0}
         >
           <table className="compare-table">
+            <colgroup>
+              <col
+                style={{ width: `${(1.65 / (values.length + 1.65)) * 100}%` }}
+              />
+              {values.map(({ r }) => (
+                <col
+                  key={r.company.symbol}
+                  style={{ width: `${100 / (values.length + 1.65)}%` }}
+                />
+              ))}
+            </colgroup>
             <thead>
               <tr>
-                <th>Reported metric</th>
+                <th>MEASUREMENT</th>
                 {values.map(({ r, p }) => (
-                  <th key={r.company.symbol}>
+                  <th
+                    key={r.company.symbol}
+                    data-reference={
+                      r.company.symbol === referenceSymbol || undefined
+                    }
+                  >
                     <Link
                       href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
                     >
                       <SecurityLogo symbol={r.company.symbol} />
                       {r.company.symbol}
                     </Link>
+                    <button
+                      className={compareStyles.referenceButton}
+                      type="button"
+                      aria-pressed={r.company.symbol === referenceSymbol}
+                      onClick={() => setReferenceSymbol(r.company.symbol)}
+                    >
+                      Use as reference
+                    </button>
                     <small className={decisionStyles.basisDate}>
                       {p.periodBasis} · {dateLabel(p.last?.end)}
                     </small>
@@ -562,6 +622,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                 "Net income",
                 "Free cash flow",
                 "Operating margin",
+                "Free cash flow margin",
                 "Price trend",
                 "AURYN View",
                 "AURYN Pace",
@@ -569,15 +630,31 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                 <tr key={label}>
                   <th>{label}</th>
                   {values.map(({ r, p, edge }) => (
-                    <td key={r.company.symbol}>
+                    <td
+                      key={r.company.symbol}
+                      data-reference={
+                        r.company.symbol === referenceSymbol || undefined
+                      }
+                    >
                       {
                         [
-                          amount(p.last?.revenue, p.last?.currency, true),
-                          percent(p.growth),
-                          amount(p.last?.netIncome, p.last?.currency, true),
-                          amount(p.last?.fcf, p.last?.currency, true),
-                          percent(p.last?.margin),
-                          p.tech.trend,
+                          p.last?.revenue == null
+                            ? "Unavailable"
+                            : amount(p.last.revenue, p.last.currency, true),
+                          p.growth == null ? "Unavailable" : percent(p.growth),
+                          p.last?.netIncome == null
+                            ? "Unavailable"
+                            : amount(p.last.netIncome, p.last.currency, true),
+                          p.last?.fcf == null
+                            ? "Unavailable"
+                            : amount(p.last.fcf, p.last.currency, true),
+                          p.last?.margin == null
+                            ? "Unavailable"
+                            : percent(p.last.margin),
+                          p.last?.fcfMargin == null
+                            ? "Unavailable"
+                            : percent(p.last.fcfMargin),
+                          p.tech.trend || "Unavailable",
                           <div key="view">
                             <strong>{edge.decision.contextLabel}</strong>
                             <small className="block">
@@ -605,6 +682,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
             </tbody>
           </table>
           <p className="footnote">
+            Highlighted column is a comparison reference, not a ranking.
             Different fiscal year ends and currencies can limit comparability.
             Missing observations remain unavailable. No combined ranking is
             inferred.
@@ -616,13 +694,28 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         </Empty>
       )}
       {values.length >= 2 && (
-        <details className={decisionStyles.details}>
-          <summary>Next contribution · portfolio capacity</summary>
+        <section className={compareStyles.contribution}>
+          <span className={compareStyles.eyebrow}>YOUR NEXT CONTRIBUTION</span>
+          <h2>Test your next addition</h2>
+          <p>
+            Apply the same amount to each company independently. No suggested
+            allocation is generated.
+          </p>
           <ContributionCompare
+            defaultOpen
             symbols={values.map(({ r }) => r.company.symbol)}
             prefix={prefix}
           />
-        </details>
+        </section>
+      )}
+      {values.length > 0 && (
+        <div className={compareStyles.tools}>
+          <PaceHelp trigger="Understand AURYN Pace" />
+          <details className={decisionStyles.details}>
+            <summary>Price and financial charts</summary>
+            <ComparisonCharts research={values.map(({ r }) => r)} />
+          </details>
+        </div>
       )}
     </section>
   );

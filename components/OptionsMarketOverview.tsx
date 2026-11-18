@@ -12,8 +12,10 @@ const finite = (v: unknown, percent = false) =>
     : "Not supplied";
 export default function OptionsMarketOverview({
   preview = false,
+  standalone = false,
 }: {
   preview?: boolean;
+  standalone?: boolean;
 }) {
   const [board, setBoard] = useState("stocks");
   const [query, setQuery] = useState("");
@@ -44,17 +46,19 @@ export default function OptionsMarketOverview({
     (currentPage + 1) * pageSize,
   );
   return (
-    <section className={s.optionsPanel}>
-      <header className={s.header}>
-        <h3>Options across the market</h3>
-        <Link href="/options">Open market workspace ↗</Link>
-      </header>
+    <section className={`${s.optionsPanel} ${picker.overview}`}>
+      {!standalone && (
+        <header className={s.header}>
+          <h3>Options across the market</h3>
+          <Link href="/options">Open market workspace ↗</Link>
+        </header>
+      )}
       <>
         <p>
           End-of-day observations. Stock and fund universes are separate, not a
           combined ranking. No trade direction is inferred.
         </p>
-        <nav className={s.tabs} aria-label="Options universe">
+        <nav className={picker.universe} aria-label="Options universe">
           {["stocks", "funds"].map((id) => (
             <button
               key={id}
@@ -80,7 +84,7 @@ export default function OptionsMarketOverview({
           <p role="status">Market options coverage is unavailable.</p>
         ) : (
           <>
-            <p>
+            <p className={picker.coverage}>
               {records.length} returned {board}.{" "}
               {board === "stocks" && data?.coverageCount != null
                 ? `${data.coverageCount} stocks in provider coverage.`
@@ -101,7 +105,7 @@ export default function OptionsMarketOverview({
                 placeholder="Ticker, e.g. AAPL"
               />
             </label>
-            <p role="status">
+            <p className={picker.resultCount} role="status">
               {visible.length} matching observations · {records.length}{" "}
               returned. Select a ticker to open its options research.
             </p>

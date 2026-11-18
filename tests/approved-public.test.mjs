@@ -102,6 +102,7 @@ function accountHarness({
   let index = 0;
   const values = [],
     effects = [],
+    persistence = [],
     routes = [];
   const useState = (initial) => {
     const i = index++;
@@ -122,6 +123,7 @@ function accountHarness({
     useEffect,
     authErrorMessage,
     authClient: () => ({ auth }),
+    setRememberSession: (value) => persistence.push(value),
     useRouter: () => ({ replace: (path) => routes.push(path) }),
   });
   const render = () => {
@@ -130,12 +132,13 @@ function accountHarness({
   };
   render();
   values[4] = mode;
-  values[8] = provider;
+  values[9] = provider;
   return {
     render,
     values,
     effects,
     routes,
+    persistence,
     field: (name, value) =>
       nodes(
         render(),
@@ -294,7 +297,11 @@ test("email sign-in trims email, keeps password intact and opens the account wor
   });
   harness.field("email", "  person@example.com  ");
   harness.field("password", " valid password ");
+  const remember = nodes(harness.render(), n => n.type === "input" && n.props.type === "checkbox")[0];
+  assert.equal(remember.props.checked, true);
+  remember.props.onChange({target:{checked:false}});
   await harness.submit();
+  assert.deepEqual(harness.persistence, [false]);
   assert.deepEqual(calls, [
     { email: "person@example.com", password: " valid password " },
   ]);
@@ -383,7 +390,7 @@ test("available OAuth choices call their provider and disabled choices do not se
   const previous = globalThis.window;
   globalThis.window = { location: { origin: "https://auryn.example" } };
   try {
-    for (const provider of ["google", "x"]) {
+    for (const provider of ["google"]) {
       const harness = accountHarness({
         auth: {
           signInWithOAuth: async (value) => {
@@ -407,7 +414,7 @@ test("available OAuth choices call their provider and disabled choices do not se
     }
     assert.deepEqual(
       calls.map((c) => c.provider),
-      ["google", "x"],
+      ["google"],
     );
     assert(
       calls.every(
@@ -428,7 +435,7 @@ test("available OAuth choices call their provider and disabled choices do not se
         n.type === "button" &&
         n.props["aria-label"]?.startsWith("Continue with"),
     );
-    assert.equal(buttons.length, 2);
+    assert.equal(buttons.length, 1);
     assert(buttons.every((b) => b.props.disabled));
   } finally {
     globalThis.window = previous;
@@ -517,7 +524,7 @@ test("confirmation resend preserves the callback and suppresses a second request
       },
     });
     harness.field("email", " person@example.com ");
-    harness.values[5] = "Confirm your email";
+    harness.values[6] = "Confirm your email";
     const resend = () =>
       nodes(
         harness.render(),

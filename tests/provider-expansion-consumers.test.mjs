@@ -337,3 +337,13 @@ test("paged market surface has one horizontal scroller without nested vertical t
  assert.match(source,/setQuery\(event.target.value\);\s+setPage\(0\)/);
  assert.match(source,/setBoard\(id\);\s+setPage\(0\)/);
 });
+test("standalone market page hides embedded duplicate heading and self-link",()=>{
+ const source=fs.readFileSync("components/OptionsMarketOverview.tsx","utf8");
+ assert.match(source,/!standalone &&/);
+ const page=fs.readFileSync("components/OptionsMarketPage.tsx","utf8");
+ assert.match(page,/<OptionsMarketOverview standalone/);
+ assert.match(page,/className=\{layout.viewSwitch\}/);
+ const css=fs.readFileSync("components/OptionsMarketOverview.module.css","utf8");
+ assert.match(css,/\.universe button\[aria-pressed="true"\]/);
+ assert.match(css,/\.pagination button:disabled/);
+});

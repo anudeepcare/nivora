@@ -66,7 +66,7 @@ test("market options has its own lazy route without removing ticker options", as
   const shell = fs.readFileSync("components/Shell.tsx", "utf8");
   assert.match(product, /page === "options"/);
   assert.match(product, /import\("\.\/OptionsMarketPage"\)/);
-  assert.match(page, /<OptionsMarketOverview \/>/);
+  assert.match(page, /<OptionsMarketOverview standalone \/>/);
   assert.match(page, /not included in this design\s+preview/);
   assert.match(shell, /mobileNavigation.some/);
   assert.equal(lensForSection("Options").label, "Options");

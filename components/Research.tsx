@@ -168,6 +168,15 @@ const tabPresentation = {
   Advanced: { label: "Indicators & tools", icon: SlidersHorizontal },
   Pace: { label: "Pace", icon: ChartCandlestick },
 };
+function ResearchTabIcon({
+  section,
+}: {
+  section: keyof typeof tabPresentation;
+}) {
+  const Icon = tabPresentation[section].icon;
+  return <Icon size={16} aria-hidden="true" />;
+}
+
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
   const workspacePreferences = useWorkspacePreferences();
@@ -595,6 +604,7 @@ export default function Research({ symbol }: { symbol: string }) {
             aria-current={tab === section ? "page" : undefined}
             onClick={() => switchTab(section)}
           >
+            <ResearchTabIcon section={section} />
             {tabPresentation[section].label}
           </button>
         ))}
@@ -604,6 +614,7 @@ export default function Research({ symbol }: { symbol: string }) {
     <article
       className={`research-page approved-research-page ${cockpit.root}`}
       data-research-mode={preferences.detail}
+      data-active-lens={activeLens.sections[0]}
     >
       <header className={experience.stockHeader}>
         <div className={experience.stockIdentity}>
@@ -725,6 +736,7 @@ export default function Research({ symbol }: { symbol: string }) {
             }
             onClick={() => switchTab(lens.sections[0])}
           >
+            <ResearchTabIcon section={lens.sections[0]} />
             {lens.label}
           </button>
         ))}

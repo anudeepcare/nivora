@@ -650,7 +650,7 @@ export function researchOutlook(
       impliedEps > referenceEstimate.epsHigh! * 1.1)
   )
     return unavailable(
-      "Forward P/E cannot be reconciled with the nearest annual EPS range. Earnings-period and accounting/split basis are unverified, so this model range is withheld.",
+      `Forward P/E cannot be reconciled with the nearest annual EPS range${referenceEstimate ? ` (${referenceEstimate.period}, ${referenceEstimate.date}; ${referenceEstimate.epsLow!.toFixed(2)}–${referenceEstimate.epsHigh!.toFixed(2)} ${referenceEstimate.currency})` : ""}. The reference price divided by forward P/E implies EPS of ${impliedEps.toFixed(2)} ${r.quote.currency}. A later forecast may differ, but the provider multiple does not identify its denominator period or accounting/split basis, so this model range is withheld.`,
     );
   const { epsLow: low, eps: base, epsHigh: high } = estimate;
   if (

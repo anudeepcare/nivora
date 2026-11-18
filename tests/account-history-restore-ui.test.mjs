@@ -93,7 +93,7 @@ for (const late of [false, true])
       const cleanup = effects.map((f) => f());
       if (late) {
         await nodes()
-          .find((n) => n.type === "button")
+          .find((n) => n.type === "button" && n.props.className === "btn")
           .props.onClick();
         assert.equal(restoreSignal.aborted, true);
         resolveSaved({ result: saved });
@@ -113,7 +113,7 @@ for (const late of [false, true])
           false,
         );
         assert.equal(
-          tree.filter((n) => n.type === "button")[1].props.disabled,
+          tree.filter((n) => n.type === "button" && n.props.className === "btn")[1].props.disabled,
           true,
         );
         cleanup.forEach((f) => f?.());

@@ -1,4 +1,5 @@
 "use client";
+import AskAurynQuestion from "./AskAurynQuestion";
 import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
 import { Sparkles, Download } from "lucide-react";
@@ -145,6 +146,10 @@ export default function Analyst({
     };
     return (
       <section className="ask-auryn">
+        <AskAurynQuestion
+          key={research.company.symbol}
+          symbol={research.company.symbol}
+        />
         <p className="analyst-context">
           <strong>{research.company.symbol}</strong> · Evidence through{" "}
           {dateLabel(research.retrievedAt)} · Answers use this company’s
@@ -216,6 +221,10 @@ export default function Analyst({
         </div>
         <Sparkles size={26} className="violet" />
       </header>
+      <AskAurynQuestion
+        key={research.company.symbol}
+        symbol={research.company.symbol}
+      />
       <div className="analyst-availability" role="status">
         <span
           className={`status-pill ${availability.data?.available ? "green" : "amber"}`}

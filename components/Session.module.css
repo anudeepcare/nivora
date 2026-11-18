@@ -330,8 +330,14 @@
   color: var(--muted);
   font-size: 11px;
 }
-.secondaryOptions summary { cursor: pointer; width: fit-content; }
-.secondaryOptions[open] > button { margin-top: 10px; width: 100%; }
+.secondaryOptions summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.secondaryOptions[open] > button {
+  margin-top: 10px;
+  width: 100%;
+}
 .auth .main .secondaryOptions :global(.mp-social-x-label) {
   position: static;
   width: auto;
@@ -340,20 +346,72 @@
   clip: auto;
   white-space: normal;
 }
-.auth .main .secondaryOptions :global(.mp-social-x) { font-size: 13px !important; }
+.auth .main .secondaryOptions :global(.mp-social-x) {
+  font-size: 13px !important;
+}
 @media (min-width: 901px) {
-  .main { justify-content: flex-start; }
-  .auth .main :global(.mp-auth-home) { margin-bottom: 20px; }
+  .main {
+    justify-content: flex-start;
+  }
+  .auth .main :global(.mp-auth-home) {
+    margin-bottom: 20px;
+  }
 }
 
 /* On narrow screens the requested task comes before the product introduction. */
 @media (max-width: 900px) {
-  .main { order: -1; padding: 24px 22px 32px; }
-  .auth .main :global(.mp-auth-mobile-brand) { display: block; align-self: flex-start; margin-bottom: 24px; }
-  .auth .main :global(.mp-auth-mobile-brand a) { color: var(--ink); }
-  .auth .main :global(.mp-auth-home) { align-self: flex-start; margin-bottom: 18px; }
-  .story { padding: 32px 22px; }
-  .story > a { display: none; }
-  .storyContent > h2 { font-size: 30px; letter-spacing: -1px; }
-  .researchCard { margin-top: 24px; }
+  .main {
+    order: -1;
+    padding: 24px 22px 32px;
+  }
+  .auth .main :global(.mp-auth-mobile-brand) {
+    display: block;
+    align-self: flex-start;
+    margin-bottom: 24px;
+  }
+  .auth .main :global(.mp-auth-mobile-brand a) {
+    color: var(--ink);
+  }
+  .auth .main :global(.mp-auth-home) {
+    align-self: flex-start;
+    margin-bottom: 18px;
+  }
+  .story {
+    padding: 32px 22px;
+  }
+  .story > a {
+    display: none;
+  }
+  .storyContent > h2 {
+    font-size: 30px;
+    letter-spacing: -1px;
+  }
+  .researchCard {
+    margin-top: 24px;
+  }
+}
+.remember {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0 18px;
+}
+.remember label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.remember input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  accent-color: var(--blue);
+}
+.remember small {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 52ch;
 }

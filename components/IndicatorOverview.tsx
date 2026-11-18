@@ -69,6 +69,9 @@ export default function IndicatorOverview({
             return (
               <article
                 key={row.key}
+                data-evidence-family={
+                  group.label.startsWith("Business") ? "business" : "market"
+                }
                 className={`${styles.indicator} ${wall.metric}`}
               >
                 <header>
