@@ -58,10 +58,14 @@ test("institution schemas preserve report dates and equity, exclude scores/optio
 test("institution UI mounts only on explicit selection and history has its own request", () => {
   assert.match(
     fs.readFileSync("components/InstitutionalActivists.tsx", "utf8"),
-    /selected && <InstitutionDetail/,
+    /selected &&\s*\(?\s*<InstitutionDetail/,
   );
   const s = fs.readFileSync("components/InstitutionDetail.tsx", "utf8");
-  assert.match(s, /history \? "history" : "profile"/);
+  assert.match(
+    s,
+    /history\s*\? `institution\/\$\{encodeURIComponent\(cik\)\}\?view=history`/,
+  );
+  assert.match(s, /institution-directory\?cik=/);
   assert.match(
     s.replace(/\s+/g, " "),
     /not total firm assets or investment returns/,

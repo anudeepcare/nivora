@@ -106,13 +106,18 @@ export default function AskAurynQuestion({ symbol }: { symbol: string }) {
                     </a>
                   </dt>
                   <dd>
-                    {f.value?.toLocaleString(undefined, {
-                      maximumFractionDigits: 2,
-                    })}{" "}
-                    {f.unit}
+                    {f.passage || (
+                      <>
+                        {f.value?.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        {f.unit}
+                      </>
+                    )}
                   </dd>
                   <small>
-                    Period {f.period} · recorded {f.filed}
+                    Period {f.period} ·{" "}
+                    {f.id.startsWith("T-") ? "checked" : "recorded"} {f.filed}
                   </small>
                 </div>
               ))}

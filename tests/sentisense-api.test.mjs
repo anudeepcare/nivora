@@ -773,3 +773,21 @@ test("document publications accept documented bare response and enforce search i
     } else assert.equal(result.data, null);
   }
 });
+
+test("primary-class estimate display does not weaken adapter subject checks", async () => {
+  for (const [requested, returned, expected] of [
+    ["GOOG", "GOOGL", "subject-mismatch"],
+    ["GOOGL", "MSFT", "subject-mismatch"],
+    ["GOOGL", "GOOGL", "preview"],
+  ]) {
+    const read = createSentiSenseClient({
+      key: "synthetic",
+      fetcher: async () =>
+        response({
+          isPreview: true,
+          data: { ticker: returned, estimates: [], surprises: [] },
+        }),
+    });
+    assert.equal((await read(requested, "estimates")).status, expected);
+  }
+});

@@ -11,6 +11,10 @@ import EarningsReview from "./EarningsReview";
 import EconomicContext from "./EconomicContext";
 import s from "./DirectResearchLenses.module.css";
 
+const EntityMetricHistory = dynamic(() => import("./EntityMetricHistory"));
+
+const StockSentiment = dynamic(() => import("./StockSentiment"));
+
 const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
   loading: () => <p role="status">Opening research tools…</p>,
 });
@@ -52,6 +56,16 @@ export function IndicatorsLens({
   return (
     <section className={s.lens} aria-label="Indicators lens">
       <IndicatorOverview research={research} />
+      <EntityMetricHistory
+        key={`history-${research.company.symbol}`}
+        symbol={research.company.symbol}
+        preview={preview}
+      />
+      <StockSentiment
+        key={research.company.symbol}
+        symbol={research.company.symbol}
+        preview={preview}
+      />
       <div className={s.supporting}>
         <AdvancedResearch research={research} />
         <SentiSensePanels

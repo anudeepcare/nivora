@@ -89,7 +89,7 @@ export default function CompanyRelationships({
                   Showing a bounded subset of the relationship map.
                 </p>
               )}
-              <details>
+              <details data-info-disclosure>
                 <summary aria-label="Relationship source details">
                   ⓘ Source
                 </summary>

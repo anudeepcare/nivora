@@ -1,3 +1,4 @@
+import { optionsPositioning } from "../lib/options-positioning.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 test("positioning preserves genuine zero and missing metrics without inferring direction", async () => {
@@ -140,4 +141,50 @@ test("open-interest walls preserve dated strike evidence, not synthetic gamma", 
     0,
   );
   assert.doesNotMatch(JSON.stringify(p), /gamma|gex|conviction/i);
+});
+
+test("large print summary reads root aggregate fields, keeps zero distinct and does not borrow dates", () => {
+  assert.deepEqual(optionsPositioning({ largePrintCount: 0 }).prints, {
+    count: 0,
+    percentile: null,
+  });
+  assert.deepEqual(
+    optionsPositioning({
+      largePrintCount: 4,
+      largestPrintPctl: 88,
+      asOf: "2026-11-18",
+    }).prints,
+    { count: 4, percentile: 88 },
+  );
+  assert.deepEqual(
+    optionsPositioning({ latest: { largePrintCount: 9, largestPrintPctl: 99 } })
+      .prints,
+    { count: null, percentile: null },
+  );
+  for (const value of [
+    -1,
+    1.5,
+    [4],
+    true,
+    Infinity,
+    Number.MAX_SAFE_INTEGER + 1,
+  ])
+    assert.equal(
+      optionsPositioning({ largePrintCount: value }).prints.count,
+      null,
+    );
+  for (const value of [-1, 101, [88], true, Infinity])
+    assert.equal(
+      optionsPositioning({ largestPrintPctl: value }).prints.percentile,
+      null,
+    );
+  assert.equal(
+    optionsPositioning({ largestPrintPctl: 0 }).prints.percentile,
+    0,
+  );
+  assert.equal(
+    optionsPositioning({ largePrintCount: 0, largestPrintPctl: 88 }).prints
+      .percentile,
+    null,
+  );
 });

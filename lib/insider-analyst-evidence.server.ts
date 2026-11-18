@@ -1,3 +1,4 @@
+import { sentisenseFetch } from "./sentisense-provider.server";
 import "server-only";
 import {
   evidenceSymbol,
@@ -23,12 +24,16 @@ export async function readInsiderAnalystEvidence(
       : `/analyst/${encodeURIComponent(symbol)}/called-it?limit=10`;
   let response: Response;
   try {
-    response = await fetcher(`https://app.sentisense.ai/api/v1${path}`, {
-      headers: { "X-SentiSense-API-Key": key, Accept: "application/json" },
-      cache: "no-store",
-      redirect: "error",
-      signal: AbortSignal.timeout(12000),
-    });
+    response = await sentisenseFetch(
+      `https://app.sentisense.ai/api/v1${path}`,
+      {
+        headers: { "X-SentiSense-API-Key": key, Accept: "application/json" },
+        cache: "no-store",
+        redirect: "error",
+        signal: AbortSignal.timeout(12000),
+      },
+      fetcher,
+    );
   } catch {
     throw new HttpError("Evidence provider could not be reached.", 503);
   }

@@ -200,7 +200,13 @@ export default function StockFacts({
                 <p>{row.help}</p>
               </Help>
             </dt>
-            <dd>{row.value}</dd>
+            <dd
+              data-value-type={
+                row.label === "Next earnings" ? "date" : "number"
+              }
+            >
+              {row.value}
+            </dd>
             <small>{row.date}</small>
           </div>
         ))}

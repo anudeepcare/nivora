@@ -29,9 +29,12 @@ export async function POST(request: Request) {
     const input = screenInput(raw);
     if (!input)
       throw new HttpError("Choose a supported screen and numeric value.", 400);
-    if (input.field.startsWith("ANALYST_")) requireFeature(access, "analysts");
-    if (["RETURN_1Y", "VOLATILITY_30D"].includes(input.field))
-      requireFeature(access, "technicals");
+    for (const condition of [input, ...(input.second ? [input.second] : [])]) {
+      if (condition.field.startsWith("ANALYST_"))
+        requireFeature(access, "analysts");
+      if (["RETURN_1Y", "VOLATILITY_30D"].includes(condition.field))
+        requireFeature(access, "technicals");
+    }
     await reserveAccess(user.id, access, "research", "stock-screener");
     const result = await runStockScreen(input);
     return privateJson({

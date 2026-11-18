@@ -48,7 +48,6 @@ const IndicatorsLens = dynamic(
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
 });
-const OptionsMarketOverview = dynamic(() => import("./OptionsMarketOverview"));
 const OptionsDesk = dynamic(() => import("./OptionsDesk"), {
   loading: () => <p role="status">Opening options…</p>,
 });
@@ -815,10 +814,6 @@ export default function Research({ symbol }: { symbol: string }) {
                           preview={!!demo}
                         />
                       ),
-                    },
-                    {
-                      title: "Market overview",
-                      content: <OptionsMarketOverview preview={!!demo} />,
                     },
                   ]}
                 />

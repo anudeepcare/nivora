@@ -1,13 +1,24 @@
 "use client";
 import { useState } from "react";
 import { useResource } from "./Session";
-import type { SentiSenseResult } from "@/lib/sentisense-api";
+
 import { institutionRows } from "@/lib/institution-view";
 import IntelligenceTable from "./IntelligenceTable";
 export default function InstitutionDetail({ cik }: { cik: string }) {
   const [history, setHistory] = useState(false);
-  const r = useResource<SentiSenseResult>(
-    `institution/${encodeURIComponent(cik)}?view=${history ? "history" : "profile"}`,
+  const [page, setPage] = useState({ offset: 0, reportDate: "" });
+  const r = useResource<{
+    data: unknown;
+    status: string;
+    isPreview: boolean;
+    retrievedAt: string;
+    canNext?: boolean;
+    totalCount?: number | null;
+    returnedCount?: number;
+  }>(
+    history
+      ? `institution/${encodeURIComponent(cik)}?view=history`
+      : `institution-directory?cik=${encodeURIComponent(cik)}&offset=${page.offset}${page.reportDate ? `&reportDate=${page.reportDate}` : ""}`,
     undefined,
     900000,
   );
@@ -36,7 +47,14 @@ export default function InstitutionDetail({ cik }: { cik: string }) {
         !["available", "preview"].includes(r.data?.status ?? "") ? (
         <p role="status">
           Institution evidence unavailable.{" "}
-          <button onClick={r.refresh}>Retry institution</button>
+          <button
+            onClick={() => {
+              setPage({ offset: 0, reportDate: "" });
+              r.refresh();
+            }}
+          >
+            Reload first page
+          </button>
         </p>
       ) : (
         <>
@@ -50,10 +68,11 @@ export default function InstitutionDetail({ cik }: { cik: string }) {
             <p>
               Latest available filing: quarter ended{" "}
               {String(d?.latestReportDate ?? "not supplied")}. This may differ
-              from the selected activist quarter and may still be filing. First
-              50 returned holdings; {String(d?.holdingsCount ?? "unknown")}{" "}
-              total rows including exited positions. No complete portfolio is
-              implied by this page.
+              from the selected activist quarter and may still be filing.{" "}
+              {r.data?.returnedCount ?? 0} returned holdings from offset{" "}
+              {page.offset}; {String(d?.holdingsCount ?? "unknown")} total rows
+              including exited positions. No complete portfolio is implied by
+              this page.
             </p>
           )}
           <IntelligenceTable
@@ -62,6 +81,40 @@ export default function InstitutionDetail({ cik }: { cik: string }) {
             }
             rows={institutionRows(d, history)}
           />
+          {!history && !r.data?.isPreview && (
+            <nav aria-label="Institution holdings pages">
+              <button
+                className="btn"
+                disabled={page.offset === 0}
+                onClick={() =>
+                  setPage({
+                    offset: Math.max(0, page.offset - 50),
+                    reportDate: String(d?.latestReportDate ?? ""),
+                  })
+                }
+              >
+                Previous holdings
+              </button>
+              <button
+                className="btn"
+                disabled={!r.data?.canNext}
+                onClick={() =>
+                  setPage({
+                    offset: page.offset + 50,
+                    reportDate: String(d?.latestReportDate ?? ""),
+                  })
+                }
+              >
+                Next holdings
+              </button>
+              {page.offset === 1000 && (
+                <p>
+                  Interactive limit reached; this view does not include all
+                  holdings.
+                </p>
+              )}
+            </nav>
+          )}
           <details>
             <summary>Source & comparison basis</summary>
             <p>

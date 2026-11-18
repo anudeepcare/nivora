@@ -213,3 +213,33 @@ test("malformed truthy basis flags stay fail-closed without leaking their object
   );
   assert.doesNotMatch(JSON.stringify(safe), /UNKNOWN_UNITS|score/);
 });
+
+test("public options DTO preserves limited print summary through the actual presentation boundary", async () => {
+  const { optionsPositioning } = await import("../lib/options-positioning.ts");
+  const result = publicIntelligence({
+    dataset: "options",
+    status: "preview",
+    isPreview: true,
+    data: {
+      asOf: "2026-11-18",
+      largePrintCount: 4,
+      largestPrintPctl: 88,
+      secret: "never",
+    },
+  });
+  assert.equal(result.isPreview, true);
+  assert.deepEqual(optionsPositioning(result.data).prints, {
+    count: 4,
+    percentile: 88,
+  });
+  assert.ok(!JSON.stringify(result).includes("never"));
+  const bad = publicIntelligence({
+    dataset: "options",
+    status: "available",
+    data: { largePrintCount: { secret: 4 }, largestPrintPctl: [88] },
+  });
+  assert.deepEqual(optionsPositioning(bad.data).prints, {
+    count: null,
+    percentile: null,
+  });
+});

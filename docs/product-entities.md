@@ -1,0 +1,13 @@
+# Product lookup
+
+Official Entities contract checked2026-11-18: https://sentisense.ai/docs/api/entities/ . Useful bounded scope: find a known product and inspect its maker/family plus conversation summaries, under the existing Market trackers surface. This is a collapsible secondary tool, not another main navigation item. No requests run until explicit search submission, then only one selected product detail request. No keystroke search, bulk enumeration, people or personalized feeds.
+
+Only fixed GET /api/v1/kb/entities/search?q=...&type=product&limit=10 and /entities/{publicSlug}. Search minimum2 maximum80characters, no URL/email/control characters. Details accept bounded public slugs, never internal kb IDs; reserved search/popular paths blocked. Response requires PRODUCT and exact returned urlSlug, preventing renamed/colliding handles from silently becoming stocks or people. Search requires product type and no ticker. Existing symbol APIs are not widened. The popular endpoint is a curated high-profile-person/organization seed list, not product popularity; intentionally not exposed.
+
+Closed projection includes product name/category/description/about, maker/family and known metrics only. No person profile, nationality, arbitrary relationships, internal ID or relatedStock is returned. Maker research link requires explicit COMPANY, public_tracked listing coverage and valid supplied ticker; private/untracked maker is not treated as tradable, and associated ticker is never product identity. Unknown references remain unavailable.
+
+Entity latestMetrics are seven-day averages: sentiment on[-1,1], mentions average (fractional allowed), and signed open-ended sentiment Score. No common scale, invented growth/adoption/revenue or interpretation as a Rating/return forecast. Endpoint supplies no metric observation timestamp; UI says dates unavailable. Fetched time is receipt only. Missing keys stay null. Current contract is flat full data; unexpected preview wrappers are withheld, never labeled full.
+
+Server-only fixed host/path, redirects refused,12second timeout,2MB streaming cap, sanitized errors. Authenticated market account, sample deployment denial, advanced feature,6/minuteuser limit,research reservation and20/minute shared endpoint limit precede calls. Session reuse1hour, explicit refresh, mounted-view age disclosure. Search form requests public product names only, not personal/account data.
+
+Tests: test-first primitive/type/handle/identity/null/scale rejection; auth/quota/transport/body-size; lazy UI and synthetic search→detail→route→transport→closed projection→SSR. No live provider request or entitlement claim, deployment, browser rendering certification, or full catalog coverage claim.

@@ -76,7 +76,7 @@ export default function IndicatorOverview({
               >
                 <header>
                   <h3>{row.label}</h3>
-                  <details className={styles.info}>
+                  <details className={styles.info} data-info-disclosure>
                     <summary aria-label={`About ${row.label}`}>ⓘ</summary>
                     <p>
                       {row.note} Historical observations only; not a trading

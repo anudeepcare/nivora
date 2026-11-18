@@ -63,7 +63,7 @@ export default function MarketCapHistory({ symbol }: { symbol: string }) {
             <div className={s.readout}>
               <strong>{money(active.value)}</strong>
               <span>{active.date} · USD</span>
-              <details>
+              <details data-info-disclosure>
                 <summary aria-label="Market capitalization methodology">
                   ⓘ
                 </summary>

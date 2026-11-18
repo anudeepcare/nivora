@@ -1,4 +1,6 @@
+import { sentisenseFetch } from "./sentisense-provider.server";
 import "server-only";
+import { readBoundedMarketJson } from "./market-response";
 import { screenInput, screenRows } from "./stock-screener";
 import { HttpError, limit } from "./server";
 /** Fixed destination and one bounded request. No credentials reach the browser. */
@@ -22,7 +24,7 @@ export async function runStockScreen(
   await limit("sentisense:stock-screener", 20);
   let response: Response;
   try {
-    response = await fetcher(
+    response = await sentisenseFetch(
       "https://app.sentisense.ai/api/v1/screener/execute",
       {
         method: "POST",
@@ -36,13 +38,9 @@ export async function runStockScreen(
         },
         body: JSON.stringify({
           plan: {
-            filters: [
-              {
-                fieldName: request.field,
-                op: request.op,
-                value: request.value,
-              },
-            ],
+            filters: [request, ...(request.second ? [request.second] : [])].map(
+              ({ field, op, value }) => ({ fieldName: field, op, value }),
+            ),
             sort: {
               fieldName: request.field,
               dir: request.op === "GTE" ? "DESC" : "ASC",
@@ -51,6 +49,7 @@ export async function runStockScreen(
           limit: 100,
         }),
       },
+      fetcher,
     );
   } catch {
     throw new HttpError("Stock screener could not reach the provider.", 503);
@@ -69,9 +68,7 @@ export async function runStockScreen(
     throw new HttpError("Stock screener is temporarily unavailable.", 503);
   let parsed: unknown;
   try {
-    const body = await response.text();
-    if (body.length > 2_000_000) throw Error();
-    parsed = JSON.parse(body);
+    parsed = await readBoundedMarketJson(response, 2_000_000);
   } catch {
     throw new HttpError("Provider returned an unreadable screen.", 502);
   }

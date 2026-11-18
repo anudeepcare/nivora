@@ -1,6 +1,7 @@
 "use client";
 import { consensusTarget } from "@/lib/analyst-presentation";
 import layout from "./SentiSenseConsensus.module.css";
+import EtfAggregateEvidence from "./EtfAggregateEvidence";
 import EtfComposition from "./EtfComposition";
 import type { SentiSenseResult } from "@/lib/sentisense-api";
 import { useResource } from "./Session";
@@ -142,6 +143,7 @@ export default function SentiSenseConsensus({
           </button>
         )}
         <EtfComposition symbol={symbol} />
+        <EtfAggregateEvidence key={symbol} symbol={symbol} />
       </section>
     );
   }

@@ -1,3 +1,4 @@
+import { optionsPositioning } from "../lib/options-positioning.ts";
 import { publicIntelligence } from "../lib/intelligence-dto.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -176,4 +177,37 @@ test("HTTP intelligence response excludes nested proprietary data while retainin
     JSON.stringify(body),
     /SECRET|sentiment|interestScore|"score"|"secret"/,
   );
+});
+
+test("option print evidence survives provider to HTTP projection to positioning consumer", async () => {
+  for (const [largePrintCount, largestPrintPctl, expected] of [
+    [4, 88, { count: 4, percentile: 88 }],
+    [0, 88, { count: 0, percentile: null }],
+    [null, null, { count: null, percentile: null }],
+  ]) {
+    const h = harness({
+      payload: {
+        asOf: "2026-11-17",
+        largePrintCount,
+        largestPrintPctl,
+        sentiment: "SECRET",
+        latest: { largePrintCount: 999, largestPrintPctl: 99 },
+      },
+    });
+    const response = await h.get(request("options"), params);
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    assert.equal(body.data.largePrintCount, largePrintCount);
+    assert.equal(body.data.largestPrintPctl, largestPrintPctl);
+    assert.deepEqual(optionsPositioning(body.data).prints, expected);
+    assert.doesNotMatch(JSON.stringify(body), /SECRET|999/);
+  }
+  const malformed = publicIntelligence({
+    dataset: "options",
+    data: {
+      largePrintCount: { secret: 1 },
+      largestPrintPctl: { score: 99 },
+    },
+  });
+  assert.deepEqual(malformed.data, {});
 });

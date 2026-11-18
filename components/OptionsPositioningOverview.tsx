@@ -35,7 +35,7 @@ export default function OptionsPositioningOverview({
       <header>
         <h3>Session snapshot</h3>
         <span>{p.asOf ? dateLabel(p.asOf) : "Snapshot date not supplied"}</span>
-        <details>
+        <details data-info-disclosure>
           <summary aria-label="About options observations">ⓘ</summary>
           <p>
             End-of-day research observations, not executable prices. Calls and
@@ -141,6 +141,32 @@ export default function OptionsPositioningOverview({
           )}
           Reported subset, not the full chain. Open interest is not dealer gamma
           or trade direction.
+        </p>
+      </section>
+      <section
+        className={styles.activity}
+        aria-label="Published large-print summary"
+      >
+        <header>
+          <h4>Published large prints</h4>
+          <span>Latest published prints session; date not supplied</span>
+        </header>
+        <div className={styles.metrics}>
+          <article>
+            <span>Published event count</span>
+            <strong>{number(p.prints.count)}</strong>
+          </article>
+          <article>
+            <span>Largest premium percentile · 0–100</span>
+            <strong>{number(p.prints.percentile)}</strong>
+          </article>
+        </div>
+        <p>
+          One event groups a contract’s fills into an order after the close. The
+          percentile compares premium with this ticker’s own trailing prints; it
+          is not a probability or trade direction. The prints session need not
+          match the snapshot date above. Contract strikes, sides and a
+          contract-level tape are not supplied by this summary.
         </p>
       </section>
       <section

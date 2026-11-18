@@ -24,13 +24,18 @@ function loadTable() {
       target: ts.ScriptTarget.ES2022,
     },
   }).outputText;
-  return new Function("React", "s", "layout", code + ";return IntelligenceTable;")(
+  return new Function(
+    "React",
+    "s",
+    "layout",
+    code + ";return IntelligenceTable;",
+  )(
     React,
     new Proxy({}, { get: (_, k) => k }),
     new Proxy({}, { get: (_, k) => k }),
   );
 }
-function harness(hiddenSignals = []) {
+function harness(hiddenSignals = [], customResult) {
   const ast = ts.createSourceFile(
     "panels.tsx",
     fs.readFileSync("components/SentiSensePanels.tsx", "utf8"),
@@ -70,6 +75,9 @@ function harness(hiddenSignals = []) {
     IntelligenceTable: loadTable(),
     OwnershipEvidenceMap: () => null,
     InsiderAnalystEvidence: () => null,
+    ProviderRating: () => null,
+    StockInsights: () => null,
+    NamedAnalystProfiles: () => null,
     OptionsPositioningOverview: () => null,
     s: new Proxy({}, { get: (_, key) => key }),
     SentiSenseConsensus: () =>
@@ -78,7 +86,7 @@ function harness(hiddenSignals = []) {
       requests.push(key);
       return {
         loading: false,
-        data: {
+        data: customResult ?? {
           status: "available",
           isPreview: false,
           retrievedAt: "2026-11-17T12:00:00Z",
@@ -194,18 +202,55 @@ test("provider identity stays in closed source details rather than panel brandin
 
 test("evidence table preserves amounts as atomic cells and distinguishes fiscal dates", () => {
   const Table = loadTable();
-  const html = renderToStaticMarkup(React.createElement(Table, {
-    title: "Consensus by period",
-    dateHeading: "Fiscal period ending",
-    rows: [{ label: "Quarter", date: "2026-12-31", href: null, cells: [
-      {label: "Revenue mean", value: "$12,345,678,901.25"},
-      {label: "EPS", value: "-$1.25"},
-      {label: "Context", value: "Provider reporting basis"}
-    ]}]
-  }));
+  const html = renderToStaticMarkup(
+    React.createElement(Table, {
+      title: "Consensus by period",
+      dateHeading: "Fiscal period ending",
+      rows: [
+        {
+          label: "Quarter",
+          date: "2026-12-31",
+          href: null,
+          cells: [
+            { label: "Revenue mean", value: "$12,345,678,901.25" },
+            { label: "EPS", value: "-$1.25" },
+            { label: "Context", value: "Provider reporting basis" },
+          ],
+        },
+      ],
+    }),
+  );
   assert.match(html, /scope="col">Fiscal period ending<\/th>/);
   assert.match(html, /class="atomic">2026-12-31<\/td>/);
   assert.ok(html.includes('<td class="atomic">$12,345,678,901.25</td>'));
   assert.ok(html.includes('<td class="atomic">-$1.25</td>'));
-  assert.ok(html.includes('<td>Provider reporting basis</td>'));
+  assert.ok(html.includes("<td>Provider reporting basis</td>"));
+});
+
+test("GOOG estimates explicitly display verified primary-class records without relabeling them", () => {
+  const result = {
+    symbol: "GOOGL",
+    status: "preview",
+    isPreview: true,
+    retrievedAt: "2026-11-18",
+    data: { ticker: "GOOGL", estimates: [], surprises: [] },
+  };
+  const props = { symbol: "GOOG", group: "analysts" };
+  const h = harness([], result);
+  h.click(props, "Estimates");
+  const html = h.render(props);
+  assert.match(h.requests.at(-1), /intelligence\/GOOGL\?dataset=estimates/);
+  assert.match(html, /GOOGL · Alphabet Class A estimates/);
+  assert.match(html, /not GOOG Class C per-share estimates/);
+  assert.match(html, /Limited provider preview/);
+  for (const bad of [
+    { ...result, symbol: "GOOG" },
+    { ...result, data: { ...result.data, ticker: "MSFT" } },
+  ]) {
+    const x = harness([], bad);
+    x.click(props, "Estimates");
+    const rejected = x.render(props);
+    assert.match(rejected, /unverified for the primary share class/);
+    assert.doesNotMatch(rejected, /Limited provider preview/);
+  }
 });

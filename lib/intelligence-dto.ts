@@ -104,7 +104,7 @@ const schemas: Partial<Record<SentiSenseDataset, Shape>> = {
     ],
   }),
   documents: withMeta("", { documents: [fields("sourceName published url")] }),
-  options: withMeta("ivRank1y maxPain", {
+  options: withMeta("ivRank1y maxPain largePrintCount largestPrintPctl", {
     ...metrics,
     latest: metrics,
     context: fields("ivRank1y"),
@@ -130,7 +130,7 @@ const schemas: Partial<Record<SentiSenseDataset, Shape>> = {
     coverage: [
       {
         ...fields("firm noteCount"),
-        analysts: [fields("name")],
+        analysts: [fields("name slug")],
         latestNote: fields("publishedDate priceTarget newsUrl"),
         firmRating: fields("date rating"),
       },

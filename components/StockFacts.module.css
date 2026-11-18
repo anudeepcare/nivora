@@ -128,3 +128,54 @@
     grid-column: 1 / -1;
   }
 }
+/* Facts may live inside a Help dialog: size by the region, never the viewport. */
+.region {
+  container-type: inline-size;
+}
+.region:not([data-price-context]) .strip {
+  grid-template-columns: minmax(0, 1fr);
+}
+.region:not([data-price-context]) .strip > div {
+  padding: 12px 14px;
+  border-right: 0;
+  border-bottom: 1px solid var(--line);
+}
+.region:not([data-price-context]) .strip dt button {
+  gap: 6px;
+  max-width: 100%;
+  white-space: normal;
+}
+.region:not([data-price-context]) .strip dt svg {
+  flex-shrink: 0;
+}
+.region:not([data-price-context]) .strip dd {
+  font-size: clamp(18px, 4cqi, 24px);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.region:not([data-price-context]) .strip small {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.region:not([data-price-context]) .strip > div:last-child:nth-child(odd) {
+  grid-column: auto;
+}
+@container (min-width: 300px) {
+  .region:not([data-price-context]) .strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (min-width: 480px) {
+  .region:not([data-price-context]) .strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@container (min-width: 1000px) {
+  .region:not([data-price-context]) .strip {
+    grid-template-columns: repeat(var(--fact-columns, 6), minmax(0, 1fr));
+  }
+}
+
+.region:not([data-price-context]) .strip dd[data-value-type="number"] {
+  white-space: nowrap;
+}

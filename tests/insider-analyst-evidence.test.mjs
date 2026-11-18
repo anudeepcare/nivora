@@ -1,3 +1,4 @@
+import { providerFixtureFunction } from "./helpers/sentisense-transport.mjs";
 import React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import ts from 'typescript';
@@ -17,7 +18,7 @@ test('recorded moves preserve counterevidence counts and firm attribution withou
  assert.equal(projectEvidence(raw,'calls','B'),null);assert.equal(projectEvidence({...raw,data:{ticker:'A',moves:[{...move,calls:[{...move.calls[0],publishedOn:'2026-01-06'}]}]}},'calls','A'),null);
  assert.equal(projectEvidence({...raw,isPreview:undefined},'calls','A'),null);assert.equal(evidenceSymbol('A/evil'),null);
 });
-function load(file,name,b){const ast=ts.createSourceFile(file,fs.readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true);const out=ts.transpileModule(ast.statements.filter(n=>!ts.isImportDeclaration(n)).map(n=>n.getText(ast).replace(/^export default /,'').replace(/^export /,'')).join('\n'),{compilerOptions:{target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.React}}).outputText;return new Function(...Object.keys(b),out+`;return ${name};`)(...Object.values(b));}
+function load(file,name,b){const ast=ts.createSourceFile(file,fs.readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true);const out=ts.transpileModule(ast.statements.filter(n=>!ts.isImportDeclaration(n)).map(n=>n.getText(ast).replace(/^export default /,'').replace(/^export /,'')).join('\n'),{compilerOptions:{target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.React}}).outputText;return providerFixtureFunction(...Object.keys(b),out+`;return ${name};`)(...Object.values(b));}
 class HttpError extends Error{constructor(m,status){super(m);this.status=status;}}
 test('fixed endpoints bound requests, no redirect or provider secret errors',async()=>{
  let requests=[];const read=load('lib/insider-analyst-evidence.server.ts','readInsiderAnalystEvidence',{evidenceSymbol,projectEvidence,HttpError,limit:async()=>{}});

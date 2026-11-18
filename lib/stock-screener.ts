@@ -12,11 +12,14 @@ export type ScreenInput = {
   field: ScreenField;
   op: "GTE" | "LTE";
   value: number;
+  second?: Omit<ScreenInput, "second">;
 };
 export function screenInput(value: unknown): ScreenInput | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const r = value as Record<string, unknown>;
-  if (Object.keys(r).some((k) => !["field", "op", "value"].includes(k)))
+  if (
+    Object.keys(r).some((k) => !["field", "op", "value", "second"].includes(k))
+  )
     return null;
   if (
     typeof r.field !== "string" ||
@@ -33,7 +36,31 @@ export function screenInput(value: unknown): ScreenInput | null {
   )
     return null;
   if (field === "ANALYST_COUNT" && !Number.isInteger(r.value)) return null;
-  return { field, op: r.op as ScreenInput["op"], value: r.value };
+  let second: Omit<ScreenInput, "second"> | undefined;
+  if (Object.hasOwn(r, "second")) {
+    if (
+      !r.second ||
+      typeof r.second !== "object" ||
+      Array.isArray(r.second) ||
+      Object.hasOwn(r.second, "second")
+    )
+      return null;
+    const parsed = screenInput(r.second);
+    if (!parsed) return null;
+    second = parsed;
+    if (
+      second.field === field &&
+      (second.op === r.op ||
+        (r.op === "GTE" ? r.value > second.value : second.value > r.value))
+    )
+      return null;
+  }
+  return {
+    field,
+    op: r.op as ScreenInput["op"],
+    value: r.value,
+    ...(second ? { second } : {}),
+  };
 }
 export type ScreenRow = {
   ticker: string;

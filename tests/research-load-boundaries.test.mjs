@@ -24,7 +24,6 @@ test("inactive heavy research evidence modules are dynamic import boundaries, no
     "OwnershipPicture",
     "Analyst",
     "OptionsDesk",
-    "OptionsMarketOverview",
   ]) {
     assert.ok(
       !staticImports.includes("./" + name),
@@ -56,4 +55,11 @@ test("supplemental quote REST and stream wait for initial research evidence", ()
     source,
     /retainResearchQuote\(priorQuote, baseResearch\?\.quote\)/,
   );
+});
+
+test("market-wide overview remains exclusive to the Screener workspace", () => {
+ const research=fs.readFileSync("components/Research.tsx","utf8");
+ assert.doesNotMatch(research,/OptionsMarketOverview|title: "Market overview"/);
+ assert.match(fs.readFileSync("components/OptionsMarketPage.tsx","utf8"),/<OptionsMarketOverview/);
+ assert.match(fs.readFileSync("lib/reference-navigation.ts","utf8"),/path: "options", label: "Screener"/);
 });

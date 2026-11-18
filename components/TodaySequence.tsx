@@ -12,6 +12,7 @@ export default function TodaySequence({
   concentration: { symbol: string; weight: number } | null;
   prefix: string;
 }) {
+  if (!decision && !headline && !concentration) return null;
   return (
     <section
       className={styles.sequence}
@@ -24,15 +25,10 @@ export default function TodaySequence({
           <h2>
             {decision.symbol}: {decision.action}
           </h2>
-          <p>
-            Review business checks and price bands before changing your plan.
-          </p>
+          <p>Research prompt, not a trade instruction.</p>
           <div className={styles.reading}>
             <b>{decision.code}</b>
-            <span>
-              Current research reading
-              <small>Not a change alert or an executed trade</small>
-            </span>
+            <span>Current research reading</span>
           </div>
           <Link
             href={`${prefix}/research/${encodeURIComponent(decision.symbol)}`}
@@ -42,46 +38,37 @@ export default function TodaySequence({
           </Link>
         </article>
       )}
-      <article>
-        <span>LATEST HEADLINE</span>
-        <h3>{headline?.title || "Keep the source in view."}</h3>
-        <p>
-          {headline
-            ? `${headline.symbol} · Published ${new Date(headline.date).toLocaleDateString()}. A headline is context, not a verified change in your investment case.`
-            : "Dated headlines appear here when news coverage is available for the companies you follow."}
-        </p>
-        {headline ? (
+      {headline && (
+        <article>
+          <span>LATEST HEADLINE</span>
+          <h3>{headline.title}</h3>
+          <p>
+            {headline.symbol} · Published{" "}
+            {new Date(headline.date).toLocaleDateString()}. Headline only, not a
+            verified change in the investment case.
+          </p>
           <a href={headline.url} target="_blank" rel="noopener noreferrer">
             Read the source <ArrowUpRight size={16} />
           </a>
-        ) : (
-          <Link href={`${prefix}/watchlist`}>
-            Review your watchlist <ArrowUpRight size={16} />
+        </article>
+      )}
+      {concentration && (
+        <article>
+          <span>EXPOSURE</span>
+          <div className={styles.exposureMetric}>
+            {concentration.weight.toFixed(1)}
+            <small>%</small>
+          </div>
+          <h3>{concentration.symbol} · Largest priced position</h3>
+          <p>
+            Of the priced portfolio; missing quotes and cash affect
+            concentration. Not a breach alert.
+          </p>
+          <Link href={`${prefix}/portfolio`}>
+            Review portfolio <ArrowUpRight size={16} />
           </Link>
-        )}
-      </article>
-      <article>
-        <span>EXPOSURE</span>
-        {concentration ? (
-          <>
-            <div className={styles.exposureMetric}>
-              {concentration.weight.toFixed(1)}
-              <small>%</small>
-            </div>
-            <h3>{concentration.symbol} · Largest priced position</h3>
-          </>
-        ) : (
-          <h3>Make room for portfolio context.</h3>
-        )}
-        <p>
-          {concentration
-            ? "Of the priced portfolio. Review missing quotes and cash before judging concentration; this is not a policy breach alert."
-            : "Record your holdings to see portfolio weights alongside your research. Unpriced positions are never treated as zero risk."}
-        </p>
-        <Link href={`${prefix}/portfolio`}>
-          Review portfolio <ArrowUpRight size={16} />
-        </Link>
-      </article>
+        </article>
+      )}
     </section>
   );
 }

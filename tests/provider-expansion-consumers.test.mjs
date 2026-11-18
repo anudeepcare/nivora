@@ -35,6 +35,7 @@ test("ETF consensus uses verified fund classification and never stock target end
     "SentiSenseConsensus",
     {
       React,
+      EtfAggregateEvidence: () => null,
       EtfComposition: () => null,
       s: {
         workspace: "workspace",
@@ -82,6 +83,7 @@ test("unknown instrument type withholds consensus rather than guessing stock ide
     "SentiSenseConsensus",
     {
       React,
+      EtfAggregateEvidence: () => null,
       EtfComposition: () => null,
       s: {},
       dateLabel: (v) => v,
@@ -163,24 +165,68 @@ test("user-facing market errors are neutral while source provenance is retained"
   assert.match(source, /source: "EODHD"/);
 });
 test("market overview pages stock and ETF observations with exact units, search and links", () => {
-  let states = ["stocks", "", 0], index = 0;
-  const records = [{ticker:"AAPL",atmIv:0.25,pcVol:0}, ...Array.from({length:50},(_,i)=>({ticker:`S${i}`,atmIv:null,pcVol:null}))];
-  const View = load("components/OptionsMarketOverview.tsx", "OptionsMarketOverview", {
-    React, Link: ({children,...p})=>React.createElement("a",p,children), picker:{}, s:{},
-    useState: (initial)=>[states[index++] ?? initial,()=>{}],
-    useResource:()=>({data:{status:"available",data:{asOf:"2026-11-16",rows:records,etfRows:[{ticker:"QQQ",atmIv:0.2,pcVol:1}]}}}),
-  });
-  const render=(next)=>{states=next;index=0;return renderToStaticMarkup(React.createElement(View));};
-  const first=render(["stocks","",0]);
-  assert.match(first,/25.00%/); assert.match(first,/0.00×/); assert.doesNotMatch(first,/QQQ/);
-  assert.equal((first.match(/<tr>/g)||[]).length,26); assert.match(first,/Page 1 of 3/);
-  assert.match(first,/Not supplied/); assert.match(first,/2026-11-16/);
-  const last=render(["stocks","",2]); assert.match(last,/S49/); assert.doesNotMatch(last,/href="\/research\/AAPL/); assert.match(last,/Page 3 of 3/);
-  const fund=render(["funds","",0]); assert.match(fund,/QQQ/); assert.doesNotMatch(fund,/href="\/research\/AAPL/);
-  const empty=render(["stocks","missing",0]); assert.match(empty,/No instruments match/); assert.match(empty,/Search covered instruments/);
-  const matched=render(["stocks","  aaPl  ",0]); assert.match(matched,/href="\/research\/AAPL\?tab=Options"/); assert.match(matched,/25.00%/);
-  assert.match(matched,/aria-label="Market options observations" tabindex="0"/);
-  assert.equal((matched.match(/<table/g)||[]).length,1);
+  let states = ["stocks", "", 0],
+    index = 0;
+  const records = [
+    { ticker: "AAPL", atmIv: 0.25, pcVol: 0 },
+    ...Array.from({ length: 50 }, (_, i) => ({
+      ticker: `S${i}`,
+      atmIv: null,
+      pcVol: null,
+    })),
+  ];
+  const View = load(
+    "components/OptionsMarketOverview.tsx",
+    "OptionsMarketOverview",
+    {
+      React,
+      Link: ({ children, ...p }) => React.createElement("a", p, children),
+      picker: {},
+      s: {},
+      useState: (initial) => [states[index++] ?? initial, () => {}],
+      useResource: () => ({
+        data: {
+          status: "available",
+          data: {
+            asOf: "2026-11-16",
+            rows: records,
+            etfRows: [{ ticker: "QQQ", atmIv: 0.2, pcVol: 1 }],
+          },
+        },
+      }),
+    },
+  );
+  const render = (next) => {
+    states = next;
+    index = 0;
+    return renderToStaticMarkup(React.createElement(View));
+  };
+  const first = render(["stocks", "", 0]);
+  assert.match(first, /25.00%/);
+  assert.match(first, /0.00×/);
+  assert.doesNotMatch(first, /QQQ/);
+  assert.equal((first.match(/<tr>/g) || []).length, 26);
+  assert.match(first, /Page 1 of 3/);
+  assert.match(first, /Not supplied/);
+  assert.match(first, /2026-11-16/);
+  const last = render(["stocks", "", 2]);
+  assert.match(last, /S49/);
+  assert.doesNotMatch(last, /href="\/research\/AAPL/);
+  assert.match(last, /Page 3 of 3/);
+  const fund = render(["funds", "", 0]);
+  assert.match(fund, /QQQ/);
+  assert.doesNotMatch(fund, /href="\/research\/AAPL/);
+  const empty = render(["stocks", "missing", 0]);
+  assert.match(empty, /No instruments match/);
+  assert.match(empty, /Search covered instruments/);
+  const matched = render(["stocks", "  aaPl  ", 0]);
+  assert.match(matched, /href="\/research\/AAPL\?tab=Options"/);
+  assert.match(matched, /25.00%/);
+  assert.match(
+    matched,
+    /aria-label="Market options observations" tabindex="0"/,
+  );
+  assert.equal((matched.match(/<table/g) || []).length, 1);
 });
 test("ETF holdings only requests its endpoint after composition is opened", () => {
   let state = [false, ""],
@@ -260,6 +306,7 @@ test("Scenarios analyst source fallback appears only when the primary stock data
     "SentiSenseConsensus",
     {
       React,
+      EtfAggregateEvidence: () => null,
       EtfComposition: () => null,
       Help: () => null,
       s: {},
@@ -304,46 +351,104 @@ test("Scenarios analyst source fallback appears only when the primary stock data
     assert.ok(html.includes(value));
 });
 
-test('failed analyst evidence has explicit scoped retry without bypassing classification',()=>{
- for(const kind of [null,'STOCK','ETF']){
-  const refreshed=[]; const requested=[];
-  const View=load('components/SentiSenseConsensus.tsx','SentiSenseConsensus',{
-   React,EtfComposition:()=>null,s:{},layout:{},dateLabel:v=>v,
-   useResource:key=>{
-    requested.push(key);
-    return {loading:false,error:key?.includes('profile')&&kind?null:'Temporary outage',
-     data:key?.includes('profile')&&kind?{status:'available',data:{kind}}:undefined,
-     refresh:()=>refreshed.push(key)};
-   },
-  });
-  const tree=View({symbol:'TEST',preview:false,fallback:React.createElement('p',null,'Alternate dated evidence')});
-  const buttons=[];
-  function walk(n){if(!n||typeof n!=='object')return;if(n.type==='button')buttons.push(n);React.Children.forEach(n.props?.children,walk);}
-  walk(tree);
-  const retry=buttons.find(n=>String(n.props.children).startsWith('Retry'));
-  assert.ok(retry,'failed '+(kind??'classification')+' exposes retry');
-  assert.equal(refreshed.length,0,'no automatic retry loop');
-  retry.props.onClick();
-  assert.equal(refreshed.length,1);
-  assert.match(refreshed[0],new RegExp('dataset='+(kind===null?'profile':kind==='ETF'?'etfAnalyst':'consensus')));
-  if(kind===null)assert.equal(requested[1],null,'unknown identity cannot request targets');
- }
+test("failed analyst evidence has explicit scoped retry without bypassing classification", () => {
+  for (const kind of [null, "STOCK", "ETF"]) {
+    const refreshed = [];
+    const requested = [];
+    const View = load(
+      "components/SentiSenseConsensus.tsx",
+      "SentiSenseConsensus",
+      {
+        React,
+        EtfAggregateEvidence: () => null,
+        EtfComposition: () => null,
+        s: {},
+        layout: {},
+        dateLabel: (v) => v,
+        useResource: (key) => {
+          requested.push(key);
+          return {
+            loading: false,
+            error: key?.includes("profile") && kind ? null : "Temporary outage",
+            data:
+              key?.includes("profile") && kind
+                ? { status: "available", data: { kind } }
+                : undefined,
+            refresh: () => refreshed.push(key),
+          };
+        },
+      },
+    );
+    const tree = View({
+      symbol: "TEST",
+      preview: false,
+      fallback: React.createElement("p", null, "Alternate dated evidence"),
+    });
+    const buttons = [];
+    function walk(n) {
+      if (!n || typeof n !== "object") return;
+      if (n.type === "button") buttons.push(n);
+      React.Children.forEach(n.props?.children, walk);
+    }
+    walk(tree);
+    const retry = buttons.find((n) =>
+      String(n.props.children).startsWith("Retry"),
+    );
+    assert.ok(retry, "failed " + (kind ?? "classification") + " exposes retry");
+    assert.equal(refreshed.length, 0, "no automatic retry loop");
+    retry.props.onClick();
+    assert.equal(refreshed.length, 1);
+    assert.match(
+      refreshed[0],
+      new RegExp(
+        "dataset=" +
+          (kind === null
+            ? "profile"
+            : kind === "ETF"
+              ? "etfAnalyst"
+              : "consensus"),
+      ),
+    );
+    if (kind === null)
+      assert.equal(
+        requested[1],
+        null,
+        "unknown identity cannot request targets",
+      );
+  }
 });
-test("paged market surface has one horizontal scroller without nested vertical traps",()=>{
- const css=fs.readFileSync("components/OptionsMarketOverview.module.css","utf8");
- assert.match(css,/overflow-x: auto/); assert.doesNotMatch(css,/max-height:|overflow-y:|overscroll-behavior: contain/);
- const source=fs.readFileSync("components/OptionsMarketOverview.tsx","utf8");
- assert.match(source,/const pageSize = 25/); assert.doesNotMatch(source,/IntelligenceTable|picker.scroll/);
- assert.match(source,/setQuery\(event.target.value\);\s+setPage\(0\)/);
- assert.match(source,/setBoard\(id\);\s+setPage\(0\)/);
+test("paged market surface has one horizontal scroller without nested vertical traps", () => {
+  const css = fs.readFileSync(
+    "components/OptionsMarketOverview.module.css",
+    "utf8",
+  );
+  assert.match(css, /overflow-x: auto/);
+  assert.doesNotMatch(
+    css,
+    /max-height:|overflow-y:|overscroll-behavior: contain/,
+  );
+  const source = fs.readFileSync(
+    "components/OptionsMarketOverview.tsx",
+    "utf8",
+  );
+  assert.match(source, /const pageSize = 25/);
+  assert.doesNotMatch(source, /IntelligenceTable|picker.scroll/);
+  assert.match(source, /setQuery\(event.target.value\);\s+setPage\(0\)/);
+  assert.match(source, /setBoard\(id\);\s+setPage\(0\)/);
 });
-test("standalone market page hides embedded duplicate heading and self-link",()=>{
- const source=fs.readFileSync("components/OptionsMarketOverview.tsx","utf8");
- assert.match(source,/!standalone &&/);
- const page=fs.readFileSync("components/OptionsMarketPage.tsx","utf8");
- assert.match(page,/<OptionsMarketOverview standalone/);
- assert.match(page,/className=\{layout.viewSwitch\}/);
- const css=fs.readFileSync("components/OptionsMarketOverview.module.css","utf8");
- assert.match(css,/\.universe button\[aria-pressed="true"\]/);
- assert.match(css,/\.pagination button:disabled/);
+test("standalone market page hides embedded duplicate heading and self-link", () => {
+  const source = fs.readFileSync(
+    "components/OptionsMarketOverview.tsx",
+    "utf8",
+  );
+  assert.match(source, /!standalone &&/);
+  const page = fs.readFileSync("components/OptionsMarketPage.tsx", "utf8");
+  assert.match(page, /<OptionsMarketOverview standalone/);
+  assert.match(page, /className=\{layout.viewSwitch\}/);
+  const css = fs.readFileSync(
+    "components/OptionsMarketOverview.module.css",
+    "utf8",
+  );
+  assert.match(css, /\.universe button\[aria-pressed="true"\]/);
+  assert.match(css, /\.pagination button:disabled/);
 });

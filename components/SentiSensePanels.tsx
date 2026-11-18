@@ -1,4 +1,11 @@
 "use client";
+import AnalystMarketActivity from "./AnalystMarketActivity";
+import PoliticianActivity from "./PoliticianActivity";
+import PoliticianMembers from "./PoliticianMembers";
+import ProviderRating from "./ProviderRating";
+import StockInsights from "./StockInsights";
+import NamedAnalystProfiles from "./NamedAnalystProfiles";
+import PublicationFeeds from "./PublicationFeeds";
 import InsiderAnalystEvidence from "./InsiderAnalystEvidence";
 import { navigateSelection } from "@/lib/selection-navigation";
 import IntelligenceTable from "./IntelligenceTable";
@@ -37,6 +44,7 @@ const groups = {
     ["earningsReactions", "Market reactions"],
     ["filingChanges", "Filing changes"],
     ["documents", "Publications"],
+    ["stockInsights", "Insights"],
   ],
   options: [
     ["options", "Positioning"],
@@ -47,6 +55,7 @@ const groups = {
     ["kpis", "Company KPIs"],
     ["kpiTypes", "Metric catalog"],
     ["profile", "Company profile"],
+    ["providerRating", "Composite rating"],
     ["aiReport", "Research report"],
     ["fundamentalsCurrent", "Trailing profile"],
     ["fundamentalsQuarterly", "Quarterly statements"],
@@ -78,7 +87,7 @@ export default function SentiSensePanels({
     optionsIntraday: "options",
   };
   const choices = groups[group].filter(
-    ([id]) => !hidden.includes(categories[id] ?? ""),
+    ([id]) => !hidden.includes(categories[id as SentiSenseDataset] ?? ""),
   );
   const [selection, setSelection] = useState<string>(groups[group][0][0]);
   const dataset = (
@@ -117,7 +126,7 @@ export default function SentiSensePanels({
               }
             </h2>
           </div>
-          <details className={s.provider}>
+          <details className={s.provider} data-info-disclosure>
             <summary aria-label="Data source details">ⓘ Source</summary>
             <p>
               Source: SentiSense. Dataset dates and coverage are shown with each
@@ -145,7 +154,7 @@ export default function SentiSensePanels({
           ))}
         </nav>
         {compact && (
-          <details className={s.provider}>
+          <details className={s.provider} data-info-disclosure>
             <summary aria-label="Data source details">ⓘ</summary>
             <p>
               Source: SentiSense. Dataset dates and coverage are shown with each
@@ -154,7 +163,13 @@ export default function SentiSensePanels({
           </details>
         )}
       </div>
-      {dataset === "aiReport" ? (
+      {(dataset as string) === "providerRating" ? (
+        <ProviderRating key={symbol} symbol={symbol} />
+      ) : (dataset as string) === "stockInsights" ? (
+        <StockInsights key={symbol} symbol={symbol} />
+      ) : dataset === "documents" ? (
+        <PublicationFeeds key={symbol} symbol={symbol} />
+      ) : dataset === "aiReport" ? (
         <SentiSenseReport key={symbol} symbol={symbol} />
       ) : dataset === "tickerStories" ? (
         <SentiSenseStories key={symbol} symbol={symbol} />
@@ -166,6 +181,13 @@ export default function SentiSensePanels({
           symbol={symbol}
           dataset={dataset}
         />
+      )}
+      {dataset === "analystActions" && <AnalystMarketActivity />}
+      {dataset === "politicians" && (
+        <>
+          <PoliticianMembers />
+          <PoliticianActivity />
+        </>
       )}
       {dataset === "insiders" && (
         <InsiderAnalystEvidence
@@ -191,14 +213,26 @@ function Dataset({
   symbol: string;
   dataset: SentiSenseDataset;
 }) {
+  // Documented company-level estimate storage uses Alphabet's primary class.
+  // Fetch and display that security explicitly; never remap data into GOOG models.
+  const primaryClass = symbol === "GOOG" && dataset === "estimates";
+  const evidenceSymbol = primaryClass ? "GOOGL" : symbol;
   const resource = useResource<SentiSenseResult>(
-    `intelligence/${encodeURIComponent(symbol)}?dataset=${dataset}`,
+    `intelligence/${encodeURIComponent(evidenceSymbol)}?dataset=${dataset}`,
     undefined,
     60_000,
   );
   const result = resource.data;
+  const verifiedPrimary =
+    !primaryClass ||
+    (result?.symbol === "GOOGL" &&
+      result.data != null &&
+      typeof result.data === "object" &&
+      !Array.isArray(result.data) &&
+      (result.data as { ticker?: unknown }).ticker === "GOOGL");
   const available =
-    result?.status === "available" || result?.status === "preview";
+    verifiedPrimary &&
+    (result?.status === "available" || result?.status === "preview");
   const view = intelligenceView(dataset, result?.data);
   const count = view.groups.reduce((n, g) => n + g.rows.length, 0);
   const tables = view.groups.map(
@@ -227,6 +261,15 @@ function Dataset({
   );
   return (
     <div className={s.content}>
+      {primaryClass && (
+        <p className={s.notice} role="note">
+          <strong>GOOGL · Alphabet Class A estimates</strong>. The provider
+          stores company estimates under its primary share class. These are
+          GOOGL records, not GOOG Class C per-share estimates. No share-class
+          conversion is assumed; this display does not replace GOOG prices or
+          valuation inputs.
+        </p>
+      )}
       {dataset !== "options" && (
         <div className={s.intro}>
           <h3>{view.title}</h3>
@@ -259,8 +302,11 @@ function Dataset({
         </div>
       ) : !available ? (
         <p className={s.state} role="status">
-          This dataset is {result?.status.replaceAll("-", " ") ?? "unavailable"}{" "}
-          for {symbol}. No substitute records are shown.
+          This dataset is{" "}
+          {!verifiedPrimary
+            ? "unverified for the primary share class"
+            : (result?.status.replaceAll("-", " ") ?? "unavailable")}{" "}
+          for {evidenceSymbol}. No substitute records are shown.
         </p>
       ) : (
         <>
@@ -271,6 +317,9 @@ function Dataset({
           )}
           {dataset === "options" && (
             <OptionsPositioningOverview data={result?.data} />
+          )}
+          {dataset === "analystCoverage" && (
+            <NamedAnalystProfiles key={symbol} data={result?.data} />
           )}
           {dataset === "holders" && (
             <OwnershipEvidenceMap symbol={symbol} data={result?.data} />

@@ -79,7 +79,19 @@ export function optionsPositioning(value: unknown) {
         )
         .sort((a, b) => a.strike - b.strike || a.side.localeCompare(b.side))
     : [];
+  const printCount = nonnegative(d.largePrintCount);
+  const printPercentile = nonnegative(d.largestPrintPctl);
   return {
+    prints: {
+      count:
+        printCount !== null && Number.isSafeInteger(printCount)
+          ? printCount
+          : null,
+      percentile:
+        printPercentile !== null && printPercentile <= 100 && printCount !== 0
+          ? printPercentile
+          : null,
+    },
     walls: {
       expiry,
       rows: wallRows,

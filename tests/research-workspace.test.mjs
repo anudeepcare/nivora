@@ -105,12 +105,11 @@ test("Options, analyst sources and Business retain default evidence and unique s
       s.indexOf(`{tab === "${end}" && (`),
     );
   const options = section("Options", "Analysts");
-  assert.ok(
-    options.indexOf("Company positioning") < options.indexOf("Market overview"),
-  );
+  assert.match(options, /Company positioning/);
+  assert.doesNotMatch(options, /Market overview|OptionsMarketOverview/);
+  assert.match(fs.readFileSync("components/OptionsMarketPage.tsx", "utf8"), /<OptionsMarketOverview/);
   for (const name of [
     "SentiSensePanels",
-    "OptionsMarketOverview",
     "OptionsDesk",
   ])
     assert.match(options, new RegExp("<" + name + "[ \\n]"));

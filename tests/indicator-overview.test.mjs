@@ -1,3 +1,4 @@
+import * as infoDisclosure from "../lib/info-disclosure.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -78,6 +79,7 @@ test("indicator cards render six real charts, dated tables and no invented empty
   const mod = { exports: {} };
   new Function("require", "module", "exports", source)(
     (name) => {
+      if (name === "@/lib/info-disclosure") return infoDisclosure;
       if (name === "react") return React;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "@/lib/indicator-overview") return logic;

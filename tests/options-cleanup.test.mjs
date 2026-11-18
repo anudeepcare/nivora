@@ -39,3 +39,15 @@ test("options and ownership consolidate heading and source into dataset toolbar"
   assert.match(source, /!compact && \(/);
   assert.match(source, /className=\{compact \? s.datasetToolbar : undefined\}/);
 });
+
+test("large-print copy separates unknown session date from snapshot and makes no tape claim", () => {
+  const source = fs.readFileSync(
+    "components/OptionsPositioningOverview.tsx",
+    "utf8",
+  );
+  assert.match(source, /Latest published prints session; date not supplied/);
+  assert.match(source, /not a probability or trade direction/);
+  assert.match(source, /not supplied by this summary/);
+  assert.match(source, /number\(p.prints.count\)/);
+  assert.match(source, /number\(p.prints.percentile\)/);
+});

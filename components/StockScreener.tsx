@@ -1,9 +1,12 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+const ScreenerCatalog = dynamic(() => import("./ScreenerCatalog"));
 import { api } from "@/lib/client";
 import {
   screenerFields,
+  screenInput,
   type ScreenField,
   type ScreenRow,
   type ScreenInput,
@@ -30,21 +33,43 @@ export default function StockScreener() {
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [page, setPage] = useState(0);
+  const [secondEnabled, setSecondEnabled] = useState(false),
+    [secondField, setSecondField] = useState<ScreenField>("ANALYST_COUNT"),
+    [secondOp, setSecondOp] = useState<"GTE" | "LTE">("GTE"),
+    [secondThreshold, setSecondThreshold] = useState("");
   const run = async (event: React.FormEvent) => {
     event.preventDefault();
     if (busy) return;
+    const input =
+      threshold.trim() && (!secondEnabled || secondThreshold.trim())
+        ? screenInput({
+            field,
+            op,
+            value: Number(threshold),
+            ...(secondEnabled
+              ? {
+                  second: {
+                    field: secondField,
+                    op: secondOp,
+                    value: Number(secondThreshold),
+                  },
+                }
+              : {}),
+          })
+        : null;
+    if (!input) {
+      setError(
+        "Enter valid conditions; a lower bound cannot exceed an upper bound, and duplicate conditions are not needed.",
+      );
+      return;
+    }
+
     setBusy(true);
     setError("");
     setResult(null);
     setPage(0);
     try {
-      setResult(
-        await api<Result>("stock-screener", {
-          field,
-          op,
-          value: Number(threshold),
-        }),
-      );
+      setResult(await api<Result>("stock-screener", input));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Screen unavailable.");
     } finally {
@@ -57,10 +82,12 @@ export default function StockScreener() {
     <section className={s.screener} aria-labelledby="stock-screener-title">
       <h2 id="stock-screener-title">Stock screener</h2>
       <p>
-        Choose a factual filter across SentiSense’s tracked stocks. This is not
-        a buy list or a complete market census. Missing values do not match a
-        filter.
+        Combine up to two factual conditions across the tracked stocks. This is
+        not a buy list or a complete market census. Missing values do not match
+        a filter. Both conditions must match; sorting uses the first
+        measurement.
       </p>
+      <ScreenerCatalog universe="STOCK" />
       <form onSubmit={run} className={s.pagination}>
         <label className={s.search}>
           Measurement
@@ -99,6 +126,71 @@ export default function StockScreener() {
             onChange={(e) => setThreshold(e.target.value)}
           />
         </label>
+        <div
+          role="group"
+          aria-label="Additional condition"
+          className={s.pagination}
+        >
+          {!secondEnabled ? (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => setSecondEnabled(true)}
+            >
+              Add another condition
+            </button>
+          ) : (
+            <>
+              <label>
+                And measurement
+                <select
+                  value={secondField}
+                  disabled={busy}
+                  onChange={(e) => {
+                    setSecondField(e.target.value as ScreenField);
+                    setSecondThreshold("");
+                  }}
+                >
+                  {Object.entries(screenerFields).map(([key, v]) => (
+                    <option key={key} value={key}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                And comparison
+                <select
+                  value={secondOp}
+                  disabled={busy}
+                  onChange={(e) => setSecondOp(e.target.value as "GTE" | "LTE")}
+                >
+                  <option value="GTE">At least</option>
+                  <option value="LTE">At most</option>
+                </select>
+              </label>
+              <label>
+                And value
+                <input
+                  type="number"
+                  required
+                  disabled={busy}
+                  min={screenerFields[secondField].min}
+                  step={secondField === "ANALYST_COUNT" ? "1" : "any"}
+                  value={secondThreshold}
+                  onChange={(e) => setSecondThreshold(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => setSecondEnabled(false)}
+              >
+                Remove additional condition
+              </button>
+            </>
+          )}
+        </div>
         <button type="submit" disabled={busy || threshold.trim() === ""}>
           {busy ? "Running screen…" : "Run screen"}
         </button>
@@ -118,8 +210,16 @@ export default function StockScreener() {
               ? ` (capped at ${result.limit}; refine the filter to narrow results)`
               : ""}
             . Applied: {screenerFields[result.screen.field].label}{" "}
-            {result.screen.op === "GTE" ? "≥" : "≤"} {result.screen.value}.
-            Sorted by that measurement{" "}
+            {result.screen.op === "GTE" ? "≥" : "≤"} {result.screen.value}
+            {result.screen.second && (
+              <>
+                {" "}
+                AND {screenerFields[result.screen.second.field].label}{" "}
+                {result.screen.second.op === "GTE" ? "≥" : "≤"}{" "}
+                {result.screen.second.value}
+              </>
+            )}
+            . Sorted by that measurement{" "}
             {result.screen.op === "GTE" ? "descending" : "ascending"}.
           </p>
           <p>

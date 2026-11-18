@@ -1,0 +1,113 @@
+.root {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  min-width: 0;
+}
+.root > summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+.root p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.form {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+.form label {
+  display: grid;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 12rem;
+  font-size: 0.85rem;
+}
+.form input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: inherit;
+}
+.matches {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+.matches li {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+.matches span {
+  font-size: 0.8rem;
+}
+.header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.header h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+.facts,
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+.metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.facts > div,
+.metrics > div {
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.root dt {
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.root dd {
+  margin: 0.5rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.metrics dd {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+.root article > details {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 430px) {
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .header {
+    flex-direction: column;
+  }
+  .form button {
+    width: 100%;
+  }
+}

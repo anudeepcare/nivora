@@ -1,4 +1,5 @@
 "use client";
+import { installInfoDisclosures } from "@/lib/info-disclosure";
 import {
   desktopNavigation,
   mobileNavigation,
@@ -69,6 +70,7 @@ export default function Shell({
   page: string;
   children: React.ReactNode;
 }) {
+  useEffect(() => installInfoDisclosures(document.body), []);
   const { demo, workspace, theme, setTheme } = useProduct();
   const { access } = useAccess();
   const pathname = usePathname();

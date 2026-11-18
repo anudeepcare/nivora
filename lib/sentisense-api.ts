@@ -717,9 +717,12 @@ export function createSentiSenseClient({
 }
 export const sentisenseEnabled = () =>
   Boolean(process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN);
+const guardedSentiSenseFetch: typeof fetch = async (input, init) =>
+  (await import("./sentisense-provider.server")).sentisenseFetch(input, init);
 let singleton: ReturnType<typeof createSentiSenseClient> | undefined;
 export function sentisenseRead(symbol: string, dataset: SentiSenseDataset) {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton(symbol, dataset);
@@ -727,12 +730,14 @@ export function sentisenseRead(symbol: string, dataset: SentiSenseDataset) {
 
 export function sentisenseStoryRead(symbol: string, id: string) {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.readStory(symbol, id);
 }
 export function sentisenseTrackedStocks() {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.trackedStocks();
@@ -740,12 +745,14 @@ export function sentisenseTrackedStocks() {
 
 export function sentisenseKpiCoverage() {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.kpiCoverage();
 }
 export function sentisenseOptionsOverview() {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.optionsOverview();
@@ -753,6 +760,7 @@ export function sentisenseOptionsOverview() {
 
 export function sentisenseInstitutionalFlows() {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.institutionalFlows();
@@ -760,6 +768,7 @@ export function sentisenseInstitutionalFlows() {
 
 export function sentisenseInstitutionalActivists() {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.institutionalActivists();
@@ -767,6 +776,7 @@ export function sentisenseInstitutionalActivists() {
 
 export function sentisenseInstitution(cik: string, history = false) {
   singleton ??= createSentiSenseClient({
+    fetcher: guardedSentiSenseFetch,
     key: process.env.SENTISENSE_API_KEY || process.env.SENTISENSE_API_TOKEN,
   });
   return singleton.institution(cik, history);

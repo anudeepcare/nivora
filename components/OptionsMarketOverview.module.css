@@ -99,6 +99,24 @@
   width: 100%;
 }
 
+.mobileViewChoice {
+  display: none;
+}
+.mobileViewChoice select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  padding: 10px;
+  font: inherit;
+}
+.mobileViewChoice select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
 /* Market discovery shell: one title, one view switch, one comparison surface. */
 .page {
   max-width: 1440px;
@@ -254,8 +272,18 @@
     display: block;
     margin: 10px 0;
   }
+  .mobileViewChoice {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .mobileViewChoice select {
+    font-size: 16px;
+  }
   .viewSwitch {
-    display: flex;
+    display: none;
   }
   .viewSwitch button {
     flex: 1;

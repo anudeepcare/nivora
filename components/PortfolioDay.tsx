@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Wallet, Clock3 } from "lucide-react";
 import type { Position } from "@/lib/types";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
 import { portfolioDay } from "@/lib/portfolio-day";
@@ -31,9 +31,18 @@ export default function PortfolioDay({
       className={s.root}
       aria-label="Your holdings and quoted price changes"
     >
+      <header className={s.heading}>
+        <span className={s.eyebrow}>
+          <Wallet size={15} aria-hidden="true" /> Holdings snapshot
+        </span>
+        <Link className={s.open} href={`${prefix}/portfolio`}>
+          Open portfolio <ArrowUpRight size={15} aria-hidden="true" />
+        </Link>
+      </header>
       <div className={s.total}>
-        <span className={s.eyebrow}>Your holdings · quoted price changes</span>
+        <span className={s.valueLabel}>Priced holdings value · USD</span>
         <strong>{amount(d.value, "USD", d.value >= 1e7)}</strong>
+        <span className={s.changeLabel}>Sum of reported quote changes</span>
         <p data-direction={direction}>
           {d.move == null ? (
             "Quoted changes not available"
@@ -49,31 +58,7 @@ export default function PortfolioDay({
           )}
         </p>
         <small>
-          {d.covered} of {d.holdings} holdings with dated reported changes.
-          {d.oldestAsOf && d.asOf && (
-            <>
-              {" "}
-              Quotes:{" "}
-              <time dateTime={d.oldestAsOf} title={d.oldestAsOf}>
-                {quoteTime(d.oldestAsOf, true)}
-              </time>
-              {d.oldestAsOf !== d.asOf && (
-                <>
-                  {" "}
-                  to{" "}
-                  <time dateTime={d.asOf} title={d.asOf}>
-                    {quoteTime(d.asOf, true)}
-                  </time>
-                </>
-              )}
-              .
-            </>
-          )}
-          {d.mixedQuoteDates
-            ? " Mixed quote dates, not one session."
-            : " Reported changes may cover different sessions."}{" "}
-          Sum of quoted changes on today&rsquo;s quantities, not account
-          performance.
+          {d.priced} of {d.holdings} holdings priced · excludes cash
         </small>
       </div>
       {(d.gainers.length > 0 || d.decliners.length > 0) && (
@@ -99,6 +84,9 @@ export default function PortfolioDay({
                         </Link>
                         <span>{signed(m.move)}</span>
                         <small>{percent(m.changePct, true)}</small>
+                        <time className={s.observed} dateTime={m.asOf}>
+                          Quote {quoteTime(m.asOf, true)}
+                        </time>
                       </li>
                     ))}
                   </ul>
@@ -107,9 +95,37 @@ export default function PortfolioDay({
           )}
         </div>
       )}
-      <Link className={s.open} href={`${prefix}/portfolio`}>
-        Open portfolio <ArrowUpRight size={15} aria-hidden="true" />
-      </Link>
+      <footer className={s.basis}>
+        <Clock3 size={14} aria-hidden="true" />
+        <div>
+          {d.covered} of {d.holdings} holdings with dated reported changes.
+          {d.oldestAsOf && d.asOf && (
+            <>
+              {" "}
+              Quotes:{" "}
+              <time dateTime={d.oldestAsOf} title={d.oldestAsOf}>
+                {quoteTime(d.oldestAsOf, true)}
+              </time>
+              {d.oldestAsOf !== d.asOf && (
+                <>
+                  {" "}
+                  to{" "}
+                  <time dateTime={d.asOf} title={d.asOf}>
+                    {quoteTime(d.asOf, true)}
+                  </time>
+                </>
+              )}
+              .
+            </>
+          )}
+          <strong className={s.warning}>
+            {d.mixedQuoteDates
+              ? " Mixed quote dates, not one session."
+              : " Reported changes may cover different sessions."}
+          </strong>{" "}
+          Current quantities × quoted changes, not account performance.
+        </div>
+      </footer>
     </section>
   );
 }
