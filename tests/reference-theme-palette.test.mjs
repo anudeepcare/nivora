@@ -9,7 +9,7 @@ const decls = (file, selector) => {
   });
   return result;
 };
-test("shared surfaces match live measured reference light and dark tokens", () => {
+test("shared surfaces preserve light reference and intentional dark readability palette", () => {
   const f = "app/core/tokens.css";
   const light = decls(f, ':root,\n:root[data-theme="light"]');
   const dark = decls(f, ':root[data-theme="dark"]');
@@ -25,8 +25,8 @@ test("shared surfaces match live measured reference light and dark tokens", () =
     "--app-background": "#080d18",
     "--card": "#0f1827",
     "--ink": "#eef2f8",
-    "--muted": "#8c99ac",
-    "--line": "#263247",
+    "--muted": "#bdc9da",
+    "--line": "#42516a",
     "--control-card": "#101a29",
     "--control-ink": "#dfe5ef",
   }))

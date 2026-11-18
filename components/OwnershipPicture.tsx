@@ -1,4 +1,5 @@
 "use client";
+import layout from "./OwnershipPicture.module.css";
 import { Help } from "./Ui";
 import type { Research } from "@/lib/types";
 import { percent, dateLabel } from "@/lib/format";
@@ -31,7 +32,7 @@ export default function OwnershipPicture({
           reporting dates and share bases from the institutional comparison
           above. They are not a second current ownership estimate.
         </p>
-        <dl className="ownership-source-aggregates">
+        <dl className={`ownership-source-aggregates ${layout.aggregates}`}>
           <div>
             <dt>Institutional aggregate</dt>
             <dd>{percent(e.ownership.institutions)}</dd>
@@ -47,8 +48,13 @@ export default function OwnershipPicture({
           source.
         </p>
         {e.holders.length > 0 && (
-          <div className="table-scroll">
-            <table>
+          <div
+            className={`table-scroll ${layout.scroll}`}
+            tabIndex={0}
+            role="region"
+            aria-label="Reported ownership positions"
+          >
+            <table className={layout.table}>
               <caption>
                 Source-specific dated positions · delayed disclosures, not live
                 buying or selling
@@ -124,8 +130,13 @@ export default function OwnershipPicture({
         </p>
       )}
       {e.holders.length > 0 && (
-        <div className="table-scroll">
-          <table>
+        <div
+          className={`table-scroll ${layout.scroll}`}
+          tabIndex={0}
+          role="region"
+          aria-label="Reported ownership positions"
+        >
+          <table className={layout.table}>
             <caption>
               Reported positions are delayed disclosures, not live buying or
               selling.

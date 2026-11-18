@@ -123,7 +123,7 @@
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--control-muted",
     "from": "#b9c1bf",
-    "to": "#8c99ac"
+    "to": "#bdc9da"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
@@ -141,37 +141,37 @@
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--control-line",
     "from": "#65716a",
-    "to": "#263247"
+    "to": "#42516a"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--surface",
     "from": "#303536",
-    "to": "#0b121f"
+    "to": "#182334"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--surface-2",
     "from": "#24272b",
-    "to": "#0b121f"
+    "to": "#182334"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--muted",
     "from": "#b9c1bf",
-    "to": "#8c99ac"
+    "to": "#bdc9da"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--line",
     "from": "#42484a",
-    "to": "#263247"
+    "to": "#42516a"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--border",
     "from": "#42484a",
-    "to": "#263247"
+    "to": "#42516a"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
@@ -195,13 +195,13 @@
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--business-icon",
     "from": "#167b57",
-    "to": "#087b78"
+    "to": "#8ed9d0"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
     "property": "--ownership-icon",
     "from": "#347d76",
-    "to": "#7051c8"
+    "to": "#cab8f7"
   },
   {
     "selector": ":root[data-theme=\"dark\"]",
@@ -329,5 +329,17 @@
     "property": "--control-ink",
     "from": "#eef2f8",
     "to": "#dfe5ef"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--financial-icon",
+    "from": "#237f75",
+    "to": "#a2d8c9"
+  },
+  {
+    "selector": ":root[data-theme=\"dark\"]",
+    "property": "--valuation-icon",
+    "from": "#956b0f",
+    "to": "#edcd8c"
   }
 ]

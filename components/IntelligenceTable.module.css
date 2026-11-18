@@ -5,3 +5,44 @@
   word-break: normal;
   font-variant-numeric: tabular-nums;
 }
+
+/* Explicit column semantics outrank legacy blanket right-aligned body cells. */
+.table.table.table :is(th, td) {
+  text-align: left;
+  vertical-align: middle;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--surface);
+}
+.table.table.table [data-numeric="true"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.table.table.table thead th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface);
+}
+.table.table.table tbody th {
+  min-width: 150px;
+  max-width: 300px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.table.table.table tbody tr:hover > :is(th, td) {
+  background: color-mix(in srgb, var(--blue) 7%, var(--surface));
+}
+@media (max-width: 600px) {
+  .table.table.table :is(th, td) {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+  .table.table.table tbody th {
+    min-width: 130px;
+    max-width: 220px;
+  }
+}

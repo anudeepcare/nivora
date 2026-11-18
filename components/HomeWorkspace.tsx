@@ -3,6 +3,7 @@ import { useState } from "react";
 import todayStyles from "./TodaySequence.module.css";
 import TodaySequence from "./TodaySequence";
 import ContributionCompare from "./ContributionCompare";
+import HomeQuarterHighlights from "./HomeQuarterHighlights";
 import HomeMarketCards from "./HomeMarketCards";
 import HomeRadar from "./HomeRadar";
 import ResearchInbox from "./ResearchInbox";
@@ -255,6 +256,11 @@ function HomeOverview() {
           />
         </div>
       </div>
+      <HomeQuarterHighlights
+        research={loadedResearch}
+        asOf={today.toISOString()}
+        prefix={prefix}
+      />
       {symbols.length > 0 && (
         <>
           <div

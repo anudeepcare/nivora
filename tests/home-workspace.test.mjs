@@ -34,6 +34,7 @@ function load(name, bindings) {
         "Compare companies",
       ),
     HomeMarketCards: () => null,
+    HomeQuarterHighlights: () => null,
     OpportunityMap: () => null,
     HomeRadar: () => null,
     PortfolioDay: () => null,

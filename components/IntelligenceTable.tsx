@@ -14,6 +14,27 @@ export default function IntelligenceTable({
   const columns = [
     ...new Set(rows.flatMap((row) => row.cells.map((cell) => cell.label))),
   ];
+  const numericColumns = new Set(
+    columns.filter((label) => {
+      const values = rows
+        .flatMap((row) =>
+          row.cells
+            .filter((cell) => cell.label === label)
+            .map((cell) => cell.value),
+        )
+        .filter(
+          (value) => value && !["Not supplied", "—", "–"].includes(value),
+        );
+      return (
+        values.length > 0 &&
+        values.every((value) =>
+          /^\(?[+−-]?(?:[A-Z]{3}\s*)?[$€£¥]?\d[\d,.]*(?:%|\s[A-Z]{3})?\)?$/.test(
+            value,
+          ),
+        )
+      );
+    }),
+  );
   return (
     <div
       className={s.tableRegion}
@@ -21,7 +42,7 @@ export default function IntelligenceTable({
       role="region"
       aria-label={`${title} records`}
     >
-      <table className={s.table}>
+      <table className={`${s.table} ${layout.table}`}>
         <caption className="sr-only">
           {title}. Missing values are shown as not supplied.
         </caption>
@@ -30,7 +51,11 @@ export default function IntelligenceTable({
             <th scope="col">Record</th>
             <th scope="col">{dateHeading}</th>
             {columns.map((label) => (
-              <th scope="col" key={label}>
+              <th
+                scope="col"
+                key={label}
+                data-numeric={numericColumns.has(label)}
+              >
                 {label}
               </th>
             ))}
@@ -59,6 +84,7 @@ export default function IntelligenceTable({
                 return (
                   <td
                     key={label}
+                    data-numeric={numericColumns.has(label)}
                     className={
                       value &&
                       /^\(?[+−-]?(?:[A-Z]{3}\s*)?[$€£¥]?\d[\d,.]*(?:%|\s[A-Z]{3})?\)?$/.test(

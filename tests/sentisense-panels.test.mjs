@@ -179,7 +179,7 @@ test("shared evidence table keeps full source detail in disclosure without expan
     }),
   );
   assert.match(html, /<table/);
-  assert.match(html, /scope="col">Value/);
+  assert.match(html, /scope="col" data-numeric="true">Value/);
   assert.match(html, /0 USD/);
   assert.match(html, /<details/);
   assert.match(html, /View source citation/);
@@ -222,9 +222,17 @@ test("evidence table preserves amounts as atomic cells and distinguishes fiscal 
   );
   assert.match(html, /scope="col">Fiscal period ending<\/th>/);
   assert.match(html, /class="atomic">2026-12-31<\/td>/);
-  assert.ok(html.includes('<td class="atomic">$12,345,678,901.25</td>'));
-  assert.ok(html.includes('<td class="atomic">-$1.25</td>'));
-  assert.ok(html.includes("<td>Provider reporting basis</td>"));
+  assert.ok(
+    html.includes(
+      '<td data-numeric="true" class="atomic">$12,345,678,901.25</td>',
+    ),
+  );
+  assert.ok(
+    html.includes('<td data-numeric="true" class="atomic">-$1.25</td>'),
+  );
+  assert.ok(
+    html.includes('<td data-numeric="false">Provider reporting basis</td>'),
+  );
 });
 
 test("GOOG estimates explicitly display verified primary-class records without relabeling them", () => {
