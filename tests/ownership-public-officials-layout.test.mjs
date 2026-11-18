@@ -5,12 +5,11 @@ test("public official alternate source is only mounted in selected dataset, not 
   const page = fs.readFileSync("components/Research.tsx", "utf8");
   const panels = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");
   assert.doesNotMatch(page, /className=\{cockpit.ownershipGrid\}/);
-  assert.match(page, /supplementalCongress=\{[\s\S]*?!congressionalHidden &&/);
+  assert.doesNotMatch(page, /<CongressDisclosures/);
   assert.match(
     panels,
-    /dataset === "politicians" && \([\s\S]*?\{supplementalCongress\}[\s\S]*?<PoliticianMembers/,
+    /dataset === "politicians" \? \([\s\S]*?<PublicOfficialsEvidence/,
   );
-  assert.equal((page.match(/<CongressDisclosures/g) || []).length, 1);
 });
 
 test("active picker renders alternate filing source only for public officials and respects hidden preference", async () => {
@@ -48,6 +47,10 @@ test("active picker renders alternate filing source only for public officials an
     useWorkspacePreferences: () => ({ preferences: { hiddenSignals: hidden } }),
     s: new Proxy({}, { get: (_, k) => k }),
     Dataset: () => React.createElement("p", null, "Selected source"),
+    PublicOfficialsEvidence: () => {
+      mounts++;
+      return React.createElement("p", null, "Distinct filing records");
+    },
     PoliticianMembers: () => null,
     PoliticianActivity: () => null,
     navigateSelection: () => {},
@@ -83,4 +86,9 @@ test("active picker renders alternate filing source only for public officials an
     /Distinct filing records/,
   );
   assert.equal(mounts, 1);
+});
+
+test("combined officials provenance identifies both sources", () => {
+  const panels = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");
+  assert.match(panels, /dataset === "politicians"[\s\S]*?SentiSense and EODHD/);
 });

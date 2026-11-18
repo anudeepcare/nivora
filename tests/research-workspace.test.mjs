@@ -70,7 +70,6 @@ test("Ownership retains unique evidence and controls without duplicated investme
     "Analyst",
     "DecisionWatch",
     "DecisionWorkspace",
-    "CongressDisclosures",
     "SentiSensePanels",
   ])
     assert.match(ownership, new RegExp("<" + component + "[ \\n]"));
@@ -79,6 +78,12 @@ test("Ownership retains unique evidence and controls without duplicated investme
       ownership.indexOf("<ResearchWorkspace"),
   );
   assert.match(ownership, /Additional ownership evidence/);
+  const panels = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");
+  const officials = fs.readFileSync("components/PublicOfficialsEvidence.tsx", "utf8");
+  assert.match(panels, /dataset === "politicians" \? \([\s\S]*?<PublicOfficialsEvidence/);
+  assert.match(officials, /congress\?symbol=/);
+  assert.match(officials, /dataset=politicians/);
+  assert.match(officials, /href: r.filingUrl/);
 });
 test("Pace preserves readings, chart, levels and historical tools with rules consolidated", () => {
   const s = fs.readFileSync("components/AccumulationDesk.tsx", "utf8");

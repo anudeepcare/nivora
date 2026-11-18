@@ -1,4 +1,5 @@
 "use client";
+import PublicOfficialsEvidence from "./PublicOfficialsEvidence";
 import OwnershipPicture from "./OwnershipPicture";
 import type { Research } from "@/lib/types";
 import CompanyKpiChart from "./CompanyKpiChart";
@@ -17,7 +18,7 @@ import OptionsPositioningOverview from "./OptionsPositioningOverview";
 import OptionsObservationChart from "./OptionsObservationChart";
 import Link from "next/link";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import type { SentiSenseDataset, SentiSenseResult } from "@/lib/sentisense-api";
 import { intelligenceView } from "@/lib/sentisense-view";
 import { useResource } from "./Session";
@@ -73,13 +74,11 @@ export default function SentiSensePanels({
   group,
   preview = false,
   supplementalOwnership,
-  supplementalCongress,
 }: {
   symbol: string;
   group: SentiSenseGroupName;
   preview?: boolean;
   supplementalOwnership?: Research;
-  supplementalCongress?: ReactNode;
 }) {
   const compact = group === "options" || group === "ownership";
   const { preferences } = useWorkspacePreferences();
@@ -136,8 +135,11 @@ export default function SentiSensePanels({
           <details className={s.provider} data-info-disclosure>
             <summary aria-label="Data source details">ⓘ Source</summary>
             <p>
-              Source: SentiSense. Dataset dates and coverage are shown with each
-              result.
+              Source:{" "}
+              {dataset === "politicians"
+                ? "SentiSense and EODHD"
+                : "SentiSense"}
+              . Dataset dates and coverage are shown with each result.
             </p>
           </details>
         </header>
@@ -164,8 +166,11 @@ export default function SentiSensePanels({
           <details className={s.provider} data-info-disclosure>
             <summary aria-label="Data source details">ⓘ</summary>
             <p>
-              Source: SentiSense. Dataset dates and coverage are shown with each
-              result.
+              Source:{" "}
+              {dataset === "politicians"
+                ? "SentiSense and EODHD"
+                : "SentiSense"}
+              . Dataset dates and coverage are shown with each result.
             </p>
           </details>
         )}
@@ -174,6 +179,8 @@ export default function SentiSensePanels({
         <ProviderRating key={symbol} symbol={symbol} />
       ) : (dataset as string) === "stockInsights" ? (
         <StockInsights key={symbol} symbol={symbol} />
+      ) : dataset === "politicians" ? (
+        <PublicOfficialsEvidence key={symbol} symbol={symbol} />
       ) : dataset === "documents" ? (
         <PublicationFeeds key={symbol} symbol={symbol} />
       ) : dataset === "aiReport" ? (
@@ -195,7 +202,6 @@ export default function SentiSensePanels({
       {dataset === "analystActions" && <AnalystMarketActivity />}
       {dataset === "politicians" && (
         <>
-          {supplementalCongress}
           <PoliticianMembers />
           <PoliticianActivity />
         </>

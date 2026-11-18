@@ -5,21 +5,12 @@ import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 const source = fs.readFileSync("components/Research.tsx", "utf8");
-test("separate congressional pane follows the same saved preference as its dataset", () => {
-  assert.match(
-    source,
-    /!congressionalHidden && \([\s\S]*?<section aria-label="Congressional activity">/,
-  );
-  const expression = source.match(/const congressionalHidden =([\s\S]*?);/)[1];
-  const hidden = new Function(
-    "workspacePreferences",
-    "return (" + expression.trim() + ")",
-  );
-  assert.equal(
-    hidden({ preferences: { hiddenSignals: ["congressional"] } }),
-    true,
-  );
-  assert.equal(hidden({ preferences: { hiddenSignals: ["insiders"] } }), false);
+test("congressional source follows the same saved dataset preference", () => {
+  const panels = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");
+  assert.doesNotMatch(source, /<CongressDisclosures/);
+  assert.match(panels, /politicians: "congressional"/);
+  assert.match(panels, /!hidden.includes/);
+  assert.match(panels, /dataset === "politicians" \? \(/);
 });
 test("failed dataset retry calls the actual resource refresh and reports pending state", () => {
   const text = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");

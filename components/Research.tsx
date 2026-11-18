@@ -128,9 +128,6 @@ const AnalystRatings = dynamic(() => import("./AnalystRatings"), {
   loading: () => <p role="status">Loading…</p>,
 });
 
-const CongressDisclosures = dynamic(() => import("./CongressDisclosures"), {
-  loading: () => <p role="status">Loading…</p>,
-});
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
@@ -179,9 +176,6 @@ function ResearchTabIcon({
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
   const workspacePreferences = useWorkspacePreferences();
-  const congressionalHidden =
-    workspacePreferences.preferences.hiddenSignals?.includes("congressional") ??
-    false;
   const technicalsHidden =
     workspacePreferences.preferences.hiddenSignals?.includes("technicals") ??
     false;
@@ -944,16 +938,6 @@ export default function Research({ symbol }: { symbol: string }) {
                     preview={!!demo}
                     group="ownership"
                     supplementalOwnership={r}
-                    supplementalCongress={
-                      !congressionalHidden && (
-                        <section aria-label="Congressional activity">
-                          <CongressDisclosures
-                            symbol={r.company.symbol}
-                            preview={!!demo}
-                          />
-                        </section>
-                      )
-                    }
                   />
                   {demo && <OwnershipPicture research={r} />}
                 </section>
