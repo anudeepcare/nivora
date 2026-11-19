@@ -37,6 +37,34 @@ export default function ReferenceAtlas({
   onTab: (tab: AtlasTarget) => void;
 }) {
   const m = useMemo(() => referenceAtlas(research), [research]);
+  const { referenceRange } = m;
+  const modeled = m.cases.length === 3;
+  const rangeCards = modeled
+    ? m.cases.map((item) => ({
+        label: item.label,
+        tone: item.tone,
+        value: amount(item.value, m.outcome.currency),
+        caption:
+          item.annual == null
+            ? "Model value"
+            : `${percent(item.annual)} annualized`,
+      }))
+    : referenceRange
+      ? referenceRange.values.map((value, index) => ({
+          label: referenceRange.labels[index],
+          tone: ["orange", "cyan", "violet"][index],
+          value: amount(value, referenceRange.currency),
+          caption:
+            referenceRange.source === "history"
+              ? ["Lower bound", "Historical base", "Upper bound"][index]
+              : "Published target",
+        }))
+      : ["Bear", "Base", "Bull"].map((label) => ({
+          label,
+          tone: undefined,
+          value: "—",
+          caption: "Not available",
+        }));
   const trends = useMemo(() => atlasTrends(research), [research]);
   const [selected, setSelected] = useState(0);
   const signal = m.signals[selected],
@@ -306,78 +334,50 @@ export default function ReferenceAtlas({
         <section className={s.scenarios}>
           <header>
             <span className={s.eyebrow}>
-              {m.referenceRange?.title ?? "Outcome range"}{" "}
+              {referenceRange?.title ??
+                (modeled ? "Modeled range" : "Outcome range")}{" "}
               {atlasHorizonLabel(m.horizon)
                 ? `· ${atlasHorizonLabel(m.horizon)}`
                 : ""}
             </span>
             <button onClick={() => onTab("Valuation")}>
-              {m.cases.length === 3 ? "Open model" : "Open Scenarios"} ↗
+              {modeled ? "Open model" : "Open Scenarios"} ↗
             </button>
           </header>
-          {m.cases.length === 3 ? (
-            <>
-              <div className={s.caseGrid}>
-                {m.cases.map((item) => (
-                  <button
-                    key={item.label}
-                    data-tone={item.tone}
-                    onClick={() => onTab("Valuation")}
-                  >
-                    <span>{item.label}</span>
-                    <strong>{amount(item.value, m.outcome.currency)}</strong>
-                    <small>
-                      {item.annual == null
-                        ? "Model value"
-                        : `${percent(item.annual)} annualized`}
-                    </small>
-                  </button>
-                ))}
-              </div>
-              <p>
-                {m.outcome.method} · {m.outcome.caveat}
-                {m.outcome.asOf && (
-                  <> Model dated {dateLabel(m.outcome.asOf)}.</>
-                )}
-                {m.outcome.end && <> Ends {dateLabel(m.outcome.end)}.</>}
-              </p>
-            </>
-          ) : m.referenceRange ? (
-            <>
-              <div className={s.caseGrid}>
-                {m.referenceRange.values.map((value, index) => (
-                  <button key={index} onClick={() => onTab("Valuation")}>
-                    <span>{m.referenceRange?.labels[index]}</span>
-                    <strong>{amount(value, m.referenceRange?.currency)}</strong>
-                  </button>
-                ))}
-              </div>
-              <p>
-                {m.referenceRange.note}
-                {m.referenceRange.asOf && (
-                  <>
-                    {" "}
-                    {m.referenceRange.source === "history"
-                      ? "Reference price dated"
-                      : "Observed"}{" "}
-                    {dateLabel(m.referenceRange.asOf)}.
-                  </>
-                )}
-              </p>
-            </>
+          <div className={s.caseGrid}>
+            {rangeCards.map((card) => (
+              <button
+                key={card.label}
+                data-tone={card.tone}
+                onClick={() => onTab("Valuation")}
+              >
+                <span>{card.label}</span>
+                <strong>{card.value}</strong>
+                <small>{card.caption}</small>
+              </button>
+            ))}
+          </div>
+          {modeled ? (
+            <p>
+              {m.outcome.method} · {m.outcome.caveat}
+              {m.outcome.asOf && <> Model dated {dateLabel(m.outcome.asOf)}.</>}
+              {m.outcome.end && <> Ends {dateLabel(m.outcome.end)}.</>}
+            </p>
+          ) : referenceRange ? (
+            <p>
+              {referenceRange.note}
+              {referenceRange.asOf && (
+                <>
+                  {" "}
+                  {referenceRange.source === "history"
+                    ? "Reference price dated"
+                    : "Observed"}{" "}
+                  {dateLabel(referenceRange.asOf)}.
+                </>
+              )}
+            </p>
           ) : (
-            <>
-              <div className={s.caseGrid}>
-                {["Bear", "Base", "Bull"].map((label) => (
-                  <button key={label} onClick={() => onTab("Valuation")}>
-                    <span>{label}</span>
-                    <strong>—</strong>
-                    <small>Not available</small>
-                  </button>
-                ))}
-              </div>
-              <p>{m.outcome.caveat}</p>
-            </>
+            <p>{m.outcome.caveat}</p>
           )}
         </section>
         <section className={s.evidence}>
