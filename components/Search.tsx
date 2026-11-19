@@ -11,6 +11,8 @@ import {
   searchSelection,
   searchRequestKey,
   searchListScrollTop,
+  searchListingKey,
+  searchHighlightIndex,
 } from "@/lib/search-selection";
 import { useProduct } from "./Session";
 import { SecurityLogo } from "./Ui";
@@ -33,11 +35,12 @@ export default function Search({
     [query, setQuery] = useState(""),
     [results, setResults] = useState<Company[]>([]),
     [open, setOpen] = useState(false),
-    [selected, setSelected] = useState(-1),
+    [selectedKey, setSelectedKey] = useState<string | null>(null),
     [loading, setLoading] = useState(false),
     [error, setError] = useState("");
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   const showResults = open && query.trim().length > 0;
+  const selected = searchHighlightIndex(results, selectedKey);
   const recent = [
     ...new Set([
       ...(workspace?.watchlist.map((x) => x.symbol) ?? []),
@@ -71,7 +74,7 @@ export default function Search({
     };
   }, []);
   useEffect(() => {
-    setSelected(-1);
+    setSelectedKey(null);
     setResults([]);
     setError("");
     if (query.trim().length < 1) {
@@ -169,6 +172,13 @@ export default function Search({
   };
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (selectedKey !== null && selected < 0) {
+      setError(
+        "That result changed. Choose a company from the refreshed list.",
+      );
+      setOpen(true);
+      return;
+    }
     try {
       go(searchSelection(query, results, selected));
     } catch {
@@ -203,22 +213,33 @@ export default function Search({
           value={query}
           onFocus={() => setOpen(true)}
           onChange={(e) => {
+            setSelectedKey(null);
             setQuery(e.target.value);
             setOpen(true);
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setOpen(false);
+              setSelectedKey(null);
               return;
             }
             if (e.key === "ArrowDown") {
               e.preventDefault();
-              setSelected((i) => Math.min(results.length - 1, i + 1));
+              setSelectedKey((key) => {
+                const index = Math.min(
+                  results.length - 1,
+                  searchHighlightIndex(results, key) + 1,
+                );
+                return results[index] ? searchListingKey(results[index]) : null;
+              });
               setOpen(true);
             }
             if (e.key === "ArrowUp") {
               e.preventDefault();
-              setSelected((i) => Math.max(-1, i - 1));
+              setSelectedKey((key) => {
+                const index = searchHighlightIndex(results, key) - 1;
+                return results[index] ? searchListingKey(results[index]) : null;
+              });
             }
           }}
         />
@@ -227,6 +248,7 @@ export default function Search({
             type="button"
             aria-label="Clear search"
             onClick={() => {
+              setSelectedKey(null);
               setQuery("");
               setOpen(false);
               input.current?.focus({ preventScroll: true });

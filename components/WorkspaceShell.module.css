@@ -330,6 +330,9 @@
   overflow: auto;
   box-sizing: border-box;
 }
+:global(#auryn-app) .searchDialog > :global(.dialog-head) {
+  border-bottom: 0;
+}
 .searchDialog > :global(.search) {
   padding: 0;
 }

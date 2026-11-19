@@ -41,6 +41,20 @@ export function searchSelection(
   return exact?.symbol ?? symbolInput(q);
 }
 
+type SearchListing = { symbol: string; exchange: string };
+export function searchListingKey(listing: SearchListing): string {
+  return JSON.stringify([listing.symbol, listing.exchange]);
+}
+
+export function searchHighlightIndex(
+  results: SearchListing[],
+  selectedKey: string | null,
+): number {
+  return selectedKey === null
+    ? -1
+    : results.findIndex((listing) => searchListingKey(listing) === selectedKey);
+}
+
 /** One cache entry for equivalent ticker/company queries. */
 export function searchRequestKey(query: string): string {
   const normalized = query

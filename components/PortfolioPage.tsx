@@ -90,6 +90,17 @@ export function Portfolio() {
       )
       .map((e) => e.symbol),
   );
+  const earningsHoldingsCount = new Set(
+    positions
+      .filter(
+        (p) =>
+          p.assetType === "stock" &&
+          Number.isFinite(p.quantity) &&
+          p.quantity !== 0 &&
+          earnings.has(p.symbol),
+      )
+      .map((p) => p.symbol),
+  ).size;
   const visible = positions.filter(
     (p) =>
       `${p.symbol} ${quotes.data[p.symbol]?.company?.name || ""} ${p.assetType === "cash" ? "cash" : ""}`
@@ -183,7 +194,7 @@ export function Portfolio() {
               <dt>Earnings · next 7 days</dt>
               <dd>
                 {calendar.data && calendar.data.followed > 0
-                  ? `${positions.filter((p) => p.assetType === "stock" && earnings.has(p.symbol)).length} holdings with supplied dates`
+                  ? `${earningsHoldingsCount} holdings with supplied dates`
                   : "Dates not confirmed"}
               </dd>
               <small>Calendar coverage may be incomplete.</small>

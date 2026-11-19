@@ -47,7 +47,7 @@
   --muted: var(--table-hover-muted);
   background: var(--table-hover-surface);
   color: var(--table-hover-ink);
-  box-shadow: inset 3px 0 #9dbbff;
+  box-shadow: none;
 }
 :root[data-theme="dark"]
   #auryn-app

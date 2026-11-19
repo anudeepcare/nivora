@@ -49,3 +49,18 @@ test("keyboard result selection scrolls only enough within its list", async () =
   assert.equal(searchListScrollTop(100, 200, 500, 480, 540), 140);
   assert.equal(searchListScrollTop(100, 200, 500, 180, 230), 80);
 });
+
+test("search highlight follows the same listing when results reorder", async () => {
+  const { searchListingKey, searchHighlightIndex, searchSelection } =
+    await import("../lib/search-selection.ts");
+  const first = { symbol: "APP", exchange: "NASDAQ", name: "AppLovin" };
+  const second = { symbol: "APPF", exchange: "NASDAQ", name: "AppFolio" };
+  const key = searchListingKey(first);
+  const refreshed = [second, first];
+  const index = searchHighlightIndex(refreshed, key);
+  assert.equal(index, 1);
+  assert.equal(searchSelection("app", refreshed, index), "APP");
+  assert.equal(searchHighlightIndex([second], key), -1);
+  assert.equal(searchHighlightIndex([{ ...first, exchange: "NYSE" }], key), -1);
+  assert.equal(searchHighlightIndex(refreshed, null), -1);
+});

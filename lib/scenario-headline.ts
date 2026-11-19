@@ -8,6 +8,8 @@ export type ScenarioHeadline = {
   eyebrow: string;
   detail: string;
   note: string;
+  referenceAsOf?: string;
+  horizon?: string;
   bear: number;
   base: number;
   bull: number;
@@ -40,6 +42,7 @@ export function scenarioHeadline(r: Research): ScenarioHeadline | null {
     return {
       source: "history",
       eyebrow: "One-year volatility range",
+      referenceAsOf: view.reference.asOf,
       detail: `No AURYN model or analyst range qualifies yet, so no direction is assumed: base is today's price. Bear and bull are a poor and a strong year for a stock that moves as much as this one (about ${span.volatility.toFixed(0)}% a year): in a study of ${MARKET_STUDY.stocks.toLocaleString("en-US")} stocks, about one year in five finished below a bear case built this way and one in five above the bull case. Not fair value or a forecast.`,
       note: "Bear and bull: 0.859 times the past year's daily volatility, scaled to one year, either side of today's price.",
       bear: span.bear,
@@ -68,6 +71,8 @@ export function scenarioHeadline(r: Research): ScenarioHeadline | null {
     : {
         source: "history",
         eyebrow: "Historical range",
+        referenceAsOf: view.reference.asOf,
+        horizon: p.horizon,
         detail: `No AURYN model or analyst range qualifies yet. These are the 10th, 50th and 90th percentile of this stock's own past moves (${p.horizon}) applied to today's price. Not fair value or a forecast.${record}`,
         note: p.note,
         bear: p.bear,

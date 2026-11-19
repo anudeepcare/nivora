@@ -180,7 +180,23 @@ function HomeOverview() {
       ]),
     ).values(),
   ];
-  const eventGroups = groupMarketEvents(calendarEvents);
+  const heldSymbols = new Set(
+    (workspace?.positions ?? [])
+      .filter(
+        (position) =>
+          position.assetType !== "cash" &&
+          Number.isFinite(position.quantity) &&
+          position.quantity !== 0,
+      )
+      .map((position) => position.symbol),
+  );
+  const eventGroups = groupMarketEvents(calendarEvents).map((group) => ({
+    ...group,
+    events: [...group.events].sort(
+      (a, b) =>
+        Number(heldSymbols.has(b.symbol)) - Number(heldSymbols.has(a.symbol)),
+    ),
+  }));
   const loadedResearch = symbols.flatMap((symbol) => {
     const research = state.research(symbol);
     return research ? [research] : [];
@@ -274,7 +290,7 @@ function HomeOverview() {
             >
               <SectionHead
                 title="Earnings & events"
-                subtitle="Recent results and the next 7 days."
+                subtitle="Recent results and the next 7 days. Held companies first within each date."
                 action={
                   <button
                     className="icon-btn"
@@ -312,7 +328,10 @@ function HomeOverview() {
                           >
                             <span>
                               <strong>{event.symbol}</strong>
-                              <span>{event.kind}</span>
+                              <span>
+                                {event.kind}
+                                {heldSymbols.has(event.symbol) ? " · Held" : ""}
+                              </span>
                               {/earnings/i.test(event.kind) && (
                                 <b
                                   className={`earnings-status earnings-${earningsEventState(event, day).status}`}

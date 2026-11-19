@@ -50,6 +50,11 @@ test("dark search pointer and keyboard option selection have explicit foreground
   );
   assert.equal(r.decl.background, "var(--table-hover-surface)");
   assert.equal(r.decl.color, "var(--table-hover-ink)");
+  assert.equal(
+    r.decl["box-shadow"],
+    "none",
+    "selection must not draw an accent stripe",
+  );
   assert.match(css, /\[aria-selected="true"\]\)\s+small/);
   assert.match(css, /--blue-soft: #283957/);
 });
