@@ -77,7 +77,7 @@
   height: 54px;
   border-radius: 50%;
   background: var(--blue-soft);
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   font-size: 22px;
   font-weight: 500;
 }
@@ -101,7 +101,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
 }
 .page :global(.workspace-settings-groups) {
   grid-area: preferences;
@@ -475,7 +475,7 @@
 }
 .page :global(.settings-eyebrow) {
   margin: 12px 0;
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   font: 11px var(--font-mono, monospace);
   letter-spacing: 0.12em;
 }
@@ -504,7 +504,7 @@
 }
 .page :global(.workspace-setting-group) > header small {
   margin: 0 0 7px;
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   font: 11px var(--font-mono, monospace);
   letter-spacing: 0.06em;
 }
@@ -886,10 +886,10 @@
   }
 }
 
-/* The shared pale blue token is not a suitable selected fill with dark-theme ink. */
+/* Solid accents retain readable white text in every appearance theme. */
 .page :global(.density-options) button[aria-pressed="true"] {
-  background: var(--blue);
-  border-color: var(--blue);
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
   color: #fff;
 }
 .page :global(.settings-signals) > header p {
@@ -1007,5 +1007,19 @@
   .page :global(.workspace-account-row) strong {
     overflow-wrap: anywhere;
     line-height: 1.5;
+  }
+}
+
+/* Touch targets expand without stretching the switch's visual thumb. */
+@media (max-width: 800px) {
+  .page :global(.research-preferences) select,
+  .page :global(.accent-options) button,
+  .page :global(.density-options) button {
+    min-height: 44px;
+  }
+  .page :global(.motion-switch)::after {
+    content: "";
+    position: absolute;
+    inset: -8px -2px;
   }
 }

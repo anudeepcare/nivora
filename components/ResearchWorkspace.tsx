@@ -20,6 +20,7 @@ export default function ResearchWorkspace({
       <div
         className="segmented"
         data-selection-navigation
+        data-nested-navigation
         onKeyDown={(event) => navigateSelection(event)}
         role="group"
         aria-label={`${label} views`}
@@ -33,7 +34,8 @@ export default function ResearchWorkspace({
             aria-controls={`${id}-content`}
             onClick={() => setSelected(index)}
           >
-            {view.title}
+            <span aria-hidden="true" data-nav-icon={view.title} />
+            <span>{view.title}</span>
           </button>
         ))}
       </div>

@@ -16,6 +16,7 @@
 .panel :global(.detail-metric) strong {
   white-space: nowrap;
   font-size: 22px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 .panel :global(.detail-metric) small {
@@ -44,6 +45,7 @@
   word-break: normal;
   overflow-wrap: normal;
   font-size: 20px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 .panel :global(.technical-level-grid) span,
@@ -96,18 +98,10 @@
 }
 .panel :global(.financial-detail-groups) > section {
   align-self: stretch;
-  background: linear-gradient(
-    130deg,
-    var(--card) 75%,
-    color-mix(in srgb, var(--jade) 12%, var(--card))
-  );
+  background: var(--card);
 }
 .panel :global(.financial-detail-groups) > section:nth-child(2) {
-  background: linear-gradient(
-    130deg,
-    var(--card) 75%,
-    color-mix(in srgb, var(--orchid) 12%, var(--card))
-  );
+  background: var(--card);
 }
 
 .ratioTrack {
@@ -153,6 +147,7 @@
   gap: 8px;
   margin: 7px 0;
   font-size: 20px;
+  font-weight: 500;
 }
 .priceMapHeader p {
   max-width: 650px;
@@ -423,6 +418,7 @@
 }
 .panel.panel.panel.panel :global(.detail-metric) strong {
   font-size: 20px;
+  font-weight: 500;
 }
 @media (max-width: 700px) {
   .panel.panel.panel.panel :global(.financial-detail-groups) {
@@ -493,6 +489,7 @@
   }
   .panel :global(.business-kpis) dd {
     font-size: 20px;
+    font-weight: 500;
   }
 }
 

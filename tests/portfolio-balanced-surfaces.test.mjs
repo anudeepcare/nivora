@@ -21,6 +21,18 @@ test("paired portfolio overview uses equivalent desktop columns", () => {
     ),
   );
 });
+test("only unequal allocation and review panels opt out of stretch", () => {
+  const css = read("PortfolioReference.module.css");
+  for (const selector of ["capitalOverview", "actions"]) {
+    assert.match(
+      css,
+      new RegExp(
+        "\\.grid > \\." + selector + "\\s*\\{[^}]*align-self:\\s*start",
+        "s",
+      ),
+    );
+  }
+});
 test("summary surfaces never force inverse green cards or private text tokens", () => {
   const css = postcss.parse(read("PortfolioWorkspace.module.css"));
   css.walkRules((rule) => {

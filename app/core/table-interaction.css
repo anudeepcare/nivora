@@ -1,0 +1,95 @@
+/* Text accents are distinct from saturated button fills and chart series. */
+:root {
+  --accent-text: var(--blue);
+}
+:root[data-theme="dark"][data-accent="blue"],
+:root[data-theme="dark"]:not([data-accent]) {
+  --accent-text: #b9ceff;
+}
+
+/* Dark interaction surfaces must never inherit the light accent wash. */
+:root[data-theme="dark"] {
+  --table-hover-surface: #2b3c58;
+  --table-hover-ink: #f3f6fd;
+  --table-hover-muted: #d1dced;
+}
+:root[data-theme="dark"][data-accent="blue"],
+:root[data-theme="dark"]:not([data-accent]) {
+  --blue-soft: #283957;
+  --accent-soft: #283957;
+}
+/* Apply to cells, not just tr: sticky first columns have their own surfaces. */
+:root[data-theme="dark"]
+  #auryn-app
+  table
+  tbody
+  tr:is(:hover, :focus-within)
+  > :is(th, td) {
+  --ink: var(--table-hover-ink);
+  --muted: var(--table-hover-muted);
+  background: var(--table-hover-surface);
+}
+:root[data-theme="dark"]
+  #auryn-app
+  table
+  tbody
+  tr:is(:hover, :focus-within)
+  > :is(th, td)
+  a:not(.button):not(.btn) {
+  color: #b9ceff;
+}
+/* Pointer and keyboard listbox selection share exactly the same readable state. */
+:root[data-theme="dark"]
+  #auryn-app
+  .search-results
+  > button:is(:hover, :focus-visible, [aria-selected="true"]) {
+  --ink: var(--table-hover-ink);
+  --muted: var(--table-hover-muted);
+  background: var(--table-hover-surface);
+  color: var(--table-hover-ink);
+  box-shadow: inset 3px 0 #9dbbff;
+}
+:root[data-theme="dark"]
+  #auryn-app
+  .search-results
+  > button:is(:hover, :focus-visible, [aria-selected="true"])
+  :is(b, strong) {
+  color: var(--table-hover-ink);
+}
+:root[data-theme="dark"]
+  #auryn-app
+  .search-results
+  > button:is(:hover, :focus-visible, [aria-selected="true"])
+  small {
+  color: var(--table-hover-muted);
+}
+@media (forced-colors: active) {
+  :root[data-theme="dark"]
+    #auryn-app
+    table
+    tbody
+    tr:is(:hover, :focus-within)
+    > :is(th, td),
+  :root[data-theme="dark"]
+    #auryn-app
+    .search-results
+    > button:is(:hover, :focus-visible, [aria-selected="true"]) {
+    background: Canvas;
+    outline: 1px solid Highlight;
+  }
+}
+/* Shared typesetting only: column alignment remains schema/component-owned. */
+:root[data-theme="dark"] #auryn-app table :is(th, td) {
+  font-variant-numeric: tabular-nums;
+  border-bottom-color: var(--line);
+}
+:root[data-theme="dark"] #auryn-app table thead th {
+  color: var(--ink);
+  font-weight: 600;
+}
+:root[data-theme="dark"] #auryn-app table tbody th {
+  font-weight: 500;
+}
+:root[data-theme="dark"] #auryn-app table tbody td {
+  font-weight: 400;
+}

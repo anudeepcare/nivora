@@ -9,6 +9,8 @@ import "./appearance.css";
 import "./core/surfaces.css";
 import "./core/readability.css";
 import "./core/mobile-glass.css";
+import "./core/table-interaction.css";
+import "./core/nested-navigation.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

@@ -1,6 +1,7 @@
 /* Published Figma auth composition, retaining real account/recovery controls. */
 .auth.auth {
   --accent: #5367f2;
+  --auth-link-ink: #3548c9;
   --ink: #171c27;
   --muted: #66707e;
   --line: #d5d9df;
@@ -134,7 +135,7 @@
 }
 .auth .main :global(.mp-overline) {
   display: block;
-  color: var(--accent);
+  color: var(--auth-link-ink);
   letter-spacing: 0.9px;
   font:
     11px "DM Mono",
@@ -165,9 +166,9 @@
   margin: 15px 0 0;
 }
 .auth .main :global(.mp-form-field label) {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
 }
 .auth .main :global(.mp-form-field input) {
   color: var(--ink);
@@ -176,7 +177,7 @@
   border-radius: 8px;
   height: 45px;
   padding: 0 12px;
-  font-size: 13px;
+  font-size: 16px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -228,9 +229,6 @@
 .auth .main :global(.mp-form-submit:hover:not(:disabled)) {
   background: #3b4ed2;
 }
-.auth .main :global(.mp-inline-link) {
-  color: var(--accent);
-}
 .auth .main :global(.mp-switch-auth) {
   display: flex;
   flex-wrap: wrap;
@@ -241,8 +239,8 @@
 }
 .auth .main :global(.mp-auth-disclaimer) {
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.7;
+  font-size: 12px;
+  line-height: 1.55;
   margin-top: 28px;
 }
 .auth .main :global(.mp-auth-help) {
@@ -272,6 +270,7 @@
 }
 :global([data-theme="dark"]) .auth .main {
   --ink: #edf2f8;
+  --auth-link-ink: #a9b7ff;
   --muted: #a5b1c3;
   --line: #2d394d;
   --bg: #111b2b;
@@ -399,7 +398,7 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  min-height: 40px;
+  min-height: 44px;
   font-size: 13px;
   cursor: pointer;
 }
@@ -410,7 +409,7 @@
   accent-color: var(--blue);
 }
 .remember small {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   color: var(--muted);
   max-width: 52ch;
@@ -428,7 +427,7 @@
   appearance: none;
   background: transparent;
   border: 0;
-  color: var(--blue);
+  color: var(--auth-link-ink);
   font: inherit;
   font-size: 13px;
   font-weight: 500;

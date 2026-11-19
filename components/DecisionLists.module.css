@@ -60,7 +60,7 @@
   font-size: 18px;
 }
 .command > div > b {
-  color: var(--accent);
+  color: var(--accent-text, var(--accent));
   font:
     500 17px "DM Mono",
     monospace;
@@ -193,7 +193,7 @@
   font-weight: 600;
 }
 .pace {
-  color: var(--accent);
+  color: var(--accent-text, var(--accent));
   font:
     500 13px "DM Mono",
     monospace;

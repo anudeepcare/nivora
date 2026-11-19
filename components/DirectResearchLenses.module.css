@@ -20,7 +20,7 @@
 .basis {
   display: block;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   margin-top: 5px;
 }
@@ -103,7 +103,7 @@
   border: 1px solid var(--line);
   border-radius: 7px;
   background: transparent;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .eventFilters button[aria-pressed="true"] {
@@ -226,7 +226,7 @@
     padding: 14px;
   }
   .basis {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 

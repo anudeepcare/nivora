@@ -52,7 +52,7 @@
 .note span {
   font-size: 10px;
   letter-spacing: 0.15em;
-  color: #79eadc;
+  color: var(--green);
 }
 .embedded {
   min-width: 0;

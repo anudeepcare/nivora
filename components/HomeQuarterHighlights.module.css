@@ -16,10 +16,11 @@
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 440px));
   gap: 12px;
 }
 .grid article {
+  container: quarter-highlight / inline-size;
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -52,6 +53,7 @@
   font-size: 21px;
   font-weight: 500;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .grid header strong small {
   display: block;
@@ -105,4 +107,21 @@
 .root a:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 3px;
+}
+
+.grid article > header > a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@container quarter-highlight (max-width: 330px) {
+  .grid article > header {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .grid header strong {
+    text-align: left;
+  }
+  .comparison > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

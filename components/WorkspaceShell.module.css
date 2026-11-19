@@ -75,7 +75,7 @@
   display: none;
 }
 .nav a[aria-current="page"] {
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
 }
 .nav a[aria-current="page"]::after {
   content: "";
@@ -89,7 +89,7 @@
 }
 .nav a:hover,
 .nav button:hover {
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   background: var(--blue-soft);
   border-radius: 8px;
 }
@@ -137,7 +137,7 @@
 }
 .actions button:last-child {
   background: var(--blue-soft);
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   font-weight: 500;
 }
 .workspace {
@@ -247,7 +247,7 @@
   font-weight: 600;
 }
 .shell .dock a[aria-current="page"] svg {
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
 }
 .shell .actions a[aria-label="Settings"] {
   display: grid;

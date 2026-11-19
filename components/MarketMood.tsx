@@ -54,12 +54,14 @@ export default function MarketMood() {
       </header>
       <div
         className={styles.choices}
+        data-nested-navigation
         role="group"
         aria-label="Sentiment datasets"
       >
         {moodKinds.map((k) => (
           <button key={k} aria-pressed={kind === k} onClick={() => setKind(k)}>
-            {names[k]}
+            <span aria-hidden="true" data-nav-icon={names[k]} />
+            <span>{names[k]}</span>
           </button>
         ))}
       </div>

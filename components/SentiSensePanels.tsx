@@ -148,6 +148,7 @@ export default function SentiSensePanels({
         <nav
           className={s.tabs}
           data-selection-navigation
+          data-nested-navigation
           onKeyDown={(event) => navigateSelection(event)}
           aria-label={`${group} intelligence datasets`}
         >
@@ -158,7 +159,8 @@ export default function SentiSensePanels({
               aria-pressed={dataset === id}
               onClick={() => setSelection(id)}
             >
-              {label}
+              <span aria-hidden="true" data-nav-icon={label} />
+              <span>{label}</span>
             </button>
           ))}
         </nav>

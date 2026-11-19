@@ -7,7 +7,7 @@
   display: block;
   font: 10px/1.6 var(--font-mono, monospace);
   letter-spacing: 0.12em;
-  color: var(--blue);
+  color: var(--ink);
   margin-bottom: 12px;
 }
 .page.page.page.page h1 {
@@ -27,6 +27,7 @@
   margin: 0;
 }
 .grid > .capitalOverview {
+  align-self: start;
   display: flex;
   grid-column: 1;
 }
@@ -35,6 +36,7 @@
   min-width: 0;
 }
 .grid > .actions {
+  align-self: start;
   grid-column: 2;
 }
 .grid > .history,

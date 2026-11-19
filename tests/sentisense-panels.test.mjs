@@ -116,7 +116,9 @@ function harness(hiddenSignals = [], customResult) {
       const tree = Component(props),
         nav = tree.props.children[1].props.children[0],
         button = nav.props.children.find(
-          (child) => child.props.children === label,
+          (child) => React.Children.toArray(child.props.children).some(
+            (part) => part === label || (React.isValidElement(part) && part.props["aria-hidden"] !== "true" && part.props.children === label),
+          ),
         );
       assert.ok(button);
       button.props.onClick();
@@ -136,7 +138,7 @@ test("intelligence picker rerenders selected dataset, preserves labels and lazil
   assert.doesNotMatch(next, /Fund A/);
   assert.equal(h.requests.length, 2);
   assert.match(h.requests[1], /dataset=insiders/);
-  assert.match(next, /aria-pressed="true">Insiders/);
+  assert.match(next, /aria-pressed="true"><span aria-hidden="true" data-nav-icon="Insiders"><\/span><span>Insiders<\/span>/);
 });
 test("demo does not make paid provider calls", () => {
   const h = harness();

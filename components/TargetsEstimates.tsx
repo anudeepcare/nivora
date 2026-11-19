@@ -52,6 +52,7 @@ export default function TargetsEstimates({
       <div
         className={styles.tabs}
         data-selection-navigation
+        data-nested-navigation
         role="tablist"
         aria-label="Target and estimate views"
       >
@@ -83,7 +84,8 @@ export default function TargetsEstimates({
               }
             }}
           >
-            {label}
+            <span aria-hidden="true" data-nav-icon={label} />
+            <span>{label}</span>
           </button>
         ))}
       </div>

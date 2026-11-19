@@ -63,6 +63,7 @@ export default function AdvancedResearch({
       <nav
         className="professional-tabs"
         data-selection-navigation
+        data-nested-navigation
         onKeyDown={(event) => navigateSelection(event)}
         aria-label="Advanced sections"
       >
@@ -77,7 +78,8 @@ export default function AdvancedResearch({
               setVisited((old) => (old.includes(id) ? old : [...old, id]));
             }}
           >
-            {label}
+            <span aria-hidden="true" data-nav-icon={label} />
+            <span>{label}</span>
           </button>
         ))}
       </nav>

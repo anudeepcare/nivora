@@ -1,6 +1,6 @@
-/* Date badges use a pale accent surface in both themes; pair with dark ink. */
+/* Date badge foreground follows its light/dark accent surface. */
 .home {
-  --date-badge-ink: #171c27;
+  --date-badge-ink: var(--ink);
 }
 .home.home.home :global(.home-evidence-layout) {
   display: grid;
@@ -40,7 +40,7 @@
   font-size: 12px;
 }
 .home.home.home :global(.home-news-meta) a {
-  color: var(--blue);
+  color: var(--ink);
   font-weight: 500;
 }
 .home.home.home :global(.home-news-title) {
@@ -59,7 +59,7 @@
 .home.home.home :global(.home-news-list) article > .text-link {
   margin-top: 10px;
   font-size: 12px;
-  color: var(--blue);
+  color: var(--ink);
 }
 .home.home.home :global(.home-more-updates) {
   border-top: 1px solid var(--line);
@@ -68,7 +68,7 @@
   cursor: pointer;
   padding: 14px 0;
   font-size: 14px;
-  color: var(--blue);
+  color: var(--ink);
 }
 .home.home.home :global(.home-more-updates) article {
   padding: 12px 0;
@@ -127,7 +127,7 @@
 }
 .home.home.home :global(.home-event-row) > svg {
   flex-shrink: 0;
-  color: var(--blue);
+  color: var(--ink);
 }
 .home.home.home :global(.home-quiet-state) {
   display: grid;
@@ -161,7 +161,7 @@
   height: 42px;
   border-radius: 12px;
   background: var(--blue-soft);
-  color: var(--blue);
+  color: var(--ink);
   font-size: 17px;
   font-weight: 500;
 }
@@ -179,7 +179,7 @@
   color: var(--muted);
 }
 .home.home.home :global(.home-review-row) > svg {
-  color: var(--blue);
+  color: var(--ink);
 }
 .home.home.home :global(.home-company) {
   grid-template-columns: 36px minmax(0, 1fr) 70px auto;

@@ -259,3 +259,7 @@
   background: var(--line);
   border: 1px dashed var(--muted);
 }
+
+.table a {
+  color: var(--accent-text, var(--blue));
+}
