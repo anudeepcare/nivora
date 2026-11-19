@@ -605,7 +605,7 @@ export default function DecisionOverview({
             <div key={x.label}>
               <dt>{x.label}</dt>
               <dd>
-                {x.label === "Price observation" && x.status === "available"
+                {x.label === "Recent quote" && x.status === "available"
                   ? dateLabel(x.detail)
                   : x.detail}
               </dd>

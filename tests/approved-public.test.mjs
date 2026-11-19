@@ -58,6 +58,8 @@ const common = {
   ...Object.fromEntries(
     [
       "ArrowRight",
+      "Sun",
+      "Moon",
       "Search",
       "FileText",
       "ChartNoAxesCombined",
@@ -100,6 +102,7 @@ function accountHarness({
   let index = 0;
   const values = [],
     effects = [],
+    persistence = [],
     routes = [];
   const useState = (initial) => {
     const i = index++;
@@ -120,6 +123,7 @@ function accountHarness({
     useEffect,
     authErrorMessage,
     authClient: () => ({ auth }),
+    setRememberSession: (value) => persistence.push(value),
     useRouter: () => ({ replace: (path) => routes.push(path) }),
   });
   const render = () => {
@@ -128,12 +132,13 @@ function accountHarness({
   };
   render();
   values[4] = mode;
-  values[8] = provider;
+  values[9] = provider;
   return {
     render,
     values,
     effects,
     routes,
+    persistence,
     field: (name, value) =>
       nodes(
         render(),
@@ -154,30 +159,33 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Invest every month/);
+  assert.match(html, /Understand any stock/);
   assert.match(html, /id="how-it-works"/);
   assert.match(html, /href="\/#how-it-works"/);
   assert.doesNotMatch(html, /Our approach/);
-  assert.match(html, /Know your reasons\./);
-  assert.match(html, /href="#how-it-works"[^>]*>Explore the product/);
+  assert.match(html, /in thirty seconds\./);
+  assert.match(html, /href="#how-it-works"[^>]*>See the method/);
+  assert.match(html, /id="product"/);
+  assert.match(html, /id="pace-public"/);
+  assert.match(html, /id="use-cases"/);
+  assert.match(html, /id="pricing"/);
+  assert.match(html, /Research framework · no live company scores/);
 
   assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
   assert.match(html, /AURYN Accumulation Pace/);
-  assert.match(html, /Product walkthrough/);
-  assert.match(html, /Compare your next contribution/);
-  assert.match(html, /Question the price/);
-  assert.match(html, /Know when to revisit/);
-  assert.match(html, /price-implied earnings per share/);
-  assert.match(html, /horizon and/);
-  assert.match(html, /future earnings multiple/);
-  assert.match(html, /Has the business changed—or just the price/);
+  assert.doesNotMatch(html, /id="investment-demo"/);
+  assert.doesNotMatch(html, /class="ap-benefits/);
+  assert.match(html, /href="\/track-record"/);
+  assert.match(html, /href="\/portfolio-check"/);
+  assert.match(html, /What does this price need to be true/);
+  assert.match(html, /growth, margins, horizon, and exit multiple/);
+  assert.match(html, /Pace separates business qualification from price conditions/);
+  assert.doesNotMatch(html, /Three questions before every contribution/);
   assert.match(html, /Turn earnings into questions/);
   assert.match(html, /alerts for supported conditions/);
   assert.match(html, /updates from the companies you follow/);
-  assert.match(html, /Discover/);
-  assert.match(html, /Understand/);
-  assert.match(html, /Plan/);
-  assert.match(html, /no live recommendation/);
+  for (const title of ["Decision Atlas", "Scenario engine", "Catalyst calendar", "Ownership network", "Pace simulator"]) assert.match(html, new RegExp(title));
+  assert.match(html, /Live coverage, dates and missing evidence/);
   assert.match(html, /href="\/sample"/);
   assert.match(html, /href="\/pricing"/);
   assert.doesNotMatch(
@@ -194,7 +202,7 @@ test("public and account previews explain Pace without fictional company results
     assert.match(html, /Illustrative product guide/);
     assert.match(html, /AURYN Accumulation Pace/);
     assert.match(html, /not predicted returns/);
-    assert.match(html, /Completed month · confirmed/);
+    assert.match(html, /Previous month closing zone · history/);
     assert.match(html, /Current month · forming/);
     assert.doesNotMatch(
       html,
@@ -230,6 +238,9 @@ test("public navigation opens accessibly, closes on Escape, and closes after a d
     (n) => n.type === "nav" && n.props.id === "ap-mobile-navigation",
   )[0];
   assert(navigation);
+  for (const href of ["/#how-it-works", "/#pace-public", "/#use-cases", "/pricing", "/methodology", "/overview"]) {
+    assert(nodes(navigation, (n) => n.type === Link && n.props.href === href).length, `Mobile menu must retain ${href}`);
+  }
   nodes(render(), (n) => n.type === "header")[0].props.onKeyDown({
     key: "Escape",
   });
@@ -286,7 +297,11 @@ test("email sign-in trims email, keeps password intact and opens the account wor
   });
   harness.field("email", "  person@example.com  ");
   harness.field("password", " valid password ");
+  const remember = nodes(harness.render(), n => n.type === "input" && n.props.type === "checkbox")[0];
+  assert.equal(remember.props.checked, true);
+  remember.props.onChange({target:{checked:false}});
   await harness.submit();
+  assert.deepEqual(harness.persistence, [false]);
   assert.deepEqual(calls, [
     { email: "person@example.com", password: " valid password " },
   ]);
@@ -375,7 +390,7 @@ test("available OAuth choices call their provider and disabled choices do not se
   const previous = globalThis.window;
   globalThis.window = { location: { origin: "https://auryn.example" } };
   try {
-    for (const provider of ["google", "x"]) {
+    for (const provider of ["google"]) {
       const harness = accountHarness({
         auth: {
           signInWithOAuth: async (value) => {
@@ -399,7 +414,7 @@ test("available OAuth choices call their provider and disabled choices do not se
     }
     assert.deepEqual(
       calls.map((c) => c.provider),
-      ["google", "x"],
+      ["google"],
     );
     assert(
       calls.every(
@@ -420,7 +435,7 @@ test("available OAuth choices call their provider and disabled choices do not se
         n.type === "button" &&
         n.props["aria-label"]?.startsWith("Continue with"),
     );
-    assert.equal(buttons.length, 2);
+    assert.equal(buttons.length, 1);
     assert(buttons.every((b) => b.props.disabled));
   } finally {
     globalThis.window = previous;
@@ -509,7 +524,7 @@ test("confirmation resend preserves the callback and suppresses a second request
       },
     });
     harness.field("email", " person@example.com ");
-    harness.values[5] = "Confirm your email";
+    harness.values[6] = "Confirm your email";
     const resend = () =>
       nodes(
         harness.render(),
@@ -758,6 +773,7 @@ test("help and methodology show their publication date without internal release 
     documents,
     legalConfiguration,
     styles: { document: "legal-document-owned" },
+    PublicHomeLink: ({children,...props}) => React.createElement("a", {...props,href:"/"},children),
     DocumentBack: () => null,
   });
   for (const id of ["help", "methodology", "terms"]) {
@@ -772,4 +788,35 @@ test("help and methodology show their publication date without internal release 
       /continuation-20261104|evidence-lenses-v1|lib\/decision-research/,
     );
   }
+});
+
+test("reference product tour switches all five lenses and links to their real research sections", () => {
+  let active = 0;
+  const Tour = load("components/PublicLanding.tsx", "ReferenceProductTour", {
+    ...common,
+    useState: () => [active, (next) => { active = next; }],
+  });
+  const expected = ["Snapshot", "Valuation", "News", "Thesis", "Pace"];
+  for (let index = 0; index < expected.length; index++) {
+    const buttons = nodes(Tour(), n => n.props?.role === "tab");
+    buttons[index].props.onClick();
+    const panels = nodes(Tour(), n => n.props?.role === "tabpanel");
+    assert.equal(panels.filter(n => !n.props.hidden).length, 1);
+    assert.equal(panels[index].props.hidden, false);
+    assert(nodes(panels[index], n => n.type === Link && n.props.href === `/research/APP?tab=${expected[index]}`).length);
+  }
+  let prevented = false;
+  nodes(Tour(), n => n.props?.role === "tab")[4].props.onKeyDown({key: "Home", preventDefault: () => {prevented = true;}, currentTarget: {parentElement: null}});
+  assert.equal(active, 0);
+  assert.equal(prevented, true);
+});
+
+test("each public research lens has a labeled explanatory diagram without invented market scores", () => {
+ const Diagram = load("components/PublicLanding.tsx", "ResearchDiagram", common);
+ for (let lens = 0; lens < 5; lens++) {
+   const html = renderToStaticMarkup(React.createElement(Diagram, {lens}));
+   assert.match(html, /role="img"/);
+   assert.match(html, /Framework illustration/);
+   assert.doesNotMatch(html, /\$\d|\d+%|APP entered|BUILD IN STAGES/);
+ }
 });

@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .highlight h3 {
@@ -74,7 +74,7 @@
 }
 .highlight time,
 .inbox > small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .inbox > small {

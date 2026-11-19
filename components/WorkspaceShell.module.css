@@ -1,5 +1,17 @@
 /* White navigation shared across all workspace routes. */
 .shell {
+  --nav-ink: #687488;
+  --nav-active: #111827;
+  --nav-surface: rgba(255, 255, 255, 0.94);
+  --nav-solid: #ffffff;
+  --nav-line: #d8dee7;
+  --nav-control: #fff;
+  --nav-control-ink: #596579;
+  --nav-control-line: #d7dde7;
+  --workspace-gap: 16px;
+  --workspace-panel-padding: 20px;
+  --workspace-title-size: clamp(30px, 3vw, 44px);
+  --workspace-panel-radius: 14px;
   display: block;
   width: 100%;
   padding: 0;
@@ -63,7 +75,7 @@
   display: none;
 }
 .nav a[aria-current="page"] {
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
 }
 .nav a[aria-current="page"]::after {
   content: "";
@@ -77,7 +89,7 @@
 }
 .nav a:hover,
 .nav button:hover {
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   background: var(--blue-soft);
   border-radius: 8px;
 }
@@ -125,7 +137,7 @@
 }
 .actions button:last-child {
   background: var(--blue-soft);
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   font-weight: 500;
 }
 .workspace {
@@ -153,20 +165,42 @@
 .skip:focus {
   top: 10px;
 }
+/* Keep desktop destinations beside the logo at compact desktop widths.
+   Overflow is horizontal and keyboard-focusable, never a second header row. */
 @media (min-width: 768px) and (max-width: 1199px) {
-  .header {
-    gap: 12px;
-    padding: 10px 20px;
-    flex-wrap: wrap;
+  .shell .header {
+    gap: 8px;
+    padding-inline: 16px;
+    flex-wrap: nowrap;
   }
-  .nav {
-    order: 4;
-    flex: 1 0 100%;
+  .shell .header .nav {
+    order: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    border-top: 0;
+  }
+  .shell .header .nav a {
+    flex: 0 0 auto;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .shell .header .brand,
+  .shell .header .actions {
+    flex-shrink: 0;
+  }
+  .shell .header .searchTrigger {
+    flex: 0 0 44px;
+    width: 44px;
+    padding: 0;
     justify-content: center;
-    border-top: 1px solid var(--line);
+    margin-left: 0;
   }
-  .searchTrigger {
-    width: 300px;
+  .shell .header .searchTrigger :is(span, kbd) {
+    display: none;
   }
 }
 :global([data-keyboard-open="true"]) .dock {
@@ -195,7 +229,7 @@
 .shell .header .nav a[aria-current="page"]::after {
   display: block;
   height: 2px;
-  background: var(--ink);
+  background: var(--blue);
   bottom: 0;
 }
 .shell .header .nav a:hover {
@@ -213,7 +247,7 @@
   font-weight: 600;
 }
 .shell .dock a[aria-current="page"] svg {
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
 }
 .shell .actions a[aria-label="Settings"] {
   display: grid;
@@ -241,7 +275,7 @@
   padding: 0 8px;
 }
 .shell .header .nav a[aria-current="page"]::after {
-  box-shadow: 0 2px 0 #d6f35a;
+  box-shadow: none;
 }
 .shell .actions button:last-child {
   background: transparent;
@@ -252,7 +286,7 @@
 
 /* Keep OS status icons, notch and landscape cutouts clear of app controls. */
 .shell .header {
-  background: var(--chrome-surface);
+  background: var(--nav-solid);
   padding-top: calc(10px + env(safe-area-inset-top, 0px));
   padding-left: max(
     24px,
@@ -383,13 +417,7 @@
   }
 }
 
-/* Selection uses color only. Keyboard focus remains a distinct visible ring. */
-.shell {
-  --nav-selected: #647a13;
-}
-:global([data-theme="dark"]) .shell {
-  --nav-selected: #d6f35a;
-}
+/* Selection matches desktop; keyboard focus remains a distinct visible ring. */
 .shell .dock a[aria-current="page"] {
   border: 0;
   background: transparent;
@@ -397,7 +425,7 @@
 }
 .shell .dock a:focus-visible,
 .shell .dock button:focus-visible {
-  outline: 2px solid var(--nav-selected);
+  outline: 2px solid var(--blue);
   outline-offset: -2px;
 }
 
@@ -406,7 +434,7 @@
   min-height: 64px;
   padding-top: calc(8px + env(safe-area-inset-top, 0px));
   padding-bottom: 8px;
-  background: var(--chrome-surface);
+  background: var(--nav-solid);
 }
 .shell .brand {
   font-size: 18px;
@@ -434,13 +462,13 @@
 
 @media (prefers-reduced-transparency: reduce) {
   .shell .header {
-    background: var(--chrome-surface);
+    background: var(--nav-solid);
     backdrop-filter: none;
   }
 }
 @media (prefers-reduced-transparency: reduce) {
   .shell .dock {
-    background: var(--chrome-surface);
+    background: var(--nav-solid);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -489,7 +517,7 @@
     padding-right: max(16px, env(safe-area-inset-right, 0px));
     gap: 4px;
     flex-wrap: nowrap;
-    background: var(--chrome-surface);
+    background: var(--nav-solid);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
@@ -543,7 +571,7 @@
     inset: auto 0 0;
     z-index: 45;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 4px;
     min-height: calc(
       var(--mobile-dock-height) + env(safe-area-inset-bottom, 0px)
@@ -554,9 +582,9 @@
     margin: 0;
     max-width: none;
     border: 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--nav-line);
     border-radius: 0;
-    background: var(--chrome-surface);
+    background: var(--nav-solid);
     box-shadow: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -573,7 +601,7 @@
     border: 0;
     border-radius: 10px;
     background: transparent;
-    color: var(--muted);
+    color: var(--nav-ink);
     font: inherit;
     font-size: 10px;
     font-weight: 500;
@@ -588,10 +616,19 @@
     height: 19px;
   }
   .shell .dock a[aria-current="page"] {
-    color: var(--nav-selected);
-    background: var(--surface);
+    color: var(--nav-active);
+    background: transparent;
     box-shadow: none;
-    font-weight: 650;
+    font-weight: 600;
+  }
+  .shell .dock a[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--blue);
   }
   .shell .dock a[aria-current="page"] svg {
     color: currentColor;
@@ -763,5 +800,234 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+/* A single comfortable reading width across research and account workspaces. */
+.shell .workspace {
+  max-width: 1440px;
+  margin-inline: auto;
+}
+.shell .content {
+  padding-top: 24px;
+  padding-bottom: 48px;
+}
+.shell .header {
+  min-height: 64px;
+  padding-block: 7px;
+}
+.shell .brand {
+  font-size: 18px;
+  letter-spacing: 0.12em;
+}
+.shell .nav a[aria-current="page"] {
+  background: color-mix(in srgb, var(--accent-solid) 8%, var(--card));
+  border-radius: 10px;
+}
+.shell .nav a[aria-current="page"]:after {
+  height: 2px;
+  left: 14px;
+  right: 14px;
+  bottom: 3px;
+}
+@media (max-width: 767px) {
+  .shell .content {
+    padding-top: 16px;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+  .shell .header {
+    min-height: 60px;
+  }
+}
+
+/* Six reference destinations stay visible on desktop; mobile retains four. */
+@media (min-width: 1200px) {
+  .shell .header {
+    gap: 20px;
+    min-height: 72px;
+    padding: 0 26px;
+  }
+  .shell .nav {
+    gap: 0;
+  }
+  .shell .nav a {
+    padding-inline: 10px;
+  }
+  .shell .searchTrigger {
+    width: min(240px, 18vw);
+  }
+}
+/* One bounded workspace pane owns scroll, including the disclosure footer.
+   Evidence keeps natural height rather than collapsing below fixed metrics. */
+.shell[data-page="research"] {
+  position: relative;
+  height: var(--visual-height, 100dvh);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.shell[data-page="research"] .header {
+  flex: 0 0 auto;
+}
+.shell[data-page="research"] .workspace {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+}
+.shell[data-page="research"] .content {
+  flex: 1 1 0;
+  display: block;
+  min-height: 0;
+  padding: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+.shell[data-page="research"] .content > :global(.research-page) {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+.shell[data-page="research"] .content > :global(.product-footer) {
+  position: static;
+  margin: 0;
+  padding: 12px 20px;
+  font-size: 10px;
+}
+@media (max-width: 767px) {
+  .shell[data-page="research"] .workspace {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+  .shell[data-page="research"] .header {
+    min-height: 62px;
+  }
+  .shell .dock {
+    height: calc(68px + env(safe-area-inset-bottom));
+  }
+  .shell[data-page="research"] .content > :global(.product-footer) {
+    padding: 4px 12px;
+  }
+  :global(.keyboard-open) .shell[data-page="research"] .workspace,
+  :global([data-keyboard-open="true"]) .shell[data-page="research"] .workspace {
+    padding-bottom: 0;
+  }
+}
+/* Reference brand proportions and active underline, independent of financial tones. */
+.shell .brand {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  gap: 11px;
+}
+.shell .brand img {
+  width: 29px;
+  height: 28px;
+}
+.shell .nav a[aria-current="page"] {
+  color: var(--ink);
+  background: transparent;
+  border-radius: 0;
+}
+.shell .nav a[aria-current="page"]::after {
+  background: var(--blue);
+  height: 3px;
+  bottom: 0;
+}
+/* Last mobile spacing rule must retain notch clearance after desktop shorthand rules. */
+@media (max-width: 767px) {
+  .shell .header {
+    min-height: calc(62px + env(safe-area-inset-top, 0px));
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .shell[data-page="research"] .header {
+    min-height: calc(62px + env(safe-area-inset-top, 0px));
+  }
+}
+
+:global([data-theme="dark"]) .shell {
+  --nav-ink: #7f8da3;
+  --nav-active: #fff;
+  --nav-surface: rgba(8, 13, 24, 0.92);
+  --nav-solid: #080d18;
+  --nav-line: #263247;
+  --nav-control: #101a29;
+  --nav-control-ink: #dfe5ef;
+  --nav-control-line: #263247;
+}
+.shell .header {
+  background: var(--nav-surface);
+  border-bottom-color: var(--nav-line);
+}
+.shell .header .nav a {
+  color: var(--nav-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.shell .header .nav a[aria-current="page"] {
+  color: var(--nav-active);
+}
+.shell .header .nav a[aria-current="page"]::after {
+  background: var(--blue);
+  box-shadow: none;
+}
+.shell .header .searchTrigger,
+.shell .header .actions :is(button, a) {
+  background: var(--nav-control);
+  color: var(--nav-control-ink);
+  border-color: var(--nav-control-line);
+}
+.shell .header .nav a:hover {
+  color: var(--nav-active);
+}
+
+.shell .header .nav .moreTrigger {
+  color: var(--nav-ink);
+  background: transparent;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.shell .header .nav .moreTrigger:hover,
+.shell .header .nav .moreTrigger[data-active="true"] {
+  color: var(--nav-active);
+}
+.shell .header .nav .moreTrigger[data-active="true"]::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 2px;
+  background: var(--blue);
+}
+.shell .header .nav .moreTrigger:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+/* Four 44px utilities plus the full wordmark cannot fit a 320px header. */
+@media (max-width: 360px) {
+  .shell .brand span {
+    display: none;
+  }
+  .shell .brand {
+    flex: 0 0 32px;
+    min-width: 32px;
+  }
+}
+
+/* Opaque mobile chrome prevents scrolled headings bleeding through controls. */
+@media (max-width: 767px) {
+  .shell .header {
+    background: #fff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  :global([data-theme="dark"]) .shell .header {
+    background: #080d18;
   }
 }

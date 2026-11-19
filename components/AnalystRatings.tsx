@@ -20,6 +20,20 @@ export default function AnalystRatings({
   ] as const;
   const known = rows.filter(([, n]) => n != null && n >= 0),
     total = known.reduce((sum, [, n]) => sum + (n ?? 0), 0);
+  if (hideConsensus && c?.rating == null && !known.length)
+    return (
+      <aside
+        className="analyst-workspace analyst-empty"
+        aria-label="Analyst rating coverage"
+      >
+        <h3>Rating coverage</h3>
+        <p>
+          No rating score or recommendation distribution was supplied for this
+          company.
+        </p>
+        <small>Dataset retrieved {dateLabel(r.retrievedAt)}.</small>
+      </aside>
+    );
   return (
     <section className="analyst-workspace depth-analysts">
       <div className="analyst-summary">

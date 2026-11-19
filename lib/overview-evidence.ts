@@ -20,7 +20,10 @@ export type OverviewMetric = {
   sourceUrls?: string[];
 };
 /** Presentation only: missing inputs never become zero or synthetic evidence. */
-export function overviewEvidence(r: Research) {
+export function overviewEvidence(
+  r: Research,
+  { includeTechnical = true }: { includeTechnical?: boolean } = {},
+) {
   const financial = latestFinancialEvidence(r),
     p = financial.latest,
     prior = financial.prior;
@@ -388,57 +391,59 @@ export function overviewEvidence(r: Research) {
       "Reported insider ownership, not net purchases or sales. Ownership does not establish the investment case.",
     );
   }
-  const tech = perspective(r).tech,
-    a = advancedStudies(r.history, r.retrievedAt);
-  add(
-    technical,
-    "rsi",
-    "RSI · 14",
-    tech.rsi,
-    "number",
-    "Momentum oscillator from completed closes. Below 30 or above 70 can persist; neither is a standalone trade signal.",
-  );
-  add(
-    technical,
-    "ma50",
-    "50-session average",
-    tech.ma50,
-    "money",
-    "Mean of the latest 50 completed closes, not an execution price.",
-  );
-  add(
-    technical,
-    "ma200",
-    "200-session average",
-    tech.ma200,
-    "money",
-    "Mean of the latest 200 completed closes; requires sufficient valid history.",
-  );
-  add(
-    technical,
-    "atr",
-    "Typical daily range",
-    a.atrPct,
-    "percent",
-    "Mean 14-session true range divided by the latest completed close; describes movement, not a future loss limit.",
-  );
-  add(
-    technical,
-    "relativeVolume",
-    "Relative volume",
-    a.relativeVolume,
-    "ratio",
-    "Latest completed session volume divided by the study average volume; not institutional buying.",
-  );
-  add(
-    technical,
-    "momentum",
-    "20-session change",
-    a.roc20,
-    "percent",
-    "Price change across 20 completed sessions; separate from business operating growth.",
-    a.roc20 != null && a.roc20 < 0 ? "risk" : "neutral",
-  );
+  if (includeTechnical) {
+    const tech = perspective(r).tech,
+      a = advancedStudies(r.history, r.retrievedAt);
+    add(
+      technical,
+      "rsi",
+      "RSI · 14",
+      tech.rsi,
+      "number",
+      "Momentum oscillator from completed closes. Below 30 or above 70 can persist; neither is a standalone trade signal.",
+    );
+    add(
+      technical,
+      "ma50",
+      "50-session average",
+      tech.ma50,
+      "money",
+      "Mean of the latest 50 completed closes, not an execution price.",
+    );
+    add(
+      technical,
+      "ma200",
+      "200-session average",
+      tech.ma200,
+      "money",
+      "Mean of the latest 200 completed closes; requires sufficient valid history.",
+    );
+    add(
+      technical,
+      "atr",
+      "Typical daily range",
+      a.atrPct,
+      "percent",
+      "Mean 14-session true range divided by the latest completed close; describes movement, not a future loss limit.",
+    );
+    add(
+      technical,
+      "relativeVolume",
+      "Relative volume",
+      a.relativeVolume,
+      "ratio",
+      "Latest completed session volume divided by the study average volume; not institutional buying.",
+    );
+    add(
+      technical,
+      "momentum",
+      "20-session change",
+      a.roc20,
+      "percent",
+      "Price change across 20 completed sessions; separate from business operating growth.",
+      a.roc20 != null && a.roc20 < 0 ? "risk" : "neutral",
+    );
+  }
   return {
     business,
     valuation,
@@ -449,4 +454,38 @@ export function overviewEvidence(r: Research) {
     specialist,
     crypto,
   };
+}
+
+/** A bounded top strip; full metric groups stay available in Research. */
+export function companyMetricSelection(
+  evidence: ReturnType<typeof overviewEvidence>,
+  limit = 7,
+): OverviewMetric[] {
+  const keys = evidence.specialist
+    ? ["roe", "revenueGrowth", "netIncome", "roa", "cash", "debt"]
+    : [
+        "operatingRunway",
+        "revenueGrowth",
+        "fcfPerShare",
+        "dilutedShareGrowth",
+        "operatingMargin",
+        "netDebt",
+        "fcf",
+        "cash",
+        "operatingCashFlow",
+      ];
+  const multipleKeys = evidence.specialist
+    ? ["PriceBookMRQ", "TrailingPE", "ForwardPE"]
+    : ["TrailingPE", "ForwardPE", "EnterpriseValueRevenue"];
+  const multiple = multipleKeys
+    .map((key) => evidence.valuation.find((row) => row.key === key))
+    .find((row) => row != null && row.value > 0);
+  const rows = keys.flatMap((key) =>
+    evidence.business.filter((row) => row.key === key),
+  );
+  const count = Number.isFinite(limit) ? Math.max(0, Math.floor(limit)) : 7;
+  return [
+    ...rows.slice(0, Math.max(0, count - (multiple ? 1 : 0))),
+    ...(multiple && count > 0 ? [multiple] : []),
+  ];
 }

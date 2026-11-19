@@ -24,6 +24,30 @@ export default function PaceHistoryInsights({
   );
   const [selected, setSelected] = useState(2);
   const zone = data.zones.find((row) => row.zone === selected)!;
+  const returnScale = Math.max(
+    1,
+    ...zone.outcomes.map((o) => Math.abs(o.medianReturn ?? 0)),
+  );
+  if (!data.available)
+    return (
+      <section
+        className={styles.unavailable}
+        aria-label="Pace historical evidence"
+      >
+        <strong>Historical outcomes not available</strong>
+        <span>
+          The supplied price history has no eligible monthly readings.
+        </span>
+        <details>
+          <summary>History requirements</summary>
+          <p>{data.reason}</p>
+          <p>
+            This does not mean a P0 reading or a zero return. Current price
+            evidence remains separate.
+          </p>
+        </details>
+      </section>
+    );
   return (
     <section className={styles.history} aria-label="Pace historical evidence">
       <header>
@@ -52,20 +76,29 @@ export default function PaceHistoryInsights({
               ))}
             </select>
           </div>
+          <p className={styles.note}>
+            Exploring {zoneLabel(selected)}, not the current zone. Historical
+            observations, not a forecast.
+          </p>
           <dl className={styles.stats}>
             <div>
               <dt>Observed visits</dt>
               <dd>{zone.visits}</dd>
-              <small>{zone.months} confirmed months</small>
+              <small>
+                {zone.months} confirmed {zone.months === 1 ? "month" : "months"}
+              </small>
             </div>
             <div>
               <dt>Median completed stay</dt>
               <dd>
                 {zone.medianDuration === null
                   ? "Not available"
-                  : `${zone.medianDuration} months`}
+                  : `${zone.medianDuration} ${zone.medianDuration === 1 ? "month" : "months"}`}
               </dd>
-              <small>{zone.completedVisits} fully observed stays</small>
+              <small>
+                {zone.completedVisits} fully observed{" "}
+                {zone.completedVisits === 1 ? "stay" : "stays"}
+              </small>
             </div>
             <div>
               <dt>Duration range</dt>
@@ -98,11 +131,50 @@ export default function PaceHistoryInsights({
                 {zone.outcomes.map((outcome) => (
                   <tr key={outcome.months}>
                     <th scope="row">{outcome.months} months</th>
-                    <td>{pct(outcome.medianReturn)}</td>
-                    <td>{pct(outcome.worstDownside)}</td>
                     <td>
-                      {outcome.count}
-                      {outcome.count < 5 ? " · limited" : ""}
+                      <span
+                        className={styles.returnValue}
+                        data-direction={
+                          outcome.medianReturn === null
+                            ? "missing"
+                            : outcome.medianReturn > 0
+                              ? "positive"
+                              : outcome.medianReturn < 0
+                                ? "negative"
+                                : "flat"
+                        }
+                      >
+                        {pct(outcome.medianReturn)}
+                      </span>
+                      {outcome.count > 0 && outcome.medianReturn !== null && (
+                        <span className={styles.outcomeBar} aria-hidden="true">
+                          <i
+                            style={{
+                              left: `${outcome.medianReturn < 0 ? 50 - (Math.abs(outcome.medianReturn) / returnScale) * 48 : 50}%`,
+                              width: `${(Math.abs(outcome.medianReturn) / returnScale) * 48}%`,
+                            }}
+                            data-direction={
+                              outcome.medianReturn < 0 ? "negative" : "positive"
+                            }
+                          />
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      <span className={styles.downside}>
+                        {pct(outcome.worstDownside)}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          outcome.count < 5 ? styles.limited : undefined
+                        }
+                      >
+                        {outcome.count}{" "}
+                        {outcome.count === 1 ? "sample" : "samples"}
+                        {outcome.count < 5 ? " · limited" : ""}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -126,7 +198,10 @@ export default function PaceHistoryInsights({
             </summary>
             <div className={styles.scroll}>
               <table>
-                <caption>Monthly v5 · available settled observations</caption>
+                <caption>
+                  {data.version} · available settled observations; earlier
+                  readings retain their original policy
+                </caption>
                 <thead>
                   <tr>
                     <th scope="col">Month</th>

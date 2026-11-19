@@ -15,6 +15,8 @@ import { api, ApiError } from "@/lib/client";
 import { readResource } from "@/lib/resource-cache";
 import { amount, dateLabel } from "@/lib/format";
 import { useProduct } from "./Session";
+import { portfolioRange } from "@/lib/portfolio-range";
+import PortfolioRange from "./PortfolioRange";
 
 export default function ApprovedPortfolioChart({
   positions,
@@ -127,6 +129,18 @@ export default function ApprovedPortfolioChart({
   const chart = useMemo(
     () =>
       portfolioHistory(
+        positions,
+        quotes,
+        history,
+        demo
+          ? Object.values(demo.research)[0]?.retrievedAt.slice(0, 10)
+          : undefined,
+      ),
+    [positions, quotes, history, demo],
+  );
+  const range = useMemo(
+    () =>
+      portfolioRange(
         positions,
         quotes,
         history,
@@ -374,6 +388,7 @@ export default function ApprovedPortfolioChart({
           </p>
         </div>
       )}
+      {!loading && <PortfolioRange range={range} />}
       {chart.points.length > 1 && (
         <details className={styles.values}>
           <summary>Data & calculation</summary>

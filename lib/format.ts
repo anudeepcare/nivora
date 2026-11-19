@@ -78,3 +78,19 @@ export const quoteTime = (
     timeZoneName: "short",
   });
 };
+/** Per-share or per-unit prices: keeps enough decimals for sub-dollar instruments
+ * so adjacent levels stay distinguishable, and compacts only very large values. */
+export const priceAmount = (n: number | null | undefined, currency = "USD") => {
+  if (typeof n !== "number" || !Number.isFinite(n)) return "—";
+  const size = Math.abs(n);
+  if (size >= 100000) return amount(n, currency, true);
+  if (size >= 1 || size === 0 || !/^[A-Z]{3}$/.test(currency))
+    return amount(n, currency);
+  const digits = Math.min(10, Math.max(2, Math.ceil(-Math.log10(size)) + 3));
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: digits,
+  }).format(n);
+};

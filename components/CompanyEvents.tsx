@@ -60,6 +60,11 @@ export default function CompanyEvents({ symbol }: { symbol: string }) {
             <CalendarDays size={24} />
             <div>
               <span className="eyebrow">NEXT SCHEDULED CATALYST</span>
+              <p>
+                Schedule feed: {r.data.source} · retrieved{" "}
+                {dateLabel(r.data.retrievedAt)}. Separate from the reported
+                earnings and analyst-estimate feeds.
+              </p>
               <h3>
                 {next
                   ? `Earnings · ${dateLabel(next.date)}`

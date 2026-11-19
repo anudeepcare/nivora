@@ -46,7 +46,9 @@ export function useWorkspacePreferences() {
     localOnly: !!demo,
   };
 }
-export default function WorkspacePreferences() {
+export default function WorkspacePreferences({
+  showConcentration = true,
+}: { showConcentration?: boolean } = {}) {
   const {
     preferences: p,
     save,
@@ -111,30 +113,35 @@ export default function WorkspacePreferences() {
           </label>
         ))}
       </fieldset>
-      <label>
-        Single-position attention threshold
-        <select
-          disabled={disabled}
-          value={p.concentrationLimit ?? ""}
-          onChange={(e) =>
-            void save({
-              concentrationLimit: e.target.value
-                ? Number(e.target.value)
-                : null,
-            })
-          }
-        >
-          <option value="">Off</option>
-          {[10, 15, 20, 25, 30, 40, 50].map((v) => (
-            <option key={v} value={v}>
-              {v}% of priced investments
-            </option>
-          ))}
-        </select>
-      </label>
-      <small>
-        This is your review threshold, not an allocation recommendation.
-      </small>
+      {showConcentration && (
+        <>
+          {" "}
+          <label>
+            Single-position attention threshold
+            <select
+              disabled={disabled}
+              value={p.concentrationLimit ?? ""}
+              onChange={(e) =>
+                void save({
+                  concentrationLimit: e.target.value
+                    ? Number(e.target.value)
+                    : null,
+                })
+              }
+            >
+              <option value="">Off</option>
+              {[10, 15, 20, 25, 30, 40, 50].map((v) => (
+                <option key={v} value={v}>
+                  {v}% of priced investments
+                </option>
+              ))}
+            </select>
+          </label>
+          <small>
+            This is your review threshold, not an allocation recommendation.
+          </small>
+        </>
+      )}
       {saving && <p role="status">Saving preferences…</p>}
       {error && <p role="alert">{error}</p>}
     </section>

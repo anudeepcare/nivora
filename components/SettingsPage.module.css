@@ -77,7 +77,7 @@
   height: 54px;
   border-radius: 50%;
   background: var(--blue-soft);
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
   font-size: 22px;
   font-weight: 500;
 }
@@ -101,7 +101,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--blue);
+  color: var(--accent-text, var(--blue));
 }
 .page :global(.workspace-settings-groups) {
   grid-area: preferences;
@@ -125,9 +125,6 @@
   padding: 6px 0;
   list-style: none;
   color: var(--ink);
-}
-.page :global(.workspace-setting-group):first-child > header {
-  padding-top: 0;
 }
 .page :global(.workspace-setting-group) > header::-webkit-details-marker {
   display: none;
@@ -463,5 +460,566 @@
   }
   .page :global(.workspace-account-row) strong {
     font-size: 13px;
+  }
+}
+
+/* Published reference: one full-width preference canvas, no account side rail. */
+.page {
+  display: flex;
+  flex-direction: column;
+  max-width: 1050px;
+  align-items: stretch;
+  gap: 0;
+  padding: 24px 0 48px;
+  min-width: 0;
+}
+.page :global(.settings-eyebrow) {
+  margin: 12px 0;
+  color: var(--accent-text, var(--blue));
+  font: 11px var(--font-mono, monospace);
+  letter-spacing: 0.12em;
+}
+.page :global(.page-heading) {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0 0 32px;
+}
+.page :global(.page-heading) h1 {
+  font-size: clamp(25px, 3vw, 36px);
+  letter-spacing: -0.04em;
+  font-weight: 600;
+}
+.page :global(.workspace-settings-groups) {
+  gap: 20px;
+}
+.page :global(.workspace-setting-group) {
+  padding: 0;
+  border-radius: 13px;
+  background: var(--card);
+}
+.page :global(.workspace-setting-group) > header {
+  padding: 20px;
+}
+.page :global(.workspace-setting-group) > header small {
+  margin: 0 0 7px;
+  color: var(--accent-text, var(--blue));
+  font: 11px var(--font-mono, monospace);
+  letter-spacing: 0.06em;
+}
+.page :global(.workspace-setting-group) > header strong {
+  font-size: 20px;
+  font-weight: 600;
+}
+.page :global(.workspace-setting-body) {
+  padding: 0 25px 20px;
+}
+.page :global(.setting-row) {
+  min-height: 72px;
+}
+.page :global(.settings-choice-cards) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 20px;
+}
+.page :global(.settings-choice-cards) button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 130px;
+  text-align: left;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+}
+.page :global(.settings-choice-cards) button[aria-pressed="true"] {
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
+  background: var(--blue-soft);
+}
+.page :global(.settings-choice-cards) i {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+}
+.page :global(.settings-choice-cards) button[aria-pressed="true"] i {
+  color: var(--card);
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.page :global(.settings-choice-cards) b {
+  margin-top: 18px;
+  font-size: 14px;
+}
+.page :global(.settings-choice-cards) p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.page :global(.workspace-account-row) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 28px;
+  border-radius: 13px;
+  box-shadow: none;
+}
+.page :global(.workspace-account-row) > div {
+  flex: 1;
+  width: auto;
+  min-width: 140px;
+}
+.page :global(.workspace-account-row) :global(.settings-signout) {
+  width: auto;
+  border: 0;
+  margin: 0;
+  padding: 8px;
+}
+.page :global(.workspace-settings-shortcuts) {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-radius: 13px;
+  box-shadow: none;
+}
+.page :global(.settings-choice-cards) button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .page {
+    padding-top: 12px;
+  }
+  .page :global(.settings-choice-cards) {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  .page :global(.settings-choice-cards) button {
+    min-height: 112px;
+  }
+  .page :global(.workspace-setting-group) > header {
+    padding: 20px 16px;
+  }
+  .page :global(.workspace-setting-body) {
+    padding: 0 16px 16px;
+  }
+  .page :global(.setting-row) {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .page :global(.workspace-settings-shortcuts) {
+    grid-template-columns: 1fr;
+  }
+}
+.page :global(.settings-feature-status) {
+  padding: 0 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.page :global(.settings-policy-row) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--line);
+  min-height: 68px;
+}
+.page :global(.settings-policy-row) > span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.page :global(.settings-policy-row) b {
+  font-size: 14px;
+}
+.page :global(.settings-policy-row) small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.page :global(.settings-policy-row) button {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+@media (max-width: 700px) {
+  .page :global(.settings-policy-row) {
+    padding: 16px;
+    flex-wrap: wrap;
+  }
+}
+
+.page :global(.settings-choice-cards) button:hover:not(:disabled) {
+  background: var(--surface);
+  border-color: var(--blue);
+}
+.page :is(button, a, select, input):focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.page :global(.settings-policy-row) select {
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+}
+.page :global(.settings-policy-row) input[type="checkbox"] {
+  accent-color: var(--blue);
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+/* Compact settings: one owner for each preference, signals visible first. */
+.page {
+  padding-top: 12px;
+}
+.page :global(.page-heading) {
+  margin-bottom: 16px;
+}
+.page :global(.page-heading) h1 {
+  font-size: clamp(24px, 3vw, 32px);
+}
+.page :global(.workspace-account-row) {
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+.page :global(.settings-profile-avatar) {
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+.page :global(.settings-section-links) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.page :global(.settings-section-links) a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 12px;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--card);
+  font-size: 13px;
+}
+.page :global(.workspace-settings-groups) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.page :global(.workspace-setting-group) {
+  min-width: 0;
+  scroll-margin-top: 16px;
+}
+.page :global(.workspace-setting-group) > header {
+  padding: 14px 16px;
+}
+.page :global(.workspace-setting-group) > header strong {
+  font-size: 15px;
+}
+.page :global(.workspace-setting-body) {
+  padding: 0 16px 12px;
+}
+.page :global(.settings-signals),
+.page :global(.settings-policy) {
+  grid-column: 1/-1;
+}
+.page :global(.settings-signals) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.page :global(.settings-signals) > header,
+.page :global(.settings-signals) > p {
+  grid-column: 1/-1;
+}
+.page :global(.settings-feature-status) {
+  margin: 8px 0 12px;
+  padding: 0 16px;
+}
+.page :global(.settings-policy-row) {
+  padding: 10px 16px;
+  min-height: 58px;
+  gap: 12px;
+}
+.page :global(.settings-policy-row) b {
+  font-size: 13px;
+  font-weight: 500;
+}
+.page :global(.settings-policy-row) small {
+  line-height: 1.45;
+}
+.page :global(.settings-policy-row) select {
+  max-width: 52%;
+}
+.page :global(.settings-info) {
+  display: inline-grid;
+  place-items: center;
+  margin-left: 6px;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  color: var(--muted);
+  font:
+    10px Georgia,
+    serif;
+  cursor: help;
+}
+.page :global(.research-preferences) {
+  margin: 0;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+}
+.page :global(.research-preferences) h3 {
+  display: none;
+}
+.page :global(.research-preferences) > p {
+  margin: 0 0 10px;
+  font-size: 12px;
+}
+.page :global(.research-preferences) > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  margin: 8px 0;
+}
+.page :global(.research-preferences) select {
+  width: auto;
+  max-width: 60%;
+  min-height: 36px;
+}
+.page :global(.research-preferences) fieldset {
+  margin: 12px 0;
+  padding: 10px;
+}
+.page :global(.research-preferences) fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 12px 5px 0;
+  font-size: 12px;
+}
+.page :global(.setting-row) {
+  min-height: 48px;
+  gap: 8px;
+  padding: 8px 0;
+}
+.page :global(.appearance-controls) {
+  padding-top: 10px;
+}
+.page :global(.accent-options) {
+  margin-bottom: 12px;
+}
+@media (max-width: 700px) {
+  .page :global(.workspace-settings-groups),
+  .page :global(.settings-signals) {
+    grid-template-columns: 1fr;
+  }
+  .page :global(.settings-policy-row) {
+    flex-wrap: nowrap;
+  }
+  .page :global(.settings-policy-row) > span {
+    min-width: 0;
+  }
+  .page :global(.settings-section-links) a {
+    min-height: 44px;
+  }
+  .page :global(.setting-row) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .page :global(.segments) button {
+    padding: 7px 10px;
+  }
+}
+.page :global(.settings-email-hint) {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Keep account identifiers and controls within their shared column. */
+.page :global(.workspace-account-row) > div {
+  min-width: 0;
+}
+.page :global(.workspace-account-row) strong {
+  overflow-wrap: anywhere;
+}
+.page :global(.settings-policy-row) > span {
+  min-width: 0;
+}
+.page :global(.settings-policy-row) select {
+  min-height: 44px;
+}
+@media (max-width: 480px) {
+  .page :global(.settings-policy) :global(.settings-policy-row) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .page :global(.settings-policy-row) select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Solid accents retain readable white text in every appearance theme. */
+.page :global(.density-options) button[aria-pressed="true"] {
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
+  color: #fff;
+}
+.page :global(.settings-signals) > header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.page :global(.settings-signals) > header {
+  display: block;
+}
+
+/* Alerts and security are compact tasks, not mismatched half-page cards. */
+.page :global(.settings-notifications),
+.page :global(#settings-account) {
+  grid-column: 1 / -1;
+}
+.page :global(.settings-notifications) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 20px;
+}
+.page :global(.settings-notifications) > header {
+  grid-column: 1;
+  padding-bottom: 4px;
+  border-bottom: 0;
+}
+.page :global(.settings-notifications) > p {
+  grid-column: 1;
+  margin: 0 0 14px;
+}
+.page :global(.settings-notifications) > :global(.button-row) {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  margin: 0;
+  padding: 12px 16px 12px 0;
+  gap: 8px;
+}
+.page :global(#settings-account) :global(.workspace-setting-body) {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+}
+.page :global(.account-identities) {
+  margin: 0;
+}
+.page :global(.settings-password-change) {
+  border-top: 1px solid var(--line);
+}
+.page :global(.settings-password-change) > summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+  color: var(--ink);
+  font-size: 13px;
+}
+.page :global(.settings-password-change) > summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.page :global(.settings-password-change) :global(.password-form) {
+  max-width: 440px;
+  margin: 0 0 4px;
+  gap: 10px;
+}
+.page :global(.password-form) > p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.page :global(.password-form) > button {
+  justify-self: start;
+  min-height: 44px;
+}
+@media (max-width: 700px) {
+  .page :global(.settings-notifications) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page :global(.settings-notifications) > :global(.button-row) {
+    grid-column: 1;
+    grid-row: auto;
+    padding: 0 16px 16px;
+    flex-wrap: wrap;
+  }
+}
+
+/* Last account-row rule: identity gets the full row, actions never squeeze email. */
+@media (max-width: 600px) {
+  .page :global(.workspace-account-row) {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px 12px;
+  }
+  .page :global(.workspace-account-row) > div {
+    grid-column: 2;
+    min-width: 0;
+    width: 100%;
+  }
+  .page :global(.workspace-account-row) > a,
+  .page :global(.workspace-account-row) :global(.settings-signout) {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    justify-content: flex-start;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 0;
+  }
+  .page :global(.workspace-account-row) > a {
+    border-top: 1px solid var(--line);
+  }
+  .page :global(.workspace-account-row) strong {
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+}
+
+/* Touch targets expand without stretching the switch's visual thumb. */
+@media (max-width: 800px) {
+  .page :global(.research-preferences) select,
+  .page :global(.accent-options) button,
+  .page :global(.density-options) button {
+    min-height: 44px;
+  }
+  .page :global(.motion-switch)::after {
+    content: "";
+    position: absolute;
+    inset: -8px -2px;
   }
 }

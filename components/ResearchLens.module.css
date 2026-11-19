@@ -1,0 +1,275 @@
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.heading h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.heading span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.sparkgrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+.indicator {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--surface);
+}
+.indicator header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: start;
+}
+.indicator h3 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+.indicator > strong {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  margin-top: 8px;
+}
+.indicator svg {
+  display: block;
+  width: 100%;
+  height: 72px;
+  color: var(--blue);
+  margin: 8px 0;
+}
+.info {
+  position: relative;
+}
+.info summary {
+  cursor: pointer;
+  list-style: none;
+  color: var(--muted);
+}
+.info p {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  width: min(240px, 65vw);
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 18px #0002;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.observations summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.observations > div {
+  max-height: 320px;
+  overflow: auto;
+  margin-top: 8px;
+}
+.observations table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+.observations th,
+.observations td {
+  padding: 7px 2px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.observations th:last-child,
+.observations td:last-child {
+  text-align: right;
+}
+.empty {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.paceChartFirst > :global(.accumulation-desk-head) {
+  margin-bottom: 8px;
+}
+.paceChartFirst > :global(.accumulation-desk-head) h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.paceChartFirst > :global(.accumulation-desk-head) :global(.eyebrow) {
+  display: none;
+}
+.paceChartFirst > :global(.accumulation-chart) {
+  margin-top: 8px;
+}
+.paceChartFirst > :global(.accumulation-summary) {
+  padding: 12px;
+  gap: 12px;
+  margin-top: 10px;
+}
+.paceReadings :global(.pace-readings) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+.paceReadings :global(.pace-period) {
+  padding: 8px 10px;
+}
+@media (max-width: 800px) {
+  .sparkgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .sparkgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.indicators > section > h3 {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 12px 0 8px;
+}
+
+.paceMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+/* Secondary policy material stays readable without competing with the chart. */
+.paceChartFirst :global(.policy-rules) {
+  margin-block: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.paceChartFirst :global(.policy-rules) p {
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.paceEvaluation {
+  padding: 16px;
+  margin-top: 10px;
+}
+.paceEvaluation > header {
+  align-items: center;
+  gap: 12px;
+}
+.paceEvaluation h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 4px 0;
+}
+.paceEvaluation > p {
+  margin: 10px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.paceEvaluation input {
+  min-height: 44px;
+}
+.paceEvaluation :global(.policy-results) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-block: 12px;
+}
+.paceEvaluation :global(.policy-results) article {
+  padding: 12px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  min-width: 0;
+}
+.paceEvaluation :global(.policy-results) h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.paceEvaluation :global(.policy-results) article > strong {
+  font-size: 22px;
+  font-weight: 500;
+}
+.paceEvaluation :global(.policy-results) article > span {
+  font-size: 12px;
+}
+.paceEvaluation :global(.policy-results) dl {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  margin-top: 12px;
+}
+.paceEvaluation :global(.policy-results) dl > div {
+  display: grid;
+  gap: 3px;
+  font-size: 12px;
+}
+.paceEvaluation :global(.policy-results) dd {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .paceEvaluation {
+    padding: 14px;
+  }
+  .paceEvaluation :global(.policy-results) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+/* Keep actual Pace history beside its dated rationale; no invented allocation simulator. */
+@media (min-width: 1000px) {
+  .paceChartFirst {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px 18px;
+    align-items: start;
+  }
+  .paceChartFirst > * {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  .paceChartFirst > :global(.accumulation-chart) {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .paceChartFirst > :global(.accumulation-summary) {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0;
+    padding: 16px;
+  }
+  .paceChartFirst > :global(.accumulation-summary) dl {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

@@ -93,3 +93,28 @@ test("a prior-session quote can support a weekend publication after month comple
     1,
   );
 });
+
+test("prospective receipts bind the requested policy version, not just a hash", () => {
+  assert.throws(() => check({ ...row, policyVersion: "monthly-v6" }));
+  assert.throws(() => check(row, [{ ...record, policy: "monthly-v6" }]));
+  const v6row = {
+    ...row,
+    policyVersion: "monthly-v6",
+    signalDate: "2026-11-30T21:00:00Z",
+    signalKnownAt: "2026-12-01T00:00:00Z",
+    executionAt: "2026-12-02T14:30:00Z",
+  };
+  const v6record = {
+    ...record,
+    policy: "monthly-v6",
+    signal_period: "2026-11",
+    published_at: "2026-12-01T12:00:00Z",
+    quote_at: "2026-11-30T21:00:00Z",
+  };
+  assert.equal(check(v6row, [v6record]).policyVersion, "monthly-v6");
+  assert.throws(() =>
+    check({ ...row, policyVersion: "monthly-v6" }, [
+      { ...record, policy: "monthly-v6" },
+    ]),
+  );
+});

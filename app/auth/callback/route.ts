@@ -1,3 +1,4 @@
+import { authCookieOptions, persistenceCookie } from "@/lib/auth-persistence";
 import { recoveryProof, recoveryCookieName } from "@/lib/recovery-proof";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -18,6 +19,7 @@ export async function GET(request: Request) {
   const destination = await completeAuthCallback(request.url, async (code) => {
     if (!url || !key) return { error: "configuration" };
     const client = createServerClient(url, key, {
+      cookieOptions: { secure: new URL(request.url).protocol === "https:" },
       cookies: {
         getAll: () => cookieStore.getAll(),
         setAll: (values: typeof writes) => {
@@ -51,7 +53,15 @@ export async function GET(request: Request) {
     },
   });
   for (const { name, value, options } of writes)
-    response.cookies.set(name, value, options);
+    response.cookies.set(
+      name,
+      value,
+      authCookieOptions(
+        name,
+        options,
+        cookieStore.get(persistenceCookie)?.value !== "session",
+      ),
+    );
   response.cookies.set(recoveryCookieName, proof, {
     httpOnly: true,
     secure: new URL(request.url).protocol === "https:",

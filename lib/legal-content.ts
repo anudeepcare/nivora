@@ -186,8 +186,8 @@ export const documents: Record<
         text: "Bisection solves for initial growth or a discount rate only when the target lies inside a valid bracket. The implied discount rate is not a prediction of realized return. Banks, insurers, crypto and unreconciled foreign listings are excluded from the generic sensitivity model.",
       },
       {
-        title: "Methodology changelog",
-        text: "October 18, 2026: evidence scoring introduced absolute anchors and five style blends. October 19, 2026: source-status details, observed-view comparison, financial crossing alerts, cash-runway and working-capital context were added. No historical scores are recalculated and presented as observations made at the time.",
+        title: "Historical observations",
+        text: "No historical scores are recalculated and presented as observations made at the time.",
       },
       {
         title: "Worked examples",
@@ -198,7 +198,7 @@ export const documents: Record<
         text: "Flags apply disclosed deterministic thresholds to available data, including thin interest coverage, cash use, high stock pay, dilution and liquidity. Review levels are on-screen prompts, not automatic trading rules or proof of business failure. They do not certify that untested risks are absent.",
       },
       {
-        title: "Timing and DCA",
+        title: "Timing and contributions",
         text: "Daily technicals use completed dated observations. The monthly accumulation policy requires consecutive month-end closes and distinguishes confirmed from forming readings. Technicals help describe entry conditions; they do not establish business value or a moat.",
       },
       {
@@ -214,8 +214,8 @@ export const documents: Record<
         text: "Company descriptions do not prove competitive advantage. Management guidance hit rates need actual management guidance, not analyst consensus. Institutional changes need dated holdings history. Historical valuation ranks need price and financial snapshots that were actually available at each date. These values are not fabricated from a current snapshot.",
       },
       {
-        title: "Research and commercial review",
-        text: "A point-in-time archive, delayed outcome evaluation and independent model validation are needed before publishing performance advantages. Data licensing and the product’s actual advice, personalization and execution features require review before commercialization. A disclaimer does not itself create a publisher exemption.",
+        title: "Validation limits",
+        text: "Performance advantages have not been independently validated. Point-in-time observations and later outcomes are needed to evaluate them; calculation tests alone cannot establish investment performance.",
       },
     ],
   },
@@ -262,7 +262,7 @@ export const documents: Record<
       },
       {
         title: "Paper trading and AI",
-        text: "AI research runs when requested and requires a configured provider. Paper trading is separate from live execution and requires its permissions and safeguards. Research labels and DCA signals do not themselves authorize an order.",
+        text: "AI research runs when requested and requires a configured provider. Paper trading is separate from live execution and requires its permissions and safeguards. Research labels and Pace signals do not themselves authorize an order.",
       },
     ],
   },
@@ -288,5 +288,5 @@ documents.privacy.sections.push({
 });
 documents.methodology.sections.push({
   title: "Funded growth and contribution eligibility",
-  text: "An ordinary operating company may qualify through funded growth: at least 20% comparable revenue growth, at least five percentage points of operating-margin improvement, positive cash with nonpositive net debt, and reported diluted weighted-share growth no greater than 10%. It needs nonnegative operating cash flow or at least 24 months of historical operating runway, plus nonnegative cash after capex or at least 18 months of investment runway. All required observations must be available and comparable. Freshness, conflicts and funding deterioration checks still apply. Confirmed P2–P4 can support gradual accumulation; P1 remains Watch/Hold; valuation and short-term momentum remain visible cautions. These conservative thresholds are transparent screening heuristics, not an optimized or backtested claim. Confirmed P0 pauses purchases/additions. A missing contribution level does not erase a separately supported business and valuation assessment. Watchlisting never implies ownership.",
+  text: "An ordinary operating company may qualify through funded growth: at least 20% comparable revenue growth, at least five percentage points of operating-margin improvement, positive cash with nonpositive net debt, and reported diluted weighted-share growth no greater than 10%. It needs nonnegative operating cash flow or at least 24 months of historical operating runway, plus nonnegative cash after capex or at least 18 months of investment runway. All required observations must be available and comparable. Freshness, conflicts and funding deterioration checks still apply. These conservative thresholds are transparent screening heuristics, not an optimized or backtested claim. A missing contribution level does not erase a separately supported business and valuation assessment. Watchlisting never implies ownership.",
 });

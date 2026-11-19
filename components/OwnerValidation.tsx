@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import s from "./OwnerValidation.module.css";
 import { api } from "@/lib/client";
 import { validationTasks } from "@/lib/user-validation";
 type Session = {
@@ -37,7 +38,7 @@ export default function OwnerValidation() {
     };
   }, [load]);
   return (
-    <section className="support">
+    <section className={`support ${s.root}`}>
       <h2>Observed user sessions</h2>
       <p>
         {new Set(sessions.map((s) => s.body.participant)).size} participant
@@ -45,6 +46,7 @@ export default function OwnerValidation() {
         are your observation notes, not automatically verified analytics.
       </p>
       <form
+        className={s.form}
         onSubmit={async (e) => {
           e.preventDefault();
           setBusy(true);
@@ -114,7 +116,7 @@ export default function OwnerValidation() {
             <option value="false">Needed help or could not finish</option>
           </select>
         </label>
-        <label>
+        <label className={s.wide}>
           Friction observed · no personal details
           <textarea
             maxLength={1500}
@@ -122,7 +124,7 @@ export default function OwnerValidation() {
             onChange={(e) => setNotes(e.target.value)}
           />
         </label>
-        <label>
+        <label className={s.consent}>
           <input
             type="checkbox"
             checked={consent}

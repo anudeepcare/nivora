@@ -1,6 +1,6 @@
 "use client";
 import type { Research } from "@/lib/types";
-import { researchAccumulation } from "@/lib/accumulation-policy-v5";
+import { researchAccumulation } from "@/lib/accumulation-policy-v6";
 import { amount, percent } from "@/lib/format";
 import { Help, Notice } from "./Ui";
 import { PriceChart } from "./Charts";
@@ -23,7 +23,7 @@ export default function Accumulation({ research }: { research: Research }) {
           </div>
           <div>
             <span className="eyebrow">
-              MONTHLY DCA · {signal?.month || "HISTORY NEEDED"}
+              MONTHLY PACE · {signal?.month || "HISTORY NEEDED"}
             </span>
             <h2>
               {signal
@@ -36,7 +36,7 @@ export default function Accumulation({ research }: { research: Research }) {
             </h2>
             <p className="muted">{signal?.reason || result.reason}</p>
           </div>
-          <Help label="Monthly DCA">
+          <Help label="Monthly Pace">
             AURYN’s monthly-v5 price policy measures settled prices against the
             previous 12 completed monthly closes and their variability. It
             requires at least 12 consecutive prior completed months; 12–23
@@ -97,7 +97,7 @@ export default function Accumulation({ research }: { research: Research }) {
               ) -
                 365 * 86400000,
           )}
-          range="DCA context"
+          range="Pace context"
         />
         {result.history.length ? (
           <div className="timeline">
@@ -146,9 +146,9 @@ export default function Accumulation({ research }: { research: Research }) {
         </section>
       )}
       <p className="footnote">
-        Experimental policy · {result.version}. Historical zones may change
-        after source corrections. These observations are not simulated returns
-        or proof that variable contributions outperform a fixed schedule.
+        Technical policy · {result.version}. Historical zones may change after
+        source corrections. These observations are not simulated returns or
+        proof that variable contributions outperform a fixed schedule.
       </p>
     </section>
   );

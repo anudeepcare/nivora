@@ -5,11 +5,12 @@ import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { NavigationMemory, restoreWhenReady } from "../lib/navigation.ts";
+import { mobileNavigation } from "../lib/reference-navigation.ts";
 import { settingsHref } from "../lib/settings-navigation.ts";
 
 function component(file, name, bindings) {
   bindings={LinkProgress:()=>null,ReleaseNotice:()=>null,ContextLink:({page,children,className})=>React.createElement('a',{href:'/'+page,className},children),...bindings};
-  bindings = { experience, PaceInstrument, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
+  bindings = { mobileNavigation, experience, PaceInstrument, useAccess: () => ({access:{capabilities:{paperTrading:false}}}), ...bindings };
   bindings={DocumentScrollReturn:()=>null,AccessBoundary:"AccessBoundary",AccessNotice:()=>null,...bindings};
   const ast = ts.createSourceFile(
     file,
@@ -203,11 +204,12 @@ test('first-load research panels suspend locally instead of replacing company id
   const {PassThrough}=await import('node:stream');
   const imported=await import('next/dist/shared/lib/lazy-dynamic/loadable.js');
   const Loadable=imported.default.default ?? imported.default;
-  const file='components/Research.tsx';
+  const file='components/DirectResearchLenses.tsx';
   const source=fs.readFileSync(file,'utf8');
   const ast=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
-  for (const name of ['AdvancedResearch']) {
+  for (const name of ['AdvancedResearch', 'EarningsWorkspace']) {
     const declaration=ast.statements.find(n=>ts.isVariableStatement(n)&&n.declarationList.declarations.some(d=>d.name.getText(ast)===name));
+    assert.ok(declaration, name+' must retain an explicit local dynamic loader');
     const code=ts.transpileModule(declaration.getText(ast),{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
     const Panel=new Function('React','dynamic',code+`;return ${name};`)(React,(_loader,options)=>Loadable({...options,loader:()=>new Promise(()=>{})}));
     const html=await new Promise((resolve,reject)=>{

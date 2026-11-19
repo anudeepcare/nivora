@@ -1,42 +1,42 @@
 "use client";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowDownRight,
-  ArrowUpRight,
-  Minus,
-  Bell,
-  ChevronDown,
-} from "lucide-react";
 import type { Research } from "@/lib/types";
 import {
   approvedResearch,
   type EvidenceSection,
 } from "@/lib/approved-research";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
-import { valuationScale } from "@/lib/research-summary";
 import { useProduct } from "./Session";
+import ResearchChanges from "./ResearchChanges";
+import ScenarioLenses from "./ScenarioLenses";
+import StockPillars from "./StockPillars";
 import PaceInstrument from "./PaceInstrument";
-import ScenarioSensitivity from "./ScenarioSensitivity";
-import DecisionInsights from "./DecisionInsights";
+import s from "./ResearchOverview.module.css";
+import CompanyMetrics from "./CompanyMetrics";
 import ResearchEvidenceGrid from "./ResearchEvidenceGrid";
-import s from "./IntegratedExperience.module.css";
-import { amount, percent, dateLabel } from "@/lib/format";
+import EvidenceCrystal from "./EvidenceCrystal";
+import AnalystTargets from "./AnalystTargets";
+import { consensusOutlook } from "@/lib/outlook";
+import { OverviewBrief, DataFreshness } from "./ResearchBrief";
 export default function IntegratedResearch({
   research: r,
   onTab,
   chart,
+  compact = false,
 }: {
   research: Research;
   onTab: (tab: EvidenceSection) => void;
   chart?: ReactNode;
   pro?: boolean;
+  compact?: boolean;
 }) {
   const { workspace, demo } = useProduct();
   const owns = !!workspace?.positions.some(
     (p) => sameProviderSymbol(p.symbol, r.company.symbol) && p.quantity > 0,
   );
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [context, setContext] = useState<boolean | null>(null);
+  const decisionOwns = context ?? owns;
   const [clock, setClock] = useState(() => Date.now());
   useEffect(() => {
     const tick = () => {
@@ -50,161 +50,175 @@ export default function IntegratedResearch({
     };
   }, []);
   const now = demo ? Date.parse(r.retrievedAt) : clock;
-  const m = useMemo(() => approvedResearch(r, owns, now), [r, owns, now]),
+  const analyst = useMemo(() => consensusOutlook(r), [r]);
+  const showConsensus =
+    !!analyst && (analyst.low == null || analyst.high == null);
+  const m = useMemo(
+      () => approvedResearch(r, decisionOwns, now),
+      [r, decisionOwns, now],
+    ),
     d = m.decision;
-  const scenarioCases = m.cases;
-  const scenarioScale =
-    m.scenarioReference != null
-      ? valuationScale(
-          scenarioCases.map((c) => c.target),
-          m.scenarioReference,
-        )
-      : null;
-  const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
+  if (compact)
+    return (
+      <section aria-label="Decision context and supporting inputs">
+        <div className="segments" aria-label="Decision context">
+          <button aria-pressed={decisionOwns} onClick={() => setContext(true)}>
+            Existing holding
+          </button>
+          <button
+            aria-pressed={!decisionOwns}
+            onClick={() => setContext(false)}
+          >
+            New purchase
+          </button>
+        </div>
+        <p>
+          <strong>{d.actionLabel}</strong> · {d.headline}
+        </p>
+        {!!d.risks.length && (
+          <details>
+            <summary>Decision risks ({d.risks.length})</summary>
+            <ul>
+              {d.risks.map((risk) => (
+                <li key={risk}>{risk}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+        <ResearchChanges
+          research={r}
+          now={now}
+          onOpen={onTab}
+          pace={
+            d.pace?.level == null
+              ? null
+              : {
+                  level: d.pace.level,
+                  policy: d.brief?.accumulation?.version ?? "monthly",
+                  date: d.pace.date ?? "",
+                  source: r.historySource ?? null,
+                }
+          }
+        />
+        <details>
+          <summary>Decision calculation basis</summary>
+          <DataFreshness research={r} now={now} decision={d} />
+        </details>
+      </section>
+    );
   return (
     <>
       <div className={s.overview}>
-        <PaceInstrument
-          research={r}
-          ownsPosition={owns}
-          now={now}
-          view={m.edge.pacePresentation}
-          readings={m.edge.pacePeriods}
-          onHistory={() => onTab("Technicals")}
-        />
-        <div className={s.chart}>{chart}</div>
-        <div
-          className={s.scenarios}
-          aria-label={
-            m.scenarioEnd
-              ? "Explore valuation scenarios"
-              : "Historical price risk"
-          }
+        <div className={s.context} aria-label="Decision context">
+          <button
+            type="button"
+            aria-pressed={decisionOwns}
+            onClick={() => setContext(true)}
+          >
+            {owns ? "For your holding" : "For an existing holding"}
+          </button>
+          <button
+            type="button"
+            aria-pressed={!decisionOwns}
+            onClick={() => setContext(false)}
+          >
+            For a new purchase
+          </button>
+        </div>
+        <div className={s.paceColumn}>
+          <PaceInstrument
+            key={`${r.company.symbol}:${decisionOwns}`}
+            research={r}
+            decision={d}
+            ownsPosition={decisionOwns}
+            now={now}
+            view={m.edge.pacePresentation}
+            readings={m.edge.pacePeriods}
+            onHistory={() => onTab("Technicals")}
+            branded
+          />
+        </div>
+        {d.risks.length > 0 && (
+          <details className={s.decisionNotes}>
+            <summary>
+              {d.risks.length} {d.risks.length === 1 ? "risk" : "risks"} to
+              review
+            </summary>
+            <ul>
+              {d.risks.map((risk) => (
+                <li key={risk}>{risk}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+        <div className={s.changes}>
+          <ResearchChanges
+            research={r}
+            now={now}
+            pace={
+              d.pace?.level == null
+                ? null
+                : {
+                    level: d.pace.level,
+                    policy: d.brief?.accumulation?.version ?? "monthly",
+                    date: d.pace.date ?? "",
+                    source: r.historySource ?? null,
+                  }
+            }
+            onOpen={onTab}
+          />
+        </div>
+        <details
+          className={s.crystal}
+          open={evidenceOpen}
+          onToggle={(event) => setEvidenceOpen(event.currentTarget.open)}
         >
-          {scenarioCases.length === 0 ? (
-            <div className={s.scenarioUnavailable}>
-              <strong>Valuation scenarios need more evidence</strong>
-              <span>
-                No comparable scenario values are established in this snapshot.
-              </span>
-              <button onClick={() => onTab("Valuation")}>
-                Review valuation evidence <ArrowRight size={15} />
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className={s.scenarioCaption}>
-                <span>
-                  {m.scenarioEnd
-                    ? "Conditional valuation scenarios"
-                    : "Historical price-risk cases"}
-                  {" · "}
-                  {m.scenarioEnd
-                    ? dateLabel(m.scenarioEnd)
-                    : `${m.scenarioHorizon} sessions`}
-                </span>
-                <span>
-                  Reference {amount(m.scenarioReference, r.quote.currency)} ·{" "}
-                  {dateLabel(m.scenarioReferenceDate)}
-                </span>
-              </div>
-              {scenarioCases.map((c, i) => {
-                const name = ["Bear", "Base", "Bull"][i];
-                const title = m.scenarioEnd
-                  ? `${name} scenario`
-                  : [
-                      "Historical downside",
-                      "Historical midpoint",
-                      "Historical upside",
-                    ][i];
-                const Icon = [ArrowDownRight, Minus, ArrowUpRight][i];
-                return (
-                  <button
-                    key={name}
-                    className={s.scenario}
-                    data-case={name}
-                    onClick={() =>
-                      onTab(m.scenarioEnd ? "Analysts" : "Technicals")
-                    }
-                    aria-label={
-                      m.scenarioEnd
-                        ? `Explore ${name.toLowerCase()} scenario assumptions`
-                        : `Explore historical ${["lower", "median", "upper"][i]} outcome`
-                    }
-                  >
-                    <span className={s.scenarioHeading}>
-                      <i aria-hidden="true">
-                        <Icon size={18} />
-                      </i>
-                      <strong>{title}</strong>
-                    </span>
-                    <span className={s.scenarioNumbers}>
-                      <b className={s.scenarioValue}>
-                        {amount(c.target, r.quote.currency)}
-                      </b>
-                      <small>{percent(c.change, true)}</small>
-                    </span>
-                    <span className={s.scenarioBasis}>
-                      {m.scenarioEnd
-                        ? [
-                            "Lower earnings power",
-                            "Central assumptions",
-                            "Higher earnings power",
-                          ][i]
-                        : `${[10, 50, 90][i]}th percentile`}
-                    </span>
-                    {scenarioScale && (
-                      <ScenarioSensitivity
-                        className={s.scenarioRange}
-                        target={c.target}
-                        reference={m.scenarioReference!}
-                        scale={scenarioScale}
-                        label={`${title}: ${amount(c.target, r.quote.currency)}; reference ${amount(m.scenarioReference, r.quote.currency)}`}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-              <p className={s.scenarioLegend}>
-                <span>
-                  Sensitivity diagrams · shared price scale · not a time path
-                </span>
-                {m.scenarioEnd
-                  ? "Conditional estimates, not probabilities."
-                  : "Past return percentiles applied to the reference; not fair values or forecasts."}
-              </p>
-            </>
+          <summary>
+            <span>Explore the evidence</span>
+            <small>Eight research lenses · inputs and explanations</small>
+          </summary>
+          {evidenceOpen && (
+            <EvidenceCrystal
+              key={r.company.symbol}
+              research={r}
+              onOpen={() => onTab("Thesis")}
+            />
           )}
+        </details>
+        <div className={s.chart}>{chart}</div>
+        <div style={{ gridArea: "pillars", minWidth: 0 }}>
+          <StockPillars research={r} decision={d} />
+        </div>
+        <div style={{ gridArea: "brief", minWidth: 0 }}>
+          <OverviewBrief
+            research={r}
+            now={now}
+            owns={decisionOwns}
+            decision={d}
+          />
+        </div>
+        <div className={s.scenarios} aria-label="Scenario evidence">
+          <div style={{ gridColumn: "1 / -1" }}>
+            {/* Bear, base and bull are shown once, beside the call above. */}
+            <details>
+              <summary>Compare how each method arrives at its range</summary>
+              <ScenarioLenses research={r} decision={d} hideSingle />
+            </details>
+          </div>
+        </div>
+        <div className={s.consensusRow} data-has-target={showConsensus}>
+          {showConsensus && <AnalystTargets research={r} />}
+          <DataFreshness
+            research={r}
+            now={now}
+            wide={!showConsensus}
+            decision={d}
+          />
         </div>
         <div className={s.overviewMetrics}>
+          <CompanyMetrics research={r} />
           <ResearchEvidenceGrid research={r} onTab={onTab} />
         </div>
-      </div>
-      <DecisionInsights research={r} owns={owns} now={now} prefix={prefix} />
-      <div className={s.market}>
-        <details className={s.evidence}>
-          <summary>
-            Supporting facts & risks <ChevronDown size={15} />
-          </summary>
-          <ul>
-            {d.reasons.map((reason) => (
-              <li key={reason}>{reason}</li>
-            ))}
-          </ul>
-          {d.risks.slice(1).map((reason) => (
-            <p key={reason}>{reason}</p>
-          ))}
-          <div className={s.evidenceActions}>
-            <Link
-              href={`${prefix}/alerts?symbol=${encodeURIComponent(r.company.symbol)}`}
-            >
-              <Bell size={15} /> Set an alert
-            </Link>
-            <button className="text-link" onClick={() => onTab("Valuation")}>
-              See valuation assumptions <ArrowRight size={15} />
-            </button>
-          </div>
-        </details>
       </div>
     </>
   );

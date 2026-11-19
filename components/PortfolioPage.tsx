@@ -1,5 +1,9 @@
 "use client";
+import DecisionAttention from "./DecisionAttention";
+import { useWorkspacePreferences } from "./WorkspacePreferences";
+import dynamic from "next/dynamic";
 import { companyAccent } from "@/lib/visual-signals";
+import reference from "./PortfolioReference.module.css";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { PaceBadge } from "./WorkspacePace";
 import workspaceVisuals from "./WorkspaceVisuals.module.css";
@@ -22,17 +26,29 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { FeatureGate } from "./Access";
 import AccountBalances from "./AccountBalances";
-import ApprovedPortfolioChart from "./ApprovedPortfolioChart";
 import { PositionEditor } from "./ApprovedWorkspaceForms";
-import PortfolioCharts from "./PortfolioCharts";
-import PortfolioExposure from "./PortfolioExposure";
-import PortfolioLedger from "./PortfolioLedger";
+const AccountHistory = dynamic(() => import("./AccountHistory"), {
+  loading: () => null,
+});
+const PortfolioCharts = dynamic(() => import("./PortfolioCharts"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
+const PortfolioExposure = dynamic(() => import("./PortfolioExposure"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
+const PortfolioLedger = dynamic(() => import("./PortfolioLedger"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
 import PortfolioRiskSummary, {
   usePortfolioCalendar,
 } from "./PortfolioRiskSummary";
-import SectorBenchmarks from "./SectorBenchmarks";
+const SectorBenchmarks = dynamic(() => import("./SectorBenchmarks"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
 import { useWorkspaceFilter } from "./Session";
-import TransactionWorkspace from "./TransactionWorkspace";
+const TransactionWorkspace = dynamic(() => import("./TransactionWorkspace"), {
+  loading: () => <p role="status">Loading analysis…</p>,
+});
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
 import {
@@ -44,6 +60,7 @@ import {
   WealthStrip,
 } from "./WorkspaceShared";
 export function Portfolio() {
+  const preferences = useWorkspacePreferences();
   const state = useWorkspaceData("portfolio"),
     { workspace, quotes, model, q, prefix } = state;
   const positions = workspace?.positions ?? [];
@@ -53,7 +70,11 @@ export function Portfolio() {
     [depthOpen, setDepthOpen] = useState(false),
     [currencySaving, setCurrencySaving] = useState(false),
     [currencyError, setCurrencyError] = useState("");
+  const [expandedMetrics, setExpandedMetrics] = useState(true);
   const [paceFilter, setPaceFilter] = useState("all");
+  const [historyVersion, setHistoryVersion] = useState(0);
+  const [comparisonOpen, setComparisonOpen] = useState(false);
+  const comparisonSetup = useRef<HTMLDialogElement>(null);
   const balances = useRef<HTMLDialogElement>(null),
     depth = useRef<HTMLDialogElement>(null);
   const calendar = usePortfolioCalendar(positions);
@@ -102,28 +123,33 @@ export function Portfolio() {
   }
   return (
     <section
-      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals}`}
+      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals} ${reference.page}`}
     >
       <Heading
         title="Portfolio"
-        subtitle="Holdings, performance and allocation."
+        subtitle="Value, decisions and exposure."
         actions={
           <>
-            <button
-              className="btn"
-              onClick={() => {
-                setDepthOpen(true);
-                depth.current?.showModal();
-              }}
-            >
-              Transactions
-            </button>
-            <button
-              className="btn"
-              onClick={() => balances.current?.showModal()}
-            >
-              Cash & balances
-            </button>
+            <details className={reference.manage}>
+              <summary>Manage</summary>
+              <div>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    setDepthOpen(true);
+                    depth.current?.showModal();
+                  }}
+                >
+                  Record transaction
+                </button>
+                <button
+                  className="btn"
+                  onClick={() => balances.current?.showModal()}
+                >
+                  Cash & balances
+                </button>
+              </div>
+            </details>
             <button
               className="btn primary"
               onClick={() => {
@@ -140,203 +166,201 @@ export function Portfolio() {
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
       <WealthStrip state={state} portfolio />
       <Coverage state={state} />
-      <div className="portfolio-grid">
-        <div>
-          <section className="card">
-            <SectionHead
-              title="Portfolio trend"
-              subtitle="Current holdings · historical prices"
-            />
-            <ApprovedPortfolioChart
-              positions={positions}
-              quotes={quotes.data}
-            />
-          </section>
-          <section className="card">
-            <div className={portfolioStyles.holdingsToolbar}>
-              <h2>
-                <Wallet size={20} aria-hidden="true" />
-                Holdings
-              </h2>
-              {positions.length > 0 && (
-                <label className={portfolioStyles.holdingsSearch}>
-                  <SearchIcon size={18} aria-hidden="true" />
-                  <input
-                    aria-label="Filter holdings"
-                    placeholder="Find a holding"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                  />
-                </label>
-              )}
-              <select
-                aria-label="Filter holdings by accumulation pace"
-                value={paceFilter}
-                onChange={(e) => setPaceFilter(e.target.value)}
-              >
-                <option value="all">All pace levels</option>
-                {[4, 3, 2, 1, 0].map((n) => (
-                  <option key={n} value={n}>
-                    P{n}
-                  </option>
-                ))}
-              </select>
-              <div className={portfolioStyles.refreshControls}>
-                {positions.length > 0 && (
-                  <select
-                    aria-label="Portfolio price refresh interval"
-                    value={quotes.mode}
-                    onChange={(e) =>
-                      quotes.changeMode(e.target.value as typeof quotes.mode)
-                    }
-                  >
-                    <option value="balanced">Every 5 min</option>
-                    <option value="live">Every 2 min</option>
-                    <option value="hourly">Hourly</option>
-                    <option value="manual">Manual</option>
-                  </select>
-                )}
-                <button
-                  type="button"
-                  disabled={quotes.loading}
-                  onClick={quotes.refresh}
-                  aria-label={
-                    quotes.loading
-                      ? "Refreshing portfolio prices"
-                      : "Refresh portfolio prices"
-                  }
-                  aria-busy={quotes.loading}
-                  title="Refresh prices now"
-                >
-                  <RefreshCw size={18} aria-hidden="true" />
-                </button>
+      {quotes.ready && positions.length > 0 && (
+        <section className={reference.checks} aria-label="Portfolio checks">
+          <dl>
+            {model.allocations[0] && (
+              <div>
+                <dt>Largest position</dt>
+                <dd>
+                  {model.allocations[0].symbol} ·{" "}
+                  {percent(model.allocations[0].weight)}
+                </dd>
+                <small>Of priced investments, excluding cash.</small>
               </div>
-            </div>
-            {visible.length ? (
-              <HoldingsTable
-                positions={visible}
-                allPositions={positions}
-                state={state}
-                earnings={earnings}
-                onEdit={setEditing}
-              />
-            ) : (
-              <Empty
-                title={
-                  positions.length
-                    ? "No holdings match your filter"
-                    : "Bring your holdings into focus"
-                }
-                icon={Wallet}
-                action={
-                  <button
-                    className="btn"
-                    onClick={() =>
-                      positions.length
-                        ? (setQuery(""), setPaceFilter("all"))
-                        : setEditing("new")
-                    }
-                  >
-                    {positions.length
-                      ? "Clear filter"
-                      : "Add your first position"}
-                  </button>
-                }
-              >
-                {positions.length
-                  ? "Try another company name or ticker."
-                  : "Record shares and average costs. Adding a position does not place a trade."}
-              </Empty>
             )}
-            <div className="approved-holding-tools">
-              {positions.length > 0 && (
-                <button
-                  className="text-link"
-                  onClick={() => {
-                    setDepthOpen(true);
-                    depth.current?.showModal();
-                  }}
-                >
-                  Transactions & analysis <ArrowUpRight size={15} />
-                </button>
+            <div>
+              <dt>Earnings · next 7 days</dt>
+              <dd>
+                {calendar.data && calendar.data.followed > 0
+                  ? `${positions.filter((p) => p.assetType === "stock" && earnings.has(p.symbol)).length} holdings with supplied dates`
+                  : "Dates not confirmed"}
+              </dd>
+              <small>Calendar coverage may be incomplete.</small>
+            </div>
+            <div>
+              <dt>Price coverage</dt>
+              <dd>
+                {model.unpriced.length
+                  ? `${model.unpriced.length} holdings unpriced`
+                  : "All holdings priced"}
+              </dd>
+              <small>
+                {model.older
+                  ? `${model.older} use older prices. Check timestamps.`
+                  : "Snapshot values, not a live account balance."}
+              </small>
+            </div>
+          </dl>
+        </section>
+      )}
+      <div className={reference.grid} data-portfolio-layout="reference">
+        <AccountHistory
+          readOnly
+          key={historyVersion}
+          onReviewRecords={() => {
+            setComparisonOpen(true);
+            comparisonSetup.current?.showModal();
+          }}
+        />
+        <div className={reference.capitalOverview}>
+          <section className="card portfolio-allocation-panel">
+            <SectionHead
+              title="Capital allocation"
+              subtitle="Priced investments · excludes cash"
+            />
+            <div className={reference.allocationBody}>
+              {model.allocations.length > 0 && (
+                <div className={reference.ring}>
+                  <svg
+                    viewBox="0 0 240 240"
+                    role="img"
+                    aria-label="Allocation of priced investments, excluding cash and unpriced holdings"
+                  >
+                    <circle
+                      cx="120"
+                      cy="120"
+                      r="92"
+                      fill="none"
+                      stroke="var(--line)"
+                      strokeWidth="22"
+                    />
+                    {model.allocations.map((a, index) => (
+                      <circle
+                        key={a.symbol}
+                        cx="120"
+                        cy="120"
+                        r="92"
+                        fill="none"
+                        stroke={companyAccent(a.symbol)}
+                        strokeWidth="22"
+                        pathLength="100"
+                        strokeDasharray={`${a.weight} ${100 - a.weight}`}
+                        strokeDashoffset={
+                          -model.allocations
+                            .slice(0, index)
+                            .reduce((sum, row) => sum + row.weight, 0)
+                        }
+                        transform="rotate(-90 120 120)"
+                      />
+                    ))}
+                  </svg>
+                  <div>
+                    <strong>{amount(model.invested)}</strong>
+                    <small>priced investments</small>
+                  </div>
+                </div>
+              )}
+              {model.allocations.length ? (
+                <div className={reference.allocationLegend}>
+                  <div
+                    className="allocation-track"
+                    role="img"
+                    aria-label={model.allocations
+                      .map((a) => `${a.symbol} ${percent(a.weight)}`)
+                      .join("; ")}
+                  >
+                    {model.allocations.map((a) => (
+                      <i
+                        key={a.symbol}
+                        style={{
+                          width: `${a.weight}%`,
+                          background: companyAccent(a.symbol),
+                        }}
+                      />
+                    ))}
+                  </div>
+                  {model.allocations.slice(0, 6).map((a) => (
+                    <Link
+                      key={a.symbol}
+                      href={researchLink(a.symbol, prefix)}
+                      className="allocation-row"
+                    >
+                      <span>
+                        <i
+                          className="dot"
+                          style={{ background: companyAccent(a.symbol) }}
+                        />
+                        {a.symbol}
+                      </span>
+                      <strong>{percent(a.weight)}</strong>
+                    </Link>
+                  ))}
+                  {model.allocations.length > 6 && (
+                    <details className="allocation-more">
+                      <summary>All {model.allocations.length} holdings</summary>
+                      {model.allocations.slice(6).map((a) => (
+                        <Link
+                          key={a.symbol}
+                          href={researchLink(a.symbol, prefix)}
+                          className="allocation-row"
+                        >
+                          <span>
+                            <i
+                              className="dot"
+                              style={{ background: companyAccent(a.symbol) }}
+                            />
+                            {a.symbol}
+                          </span>
+                          <strong>{percent(a.weight)}</strong>
+                        </Link>
+                      ))}
+                    </details>
+                  )}
+                  <p className="chart-note">
+                    Cash and managed balances excluded. Duplicate ticker
+                    positions combined.
+                    {model.unpriced.length
+                      ? " Unpriced instruments are excluded."
+                      : ""}
+                  </p>
+                </div>
+              ) : (
+                <Empty title="See how your holdings fit together">
+                  Available USD prices will reveal your allocation.
+                </Empty>
               )}
             </div>
           </section>
         </div>
-        <div>
-          <section className="card">
-            <SectionHead title="Allocation" subtitle="Priced investments" />
-            {model.allocations.length ? (
-              <>
-                <div
-                  className="allocation-track"
-                  role="img"
-                  aria-label={model.allocations
-                    .map((a) => `${a.symbol} ${percent(a.weight)}`)
-                    .join("; ")}
-                >
-                  {model.allocations.map((a) => (
-                    <i
-                      key={a.symbol}
-                      style={{
-                        width: `${a.weight}%`,
-                        background: companyAccent(a.symbol),
-                      }}
-                    />
-                  ))}
-                </div>
-                {model.allocations.slice(0, 6).map((a) => (
-                  <Link
-                    key={a.symbol}
-                    href={researchLink(a.symbol, prefix)}
-                    className="allocation-row"
-                  >
-                    <span>
-                      <i
-                        className="dot"
-                        style={{ background: companyAccent(a.symbol) }}
-                      />
-                      {a.symbol}
-                    </span>
-                    <strong>{percent(a.weight)}</strong>
-                  </Link>
-                ))}
-                {model.allocations.length > 6 && (
-                  <details className="allocation-more">
-                    <summary>All {model.allocations.length} holdings</summary>
-                    {model.allocations.slice(6).map((a) => (
-                      <Link
-                        key={a.symbol}
-                        href={researchLink(a.symbol, prefix)}
-                        className="allocation-row"
-                      >
-                        <span>
-                          <i
-                            className="dot"
-                            style={{ background: companyAccent(a.symbol) }}
-                          />
-                          {a.symbol}
-                        </span>
-                        <strong>{percent(a.weight)}</strong>
-                      </Link>
-                    ))}
-                  </details>
-                )}
-                <p className="chart-note">
-                  Cash and managed balances excluded. Duplicate ticker positions
-                  combined.
-                  {model.unpriced.length
-                    ? " Unpriced instruments are excluded."
-                    : ""}
-                </p>
-              </>
-            ) : (
-              <Empty title="See how your holdings fit together">
-                Available USD prices will reveal your allocation.
-              </Empty>
-            )}
-          </section>
-          <section className="card">
+        <section className={reference.actions}>
+          <span className={reference.eyebrow}>ACTIONS BY IMPACT</span>
+          <DecisionAttention
+            compact
+            symbols={[
+              ...new Set(
+                positions
+                  .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+                  .map((p) => p.symbol),
+              ),
+            ]}
+            held={positions
+              .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+              .map((p) => p.symbol)}
+            rows={state.paceScan.rows}
+            allocations={model.allocations}
+            concentrationLimit={preferences.preferences.concentrationLimit}
+            prefix={prefix}
+            loading={state.paceScan.loading}
+          />
+          {!positions.length && (
+            <Empty title="Your next decisions appear here">
+              Record holdings to review dated evidence and concentration.
+            </Empty>
+          )}
+        </section>
+        <div className={reference.exposure}>
+          <section className="card portfolio-exposure-panel">
             <SectionHead
               title="Exposure"
               subtitle="Shared sectors and themes"
@@ -344,22 +368,23 @@ export function Portfolio() {
             {model.groups.length ? (
               <>
                 <div
-                  className="approved-risk-bubbles"
+                  className="portfolio-exposure-rows"
                   aria-label="Sector and crypto exposure groups"
                 >
                   {model.groups.slice(0, 5).map((group, i) => (
-                    <div
-                      className="approved-risk-bubble"
-                      key={group.name}
-                      style={{
-                        color: colors[i],
-                        borderColor: colors[i],
-                        width: `${80 + Math.sqrt(group.weight) * 4}px`,
-                        height: `${80 + Math.sqrt(group.weight) * 4}px`,
-                      }}
-                    >
-                      <strong>{group.name}</strong>
-                      <span>{percent(group.weight)}</span>
+                    <div key={group.name}>
+                      <div>
+                        <strong>{group.name}</strong>
+                        <b>{percent(group.weight)}</b>
+                      </div>
+                      <span className="portfolio-exposure-track">
+                        <i
+                          style={{
+                            width: `${group.weight}%`,
+                            background: colors[i],
+                          }}
+                        />
+                      </span>
                       <small>
                         {group.symbols.length}{" "}
                         {group.symbols.length === 1 ? "company" : "companies"}
@@ -392,23 +417,129 @@ export function Portfolio() {
               </Empty>
             )}
           </section>
-          <section className="card compact-card lavender">
-            <SectionHead
-              title="Review a holding"
-              subtitle="Explore the business and your exposure before changing a holding."
+        </div>
+        <section
+          className={`card portfolio-holdings-panel ${reference.holdings}`}
+        >
+          <span className={reference.eyebrow}>ALL HOLDINGS</span>
+          <div className={portfolioStyles.holdingsToolbar}>
+            <h2>
+              <Wallet size={20} aria-hidden="true" />
+              Positions, evidence, and next actions
+            </h2>
+            <button
+              type="button"
+              className="btn"
+              aria-pressed={expandedMetrics}
+              onClick={() => setExpandedMetrics((v) => !v)}
+            >
+              Columns & metrics
+            </button>
+            {positions.length > 0 && (
+              <label className={portfolioStyles.holdingsSearch}>
+                <SearchIcon size={18} aria-hidden="true" />
+                <input
+                  aria-label="Filter holdings"
+                  placeholder="Find a holding"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </label>
+            )}
+            <select
+              aria-label="Filter holdings by accumulation pace"
+              value={paceFilter}
+              onChange={(e) => setPaceFilter(e.target.value)}
+            >
+              <option value="all">All pace levels</option>
+              {[4, 3, 2, 1, 0].map((n) => (
+                <option key={n} value={n}>
+                  P{n}
+                </option>
+              ))}
+            </select>
+            <div className={portfolioStyles.refreshControls}>
+              {positions.length > 0 && (
+                <select
+                  aria-label="Portfolio price refresh interval"
+                  value={quotes.mode}
+                  onChange={(e) =>
+                    quotes.changeMode(e.target.value as typeof quotes.mode)
+                  }
+                >
+                  <option value="balanced">Every 5 min</option>
+                  <option value="live">Every 2 min</option>
+                  <option value="hourly">Hourly</option>
+                  <option value="manual">Manual</option>
+                </select>
+              )}
+              <button
+                type="button"
+                disabled={quotes.loading}
+                onClick={quotes.refresh}
+                aria-label={
+                  quotes.loading
+                    ? "Refreshing portfolio prices"
+                    : "Refresh portfolio prices"
+                }
+                aria-busy={quotes.loading}
+                title="Refresh prices now"
+              >
+                <RefreshCw size={18} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+          {visible.length ? (
+            <HoldingsTable
+              expandedMetrics={expandedMetrics}
+              positions={visible}
+              allPositions={positions}
+              state={state}
+              earnings={earnings}
+              onEdit={setEditing}
             />
-            <Link
-              className="text-link"
-              href={
-                model.allocations[0]
-                  ? researchLink(model.allocations[0].symbol, prefix)
-                  : `${prefix}/research`
+          ) : (
+            <Empty
+              title={
+                positions.length
+                  ? "No holdings match your filter"
+                  : "Bring your holdings into focus"
+              }
+              icon={Wallet}
+              action={
+                <button
+                  className="btn"
+                  onClick={() =>
+                    positions.length
+                      ? (setQuery(""), setPaceFilter("all"))
+                      : setEditing("new")
+                  }
+                >
+                  {positions.length
+                    ? "Clear filter"
+                    : "Add your first position"}
+                </button>
               }
             >
-              View company research ↗
-            </Link>
-          </section>
-        </div>
+              {positions.length
+                ? "Try another company name or ticker."
+                : "Record shares and average costs. Adding a position does not place a trade."}
+            </Empty>
+          )}
+          <div className="approved-holding-tools">
+            {positions.length > 0 && (
+              <button
+                className="text-link"
+                onClick={() => {
+                  setDepthOpen(true);
+                  depth.current?.showModal();
+                }}
+              >
+                Transactions & analysis <ArrowUpRight size={15} />
+              </button>
+            )}
+          </div>
+        </section>
       </div>
       <p className="chart-note">
         Unrealized returns exclude realized trades, dividends, fees and taxes.
@@ -462,10 +593,47 @@ export function Portfolio() {
         </button>
       </dialog>
       <dialog
+        ref={comparisonSetup}
+        className={reference.historySetup}
+        aria-labelledby="comparison-setup-title"
+        onClose={() => {
+          setComparisonOpen(false);
+          setHistoryVersion((v) => v + 1);
+        }}
+      >
+        <header>
+          <div>
+            <h2 id="comparison-setup-title">Set up your market comparison</h2>
+            <p>
+              Account history versus SPY and QQQ, using actual dated
+              transactions.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Close market comparison setup"
+            onClick={() => comparisonSetup.current?.close()}
+          >
+            <X size={22} />
+          </button>
+        </header>
+        {comparisonOpen && (
+          <TransactionWorkspace
+            quotes={q}
+            positions={positions}
+            comparisonFirst
+          />
+        )}
+      </dialog>
+      <dialog
         ref={depth}
         className="detail-drawer approved-depth-dialog"
         aria-labelledby="approved-depth-title"
-        onClose={() => setDepthOpen(false)}
+        onClose={() => {
+          setDepthOpen(false);
+          setHistoryVersion((version) => version + 1);
+        }}
       >
         <header>
           <div>
@@ -536,12 +704,14 @@ export function Portfolio() {
   );
 }
 function HoldingsTable({
+  expandedMetrics,
   positions,
   allPositions,
   state,
   earnings,
   onEdit,
 }: {
+  expandedMetrics: boolean;
   positions: Position[];
   allPositions: Position[];
   state: ReturnType<typeof useWorkspaceData>;
@@ -554,7 +724,12 @@ function HoldingsTable({
     .filter((r) => selected.has(r.position.id))
     .sort((a, b) => (b.value ?? -1) - (a.value ?? -1));
   return (
-    <div className={`table-scroll ${portfolioStyles.ledger}`}>
+    <div
+      className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll}`}
+      role="region"
+      aria-label="Portfolio holdings, scroll for more rows and columns"
+      tabIndex={0}
+    >
       <table className="holdings-table approved-holdings-table">
         <caption className="sr-only">
           Your recorded investments. Weights use priced invested value; cash is
@@ -563,9 +738,16 @@ function HoldingsTable({
         <thead>
           <tr>
             <th>Company / accumulation pace</th>
+            {expandedMetrics && (
+              <>
+                <th>Shares</th>
+                <th>Average cost</th>
+              </>
+            )}
             <th>Weight</th>
             <th>Price</th>
-            <th>Value / return</th>
+            <th>Value</th>
+            <th>Return</th>
             <th>
               <span className="sr-only">Edit holding</span>
             </th>
@@ -601,15 +783,19 @@ function HoldingsTable({
                         <small>
                           {quotes.data[p.symbol]?.company?.name ||
                             "Open research"}
-                          <br />
-                          {p.quantity.toLocaleString(undefined, {
-                            maximumFractionDigits: 6,
-                          })}{" "}
-                          {p.assetType === "crypto" ? "units" : "shares"} ·{" "}
-                          {p.currency
-                            ? amount(p.cost, p.currency)
-                            : "Unknown currency"}{" "}
-                          cost
+                          {!expandedMetrics && (
+                            <>
+                              <br />
+                              {p.quantity.toLocaleString(undefined, {
+                                maximumFractionDigits: 6,
+                              })}{" "}
+                              {p.assetType === "crypto" ? "units" : "shares"} ·{" "}
+                              {p.currency
+                                ? amount(p.cost, p.currency)
+                                : "Unknown currency"}{" "}
+                              cost
+                            </>
+                          )}
                         </small>
                         {p.assetType !== "crypto" && (
                           <PaceBadge
@@ -621,6 +807,24 @@ function HoldingsTable({
                     </Link>
                   )}
                 </td>
+                {expandedMetrics && (
+                  <>
+                    <td>
+                      {cash
+                        ? "—"
+                        : p.quantity.toLocaleString(undefined, {
+                            maximumFractionDigits: 6,
+                          })}
+                    </td>
+                    <td>
+                      {cash
+                        ? "—"
+                        : p.currency
+                          ? amount(p.cost, p.currency)
+                          : "Unknown currency"}
+                    </td>
+                  </>
+                )}
                 <td>{cash ? "—" : percent(row.weight)}</td>
                 <td>
                   <strong>
@@ -642,6 +846,8 @@ function HoldingsTable({
                 </td>
                 <td>
                   <strong>{amount(row.value)}</strong>
+                </td>
+                <td>
                   <small
                     className={
                       row.pnl == null

@@ -755,7 +755,7 @@ export default function HomeBriefing({
                         <strong>{s}</strong>
                         <small>{names[s] ?? s}</small>
                       </span>
-                      <CompanySparkline symbol={s} />
+                      <CompanySparkline symbol={s} withinLink />
                       <span className="briefing-company-value">
                         <strong>
                           {quote?.price != null &&

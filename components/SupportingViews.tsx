@@ -1,7 +1,12 @@
 "use client";
+import EvidenceDetails from "./EvidenceDetails";
 import ComparisonCharts from "./ComparisonCharts";
+import ContributionCompare from "./ContributionCompare";
+import decisionStyles from "./DecisionLists.module.css";
+import compareStyles from "./CompareReference.module.css";
 import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
+import { SettingsSignalPolicies } from "./SettingsExperience";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
 import { ContextLink } from "./ContextLink";
@@ -121,9 +126,10 @@ export function Settings() {
           <ArrowLeft size={18} /> Back
         </Link>
       </div>
+      <p className="settings-eyebrow">YOUR WORKSPACE</p>
       <PageHeading
         title="Settings"
-        subtitle="Manage your account, display and research preferences."
+        subtitle="Your research, display, and portfolio preferences."
       />
       {message && (
         <div className="settings-feedback" role="status">
@@ -170,34 +176,45 @@ export function Settings() {
           <LogOut size={17} /> {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </div>
+      <nav className="settings-section-links" aria-label="Settings sections">
+        <a href="#settings-signals">Signals</a>
+        <a href="#settings-appearance">Appearance</a>
+        <a href="#settings-research">Research</a>
+        <a href="#settings-policy">Guardrails</a>
+        <a href="#settings-account">Account</a>
+        <a href="#settings-notifications">Alerts</a>
+      </nav>
       <div className="workspace-settings-groups">
-        <section className="workspace-setting-group">
+        <SettingsSignalPolicies section="signals" />
+        <section id="settings-appearance" className="workspace-setting-group">
           <header>
             <span>
-              <strong>Display & reading</strong>
-              <small>Theme, text and accessibility</small>
+              <small>APPEARANCE</small>
+              <strong>Accent and reading comfort</strong>
             </span>
           </header>
           <div className="workspace-setting-body">
             <DisplayPreferences />
           </div>
         </section>
-        <section className="workspace-setting-group">
+        <section id="settings-research" className="workspace-setting-group">
           <header>
             <span>
-              <strong>Research preferences</strong>
-              <small>How you want evidence presented</small>
+              <small>RESEARCH</small>
+              <strong>Reading and workspace defaults</strong>
             </span>
           </header>
           <div className="workspace-setting-body">
-            <ResearchPreferenceControls />
+            <ResearchPreferenceControls showConcentration={false} />
           </div>
         </section>
-        <section className="workspace-setting-group">
+        <SettingsSignalPolicies section="policy" />
+        <SettingsSignalPolicies section="notifications" />
+        <section id="settings-account" className="workspace-setting-group">
           <header>
             <span>
-              <strong>Account & security</strong>
-              <small>Sign-in methods and password</small>
+              <small>ACCOUNT</small>
+              <strong>Sign-in & security</strong>
             </span>
           </header>
           <div className="workspace-setting-body">
@@ -219,29 +236,32 @@ export function Settings() {
                 ))}
               </div>
             )}
-            <form className="password-form" onSubmit={update}>
-              <label>
-                New password
-                <input
-                  type="password"
-                  minLength={8}
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </label>
-              <p>
-                Use at least 8 characters and a password you don’t use
-                elsewhere.
-              </p>
-              <button
-                className="button primary"
-                disabled={busy || (!!demo && demo.routePrefix !== "")}
-              >
-                {busy ? "Saving…" : "Update password"}
-              </button>
-            </form>
+            <details className="settings-password-change">
+              <summary>Change password</summary>
+              <form className="password-form" onSubmit={update}>
+                <label>
+                  New password
+                  <input
+                    type="password"
+                    minLength={8}
+                    autoComplete="new-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </label>
+                <p>
+                  Use at least 8 characters and a password you don’t use
+                  elsewhere.
+                </p>
+                <button
+                  className="button primary"
+                  disabled={busy || (!!demo && demo.routePrefix !== "")}
+                >
+                  {busy ? "Saving…" : "Update password"}
+                </button>
+              </form>
+            </details>
           </div>
         </section>
       </div>
@@ -249,11 +269,6 @@ export function Settings() {
         className="workspace-settings-shortcuts"
         aria-label="Account and support"
       >
-        <Link href={`${prefix}/alerts`}>
-          <Bell size={18} />
-          <span>Price alerts</span>
-          <ChevronRight size={17} />
-        </Link>
         <ContextLink page="help">
           <ShieldCheck size={18} />
           <span>Help & support</span>
@@ -264,9 +279,15 @@ export function Settings() {
           <span>What’s new · {APP_VERSION}</span>
           <ChevronRight size={17} />
         </ContextLink>
-        <a href={`mailto:${SUPPORT_EMAIL}`}>
+        <a
+          href={`mailto:${SUPPORT_EMAIL}`}
+          title={`Opens your email app to ${SUPPORT_EMAIL}`}
+        >
           <ShieldCheck size={18} />
-          <span>Email support</span>
+          <span>
+            Email support{" "}
+            <small className="settings-email-hint">Opens your email app</small>
+          </span>
           <ChevronRight size={17} />
         </a>
         <div className="settings-analytics-shortcut">
@@ -292,7 +313,11 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     [rows, setRows] = useState<Research[]>([]),
     [success, setSuccess] = useState(""),
     [error, setError] = useState(""),
-    [loading, setLoading] = useState(false);
+    [loading, setLoading] = useState(false),
+    [editing, setEditing] = useState(!initialSymbols),
+    [referenceSymbol, setReferenceSymbol] = useState(
+      initialSymbols.split(",")[0] ?? "",
+    );
   useEffect(() => {
     if (!symbols) {
       setRows([]);
@@ -368,6 +393,8 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         throw Error("Choose two to four companies.");
       setSuccess("");
       setSymbols(list.join(","));
+      setEditing(false);
+      setReferenceSymbol(list[0]);
       setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Check the symbols");
@@ -392,89 +419,210 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     })),
   );
   return (
-    <section>
-      <PageHeading
-        title="Compare companies"
-        subtitle="Compare reported financials with their periods and currencies."
-      />
-      <div className="source-line">
-        {saved.data?.documents.map((d) => (
-          <button
-            className="text-button"
-            key={d.key}
-            onClick={() => {
-              setDraft(d.body.symbols.join(","));
-              setSymbols(d.body.symbols.join(","));
-            }}
-          >
-            {d.body.name}
-          </button>
-        ))}
-        {rows.length >= 2 && (
-          <button className="text-button" onClick={saveComparison}>
-            Save comparison
-          </button>
-        )}
-      </div>
-      <div className="compare-picker">
-        <Search
-          onSelect={(symbol) =>
-            setDraft((current) =>
-              [...new Set([...current.split(/[ ,]+/).filter(Boolean), symbol])]
-                .slice(0, 4)
-                .join(", "),
-            )
-          }
-        />
-      </div>
-      <form className="compare-search" onSubmit={submit}>
-        <input
-          aria-label="Companies to compare"
-          placeholder="MSFT, AAPL — up to four tickers"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value.toUpperCase())}
-        />
-        <button className="button primary" disabled={loading}>
-          {loading ? "Loading evidence…" : "Compare companies"}
+    <section className={`${decisionStyles.compare} ${compareStyles.page}`}>
+      <header className={compareStyles.heading}>
+        <div>
+          <span className={compareStyles.eyebrow}>CONTRIBUTION COMPARISON</span>
+          <h1>
+            {values.length === 3
+              ? "Three companies."
+              : values.length === 2
+                ? "Two companies."
+                : values.length === 4
+                  ? "Four companies."
+                  : "Your companies."}{" "}
+            One next dollar.
+          </h1>
+          <p>
+            Compare business evidence, expectations, Pace and portfolio capacity
+            on the same scale.
+          </p>
+        </div>
+        <button
+          className="button primary"
+          type="button"
+          aria-expanded={editing}
+          onClick={() => setEditing(!editing)}
+        >
+          + Change companies
         </button>
-      </form>
+      </header>
+      <div className={compareStyles.editor} hidden={!editing}>
+        <div className="source-line">
+          {saved.data?.documents.map((d) => (
+            <button
+              className="text-button"
+              key={d.key}
+              onClick={() => {
+                setDraft(d.body.symbols.join(","));
+                setSymbols(d.body.symbols.join(","));
+                setReferenceSymbol(d.body.symbols[0] ?? "");
+                setEditing(false);
+              }}
+            >
+              {d.body.name}
+            </button>
+          ))}
+          {rows.length >= 2 && (
+            <button className="text-button" onClick={saveComparison}>
+              Save comparison
+            </button>
+          )}
+        </div>
+        <details className={decisionStyles.lookup}>
+          <summary>Find companies by name</summary>
+          <div className="compare-picker">
+            <Search
+              onSelect={(symbol) =>
+                setDraft((current) =>
+                  [
+                    ...new Set([
+                      ...current.split(/[ ,]+/).filter(Boolean),
+                      symbol,
+                    ]),
+                  ]
+                    .slice(0, 4)
+                    .join(", "),
+                )
+              }
+            />
+          </div>
+        </details>
+        <form className="compare-search" onSubmit={submit}>
+          <input
+            aria-label="Companies to compare"
+            placeholder="MSFT, AAPL — up to four tickers"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value.toUpperCase())}
+          />
+          <button className="button primary" disabled={loading}>
+            {loading ? "Loading evidence…" : "Compare companies"}
+          </button>
+        </form>
+      </div>
       {error && <Notice error>{error}</Notice>}
       {success && <Notice>{success}</Notice>}
       {compatibility.length > 0 && (
         <p className="context-note">{compatibility.join(" ")}</p>
       )}
       {values.length > 0 && (
-        <ComparisonCharts research={values.map(({ r }) => r)} />
+        <>
+          <section
+            className={`${decisionStyles.command} ${compareStyles.command}`}
+            aria-label="Decision comparison"
+            style={{
+              gridTemplateColumns: `minmax(220px, 1.65fr) repeat(${values.length}, minmax(160px, 1fr))`,
+            }}
+          >
+            <div className={decisionStyles.commandLabel}>
+              <span>DECISION</span>
+              <strong>Decision context</strong>
+              <p>
+                Each company retains its own context. No automatic winner or
+                allocation is inferred.
+              </p>
+            </div>
+            {values.map(({ r, edge }) => (
+              <div
+                key={r.company.symbol}
+                data-reference={
+                  r.company.symbol === referenceSymbol || undefined
+                }
+              >
+                <Link
+                  href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
+                >
+                  <SecurityLogo symbol={r.company.symbol} />
+                  {r.company.symbol}
+                </Link>
+                <strong>
+                  {edge.pacePresentation.actionLabel || "Unavailable"}
+                </strong>
+                <b>{edge.pacePresentation.code || "Pace unavailable"}</b>
+                <small>{edge.decision.contextLabel}</small>
+              </div>
+            ))}
+          </section>
+        </>
       )}
-      <PaceHelp trigger="Understand AURYN Pace" />
+
       {values.length ? (
-        <div className="table-scroll">
+        <div
+          className={`table-scroll ${compareStyles.matrix}`}
+          role="region"
+          aria-label="Company comparison, scroll for more metrics and columns"
+          tabIndex={0}
+        >
           <table className="compare-table">
+            <colgroup>
+              <col
+                style={{ width: `${(1.65 / (values.length + 1.65)) * 100}%` }}
+              />
+              {values.map(({ r }) => (
+                <col
+                  key={r.company.symbol}
+                  style={{ width: `${100 / (values.length + 1.65)}%` }}
+                />
+              ))}
+            </colgroup>
             <thead>
               <tr>
-                <th>Reported metric</th>
-                {values.map(({ r }) => (
-                  <th key={r.company.symbol}>
+                <th>MEASUREMENT</th>
+                {values.map(({ r, p }) => (
+                  <th
+                    key={r.company.symbol}
+                    data-reference={
+                      r.company.symbol === referenceSymbol || undefined
+                    }
+                  >
                     <Link
                       href={`${prefix}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}`}
                     >
                       <SecurityLogo symbol={r.company.symbol} />
                       {r.company.symbol}
                     </Link>
+                    <button
+                      className={compareStyles.referenceButton}
+                      type="button"
+                      aria-pressed={r.company.symbol === referenceSymbol}
+                      onClick={() => setReferenceSymbol(r.company.symbol)}
+                    >
+                      Use as reference
+                    </button>
+                    <small className={decisionStyles.basisDate}>
+                      {p.periodBasis} · {dateLabel(p.last?.end)}
+                    </small>
+                    <details className={decisionStyles.basis}>
+                      <summary>Accounting basis</summary>
+                      <dl>
+                        <div>
+                          <dt>Company</dt>
+                          <dd>{r.company.name}</dd>
+                        </div>
+                        <div>
+                          <dt>Reporting period</dt>
+                          <dd>
+                            {p.periodBasis} · {dateLabel(p.last?.end)}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Reporting currency</dt>
+                          <dd>{p.last?.currency || "Unavailable"}</dd>
+                        </div>
+                      </dl>
+                    </details>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {[
-                "Company",
-                "Reporting period",
-                "Reporting currency",
                 "Revenue",
                 "Revenue growth",
                 "Net income",
                 "Free cash flow",
                 "Operating margin",
+                "Free cash flow margin",
                 "Price trend",
                 "AURYN View",
                 "AURYN Pace",
@@ -482,19 +630,42 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
                 <tr key={label}>
                   <th>{label}</th>
                   {values.map(({ r, p, edge }) => (
-                    <td key={r.company.symbol}>
+                    <td
+                      key={r.company.symbol}
+                      data-reference={
+                        r.company.symbol === referenceSymbol || undefined
+                      }
+                    >
                       {
                         [
-                          r.company.name,
-                          `${p.periodBasis} · ${dateLabel(p.last?.end)}`,
-                          p.last?.currency || "—",
-                          amount(p.last?.revenue, p.last?.currency, true),
-                          percent(p.growth),
-                          amount(p.last?.netIncome, p.last?.currency, true),
-                          amount(p.last?.fcf, p.last?.currency, true),
-                          percent(p.last?.margin),
-                          p.tech.trend,
-                          `${edge.decision.contextLabel}: ${edge.pacePresentation.actionLabel} · ${edge.reason} New purchase: ${edge.decision.actionLabels.entry}. Holding: ${edge.decision.actionLabels.holding}.`,
+                          p.last?.revenue == null
+                            ? "Unavailable"
+                            : amount(p.last.revenue, p.last.currency, true),
+                          p.growth == null ? "Unavailable" : percent(p.growth),
+                          p.last?.netIncome == null
+                            ? "Unavailable"
+                            : amount(p.last.netIncome, p.last.currency, true),
+                          p.last?.fcf == null
+                            ? "Unavailable"
+                            : amount(p.last.fcf, p.last.currency, true),
+                          p.last?.margin == null
+                            ? "Unavailable"
+                            : percent(p.last.margin),
+                          p.last?.fcfMargin == null
+                            ? "Unavailable"
+                            : percent(p.last.fcfMargin),
+                          p.tech.trend || "Unavailable",
+                          <div key="view">
+                            <strong>{edge.decision.contextLabel}</strong>
+                            <small className="block">
+                              {edge.pacePresentation.actionLabel}
+                            </small>
+                            <EvidenceDetails
+                              reason={edge.reason}
+                              entry={edge.decision.actionLabels.entry}
+                              holding={edge.decision.actionLabels.holding}
+                            />
+                          </div>,
                           <div key="pace">
                             <PaceGuidance
                               view={edge.pacePresentation}
@@ -511,6 +682,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
             </tbody>
           </table>
           <p className="footnote">
+            Highlighted column is a comparison reference, not a ranking.
             Different fiscal year ends and currencies can limit comparability.
             Missing observations remain unavailable. No combined ranking is
             inferred.
@@ -520,6 +692,30 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         <Empty title="Compare growth, margins and valuation">
           Choose two to four companies to compare their reported economics.
         </Empty>
+      )}
+      {values.length >= 2 && (
+        <section className={compareStyles.contribution}>
+          <span className={compareStyles.eyebrow}>YOUR NEXT CONTRIBUTION</span>
+          <h2>Test your next addition</h2>
+          <p>
+            Apply the same amount to each company independently. No suggested
+            allocation is generated.
+          </p>
+          <ContributionCompare
+            defaultOpen
+            symbols={values.map(({ r }) => r.company.symbol)}
+            prefix={prefix}
+          />
+        </section>
+      )}
+      {values.length > 0 && (
+        <div className={compareStyles.tools}>
+          <PaceHelp trigger="Understand AURYN Pace" />
+          <details className={decisionStyles.details}>
+            <summary>Price and financial charts</summary>
+            <ComparisonCharts research={values.map(({ r }) => r)} />
+          </details>
+        </div>
       )}
     </section>
   );

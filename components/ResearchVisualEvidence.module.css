@@ -1,0 +1,500 @@
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  min-width: 0;
+  color: var(--ink);
+  margin-block: 12px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.header h3 {
+  margin: 4px 0 0;
+  font-size: 15px;
+  letter-spacing: -0.025em;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+}
+.eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.subtle {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: right;
+}
+.calendarLayout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(230px, 1.15fr);
+  gap: 20px;
+}
+.monthHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.monthHead button,
+.agendaHead button,
+.expand {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 7px;
+  padding: 6px;
+  cursor: pointer;
+}
+.monthHead button {
+  display: grid;
+  place-items: center;
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+.weekday {
+  font-size: 9px;
+  color: var(--muted);
+  text-align: center;
+  padding: 5px;
+}
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 35px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 11px;
+  cursor: pointer;
+}
+.day:hover,
+.monthHead button:hover,
+.agendaHead button:hover,
+.expand:hover {
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.day[aria-pressed="true"] {
+  border-color: #7c78ed;
+  background: color-mix(in srgb, #7c78ed 15%, transparent);
+}
+.day:focus-visible,
+.monthHead button:focus-visible,
+.agendaHead button:focus-visible,
+.expand:focus-visible,
+.scroll:focus-visible {
+  outline: 2px solid #7c78ed;
+  outline-offset: 2px;
+}
+.dots {
+  display: flex;
+  gap: 3px;
+  min-height: 4px;
+}
+.dots i,
+.legend i,
+.event > i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: none;
+}
+.earnings {
+  background: #8b81ed;
+}
+.filing {
+  background: #4a9cce;
+}
+.transaction {
+  background: #cf9649;
+}
+.legend {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 9px;
+}
+.legend span {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.agenda {
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+  min-width: 0;
+}
+.agendaHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  min-height: 28px;
+}
+.agendaHead button {
+  font-size: 10px;
+}
+.scroll {
+  max-height: 270px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.event {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+.event time {
+  display: flex;
+  flex-direction: column;
+  width: 31px;
+  flex: none;
+  text-align: center;
+  font-size: 9px;
+  color: var(--muted);
+  gap: 2px;
+}
+.event time b {
+  font-size: 16px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.event > div {
+  min-width: 0;
+  flex: 1;
+}
+.eventLabel {
+  font-size: 11px;
+  font-weight: 500;
+  display: block;
+  overflow-wrap: anywhere;
+}
+.event small {
+  font-size: 9px;
+  color: var(--muted);
+  display: block;
+  margin-top: 3px;
+}
+.empty {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  padding: 24px 0;
+}
+.footnote {
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+.network {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  align-items: center;
+  gap: 28px;
+  padding-block: 6px;
+}
+.hub {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, #827be9 8%, var(--card));
+  border-radius: 12px;
+  padding: 22px 8px;
+}
+.hub strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+.hub span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.hub:after {
+  content: "";
+  height: 1px;
+  background: var(--line);
+  position: absolute;
+  width: 28px;
+  left: 100%;
+  top: 50%;
+}
+.branches {
+  max-height: 360px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+.holder {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 9px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+.holder:before {
+  content: "";
+  width: 17px;
+  height: 1px;
+  background: var(--line);
+  position: absolute;
+  right: 100%;
+  top: 50%;
+}
+
+.holderIcon {
+  color: var(--muted);
+  flex: none;
+}
+.holder > div {
+  min-width: 0;
+  flex: 1;
+}
+.holder strong {
+  font-size: 10px;
+  font-weight: 500;
+  display: block;
+  overflow-wrap: anywhere;
+}
+.holder small {
+  display: block;
+  font-size: 8px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.weight {
+  font-size: 12px;
+  flex: none;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.weight small {
+  font-size: 8px;
+}
+.expand {
+  display: block;
+  font-size: 10px;
+  margin: 10px 0 0 auto;
+  padding: 7px 10px;
+}
+@media (max-width: 700px) {
+  .calendarLayout {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .agenda {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 12px 0 0;
+  }
+  .network {
+    grid-template-columns: 95px minmax(0, 1fr);
+    gap: 15px;
+  }
+  .hub:after {
+    width: 15px;
+  }
+  .hub {
+    padding: 18px 5px;
+  }
+  .hub strong {
+    font-size: 15px;
+  }
+  .branches {
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    grid-template-columns: 1fr;
+    padding-left: 12px;
+  }
+  .holder:before,
+  .holder:nth-child(even):before {
+    width: 13px;
+  }
+  .holderIcon {
+    display: none;
+  }
+  .panel {
+    padding: 12px;
+  }
+  .scroll {
+    max-height: 230px;
+  }
+}
+
+/* Calendar is a compact index, not a second page-sized hero. Keep touch dates spacious. */
+.panel[aria-label="Company events calendar"] {
+  padding: 12px;
+}
+.panel[aria-label="Company events calendar"] .header {
+  margin-bottom: 8px;
+}
+.panel[aria-label="Company events calendar"] .monthHead {
+  margin-bottom: 6px;
+}
+.panel[aria-label="Company events calendar"] .day {
+  height: 28px;
+}
+.panel[aria-label="Company events calendar"] .scroll {
+  max-height: 220px;
+  overscroll-behavior: auto;
+}
+@media (pointer: coarse) {
+  .panel[aria-label="Company events calendar"] .day {
+    min-height: 44px;
+    height: auto;
+  }
+  .monthHead button,
+  .agendaHead button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Ownership reading grid: blue identifies institutions, not bullish sentiment. */
+.panel[aria-label="Reported institutional relationships"] .network {
+  grid-template-columns: 140px minmax(0, 1fr);
+  align-items: start;
+}
+.panel[aria-label="Reported institutional relationships"] .hub {
+  border-color: color-mix(in srgb, #4b7fce 40%, var(--line));
+  background: color-mix(in srgb, #4b7fce 9%, var(--card));
+}
+.panel[aria-label="Reported institutional relationships"] .branches {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-height: none;
+  overflow: visible;
+  gap: 10px;
+}
+.panel[aria-label="Reported institutional relationships"] .holder {
+  padding: 14px 12px;
+}
+.panel[aria-label="Reported institutional relationships"] .holder strong {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.panel[aria-label="Reported institutional relationships"] .holder small,
+.panel[aria-label="Reported institutional relationships"] .hub span {
+  font-size: 11px;
+}
+.panel[aria-label="Reported institutional relationships"] .holderIcon {
+  color: #4b7fce;
+}
+.panel[aria-label="Reported institutional relationships"] .weight {
+  font-size: 16px;
+  font-weight: 500;
+}
+.panel[aria-label="Reported institutional relationships"] .subtle,
+.panel[aria-label="Reported institutional relationships"] .footnote {
+  font-size: 12px;
+}
+.panel[aria-label="Reported institutional relationships"] .expand {
+  min-height: 44px;
+  font-size: 13px;
+}
+@media (max-width: 1000px) {
+  .panel[aria-label="Reported institutional relationships"] .branches {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 650px) {
+  .panel[aria-label="Reported institutional relationships"] .network {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .panel[aria-label="Reported institutional relationships"] .hub {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px;
+  }
+  .panel[aria-label="Reported institutional relationships"] .hub:after,
+  .panel[aria-label="Reported institutional relationships"] .holder:before {
+    content: none;
+  }
+  .panel[aria-label="Reported institutional relationships"] .branches {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .panel[aria-label="Reported institutional relationships"] .header {
+    flex-wrap: wrap;
+  }
+}
+
+/* Ownership matches the quiet reference: a neutral issuer and readable disclosures. */
+.panel[aria-label="Reported institutional relationships"] .header h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+.panel[aria-label="Reported institutional relationships"] .hub {
+  background: var(--surface);
+  border-color: var(--line);
+}
+.panel[aria-label="Reported institutional relationships"] .hub strong {
+  font-weight: 500;
+}
+.panel[aria-label="Reported institutional relationships"] .holder {
+  border-radius: 8px;
+}
+.panel[aria-label="Reported institutional relationships"] .weight {
+  min-width: 62px;
+}
+.panel[aria-label="Reported institutional relationships"] .eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+}
+
+/* Ownership names, periods and percentages retain a readable hierarchy. */
+.panel[aria-label="Reported institutional relationships"] .holder strong {
+  font-size: 14px;
+}
+.panel[aria-label="Reported institutional relationships"] .holder small,
+.panel[aria-label="Reported institutional relationships"] .hub span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.panel[aria-label="Reported institutional relationships"] .weight {
+  font-variant-numeric: tabular-nums;
+}
+:global([data-theme="dark"])
+  .panel[aria-label="Reported institutional relationships"]
+  .holderIcon {
+  color: #8db6ed;
+}

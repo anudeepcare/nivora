@@ -15,23 +15,20 @@ export default function ReleaseNotes() {
       </header>
       <span className="eyebrow">PRODUCT UPDATES</span>
       <h1>What’s new</h1>
-      <p>
-        New tools, thoughtful improvements and the details behind the numbers.
-      </p>
+      <p>Recent changes, preserved tools, and what is still being checked.</p>
       {releases.map((r) => (
         <article key={r.version}>
           <div className={styles.meta}>
             <span>{r.version}</span>
             <time dateTime={r.date}>{r.date}</time>
-            <span>
-              {r.status === "candidate"
-                ? "Release candidate · not published"
-                : "Published"}
-            </span>
+            <span>{r.status === "candidate" ? "In review" : "Published"}</span>
           </div>
           <h2>{r.title}</h2>
           {Object.entries(r.groups).map(([title, items]) => (
-            <section key={title}>
+            <section
+              key={title}
+              data-verification={title === "Still being verified" || undefined}
+            >
               <h3>{title}</h3>
               <ul>
                 {items.map((item) => (

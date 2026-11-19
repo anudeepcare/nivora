@@ -1,0 +1,118 @@
+.map {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 24px 0;
+  background: var(--card);
+  min-width: 0;
+}
+.map header {
+  padding: 22px 24px;
+}
+.map header > span {
+  color: var(--green);
+  font: 10px var(--font-mono, monospace);
+  letter-spacing: 0.1em;
+}
+.map h2 {
+  font-size: 23px;
+  margin: 8px 0;
+}
+.map p,
+.map footer {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.map header p {
+  margin: 0;
+}
+.plot {
+  height: 420px;
+  position: relative;
+  background:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px),
+    radial-gradient(
+      ellipse at 65% 30%,
+      color-mix(in srgb, var(--green) 8%, transparent),
+      transparent 70%
+    );
+  background-size:
+    20% 25%,
+    20% 25%,
+    100% 100%;
+}
+.plot > a {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  width: 62px;
+  height: 62px;
+  border: 1px solid color-mix(in srgb, var(--green) 55%, var(--line));
+  background: color-mix(in srgb, var(--green) 16%, var(--card));
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-decoration: none;
+  font: 12px var(--font-mono, monospace);
+  gap: 4px;
+}
+.plot > a:hover,
+.plot > a:focus-visible {
+  z-index: 2;
+  outline: 2px solid var(--green);
+  background: var(--card);
+}
+.plot small {
+  color: var(--green);
+  font-size: 10px;
+}
+.x,
+.y {
+  position: absolute;
+  color: var(--muted);
+  font: 9px var(--font-mono, monospace);
+  letter-spacing: 0.06em;
+}
+.x {
+  bottom: 12px;
+  right: 16px;
+}
+.y {
+  left: 10px;
+  top: 18px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.empty {
+  position: absolute;
+  top: 35%;
+  left: 15%;
+  right: 15%;
+  text-align: center;
+}
+.map footer {
+  padding: 14px 22px;
+}
+@media (max-width: 760px) {
+  .plot {
+    height: 340px;
+  }
+  .map header {
+    padding: 18px;
+  }
+  .map h2 {
+    font-size: 20px;
+  }
+  .plot > a {
+    width: 48px;
+    height: 48px;
+    font-size: 10px;
+  }
+  .map footer {
+    padding: 12px 18px;
+  }
+}

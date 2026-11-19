@@ -1,118 +1,109 @@
 "use client";
 import type { Research } from "@/lib/types";
-import { latestFinancialEvidence } from "@/lib/analysis";
-import { earningsReview, earningsThesisChecks } from "@/lib/earnings-review";
+import { earningsReview, annualThesisBridge } from "@/lib/earnings-review";
 import { dateLabel, percent } from "@/lib/format";
-import EarningsPrep from "./EarningsPrep";
-import { useProduct, useResource } from "./Session";
+import { researchPeriods } from "@/lib/financial-catalog";
+import { Source } from "./Ui";
+import { earningsCalendar } from "@/lib/earnings-calendar";
 export default function EarningsReview({
   research: r,
+  now = Date.now(),
+  contextOnly = false,
 }: {
   research: Research;
+  now?: number;
+  contextOnly?: boolean;
 }) {
-  const { demo } = useProduct();
-  const notes = useResource<{
-    documents: { key: string; body: { condition?: string; thesis?: string } }[];
-  }>("documents?kind=note", demo ? { documents: [] } : undefined);
   const review = earningsReview(
     r.evidence?.earnings ?? [],
     r.retrievedAt.slice(0, 10),
   );
-  const financial = latestFinancialEvidence(r);
-  const checks = earningsThesisChecks(financial.latest, financial.prior);
-  const note = notes.data?.documents.find(
-    (x) => x.key === r.company.symbol,
-  )?.body;
+  const bridge = annualThesisBridge(
+    researchPeriods(r, "annual"),
+    r.retrievedAt.slice(0, 10),
+  );
+  const nextReport = earningsCalendar(r, now).next?.date;
   return (
     <section className="earnings-review card">
-      <header className="section-head">
-        <div>
-          <span className="eyebrow">EARNINGS TO THESIS</span>
-          <h2>Earnings snapshot</h2>
-        </div>
-      </header>
-      {review ? (
+      {!contextOnly && (
         <>
-          <h3>{review.label}</h3>
-          <p className="small muted">{dateLabel(review.date)} · Reported EPS</p>
-          <dl className="earnings-kpis">
+          <header className="section-head">
             <div>
-              <dt>Actual</dt>
-              <dd>{review.actual?.toFixed(2) ?? "Pending"}</dd>
+              <h2>Earnings snapshot</h2>
             </div>
-            <div>
-              <dt>Estimate</dt>
-              <dd>{review.estimate?.toFixed(2) ?? "Unavailable"}</dd>
-            </div>
-            <div>
-              <dt>Surprise</dt>
-              <dd
-                className={
-                  review.surprise !== null && review.surprise < 0
-                    ? "negative"
-                    : ""
-                }
-              >
-                {review.surprise !== null
-                  ? percent(review.surprise, true)
-                  : "Unavailable"}
-              </dd>
-            </div>
-          </dl>
-          <p className="small muted">
-            Reported series; GAAP/adjusted basis not reconciled. EPS alone does
-            not confirm the business case.
-          </p>
+          </header>
+          {review ? (
+            <>
+              <h3>{review.label}</h3>
+              <p className="small muted">
+                {dateLabel(review.date)} · Reported EPS
+              </p>
+              <dl className="earnings-kpis">
+                <div>
+                  <dt>Actual</dt>
+                  <dd>{review.actual?.toFixed(2) ?? "Pending"}</dd>
+                </div>
+                <div>
+                  <dt>Estimate</dt>
+                  <dd>{review.estimate?.toFixed(2) ?? "Unavailable"}</dd>
+                </div>
+                <div>
+                  <dt>Surprise</dt>
+                  <dd
+                    className={
+                      review.surprise !== null && review.surprise < 0
+                        ? "negative"
+                        : ""
+                    }
+                  >
+                    {review.surprise !== null
+                      ? percent(review.surprise, true)
+                      : "Unavailable"}
+                  </dd>
+                </div>
+              </dl>
+            </>
+          ) : (
+            <p>Recent reported results are not available in this snapshot.</p>
+          )}
         </>
-      ) : (
-        <p>Recent reported results are not available in this snapshot.</p>
-      )}
-      {checks.length > 0 && (
-        <section>
-          <h3>Evidence to revisit</h3>
-          <p className="small muted">
-            {financial.periodBasis} periods ending{" "}
-            {dateLabel(financial.latest?.end)} and{" "}
-            {dateLabel(financial.prior?.end)}. These may predate the earnings
-            announcement above.
-          </p>
-          <ul>
-            {checks.map((check) => (
-              <li key={check}>{check}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-      {note?.condition && (
-        <blockquote>
-          <strong>Your review trigger</strong>
-          <p>{note.condition}</p>
-        </blockquote>
-      )}
-      {note?.thesis && (
-        <details>
-          <summary>Your saved research case</summary>
-          <p>{note.thesis}</p>
-        </details>
-      )}
-
-      {r.filings
-        .slice(0, 3)
-        .filter((f) => /^https:\/\//.test(f.url))
-        .map((f) => (
-          <p key={f.url}>
-            <a href={f.url} target="_blank" rel="noopener noreferrer">
-              Open filing evidence ↗
-            </a>
-          </p>
-        ))}
-      {notes.error && (
-        <p className="small muted">Your saved research could not be loaded.</p>
       )}
       <details>
-        <summary>Prepare for the next report</summary>
-        <EarningsPrep research={r} />
+        <summary>What changed in the business?</summary>
+        {bridge ? (
+          <>
+            <p className="small muted">
+              Annual periods {dateLabel(bridge.prior.end)} →{" "}
+              {dateLabel(bridge.latest.end)} · {bridge.latest.currency} ·{" "}
+              {bridge.latest.basis}. These filings may predate the earnings
+              results.
+            </p>
+            <ul>
+              {bridge.checks.map((check) => (
+                <li key={check}>{check}</li>
+              ))}
+            </ul>
+            <p className="small muted">
+              Reported changes are prompts to revisit your thesis, not proof of
+              a lasting trend or a buy/sell signal.
+            </p>
+            <Source href={bridge.latest.sourceUrl}>
+              Latest filing · {dateLabel(bridge.latest.filed)}
+            </Source>{" "}
+            <Source href={bridge.prior.sourceUrl}>
+              Comparison filing · {dateLabel(bridge.prior.filed)}
+            </Source>
+          </>
+        ) : (
+          <p>
+            Comparable filed annual evidence is unavailable. An EPS surprise
+            alone does not establish a change in the business thesis.
+          </p>
+        )}
       </details>
+      {!contextOnly && nextReport && (
+        <p className="small muted">Next report · {dateLabel(nextReport)}</p>
+      )}
     </section>
   );
 }

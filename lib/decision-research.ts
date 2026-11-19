@@ -1,3 +1,4 @@
+import { earningsCalendar } from "./earnings-calendar.ts";
 import { evidenceMemo } from "./evidence-memo.ts";
 import type { Research } from "./types";
 import { latestFinancialEvidence, indicators } from "./analysis.ts";
@@ -597,9 +598,7 @@ function computeResearchDecision(
   flags.sort((a, b) => Number(b.severe) - Number(a.severe));
   const { studies, technical, bars, volatility, maxDrawdown, range } =
     decisionHistory(r);
-  const next = (r.evidence?.earnings ?? [])
-    .filter((x) => x.date >= r.retrievedAt.slice(0, 10))
-    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  const next = earningsCalendar(r, Date.parse(r.retrievedAt)).next;
   const fcase = financialCase(p, q);
   const tripwires = lenses
     .flatMap((x) => x.metrics)

@@ -1,42 +1,33 @@
-# Provider allocation — current implementation
+# Market-data provider strategy
 
-The user already subscribes to Twelve Data and EODHD All-in-One. This build uses both without requesting an additional subscription. Personal use comes first; commercial rights and scaling remain a later acceptance gate.
+Updated November 17, 2026. Only EODHD and SentiSense are authorized market-data sources. Missing coverage is disclosed, not replaced with another vendor or simulated financial output.
 
-| Dataset | Preferred source | Behavior / cache |
-|---|---|---|
-| Quotes, including USD crypto | Twelve Data | 60 seconds; timestamp from provider; EODHD fallback on failure, labelled delayed/indicative |
-| 1D / 1W charts | Twelve Data | 5-minute / hourly bars; 60 seconds; EODHD historical intraday fallback |
-| Longer daily charts and technical/DCA inputs | EODHD | 15 minutes; split-adjusted OHLC, already adjusted volume preserved; Twelve Data whole-series fallback |
-| Search and instrument identity | EODHD when configured | 1 hour; US/USD listings and USD crypto; exact crypto shortcuts; Twelve path when EODHD absent |
-| Annual/quarterly financials, derived TTM | EODHD | 6 hours; 19 mapped raw financial fields and 31 financial metrics in the catalog; coverage varies |
-| Consensus, estimates, ownership, earnings, insiders | EODHD fundamentals | Reuse the same fundamentals response; no separate request for each displayed metric |
-| Company profile and logos | EODHD, then available Twelve/Finnhub logo sources | 1 day; bundled logos first in the UI; fixed neutral fallback |
-| News | EODHD | 1 hour; on Thesis visit; dated publisher links, no unsafe/future URLs |
-| Filings | EODHD SEC endpoints | 6 hours; on Thesis visit; 10-K/10-Q/8-K with validated SEC source URLs; foreign-form coverage is limited |
-| Dividends / splits | EODHD | 1 day; displayed on Thesis; holdings are not automatically adjusted |
-| AI evidence interpretation | Separately configured AI service | Default off; EODHD does not include AI generation credits |
-| Execution | Alpaca Paper | Separate trusted-admin safeguards; default off; no live-money integration |
+## Allocation
 
-When EODHD is not configured, the existing Twelve Data/SEC/Finnhub path remains available. No automatic financial-provider merge occurs. Market fallbacks replace a complete quote/series and identify the selected source; prices are not compared opportunistically to choose the most attractive value. Daily charts are split adjusted, not dividend-reinvested total returns.
+- EODHD: security search, quotes, historical prices, fundamentals, company profile, news, corporate actions, calendar events, screening and available company context. Reuse the existing shared cache, budget and access guards. These capabilities do not imply complete ticker coverage or individual subscription entitlement.
+- SentiSense: dated analyst, earnings, ownership, insider/public-official, options and document evidence, company KPIs, stories and coverage discovery. Fixed endpoint identifiers only; no caller-controlled provider URLs. ETF analyst aggregates describe constituents and are not direct analyst targets for the fund.
+- Quote times, completed price dates, financial period ends, estimates, holdings composition and retrieval times remain distinct. Missing values are not zero. Provider estimates never silently replace a calculation's required financial inputs.
 
-## Data quality and cost boundaries
+## Exclusions and unresolved coverage
 
-Provider keys remain server-only. Failed requests are not cached as valid data. Concurrent identical requests share promises; successful datasets are cached by instrument/endpoint and bounded in process memory. Twelve Data keeps the existing credit guard and optional distributed Supabase budget. EODHD caching is currently per process, not a shared multi-instance cache; establish global budget/usage monitoring before a multi-user launch. A provider outage may still add one fallback attempt and latency.
+Twelve Data, SEC direct fallback, Finnhub and Alpaca market-data fallbacks are disabled. EODHD Marketplace options/UnicornBay is not assumed included. A full strike/expiry chain, dealer GEX or Vanna heatmap cannot be reconstructed from summary records. Paper execution, AI interpretation, authentication and email are separate services, not extra market-data vendors.
 
-Live quotes, completed daily candles, reported financial periods and forecasts have distinct dates and meanings. Missing values stay null; genuine zeros are retained. Forecast EPS is not labelled GAAP EPS. Foreign issuer per-share valuation is withheld when share/ADR currency comparability is not established. Future earnings do not have actual results. Ownership is a delayed report, not live whale buying.
+The adapter implements a selected fixed subset of the documented API, not every paid-plan endpoint. A successful build or public documentation is not verification of account entitlement, freshness, ticker completeness or display rights. Provider-level caching and concurrency limits are not a global subscription quota guarantee.
 
-The EODHD REST stock quote is labelled delayed/indicative. The subscription's separate WebSocket service is not implemented in this release. Long-term decisions do not require streaming every symbol. No options/gamma add-ons, transcript license, market-wide bulk ingestion, FMP purchase or other paid service was added.
+## Presentation and licensing
 
-The user reports configuring EODHD_API_KEY externally. Local paid-account verification remains blocked by access, not by a demonstrated provider failure. Public demo checks are recorded in verification/eodhd-demo-check.json and eodhd-demo-normalization.json. Check APP, HIMS, OSCR, IREN, ASTS, SAP, BTC/USD and ETH/USD on the deployed preview before deciding whether either subscription is redundant.
+Customer-facing headings and errors use neutral product language. Source identity remains available in source details alongside dates and coverage. Do not remove mandatory attribution when a license requires it. Raw proprietary sentiment/Score is withheld pending verified display rights; an information icon alone does not satisfy a license requiring a visible provider link. Plan access and a commercial Data License are different requirements.
 
-## Official references used
+Keep options stock and ETF universes separate. Do not expose vendor scores as a new product ranking, infer buy/sell direction from volume, or call estimated premium traded cash. ETF holdings-weighted analyst upside is not a fund price target. Preserve partial-coverage and insufficient-coverage states.
+
+## Official references
 
 - https://eodhd.com/pricing
 - https://eodhd.com/financial-apis/stock-etfs-fundamental-data-feeds
 - https://eodhd.com/financial-apis/api-for-historical-data-and-volumes
-- https://eodhd.com/financial-apis/intraday-historical-data-api
-- https://eodhd.com/financial-apis/search-api-for-stocks-etfs-mutual-funds-and-indices
-- https://twelvedata.com/docs
-- https://twelvedata.com/docs/fundamentals/logo
+- https://sentisense.ai/docs/api/
+- https://sentisense.ai/docs/api/stocks/
+- https://sentisense.ai/docs/api/options/
+- https://sentisense.ai/docs/api/etfs/
 
-Provider documentation does not verify the user's individual entitlement, current ticker completeness or permission to resell displayed data. ValueSnapshot's public attribution and research inventory remain in VALUESNAPSHOT_RESEARCH_AUDIT.md; stronger data access alone does not prove a better product.
+Live subscription checks and browser verification are recorded separately. This document makes no deployment or full-coverage claim.

@@ -214,3 +214,12 @@ test("lower prices preserve a supported earnings entry when business inputs do n
   assert.notEqual(missingMultiple.valuation?.basis, "earnings");
   assert.notEqual(missingMultiple.action, "Buy");
 });
+
+test('rapid revenue growth does not inherit a mature cash-flow headline model',()=>{
+ const r=structuredClone(demoData.research.MSFT);r.evidence=undefined;
+ const rows=r.facts.filter(f=>f.metric==='revenue'&&f.scope==='annual').sort((a,b)=>a.end.localeCompare(b.end));
+ const latest=rows.at(-1),prior=rows.at(-2);latest.value=prior.value*1.465;
+ const d=aurynDecision(r,{now:Date.parse(r.retrievedAt)});
+ assert.notEqual(d.valuation?.basis,'cash-flow');
+ assert.ok(d.reasons.some(x=>/growth/i.test(x)));
+});

@@ -1,3 +1,4 @@
+import { earningsCalendar } from "./earnings-calendar.ts";
 import type { Research } from "./types";
 import { quoteHealth } from "./quote-health.ts";
 import { selectPriceReference, settledPriceBars } from "./price-reference.ts";
@@ -78,21 +79,8 @@ export function movementContext(
       ...n,
       publisher: new URL(n.url).hostname.replace(/^www\./, ""),
     }));
-  const earnings =
-    r.company.assetType === "stock"
-      ? ((r.evidence?.earnings ?? [])
-          .filter((e) => {
-            const t = Date.parse(e.date);
-            return (
-              Number.isFinite(t) &&
-              /^\d{4}-\d{2}-\d{2}$/.test(e.date) &&
-              new Date(t).toISOString().slice(0, 10) === e.date &&
-              e.date >= day(now) &&
-              e.actual == null
-            );
-          })
-          .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null)
-      : null;
+  const calendarEvidence = earningsCalendar(r, now);
+  const earnings = calendarEvidence.next;
   const last = settled.at(-1),
     priorVolumes = settled.slice(-21, -1);
   const volumeRecent = !!last && now - Date.parse(last.time) <= 10 * 86400000;
@@ -111,7 +99,9 @@ export function movementContext(
     today: !fallback && validPrice && !q.stale && day(at) === day(now),
     asOf,
     session: fallback ? "Settled daily close" : q.session,
-    stale: q.stale,
+    // The selected close already passed its own age check; a discarded quote
+    // must not describe that separate observation as stale.
+    stale: reference ? false : q.stale,
     priceBasis:
       reference?.basis ?? (validPrice ? "older-quote" : "unavailable"),
     priceSource: fallback
@@ -120,14 +110,7 @@ export function movementContext(
     changeFrom: previous?.time ?? null,
     headlines: coverage,
     earnings,
-    earningsStatus:
-      r.company.assetType === "crypto"
-        ? "Not applicable to crypto"
-        : earnings
-          ? "Unreported scheduled earnings"
-          : r.evidence
-            ? "No upcoming earnings date supplied"
-            : "Earnings calendar unavailable",
+    earningsStatus: calendarEvidence.status,
     relativeVolume: volume,
     volumeDate: last?.time ?? null,
     volumeStatus: !last

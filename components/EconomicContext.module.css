@@ -1,0 +1,100 @@
+.context {
+  min-width: 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.context header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.context h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.controls {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.controls button {
+  min-height: 40px;
+  padding: 8px 12px;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.controls button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--card);
+}
+.body {
+  font-size: 13px;
+  min-width: 0;
+}
+.body p {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+.body small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+.scroll {
+  max-height: 390px;
+  overflow: auto;
+}
+.scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.scroll th,
+.scroll td {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+.scroll td {
+  white-space: nowrap;
+}
+.scroll th {
+  min-width: 140px;
+}
+.curve {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 12px;
+}
+.curve div {
+  border-bottom: 2px solid var(--blue);
+  padding: 10px 0;
+}
+.curve dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.curve dd {
+  margin: 6px 0 0;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.controls button:focus-visible,
+.scroll:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .controls {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .controls button {
+    flex: none;
+    min-height: 44px;
+  }
+}

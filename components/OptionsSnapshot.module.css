@@ -17,7 +17,7 @@
 .note,
 .levels small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 .levels {
@@ -35,7 +35,7 @@
   align-items: center;
   gap: 4px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .levels strong {
   display: block;

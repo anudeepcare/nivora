@@ -1,0 +1,149 @@
+.launch {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: max(24px, env(safe-area-inset-top))
+    max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom))
+    max(24px, env(safe-area-inset-left));
+  color: #24342c;
+  background:
+    radial-gradient(ellipse at 50% 42%, #eaf1e580, transparent 58%), #f7f8f5;
+}
+.content {
+  width: min(100%, 360px);
+  text-align: center;
+  position: relative;
+}
+.mark {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+  animation: breathe 2.8s ease-in-out infinite;
+}
+.mark img {
+  display: block;
+  filter: drop-shadow(0 5px 10px #527f3c20);
+}
+.content h1 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.recovery {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  padding-top: 16px;
+}
+.recovery p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #53645b;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.actions button {
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 1px solid #aebdaf;
+  border-radius: 10px;
+  background: #ffffff;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.actions button:focus-visible {
+  outline: 2px solid #458b69;
+  outline-offset: 3px;
+}
+:global([data-theme="dark"]) .launch {
+  color: #eef2ec;
+  background:
+    radial-gradient(ellipse at 50% 42%, #34403866, transparent 58%), #24272b;
+}
+:global([data-theme="dark"]) .recovery p {
+  color: #c0ccc4;
+}
+:global([data-theme="dark"]) .actions button {
+  background: #303a34;
+  border-color: #63766a;
+}
+.skeleton {
+  padding: 24px 0;
+  min-height: 55vh;
+}
+.skeletonHeading,
+.skeletonLine,
+.chart,
+.table span {
+  display: block;
+  background: var(--line, #e0e6df);
+  opacity: 0.55;
+  border-radius: 8px;
+}
+.skeletonHeading {
+  width: min(60%, 260px);
+  height: 28px;
+}
+.skeletonLine {
+  width: min(80%, 420px);
+  height: 14px;
+  margin-top: 18px;
+}
+.chart {
+  height: 260px;
+  margin-top: 28px;
+}
+.table {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+}
+.table span {
+  height: 44px;
+}
+.skeleton p {
+  color: var(--muted);
+  font-size: 14px;
+}
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mark {
+    animation: none;
+  }
+}
+:global([data-motion="reduce"]) .mark {
+  animation: none;
+}
+@media (max-height: 500px) {
+  .launch {
+    align-items: start;
+  }
+  .content {
+    margin-block: 20px 160px;
+  }
+}

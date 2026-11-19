@@ -9,22 +9,49 @@ import { providerSymbol, providerIdentity } from "../lib/provider-symbol.ts";
 import { eodTicker } from "../lib/eodhd-normalize.ts";
 const originalFetch = globalThis.fetch;
 test("a complete cached directory cannot turn a failed targeted search into a false empty result", async () => {
-  const p = fixtureProviders((u) => {
-    if (u.pathname.includes('/exchange-symbol-list/')) return Response.json([{Code:'KNOWN',Name:'Known Company',Exchange:'US',Currency:'USD',Type:'Common Stock'}]);
-    if (u.pathname.includes('/search/')) throw Error('Search transport unavailable');
-    return marketResponse(u);
-  }, {twelve:false});
+  const p = fixtureProviders(
+    (u) => {
+      if (u.pathname.includes("/exchange-symbol-list/"))
+        return Response.json([
+          {
+            Code: "KNOWN",
+            Name: "Known Company",
+            Exchange: "US",
+            Currency: "USD",
+            Type: "Common Stock",
+          },
+        ]);
+      if (u.pathname.includes("/search/"))
+        throw Error("Search transport unavailable");
+      return marketResponse(u);
+    },
+    { twelve: false },
+  );
   assert.equal((await p.marketDirectory()).complete, true);
-  await assert.rejects(p.search('MISSING'), /Search transport unavailable/);
+  await assert.rejects(p.search("MISSING"), /Search transport unavailable/);
 });
 test("cold exact search returns provider matches without downloading entire market directories", async () => {
   const p = fixtureProviders((u) => {
-    if (u.pathname.includes('/search/')) return Response.json([{ Code: 'FAST', Name: 'Fast Company', Exchange: 'US', Currency: 'USD', Type: 'Common Stock' }]);
+    if (u.pathname.includes("/search/"))
+      return Response.json([
+        {
+          Code: "FAST",
+          Name: "Fast Company",
+          Exchange: "US",
+          Currency: "USD",
+          Type: "Common Stock",
+        },
+      ]);
     return marketResponse(u);
   });
-  const rows = await p.search('FAST');
-  assert.equal(rows[0]?.symbol, 'FAST');
-  assert.equal(p.calls.some(u => /exchange-symbol-list|\/stocks$|\/cryptocurrencies$/.test(u.pathname)), false);
+  const rows = await p.search("FAST");
+  assert.equal(rows[0]?.symbol, "FAST");
+  assert.equal(
+    p.calls.some((u) =>
+      /exchange-symbol-list|\/stocks$|\/cryptocurrencies$/.test(u.pathname),
+    ),
+    false,
+  );
 });
 test.after(() => {
   globalThis.fetch = originalFetch;
@@ -122,7 +149,7 @@ function secResponse(
     });
   return null;
 }
-test("a nonempty but incomplete primary selects complete SEC statements and keeps primary profile and ownership", async () => {
+test("incomplete EODHD statements remain primary without excluded SEC enrichment", async () => {
   const p = fixtureProviders(
     (u) =>
       secResponse(u) ??
@@ -131,15 +158,23 @@ test("a nonempty but incomplete primary selects complete SEC statements and keep
         : marketResponse(u)),
   );
   const r = await p.research("TEST");
-  assert.equal(r.facts.find((f) => f.metric === "revenue")?.value, 200);
-  assert.ok(r.facts.every((f) => f.sourceUrl.includes("sec.gov")));
+  assert.equal(r.facts.find((f) => f.metric === "revenue")?.value, 100);
+  assert.ok(r.facts.every((f) => f.sourceUrl.includes("eodhd.com")));
+  assert.equal(
+    p.calls.some((u) => u.hostname.includes("sec.gov")),
+    false,
+  );
   assert.equal(r.company.name, "Verified TEST");
   assert.equal(r.evidence.ownership.outstanding, 77);
-  assert.equal(r.filings.length, 1);
+  assert.equal(r.filings.length, 0);
+  assert.equal(
+    p.calls.some((u) => u.hostname.includes("sec.gov")),
+    false,
+  );
   assert.equal(r.quote.price, 102);
   assert.equal(r.history.length, 1);
 });
-test("stale complete primary statements recover with newer complete SEC evidence", async () => {
+test("stale EODHD statements preserve original dates instead of borrowing excluded SEC evidence", async () => {
   const p = fixtureProviders(
     (u) =>
       secResponse(u) ??
@@ -148,7 +183,12 @@ test("stale complete primary statements recover with newer complete SEC evidence
         : marketResponse(u)),
   );
   const r = await p.fundamentals("TEST");
-  assert.equal(r.facts.find((f) => f.metric === "revenue")?.value, 200);
+  assert.equal(r.facts.find((f) => f.metric === "revenue")?.value, 100);
+  assert.ok(r.facts.every((f) => f.end === "2023-06-30"));
+  assert.equal(
+    p.calls.some((u) => u.hostname.includes("sec.gov")),
+    false,
+  );
 });
 test("current complete primary avoids unnecessary SEC spend", async () => {
   const p = fixtureProviders((u) =>
@@ -174,7 +214,11 @@ test("incomplete SEC fallback cannot erase better primary facts or splice anothe
   const r = await p.fundamentals("TEST");
   assert.equal(r.facts.find((f) => f.metric === "revenue")?.value, 100);
   assert.ok(r.facts.every((f) => f.currency === "USD"));
-  assert.equal(r.filings.length, 1);
+  assert.equal(r.filings.length, 0);
+  assert.equal(
+    p.calls.some((u) => u.hostname.includes("sec.gov")),
+    false,
+  );
 });
 test("international exchange suffixes cannot alias to US class shares or spend provider calls", async () => {
   const p = fixtureProviders(marketResponse);
@@ -246,20 +290,18 @@ test("partial research reports independent dataset availability and crypto finan
   const crypto = await p.research("ETH/USD");
   assert.equal(crypto.coverage?.fundamentals.status, "not-applicable");
 });
-test("a Twelve-only profile recovers independently when SEC facts and quote are unavailable", async () => {
-  const p = fixtureProviders(
-    (u) =>
-      u.pathname === "/quote"
-        ? new Response("", { status: 503 })
-        : marketResponse(u),
-    { eodhd: false },
-  );
+test("legacy Twelve credentials alone cannot supply a profile or hidden fallback", async () => {
+  const p = fixtureProviders(marketResponse, { eodhd: false });
   const r = await p.research("PROFILE");
-  assert.equal(r.company.name, "Verified PROFILE");
-  assert.equal(r.coverage.profile.status, "available");
-  assert.equal(r.history.length, 1);
+  assert.equal(r.company.symbol, "PROFILE");
+  assert.notEqual(r.company.name, "Verified PROFILE");
+  assert.notEqual(r.coverage.profile.status, "available");
+  assert.equal(r.history.length, 0);
   assert.equal(r.facts.length, 0);
+  assert.equal(r.quote.price, null);
+  assert.equal(p.calls.length, 0);
 });
+
 test("mixed periods and currencies never count as a complete operating statement", () => {
   const { fundamentalCoverage, preferReportedFacts } = sourceModule(
     "lib/fundamental-coverage.ts",
@@ -410,41 +452,18 @@ test("verified provider aliases remain discoverable when the current full direct
   assert.equal((await p.search("Facebook"))[0]?.symbol, "META");
 });
 
-test("a live-shaped Twelve profile without currency recovers only with a matching USD directory listing", async () => {
-  const p = fixtureProviders(
-    (u) => {
-      if (u.pathname === "/quote") return new Response("", { status: 503 });
-      if (u.pathname === "/profile")
-        return Response.json({
-          symbol: "IREN",
-          name: "IREN Ltd.",
-          exchange: "NASDAQ",
-          country: "Australia",
-          type: "Common Stock",
-        });
-      if (u.pathname === "/stocks")
-        return Response.json({
-          data: [
-            {
-              symbol: "IREN",
-              name: "IREN Ltd.",
-              exchange: "NASDAQ",
-              currency: "USD",
-              type: "Common Stock",
-            },
-          ],
-        });
-      if (u.pathname === "/etf" || u.pathname === "/cryptocurrencies")
-        return Response.json({ data: [] });
-      return marketResponse(u);
-    },
-    { eodhd: false },
+test("EODHD issuer identity and USD listing survive quote outage", async () => {
+  const p = fixtureProviders((u) =>
+    u.pathname.includes("/real-time/")
+      ? new Response("", { status: 503 })
+      : marketResponse(u),
   );
   const r = await p.research("IREN");
-  assert.equal(r.company.name, "IREN Ltd.");
+  assert.equal(r.company.name, "Verified IREN");
   assert.equal(r.company.currency, "USD");
   assert.equal(r.coverage.profile.status, "available");
   assert.equal(r.quote.price, null);
+  assert.ok(p.calls.every((u) => u.hostname === "eodhd.com"));
 });
 
 test("a currency-less Twelve profile cannot borrow another listing identity or non-USD currency", async () => {

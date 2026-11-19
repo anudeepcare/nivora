@@ -98,7 +98,7 @@ test("missing inputs render unmeasured cells, not numeric zero", () => {
   assert.doesNotMatch(html, /NaN|Infinity/);
 });
 
-test("account replay exposes an exit and disables the device observation selector", () => {
+test("account replay exposes an exit without removed saved-view controls", () => {
   const html = renderToStaticMarkup(
     React.createElement(mod.exports.default, {
       contracts: [c],
@@ -116,7 +116,7 @@ test("account replay exposes an exit and disables the device observation selecto
   );
   assert.match(html, /Account replay is active/);
   assert.match(html, /Exit account replay/);
-  assert.match(html, /Observation<select disabled=""/);
+  assert.doesNotMatch(html, /Saved views|Observation<select/);
 });
 
 test("focused board shortcuts act locally and leave controls and modified keys alone", () => {

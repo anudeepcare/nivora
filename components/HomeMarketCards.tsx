@@ -26,6 +26,13 @@ type HistoryState = {
   pending: string[];
 };
 const DAY = 86400000;
+function quoteDirection(value: number | null | undefined) {
+  return value == null || !Number.isFinite(value) || value === 0
+    ? "flat"
+    : value < 0
+      ? "down"
+      : "up";
+}
 
 /** Never fill missing observations or render a stale/malformed series as a current trend. */
 function usableHistory(history: Candle[] | undefined, now: number): Candle[] {
@@ -333,19 +340,24 @@ export default function HomeMarketCards({
         <div>
           <span className={styles.eyebrow}>
             <ChartNoAxesCombined size={15} aria-hidden="true" />{" "}
-            {context === "research" ? "SAVED COMPANIES" : "THE BIG PICTURE"}
+            {context === "research"
+              ? "SAVED COMPANIES"
+              : "YOUR FOLLOWED COMPANIES"}
           </span>
           <h2 id="home-market-pulse">
-            {context === "research" ? "Saved companies" : "Market pulse"}
+            {context === "research"
+              ? "Saved companies"
+              : "Followed company trends"}
           </h2>
           <p>
             {selected.length
               ? `${selected.length} of ${total ?? allSymbols.length} ${context === "research" ? "saved" : "followed"} companies · ${ready} quotes available`
-              : "A little curiosity. A clearer view of the market."}
+              : "Follow a company to see its reported price history here."}
           </p>
         </div>
-        <Link href={`${prefix}/discover`} className={styles.explore}>
-          Explore companies <ArrowRight size={17} aria-hidden="true" />
+        <Link href={`${prefix}/watchlist`} className={styles.explore}>
+          View all followed companies{" "}
+          <ArrowRight size={17} aria-hidden="true" />
         </Link>
       </div>
       {!selected.length ? (
@@ -434,13 +446,13 @@ export default function HomeMarketCards({
                     <>
                       <span
                         className={styles.changeValue}
-                        data-direction={quote.changePct < 0 ? "down" : "up"}
+                        data-direction={quoteDirection(quote.changePct)}
                       >
                         {quote.changePct < 0 ? (
                           <ArrowDownRight size={15} aria-hidden="true" />
-                        ) : (
+                        ) : quote.changePct > 0 ? (
                           <ArrowUpRight size={15} aria-hidden="true" />
-                        )}
+                        ) : null}
                         {percent(quote.changePct, true)}
                       </span>
                       <span>daily change</span>

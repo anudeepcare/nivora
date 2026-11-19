@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import postcss from 'postcss';
 import prettier from 'prettier';
+import {deduplicateRules} from '../scripts/lib/css-deduplicate.mjs';
 
 // Compare the complete ordered AST, including duplicate declarations, importance,
 // media conditions and layer boundaries. Formatting and source comments are inert.
@@ -28,9 +29,38 @@ function semantic(node) {
   if (node.nodes) value.nodes = node.nodes.map(semantic).filter(Boolean);
   return value;
 }
-test('consolidated compatibility preserves every ordered rule and declaration', async () => {
+test('consolidated compatibility preserves the ordered cascade after exact duplicate removal', async () => {
   const before = await expanded('docs/archive/styles/app/core/compatibility.css');
   const after = await expanded('app/core/compatibility.css');
+  // Consent is now owned by its scoped component; the obsolete global rules
+  // were deliberately removed in the preceding theme cleanup.
+  before.walkRules(rule => {
+    if (/^\.(analytics-consent|consent-actions)(?:[ .:]|$)/.test(rule.selector)) rule.remove();
+  });
+  // Company metrics are now visible by default at every viewport width.
+  // Remove only the deliberately retired disclosure selectors from the archive;
+  // every other historical selector and declaration remains order-equivalent.
+  const retiredMetricSelectors = new Set([
+    '.company-metrics .company-metrics-toggle',
+    '.company-metrics:not(.company-metrics-expanded) > div:nth-child(n + 5)',
+  ]);
+  before.walkRules(rule => {
+    if (retiredMetricSelectors.has(rule.selector)) rule.remove();
+  });
+  // Explicit user-requested removal of decorative card-top rails. Preserve
+  // every selector/order and every non-rail declaration in this archive check.
+  before.walkDecls(declaration => {
+    const {prop, value} = declaration;
+    const selector = declaration.parent.selector;
+    if (prop === 'border-top' && /^3px solid /.test(value)) declaration.value = '1px solid var(--line)';
+    if (prop === 'border-top' && value === '2px solid var(--blue)' && selector !== '.timeline .step') declaration.value = '1px solid var(--line)';
+    if (prop === 'border-top-color' && selector !== '.au-dca-scale span.active' && declaration.parent.nodes.every(node => !(node.prop === 'animation' && /spin/.test(node.value)))) {
+      // The loading spinner is a functional rotating stroke, not a card rail.
+      const isSpinner = declaration.parent.nodes.some(node => node.prop === 'border' && node.value === '2px solid var(--line)');
+      if (!isSpinner) declaration.value = 'var(--line)';
+    }
+  });
+  deduplicateRules(before);
   assert.deepEqual(semantic(after), semantic(before));
   let rules = 0;
   after.walkRules(() => rules++);
@@ -42,11 +72,35 @@ test('consolidated compatibility preserves every ordered rule and declaration', 
     assert.match(match[1], /^(\/|data:|https?:|#)/, `Relative asset URL: ${match[1]}`);
   }
 });
-test('token extraction preserves the complete foundation cascade and font registration order', async () => {
-  assert.deepEqual(
-    semantic(await expanded('app/core/foundation.css')),
-    semantic(await expanded('docs/archive/styles/foundation.before.css')),
-  );
+test('reference token delta preserves every other foundation declaration and font registration order', async () => {
+  const before = await expanded('docs/archive/styles/foundation.before.css');
+  // This reviewed fixture lists exact intentional changes, not an ignored class
+  // of properties. Any unlisted change or unexpected old value still fails.
+  const changes=JSON.parse(fs.readFileSync('tests/fixtures/reference-token-delta.json','utf8'));
+  assert.ok(changes.length > 30);
+  for(const change of changes){
+    const matches=[];
+    before.walkDecls(change.property,d=>{
+      const context=d.parent.parent;
+      const rightContext=change.media ? context.type==='atrule' && context.name==='media' && context.params===change.media : context.type==='root';
+      if(d.parent.selector===change.selector && rightContext)matches.push(d);
+    });
+    assert.equal(matches.length,1,`Exact token scope: ${change.selector} ${change.property}`);
+    assert.equal(matches[0].value,change.from);
+    matches[0].value=change.to;
+  }
+  const root=before.nodes.find(n=>n.type==='rule'&&n.selector===':root');
+  root.nodes.find(n=>n.prop==='--app-gutter').cloneAfter({prop:'--font-mono',value:'"DM Mono", "SFMono-Regular", Consolas, monospace'});
+  const registrations=[['DM Mono',400,'dm-mono-400'],['DM Mono',500,'dm-mono-500'],... [400,500,600,700,800].map(weight=>['Manrope',weight,`manrope-${weight}`])];
+  const fontSource=registrations.map(([family,weight,file])=>`@font-face { font-family: "${family}"; font-style: normal; font-weight: ${weight}; font-display: swap; src: url("/fonts/${file}.ttf") format("truetype"); }`).join('\n');
+  const fontRules=postcss.parse(await prettier.format(fontSource,{parser:'css'}));
+  before.prepend(fontRules.nodes);
+  assert.deepEqual(semantic(await expanded('app/core/foundation.css')),semantic(before));
+  for(const [, , file] of registrations){
+    const bytes=fs.readFileSync(`public/fonts/${file}.ttf`);
+    assert.equal(bytes.subarray(0,4).toString('hex'),'00010000',`${file} is a valid local TrueType font`);
+    assert.ok(bytes.length > 10000);
+  }
   const foundation = postcss.parse(fs.readFileSync('app/core/foundation.css', 'utf8'));
   assert.equal(foundation.nodes[0].name, 'import');
   assert.equal(foundation.nodes[0].params, '"./tokens.css"');

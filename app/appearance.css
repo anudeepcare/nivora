@@ -1,12 +1,12 @@
-:root[data-accent="blue"] {
-  --blue: #24272b;
-  --accent-solid: #24272b;
-  --blue-soft: #edf5c9;
-}
+/* Default Indigo matches the measured reference in both themes. */
+:root[data-accent="blue"],
 :root[data-theme="dark"][data-accent="blue"] {
-  --blue: #d6f35a;
-  --accent-solid: #52613a;
-  --blue-soft: #353d28;
+  --accent: #5367f2;
+  --accent-dark: #3b4ed2;
+  --accent-soft: #eceeff;
+  --blue: #5367f2;
+  --accent-solid: #5367f2;
+  --blue-soft: #eceeff;
 }
 /* Appearance tokens: scoped to accents and spacing, never financial meaning or PWA geometry. */
 :root[data-accent="teal"] {

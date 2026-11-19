@@ -1,6 +1,8 @@
 "use client";
+import GuardrailReview from "./GuardrailReview";
 import SearchableSelect from "./SearchableSelect";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import type { Research, Quote } from "@/lib/types";
 import { aurynDecision } from "@/lib/auryn-decision";
@@ -21,9 +23,11 @@ import s from "./ContributionCompare.module.css";
 export default function ContributionCompare({
   symbols,
   prefix = "",
+  defaultOpen = false,
 }: {
   symbols: string[];
   prefix?: string;
+  defaultOpen?: boolean;
 }) {
   const { owner } = useProduct();
   const choices = useMemo(
@@ -38,64 +42,47 @@ export default function ContributionCompare({
       ),
     [symbols],
   );
-  return <Workbench key={owner} choices={choices} prefix={prefix} />;
+  return (
+    <Workbench
+      key={owner}
+      choices={choices}
+      prefix={prefix}
+      defaultOpen={defaultOpen}
+    />
+  );
 }
-function Workbench({ choices, prefix }: { choices: string[]; prefix: string }) {
-  const [open, setOpen] = useState(false),
+function Workbench({
+  choices,
+  prefix,
+  defaultOpen,
+}: {
+  choices: string[];
+  prefix: string;
+  defaultOpen: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen),
     [selection, setSelection] = useState<string[]>([]),
     [addition, setAddition] = useState("");
+  const contentId = useId();
   const selected = selection.length ? selection : choices.slice(0, 3);
   return (
     <section className={s.root} aria-label="Compare your next contribution">
-      <header>
-        <div>
-          <span className="eyebrow">COMPANY COMPARISON</span>
-          <h2>Compare your companies</h2>
-          <p>
-            Compare business strength, AURYN Pace and portfolio fit in one view.
-          </p>
-        </div>
-        <svg className={s.heroArt} viewBox="0 0 480 200" aria-hidden="true">
-          <defs>
-            <linearGradient id="compare-glow" x1="0" y1="0" x2="1" y2="1">
-              <stop stopColor="#d6f35a" />
-              <stop offset="1" stopColor="#70c7a9" />
-            </linearGradient>
-          </defs>
-          <path
-            d="M15 150 110 70 190 110 280 25 375 80 465 15"
-            fill="none"
-            stroke="url(#compare-glow)"
-            strokeWidth="2"
-            opacity=".35"
-          />
-          <path
-            d="m280 25 95 55 90-65-90 150Z"
-            fill="url(#compare-glow)"
-            opacity=".08"
-          />
-          <path
-            d="m110 70 80 40 90-85-90 150Z"
-            fill="url(#compare-glow)"
-            opacity=".08"
-          />
-          <path
-            d="m280 25 22 22-22 22-22-22Z"
-            fill="url(#compare-glow)"
-            opacity=".7"
-          />
-        </svg>
-        <button
-          className={s.open}
-          onClick={() => setOpen(!open)}
-          aria-expanded={open}
-        >
-          {open ? "Close comparison" : "Compare companies"}{" "}
-          <span aria-hidden="true">↗</span>
-        </button>
-      </header>
+      <button
+        className={s.toggle}
+        type="button"
+        aria-controls={contentId}
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+      >
+        <span>
+          {open
+            ? "Close contribution comparison"
+            : "Compare contribution choices"}
+        </span>
+        <ChevronDown size={18} aria-hidden="true" />
+      </button>
       {open && (
-        <div className={s.content}>
+        <div className={s.content} id={contentId}>
           {choices.length ? (
             <>
               <div className={s.controls}>
@@ -240,7 +227,20 @@ function Candidate({
       ) : r && d ? (
         <>
           <p>{r.company.name}</p>
+          <GuardrailReview cashSpend={addition} />
           <dl>
+            <div>
+              <dt>Current assessment</dt>
+              <dd>{d.actionLabel}</dd>
+            </div>
+            <div>
+              <dt>Current eligible Pace</dt>
+              <dd>
+                {d.pace.eligibleLevel == null
+                  ? "Unavailable"
+                  : `P${d.pace.eligibleLevel}`}
+              </dd>
+            </div>
             <div>
               <dt>
                 Business{" "}
@@ -309,13 +309,22 @@ function Candidate({
               </div>
             )}
           </dl>
-          <p className={s.reason}>
-            {fit.atLimit
-              ? "Your chosen position threshold is reached."
-              : priceReady
-                ? d.explanation.detail
+          {(fit.atLimit || !priceReady) && (
+            <p className={s.reason}>
+              {fit.atLimit
+                ? "Your chosen position threshold is reached."
                 : "A recent USD quote is needed before considering an addition."}
-          </p>
+            </p>
+          )}
+          <details className={s.evidenceDetails}>
+            <summary>Evidence and limitations</summary>
+            <p>{d.explanation.detail}</p>
+            <p>
+              The completed monthly reading is historical. Current eligible Pace
+              and the business assessment can differ; a deeper historical zone
+              is not an instruction to add.
+            </p>
+          </details>
           {addition != null &&
             addition > 0 &&
             fit.limit != null &&
@@ -325,13 +334,15 @@ function Candidate({
                 This addition would exceed your {fit.limit}% position threshold.
               </p>
             )}
-          <small>
-            Financial period {dateLabel(d.period)} · quote{" "}
-            {dateLabel(r.quote.asOf)}
-          </small>
-          <Link href={`${prefix}/research/${encodeURIComponent(symbol)}`}>
-            Review the evidence →
-          </Link>
+          <footer className={s.footer}>
+            <small>
+              Financial period {dateLabel(d.period)} · quote{" "}
+              {dateLabel(r.quote.asOf)}
+            </small>
+            <Link href={`${prefix}/research/${encodeURIComponent(symbol)}`}>
+              Review the evidence →
+            </Link>
+          </footer>
         </>
       ) : (
         <p>Research unavailable in this preview.</p>

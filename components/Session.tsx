@@ -1,4 +1,5 @@
 "use client";
+import { settleWithDeadline } from "@/lib/request-deadline";
 import { invalidateResource } from "@/lib/resource-cache";
 import { usePathname, useRouter } from "next/navigation";
 import { authDestination, authErrorMessage } from "@/lib/auth-navigation";
@@ -16,17 +17,12 @@ import {
   useState,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { api, authClient } from "@/lib/client";
+import { api, authClient, setRememberSession } from "@/lib/client";
 import type { Research, Workspace } from "@/lib/types";
 import { Logo } from "./Ui";
+import LaunchScreen, { LaunchSequence } from "./LaunchScreen";
 import experience from "./Session.module.css";
-import {
-  ArrowRight,
-  Layers3,
-  Scale,
-  ChartNoAxesCombined,
-  Check,
-} from "lucide-react";
+import { ArrowRight, Sun, Moon, Check } from "lucide-react";
 import { readResource, resourceSnapshot } from "@/lib/resource-cache";
 import { accountCache, clearAccountCache } from "@/lib/account-cache";
 export type DemoData = {
@@ -78,8 +74,7 @@ export function ProductSession({
     let authEventSeen = false;
     try {
       const client = authClient();
-      client.auth
-        .getSession()
+      settleWithDeadline(client.auth.getSession(), 10000)
         .then(({ data, error }) => {
           if (!alive || authEventSeen) return;
           if (error) setError("Your account session could not be loaded.");
@@ -116,8 +111,7 @@ export function ProductSession({
     const restored = (event: PageTransitionEvent) => {
       if (!event.persisted) return;
       // Resume without discarding the mounted shell or replaying launch screens.
-      void authClient()
-        .auth.getSession()
+      void settleWithDeadline(authClient().auth.getSession(), 10000)
         .then(({ data, error }) => {
           if (active && !error) {
             if (!data.session) clearAccountCache();
@@ -141,29 +135,29 @@ export function ProductSession({
   }, [destination, router]);
   if (loading || destination)
     return (
-      <main className="session-state">
-        <Logo />
-        <span className="spinner" />
-        <p>Opening your workspace…</p>
-      </main>
+      <LaunchSequence>
+        <LaunchScreen />
+      </LaunchSequence>
     );
   if (!demo && !session) return <Login initialError={error} />;
   return (
-    <StoreProvider
-      key={demo ? "preview" : session!.user.id}
-      owner={session?.user.id || "preview"}
-      demo={demo}
-      displayName={
-        typeof session?.user.user_metadata?.full_name === "string"
-          ? session.user.user_metadata.full_name
-              .trim()
-              .split(/\s+/)[0]
-              .slice(0, 25)
-          : undefined
-      }
-    >
-      {children}
-    </StoreProvider>
+    <LaunchSequence>
+      <StoreProvider
+        key={demo ? "preview" : session!.user.id}
+        owner={session?.user.id || "preview"}
+        demo={demo}
+        displayName={
+          typeof session?.user.user_metadata?.full_name === "string"
+            ? session.user.user_metadata.full_name
+                .trim()
+                .split(/\s+/)[0]
+                .slice(0, 25)
+            : undefined
+        }
+      >
+        {children}
+      </StoreProvider>
+    </LaunchSequence>
   );
 }
 function StoreProvider({
@@ -216,17 +210,18 @@ function StoreProvider({
         null,
     ),
     [workspaceError, setWorkspaceError] = useState(""),
-    [theme, setThemeState] = useState<"light" | "dark">("light"),
+    [theme, setThemeState] = useState<"light" | "dark">("dark"),
     // Match the server render; the boot script already applies saved appearance.
     [themePreference, setThemePreference] = useState<
       "light" | "dark" | "system"
-    >("light"),
+    >("dark"),
     [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
     [reduceMotion, setReduceMotionState] = useState(false),
     [preferencesReady, setPreferencesReady] = useState(false);
   const alive = useRef(true);
   const reloadWorkspace = useCallback(async () => {
     if (demo) return;
+    setWorkspaceError("");
     try {
       const value = await api<Workspace>("workspace");
       if (alive.current) {
@@ -272,7 +267,7 @@ function StoreProvider({
       document
         .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
         .forEach((meta) => {
-          meta.content = value === "dark" ? "#24272b" : "#f7f8f5";
+          meta.content = value === "dark" ? "#080d18" : "#f7f7f5";
           meta.removeAttribute("media");
         });
       setThemeState(value);
@@ -457,6 +452,7 @@ function Login({ initialError }: { initialError: string }) {
     [error, setError] = useState(initialError),
     [busy, setBusy] = useState(false),
     [mode, setMode] = useState<"login" | "signup" | "reset">("login"),
+    [remember, setRemember] = useState(true),
     [notice, setNotice] = useState(""),
     [resendPending, setResendPending] = useState(false),
     [resendUntil, setResendUntil] = useState(0);
@@ -472,6 +468,12 @@ function Login({ initialError }: { initialError: string }) {
     google: boolean | null;
     x: boolean | null;
   }>({ google: null, x: null });
+  const [loginTheme, setLoginTheme] = useState<"light" | "dark">("dark");
+  useEffect(() => {
+    setLoginTheme(
+      document.documentElement.dataset.theme === "light" ? "light" : "dark",
+    );
+  }, []);
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
@@ -531,6 +533,7 @@ function Login({ initialError }: { initialError: string }) {
     setError("");
     setNotice("");
     try {
+      setRememberSession(remember);
       const { error } = await authClient().auth.signInWithOAuth({
         provider,
         options: {
@@ -552,6 +555,7 @@ function Login({ initialError }: { initialError: string }) {
     setError("");
     setNotice("");
     try {
+      if (mode !== "reset") setRememberSession(remember);
       const auth = authClient().auth;
       const result =
         mode === "login"
@@ -593,37 +597,46 @@ function Login({ initialError }: { initialError: string }) {
           <img src="/icon.svg" alt="" width="30" height="30" /> AURYN
         </a>
         <div className={experience.storyContent}>
-          <span className={experience.eyebrow}>YOUR INVESTMENT WORKSPACE</span>
-          <h2>
-            Your research.
-            <br />
-            <span>A clearer view.</span>
-          </h2>
-          <p>One place for your investment research.</p>
-          <div className={experience.brandVisual} aria-hidden="true">
-            <span className={experience.visualOrbit} />
-            <span className={experience.visualOrbit} />
-            <img src="/icon.svg" alt="" width="82" height="88" />
-            <span className={experience.visualCaption}>
-              A CONNECTED PERSPECTIVE
-            </span>
-          </div>
+          <span className={experience.eyebrow}>YOUR RESEARCH, CONTINUED</span>
+          <h2>Return to the reasons behind every position.</h2>
           <div className={experience.researchCard}>
-            <span>
-              <Layers3 size={18} /> Business
-            </span>
-            <span>
-              <Scale size={18} /> Value
-            </span>
-            <span>
-              <ChartNoAxesCombined size={18} /> Your pace
-            </span>
+            <small>YOUR DECISION WORKSPACE</small>
+            <h3>Keep the evidence in view.</h3>
+            <p>
+              Connect the business, its expectations and your accumulation
+              conditions before making a decision.
+            </p>
+            <div>
+              <span>
+                <b>Business</b>Understand the evidence
+              </span>
+              <span>
+                <b>Expectations</b>Explore the scenarios
+              </span>
+              <span>
+                <b>Pace</b>Review your conditions
+              </span>
+            </div>
           </div>
         </div>
-        <p className={experience.storyFoot}>
-          Research with perspective. Invest at your own pace.
-        </p>
       </aside>
+      <button
+        type="button"
+        className={experience.themeToggle}
+        aria-label={`Use ${loginTheme === "dark" ? "day" : "night"} theme`}
+        onClick={() => {
+          const next = loginTheme === "dark" ? "light" : "dark";
+          document.documentElement.dataset.theme = next;
+          try {
+            localStorage.setItem("auryn-product-theme", next);
+          } catch {
+            /* Optional preference persistence. */
+          }
+          setLoginTheme(next);
+        }}
+      >
+        {loginTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+      </button>
       <section className={experience.main} aria-label="Account access">
         <div className="mp-auth-mobile-brand">
           <a className="mp-brand" href="/" aria-label="Auryn home">
@@ -644,24 +657,41 @@ function Login({ initialError }: { initialError: string }) {
               {mode === "reset"
                 ? "RESET PASSWORD"
                 : mode === "signup"
-                  ? "WELCOME TO AURYN"
-                  : "YOUR WORKSPACE AWAITS"}
+                  ? "START WITH YOUR JUDGMENT"
+                  : "WELCOME BACK"}
             </span>
             <h1>
               {mode === "login"
-                ? "Welcome back."
+                ? "Sign in to Auryn"
                 : mode === "signup"
-                  ? "Start with clarity."
+                  ? "Create your workspace"
                   : "A fresh start."}
             </h1>
             <p>
               {mode === "signup"
-                ? "Create your account to start your research."
+                ? "Build a research system around the way you invest."
                 : mode === "reset"
                   ? "We’ll email a secure link to restore access to your workspace."
-                  : "Sign in to continue your research."}
+                  : "Continue your research and saved decisions."}
             </p>
           </div>
+          {mode === "login" && (
+            <div className={experience.remember}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  disabled={busy}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />{" "}
+                Remember me on this browser
+              </label>
+              <small>
+                Unchecked uses browser-session cookies. Browser restore can
+                retain them; sign out on shared devices.
+              </small>
+            </div>
+          )}
           {mode !== "reset" && (
             <>
               <div
@@ -675,7 +705,12 @@ function Login({ initialError }: { initialError: string }) {
                   disabled={busy || socialProviders.google === false}
                   onClick={() => social("google")}
                 >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       fill="currentColor"
                       d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.6h3.3c1.9-1.8 2.9-4.4 2.9-7.5ZM12 22c2.7 0 5-1 6.7-2.4l-3.3-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.2H3v2.7A10 10 0 0 0 12 22ZM6.4 13.8a6 6 0 0 1 0-3.6V7.5H3a10 10 0 0 0 0 9l3.4-2.7ZM12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0 0 12 2a10 10 0 0 0-9 5.5l3.4 2.7C7.2 7.8 9.4 6 12 6Z"
@@ -683,24 +718,10 @@ function Login({ initialError }: { initialError: string }) {
                   </svg>
                   <span>Continue with Google</span>
                 </button>
-                <button
-                  type="button"
-                  className="mp-social-button mp-social-x"
-                  aria-label="Continue with X"
-                  disabled={busy || socialProviders.x === false}
-                  onClick={() => social("x")}
-                >
-                  <span aria-hidden="true">𝕏</span>
-                  <span className="mp-social-x-label">Continue with X</span>
-                </button>
               </div>
-              {(socialProviders.google === false ||
-                socialProviders.x === false) && (
+              {socialProviders.google === false && (
                 <p className="mp-provider-note" role="status">
-                  {socialProviders.google === false &&
-                  socialProviders.x === false
-                    ? "Social sign-in is not enabled yet. Continue securely with email below."
-                    : `${socialProviders.google === false ? "Google" : "X"} sign-in is not enabled yet. Use an available option below.`}
+                  Google sign-in is not enabled yet. Continue with email below.
                 </p>
               )}
               <div className="mp-form-divider">
@@ -710,22 +731,25 @@ function Login({ initialError }: { initialError: string }) {
           )}
           <form className="mp-auth-form" onSubmit={submit} aria-busy={busy}>
             {mode === "signup" && (
-              <div className="mp-form-field">
-                <label htmlFor="auryn-signup-name">
-                  Full name{" "}
-                  <span className="mp-field-optional">(optional)</span>
-                </label>
-                <input
-                  id="auryn-signup-name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="Your name"
-                  maxLength={100}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
+              <details className={experience.secondaryOptions}>
+                <summary>Add your name (optional)</summary>
+                <div className="mp-form-field">
+                  <label htmlFor="auryn-signup-name">
+                    Full name{" "}
+                    <span className="mp-field-optional">(optional)</span>
+                  </label>
+                  <input
+                    id="auryn-signup-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    maxLength={100}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+              </details>
             )}
             <div className="mp-form-field">
               <label htmlFor="auryn-signin-email">Email address</label>
@@ -793,6 +817,8 @@ function Login({ initialError }: { initialError: string }) {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     <svg
+                      width="20"
+                      height="20"
                       className="mp-icon"
                       viewBox="0 0 24 24"
                       fill="none"
@@ -845,7 +871,7 @@ function Login({ initialError }: { initialError: string }) {
                 : mode === "login"
                   ? "Sign in"
                   : mode === "signup"
-                    ? "Create account"
+                    ? "Create workspace"
                     : "Send reset link"}
               <span aria-hidden="true">→</span>
             </button>

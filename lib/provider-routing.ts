@@ -3,7 +3,7 @@ export function preferredMarketSources(
   dataset: "quote" | "intraday" | "daily",
   configured: { twelve: boolean; eodhd: boolean },
 ): MarketSource[] {
-  const order: MarketSource[] = ["eodhd", "twelve"];
+  const order: MarketSource[] = ["eodhd"];
   return order.filter((p) => configured[p]);
 }
 /** Missing coverage is definitive only if every attempted source said 404.

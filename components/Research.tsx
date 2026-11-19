@@ -1,4 +1,9 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
+import { researchLenses, lensForSection } from "@/lib/reference-navigation";
+import cockpit from "./ReferenceCockpit.module.css";
+import ReferenceAtlas from "./ReferenceAtlas";
+import ResearchWorkspace from "./ResearchWorkspace";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import { customerText } from "@/lib/customer-language";
 import { pacePeriods, PACE_LEVELS } from "@/lib/pace-presentation";
@@ -23,28 +28,49 @@ import {
   subscribeQuotes,
 } from "@/lib/shared-quotes";
 import { retainResearchQuote } from "@/lib/research-quote";
-const ResearchReceipt = dynamic(() => import("./ResearchReceipt"));
+// Only the active lens downloads its evidence UI; no speculative provider requests.
+const SentiSensePanels = dynamic(() => import("./SentiSensePanels"), {
+  loading: () => <p role="status">Opening evidence…</p>,
+});
+const EventsLens = dynamic(
+  () => import("./DirectResearchLenses").then((module) => module.EventsLens),
+  {
+    loading: () => <p role="status">Opening events…</p>,
+  },
+);
+const IndicatorsLens = dynamic(
+  () =>
+    import("./DirectResearchLenses").then((module) => module.IndicatorsLens),
+  {
+    loading: () => <p role="status">Opening indicators…</p>,
+  },
+);
 const ValueStudio = dynamic(() => import("./ValueStudio"), {
   loading: () => <p role="status">Opening valuation…</p>,
 });
 const OptionsDesk = dynamic(() => import("./OptionsDesk"), {
   loading: () => <p role="status">Opening options…</p>,
 });
-const AdvancedResearch = dynamic(() => import("./AdvancedResearch"), {
-  loading: () => (
-    <p role="status" aria-busy="true">
-      Loading advanced research…
-    </p>
-  ),
-});
 
-import FinancingContext from "./FinancingContext";
-import BusinessHistory from "./BusinessHistory";
+const FinancingContext = dynamic(() => import("./FinancingContext"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const BusinessHistory = dynamic(() => import("./BusinessHistory"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import { headerMarketContext } from "@/lib/business-history";
-import BusinessMap from "./BusinessMap";
-import TimingContext from "./TimingContext";
-import DecisionWorkspace from "./DecisionWorkspace";
-import DecisionWatch from "./DecisionWatch";
+const BusinessMap = dynamic(() => import("./BusinessMap"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const TimingContext = dynamic(() => import("./TimingContext"));
+const DecisionWorkspace = dynamic(() => import("./DecisionWorkspace"));
+const DecisionWatch = dynamic(() => import("./DecisionWatch"));
+const ResearchNotes = dynamic(() => import("./ResearchNotes"), {
+  loading: () => <p role="status">Opening saved research…</p>,
+});
+const CompanyBrief = dynamic(() => import("./CompanyBrief"), {
+  loading: () => <p role="status">Opening export tools…</p>,
+});
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -74,26 +100,34 @@ import { amount, percent, dateLabel, quoteTime } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
 import { SecurityLogo, Help, Notice, Empty, DataStamp } from "./Ui";
 import PriceStudyChart from "./PriceStudyChart";
-import Financials from "./FinancialPicture";
-import { TechnicalPicture, ThesisPicture } from "./ResearchDetails";
+const Financials = dynamic(() => import("./FinancialPicture"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const TechnicalPicture = dynamic(() =>
+  import("./ResearchDetails").then((module) => module.TechnicalPicture),
+);
+const OwnershipPicture = dynamic(() => import("./OwnershipPicture"));
+const Analyst = dynamic(() => import("./Analyst"));
 import { groupHistory } from "@/lib/chart-period";
-import EarningsReview from "./EarningsReview";
-import ResearchNotes from "./ResearchNotes";
-import CompanyBrief from "./CompanyBrief";
-import DcaResearch from "./DcaResearch";
-import DecisionOverview from "./IntegratedResearch";
+const DcaResearch = dynamic(() => import("./DcaResearch"), {
+  loading: () => <p role="status">Loading…</p>,
+});
 import experience from "./IntegratedExperience.module.css";
 import tabVisuals from "./ResearchTabVisuals.module.css";
+import deskLayout from "./ResearchDeskLayout.module.css";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
 import PaceHelp from "./PaceHelp";
 import { paceCode } from "@/lib/pace-presentation";
-import EarningsWorkspace from "./EarningsWorkspace";
+
 import DecisionBrief from "./DecisionBrief";
-import TargetsEstimates from "./TargetsEstimates";
-import AnalystRatings from "./AnalystRatings";
-import CompanyUpdates from "./CompanyUpdates";
-import CongressDisclosures from "./CongressDisclosures";
+const TargetsEstimates = dynamic(() => import("./TargetsEstimates"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+const AnalystRatings = dynamic(() => import("./AnalystRatings"), {
+  loading: () => <p role="status">Loading…</p>,
+});
+
 import OverviewContext from "./OverviewContext";
 const tabs = [
   "Snapshot",
@@ -105,6 +139,7 @@ const tabs = [
   "News",
   "Advanced",
   "Options",
+  "Pace",
 ] as const;
 const ranges = [
   "1D",
@@ -118,7 +153,7 @@ const ranges = [
   "ALL",
 ] as const;
 const tabPresentation = {
-  Snapshot: { label: "Overview", icon: LayoutDashboard },
+  Snapshot: { label: "Decision atlas", icon: LayoutDashboard },
   Financials: { label: "Business", icon: Building2 },
   Valuation: { label: "Valuation", icon: Scale },
   Technicals: { label: "Technicals", icon: ChartCandlestick },
@@ -126,12 +161,24 @@ const tabPresentation = {
   Options: { label: "Options", icon: Layers },
   Thesis: { label: "Case & ownership", icon: BriefcaseBusiness },
   News: { label: "News & earnings", icon: Newspaper },
-  Advanced: { label: "Advanced", icon: SlidersHorizontal },
+  Advanced: { label: "Indicators & tools", icon: SlidersHorizontal },
+  Pace: { label: "Pace", icon: ChartCandlestick },
 };
+function ResearchTabIcon({
+  section,
+}: {
+  section: keyof typeof tabPresentation;
+}) {
+  const Icon = tabPresentation[section].icon;
+  return <Icon size={16} aria-hidden="true" />;
+}
+
 export default function Research({ symbol }: { symbol: string }) {
   const { access } = useAccess();
-  const [receiptOpen, setReceiptOpen] = useState(false);
   const workspacePreferences = useWorkspacePreferences();
+  const technicalsHidden =
+    workspacePreferences.preferences.hiddenSignals?.includes("technicals") ??
+    false;
   const rangeTouched = useRef(false);
   const { preferences } = useResearchPreferences();
   const requestedTab = useSearchParams().get("tab");
@@ -153,7 +200,7 @@ export default function Research({ symbol }: { symbol: string }) {
   const latestQuote = useResource<
     Record<string, { company: Company; quote: Quote }>
   >(
-    `quotes?symbols=${encodeURIComponent(symbol)}`,
+    baseResearch ? `quotes?symbols=${encodeURIComponent(symbol)}` : null,
     demo
       ? ({
           [symbol]: {
@@ -167,10 +214,10 @@ export default function Research({ symbol }: { symbol: string }) {
   const refreshQuote = useRef(latestQuote.refresh);
   refreshQuote.current = latestQuote.refresh;
   useEffect(() => {
-    if (demo) return;
+    if (demo || !baseResearch) return;
     return startQuotePolling(() => refreshQuote.current());
-  }, [symbol, demo]);
-  const live = useLivePrices([symbol], !!demo);
+  }, [symbol, demo, baseResearch]);
+  const live = useLivePrices([symbol], !!demo || !baseResearch);
   const retainedQuote = useRef<{ symbol: string; quote: Quote | undefined }>({
     symbol,
     quote: undefined,
@@ -264,8 +311,40 @@ export default function Research({ symbol }: { symbol: string }) {
     if (next === "Snapshot" || next === "Technicals")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
   }, [requestedTab]);
-  const [workbenchTarget, setWorkbenchTarget] = useState("risk");
   const researchNavigation = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const revealSelection = () => {
+      const navigation = researchNavigation.current;
+      const selected = navigation?.querySelector<HTMLElement>(
+        '[aria-current="page"]',
+      );
+      if (!navigation || !selected) return;
+      const frame = navigation.getBoundingClientRect();
+      const item = selected.getBoundingClientRect();
+      if (item.left < frame.left || item.right > frame.right)
+        navigation.scrollLeft +=
+          item.left - frame.left - (frame.width - item.width) / 2;
+    };
+    let mounted = true;
+    const revealWhenReady = () => {
+      if (mounted) revealSelection();
+    };
+    revealSelection();
+    // Fonts and deferred route content can settle after the initial layout pass.
+    const observer = new ResizeObserver(revealWhenReady);
+    if (researchNavigation.current) {
+      observer.observe(researchNavigation.current);
+      for (const child of researchNavigation.current.children)
+        observer.observe(child);
+    }
+    void document.fonts.ready.then(revealWhenReady);
+    window.addEventListener("resize", revealWhenReady);
+    return () => {
+      mounted = false;
+      observer.disconnect();
+      window.removeEventListener("resize", revealWhenReady);
+    };
+  }, [tab, r?.company.symbol]);
   const switchTab = (next: (typeof tabs)[number]) => {
     if (next === "Technicals" || next === "Snapshot")
       setRetainedCharts((old) => (old.includes(next) ? old : [...old, next]));
@@ -276,19 +355,22 @@ export default function Research({ symbol }: { symbol: string }) {
     window.history.replaceState(null, "", url);
     requestAnimationFrame(() => {
       const navigation = researchNavigation.current;
-      const top = navigation?.getBoundingClientRect().top;
-      const headerHeight =
-        document.querySelector("[data-shell] > header")?.getBoundingClientRect()
-          .height ?? 72;
-      if (
-        navigation &&
-        top != null &&
-        (top < headerHeight || top > window.innerHeight - 100)
-      )
+      const content = document.getElementById("content");
+      if (!navigation || !content) return;
+      const top = navigation.getBoundingClientRect().top;
+      const bounds = content.getBoundingClientRect();
+      if (content.dataset.workspaceScroll === "true") {
+        if (top < bounds.top || top > bounds.bottom - 100)
+          content.scrollTo({
+            top: content.scrollTop + top - bounds.top,
+            behavior: "instant",
+          });
+      } else if (top < 72 || top > window.innerHeight - 100) {
         window.scrollTo({
-          top: window.scrollY + top - headerHeight - 8,
+          top: window.scrollY + top - 80,
           behavior: "instant",
         });
+      }
     });
   };
   const intraday = range === "1D" || range === "1W";
@@ -388,15 +470,42 @@ export default function Research({ symbol }: { symbol: string }) {
     saved = workspace?.watchlist.some((x) => x.symbol === symbol),
     visible = crypto
       ? tabs.filter((x) =>
-          ["Snapshot", "Technicals", "Thesis", "News", "Advanced"].includes(x),
+          [
+            "Snapshot",
+            "Technicals",
+            "Thesis",
+            "News",
+            "Advanced",
+            "Pace",
+          ].includes(x),
         )
       : tabs;
-  const coreSections = visible.filter(
-    (key) => key !== "Options" && key !== "Advanced",
+  const activeLens = lensForSection(tab)!;
+  const availableLenses = researchLenses.filter((lens) =>
+    lens.sections.some((section) => visible.includes(section)),
   );
-  const labSections = visible.filter(
-    (key) => key === "Options" || key === "Advanced",
+  const supportingSections = activeLens.sections.filter((section) =>
+    visible.includes(section),
   );
+  const intervalControls =
+    tab === "Technicals" ? (
+      <div className="segments" aria-label="Chart interval">
+        {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
+          <button
+            key={v}
+            className={frequency === v ? "active" : ""}
+            aria-pressed={frequency === v}
+            onClick={() => {
+              setFrequency(v);
+              rangeTouched.current = true;
+              setRange(v === "Monthly" ? "5Y" : "1Y");
+            }}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
+    ) : undefined;
   const chart = (
     <section className="plot-section">
       <header className="row between chart-head">
@@ -422,6 +531,7 @@ export default function Research({ symbol }: { symbol: string }) {
       {bars.length ? (
         <PriceStudyChart
           research={r}
+          controls={intervalControls}
           onOptions={undefined}
           bars={chartBars}
           range={frequency === "Daily" ? range : `${range} ${frequency}`}
@@ -429,11 +539,14 @@ export default function Research({ symbol }: { symbol: string }) {
           contrast={tab === "Snapshot"}
         />
       ) : (
-        <div className="chart-empty" role="status">
-          {short.loading
-            ? "Loading this period…"
-            : short.error || "No observations in this period."}
-        </div>
+        <>
+          {intervalControls}
+          <div className="chart-empty" role="status">
+            {short.loading
+              ? "Loading this period…"
+              : short.error || "No observations in this period."}
+          </div>
+        </>
       )}
       <div className="chart-note">
         <DataStamp
@@ -470,21 +583,57 @@ export default function Research({ symbol }: { symbol: string }) {
     now: demo ? Date.parse(r.retrievedAt) : Date.now(),
   });
   const headerContext = headerMarketContext(r);
+  const evidenceToolbar =
+    supportingSections.length > 1 ? (
+      <nav
+        className={`${cockpit.supporting} auryn-view-tabs`}
+        data-selection-navigation
+        onKeyDown={(event) => navigateSelection(event)}
+        aria-label={`${activeLens.label} evidence`}
+      >
+        {supportingSections.map((section) => (
+          <button
+            key={section}
+            aria-current={tab === section ? "page" : undefined}
+            onClick={() => switchTab(section)}
+          >
+            <ResearchTabIcon section={section} />
+            {tabPresentation[section].label}
+          </button>
+        ))}
+      </nav>
+    ) : null;
   return (
     <article
-      className="research-page approved-research-page"
+      className={`research-page approved-research-page ${cockpit.root}`}
       data-research-mode={preferences.detail}
+      data-active-lens={activeLens.sections[0]}
     >
       <header className={experience.stockHeader}>
         <div className={experience.stockIdentity}>
           <SecurityLogo symbol={symbol} size={52} />
           <div>
             <h1>{r.company.name}</h1>
-            <p className="muted small">
-              {symbol} · {r.company.exchange || "Listing"} · {r.quote.currency}
-            </p>
-            <div className="security-context">
+            <div className={cockpit.identityMeta}>
+              <span>
+                {symbol} · {r.company.exchange || "Listing"} ·{" "}
+                {r.quote.currency}
+              </span>
               {headerContext.sector && <span>{headerContext.sector}</span>}
+              <Help label="Company facts and source dates">
+                <StockFacts research={r} />
+                {r.issues.map((issue) => (
+                  <p key={issue}>{customerText(issue)}</p>
+                ))}
+                <button
+                  className="button"
+                  disabled={resource.loading}
+                  onClick={resource.refresh}
+                >
+                  <RefreshCw size={17} aria-hidden="true" />
+                  Refresh research data
+                </button>
+              </Help>
             </div>
           </div>
         </div>
@@ -513,10 +662,23 @@ export default function Research({ symbol }: { symbol: string }) {
                     ? `This change compares completed daily closes${headerMovement.changeFrom ? ` against ${dateLabel(headerMovement.changeFrom)}` : ""}. It does not describe a live trading-session move.`
                     : "This change follows the quote source’s session comparison. The quote’s session and timestamp appear below the price; extended-hours and regular-session comparisons can differ."}
                 </p>
+                <p>
+                  Displayed price source:{" "}
+                  {(headerReference?.basis === "settled-close"
+                    ? r.historySource
+                    : r.quote.source) || "not supplied"}
+                  .
+                  {headerReference?.basis === "settled-close" &&
+                    " This is a completed daily close; its date is not an intraday timestamp."}
+                </p>
               </Help>
             </span>
             <DataStamp
-              source={r.quote.source}
+              source={
+                headerReference?.basis === "settled-close"
+                  ? r.historySource
+                  : r.quote.source
+              }
               asOf={headerReference?.asOf ?? r.quote.asOf}
               status={
                 headerReference?.basis === "settled-close"
@@ -538,112 +700,40 @@ export default function Research({ symbol }: { symbol: string }) {
           </button>
         </div>
       </header>
-      <StockFacts research={r} />
-      {receiptOpen && (
-        <ResearchReceipt research={r} onClose={() => setReceiptOpen(false)} />
-      )}
 
       {notice && <Notice error>{notice}</Notice>}
       {resource.error && <Notice error>{resource.error}</Notice>}
-      {r.issues.length > 0 && (
-        <div className="coverage-note">
-          <span>
-            Source coverage{" "}
-            <Help label="Research data status" trigger="Details">
-              {r.issues.map((issue) => (
-                <p key={issue}>{customerText(issue)}</p>
-              ))}
-            </Help>
-          </span>
-          <button
-            className="icon-button"
-            aria-label="Retry data sources"
-            disabled={resource.loading}
-            onClick={resource.refresh}
-          >
-            <RefreshCw size={17} />
-          </button>
-        </div>
-      )}
-      <label className={experience.researchPicker}>
-        Research section
-        <select
-          value={tab}
-          onChange={(e) => switchTab(e.target.value as (typeof tabs)[number])}
-        >
-          {coreSections.map((key) => (
-            <option key={key} value={key}>
-              {tabPresentation[key].label}
-            </option>
-          ))}
-          {labSections.length > 0 && (
-            <option
-              value={
-                labSections.includes(tab)
-                  ? tab
-                  : labSections.includes("Options")
-                    ? "Options"
-                    : labSections[0]
-              }
-            >
-              Labs
-            </option>
-          )}
-        </select>
-      </label>
       <nav
-        className={experience.researchNav}
+        className={cockpit.lenses}
         aria-label="Research sections"
         ref={researchNavigation}
       >
-        {coreSections.map((key) => {
-          const Icon = tabPresentation[key].icon;
-          return (
-            <button
-              key={key}
-              data-section={key}
-              aria-current={tab === key ? "page" : undefined}
-              aria-controls={
-                key === "Snapshot" ? "research-overview" : "research-content"
-              }
-              onClick={() => switchTab(key)}
-            >
-              <Icon size={16} />
-              {tabPresentation[key].label}
-            </button>
-          );
-        })}
-        {labSections.length > 0 && (
+        {availableLenses.map((lens) => (
           <button
-            data-section="Labs"
-            aria-current={labSections.includes(tab) ? "page" : undefined}
-            aria-controls="research-content"
-            onClick={() =>
-              switchTab(
-                labSections.includes(tab)
-                  ? tab
-                  : labSections.includes("Options")
-                    ? "Options"
-                    : labSections[0],
-              )
+            key={lens.label}
+            data-section={lens.sections[0]}
+            aria-current={activeLens.label === lens.label ? "page" : undefined}
+            aria-controls={
+              lens.sections[0] === "Snapshot"
+                ? "research-overview"
+                : "research-content"
             }
+            onClick={() => switchTab(lens.sections[0])}
           >
-            <Layers size={16} /> Labs
+            <ResearchTabIcon section={lens.sections[0]} />
+            {lens.label}
           </button>
-        )}
+        ))}
       </nav>
+      {evidenceToolbar}
       <div id="research-overview" hidden={tab !== "Snapshot"}>
         {retainedCharts.includes("Snapshot") && (
           <FeatureGate
             feature="overview"
             fallback={<FreeSnapshot research={r} />}
           >
-            <DecisionOverview
-              key={r.company.symbol}
-              research={r}
-              onTab={switchTab}
-              chart={chart}
-            />
+            <ReferenceAtlas research={r} onTab={switchTab} />
+            <div className={cockpit.primaryChart}>{chart}</div>
           </FeatureGate>
         )}
       </div>
@@ -653,20 +743,11 @@ export default function Research({ symbol }: { symbol: string }) {
         hidden={tab === "Snapshot"}
         aria-label={tabPresentation[tab].label}
       >
-        <div id="research-content" className="approved-evidence-body au-stack">
-          {labSections.includes(tab) && (
-            <nav className={experience.labViews} aria-label="Labs views">
-              {labSections.map((key) => (
-                <button
-                  key={key}
-                  aria-current={tab === key ? "page" : undefined}
-                  onClick={() => switchTab(key)}
-                >
-                  {key === "Advanced" ? "Research tools" : "Options"}
-                </button>
-              ))}
-            </nav>
-          )}
+        <div
+          id="research-content"
+          className={`approved-evidence-body au-stack ${deskLayout.content}`}
+          data-desk={tab}
+        >
           <FeatureGate
             feature={
               (
@@ -680,6 +761,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   News: "news",
                   Advanced: "advanced",
                   Options: "options",
+                  Pace: "technicals",
                 } as const
               )[tab]
             }
@@ -688,149 +770,220 @@ export default function Research({ symbol }: { symbol: string }) {
             }
           >
             {tab === "News" && (
-              <>
-                <CompanyUpdates research={r} preview={!!demo} />
-                <EarningsReview research={r} />
-                <details className="research-reference">
-                  <summary>Earnings history &amp; estimates</summary>
-                  <EarningsWorkspace research={r} />
-                </details>
-              </>
-            )}
-            {tab === "Advanced" && (
-              <>
-                <CongressDisclosures
-                  symbol={r.company.symbol}
-                  preview={!!demo}
-                />
-                <AdvancedResearch
-                  key={r.company.symbol}
-                  research={r}
-                  initialSection={workbenchTarget}
-                />
-              </>
-            )}
-            {tab === "Options" && (
-              <OptionsDesk
+              <EventsLens
                 key={r.company.symbol}
                 research={r}
                 preview={!!demo}
               />
             )}
-            {tab === "Analysts" && (
-              <>
-                <TargetsEstimates research={r} />
-                <AnalystRatings research={r} hideConsensus />
-              </>
-            )}
-            {tab === "Financials" && (
-              <>
-                <Financials research={r} />
-                <BusinessHistory research={r} />
-                <FinancingContext research={r} />
-                <button
-                  className="text-link"
-                  onClick={() => setReceiptOpen(true)}
-                >
-                  Metric formulas &amp; sources
-                </button>
-              </>
-            )}
-            {tab === "Valuation" && (
-              <ValueStudio
+            {tab === "Advanced" && (
+              <IndicatorsLens
+                key={r.company.symbol}
                 research={r}
-                onWorkbench={() => {
-                  setWorkbenchTarget("expectations");
-                  switchTab("Advanced");
-                }}
+                preview={!!demo}
               />
             )}
+            {tab === "Options" && (
+              <section aria-label="Company positioning">
+                <ResearchWorkspace
+                  key={`${r.company.symbol}-options-tools`}
+                  label="Options research"
+                  views={[
+                    {
+                      title: "Positioning & history",
+                      content: (
+                        <SentiSensePanels
+                          symbol={r.company.symbol}
+                          preview={!!demo}
+                          group="options"
+                        />
+                      ),
+                    },
+                    {
+                      title: "Chain, gamma & practice",
+                      content: (
+                        <OptionsDesk
+                          key={r.company.symbol}
+                          research={r}
+                          preview={!!demo}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </section>
+            )}
+            {tab === "Analysts" && (
+              <ResearchWorkspace
+                key={`${r.company.symbol}-analysts`}
+                label="Analyst evidence"
+                views={[
+                  {
+                    title: "Consensus & revisions",
+                    content: (
+                      <SentiSensePanels
+                        group="analysts"
+                        symbol={r.company.symbol}
+                        preview={!!demo}
+                      />
+                    ),
+                  },
+                  {
+                    title: "Estimates & model evidence",
+                    content: (
+                      <section aria-label="Separate estimates and model evidence">
+                        <p className="small muted">
+                          Separate source coverage and reporting periods. These
+                          figures are not merged with the consensus feed.
+                        </p>
+                        <TargetsEstimates
+                          research={r}
+                          ratings={
+                            <AnalystRatings research={r} hideConsensus />
+                          }
+                        />
+                      </section>
+                    ),
+                  },
+                ]}
+              />
+            )}
+            {tab === "Financials" && (
+              <section aria-label="Business evidence">
+                <Financials research={r} />
+                <ResearchWorkspace
+                  key={`${r.company.symbol}-business-support`}
+                  label="Additional business evidence"
+                  views={[
+                    {
+                      title: "Operating history",
+                      content: <BusinessHistory research={r} />,
+                    },
+                    {
+                      title: "Funding & dilution",
+                      content: <FinancingContext research={r} />,
+                    },
+                  ]}
+                />
+              </section>
+            )}
+            {tab === "Valuation" && (
+              <ValueStudio research={r} preview={!!demo} />
+            )}
+            {tab === "Technicals" && technicalsHidden && (
+              <section className={cockpit.preferenceNotice} role="status">
+                <h2>Technical indicators are hidden</h2>
+                <p>
+                  Your research preference hides this evidence. It does not
+                  change your access or the separate Pace calculation.
+                </p>
+                <button
+                  className="button"
+                  disabled={
+                    workspacePreferences.saving || !workspacePreferences.ready
+                  }
+                  onClick={() =>
+                    void workspacePreferences.save({
+                      hiddenSignals:
+                        workspacePreferences.preferences.hiddenSignals.filter(
+                          (signal) => signal !== "technicals",
+                        ),
+                    })
+                  }
+                >
+                  Show technical indicators
+                </button>
+                {workspacePreferences.error && (
+                  <p role="alert">{workspacePreferences.error}</p>
+                )}
+                <a href="/settings">
+                  Restore technical indicators in Settings →
+                </a>
+              </section>
+            )}
             {access.features.technicals &&
-              retainedCharts.includes("Technicals") && (
+              !technicalsHidden &&
+              (tab === "Technicals" ||
+                retainedCharts.includes("Technicals")) && (
                 <section
                   data-retained-panel="Technicals"
                   hidden={tab !== "Technicals"}
                   className="au-stack"
                 >
-                  <header className="section-head">
-                    <div>
-                      <h2>Technicals</h2>
-                      <p>
-                        Trend, momentum, participation and risk. Studies use
-                        completed daily prices.
-                      </p>
-                    </div>
-                    <div className="segments" aria-label="Chart interval">
-                      {(["Daily", "Weekly", "Monthly"] as const).map((v) => (
-                        <button
-                          key={v}
-                          className={frequency === v ? "active" : ""}
-                          aria-pressed={frequency === v}
-                          onClick={() => {
-                            setFrequency(v);
-                            rangeTouched.current = true;
-                            setRange(v === "Monthly" ? "5Y" : "1Y");
-                          }}
-                        >
-                          {v}
-                        </button>
-                      ))}
-                    </div>
-                  </header>
-                  {p && (
-                    <section
-                      className="technical-pace"
-                      aria-label="AURYN Pace price evidence"
-                    >
-                      <div>
-                        <span className="eyebrow">AURYN PACE</span>
-                        <strong>Your price-based accumulation reading</strong>
-                        <PaceHelp trigger="What does P mean?" />
-                      </div>
-                      <PaceReadings
-                        readings={pacePeriods({
-                          ...p.dca.confirmed,
-                          forming: p.dca.forming,
-                        })}
-                      />
-                    </section>
-                  )}
-                  <div className="technical-canvas-layout">
-                    <div className="technical-chart-column">
-                      {chart}
-                      <TimingContext research={r} />
-                    </div>
-                    <TechnicalPicture research={r} dca={null} />
-                  </div>
-                  <details className="value-personal-model">
-                    <summary>
-                      Monthly price zones and historical policy evidence
-                    </summary>
-                    <DcaResearch research={r} />
-                  </details>
+                  <TechnicalPicture
+                    research={r}
+                    dca={null}
+                    chart={
+                      <>
+                        {chart}
+                        <TimingContext research={r} />
+                      </>
+                    }
+                  />
                 </section>
               )}
+            {tab === "Pace" && (
+              <section
+                className="au-stack"
+                aria-label="Pace monthly price zones and historical evidence"
+              >
+                <DcaResearch research={r} />
+              </section>
+            )}
             {tab === "Thesis" && (
               <>
-                <BusinessHistory research={r} />
-                <ThesisPicture research={r} />
-                <BusinessMap key={r.company.symbol} research={r} />
-                <details className="edge-method">
-                  <summary>How the business is assessed</summary>
-                  <DecisionWorkspace
-                    research={r}
-                    onTab={switchTab}
-                    part="detail"
+                <section aria-label="Institutional and insider evidence">
+                  <SentiSensePanels
+                    symbol={r.company.symbol}
+                    preview={!!demo}
+                    group="ownership"
+                    supplementalOwnership={r}
                   />
-                  <DecisionWatch key={r.company.symbol} research={r} />
-                </details>
-                <details className="research-reference">
-                  <summary>Notes &amp; saved research</summary>
-                  <FeatureGate feature="advanced">
-                    <ResearchNotes research={r} />
-                  </FeatureGate>
-                  <CompanyBrief research={r} />
-                </details>
+                  {demo && <OwnershipPicture research={r} />}
+                </section>
+                <ResearchWorkspace
+                  key={`${r.company.symbol}-ownership-context`}
+                  label="Additional ownership evidence"
+                  views={[
+                    {
+                      title: "Business context & assistant",
+                      content: (
+                        <>
+                          <BusinessMap
+                            key={r.company.symbol}
+                            research={r}
+                            preview={!!demo}
+                          />
+                          <Analyst research={r} compact />
+                        </>
+                      ),
+                    },
+                    {
+                      title: "Evidence & alerts",
+                      content: (
+                        <>
+                          <DecisionWorkspace
+                            research={r}
+                            onTab={switchTab}
+                            part="detail"
+                          />
+                          <DecisionWatch key={r.company.symbol} research={r} />
+                        </>
+                      ),
+                    },
+                    {
+                      title: "Notes & export",
+                      content: (
+                        <>
+                          <FeatureGate feature="advanced">
+                            <ResearchNotes research={r} />
+                          </FeatureGate>
+                          <CompanyBrief research={r} />
+                        </>
+                      ),
+                    },
+                  ]}
+                />
               </>
             )}
           </FeatureGate>
@@ -970,7 +1123,7 @@ export function DcaCard({
       aria-label="Monthly accumulation signal"
     >
       <div className="au-between au-dca-top">
-        <span className="au-eyebrow">Monthly DCA · price only</span>
+        <span className="au-eyebrow">Monthly Pace · price only</span>
         <Help label="AURYN Pace zones">
           P1 means Watch/Hold; P2 starts small, P3 builds gradually and P4 marks
           a deep price zone. Business checks must qualify before buying. These

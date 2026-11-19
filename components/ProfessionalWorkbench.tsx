@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import type { Research, Candle } from "@/lib/types";
 import { tradePlan, advancedStudies } from "@/lib/advanced-research";
 import { planStress } from "@/lib/professional-studies";
@@ -9,6 +10,10 @@ import { conditionStudy } from "@/lib/condition-study";
 import { useProduct, useResource } from "./Session";
 import { amount, percent, dateLabel } from "@/lib/format";
 import ExpectationMap from "./ExpectationMap";
+import styles from "./ProfessionalWorkbench.module.css";
+const FundedScenarios = dynamic(() => import("./FundedScenarios"), {
+  loading: () => <p role="status">Opening funding assumptions…</p>,
+});
 
 export function PositionWorkbench({ research: r }: { research: Research }) {
   const [capital, setCapital] = useState(""),
@@ -188,7 +193,42 @@ export function PositionWorkbench({ research: r }: { research: Research }) {
 }
 
 export function ExpectationWorkbench({ research: r }: { research: Research }) {
-  return <ExpectationMap research={r} />;
+  const [mode, setMode] = useState<"operating" | "funded">("operating");
+  return (
+    <div>
+      <div
+        className={styles.modelSelector}
+        role="group"
+        aria-label="Scenario model"
+      >
+        <button
+          type="button"
+          aria-pressed={mode === "operating"}
+          onClick={() => setMode("operating")}
+        >
+          Operating expectations
+        </button>
+        <button
+          type="button"
+          aria-pressed={mode === "funded"}
+          onClick={() => setMode("funded")}
+        >
+          Funding & dilution cases
+        </button>
+      </div>
+      {mode === "operating" ? (
+        <ExpectationMap
+          key={`${r.company.symbol}:${r.quote.currency}`}
+          research={r}
+        />
+      ) : (
+        <FundedScenarios
+          key={`${r.company.symbol}:${r.quote.currency}`}
+          research={r}
+        />
+      )}
+    </div>
+  );
 }
 
 export function ContextWorkbench({ research: r }: { research: Research }) {
@@ -225,7 +265,7 @@ export function ContextWorkbench({ research: r }: { research: Research }) {
     [r, series.data],
   );
   return (
-    <section className="context-workbench">
+    <section className={`context-workbench ${styles.marketContext}`}>
       <header className="desk-heading">
         <div>
           <span className="eyebrow">

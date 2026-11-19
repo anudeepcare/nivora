@@ -21,7 +21,11 @@ export default function TechnicalLevelMap({
   const valid = levels
     .filter(
       (l): l is Level & { price: number } =>
-        l.price !== null && Number.isFinite(l.price) && l.price > 0,
+        l.price !== null &&
+        Number.isFinite(l.price) &&
+        l.price > 0 &&
+        spot !== null &&
+        Number.isFinite((l.price / spot - 1) * 100),
     )
     .sort((a, b) => b.price - a.price);
   if (!spot || !Number.isFinite(spot) || spot <= 0 || !valid.length)
@@ -55,6 +59,11 @@ export default function TechnicalLevelMap({
               <span>
                 <strong>{l.name}</strong>
                 <small>{l.period}</small>
+                <small>
+                  {l.asOf
+                    ? `Through ${dateLabel(l.asOf)}`
+                    : "Date not supplied"}
+                </small>
               </span>
               <span className={s.track} aria-hidden="true">
                 <i style={{ left: `${50 + (distance / max) * 45}%` }} />
@@ -62,8 +71,9 @@ export default function TechnicalLevelMap({
               <span>
                 <b>{amount(l.price, currency)}</b>
                 <small>
-                  {percent(Math.abs(distance))}{" "}
-                  {distance >= 0 ? "above" : "below"} price
+                  {distance === 0
+                    ? "At reference price"
+                    : `${percent(Math.abs(distance))} ${distance > 0 ? "above" : "below"} price`}
                 </small>
               </span>
             </button>

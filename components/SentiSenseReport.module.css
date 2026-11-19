@@ -1,0 +1,34 @@
+.blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1rem;
+}
+.paragraph {
+  grid-column: 1 / -1;
+  margin: 0 0 0.5rem;
+  max-width: 90ch;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.metric {
+  margin: 0;
+  padding: 1rem;
+  background: var(--surface-alt, rgba(127, 127, 127, 0.06));
+  border-radius: 0.75rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.metric dt {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.metric dd {
+  margin: 0.45rem 0 0;
+  line-height: 1.5;
+}
+.metric .value {
+  font-size: 1.4rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}

@@ -81,7 +81,10 @@ export default function GrowCompanyEvents({ symbol }: { symbol: string }) {
     currency ? amount(n, currency) : n == null ? "—" : n.toFixed(2);
   return (
     <section className={s.workspace}>
-      <div className={s.filters} aria-label="Company event datasets">
+      <div
+        className={`${s.filters} auryn-detail-tabs`}
+        aria-label="Company event datasets"
+      >
         {(
           [
             ["earnings", "Earnings"],
@@ -113,6 +116,13 @@ export default function GrowCompanyEvents({ symbol }: { symbol: string }) {
         <>
           {dataset === "earnings" && (
             <>
+              <p className={s.caption}>
+                Events earnings feed: {d.source} · retrieved{" "}
+                {dateLabel(d.retrievedAt)}. Dates below are report dates, not
+                fiscal period endings. Analyst estimates uses a separate feed;
+                EPS basis and update times may differ. No cross-feed
+                reconciliation is applied.
+              </p>
               {latest && (
                 <div className={s.stats}>
                   {[

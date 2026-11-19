@@ -18,12 +18,19 @@ export type PriceRiskScenarios =
       referenceBasis: "quote" | "settled-close";
       horizon: number;
       samples: number;
+      /** Non-overlapping periods of this length inside the sample; overlapping windows are dependent. */
+      independent: number;
+      /** Largest one-session move inside the sample, percent. A very large value can be an unadjusted split or bad tick. */
+      largestMove: { date: string; change: number } | null;
       from: string;
       through: string;
       caveat: string;
     };
 /** Empirical overlapping-window outcomes. Not probabilities, analyst targets or fair value. */
-export function priceRiskScenarios(r: Research): PriceRiskScenarios {
+export function priceRiskScenarios(
+  r: Research,
+  options: { horizon?: 63 | 252 } = {},
+): PriceRiskScenarios {
   const unavailable = (reason: string): PriceRiskScenarios => ({
     available: false,
     reason,
@@ -60,7 +67,13 @@ export function priceRiskScenarios(r: Research): PriceRiskScenarios {
     now - at <= 7 * 86400000;
   const reference = useQuote ? r.quote.price! : last.close,
     referenceDate = useQuote ? r.quote.asOf! : last.time;
-  const horizon = bars.length >= 252 ? 63 : 20;
+  // The default is unchanged. A one-year horizon is opt-in and needs three
+  // years of settled history so several non-overlapping years are observed.
+  if (options.horizon === 252 && bars.length < 756)
+    return unavailable(
+      "At least three years of settled daily history are needed for a one-year historical range.",
+    );
+  const horizon = options.horizon === 252 ? 252 : bars.length >= 252 ? 63 : 20;
   const returns: number[] = [];
   const gaps = bars.map((b, i) =>
     i > 0 &&
@@ -74,6 +87,16 @@ export function priceRiskScenarios(r: Research): PriceRiskScenarios {
     if (gaps[i] !== gaps[i - horizon]) continue;
     const move = Math.log(bars[i].close / bars[i - horizon].close);
     if (Number.isFinite(move)) returns.push(move);
+  }
+  let largestMove: { date: string; change: number } | null = null;
+  for (let i = 1; i < bars.length; i++) {
+    if (gaps[i] !== gaps[i - 1]) continue;
+    const change = (bars[i].close / bars[i - 1].close - 1) * 100;
+    if (
+      Number.isFinite(change) &&
+      (!largestMove || Math.abs(change) > Math.abs(largestMove.change))
+    )
+      largestMove = { date: bars[i].time, change };
   }
   if (returns.length < 40)
     return unavailable(
@@ -114,6 +137,8 @@ export function priceRiskScenarios(r: Research): PriceRiskScenarios {
     referenceBasis: useQuote ? "quote" : "settled-close",
     horizon,
     samples: returns.length,
+    independent: Math.max(1, Math.floor((bars.length - 1) / horizon)),
+    largestMove,
     from: bars[0].time,
     through: last.time,
     caveat:

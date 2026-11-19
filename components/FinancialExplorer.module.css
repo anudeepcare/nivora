@@ -34,8 +34,8 @@
 .explorer.explorer.explorer :global(.explorer-plot) > svg {
   display: block;
   width: 100%;
-  height: 300px;
-  max-height: 340px;
+  height: auto;
+  max-height: none;
 }
 .explorer.explorer.explorer :global(.explorer-definition) {
   border: 0;
@@ -94,7 +94,7 @@
 
 @media (max-width: 600px) {
   .explorer.explorer.explorer :global(.explorer-plot) > svg {
-    height: 220px;
+    height: auto;
   }
   .explorer.explorer.explorer :global(.explorer-tools) {
     width: 100%;
@@ -111,5 +111,80 @@
     width: 100%;
     min-width: 0;
     max-width: 100%;
+  }
+}
+
+.explorer.explorer.explorer :global(.explorer-mobile-picker) {
+  display: grid;
+  gap: 6px;
+  max-width: 320px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.explorer.explorer.explorer :global(.explorer-mobile-picker select) {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+.explorer.explorer.explorer :global(.explorer-metrics > div) {
+  display: contents;
+}
+.explorer.explorer.explorer :global(.explorer-metrics > div > span) {
+  display: none;
+}
+.explorer.explorer.explorer {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+}
+.explorer.explorer.explorer > header {
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.explorer.explorer.explorer :global(.explorer-mobile-picker) {
+  max-width: none;
+  margin: 0 0 12px;
+}
+.explorer.explorer.explorer :global(.explorer-mobile-picker select) {
+  font-size: 13px;
+}
+.explorer.explorer.explorer :global(.explorer-metrics) {
+  display: none;
+}
+.explorer.explorer.explorer :global(.explorer-latest) {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 7px 14px;
+  margin: 0;
+}
+.explorer.explorer.explorer :global(.explorer-latest > strong) {
+  font-size: 28px;
+}
+.explorer.explorer.explorer :global(.explorer-latest > span) {
+  font-size: 11px;
+}
+.explorer.explorer.explorer :global(.explorer-inspection) {
+  font-size: 11px;
+  margin: 7px 0;
+  min-height: 18px;
+}
+.explorer.explorer.explorer :global(.explorer-definition) {
+  padding: 9px 12px;
+  margin: 8px 0;
+  font-size: 11px;
+}
+@media (max-width: 650px) {
+  .explorer.explorer.explorer {
+    padding: 16px 14px;
   }
 }

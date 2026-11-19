@@ -250,13 +250,10 @@
   letter-spacing: 1.4px;
   color: var(--ink);
 }
-.brand svg {
+.brand img {
   width: 31px;
-  height: 33px;
-  color: var(--accent);
-}
-.brandDot {
-  color: var(--accent);
+  height: auto;
+  flex-shrink: 0;
 }
 .brandButton {
   justify-content: flex-start !important;
@@ -2239,7 +2236,7 @@
   .brand {
     font-size: 19px;
   }
-  .brand svg {
+  .brand img {
     width: 27px;
   }
   .publicNav nav {

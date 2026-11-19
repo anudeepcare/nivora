@@ -1,4 +1,9 @@
 "use client";
+import { installInfoDisclosures } from "@/lib/info-disclosure";
+import {
+  desktopNavigation,
+  mobileNavigation,
+} from "@/lib/reference-navigation";
 import { ReleaseNotice } from "./ReleaseNotes";
 import experience from "./WorkspaceShell.module.css";
 import { AccessNotice, useAccess } from "./Access";
@@ -18,6 +23,7 @@ import {
   Sun,
   Moon,
   Compass,
+  SlidersHorizontal,
   FlaskConical,
   Scale,
   HelpCircle,
@@ -43,12 +49,20 @@ function LinkProgress() {
     />
   ) : null;
 }
-const primary = [
-  { path: "overview", label: "Home", icon: Home },
-  { path: "research", label: "Research", icon: ChartNoAxesCombined },
-  { path: "watchlist", label: "Watchlist", icon: Bookmark },
-  { path: "portfolio", label: "Portfolio", icon: PieChart },
-];
+const navigationIcons = {
+  overview: Home,
+  research: ChartNoAxesCombined,
+  options: SlidersHorizontal,
+  discover: Compass,
+  compare: Scale,
+  watchlist: Bookmark,
+  portfolio: PieChart,
+};
+const primary = desktopNavigation.map((item) => ({
+  ...item,
+  icon: navigationIcons[item.path],
+}));
+
 export default function Shell({
   page,
   children,
@@ -56,6 +70,7 @@ export default function Shell({
   page: string;
   children: React.ReactNode;
 }) {
+  useEffect(() => installInfoDisclosures(document.body), []);
   const { demo, workspace, theme, setTheme } = useProduct();
   const { access } = useAccess();
   const pathname = usePathname();
@@ -190,7 +205,7 @@ export default function Shell({
         <Link
           href={`${prefix}/overview`}
           className={experience.brand}
-          aria-label="AURYN home"
+          aria-label="AURYN workspace home"
         >
           <img src="/icon.svg" width="32" height="32" alt="" />
           <span>AURYN</span>
@@ -224,7 +239,7 @@ export default function Shell({
             <Bell size={19} />
           </Link>
           <button
-            aria-label="Account and workspace tools"
+            aria-label="More tools and account"
             aria-haspopup="dialog"
             onClick={() => tools.current?.showModal()}
           >
@@ -233,7 +248,12 @@ export default function Shell({
         </div>
       </header>
       <div className={experience.workspace}>
-        <main id="content" className={experience.content} tabIndex={-1}>
+        <main
+          id="content"
+          data-workspace-scroll={page === "research" ? "true" : undefined}
+          className={experience.content}
+          tabIndex={-1}
+        >
           <AccessNotice />
           <ReleaseNotice />
           {demo && demo.routePrefix !== "" && (
@@ -246,7 +266,11 @@ export default function Shell({
         </main>
       </div>
       <nav className={experience.dock} aria-label="Mobile navigation">
-        {primary.map((r) => nav(r))}
+        {primary
+          .filter((item) =>
+            mobileNavigation.some((entry) => entry.path === item.path),
+          )
+          .map((r) => nav(r))}
       </nav>
       <dialog
         ref={tools}
@@ -256,7 +280,7 @@ export default function Shell({
         <header className="dialog-head">
           <div>
             <span className="eyebrow">Your workspace</span>
-            <h2>Account & workspace</h2>
+            <h2>Research tools &amp; workspace</h2>
           </div>
           <button
             className="icon-button"

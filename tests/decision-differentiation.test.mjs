@@ -126,7 +126,7 @@ test("without confirmed Pace the independent valuation screen can support entry 
   assert.deepEqual(high.actions, { entry: "Review", holding: "Review" });
   assert.equal(low.explanation.code, "entry");
   assert.equal(high.explanation.code, "history");
-  assert.match(high.explanation.detail, /confirmed Pace.*not available/);
+  assert.match(high.explanation.detail, /Pace level is not available/);
   assert.equal(low.valuation.base, high.valuation.base);
 });
 test("an unassessed value is explicitly different from a failed price condition", () => {

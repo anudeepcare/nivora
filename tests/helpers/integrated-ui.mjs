@@ -21,6 +21,8 @@ const helpModule = { exports: {} };
 const helpModuleCode = ts.transpileModule(fs.readFileSync("components/PaceHelp.tsx", "utf8"), {compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.CommonJS}}).outputText;
 const jsx = await import("react/jsx-runtime");
 new Function("require", "module", "exports", helpModuleCode)((name) => {
+  if (name === "react") return React;
+  if (name === "./PacePriceZones") return {__esModule:true,default:()=>null};
   if (name === "react/jsx-runtime") return jsx;
   if (name === "@/lib/pace-presentation") return pace;
   if (name === "./Ui") return { Help };
@@ -42,7 +44,9 @@ new Function("require", "module", "exports", code)(
   (name) => {
     if (name === "./PaceHelp") return { __esModule: true, default: PaceHelp };
     if (name === "react") return React;
-    if (name === "react/jsx-runtime") return jsx;
+    if (name === "react") return React;
+  if (name === "./PacePriceZones") return {__esModule:true,default:()=>null};
+  if (name === "react/jsx-runtime") return jsx;
     if (name === "lucide-react") return icons;
     if (name === "@/lib/pace-presentation") return pace;
     if (name === "@/lib/pace-instrument") return reading;

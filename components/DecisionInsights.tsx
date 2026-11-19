@@ -1,4 +1,5 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Research } from "@/lib/types";
@@ -13,11 +14,15 @@ export default function DecisionInsights({
   owns = false,
   now,
   prefix = "",
+  initialTab = 0,
+  embedded = false,
 }: {
   research: Research;
   owns?: boolean;
   now: number;
   prefix?: string;
+  initialTab?: 0 | 1 | 2;
+  embedded?: boolean;
 }) {
   return (
     <Insights
@@ -26,6 +31,8 @@ export default function DecisionInsights({
       owns={owns}
       now={now}
       prefix={prefix}
+      initialTab={initialTab}
+      embedded={embedded}
     />
   );
 }
@@ -34,17 +41,23 @@ function Insights({
   owns,
   now,
   prefix,
+  initialTab,
+  embedded = false,
 }: {
   research: Research;
   owns: boolean;
   now: number;
   prefix: string;
+  initialTab: 0 | 1 | 2;
+  embedded?: boolean;
 }) {
-  const [tab, setTab] = useState(0),
+  const [tab, setTab] = useState<number>(initialTab),
     [multiple, setMultiple] = useState("25"),
     [desired, setDesired] = useState("8"),
     [horizon, setHorizon] = useState("");
   const e = useMemo(() => decisionEvidence(r, owns, now), [r, owns, now]);
+  const reference = e.decision.reference;
+  const referencePrice = reference?.price ?? r.quote.price;
   const model = useMemo(
     () =>
       targetsEstimates({ ...r, priceObservedAt: new Date(now).toISOString() }),
@@ -70,7 +83,7 @@ function Insights({
   const years = selection.startsWith("years:")
     ? Number(selection.split(":")[1])
     : (Date.parse(selection) - now) / (365.25 * 86400000);
-  const stamp = Date.parse(r.quote.asOf ?? "");
+  const stamp = Date.parse(reference?.asOf ?? r.quote.asOf ?? "");
   const usable =
     Number.isFinite(stamp) &&
     stamp <= now + 60000 &&
@@ -80,7 +93,7 @@ function Insights({
   const result =
     usable && multiple.trim() && desired.trim()
       ? impliedExpectations({
-          price: r.quote.price ?? 0,
+          price: referencePrice ?? 0,
           eps: comparableListing ? (estimate?.eps ?? null) : null,
           years,
           multiple: Number(multiple),
@@ -89,7 +102,10 @@ function Insights({
       : null;
   const d = e.decision;
   return (
-    <section className={s.root} aria-label="Decision insights">
+    <section
+      className={`${s.root} ${embedded ? s.embedded : ""}`}
+      aria-label="Decision insights"
+    >
       <header>
         <div>
           <span className="eyebrow">BUSINESS, PRICE & VALUATION</span>
@@ -105,7 +121,9 @@ function Insights({
         </Help>
       </header>
       <div
-        className={s.tabs}
+        className={`${s.tabs} auryn-view-tabs`}
+        data-selection-navigation
+        onKeyDown={(event) => navigateSelection(event)}
         role="group"
         aria-label="Choose a decision question"
       >
@@ -200,65 +218,165 @@ function Insights({
       )}
       {tab === 1 && (
         <div className={s.panel}>
-          <h3>What would today’s price require?</h3>
-          <p>
-            Choose a horizon, future P/E and desired annual price return. See
-            the earnings per share needed to support those assumptions.
-          </p>
-          <div className={s.inputs}>
-            <label>
-              Horizon
-              <select
-                value={selection}
-                onChange={(e) => setHorizon(e.target.value)}
-              >
-                {estimates.map((x) => (
-                  <option key={x.date} value={x.date}>
-                    Fiscal year ending {x.date}
-                  </option>
-                ))}
-                {[1, 3, 5].map((y) => (
-                  <option key={y} value={`years:${y}`}>
-                    {y} years · custom horizon
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Future P/E assumption
-              <input
-                inputMode="decimal"
-                type="number"
-                min="1"
-                max="200"
-                step="1"
-                value={multiple}
-                onChange={(e) => setMultiple(e.target.value)}
-              />
-            </label>
-            <label>
-              Desired annual price return (%)
-              <input
-                inputMode="decimal"
-                type="number"
-                min="-99"
-                max="100"
-                value={desired}
-                onChange={(e) => setDesired(e.target.value)}
-              />
-            </label>
-          </div>
+          {embedded ? (
+            <div className={s.priceQuestion}>
+              <span className="eyebrow">What the price needs</span>
+              <div className={s.sentence}>
+                At <strong>{amount(referencePrice, r.quote.currency)}</strong>,
+                to earn{" "}
+                <label className={s.inlineNumber}>
+                  <span className={s.srOnly}>
+                    Desired annual price return (%)
+                  </span>
+                  <input
+                    aria-label="Desired annual price return (%)"
+                    inputMode="decimal"
+                    type="number"
+                    min="-99"
+                    max="100"
+                    value={desired}
+                    onChange={(event) => setDesired(event.target.value)}
+                  />
+                  <span aria-hidden="true">%</span>
+                </label>{" "}
+                a year through{" "}
+                <label className={s.inlineHorizon}>
+                  <span className={s.srOnly}>Horizon</span>
+                  <select
+                    aria-label="Horizon"
+                    value={selection}
+                    onChange={(event) => setHorizon(event.target.value)}
+                  >
+                    {estimates.map((x) => (
+                      <option key={x.date} value={x.date}>
+                        FY{new Date(x.date).getUTCFullYear()}
+                      </option>
+                    ))}
+                    {[1, 3, 5].map((y) => (
+                      <option key={y} value={`years:${y}`}>
+                        {y} years
+                      </option>
+                    ))}
+                  </select>
+                </label>{" "}
+                and then trade at{" "}
+                <label className={s.inlineNumber}>
+                  <span className={s.srOnly}>Future P/E assumption</span>
+                  <input
+                    aria-label="Future P/E assumption"
+                    inputMode="decimal"
+                    type="number"
+                    min="1"
+                    max="200"
+                    step="1"
+                    value={multiple}
+                    onChange={(event) => setMultiple(event.target.value)}
+                  />
+                  <span aria-hidden="true">×</span>
+                </label>{" "}
+                earnings, {r.company.name} needs EPS of{" "}
+                <strong aria-live="polite">
+                  {result ? amount(result.requiredEps, r.quote.currency) : "—"}
+                </strong>
+                .
+              </div>
+            </div>
+          ) : (
+            <>
+              <h3>What would today’s price require?</h3>
+              <p>
+                Choose a horizon, future P/E and desired annual price return.
+                See the earnings per share needed to support those assumptions.
+              </p>
+              <div className={s.inputs}>
+                <label>
+                  Horizon
+                  <select
+                    value={selection}
+                    onChange={(e) => setHorizon(e.target.value)}
+                  >
+                    {estimates.map((x) => (
+                      <option key={x.date} value={x.date}>
+                        Fiscal year ending {x.date}
+                      </option>
+                    ))}
+                    {[1, 3, 5].map((y) => (
+                      <option key={y} value={`years:${y}`}>
+                        {y} years · custom horizon
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Future P/E assumption
+                  <input
+                    inputMode="decimal"
+                    type="number"
+                    min="1"
+                    max="200"
+                    step="1"
+                    value={multiple}
+                    onChange={(e) => setMultiple(e.target.value)}
+                  />
+                </label>
+                <label>
+                  Desired annual price return (%)
+                  <input
+                    inputMode="decimal"
+                    type="number"
+                    min="-99"
+                    max="100"
+                    value={desired}
+                    onChange={(e) => setDesired(e.target.value)}
+                  />
+                </label>
+              </div>
+            </>
+          )}
           {result ? (
             <>
-              <div className={s.answer} aria-live="polite">
-                <span>Required EPS at this horizon</span>
-                <strong>{amount(result.requiredEps, r.quote.currency)}</strong>
-                <p>
-                  To support {amount(result.requiredPrice, r.quote.currency)} at{" "}
-                  {multiple}× P/E over {years.toFixed(1)} years.
-                </p>
-              </div>
-              {estimate && result.gapPercent != null && (
+              {!embedded && (
+                <div className={s.answer} aria-live="polite">
+                  <span>Required EPS at this horizon</span>
+                  <strong>
+                    {amount(result.requiredEps, r.quote.currency)}
+                  </strong>
+                  <p>
+                    To support {amount(result.requiredPrice, r.quote.currency)}{" "}
+                    at {multiple}× P/E over {years.toFixed(1)} years.
+                  </p>
+                </div>
+              )}
+              {embedded && (
+                <div
+                  className={s.epsComparison}
+                  aria-label="EPS requirement comparison"
+                >
+                  {[
+                    { label: "Price needs", value: result.requiredEps },
+                    ...(estimate &&
+                    comparableListing &&
+                    estimate.eps != null &&
+                    estimate.eps > 0
+                      ? [{ label: "Analysts expect", value: estimate.eps }]
+                      : []),
+                  ].map((row, index) => (
+                    <div className={s.epsRow} key={row.label}>
+                      <span>{row.label}</span>
+                      <div className={s.epsTrack}>
+                        <i
+                          data-consensus={index === 1}
+                          style={{
+                            width: `${Math.max(0, Math.min(100, (row.value / Math.max(result.requiredEps, estimate?.eps ?? 0, 0.01)) * 100))}%`,
+                          }}
+                        />
+                      </div>
+                      <strong>{amount(row.value, r.quote.currency)}</strong>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {!embedded && estimate && result.gapPercent != null && (
                 <div
                   className={s.estimatePair}
                   aria-label="Same-period EPS comparison"
@@ -295,9 +413,9 @@ function Insights({
                 </p>
                 <p>
                   {r.quote.stale ? "Older dated reference" : "Reference"}{" "}
-                  {amount(r.quote.price, r.quote.currency)} ·{" "}
-                  {dateLabel(r.quote.asOf)}. A multiple is not a forecast
-                  probability.
+                  {amount(referencePrice, r.quote.currency)} ·{" "}
+                  {dateLabel(reference?.asOf ?? r.quote.asOf)}. A multiple is
+                  not a forecast probability.
                 </p>
               </details>
             </>

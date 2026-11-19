@@ -1,0 +1,126 @@
+.stats.stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+}
+.stats strong {
+  font-size: clamp(16px, 1.7vw, 20px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+@media (max-width: 900px) {
+  .stats.stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 420px) {
+  .stats.stats {
+    gap: 0 12px;
+  }
+}
+
+.stats.stats {
+  margin: 18px 0;
+  border-block: 1px solid var(--line);
+}
+.stats > div {
+  padding: 18px 14px;
+  min-width: 0;
+}
+.stats [data-target="Mean target"] {
+  background: color-mix(in srgb, var(--blue) 7%, transparent);
+}
+.stats strong {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(18px, 1.7vw, 24px);
+  font-weight: 500;
+}
+
+/* Container width, not viewport width, determines four versus balanced two-by-two. */
+.stats.stats {
+  container-type: normal;
+  gap: 0;
+}
+@supports (container-type: inline-size) {
+  .container {
+    container-type: inline-size;
+  }
+}
+.stats.stats > div {
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+@container (min-width: 680px) {
+  .stats.stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.metricLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.metricLabel svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+.stats [data-target="Mean target"] {
+  --metric-tone: var(--blue);
+}
+.stats [data-target="Low target"] {
+  --metric-tone: #ad6239;
+}
+.stats [data-target="High target"] {
+  --metric-tone: #7054b3;
+}
+.stats [data-target] .metricLabel svg {
+  color: var(--metric-tone, var(--muted));
+}
+:global([data-theme="dark"]) .stats [data-target="Low target"] {
+  --metric-tone: #e1a27d;
+}
+:global([data-theme="dark"]) .stats [data-target="High target"] {
+  --metric-tone: #b6a1ed;
+}
+.stats [data-target="Mean target"] strong {
+  color: var(--blue);
+}
+
+.rangeFigure {
+  margin: 20px 12px 8px;
+}
+.rangeTrack {
+  position: relative;
+  height: 8px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--blue) 18%, var(--card)),
+    color-mix(in srgb, var(--blue) 55%, var(--card))
+  );
+  border: 1px solid var(--line);
+}
+.rangeTrack span {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 2px solid var(--card);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.rangeLabels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}

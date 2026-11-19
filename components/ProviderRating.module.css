@@ -1,0 +1,116 @@
+.panel {
+  min-width: 0;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.header p {
+  max-width: 50rem;
+  line-height: 1.5;
+}
+.header button {
+  flex-shrink: 0;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+.stats > div {
+  padding: 0.8rem;
+  background: var(--surface-alt, var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+}
+.stats dt {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.stats dd {
+  margin: 0.5rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.stats dd span {
+  font-size: 1rem;
+}
+.stats small {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text);
+}
+.dimensions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+.dimensions article {
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.dimensions header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.dimensions h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+.dimensions span,
+.dimensions p,
+.dimensions li {
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+.dimensions meter {
+  width: 100%;
+  height: 0.55rem;
+  margin-top: 0.6rem;
+  accent-color: var(--accent);
+}
+.panel > details {
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.panel > p {
+  line-height: 1.6;
+}
+.panel summary {
+  cursor: pointer;
+}
+@media (max-width: 700px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 430px) {
+  .header {
+    flex-direction: column;
+  }
+  .dimensions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stats dd {
+    font-size: 1.15rem;
+  }
+}

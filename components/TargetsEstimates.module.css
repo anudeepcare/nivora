@@ -1,5 +1,5 @@
 .root {
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 16px;
   background: var(--surface, #fff);
   padding: 20px;
@@ -10,11 +10,11 @@
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 .header h2 {
-  margin: 7px 0;
-  font-size: 25px;
+  margin: 0;
+  font-size: 23px;
   letter-spacing: -0.7px;
 }
 .header p {
@@ -379,4 +379,129 @@
   .root.root.root .header h2 {
     font-size: 22px;
   }
+}
+.consensusGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.consensusGrid > * {
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .consensusGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.root.root.root {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.root.root.root .header {
+  margin-bottom: 14px;
+}
+.root.root.root .panel:not(.consensusGrid) {
+  padding: 20px;
+  margin-top: 16px;
+  border-radius: 18px;
+  background: var(--card);
+}
+.root.root.root .consensusGrid {
+  padding-top: 16px;
+}
+@media (max-width: 650px) {
+  .root.root.root .panel:not(.consensusGrid) {
+    padding: 16px 14px;
+  }
+}
+
+.assumptionBar {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 14px 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--green) 4%, var(--card));
+}
+.assumptionBar .control {
+  max-width: none;
+  margin: 0;
+  font-size: 12px;
+}
+.assumptionBar input {
+  min-height: 40px;
+  font-size: 14px;
+}
+.assumptionFacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0 0 6px;
+}
+.assumptionFacts dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+.assumptionFacts dd {
+  margin: 5px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.resetAssumption {
+  min-height: 40px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.assumptionHelp {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.assumptionHelp summary {
+  padding: 4px 0;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.assumptionHelp p {
+  max-width: 90ch;
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+@media (max-width: 650px) {
+  .assumptionBar {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 14px;
+  }
+  .assumptionFacts {
+    gap: 12px 20px;
+  }
+  .resetAssumption {
+    justify-self: start;
+  }
+}
+.cases > article[data-case] {
+  --case-accent: #a38232;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--case-accent) 7%, var(--card)),
+    var(--card)
+  );
+  border: 0;
+}
+.cases > article[data-case="bear"] {
+  --case-accent: #c65050;
+}
+.cases > article[data-case="bull"] {
+  --case-accent: #00866b;
+}
+.cases > article[data-case] > span {
+  color: var(--case-accent);
+  font-weight: 500;
 }

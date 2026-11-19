@@ -1,33 +1,33 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(var(--evidence-columns, 4), minmax(0, 1fr));
+  gap: 40px;
   margin: 16px 0;
 }
 .panel {
   --category: var(--financial-icon);
   --category-bg: #edf3f0;
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 0;
 
-  border-radius: 12px;
-  padding: 20px;
-  background: var(--card);
-  box-shadow: var(--panel-shadow);
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .panel[data-category="business"] {
   --category: var(--business-icon);
-  background: var(--card);
+  background: transparent;
   --category-bg: #d8f2e8;
 }
 .panel[data-category="valuation"] {
   --category: var(--valuation-icon);
-  background: var(--card);
+  background: transparent;
   --category-bg: #edf5c9;
 }
 .panel[data-category="ownership"] {
   --category: var(--ownership-icon);
-  background: var(--card);
+  background: transparent;
   --category-bg: #edf3f0;
 }
 .panel header {
@@ -145,5 +145,118 @@
   }
   .panel footer {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .panel {
+    padding: 0;
+  }
+  .panel dl > div {
+    flex-direction: row;
+    align-items: baseline;
+  }
+  .panel h3 {
+    font-size: 16px;
+  }
+}
+/* Preserve the user's metric grids and their category identity. */
+.grid {
+  gap: 16px;
+  margin: 0;
+}
+.panel {
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px #17342c08;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--category) 5%, var(--card)),
+    var(--card)
+  );
+}
+.panel[data-category] {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--category) 5%, var(--card)),
+    var(--card)
+  );
+}
+.panel h3 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.panel header {
+  margin-bottom: 16px;
+}
+.panel dd {
+  font-weight: 600;
+}
+.panel footer {
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .panel {
+    padding: 16px 12px;
+  }
+  .panel header {
+    gap: 6px;
+  }
+  .panel h3 {
+    font-size: 12px;
+  }
+  .panel dl > div {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .panel dd {
+    font-size: 18px;
+  }
+  .panel dt {
+    font-size: 12px;
+  }
+  .panel footer {
+    font-size: 12px;
+  }
+}
+.snapshot {
+  grid-column: 1/-1;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  padding: 0 4px;
+  margin-top: -4px;
+}
+@media (max-width: 600px) {
+  .panel:last-of-type:nth-child(odd) {
+    grid-column: 1/-1;
+  }
+}
+
+/* Keep the original category boxes; reduce only their whitespace. */
+.grid {
+  gap: 12px;
+}
+.panel {
+  padding: 14px;
+}
+.panel header {
+  margin-bottom: 8px;
+}
+.panel dl > div {
+  padding: 6px 0;
+}
+@media (max-width: 600px) {
+  .panel {
+    padding: 12px;
   }
 }

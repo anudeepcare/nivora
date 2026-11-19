@@ -1,0 +1,271 @@
+.lens {
+  min-width: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--line);
+}
+.metric.metric {
+  border: 0;
+  border-radius: 0;
+  padding: 18px;
+  background: var(--card);
+  min-width: 0;
+}
+.basis {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+.supporting {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.supporting > * {
+  min-width: 0;
+}
+.events.events {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  margin: 0;
+}
+.eventColumns.eventColumns {
+  grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr);
+  gap: 16px;
+}
+.calendarPanel,
+.streamPanel {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.events .calendarPanel button {
+  min-height: 40px;
+}
+.events .streamPanel > div[tabindex] {
+  max-height: 360px;
+}
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .eventColumns.eventColumns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .calendarPanel,
+  .streamPanel {
+    padding: 14px;
+  }
+  .metric.metric {
+    padding: 14px;
+  }
+}
+@media (max-width: 420px) {
+  .metric.metric {
+    padding: 12px;
+  }
+  .basis {
+    font-size: 10px;
+  }
+}
+.events.events .calendarPanel .calendarDay {
+  min-height: 48px;
+  height: auto;
+  border-radius: 0;
+  border: 1px solid var(--line);
+}
+.eventFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 16px;
+}
+.eventFilters button {
+  padding: 6px 10px;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: transparent;
+  font-size: 12px;
+  color: var(--muted);
+}
+.eventFilters button[aria-pressed="true"] {
+  background: var(--blue-soft);
+  color: var(--blue);
+  border-color: var(--blue);
+}
+@media (max-width: 760px) {
+  .events.events .calendarPanel .calendarDay {
+    min-height: 44px;
+  }
+}
+
+/* Business and market observations stay distinct without implying good or bad. */
+.grid {
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.metric.metric {
+  --metric-accent: #4b7fce;
+  border: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+.metric[data-evidence-family="business"] {
+  --metric-accent: #9775c4;
+}
+.metric.metric > strong {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.metric.metric svg polyline {
+  stroke: var(--metric-accent);
+}
+.metric.metric h3 {
+  font-weight: 500;
+}
+.calendarPanel {
+  border-top: 1px solid var(--line);
+}
+.streamPanel {
+  border-top: 1px solid var(--line);
+}
+
+/* Compact evidence cards: actual trends, not fabricated strength gauges. */
+.metric.metric {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.metric.metric header {
+  align-items: start;
+}
+.metric.metric h3 {
+  font-size: 13px;
+  line-height: 1.4;
+}
+.metric.metric > strong {
+  font-size: clamp(22px, 2vw, 28px);
+  margin: 0;
+}
+.metric.metric > svg {
+  height: 48px;
+  width: 100%;
+  margin: 0;
+}
+.metric.metric > details {
+  margin-top: auto;
+}
+
+/* Reference evidence rhythm: readable dates and compact real-data charts. */
+.basis {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.metric.metric {
+  gap: 7px;
+}
+.metric.metric > details summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+.calendarPanel,
+.streamPanel {
+  padding: 18px;
+}
+.events.events .calendarPanel .calendarDay {
+  border-radius: 6px;
+}
+.eventFilters {
+  gap: 4px;
+  padding: 4px;
+  border-radius: 9px;
+  background: var(--surface);
+  width: fit-content;
+}
+.eventFilters button {
+  min-height: 44px;
+  border-color: transparent;
+  font-size: 12px;
+}
+.eventFilters button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.eventFilters button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+@media (max-width: 650px) {
+  .calendarPanel,
+  .streamPanel {
+    padding: 14px;
+  }
+  .basis {
+    font-size: 12px;
+  }
+}
+
+/* Readable evidence dates and controls at phone widths; preserve real sparklines. */
+.metric.metric h3 {
+  color: var(--ink);
+  font-size: 14px;
+}
+.metric.metric header {
+  gap: 8px;
+}
+.metric.metric > strong {
+  letter-spacing: -0.025em;
+}
+.metric.metric > details summary {
+  color: var(--ink);
+}
+.metric.metric > details summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.basis {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+:global([data-theme="dark"]) .metric {
+  --metric-accent: #8db6ed;
+}
+:global([data-theme="dark"]) .metric[data-evidence-family="business"] {
+  --metric-accent: #bea5ed;
+}
+@media (max-width: 650px) {
+  .basis {
+    font-size: 12px;
+  }
+  .eventFilters {
+    width: 100%;
+  }
+  .eventFilters button {
+    flex: 1 1 auto;
+  }
+}

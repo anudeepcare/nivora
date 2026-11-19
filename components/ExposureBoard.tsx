@@ -9,7 +9,6 @@ import {
   Download,
   Focus,
   Layers3,
-  SlidersHorizontal,
   Star,
   Trash2,
 } from "lucide-react";
@@ -70,7 +69,6 @@ export default function ExposureBoard({
       snapshots: [],
     }),
     [snapshot, setSnapshot] = useState(""),
-    [name, setName] = useState(""),
     [message, setMessage] = useState(""),
     [mode, setMode] = useState("map");
   const [presentation, setPresentation] = useState("heatmap");
@@ -181,43 +179,6 @@ export default function ExposureBoard({
         "Snapshot saved on this device. This is not an intraday history feed.",
       );
   }
-  function savePreset() {
-    if (!name.trim()) {
-      setMessage("Give this view a name first.");
-      return;
-    }
-    const p: BoardPreset = {
-      name: name.trim().slice(0, 60),
-      metric,
-      range,
-      expirations,
-      months,
-      minimum,
-      normalized,
-    };
-    if (
-      persist({
-        ...saved,
-        presets: [...saved.presets.filter((x) => x.name !== p.name), p].slice(
-          -10,
-        ),
-      })
-    ) {
-      setMessage("View saved on this device.");
-      setName("");
-    }
-  }
-  function applyPreset(n: string) {
-    const p = saved.presets.find((x) => x.name === n);
-    if (p) {
-      setMetric(p.metric);
-      setRange(p.range);
-      setExpirations(p.expirations);
-      setMonths(p.months ?? 0);
-      setMinimum(p.minimum);
-      setNormalized(p.normalized);
-    }
-  }
   function center(strike: number | null) {
     if (strike !== null)
       table.current
@@ -282,7 +243,10 @@ export default function ExposureBoard({
             <Layers3 size={18} /> Exposure levels
           </h3>
         </div>
-        <div className={s.tabs} aria-label="Exposure workspace views">
+        <div
+          className={`${s.tabs} auryn-view-tabs`}
+          aria-label="Exposure workspace views"
+        >
           {[
             ["map", "Exposure map"],
             ["changes", "Saved changes"],
@@ -339,8 +303,7 @@ export default function ExposureBoard({
           <p>
             Coverage describes usable returned inputs, not the entire market.
             Cells can have different observation dates. Device snapshots stay in
-            this browser; use History &amp; saved views for cross-device
-            storage.
+            this browser; use account history for cross-device storage.
           </p>
         </Help>
       </header>
@@ -364,35 +327,6 @@ export default function ExposureBoard({
             {metric === "gex" ? "estimated gamma exposure" : "open contracts"}.
             Select a level to inspect its data.
           </p>
-          <div className={s.readingGuide}>
-            <strong>How to read this map</strong>
-            <p>
-              Rows are strike prices; columns are expiration dates. Darker cells
-              mark larger concentrations in the loaded data. Teal is the
-              call-side estimate and coral is the put-side estimate—not a buy or
-              sell signal.
-            </p>
-            <p>
-              Start near the outlined stock-price row. Select a cell to see its
-              value, input coverage and observation date. Use Open contracts
-              (OI) to compare contract counts instead of gamma estimates.
-            </p>
-            <details>
-              <summary>What do the controls change?</summary>
-              <p>
-                Nearby strikes changes how many price levels you see. Expiration
-                range limits the dates. Hide values below filters smaller cells;
-                % of largest switches the threshold to a relative size. Center
-                returns to the stock-price area; Largest locates the strongest
-                measured concentration.
-              </p>
-              <p>
-                Blank or unmeasured cells mean missing inputs, not zero. These
-                estimates describe the returned contracts; they do not establish
-                support, resistance or how dealers are positioned.
-              </p>
-            </details>
-          </div>
           <div className={s.toolbar}>
             <label>
               Measure
@@ -528,7 +462,7 @@ export default function ExposureBoard({
       {mode === "map" && (
         <>
           <div
-            className={s.presentation}
+            className={`${s.presentation} auryn-detail-tabs`}
             role="group"
             aria-label="Exposure presentation"
           >
@@ -889,62 +823,7 @@ export default function ExposureBoard({
           )}
         </section>
       )}
-      <details className={s.saved}>
-        <summary>
-          <SlidersHorizontal size={16} /> Saved views & history
-        </summary>
-        <div className={s.toolbar}>
-          <label>
-            Saved view
-            <select
-              defaultValue=""
-              onChange={(e) => applyPreset(e.target.value)}
-            >
-              <option value="">Choose a view</option>
-              {saved.presets.map((p) => (
-                <option key={p.name}>{p.name}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            View name
-            <input
-              maxLength={60}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="For example: nearest expirations"
-            />
-          </label>
-          <button type="button" onClick={savePreset}>
-            Save this view
-          </button>
-          <label>
-            Observation
-            <select
-              value={snapshot}
-              disabled={!!externalSnapshot}
-              onChange={(e) => {
-                setSnapshot(e.target.value);
-                setSelected(null);
-              }}
-            >
-              <option value="">Latest loaded snapshot</option>
-              {snapshots.map((x) => (
-                <option key={x.id} value={x.id}>
-                  Saved {new Date(x.savedAt).toLocaleString()}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <p>
-          Keyboard while the board is focused: F centers price; L inspects the
-          largest cell; S saves a snapshot; Escape closes details. Up to ten
-          views and twelve snapshots per device across all symbols. Export
-          important observations before clearing browser storage.
-        </p>
-        {accountTools}
-      </details>
+      {accountTools}
       {message && <p role="status">{message}</p>}
     </section>
   );

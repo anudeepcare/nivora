@@ -23,3 +23,25 @@ export async function fetchWithDeadline(
     options.signal?.removeEventListener("abort", abort);
   }
 }
+
+/** Bound SDK work that can stall before any network fetch deadline is reached.
+ * This does not cancel the SDK operation or alter its auth state; it releases
+ * the waiting view/request and lets subsequent auth events recover normally.
+ */
+export async function settleWithDeadline<T>(
+  task: Promise<T>,
+  timeoutMs: number,
+  message = "The account connection timed out. Please try again.",
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      task,
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
+}

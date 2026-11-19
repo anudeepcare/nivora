@@ -9,7 +9,7 @@ test('the forming and completed readings retain independent dates and levels in 
   const rows = pacePeriods({multiplier: 2, date: '2026-09-30', month: '2026-09', forming: {multiplier: 4, date: '2026-10-26', month: '2026-10'}});
   assert.deepEqual(rows.map(r=>[r.key,r.code,r.date]), [['forming','P4','2026-10-26'],['confirmed','P2','2026-09-30']]);
   assert.match(rows[0].label, /Current month/);
-  assert.match(rows[1].label, /Completed month/);
+  assert.match(rows[1].label, /Previous month closing zone/);
   assert.equal(pacePeriods({multiplier: null, forming: null})[1].code, 'Pending');
 });
 
@@ -23,13 +23,13 @@ test('DCA display keeps forming readings visible when completed history is unava
     forming: { multiplier: 4, month: '2026-10' },
   });
   assert.equal(forming.reading?.multiplier, 4);
-  assert.equal(forming.period, 'Current month · forming');
+  assert.equal(forming.period, 'Current month · provisional');
   const confirmed = dcaDisplay({
     confirmed: { multiplier: 1, month: '2026-09' },
     forming: { multiplier: 4, month: '2026-10' },
   });
-  assert.equal(confirmed.reading?.multiplier, 1);
-  assert.equal(confirmed.period, '2026-09 · confirmed');
+  assert.equal(confirmed.reading?.multiplier, 4);
+  assert.equal(confirmed.period, 'Current month · provisional');
   assert.equal(dcaDisplay({ confirmed: null, forming: null }).reading, null);
 });
 test('contribution guide explains the multiplier against the planned amount', () => {
@@ -95,7 +95,7 @@ test('non-entry states do not collapse every stock into a zero multiplier', () =
   assert.equal(contributionGuide('Watch', 1).multiple, 0);
   assert.equal(contributionGuide('Watch', 1).label, 'P1 watch zone');
   assert.equal(contributionGuide('Review', 2).label, 'P2 zone · business gate');
-  assert.match(contributionGuide('Review', 2).meaning, /confirmed P2 price zone/i);
+  assert.match(contributionGuide('Review', 2).meaning, /P2 price zone/i);
   assert.match(contributionGuide('Wait', 4).meaning, /price zone is visible/i);
   assert.equal(contributionGuide('Wait', 0).label, '0× · price pause');
 });

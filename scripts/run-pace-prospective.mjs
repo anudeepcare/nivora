@@ -53,7 +53,7 @@ for (const asset of input.assets) {
         "id,published_at,symbol,signal_period,policy,pace,reference_price,quote_at,evidence_hash,policy_hash",
       )
       .eq("symbol", symbol)
-      .eq("policy", "monthly-v5")
+      .eq("policy", input.policyVersion)
       .eq("policy_hash", input.policyHash)
       .order("id")
       .range(offset, offset + 499);
@@ -67,7 +67,11 @@ for (const asset of input.assets) {
     receipts.push({
       securityId: asset.id,
       month: row.month,
-      ...verifyProspectivePublication(symbol, row, records),
+      ...verifyProspectivePublication(
+        symbol,
+        { ...row, policyVersion: input.policyVersion },
+        records,
+      ),
     });
   }
 }

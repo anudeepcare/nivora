@@ -1,0 +1,73 @@
+.aggregates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 240px));
+  gap: 12px 24px;
+  margin: 16px 0;
+}
+.aggregates dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.aggregates dd {
+  margin: 0;
+  padding-top: 4px;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.scroll.scroll {
+  max-height: 440px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+.scroll:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.table.table.table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+.table.table.table :is(th, td) {
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+  vertical-align: middle;
+  color: var(--ink);
+  background: var(--surface);
+}
+.table.table.table :is(th, td):nth-child(n + 3) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.table.table.table :is(th, td):nth-child(2) {
+  white-space: nowrap;
+}
+.table.table.table :is(th, td):first-child {
+  width: 40%;
+  max-width: 380px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.table.table.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-size: 12px;
+  color: var(--muted);
+}
+.table.table.table tbody tr:hover > :is(th, td) {
+  background: color-mix(in srgb, var(--blue) 7%, var(--surface));
+}
+@media (max-width: 600px) {
+  .aggregates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .scroll.scroll {
+    max-height: 380px;
+  }
+}

@@ -1,3 +1,4 @@
+import { readBoundedMarketJson } from "./market-response";
 import {
   sharedEodRead,
   MarketGuardError,
@@ -36,7 +37,7 @@ export async function eodRequest(
   const token = process.env.EODHD_API_KEY || process.env.EODHD_API_TOKEN;
   if (!token)
     throw new HttpError(
-      "Add EODHD_API_KEY to the server environment to connect your subscription.",
+      "Market data is not configured. Contact the workspace administrator.",
       503,
     );
   const key = canonicalMarketKey(path, params),
@@ -52,6 +53,7 @@ export async function eodRequest(
           ? { cache: "no-store" as const }
           : { next: { revalidate: Math.max(1, Math.ceil(ttl / 1000)) } }),
         signal: AbortSignal.timeout(15000),
+        redirect: "error",
       },
     );
     if (response.status === 402 && path.startsWith("mp/unicornbay/options/"))
@@ -82,29 +84,34 @@ export async function eodRequest(
     }
     if (response.status === 401 || response.status === 403)
       throw new EodAccessError(
-        "EODHD did not authorize this dataset. Check the key and plan entitlement.",
+        "The data source did not authorize this dataset. Check subscription access.",
         503,
       );
     if (response.status === 404)
       throw new HttpError(
-        "This instrument or dataset was not found by EODHD.",
+        "This instrument or dataset was not found by the data source.",
         404,
       );
     if (!response.ok)
       throw new HttpError(
         response.status === 401 || response.status === 403
-          ? "EODHD did not authorize this dataset. Check the key and plan entitlement."
+          ? "The data source did not authorize this dataset. Check subscription access."
           : response.status === 402
             ? "Updates temporarily limited: the market-data allowance is exhausted."
             : response.status === 429
-              ? "EODHD request allowance reached. Retry shortly."
-              : "EODHD could not return this dataset. Retry shortly.",
+              ? "Market-data request allowance reached. Retry shortly."
+              : "The data source could not return this dataset. Retry shortly.",
         503,
       );
-    const data = await response.json();
+    const data = await readBoundedMarketJson(
+      response,
+      /^(ust\/|economic-events$|calendar\/dividends$)/.test(path)
+        ? 2 * 1024 * 1024
+        : 16 * 1024 * 1024,
+    );
     if (data?.error || data?.errors)
       throw new HttpError(
-        "EODHD returned a dataset error. Check instrument coverage and entitlement.",
+        "The data source returned a dataset error. Check coverage and subscription access.",
         503,
       );
     // HTTP success with an empty/error-shaped payload must not poison a
@@ -137,7 +144,7 @@ export async function eodRequest(
               ?.replace(/\.(?:US|CC)$/, "")))
     )
       throw new HttpError(
-        "EODHD returned an invalid or empty dataset. Retry shortly.",
+        "The data source returned an invalid or empty dataset. Retry shortly.",
         503,
       );
     return data;

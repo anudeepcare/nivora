@@ -16,8 +16,10 @@ import TechnicalLevels from "./TechnicalLevels";
 import TechnicalLevelMap from "./TechnicalLevelMap";
 export default function TechnicalDashboard({
   research: r,
+  chart,
 }: {
   research: Research;
+  chart?: React.ReactNode;
 }) {
   const p = useMemo(() => perspective(r), [r]),
     s = useMemo(
@@ -202,7 +204,7 @@ export default function TechnicalDashboard({
     },
     {
       title: "Participation",
-      tone: "green",
+      tone: "teal",
       note: "Volume measures do not identify institutions or prove buying pressure. Reported volume quality matters.",
       rows: [
         [
@@ -259,87 +261,96 @@ export default function TechnicalDashboard({
     });
   return (
     <section className={`technical-dashboard depth-technicals ${layout.panel}`}>
-      <header className="technical-desk-heading">
-        <div>
-          <span className="eyebrow">TECHNICALS · COMPLETED DAILY EVIDENCE</span>
-          <h2>
-            {p.tech.trend === "Constructive"
-              ? "Trend constructive. Check momentum."
-              : p.tech.trend === "Weak"
-                ? "Trend weak. Watch participation and support."
-                : "Price signals are mixed. Keep risk in view."}
-          </h2>
-          <p>
-            {a.count} valid completed observations · through {dateLabel(a.asOf)}
-            . Chart interval changes do not alter these daily studies.
-          </p>
-        </div>
-      </header>
-      <div className="technical-summary-strip">
-        {[
-          [
-            "Trend",
-            last != null && pro.ma50 != null
-              ? last >= pro.ma50
-                ? "Above 50 average"
-                : "Below 50 average"
-              : "History needed",
-          ],
-          [
-            "Momentum",
-            p.tech.rsi == null
-              ? "History needed"
-              : `RSI ${p.tech.rsi.toFixed(1)}`,
-          ],
-          [
-            "Participation",
-            a.relativeVolume == null
-              ? "Volume needed"
-              : `${a.relativeVolume.toFixed(2)}× usual volume`,
-          ],
-          [
-            "Daily range",
-            x.atrPct == null
-              ? "History needed"
-              : `${percent(x.atrPct)} Wilder ATR`,
-          ],
-        ].map(([label, value]) => (
-          <div key={label}>
-            <span>{label}</span>
-            <strong>{value}</strong>
+      <div className={layout.technicalWorkbench}>
+        {chart && <div className={layout.technicalChart}>{chart}</div>}
+        <div className={layout.technicalCurrent}>
+          <header className="technical-desk-heading">
+            <div>
+              <span className="eyebrow">
+                TECHNICALS · COMPLETED DAILY EVIDENCE
+              </span>
+              <h2>
+                {p.tech.trend === "Constructive"
+                  ? "Trend constructive. Check momentum."
+                  : p.tech.trend === "Weak"
+                    ? "Trend weak. Watch participation and support."
+                    : "Price signals are mixed. Keep risk in view."}
+              </h2>
+              <p>
+                {a.count} valid completed observations · through{" "}
+                {dateLabel(a.asOf)}. Chart interval changes do not alter these
+                daily studies.
+              </p>
+            </div>
+          </header>
+
+          <div className="technical-summary-strip">
+            {[
+              [
+                "Trend",
+                last != null && pro.ma50 != null
+                  ? last >= pro.ma50
+                    ? "Above 50 average"
+                    : "Below 50 average"
+                  : "History needed",
+              ],
+              [
+                "Momentum",
+                p.tech.rsi == null
+                  ? "History needed"
+                  : `RSI ${p.tech.rsi.toFixed(1)}`,
+              ],
+              [
+                "Participation",
+                a.relativeVolume == null
+                  ? "Volume needed"
+                  : `${a.relativeVolume.toFixed(2)}× usual volume`,
+              ],
+              [
+                "Daily range",
+                x.atrPct == null
+                  ? "History needed"
+                  : `${percent(x.atrPct)} Wilder ATR`,
+              ],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+              </div>
+            ))}
           </div>
-        ))}
+          <TechnicalLevelMap
+            spot={r.quote.price}
+            currency={currency}
+            levels={[
+              {
+                name: "50-session average",
+                price: pro.ma50,
+                period: "Completed daily closes",
+                asOf: a.asOf,
+              },
+              {
+                name: "200-session average",
+                price: pro.ma200,
+                period: "Completed daily closes",
+                asOf: a.asOf,
+              },
+              {
+                name: "50-week WMA",
+                price: extra.wma50Week,
+                period: "Weighted completed weeks",
+                asOf: extra.weeklyAsOf,
+              },
+              {
+                name: "200-week WMA",
+                price: extra.wma200Week,
+                period: "Weighted completed weeks",
+                asOf: extra.weeklyAsOf,
+              },
+            ]}
+          />
+        </div>
       </div>
-      <TechnicalLevelMap
-        spot={r.quote.price}
-        currency={currency}
-        levels={[
-          {
-            name: "50-session average",
-            price: pro.ma50,
-            period: "Completed daily closes",
-            asOf: a.asOf,
-          },
-          {
-            name: "200-session average",
-            price: pro.ma200,
-            period: "Completed daily closes",
-            asOf: a.asOf,
-          },
-          {
-            name: "50-week WMA",
-            price: extra.wma50Week,
-            period: "Weighted completed weeks",
-            asOf: extra.weeklyAsOf,
-          },
-          {
-            name: "200-week WMA",
-            price: extra.wma200Week,
-            period: "Weighted completed weeks",
-            asOf: extra.weeklyAsOf,
-          },
-        ]}
-      />
       <div className="technical-desk-groups">
         {groups.map((g) => (
           <section key={g.title} data-tone={g.tone}>
@@ -488,7 +499,7 @@ export default function TechnicalDashboard({
             volume inconsistencies can distort studies.
           </p>
           <p>
-            DCA contribution context is in Overview; deeper tail-risk and trade
+            Contribution context is in Overview; deeper tail-risk and trade
             planning are in Advanced.
           </p>
         </details>

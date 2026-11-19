@@ -1,0 +1,496 @@
+.page.page.page.page {
+  --workspace-title-size: clamp(28px, 2.4vw, 34px);
+  min-width: 0;
+  padding-bottom: 32px;
+}
+.eyebrow {
+  display: block;
+  font: 10px/1.6 var(--font-mono, monospace);
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.page.page.page.page h1 {
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  font-size: var(--workspace-title-size, clamp(30px, 3vw, 44px));
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--workspace-gap, 16px);
+  align-items: stretch;
+}
+.grid > * {
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+}
+.grid > .capitalOverview {
+  align-self: start;
+  display: flex;
+  grid-column: 1;
+}
+.capitalOverview > :global(.card) {
+  flex: 1;
+  min-width: 0;
+}
+.grid > .actions {
+  align-self: start;
+  grid-column: 2;
+}
+.grid > .history,
+.grid > .exposure,
+.grid > .holdings {
+  grid-column: 1 / -1;
+}
+.grid :global(.card) {
+  margin: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--workspace-panel-radius, 14px);
+  box-shadow: none;
+}
+.grid .holdings {
+  width: 100%;
+}
+.capitalOverview,
+.actions,
+.exposure {
+  min-width: 0;
+}
+.actions {
+  border: 1px solid var(--line);
+  border-radius: var(--workspace-panel-radius, 14px);
+  padding: var(--workspace-panel-padding, 20px);
+  background: var(--card);
+}
+.exposure {
+  grid-column: 1 / -1;
+}
+.exposure :global(.portfolio-exposure-rows) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+}
+.ring {
+  container-type: inline-size;
+  position: relative;
+  width: min(100%, 200px);
+  margin: 8px auto 12px;
+}
+.ring svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ring > div {
+  position: absolute;
+  inset: 22%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.ring strong {
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
+  font: 500 clamp(12px, 6.8cqi, 19px) / 1.3 var(--font-mono, monospace);
+}
+.ring small {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 8px;
+}
+.page.page.page.page :global(.allocation-track) {
+  display: none;
+}
+.page.page.page.page :global(.wealth-strip.four) > div {
+  background: var(--card);
+  box-shadow: none;
+}
+.holdingsScroll {
+  min-width: 0;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+  max-height: min(75svh, 840px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+.holdingsScroll:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.holdingsScroll table {
+  min-width: 760px;
+  width: 100%;
+}
+.holdingsScroll thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card);
+}
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--workspace-gap, 16px);
+  }
+  .grid > .capitalOverview,
+  .grid > .actions,
+  .grid > .history,
+  .grid > .exposure,
+  .grid > .holdings {
+    grid-column: 1;
+  }
+  .grid > div:nth-child(2) {
+    display: block;
+  }
+  .actions {
+    padding: 16px;
+  }
+  .ring {
+    max-width: 220px;
+  }
+  .holdingsScroll {
+    max-height: min(75svh, 840px);
+  }
+}
+.historyUnavailable {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+  padding: var(--workspace-panel-padding, 20px);
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+}
+.historyUnavailable p {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.summaryDetails {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  background: var(--card);
+}
+.summaryDetails > summary {
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 24px;
+}
+.summaryDetails[open] > summary {
+  margin-bottom: 12px;
+}
+.page.page.page.page :global(.wealth-strip.four) > div {
+  background: var(--card);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 14px 18px;
+}
+.page.page.page.page :global(.wealth-strip.four) {
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.page.page.page.page :global(.wealth-strip.four) > div > strong {
+  font-size: clamp(22px, 2.4vw, 32px);
+}
+
+.capitalOverview {
+  container-type: inline-size;
+}
+.allocationBody {
+  display: grid;
+  gap: 12px 20px;
+  align-items: start;
+}
+.allocationLegend {
+  min-width: 0;
+}
+.allocationLegend :global(.allocation-row) {
+  padding-block: 8px;
+}
+.allocationLegend :global(.chart-note) {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+@container (min-width: 480px) {
+  .allocationBody {
+    grid-template-columns: minmax(160px, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+
+/* Only data tables scroll horizontally; the portfolio page itself stays fluid. */
+@media (max-width: 700px) {
+  .page.page.page.page .grid :global(.card) {
+    padding: 14px;
+  }
+  .page.page.page.page :global(.heading-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .page.page.page.page :global(.heading-actions) button {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    min-height: 44px;
+  }
+  .page.page.page.page .holdingsScroll :global(table.holdings-table) {
+    display: table;
+    min-width: 760px;
+    width: 100%;
+  }
+  .page.page.page.page .holdingsScroll thead {
+    display: table-header-group;
+  }
+  .page.page.page.page .holdingsScroll tbody {
+    display: table-row-group;
+  }
+  .page.page.page.page .holdingsScroll :is(thead, tbody) tr {
+    display: table-row;
+    margin: 0;
+    padding: 0;
+  }
+  .page.page.page.page .holdingsScroll :is(th, td) {
+    display: table-cell;
+    padding: 10px 12px;
+    vertical-align: top;
+    width: auto;
+    text-align: left;
+  }
+  .page.page.page.page .holdingsScroll td::before {
+    content: none;
+  }
+  .page.page.page.page :global(.wealth-strip.four) > div {
+    padding: 12px;
+  }
+  .page.page.page.page :global(.wealth-strip.four) > div > strong {
+    font-size: 21px;
+    overflow-wrap: anywhere;
+  }
+}
+
+.manage {
+  position: relative;
+  min-width: 0;
+}
+.manage > summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--card);
+  cursor: pointer;
+  list-style: none;
+}
+.manage > summary::-webkit-details-marker {
+  display: none;
+}
+.manage > summary::after {
+  content: "+";
+}
+.manage[open] > summary::after {
+  content: "−";
+}
+.manage > div {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 12;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  width: 210px;
+  max-width: calc(100vw - 32px);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px #00000018;
+}
+.manage > div button {
+  width: 100%;
+  justify-content: flex-start;
+}
+.manage > summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .page.page.page.page h1 {
+    font-size: 25px;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+  .page.page.page.page :global(.heading-actions) {
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+  }
+  .manage > div {
+    right: auto;
+    left: 0;
+  }
+  .page.page.page.page :global(.wealth-strip.four) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-bottom: 12px;
+  }
+  .page.page.page.page :global(.wealth-strip.four) > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: baseline;
+    gap: 3px 12px;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .page.page.page.page :global(.wealth-strip.four) > div:last-child {
+    border-bottom: 0;
+  }
+  .page.page.page.page :global(.wealth-strip.four) > div > span {
+    min-height: 0;
+    font-size: 11px;
+  }
+  .page.page.page.page :global(.wealth-strip.four) > div > strong {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.3;
+    text-align: right;
+  }
+  .page.page.page.page :global(.wealth-strip.four) > div > small {
+    grid-column: 1 / -1;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+}
+
+/* Keep action identity stable in light/dark; financial colors remain independent. */
+.page.page.page.page :global(.btn.primary) {
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
+  color: #fff;
+}
+
+.checks {
+  margin: 12px 0 20px;
+  border-block: 1px solid var(--line);
+}
+.checks dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 14px 0;
+}
+.checks dl > div {
+  min-width: 0;
+}
+.checks dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.checks dd {
+  margin: 5px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.checks small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.grid > [data-read-only] {
+  grid-column: 1/-1;
+}
+@media (max-width: 600px) {
+  .checks dl {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .checks dl > div + div {
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* Explicit holdings columns keep units, value and return independently scannable. */
+.page.page.page.page .holdingsScroll :global(table.holdings-table) {
+  min-width: 900px;
+}
+.page.page.page.page .holdingsScroll :is(th, td) {
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+.page.page.page.page .holdingsScroll th {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.025em;
+}
+.page.page.page.page .holdingsScroll tbody td {
+  border-bottom: 1px solid var(--line);
+  padding: 14px 12px;
+}
+.page.page.page.page .holdingsScroll td:first-child {
+  min-width: 210px;
+}
+.page.page.page.page .holdingsScroll td:not(:first-child):not(:last-child) {
+  white-space: nowrap;
+}
+.historySetup {
+  width: min(960px, calc(100% - 32px));
+  max-height: 85dvh;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+  overflow: auto;
+}
+.historySetup::backdrop {
+  background: #0007;
+}
+.historySetup > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.historySetup h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+}
+.historySetup > header p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.historySetup > header button {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+}

@@ -100,7 +100,7 @@ function shell(
 }
 test("account menu retains Settings return context", () => {
   const { tree, pushes } = shell("research");
-  const avatar = nodes(tree, n => n.props?.["aria-label"] === "Account and workspace tools")[0];
+  const avatar = nodes(tree, n => n.props?.["aria-label"] === "More tools and account")[0];
   assert.equal(avatar.type, "button");
   assert.equal(avatar.props["aria-haspopup"], "dialog");
   const settings = nodes(tree, n => n.type === "Link" && n.props.href === "/settings")[0];
@@ -155,6 +155,8 @@ function settings(demo, overrides = {}) {
     PageHeading: empty,
     DisplayPreferences: empty,
     ResearchPreferenceControls: empty,
+    SettingsExperience: empty,
+    SettingsSignalPolicies: empty,
     ArrowUpRight: empty,
     ArrowLeft: empty,
     ChevronRight: empty,
@@ -331,14 +333,17 @@ test("Settings presents compact groups on one page without duplicate account sum
     1,
   );
   assert.equal(nodes(tree, (n) => n.props?.hidden === true).length, 0);
-  assert.equal(nodes(tree, (n) => n.type === "details").length, 0,
-    "Settings sections are directly visible without extra disclosure steps");
+  const disclosures = nodes(tree, (n) => n.type === "details");
+  assert.equal(disclosures.length, 1, "Only the infrequent password action is collapsed");
+  assert.equal(disclosures[0].props.className, "settings-password-change");
+  assert.equal(nodes(disclosures[0], (n) => n.type === "form").length, 1);
+  assert.equal(nodes(disclosures[0], (n) => n.type === "summary")[0].props.children, "Change password");
   assert.equal(nodes(tree, (n) => n.type === "header").length, 3);
   assert.equal(
     nodes(tree, (n) => n.type === "input" && n.props.type === "password")
       .length,
     1,
-    "Account controls remain directly available",
+    "Password controls remain available in the security disclosure",
   );
   assert.equal(
     nodes(tree, (n) => n.type === "Link" && n.props.href === "/preview/plans")
@@ -389,4 +394,59 @@ test("account menu signs out directly without navigating to Settings", async () 
   await button.props.onClick();
   assert.equal(result.signOutCalls(), 1);
   assert.deepEqual(result.pushes, []);
+});
+
+ test("Figma research experience cards persist actual research preferences", () => {
+ const saved=[]; const View=load("components/SettingsExperience.tsx","SettingsExperience",{useResearchPreferences:()=>({preferences:{detail:"essential",horizon:"long"},setPreferences:p=>saved.push(p),disabled:false,error:null})});
+ const buttons=nodes(View(),n=>n.type==="button");
+ assert.equal(buttons.length,3); assert.equal(buttons[0].props["aria-pressed"],true);
+ buttons[1].props.onClick(); buttons[2].props.onClick();
+ assert.deepEqual(saved,[{detail:"advanced",horizon:"long"},{detail:"essential",horizon:"swing"}]);
+ });
+
+test("Signal visibility saves account preferences but unavailable delivery stays disabled",()=>{
+ const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});const tree=View();
+ const controls=nodes(tree,n=>n.type==="input");assert.equal(controls.length,5);assert.ok(controls.every(n=>!n.props.disabled&&n.props.checked));controls[0].props.onChange({target:{checked:false}});assert.deepEqual(saved,[{hiddenSignals:["congressional"]}]);
+ assert.ok(nodes(tree,n=>n.type==="button").every(n=>n.props.disabled));
+});
+test("Preview cannot claim saved signal visibility",()=>{const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:()=>assert.fail(),saving:false,ready:true,localOnly:true,error:null})});assert.ok(nodes(View(),n=>n.type==="input").every(n=>n.props.disabled));});
+test("guardrail selections persist actual account percentages and support off",()=>{
+ const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[],maxLossPercent:null,cashReservePercent:10},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});const selects=nodes(View(),n=>n.type==="select");assert.equal(selects.length,3);selects[1].props.onChange({target:{value:"1"}});selects[2].props.onChange({target:{value:""}});assert.deepEqual(saved,[{maxLossPercent:1},{cashReservePercent:null}]);
+});
+
+test("unavailable notification delivery is one clear notice, not five dead controls", () => {
+ const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:()=>{},saving:false,ready:true,localOnly:false,error:null})});
+ const tree=View();
+ assert.equal(nodes(tree,n=>n.type==="button" && n.props.disabled).length,0);
+});
+
+
+test("Settings avoids duplicated preset controls and links directly to important groups", () => {
+ const {tree}=settings({routePrefix:"/preview"});
+ const source=fs.readFileSync("components/SupportingViews.tsx","utf8").split("export function Compare")[0];
+ assert.doesNotMatch(source, /<SettingsExperience/);
+ assert.match(source, /showConcentration=\{false\}/);
+ assert.equal((source.match(/section="policy"/g)||[]).length,1);
+ assert.ok(nodes(tree,n=>n.type==="a" && n.props.href==="#settings-signals").length);
+ assert.ok(nodes(tree,n=>n.type==="a" && n.props.href==="#settings-policy").length);
+});
+test("Settings concentration control persists in the single guardrail section",()=>{
+ const saved=[];const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[],concentrationLimit:20},save:p=>saved.push(p),saving:false,ready:true,localOnly:false,error:null})});
+ const tree=View({section:"policy"});
+ assert.equal(nodes(tree,n=>n.type==="input").length,0);
+ nodes(tree,n=>n.type==="select" && n.props["aria-label"]==="Single-position attention threshold")[0].props.onChange({target:{value:"25"}});
+ assert.deepEqual(saved,[{concentrationLimit:25}]);
+});
+
+test("Settings offers only supported in-app alert setup without subscribing", () => {
+ const writes=[];
+ const View=load("components/SettingsExperience.tsx","SettingsSignalPolicies",{useWorkspacePreferences:()=>({preferences:{hiddenSignals:[]},save:p=>writes.push(p),saving:false,ready:true,localOnly:false,error:null})});
+ const tree=View({section:"notifications"});
+ const links=nodes(tree,n=>n.type==="a");
+ assert.deepEqual(links.map(n=>n.props.href),['alerts?type=monthly-zone','alerts?type=earnings-soon','alerts?type=new-filing']);
+ for (const base of ['https://example.test/settings','https://example.test/preview/settings']) {
+   for (const link of links) assert.equal(new URL(link.props.href,base).pathname,base.includes('/preview/')?'/preview/alerts':'/alerts');
+ }
+ assert.equal(nodes(tree,n=>n.type==="select" || n.type==="input").length,0);
+ assert.deepEqual(writes,[]);
 });

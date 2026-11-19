@@ -23,18 +23,12 @@ export default function EarningsWorkspace({
         <div>
           <span className="eyebrow">Expectations & delivery</span>
           <h3>Earnings checkpoints</h3>
-          <p>Results and forecasts stay separate. Estimates can change.</p>
         </div>
       </header>
       {rows.length > 0 && (
         <div className="table-scroll">
           <table>
-            <caption>
-              Reported EPS versus the supplied estimate. Surprise = (actual −
-              estimate) / |estimate|. Currency and adjusted/GAAP basis are not
-              consistently supplied for historical EPS; compare within the same
-              series.
-            </caption>
+            <caption>EPS results and surprise</caption>
             <thead>
               <tr>
                 <th>Report date</th>

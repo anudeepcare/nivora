@@ -1,12 +1,18 @@
 "use client";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Position, Quote } from "@/lib/types";
 import type { HomeFeed } from "@/lib/home-feed";
 import { portfolioRiskSummary } from "@/lib/product-attention";
 import { amount, percent } from "@/lib/format";
 import { useProduct, useResource } from "./Session";
+import { api } from "@/lib/client";
+import {
+  readPortfolioCalendar,
+  invalidatePortfolioCalendar,
+} from "@/lib/portfolio-calendar-resource";
+import { loadPortfolioCalendar } from "@/lib/portfolio-calendar";
 export function usePortfolioCalendar(positions: Position[]) {
-  const { demo, workspace } = useProduct(),
+  const { demo, workspace, cache } = useProduct(),
     symbols = [
       ...new Set([
         ...positions
@@ -16,19 +22,73 @@ export function usePortfolioCalendar(positions: Position[]) {
       ]),
     ]
       .filter((s) => /^[A-Z][A-Z0-9.-]{0,14}$/.test(s))
-      .slice(0, 30),
+      .sort(),
     key = symbols.join(",");
-  const preview = useMemo(
-    () => (demo ? { events: [], issues: [], followed: 0 } : undefined),
-    [demo],
-  );
-  const calendar = useResource<
-    Pick<HomeFeed, "events" | "issues" | "followed">
-  >(
-    key ? `home-feed?kind=events&symbols=${encodeURIComponent(key)}` : null,
-    preview,
-    300000,
-  );
+  const resourceKey = `portfolio-calendar:${key}`;
+  type Calendar = Awaited<ReturnType<typeof loadPortfolioCalendar>>;
+  const [revision, setRevision] = useState(0);
+  const [state, setState] = useState<{
+    key: string;
+    data: Calendar | null;
+    loading: boolean;
+    error: string;
+  }>({ key: resourceKey, data: null, loading: !!key, error: "" });
+  useEffect(() => {
+    if (demo) return;
+    let active = true;
+    const abort = new AbortController();
+    setState({ key: resourceKey, data: null, loading: !!key, error: "" });
+    readPortfolioCalendar(
+      cache,
+      resourceKey,
+      key ? key.split(",") : [],
+      (batch, signal) =>
+        api<HomeFeed>(
+          `home-feed?kind=events&symbols=${encodeURIComponent(batch.join(","))}`,
+          undefined,
+          signal,
+        ),
+      abort.signal,
+    )
+      .then((data) => {
+        if (active)
+          setState({ key: resourceKey, data, loading: false, error: "" });
+      })
+      .catch(() => {
+        if (active)
+          setState({
+            key: resourceKey,
+            data: null,
+            loading: false,
+            error: "Calendar unavailable. Please retry later.",
+          });
+      });
+    return () => {
+      active = false;
+      abort.abort();
+    };
+  }, [demo, key, resourceKey, cache, revision]);
+  const calendar = {
+    ...(demo
+      ? {
+          data: {
+            events: [],
+            issues: [],
+            followed: 0,
+            requested: 0,
+            eventsReady: true,
+          },
+          loading: false,
+          error: "",
+        }
+      : state.key === resourceKey
+        ? state
+        : { data: null, loading: !!key, error: "" }),
+    refresh: () => {
+      invalidatePortfolioCalendar(cache, resourceKey);
+      setRevision((r) => r + 1);
+    },
+  };
   const refresh = useRef(calendar.refresh);
   refresh.current = calendar.refresh;
   useEffect(() => {

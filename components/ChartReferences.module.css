@@ -1,0 +1,102 @@
+.references {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 10px;
+}
+.references > span,
+.references button {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1.4;
+  background: var(--surface);
+  color: var(--muted);
+  border: 0;
+  white-space: nowrap;
+}
+.references button {
+  cursor: pointer;
+  min-height: 32px;
+  color: var(--ink);
+}
+.references i {
+  display: inline-block;
+  height: 2px;
+  width: 12px;
+}
+@media (max-width: 600px) {
+  .references {
+    gap: 5px;
+  }
+  .references > span {
+    font-size: 9px;
+    padding: 5px 7px;
+  }
+}
+
+.tools.tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0;
+  padding: 0;
+}
+.tools.tools :global(.segments) {
+  margin: 0;
+}
+.tools.tools > button {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.referenceDetails {
+  margin: 4px 0;
+  font-size: 12px;
+}
+.referenceDetails summary {
+  cursor: pointer;
+  padding: 6px 0;
+}
+
+/* One swipeable phone toolbar rather than multiple rows above the plot. */
+@media (max-width: 600px) {
+  .tools.tools {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    padding-block: 4px;
+    scrollbar-width: thin;
+  }
+  .tools.tools > * {
+    flex-shrink: 0;
+  }
+  .tools.tools > button {
+    min-height: 44px;
+    white-space: nowrap;
+  }
+  .tools.tools :global(.segments) {
+    flex-wrap: nowrap;
+  }
+  .tools.tools :global(.segments) button {
+    min-height: 44px;
+  }
+  .references {
+    gap: 6px 12px;
+  }
+  .references > span {
+    padding: 2px 0;
+    background: transparent;
+    font-size: 11px;
+    white-space: normal;
+  }
+  .referenceDetails summary {
+    min-height: 44px;
+    align-content: center;
+  }
+}

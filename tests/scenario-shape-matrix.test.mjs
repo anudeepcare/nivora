@@ -37,6 +37,11 @@ for (const shape of ["nested-annual", "flat-fiscal", "flat-relative"])
             earningsEstimateHigh: 3,
           },
         };
+        // "missing-eps" exercises revenue recovery (or bank withholding), so
+        // every annual EPS range must be incomplete. The nearer year is now
+        // eligible under the 90-day horizon and must not silently rescue it.
+        if (pattern === "missing-eps")
+          rows["2027-03-31"].earningsEstimateLow = null;
         if (pattern === "incomplete-nearer")
           rows["2029-10-17"] = {
             ...estimate,

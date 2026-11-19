@@ -15,7 +15,8 @@ export function canonical(r: Research) {
       .at(-1);
   const content = {
     company: r.company,
-    policy: "research-v1.6",
+    policy: "research-v1.7",
+    pacePolicy: p.dca.version,
     classification: r.evidence?.profile
       ? {
           sector: r.evidence.profile.sector,

@@ -68,7 +68,9 @@ test("a completed P2 and forming P4 keep their independent identities through de
   const d = aurynDecision(r, { now: Date.parse(r.retrievedAt) });
   assert.equal(d.brief.accumulation.multiplier, 2);
   assert.equal(d.brief.accumulation.forming.multiplier, 4);
-  assert.equal(d.actionLabel, "Buy small");
+  // Evidence rule, 10 Nov 2026: the fixture is a deep fall, so the call waits; the
+  // completed and forming zones keep their separate identities below.
+  assert.equal(d.actionLabel, "Wait before buying");
 });
 test("P4 cannot bypass any business risk or essential data check", () => {
   for (const level of [0, 1, 2, 3, 4]) {

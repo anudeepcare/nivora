@@ -2,9 +2,7 @@
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import type { PriceRiskScenarios } from "@/lib/price-risk-scenarios";
 import { amount, percent, dateLabel } from "@/lib/format";
-import { valuationScale } from "@/lib/research-summary";
 import styles from "./PriceRiskCases.module.css";
-import ScenarioSensitivity from "./ScenarioSensitivity";
 export default function PriceRiskCases({
   scenarios: s,
   compact = false,
@@ -21,10 +19,12 @@ export default function PriceRiskCases({
           ? `Historical downside · ${c.percentile}th percentile`
           : `Historical upside · ${c.percentile}th percentile`,
   }));
-  const scale = valuationScale(
-    cases.map((c) => c.target),
-    s.reference,
+  const extent = [...cases.map((c) => c.target), s.reference].filter(
+    Number.isFinite,
   );
+  const lo = Math.min(...extent),
+    hi = Math.max(...extent);
+  const position = (value: number) => 5 + (90 * (value - lo)) / (hi - lo || 1);
   return (
     <div className={`price-risk-cases ${styles.root}`} data-compact={compact}>
       <div className="price-risk-label">
@@ -67,27 +67,63 @@ export default function PriceRiskCases({
               </span>
               <strong>{amount(c.target, s.currency)}</strong>
               <small>{percent(c.change, true)} vs reference</small>
-              {scale && (
-                <ScenarioSensitivity
-                  className={styles.range}
-                  target={c.target}
-                  reference={s.reference}
-                  scale={scale}
-                  label={`${c.name}: ${amount(c.target, s.currency)}; reference ${amount(s.reference, s.currency)}`}
-                />
-              )}
             </article>
           );
         })}
       </div>
+      <svg
+        className={styles.rangeGraphic}
+        viewBox="0 0 100 12"
+        role="img"
+        aria-label="Historical downside, midpoint and upside on a common price scale; vertical tick marks the reference price"
+      >
+        <line
+          x1="5"
+          x2="95"
+          y1="5"
+          y2="5"
+          stroke="currentColor"
+          strokeOpacity=".2"
+          strokeWidth=".6"
+        />
+        {cases.map((c) => (
+          <circle
+            key={c.percentile}
+            cx={position(c.target)}
+            cy="5"
+            r="1"
+            fill={
+              c.percentile < 50
+                ? "#c65050"
+                : c.percentile > 50
+                  ? "#00866b"
+                  : "#a38232"
+            }
+          />
+        ))}
+        <line
+          x1={position(s.reference)}
+          x2={position(s.reference)}
+          y1="2.5"
+          y2="7.5"
+          stroke="currentColor"
+          strokeWidth=".4"
+        />
+      </svg>
       <p className="price-risk-selected">
-        Sensitivity diagrams · shared price scale · not a time path. Past{" "}
-        {s.horizon}-session returns applied to the reference; not fair values or
-        forecasts. The midpoint is the historical median.
+        Reference {amount(s.reference, s.currency)} ·{" "}
+        {dateLabel(s.referenceDate)}. Historical returns, not forecasts or fair
+        value.
       </p>
       <details>
         <summary>Basis &amp; limits · {s.samples} historical windows</summary>
         <p>{s.caveat}</p>
+        <p>
+          The midpoint is the historical median, not the expected future price.
+          Predictive accuracy has not been validated; outcomes can fall outside
+          this range. These percentiles describe past returns, not probabilities
+          of future prices.
+        </p>
         <p>
           Observed history {dateLabel(s.from)}–{dateLabel(s.through)}. Reference{" "}
           {amount(s.reference, s.currency)} · {dateLabel(s.referenceDate)}

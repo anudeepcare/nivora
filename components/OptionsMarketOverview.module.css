@@ -1,0 +1,262 @@
+.search {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 28rem;
+  margin: 1rem 0;
+}
+.search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+}
+/* One paged comparison, not a full-universe table plus a second ticker scroller. */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+.pagination button {
+  min-height: 44px;
+  padding: 8px 14px;
+}
+.pagination span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.tableScroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.tableScroll:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+.table th:first-child {
+  text-align: left;
+}
+.table thead {
+  color: var(--muted);
+  background: var(--card);
+}
+.table th {
+  font-weight: 500;
+}
+.table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--blue) 4%, var(--card));
+}
+.table a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.screener {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: clamp(16px, 3vw, 28px);
+  background: var(--card);
+  margin-top: 16px;
+  min-width: 0;
+}
+.screener h2 {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.screener > p {
+  max-width: 90ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.screener form {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  align-items: end;
+}
+.screener form label {
+  margin: 0;
+  flex: 1 1 180px;
+  font-size: 12px;
+}
+.screener select {
+  min-height: 44px;
+  width: 100%;
+}
+
+.mobileViewChoice {
+  display: none;
+}
+.mobileViewChoice select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  padding: 10px;
+  font: inherit;
+}
+.mobileViewChoice select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+/* Market discovery shell: one title, one view switch, one comparison surface. */
+.page {
+  max-width: 1440px;
+  margin: 0 auto;
+  min-width: 0;
+}
+.pageHeader {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 6px 20px;
+  margin-bottom: 20px;
+}
+.pageHeader h1 {
+  font-size: clamp(26px, 3vw, 38px);
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  margin: 0;
+}
+.pageHeader p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.pageHeader p:first-of-type {
+  grid-column: 1;
+}
+.pageHeader p:last-of-type {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+.pageHeader a {
+  display: inline-flex;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  min-height: 44px;
+  align-items: center;
+}
+.viewSwitch {
+  margin-bottom: 14px;
+}
+.pagination button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.overview {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  background: var(--card);
+  min-width: 0;
+}
+.overview > p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+.overview .coverage {
+  display: inline-block;
+  margin: 0 0 0 16px;
+  font-size: 12px;
+}
+.overview .search {
+  max-width: 440px;
+  margin: 16px 0 10px;
+  font-size: 12px;
+}
+.overview .resultCount {
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+.pagination button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 13px;
+}
+.pagination button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.overview .tableScroll {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.overview .table thead {
+  background: var(--surface);
+}
+.overview .table th,
+.overview .table td {
+  padding: 10px 14px;
+}
+.overview .table a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.overview .table a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 650px) {
+  .pageHeader {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pageHeader p:last-of-type {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: 6px;
+  }
+  .overview {
+    padding: 14px;
+  }
+  .overview .coverage {
+    display: block;
+    margin: 10px 0;
+  }
+  .mobileViewChoice {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .mobileViewChoice select {
+    font-size: 16px;
+  }
+  .viewSwitch {
+    display: none;
+  }
+  .viewSwitch button {
+    flex: 1;
+    padding-inline: 10px;
+  }
+}

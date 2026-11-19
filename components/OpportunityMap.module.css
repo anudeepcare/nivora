@@ -142,3 +142,57 @@
     font-size: 20px;
   }
 }
+
+/* In Today this is secondary cached business evidence, not the daily price job. */
+.compact {
+  margin: 0;
+  padding: 16px 22px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.compact header {
+  align-items: center;
+}
+.compact h2 {
+  font-size: 16px;
+  margin: 0;
+}
+.compact .eyebrow {
+  display: none;
+}
+.compact .note {
+  margin: 8px 0;
+  line-height: 1.45;
+}
+.compact .tile {
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+.compact .tile h3,
+.compact .tile button {
+  margin-bottom: 6px;
+}
+.compact .tile strong {
+  font-size: 20px;
+}
+.compact .tile p {
+  margin-top: 6px;
+}
+.compact .bar {
+  margin-top: 6px;
+  height: 3px;
+}
+@media (max-width: 600px) {
+  .compact {
+    padding: 14px;
+  }
+  .compact header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .compact .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

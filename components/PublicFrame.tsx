@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PublicHomeLink from "./PublicHomeLink";
 import type { ReactNode } from "react";
 import s from "./PublicFrame.module.css";
 export default function PublicFrame({
@@ -13,10 +14,10 @@ export default function PublicFrame({
   return (
     <main className={s.page}>
       <header className={s.header}>
-        <Link href="/" className={s.brand}>
+        <PublicHomeLink className={s.brand}>
           <img src="/icon.svg" width="28" height="28" alt="" />
           AURYN
-        </Link>
+        </PublicHomeLink>
         <nav aria-label="Public navigation">
           <Link href="/about">How it works</Link>
           <Link href="/track-record">Pace & evidence</Link>

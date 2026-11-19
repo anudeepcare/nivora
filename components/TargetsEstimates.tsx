@@ -1,13 +1,14 @@
 "use client";
-import { useId, useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import type { Research } from "@/lib/types";
 import { researchOutlook } from "@/lib/outlook";
+import { scenarioResearchInput } from "@/lib/scenario-reference";
 import { targetsEstimates } from "@/lib/targets-estimates";
 import { amount, dateLabel, percent } from "@/lib/format";
 import AnalystTargets from "./AnalystTargets";
 import EstimateRevisions from "./EstimateRevisions";
 import PriceRiskCases from "./PriceRiskCases";
-import ValuationLab from "./ValuationLab";
+import SelectedValuation from "./SelectedValuation";
 import styles from "./TargetsEstimates.module.css";
 
 const tabs = [
@@ -18,12 +19,14 @@ const tabs = [
 ] as const;
 export default function TargetsEstimates({
   research: r,
+  ratings,
 }: {
   research: Research;
+  ratings?: ReactNode;
 }) {
   const model = useMemo(() => targetsEstimates(r), [r]);
   const [active, setActive] = useState(0);
-  const id = useId();
+  const id = `auryn-targets-${encodeURIComponent(r.company.symbol)}`;
   const [multipleInput, setMultipleInput] = useState({
     symbol: r.company.symbol,
     value: "",
@@ -33,7 +36,9 @@ export default function TargetsEstimates({
   const forecast = useMemo(
     () =>
       multipleValue.trim()
-        ? researchOutlook(r, { earningsMultiple: Number(multipleValue) })
+        ? researchOutlook(scenarioResearchInput(r), {
+            earningsMultiple: Number(multipleValue),
+          })
         : model.forecast,
     [r, model.forecast, multipleValue],
   );
@@ -41,25 +46,13 @@ export default function TargetsEstimates({
     <section className={styles.root} aria-label="Targets and estimates">
       <header className={styles.header}>
         <div>
-          <span className="eyebrow">Expectations & assumptions</span>
-          <h2>Targets & Estimates</h2>
-          <p>
-            Published expectations, conditional AURYN models and historical
-            price risk answer different questions.
-          </p>
-        </div>
-        <div className={styles.quote}>
-          <small>
-            {r.quote.stale ? "Older reference quote" : "Reference quote"}
-          </small>
-          <strong>{amount(r.quote.price, r.quote.currency)}</strong>
-          <small>
-            {dateLabel(r.quote.asOf)} · {r.quote.currency}
-          </small>
+          <h2>Targets & estimates</h2>
         </div>
       </header>
       <div
-        className={styles.tabs}
+        className={`${styles.tabs} auryn-view-tabs`}
+        data-selection-navigation
+        data-nested-navigation
         role="tablist"
         aria-label="Target and estimate views"
       >
@@ -91,12 +84,13 @@ export default function TargetsEstimates({
               }
             }}
           >
-            {label}
+            <span aria-hidden="true" data-nav-icon={label} />
+            <span>{label}</span>
           </button>
         ))}
       </div>
       <div
-        className={styles.panel}
+        className={`${styles.panel} ${active === 0 && ratings ? styles.consensusGrid : ""}`}
         role="tabpanel"
         id={`${id}-panel-${active}`}
         aria-labelledby={`${id}-tab-${active}`}
@@ -105,33 +99,7 @@ export default function TargetsEstimates({
         {active === 0 && (
           <>
             <AnalystTargets research={r} showUnavailable />
-            <dl className={styles.metadata}>
-              <div>
-                <dt>Target contributors</dt>
-                <dd>Not supplied</dd>
-              </div>
-              <div>
-                <dt>Target horizon</dt>
-                <dd>Not supplied</dd>
-              </div>
-              <div>
-                <dt>Dataset updated</dt>
-                <dd>{dateLabel(model.consensus?.asOf)}</dd>
-              </div>
-              <div>
-                <dt>Currency</dt>
-                <dd>{r.quote.currency}</dd>
-              </div>
-            </dl>
-            <p className={styles.note}>
-              Rating counts are not target-contributor coverage. Missing
-              low/high targets stay unavailable. Dataset dates are not
-              individual analyst publication dates.
-            </p>
-            <p className={styles.note}>
-              Target share/split basis is not independently supplied; no split
-              adjustment is inferred.
-            </p>
+            {ratings}
           </>
         )}
         {active === 1 && (
@@ -188,49 +156,33 @@ export default function TargetsEstimates({
             ) : (
               <p className={styles.empty}>{model.estimatesReason}</p>
             )}
-            <p className={styles.note}>
-              Ranges are provider-reported estimates. Analyst counts refer to
-              EPS coverage; revenue contributor counts are not supplied. Fiscal
-              periods may be awaiting results. Relative provider labels use the
-              year of the period end. EPS accounting and split basis are not
-              independently verified.
-            </p>
+            <details className={styles.assumptions}>
+              <summary>Estimate coverage</summary>
+              <p className={styles.note}>
+                Ranges are provider-reported estimates. Analyst counts refer to
+                EPS coverage; revenue contributor counts are not supplied.
+                Fiscal periods may be awaiting results. Relative provider labels
+                use the year of the period end. EPS accounting and split basis
+                are not independently verified.
+              </p>
+            </details>
             <EstimateRevisions research={r} />
           </>
         )}
         {active === 2 && (
           <>
-            <div className={styles.subhead}>
-              <h3>Conditional earnings & revenue sensitivity</h3>
-              <span>Conditional assumptions · not analyst price targets</span>
-            </div>
-            <p className={styles.note}>
-              Analyst targets are published opinions. This model applies an exit
-              multiple to a fiscal-year forecast; historical outcomes use past
-              price moves. Different dates and assumptions produce different
-              values.
-            </p>
-            <details className={styles.assumptions}>
-              <summary>Inspect or change the earnings P/E assumption</summary>
-              <p className={styles.note}>
-                Source: {r.evidence?.source ?? "Estimate provider"} · dataset
-                updated {dateLabel(model.asOf)}. Reported forward P/E:{" "}
-                {r.evidence?.multiples?.ForwardPE != null
-                  ? `${r.evidence.multiples.ForwardPE.toFixed(1)}×`
-                  : "not supplied"}
-                . Its denominator period and accounting/split basis are not
-                supplied. Automatic use requires compatibility with the nearest
-                annual EPS range. The model selects the eligible forecast
-                nearest three years.
-              </p>
+            <section
+              className={styles.assumptionBar}
+              aria-label="Scenario P/E assumption"
+            >
               <label className={styles.control}>
-                Your exit P/E assumption (earnings cases only)
+                Exit P/E assumption
                 <input
                   type="number"
                   min="0.1"
                   max="500"
                   step="0.1"
-                  placeholder="Use checked provider P/E"
+                  placeholder="Use reported P/E"
                   value={multipleValue}
                   onChange={(event) =>
                     setMultipleInput({
@@ -240,23 +192,53 @@ export default function TargetsEstimates({
                   }
                 />
               </label>
+              <dl className={styles.assumptionFacts}>
+                <div>
+                  <dt>Reported forward P/E</dt>
+                  <dd>
+                    {r.evidence?.multiples?.ForwardPE != null
+                      ? `${r.evidence.multiples.ForwardPE.toFixed(1)}×`
+                      : "Not supplied"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Estimate horizon</dt>
+                  <dd>
+                    {forecast.available
+                      ? `${forecast.period} · ${dateLabel(forecast.end)}`
+                      : "See selected scenario period"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Dataset updated</dt>
+                  <dd>{dateLabel(model.asOf)}</dd>
+                </div>
+              </dl>
               {multipleValue && (
                 <button
                   type="button"
+                  className={styles.resetAssumption}
                   onClick={() =>
                     setMultipleInput({ symbol: r.company.symbol, value: "" })
                   }
                 >
-                  Reset to checked provider P/E
+                  Reset P/E
                 </button>
               )}
-              <p className={styles.note}>
-                Low / central / high cases use 0.8× / 1.0× / 1.2× this multiple.
-                Changing it does not change analyst consensus or validate the
-                EPS accounting basis.
-              </p>
-            </details>
-            {forecast.available ? (
+              <details className={styles.assumptionHelp}>
+                <summary>Assumptions & limits</summary>
+                <p className={styles.note}>
+                  The earnings cases use 0.8× / 1.0× / 1.2× the selected
+                  multiple. Changing this input does not change analyst
+                  consensus. The nearest eligible three-year estimate supplies
+                  the horizon; EPS period, accounting and split basis need
+                  verification.
+                </p>
+              </details>
+            </section>
+            {!multipleValue ? (
+              <SelectedValuation research={r} />
+            ) : forecast.available ? (
               <>
                 <p>
                   {forecast.multipleSource === "user-assumption"
@@ -278,15 +260,8 @@ export default function TargetsEstimates({
                 )}
                 <div className={styles.cases}>
                   {forecast.cases.map((c) => (
-                    <article key={c.name}>
-                      <span>
-                        {c.name === "Bear"
-                          ? "Lower"
-                          : c.name === "Bull"
-                            ? "Higher"
-                            : "Central"}{" "}
-                        assumption
-                      </span>
+                    <article key={c.name} data-case={c.name.toLowerCase()}>
+                      <span>{c.name} scenario</span>
                       <strong>{amount(c.target, forecast.currency)}</strong>
                       <b>{percent(c.change, true)} vs reference</b>
                       <small>
@@ -318,10 +293,6 @@ export default function TargetsEstimates({
             ) : (
               <p className={styles.empty}>{forecast.reason}</p>
             )}
-            <details className={styles.lab}>
-              <summary>Test cash-flow assumptions & reverse valuation</summary>
-              <ValuationLab research={r} />
-            </details>
           </>
         )}
         {active === 3 && (

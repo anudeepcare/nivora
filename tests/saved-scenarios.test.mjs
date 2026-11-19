@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {cleanSavedScenario,matchingSavedScenario,applySavedScenario} from '../lib/saved-scenarios.ts';
+const sample=()=>({version:1,symbol:'APP',currency:'USD',baselineDate:'2026-09-30',savedAt:'2026-11-17T12:00:00Z',years:3,selected:'Base',input:{revenue:1000,shares:100,growth:12,margin:25,multiple:20,dilution:1,discount:10}});
+test('scenario validates bounded assumptions and removes unexpected properties',()=>{assert.deepEqual(cleanSavedScenario({...sample(),token:'do not retain'}),sample());for(const input of [{growth:Infinity},{shares:0},{margin:101},{discount:-1}])assert.throws(()=>cleanSavedScenario({...sample(),input:{...sample().input,...input}}));});
+test('saved cases cannot restore across a different symbol or currency',()=>{assert.equal(matchingSavedScenario(sample(),'MSFT','USD'),null);assert.equal(matchingSavedScenario(sample(),'APP','EUR'),null);assert.equal(matchingSavedScenario({bad:true},'APP','USD'),null);assert.ok(matchingSavedScenario(sample(),'APP','USD'));});
+test('restoring assumptions always keeps current reporting baseline, not stale revenue/shares',()=>{const current={...sample().input,revenue:2000,shares:120,growth:0};const restored=applySavedScenario(sample(),current);assert.equal(restored.revenue,2000);assert.equal(restored.shares,120);assert.equal(restored.growth,12);});
+import {cleanDocument} from '../lib/documents.ts';
+test('document validation persists cases only under matching company and rejects mismatch',()=>{const d=cleanDocument('view',{name:'Case',symbols:['APP'],scenarioCase:sample()});assert.deepEqual(d.scenarioCase,sample());assert.throws(()=>cleanDocument('view',{symbols:['MSFT'],scenarioCase:sample()}));assert.throws(()=>cleanDocument('view',{symbols:[],scenarioCase:sample()}));});

@@ -1,83 +1,108 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { useProduct } from "./Session";
+import { useEffect, useState, useRef } from "react";
 import type { Research } from "@/lib/types";
 import {
-  evidenceObservation,
-  evidenceChanges,
-  parseSavedEvidence,
-  type SavedEvidence,
-} from "@/lib/research-integrity";
+  parseVisitSnapshot,
+  researchVisitSnapshot,
+  researchChanges,
+  type ResearchChange,
+  type VisitSnapshot,
+} from "@/lib/research-changes";
+import { dateLabel } from "@/lib/format";
+import styles from "./ResearchChanges.module.css";
 export default function ResearchChanges({
-  research: r,
+  research,
+  pace,
+  now,
+  onOpen,
 }: {
   research: Research;
+  pace: VisitSnapshot["pace"];
+  now: number;
+  onOpen: (tab: "Technicals" | "Analysts") => void;
 }) {
-  const { cache, owner, demo } = useProduct(),
-    seen = useRef("");
-  const [changes, setChanges] = useState<string[]>([]),
-    [baseline, setBaseline] = useState(false),
-    [saved, setSaved] = useState(true);
+  const [visit, setVisit] = useState<{
+    symbol: string;
+    date: string;
+    changes: ResearchChange[];
+  } | null>(null);
+  const captured = useRef<{
+    symbol: string;
+    baseline: VisitSnapshot | null;
+  } | null>(null);
   useEffect(() => {
-    const token = `${owner}:${r.company.symbol}:${r.retrievedAt}`;
-    if (seen.current === token) return;
-    seen.current = token;
-    const current = evidenceObservation(r),
-      key = `auryn-observed-v1:${owner}:${r.company.symbol}`;
-    let prior: SavedEvidence | null = null;
+    const key = `auryn:research-visit:v1:${research.company.symbol}`;
     try {
-      const x = JSON.parse(localStorage.getItem(key) || "null");
-      prior = parseSavedEvidence(x);
-    } catch {}
-    const list = evidenceChanges(prior, current);
-    setChanges(list);
-    setBaseline(!prior);
-    setSaved(true);
-    if (!demo)
-      try {
-        localStorage.setItem(key, JSON.stringify(current));
-      } catch {
-        setSaved(false);
+      if (captured.current?.symbol !== research.company.symbol) {
+        const stored = parseVisitSnapshot(localStorage.getItem(key), now);
+        captured.current = {
+          symbol: research.company.symbol,
+          baseline:
+            stored && now - Date.parse(stored.seenAt) >= 15 * 60000
+              ? stored
+              : null,
+        };
       }
-    if (list.length) {
-      const feed = (cache.get("brief:changes")?.value ?? []) as {
-        symbol: string;
-        changes: string[];
-        at: string;
-      }[];
-      cache.set("brief:changes", {
-        at: Date.now(),
-        value: [
-          { symbol: r.company.symbol, changes: list, at: r.retrievedAt },
-          ...feed.filter((x) => x.symbol !== r.company.symbol),
-        ].slice(0, 12),
-      });
+      const previous = captured.current.baseline;
+      const next = researchVisitSnapshot(research, pace, now);
+      const changes = previous ? researchChanges(previous, next) : [];
+      setVisit(
+        previous && changes.length
+          ? { symbol: next.symbol, date: previous.seenAt, changes }
+          : null,
+      );
+      const storedData = parseVisitSnapshot(localStorage.getItem(key), now);
+      const stored = storedData?.currency === next.currency ? storedData : null;
+      const latest = {
+        ...next,
+        price:
+          stored?.price &&
+          (!next.price ||
+            Date.parse(stored.price.date) > Date.parse(next.price.date))
+            ? stored.price
+            : next.price,
+        pace:
+          stored?.pace &&
+          (!next.pace ||
+            Date.parse(stored.pace.date) > Date.parse(next.pace.date))
+            ? stored.pace
+            : next.pace,
+        ...(stored?.dataset &&
+        (!next.dataset ||
+          Date.parse(stored.dataset.date) > Date.parse(next.dataset.date))
+          ? {
+              dataset: stored.dataset,
+              estimate: stored.estimate,
+              target: stored.target,
+            }
+          : {}),
+      };
+      if (latest.price || latest.pace)
+        localStorage.setItem(key, JSON.stringify(latest));
+    } catch {
+      /* Private browsing/storage limits do not block research. */
     }
-  }, [r, owner, cache, demo]);
-
-  if (!seen.current) return null;
+  }, [research, pace, now]);
+  if (!visit || visit.symbol !== research.company.symbol) return null;
   return (
-    <section className="observed-changes">
-      <span className="eyebrow">
-        {baseline ? "Your first observation" : "Since your previous saved view"}
-      </span>
-      {changes.map((x) => (
-        <p key={x}>{x}</p>
-      ))}
-      {!changes.length && (
-        <p>
-          {baseline
-            ? "This view establishes a baseline. Future visits can show changes to available evidence."
-            : "No tracked evidence changes detected since your saved view."}
-        </p>
-      )}
-      <small>
-        {!saved
-          ? "Device storage is unavailable; this observation will not persist."
-          : demo
-            ? "Preview does not save observation history."
-            : "Saved on this device for this account; not a continuous market monitor or complete revision history."}
-      </small>
-    </section>
+    <aside className={styles.root} aria-label="Changes since your last visit">
+      <header>
+        <strong>Since you last checked</strong>
+        <small>{dateLabel(visit.date)} · this device</small>
+      </header>
+      <div>
+        {visit.changes.map((change) => (
+          <button
+            type="button"
+            key={change.label}
+            onClick={() => onOpen(change.destination)}
+          >
+            <span>{change.label}</span>
+            <strong>{change.detail}</strong>
+            <span aria-hidden="true">↗</span>
+          </button>
+        ))}
+      </div>
+    </aside>
   );
 }

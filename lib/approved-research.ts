@@ -84,7 +84,7 @@ export function approvedResearch(
       "pace",
       edge.pace >= 2 ? "buy" : "wait",
       Math.max(1, edge.pace),
-      `P${edge.pace} confirmed price reading`,
+      `P${edge.pace} current price zone`,
       "Technicals",
     );
   if (edge.value === "supported")
@@ -110,29 +110,18 @@ export function approvedResearch(
   if (edge.riskReview) add("risk", "wait", 4, edge.risk, "Thesis");
   if (!factors.some((x) => x.side === "wait") && b.counterCase[0])
     add("counter", "wait", 2, b.counterCase[0], "Thesis");
-  const price = r.quote.price;
-  const currencyAligned = r.quote.currency === r.company.currency;
-  const scenario =
-    b.scenarioEligible && b.scenario && b.scenario.currency === r.quote.currency
-      ? b.scenario
-      : null;
+  const valuation = decision.valuation;
+  const price = decision.reference?.price ?? null;
+  const scenario = valuation;
   const cases =
-    price != null && price > 0 && currencyAligned
-      ? scenario
-        ? ["Bear", "Base", "Bull"].map((name, i) => ({
-            name,
-            target: [scenario.low, scenario.base, scenario.high][i],
-            change:
-              ([scenario.low, scenario.base, scenario.high][i] / price - 1) *
-              100,
-          }))
-        : b.priceRisk.available
-          ? b.priceRisk.cases.map((c) => ({
-              name: c.name,
-              target: c.target,
-              change: c.change,
-            }))
-          : []
+    scenario && price != null
+      ? ["Bear", "Base", "Bull"].map((name, i) => ({
+          name,
+          target: [scenario.bear, scenario.base, scenario.bull][i],
+          change:
+            ([scenario.bear, scenario.base, scenario.bull][i] / price - 1) *
+            100,
+        }))
       : [];
   const safeCases =
     cases.length === 3 &&
@@ -148,30 +137,15 @@ export function approvedResearch(
     evidence,
     factors,
     cases: safeCases,
-    scenarioBasis: scenario
-      ? "Earnings sensitivity"
-      : b.priceRisk.available
-        ? "Historical volatility sensitivity"
-        : "",
+    scenarioBasis: scenario?.label ?? "",
+    scenarioKind: scenario?.basis ?? null,
+    scenarioAssumptions: scenario?.assumptions ?? null,
     scenarioEnd: scenario?.end ?? null,
     scenarioYears: scenario?.years ?? null,
-    scenarioHorizon:
-      !scenario && b.priceRisk.available ? b.priceRisk.horizon : null,
-    scenarioReference: scenario
-      ? price
-      : b.priceRisk.available
-        ? b.priceRisk.reference
-        : null,
-    scenarioReferenceDate: scenario
-      ? r.quote.asOf
-      : b.priceRisk.available
-        ? b.priceRisk.referenceDate
-        : null,
-    scenarioReferenceBasis: scenario
-      ? "quote"
-      : b.priceRisk.available
-        ? b.priceRisk.referenceBasis
-        : null,
+    scenarioHorizon: null,
+    scenarioReference: price,
+    scenarioReferenceDate: decision.reference?.asOf ?? null,
+    scenarioReferenceBasis: decision.reference?.basis ?? null,
     title: `${decision.actionLabel}. ${decision.headline}`,
     metrics: [
       ...evidence.business,

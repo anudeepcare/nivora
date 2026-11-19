@@ -65,6 +65,26 @@ function render(chain, view = "positioning") {
   ).outputText;
   new Function("require", "module", "exports", code)(
     (name) => {
+      if (name === "./GuardrailReview")
+        return { __esModule: true, default: () => null };
+      if (name === "./QuickRead")
+        return {
+          __esModule: true,
+          default: ({ items }) =>
+            React.createElement(
+              "section",
+              null,
+              items.map((x) =>
+                React.createElement(
+                  "article",
+                  { key: x.label },
+                  x.label,
+                  x.value,
+                  x.detail,
+                ),
+              ),
+            ),
+        };
       if (name === "./SearchableSelect")
         return {
           __esModule: true,
@@ -114,7 +134,14 @@ function render(chain, view = "positioning") {
     React.createElement(mod.exports.default, {
       research: {
         company: { symbol: "TEST" },
-        quote: { price: 100, currency: "USD", asOf: new Date().toISOString() },
+        quote: {
+          price: 100,
+          currency: "USD",
+          asOf: "2026-11-17T20:42:31Z",
+          source: "Synthetic quote source",
+          session: "regular",
+          stale: true,
+        },
       },
       preview: true,
     }),
@@ -161,9 +188,8 @@ test("price levels opens with one toolbar and immediate analysis, with details b
   const html = render({ symbol: "TEST", contracts, complete: true });
   assert.equal((html.match(/<header/g) || []).length, 1);
   assert.doesNotMatch(html, /<h2|options-desk|depth-options/);
-  assert.ok(
-    html.indexOf("Exposure workspace") < html.indexOf("Session activity"),
-  );
+  assert.match(html, /Exposure workspace/);
+  assert.doesNotMatch(html, /Session activity/);
   assert.match(html, /<select aria-label="Expiration date"/);
   assert.match(html, /Data &amp; definitions/);
   assert.match(html, /Quote quality/);
@@ -184,4 +210,26 @@ test("contract inspection and guide remain independently accessible", () => {
   const guide = render(chain, "learn");
   assert.match(guide, /Options essentials/);
   assert.match(guide, /Open interest &amp; GEX/);
+});
+
+test("empty contract tools have no disabled toolbar clutter and guide stays reachable", () => {
+  const html = render(null);
+  assert.doesNotMatch(
+    html,
+    /aria-label="Expiration date"|aria-label="Advanced options tools"|disabled=""/,
+  );
+  assert.match(html, /Options guide/);
+  const guide = render(null, "learn");
+  assert.match(guide, /Options essentials/);
+});
+
+test("Options exposes quote basis and exact time separately from contract dates without changing price", () => {
+  const html = render({ symbol: "TEST", contracts, complete: true });
+  assert.match(html, /Underlying quote/);
+  assert.match(html, /2026-11-17 20:42:31 UTC/);
+  assert.match(html, /Synthetic quote source/);
+  assert.match(html, /stale/);
+  assert.match(html, /Contract observation date/);
+  assert.match(html, /stock header may show a settled close/);
+  assert.match(html, /\$100/);
 });

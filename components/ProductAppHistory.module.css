@@ -1,0 +1,106 @@
+.root {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  min-width: 0;
+}
+.root > header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.root h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.root p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.root button {
+  flex-shrink: 0;
+  min-height: 42px;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: end;
+  margin: 1rem 0;
+}
+.controls label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  min-width: 0;
+}
+.controls select {
+  min-height: 42px;
+  max-width: 100%;
+  padding: 0.5rem;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.chart {
+  margin: 1rem 0;
+}
+.chart figcaption {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 120px;
+  overflow: visible;
+}
+.chart line {
+  stroke: var(--line);
+}
+.chart circle {
+  fill: var(--blue);
+}
+.chart text {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.table {
+  overflow-x: auto;
+}
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.table th,
+.table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.table td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.root summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+}
+@media (max-width: 500px) {
+  .root > header {
+    flex-direction: column;
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .chart svg {
+    min-height: 100px;
+  }
+}

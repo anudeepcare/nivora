@@ -866,10 +866,10 @@
   border: 0;
   color: var(--scenario-tone);
 }
-.scenario[data-case="Bear"] {
+.scenario[data-tone="negative"] {
   --scenario-tone: #c36f64;
 }
-.scenario[data-case="Bull"] {
+.scenario[data-tone="positive"] {
   --scenario-tone: #53b490;
 }
 .scenario:hover {
@@ -1396,7 +1396,7 @@
   line-height: 1.6;
 }
 .overview {
-  align-items: stretch;
+  align-items: start;
 }
 .bottom {
   align-items: stretch;
@@ -1514,5 +1514,49 @@
   }
   .stockPrice :global(.data-stamp) {
     font-size: 10px;
+  }
+}
+
+.paceColumn {
+  grid-area: pace;
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+}
+
+/* Research identity and quote must shrink within a narrow viewport. */
+.stockIdentity {
+  min-width: 0;
+}
+.stockIdentity > div {
+  min-width: 0;
+}
+.stockIdentity h1 {
+  overflow-wrap: anywhere;
+}
+.stockPrice {
+  min-width: 0;
+}
+.stockPrice > div {
+  min-width: 0;
+}
+.stockPrice :global(.data-stamp) {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 430px) {
+  .stockHeader {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .stockIdentity {
+    width: 100%;
+    gap: 8px;
+  }
+  .stockIdentity h1 {
+    font-size: 19px;
+  }
+  .stockPrice strong {
+    font-size: 23px;
   }
 }

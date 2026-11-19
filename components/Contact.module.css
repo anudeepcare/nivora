@@ -18,7 +18,7 @@
 .page.page.page :global(.support-introduction) {
   padding: 20px;
   border-radius: 14px;
-  background: color-mix(in srgb, #319688 8%, var(--card));
+  background: color-mix(in srgb, var(--blue) 8%, var(--card));
 }
 .page.page.page h1 {
   font-size: 36px;
@@ -58,7 +58,7 @@
   margin: 0;
   padding: 0;
   flex: 0 0 18px;
-  accent-color: var(--green);
+  accent-color: var(--blue);
 }
 .page.page.page input[type="file"] {
   font-size: 13px;
@@ -70,7 +70,7 @@
   border-radius: 6px;
   padding: 8px 12px;
   margin-right: 10px;
-  background: color-mix(in srgb, #319688 12%, var(--card));
+  background: color-mix(in srgb, var(--blue) 12%, var(--card));
   color: var(--ink);
   font: inherit;
   cursor: pointer;

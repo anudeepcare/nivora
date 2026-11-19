@@ -1,6 +1,6 @@
 "use client";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { Building2, Scale, Activity, Users, ArrowUpRight } from "lucide-react";
 import type { Research } from "@/lib/types";
 import type { EvidenceSection } from "@/lib/approved-research";
@@ -22,7 +22,15 @@ export default function ResearchEvidenceGrid({
       name: "Business quality",
       key: "business",
       icon: Building2,
-      rows: evidence.business,
+      rows: evidence.business.filter(
+        (x) =>
+          ![
+            "revenueGrowth",
+            "operatingMargin",
+            "fcfMargin",
+            "netMargin",
+          ].includes(x.key),
+      ),
       tab: "Financials" as const,
     },
     {
@@ -50,12 +58,18 @@ export default function ResearchEvidenceGrid({
     .filter(({ key }) =>
       preferences.visibleMetrics.includes(key === "technical" ? "price" : key),
     )
+    .filter(({ rows }) => rows.length > 0)
     .filter(
       ({ tab }) =>
         !evidence.crypto || (tab !== "Financials" && tab !== "Valuation"),
     );
+  if (!groups.length) return null;
   return (
-    <section className={s.grid} aria-label="Research evidence at a glance">
+    <section
+      className={s.grid}
+      aria-label="Research evidence at a glance"
+      style={{ "--evidence-columns": groups.length } as CSSProperties}
+    >
       {groups.map(({ name, key, icon: Icon, rows, tab }) => (
         <article key={key} data-category={key} className={s.panel}>
           <header>
@@ -96,15 +110,13 @@ export default function ResearchEvidenceGrid({
                 : "No comparable evidence available."}
             </p>
           )}
-          <footer>
-            {key === "business"
-              ? `Reported period · ${dateLabel(evidence.period)}`
-              : key === "technical"
-                ? `Price history · ${dateLabel(research.history.at(-1)?.time)}`
-                : `Snapshot · ${dateLabel(research.evidence?.updatedAt || research.retrievedAt)}`}
-          </footer>
         </article>
       ))}
+      <footer className={s.snapshot}>
+        Financials {dateLabel(evidence.period)} · Price history{" "}
+        {dateLabel(research.history.at(-1)?.time)} · Evidence{" "}
+        {dateLabel(research.evidence?.updatedAt || research.retrievedAt)}
+      </footer>
     </section>
   );
 }

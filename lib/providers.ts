@@ -3,7 +3,6 @@ import {
   readPreferred,
   readFreshQuote,
   quoteRefreshMaxAge,
-  providerCacheSeconds,
 } from "./provider-routing";
 import {
   eodEnabled,
@@ -27,7 +26,6 @@ import {
   type MarketDirectory,
 } from "./market-coverage";
 import { secObservations } from "./sec-observations";
-import { reserveProvider } from "./provider-budget";
 import type {
   Candle,
   Company,
@@ -42,7 +40,6 @@ import {
   providerSymbol,
   providerIdentity,
   sameProviderSymbol,
-  twelveSymbol,
 } from "./provider-symbol";
 import { readExtendedQuote } from "./extended-quote";
 const extendedCapability = { deniedUntil: 0 };
@@ -87,56 +84,20 @@ async function json(
     );
   return r.json();
 }
+/** Compatibility boundary: legacy callers must never contact Twelve Data. */
 export async function twelve(
-  endpoint: string,
-  params: Record<string, string>,
-  cost = 1,
-) {
-  const key = process.env.TWELVE_DATA_API_KEY;
-  if (!key) throw new HttpError("Market data is not configured.", 503);
-  await reserveProvider(cost);
-  const requestParams =
-    params.symbol && endpoint !== "symbol_search"
-      ? { ...params, symbol: twelveSymbol(params.symbol) }
-      : params;
-  const data = await json(
-    `https://api.twelvedata.com/${endpoint}?${new URLSearchParams({ ...requestParams, apikey: key })}`,
-    {},
-    providerCacheSeconds(endpoint, params),
+  _endpoint: string,
+  _params: Record<string, string>,
+  _cost = 1,
+): Promise<any> {
+  throw new HttpError(
+    "This legacy data provider is disabled. EODHD is required.",
+    503,
   );
-  if (!data || typeof data !== "object" || Array.isArray(data))
-    throw new HttpError(
-      "The provider returned an invalid dataset. Try again shortly.",
-      503,
-    );
-  if (data.status === "error") {
-    const error = new HttpError(
-      data.code === 429
-        ? "Market-data allowance reached. Try again later."
-        : data.code === 404
-          ? "This instrument was not found by the data provider."
-          : "The provider did not return this instrument.",
-      data.code === 404 ? 404 : 503,
-    );
-    // Preserve only a machine-readable capability classification, never provider
-    // credentials or raw messages in client errors. Invalid symbols and outages
-    // must not disable extended data for other instruments.
-    if (
-      params.prepost === "true" &&
-      data.code !== 429 &&
-      /(?:pre.?post|extended.?hours)/i.test(String(data.message)) &&
-      /(?:plan|subscription|upgrade|permission|not available|not supported|access)/i.test(
-        String(data.message),
-      )
-    )
-      Object.assign(error, { entitlementDenied: true });
-    throw error;
-  }
-  return data;
 }
 const num = numeric;
 const configuredSources = () => ({
-  twelve: Boolean(process.env.TWELVE_DATA_API_KEY),
+  twelve: false,
   eodhd: eodEnabled(),
 });
 export async function quote(
@@ -471,114 +432,16 @@ const tags: Record<Metric, string[]> = {
     "InterestExpenseNonOperating",
   ],
 };
-async function sec(path: string) {
-  const agent = process.env.SEC_USER_AGENT;
-  if (!agent || agent.includes("example.com"))
-    throw new HttpError(
-      "Configure a valid SEC contact identity to load filings.",
-      503,
-    );
-  return json(path, { "User-Agent": agent, Accept: "application/json" });
+async function sec(_path: string): Promise<any> {
+  throw new HttpError(
+    "Direct SEC fallback is disabled. EODHD is required.",
+    503,
+  );
 }
 export async function fundamentals(
   symbol: string,
 ): Promise<Awaited<ReturnType<typeof secFundamentals>>> {
-  symbol = researchSymbol(symbol);
-  try {
-    if (!eodEnabled()) return await secFundamentals(symbol);
-    const primary = await eodFundamentals(symbol);
-    const coverage = fundamentalCoverage(primary.facts);
-    if (coverage.complete && coverage.fresh) return primary;
-    // Keep verified primary identity/evidence. Completeness and age trigger
-    // independent recovery, selecting one entire set of reported statements.
-    try {
-      const reported = await secFundamentals(symbol);
-      const useReported = preferReportedFacts(primary.facts, reported.facts);
-      return {
-        ...primary,
-        facts: useReported ? reported.facts : primary.facts,
-        filings: reported.filings.length ? reported.filings : primary.filings,
-        issues: [
-          useReported
-            ? "Financial statements: primary coverage was incomplete or old; one SEC fallback statement collection is shown."
-            : `Financial statements: ${coverage.reason} The primary collection is retained because SEC did not improve comparable coverage.`,
-          ...reported.issues,
-        ],
-      };
-    } catch {
-      return {
-        ...primary,
-        issues: [
-          `Financial statements: ${coverage.reason} SEC fallback is unavailable; verified primary observations are retained.`,
-        ],
-      };
-    }
-  } catch {
-    const [reported, profile] = await Promise.allSettled([
-      secFundamentals(symbol),
-      process.env.TWELVE_DATA_API_KEY
-        ? cached(`fallback-profile:${symbol}`, 86400000, async () => {
-            const raw = await twelve("profile", { symbol }, 10);
-            const p = normalizeGrow(
-              symbol,
-              "profile",
-              raw,
-              new Date().toISOString(),
-            ).profile;
-            // Twelve profiles omit currency. Confirm the listing against the
-            // full directory rather than inferring quote currency from domicile
-            // (a US-listed foreign issuer may correctly report Australia, etc.).
-            const listing = raw.currency
-              ? raw
-              : (await marketDirectory()).listings.find(
-                  (row) =>
-                    sameProviderSymbol(row.symbol, symbol) &&
-                    row.exchange.toUpperCase() ===
-                      String(raw.exchange ?? "").toUpperCase(),
-                );
-            if (
-              !p?.name ||
-              !sameProviderSymbol(raw.symbol, symbol) ||
-              !listing ||
-              !supportedListing(listing)
-            )
-              throw new Error(
-                "Company profile unavailable for this USD listing",
-              );
-            return {
-              symbol,
-              name: p.name,
-              sector: p.sector,
-              description: p.description,
-              assetType: "stock" as const,
-              exchange: String(raw.exchange || ""),
-              currency: listing.currency,
-            };
-          })
-        : Promise.reject(new Error("Profile provider not configured")),
-    ]);
-    const result =
-      reported.status === "fulfilled"
-        ? reported.value
-        : {
-            facts: [],
-            filings: [],
-            name: symbol,
-            issues: [
-              "Reported financials unavailable from the fallback source.",
-            ],
-          };
-    const company = profile.status === "fulfilled" ? profile.value : undefined;
-    return {
-      ...result,
-      name: company?.name || result.name,
-      ...(company ? { company } : {}),
-      issues: [
-        "Primary company data unavailable; fallback coverage is shown where available.",
-        ...result.issues,
-      ],
-    };
-  }
+  return eodFundamentals(researchSymbol(symbol));
 }
 async function secFundamentals(symbol: string): Promise<{
   facts: Fact[];
@@ -792,11 +655,7 @@ export async function research(symbol: string): Promise<Research> {
       currency: "USD",
       asOf: null,
       session: "Unavailable",
-      source: eodEnabled()
-        ? "EODHD"
-        : process.env.TWELVE_DATA_API_KEY
-          ? "Twelve Data"
-          : "Unconfigured",
+      source: eodEnabled() ? "EODHD" : false ? "Twelve Data" : "Unconfigured",
       stale: true,
     },
     history: h.candles,
@@ -830,50 +689,7 @@ export async function research(symbol: string): Promise<Research> {
 }
 async function remoteSearch(query: string) {
   query = query.trim().toUpperCase();
-  return cached(`search:${query}`, 3600_000, async () => {
-    if (eodEnabled()) {
-      try {
-        const rows = await eodSearch(query);
-        if (rows.length || !process.env.TWELVE_DATA_API_KEY) return rows;
-      } catch (error) {
-        if (!process.env.TWELVE_DATA_API_KEY) throw error;
-      }
-    }
-    const result = await twelve("symbol_search", {
-      symbol: query,
-      outputsize: "50",
-    });
-    if (!Array.isArray(result.data))
-      throw new HttpError("Instrument search is temporarily unavailable.", 503);
-    const rows = result.data
-      .filter(
-        (v: any) =>
-          supportedListing(v) ||
-          (v.instrument_type === "Digital Currency" &&
-            String(v.symbol).endsWith("/USD")),
-      )
-      .sort(
-        (a: any, b: any) =>
-          Number(b.symbol === query) - Number(a.symbol === query),
-      )
-      .map((v: any) => ({
-        symbol: v.symbol,
-        name: v.instrument_name,
-        exchange: v.exchange,
-        currency: v.currency,
-        assetType:
-          v.instrument_type === "Digital Currency" ? "crypto" : "stock",
-      }));
-    return rows
-      .filter(
-        (row: Company, index: number) =>
-          rows.findIndex(
-            (other: Company) =>
-              providerIdentity(other.symbol) === providerIdentity(row.symbol),
-          ) === index,
-      )
-      .slice(0, 12);
-  });
+  return cached(`search:${query}`, 3600_000, () => eodSearch(query));
 }
 
 /** Enumerate every row of each enabled provider directory; no search-result cap.

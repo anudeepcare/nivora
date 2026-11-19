@@ -85,6 +85,7 @@ test("next earnings excludes already reported events and invalid calendar dates"
   const r = fixture();
   r.evidence = {
     ...r.evidence,
+    updatedAt: "2026-10-26",
     earnings: [
       { date: "2026-10-26", actual: 1, time: "BeforeMarket" },
       { date: "2026-10-27", actual: null, time: "AfterMarket" },
@@ -112,6 +113,7 @@ test("news and earnings expire against the wall clock", () => {
   const r = fixture();
   r.evidence = {
     ...r.evidence,
+    updatedAt: "2026-10-26",
     earnings: [{ date: "2026-10-27", actual: null, time: "AfterMarket" }],
   };
   const m = movementContext(
@@ -190,4 +192,36 @@ test("settled volume uses its actual date and ages independently from retrieval"
   });
   assert.equal(old.relativeVolume, null);
   assert.match(old.volumeStatus, /older than 10 days/);
+});
+
+test("selected settled-close freshness does not inherit a discarded stale quote", () => {
+  const r = fixture();
+  r.history = ["2026-10-23", "2026-10-26"].map((time) => ({
+    time,
+    open: 100,
+    high: 100,
+    low: 100,
+    close: 100,
+    volume: 100,
+  }));
+  r.quote.stale = true;
+  const m = movementContext(r, [], { now: Date.parse("2026-10-27T13:24:00Z") });
+  assert.equal(m.priceBasis, "settled-close");
+  assert.equal(m.stale, false);
+  assert.equal(m.today, false);
+});
+
+test("an upcoming event from an expired or future calendar dataset is withheld", () => {
+  const r = fixture();
+  r.evidence = {
+    ...r.evidence,
+    updatedAt: "2026-01-01",
+    earnings: [{ date: "2026-10-28", actual: null }],
+  };
+  let m = movementContext(r, [], { now: Date.parse("2026-10-26T13:24:00Z") });
+  assert.equal(m.earnings, null);
+  assert.match(m.earningsStatus, /refresh/i);
+  r.evidence.updatedAt = "2026-10-27";
+  m = movementContext(r, [], { now: Date.parse("2026-10-26T13:24:00Z") });
+  assert.equal(m.earnings, null);
 });

@@ -1,0 +1,216 @@
+.sequence {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  grid-template-rows: auto;
+  background: var(--card, #0f1827);
+  border: 1px solid var(--line);
+  border-radius: var(--workspace-panel-radius, 14px);
+  overflow: hidden;
+  margin: 4px 0 16px;
+  min-width: 0;
+}
+.sequence article {
+  padding: 16px;
+  min-height: 0;
+  min-width: 0;
+}
+.sequence article + article {
+  border-left: 1px solid var(--line);
+}
+.sequence article:last-child {
+  border-bottom: 0;
+}
+.primary {
+  background: radial-gradient(
+    ellipse at 0 0,
+    color-mix(in srgb, var(--blue) 10%, transparent),
+    transparent 70%
+  );
+}
+.sequence article > span {
+  font: 11px var(--font-mono, monospace);
+  letter-spacing: 0.09em;
+  color: var(--blue);
+}
+.sequence h2 {
+  font-size: clamp(20px, 1.8vw, 25px);
+  letter-spacing: -0.04em;
+  line-height: 1.18;
+  margin: 10px 0 8px;
+}
+.sequence h3 {
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 10px 0 8px;
+}
+.sequence p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+.primary p {
+  font-size: 13px;
+}
+.sequence a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 8px;
+}
+.sequence a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+.reading {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  margin-top: 12px;
+}
+.reading > b {
+  font: 500 28px var(--font-mono, monospace);
+  color: var(--blue);
+}
+.reading > span {
+  font-size: 12px;
+  border-left: 1px solid var(--line);
+  padding-left: 20px;
+}
+.reading small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 6px;
+}
+@media (max-width: 760px) {
+  .sequence {
+    display: flex;
+    flex-direction: column;
+  }
+  .sequence article {
+    padding: 16px;
+  }
+  .sequence article + article {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .primary {
+    border-right: 0;
+  }
+  .sequence h2 {
+    margin-top: 10px;
+  }
+  .reading {
+    gap: 15px;
+  }
+}
+.hero {
+  padding: 6px 0 14px;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+}
+.hero > div {
+  width: 100%;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.hero h1 {
+  font-size: clamp(26px, 2.5vw, 36px) !important;
+  letter-spacing: -0.05em;
+  line-height: 1.08;
+  margin: 0 0 8px;
+}
+.hero p {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+@media (max-width: 760px) {
+  .hero {
+    padding: 12px 0;
+    min-height: 0;
+  }
+  .hero h1 {
+    font-size: 26px !important;
+  }
+  .hero p {
+    font-size: 14px;
+  }
+}
+
+.exposureMetric {
+  font-size: clamp(28px, 2.5vw, 36px);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-top: 12px;
+  color: var(--ink);
+}
+.exposureMetric small {
+  font-size: 0.5em;
+  color: var(--muted);
+  margin-left: 3px;
+}
+.weightBar {
+  height: 10px;
+  background: var(--surface);
+  border-radius: 6px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+.weightBar > span {
+  height: 100%;
+  display: block;
+  background: var(--blue);
+  border-radius: 6px;
+}
+.sequence h2,
+.sequence h3 {
+  font-weight: 500;
+}
+.sequence a {
+  font-weight: 500;
+}
+
+/* Compact research prompts: the metric is content, not a full-height tile. */
+.sequence article {
+  padding: 14px 16px;
+}
+.sequence h2,
+.sequence h3 {
+  font-size: 16px;
+  line-height: 1.35;
+  margin: 8px 0;
+}
+.sequence article > span {
+  font-family: inherit;
+  letter-spacing: 0.035em;
+}
+.reading {
+  gap: 10px;
+  margin-top: 8px;
+}
+.reading > b {
+  font-size: 20px;
+}
+.reading > span {
+  padding-left: 10px;
+}
+.exposureMetric {
+  font-size: 30px;
+  margin: 8px 0;
+}
+.sequence p {
+  font-size: 12px;
+}

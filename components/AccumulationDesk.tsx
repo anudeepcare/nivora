@@ -1,5 +1,9 @@
 "use client";
+import detail from "./PaceDeskDetails.module.css";
+import PaceEvidenceJourney from "./PaceEvidenceJourney";
+import PaceMonthHistory from "./PaceMonthHistory";
 import PaceReadings from "./PaceReadings";
+import styles from "./ResearchLens.module.css";
 import PaceHistoryInsights from "./PaceHistoryInsights";
 import { pacePeriods } from "@/lib/pace-presentation";
 import { useMemo, useState } from "react";
@@ -7,20 +11,19 @@ import type { Research, Candle } from "@/lib/types";
 import {
   researchAccumulation,
   adaptiveSettledBars,
-} from "@/lib/accumulation-policy-v5";
+} from "@/lib/accumulation-policy-v7";
 import { weeklyAccumulation } from "@/lib/accumulation-weekly";
 import { evaluateAccumulation } from "@/lib/accumulation-evaluation";
 import { amount, percent, dateLabel } from "@/lib/format";
 import PaceHelp from "./PaceHelp";
 import { paceCode } from "@/lib/pace-presentation";
 import { PriceChart } from "./Charts";
-const colours: Record<number, string> = {
-  0: "#d89a20",
-  1: "#7d9db0",
-  2: "#12a28b",
-  3: "#71b337",
-  4: "#ac68e5",
-};
+import {
+  paceChartColours as colours,
+  paceChartLevels,
+  paceExtensionColour,
+  paceUnavailableColour,
+} from "@/lib/pace-chart-levels";
 export default function AccumulationDesk({
   research: r,
 }: {
@@ -84,25 +87,18 @@ export default function AccumulationDesk({
           return [
             b.time,
             s && "trimTier" in s && s.trimTier === "strong"
-              ? "#bd4660"
+              ? paceExtensionColour
               : s
                 ? colours[s.multiplier]
-                : "#b0b5bd",
+                : paceUnavailableColour,
           ];
         }),
       ),
     [monthly, chosen, weekly],
   );
   const levels = useMemo(
-    () =>
-      signal
-        ? [
-            { label: "P2 zone", price: signal.buy2 },
-            { label: "P3 zone", price: signal.buy3 },
-            { label: "P4 zone", price: signal.buy4 },
-          ].filter((level) => level.price > 0)
-        : [],
-    [signal],
+    () => paceChartLevels(chosen.forming, confirmed),
+    [chosen.forming, confirmed],
   );
   const evaluation = useMemo(
     () =>
@@ -112,7 +108,9 @@ export default function AccumulationDesk({
     [showEvaluation, r.history, r.retrievedAt, cost, market, weekly],
   );
   return (
-    <section className="accumulation-desk">
+    <section
+      className={`accumulation-desk ${styles.paceChartFirst} ${detail.desk}`}
+    >
       <header className="accumulation-desk-head">
         <div>
           <span className="eyebrow">
@@ -120,11 +118,19 @@ export default function AccumulationDesk({
               ? "Weekly conditions · separate time horizon"
               : "Cycle-relative · monthly discipline"}
           </span>
-          <h2>AURYN Pace · price history</h2>
-          <small>Model {chosen.version} · settled prices</small>
-          <PaceHelp trigger="What does P mean?" />
+          <h2>
+            AURYN Pace{" "}
+            <span className={detail.titleNote}>The price in perspective</span>
+          </h2>
+          <div className={styles.paceMeta}>
+            <small>Model {chosen.version} · settled prices</small>
+            <PaceHelp trigger="What does P mean?" />
+          </div>
         </div>
-        <div className="segments" aria-label="Accumulation time horizon">
+        <div
+          className="auryn-detail-tabs auryn-tab-inline"
+          aria-label="Accumulation time horizon"
+        >
           {(["monthly", "weekly"] as const).map((v) => (
             <button
               key={v}
@@ -137,33 +143,125 @@ export default function AccumulationDesk({
           ))}
         </div>
       </header>
-      <div className="accumulation-summary">
-        <div>
+      <div className={detail.observations}>
+        <div className={styles.paceReadings}>
           <PaceReadings
+            compact
             readings={pacePeriods(
               { ...confirmed, forming: chosen.forming },
               weekly,
             )}
           />
-          <h3>
-            {signal
-              ? signal.multiplier === 0
-                ? trimTier === "strong"
-                  ? "Price extension review"
-                  : "Pause new buying"
-                : signal.multiplier === 1
-                  ? "No accumulation zone established"
-                  : "Stronger pullback condition"
-              : `More ${cadence} history needed`}
-          </h3>
-          <p>{signal?.reason ?? chosen.reason}</p>
+        </div>
+        <div className={detail.priceBasis} aria-label="Price observation basis">
+          <span>
+            Settled chart close{" "}
+            <strong>{amount(monthly.at(-1)?.close, r.quote.currency)}</strong> ·{" "}
+            {dateLabel(monthly.at(-1)?.time)}
+          </span>
+          <span>
+            Latest quoted price{" "}
+            <strong>{amount(r.quote.price, r.quote.currency)}</strong> ·{" "}
+            {r.quote.asOf &&
+            !/^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf) &&
+            Number.isFinite(Date.parse(r.quote.asOf))
+              ? new Date(r.quote.asOf)
+                  .toISOString()
+                  .replace("T", " ")
+                  .slice(0, 16) + " UTC"
+              : r.quote.asOf && /^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf)
+                ? `${dateLabel(r.quote.asOf)} · time not supplied`
+                : "Observation time not supplied"}
+            {r.quote.stale ? " · stale" : ""}
+          </span>
           <small>
-            {signal
-              ? `${signal === chosen.forming ? (weekly ? "Current week · forming" : "Current month · forming") : weekly ? "Confirmed week ending" : signal.month + " · confirmed at"} ${dateLabel(signal.date)}`
-              : weekly
+            The quote is not used to overwrite settled chart history. Different
+            observation times can produce different prices.
+          </small>
+        </div>
+      </div>
+      <div className="accumulation-chart">
+        <div className={detail.chartHeading}>
+          <span>{weekly ? "Weekly" : "Monthly"} price landscape</span>
+          <small>
+            {monthly.length} displayed {weekly ? "weeks" : "months"} · Pace
+            colors, not price direction
+          </small>
+        </div>
+        <PriceChart
+          bars={monthly}
+          range={weekly ? "weekly-policy-v1" : chosen.version}
+          style="candles"
+          candleColors={candleColors}
+          levels={levels}
+        />
+      </div>
+      <div className="accumulation-legend" aria-label="Chart zone legend">
+        {[0, 1, 2, 3, 4].map((n) => (
+          <span key={n}>
+            <i style={{ background: colours[n] }} />
+            {n === 0 ? "P0 · Pause" : paceCode(n)}
+          </span>
+        ))}
+        <span>
+          <i style={{ background: paceExtensionColour }} />
+          Price-extension review
+        </span>
+        <span>
+          <i style={{ background: paceUnavailableColour }} />
+          No eligible signal
+        </span>
+      </div>
+      {!!levels.length && (
+        <details open className={detail.levels}>
+          <summary>Conditional zone prices</summary>
+          <dl>
+            {levels.map((l) => (
+              <div key={l.label}>
+                <dt>
+                  <i
+                    className={detail.zoneSwatch}
+                    style={{ background: l.color }}
+                    aria-hidden="true"
+                  />
+                  {l.label}
+                </dt>
+                <dd>{amount(l.price, r.quote.currency)}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      )}
+      {!weekly && <PaceMonthHistory key={r.company.symbol} research={r} />}
+      <div className="accumulation-summary">
+        {chosen.forming && confirmed && (
+          <div className={detail.formingContext}>
+            <small>
+              Current forming context · {dateLabel(chosen.forming.date)}
+            </small>
+            <p>{chosen.forming.reason}</p>
+            <small>
+              Provisional until the interval closes. Not a buy or sell
+              instruction.
+            </small>
+          </div>
+        )}
+        <div>
+          <small>
+            {confirmed
+              ? "Last confirmed reading · rationale"
+              : signal
+                ? "Current forming reading · rationale"
+                : "History coverage"}
+          </small>
+          <p>{signal?.reason ?? chosen.reason}</p>
+          {!signal && (
+            <small>
+              {weekly
                 ? "52 consecutive completed prior weeks required"
                 : "12 consecutive completed prior months required"}
-          </small>
+            </small>
+          )}
         </div>
         <dl>
           <div>
@@ -180,22 +278,6 @@ export default function AccumulationDesk({
           </div>
         </dl>
       </div>
-      <p className="small muted">
-        P means Pace. Levels describe accumulation zones, not purchase
-        multiples, leverage or expected returns.{" "}
-        {signal &&
-          "historyBasis" in signal &&
-          signal.historyBasis === "limited" &&
-          "priorMonths" in signal && (
-            <strong className="dca-limited-history">
-              Limited listing history · {String(signal.priorMonths)} prior
-              completed months.{" "}
-            </strong>
-          )}
-        Completed periods stay fixed for unchanged input history; the forming
-        reading can change. A deeper price pullback does not establish a better
-        business or confirmed support.
-      </p>
       {signal?.trimReview && (
         <div className="accumulation-extension" role="note">
           <strong>
@@ -210,37 +292,7 @@ export default function AccumulationDesk({
           </span>
         </div>
       )}
-      <div className="accumulation-chart">
-        <PriceChart
-          bars={monthly}
-          range={weekly ? "weekly-policy-v1" : "monthly-policy-v5"}
-          style="candles"
-          candleColors={candleColors}
-          levels={levels}
-        />
-      </div>
-      {!!levels.length && (
-        <div className="candidate-levels">
-          {levels.map((l) => (
-            <div key={l.label}>
-              <span>{l.label}</span>
-              <strong>{amount(l.price, r.quote.currency)}</strong>
-            </div>
-          ))}
-        </div>
-      )}
-      <div className="accumulation-legend">
-        {[0, 1, 2, 3, 4].map((n) => (
-          <span key={n}>
-            <i style={{ background: colours[n] }} />
-            {n === 0 ? "Pause" : paceCode(n)}
-          </span>
-        ))}
-        <span>
-          <i style={{ background: "#b0b5bd" }} />
-          No eligible signal
-        </span>
-      </div>
+      <PaceEvidenceJourney research={r} />
       {weekly && (
         <p className="small muted">
           Weekly v1 is a separate, shorter-horizon price policy. The available
@@ -250,10 +302,26 @@ export default function AccumulationDesk({
       {!weekly && <PaceHistoryInsights research={r} />}
       <details className="policy-rules">
         <summary>See the rules and price assumptions</summary>
+        <p className="small muted">
+          P means Pace. Levels describe accumulation zones, not purchase
+          multiples, leverage or expected returns.{" "}
+          {signal &&
+            "historyBasis" in signal &&
+            signal.historyBasis === "limited" &&
+            "priorMonths" in signal && (
+              <strong className="dca-limited-history">
+                Limited listing history · {String(signal.priorMonths)} prior
+                completed months.{" "}
+              </strong>
+            )}
+          Completed periods stay fixed for unchanged input history; the forming
+          reading can change. A deeper price pullback does not establish a
+          better business or confirmed support.
+        </p>
         <p>
           {weekly
             ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."
-            : "Monthly v5 uses the preceding 12 completed monthly closes for its cycle average and sample spread (minimum 10% of that average). Readings with 12–23 prior completed months are labelled limited history; 24 prior months use the standard robust-trend guard. The 2×/3×/4× gates require 10%/25%/35% below the cycle average and 0.5/0.95/1.3 spread units below it. Positive extension reviews also retain the robust-trend upper guard and a severe cycle-extension check."}
+            : "The current monthly model uses a fixed technical classifier across monthly price position, daily trend, volatility and momentum. Existing extension rules remain in place. Earlier observations and insufficient-history cases retain their original policy version. Conditional price levels are local transitions, not guarantees for all prices beyond a threshold."}{" "}
           Weekly and monthly calculations differ. Historical readings do not
           establish future outperformance.
         </p>
@@ -279,11 +347,11 @@ export default function AccumulationDesk({
         >
           {showEvaluation
             ? "Hide historical comparison"
-            : "Test this policy on available history ↗"}
+            : "View legacy-policy backtest ↗"}
         </button>
       )}
       {showEvaluation && !weekly && (
-        <section className="policy-evaluation">
+        <section className={`policy-evaluation ${styles.paceEvaluation}`}>
           <header>
             <div>
               <span className="eyebrow">
@@ -318,7 +386,7 @@ export default function AccumulationDesk({
               </p>
               <div className="policy-results">
                 {[
-                  ["Normal DCA", evaluation.fixed],
+                  ["Fixed contributions", evaluation.fixed],
                   ["Legacy price-only policy", evaluation.adaptive],
                 ].map(([name, result]) => {
                   const x = result as typeof evaluation.fixed;
@@ -351,7 +419,7 @@ export default function AccumulationDesk({
               </div>
               <p>
                 Later {evaluation.holdout.months}-month slice, restarted at
-                zero: normal DCA{" "}
+                zero: fixed contributions{" "}
                 {amount(evaluation.holdout.fixed.value, "USD", true)} ·
                 trend-adjusted{" "}
                 {amount(evaluation.holdout.adaptive.value, "USD", true)} model

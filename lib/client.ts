@@ -1,7 +1,12 @@
 "use client";
-import { fetchWithDeadline } from "./request-deadline";
+import { fetchWithDeadline, settleWithDeadline } from "./request-deadline";
 import { customerText } from "./customer-language";
-import { createBrowserClient } from "@supabase/ssr";
+import { authCookieOptions, persistenceCookie } from "./auth-persistence";
+import {
+  createBrowserClient,
+  parseCookieHeader,
+  serializeCookieHeader,
+} from "@supabase/ssr";
 import { completeSignOut } from "./auth-actions";
 import { clearAccountCache } from "./account-cache";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -13,7 +18,49 @@ export function authClient() {
     throw Error(
       "Sign-in is temporarily unavailable. Please try again or contact support.",
     );
-  return (client ??= createBrowserClient(url, key));
+  return (client ??= createBrowserClient(url, key, {
+    cookieOptions: {
+      secure:
+        typeof window !== "undefined" && window.location.protocol === "https:",
+    },
+    cookies: {
+      getAll: () =>
+        parseCookieHeader(document.cookie).map(({ name, value }) => ({
+          name,
+          value: value ?? "",
+        })),
+      setAll: (
+        writes: {
+          name: string;
+          value: string;
+          options: import("@supabase/ssr").CookieOptions;
+        }[],
+      ) => {
+        const remember =
+          parseCookieHeader(document.cookie).find(
+            (c) => c.name === persistenceCookie,
+          )?.value !== "session";
+        for (const { name, value, options } of writes)
+          document.cookie = serializeCookieHeader(
+            name,
+            value,
+            authCookieOptions(name, options, remember),
+          );
+      },
+    },
+  }));
+}
+export function setRememberSession(remember: boolean) {
+  document.cookie = serializeCookieHeader(
+    persistenceCookie,
+    remember ? "remember" : "session",
+    {
+      path: "/",
+      sameSite: "lax",
+      secure: window.location.protocol === "https:",
+      maxAge: 31536000,
+    },
+  );
 }
 export class ApiError extends Error {
   constructor(
@@ -31,7 +78,10 @@ export async function api<T>(
   body?: unknown,
   signal?: AbortSignal,
 ): Promise<T> {
-  const { data, error } = await authClient().auth.getSession();
+  const { data, error } = await settleWithDeadline(
+    authClient().auth.getSession(),
+    10000,
+  );
   if (error || !data.session)
     throw new ApiError("Your session ended. Sign in again.", 401);
   const send = (token: string) =>
@@ -62,7 +112,10 @@ export async function api<T>(
   // A rejected token has not authorized a mutation. Refresh once, sharing the
   // refresh across concurrent requests, then retry with the replacement token.
   if (response.status === 401 && !signal?.aborted) {
-    refreshInFlight ??= authClient().auth.refreshSession();
+    refreshInFlight ??= settleWithDeadline(
+      authClient().auth.refreshSession(),
+      10000,
+    );
     const pending = refreshInFlight;
     let refreshed;
     try {
@@ -73,7 +126,14 @@ export async function api<T>(
     if (!refreshed.error && refreshed.data.session && !signal?.aborted)
       response = await send(refreshed.data.session.access_token);
   }
-  const value = await response.json().catch(() => ({}));
+  const value = await settleWithDeadline(response.json(), 20000).catch(() => {
+    if (response.ok)
+      throw new ApiError(
+        "The server response could not be read. Please try again.",
+        502,
+      );
+    return {};
+  });
   if (!response.ok)
     throw new ApiError(
       customerText(value.error || "This request could not be completed."),

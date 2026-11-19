@@ -1,0 +1,13 @@
+# ETF constituent insider and sentiment evidence
+
+Contract: https://sentisense.ai/docs/api/etfs/ checked 2026-11-18. Isolated optional UI mounts only in existing verified ETF branch of SentiSenseConsensus, beside composition. Nothing loads until the user selects insider30, insider90 or sentiment. One selected fixed endpoint runs; no constituent fan-out or polling. Analyst aggregate and existing composition remain intact.
+
+Endpoints: /api/v1/etfs/{ticker}/aggregates/insider?lookbackDays=30 (or90) and /aggregates/sentiment. Both require exact response ticker. Insider requires matching reported lookback. ComputedAt is epoch seconds, composition asOfDate is a separate date (nullable for sentiment). Sentiment per-reading asOfTimestamp is distinct from aggregate assembly time. Future/invalid dates are withheld; retrieval never substitutes for an observation date.
+
+Insider amounts are holdings-weighted USD, not fund inflows/redemptions. Trade and distinct-insider counts are unweighted. Contributor per-stock net USD and weighted net USD remain separately labeled, and top-ten is not a complete portfolio. Constituent ticker strings have no inferred US listing links. Coverage includes holdings count, covered count, portfolio weight percentage, partial/top-N state and known issuer total. Unknown values remain missing, never zero. 404 does not prove no trading: it can mean unsupported fund, absent holdings/activity or insufficient coverage.
+
+Sentiment retains two independent signed open-ended Score readings, constituent-weighted and direct fund mentions. These are not percentages, the0–100 Rating, or probabilities. Direct can be null; differing metric dates are visible. No per-holding sentiment contributors are invented. Standard wrapper preview is retained if provided even though current docs serve full aggregate data to every authenticated API tier.
+
+Security: server-only key, fixed host/path modes, no redirect,12-second timeout,2MB streaming limit, sanitized errors. Account market auth, sample deployment denial, existing advanced feature (same as insiders/etfHoldings),6-per-minute user limit and research reservation before transport;20-per-minute shared endpoint limit. UI session reuse1hour with manual refresh and mounted-view age disclosure. Provider entitlement is not claimed from successful synthetic tests.
+
+Test-first projection, auth/quota/transport tests, and synthetic route→real transport→projector→SSR tests cover both modes, units, preview, missing direct data, timestamps, partial coverage, and malformed/identity rejection. No live authenticated calls, purchase, deployment or browser visual certification.

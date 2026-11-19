@@ -1,4 +1,5 @@
 "use client";
+import evidenceScroll from "./EvidenceScroll.module.css";
 import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
 import {
@@ -416,29 +417,47 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
     demoFilings,
     3600000,
   );
+  const filingLabel = (filing: Filing) => {
+    if (/^10-Q(?:\/A)?$/i.test(filing.form)) return "Quarterly report";
+    if (/^10-K(?:\/A)?$/i.test(filing.form)) return "Annual report";
+    if (/^8-K(?:\/A)?$/i.test(filing.form)) return "Current report";
+    return filing.title;
+  };
   return (
     <div className="au-two coverage-grid">
       <section className="au-panel">
         <header className="au-panel-head">
           <h2>Recent coverage</h2>
-          <small>Publisher sources</small>
+          <small>
+            {news.data?.items.length
+              ? `${news.data.items.length} articles`
+              : ""}
+          </small>
         </header>
         {news.data?.items.length ? (
-          news.data.items.slice(0, 6).map((n, i) => (
-            <a
-              className="source-row"
-              key={n.url + i}
-              href={n.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>
-                <small>{dateLabel(n.date)}</small>
-                <strong>{n.title}</strong>
-              </span>
-              <ArrowUpRight size={17} />
-            </a>
-          ))
+          <div
+            className={evidenceScroll.region}
+            tabIndex={0}
+            role="region"
+            aria-label="Recent coverage articles"
+          >
+            {news.data.items.map((n, i) => (
+              <a
+                className="source-row"
+                key={n.url + i}
+                href={n.url}
+                title={n.title}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>
+                  <small>{dateLabel(n.date)}</small>
+                  <strong>{n.title}</strong>
+                </span>
+                <ArrowUpRight size={17} />
+              </a>
+            ))}
+          </div>
         ) : (
           <p className="au-caption">
             {news.loading
@@ -454,23 +473,32 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
             <FileText size={18} />
           </header>
           {filings.data?.filings.length ? (
-            filings.data.filings.slice(0, 6).map((f) => (
-              <a
-                className="source-row"
-                key={f.url}
-                href={f.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span>
-                  <small>
-                    {f.form} · {dateLabel(f.date)}
-                  </small>
-                  <strong>{f.title}</strong>
-                </span>
-                <ArrowUpRight size={17} />
-              </a>
-            ))
+            <div
+              className={evidenceScroll.region}
+              tabIndex={0}
+              role="region"
+              aria-label="Source filing records"
+            >
+              {filings.data.filings.map((f) => (
+                <a
+                  className="source-row"
+                  key={f.url}
+                  href={f.url}
+                  title={f.title}
+                  aria-label={`${f.form} · ${dateLabel(f.date)} · ${f.title}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span>
+                    <small>
+                      {f.form} · {dateLabel(f.date)}
+                    </small>
+                    <strong>{filingLabel(f)}</strong>
+                  </span>
+                  <ArrowUpRight size={17} />
+                </a>
+              ))}
+            </div>
           ) : (
             <p className="au-caption">
               {filings.loading

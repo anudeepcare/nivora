@@ -13,7 +13,20 @@ import { expandedStudies } from "../lib/technical-expanded.ts";
 import { priceStudies } from "../lib/price-studies.ts";
 import { perspective } from "../lib/analysis.ts";
 function component(file, name, bindings) {
-  bindings = { SectionIcon:()=>null, Help:({label,children})=>React.createElement("details",null,React.createElement("summary",null,label),children), layout: {panel:"panel"}, ...bindings };
+  bindings = {
+    businessLayout: { root: "business-root" },
+    QuickRead: () => null,
+    SectionIcon: () => null,
+    Help: ({ label, children }) =>
+      React.createElement(
+        "details",
+        null,
+        React.createElement("summary", null, label),
+        children,
+      ),
+    layout: { panel: "panel" },
+    ...bindings,
+  };
   const ast = ts.createSourceFile(
       file,
       fs.readFileSync(file, "utf8"),
@@ -72,6 +85,7 @@ const financialBindings = {
   useMemo: React.useMemo,
   useState: React.useState,
   ...format,
+  MarketCapHistory: () => null,
   FinancialExplorer: () => null,
   FinancialDetailTable: () => null,
   Help: ({ trigger }) => React.createElement("button", null, trigger),
@@ -104,10 +118,7 @@ test("financial cash bridge uses reported cash and negative capex as a spending 
   assert.ok(
     html.includes("Cash after capex: " + format.amount(4e8, "USD", true)),
   );
-  assert.match(
-    html,
-    /business-kpis/,
-  );
+  assert.doesNotMatch(html, /business-kpis/);
 });
 test("financial cash bridge does not draw unreconciled line items as a valid waterfall", () => {
   const period = {

@@ -1,8 +1,11 @@
 "use client";
+import { useState } from "react";
+import todayStyles from "./TodaySequence.module.css";
+import TodaySequence from "./TodaySequence";
 import ContributionCompare from "./ContributionCompare";
+import HomeQuarterHighlights from "./HomeQuarterHighlights";
 import HomeMarketCards from "./HomeMarketCards";
-import { MarketRadar } from "./MarketRadar";
-import OpportunityMap from "./OpportunityMap";
+import HomeRadar from "./HomeRadar";
 import ResearchInbox from "./ResearchInbox";
 import { useHomeFeed } from "./useHomeFeed";
 import { PaceBoard } from "./WorkspacePace";
@@ -19,18 +22,12 @@ import {
   relevantHoldingHeadlines,
 } from "@/lib/home-feed";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
-import {
-  ArrowUpRight,
-  Bookmark,
-  CalendarDays,
-  FileText,
-  RefreshCw,
-  Search as SearchIcon,
-} from "lucide-react";
+import { ArrowUpRight, CalendarDays, FileText, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { FeatureGate } from "./Access";
 import CompanySparkline from "./CompanySparkline";
 import homeStyles from "./HomeWorkspace.module.css";
+import PortfolioDay from "./PortfolioDay";
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
 import {
@@ -84,8 +81,8 @@ function EarningsNumbers({
   return (
     <small className={homeStyles.earningsNumbers}>
       <span>
-        EPS reported{" "}
-        <strong>{actual === null ? "Pending" : actual.toFixed(2)}</strong>
+        {actual === null ? "" : "EPS "}
+        <strong>{actual === null ? "" : actual.toFixed(2)}</strong>
       </span>
       <span>
         Estimate{" "}
@@ -98,8 +95,9 @@ function EarningsNumbers({
 }
 
 function HomeOverview() {
+  const [radarOpen, setRadarOpen] = useState(true);
   const state = useWorkspaceData(),
-    { workspace, quotes, model, prefix, demo, displayName, pace } = state;
+    { workspace, quotes, model, prefix, demo, pace } = state;
   const today = new Date(
     demo
       ? Object.values(demo.research)[0]?.retrievedAt || Date.now()
@@ -149,7 +147,6 @@ function HomeOverview() {
     newsReady: readiness.newsReady && !feed.error,
     hasHoldings: !!workspace?.positions.length,
   });
-  const largest = model.allocations[0];
   const signals = symbols
     .map((symbol) => ({ symbol, signal: pace(symbol) }))
     .filter(
@@ -188,21 +185,32 @@ function HomeOverview() {
     const research = state.research(symbol);
     return research ? [research] : [];
   });
-  const hour = today.getHours(),
-    greeting =
-      hour < 12
-        ? "Good morning"
-        : hour < 18
-          ? "Good afternoon"
-          : "Good evening";
+  const renderHeadline = (news: (typeof headlines)[number]) => (
+    <article key={`${news.symbol}:${news.url}`}>
+      <div className="home-news-meta">
+        <SecurityLogo symbol={news.symbol} />
+        <Link href={researchLink(news.symbol, prefix)}>{news.symbol}</Link>
+        <time dateTime={news.date}>{dateLabel(news.date)}</time>
+      </div>
+      <a
+        className="home-news-title"
+        href={news.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {news.title}
+        <ArrowUpRight size={17} />
+      </a>
+    </article>
+  );
   return (
     <section
       className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
     >
-      <div className={homeStyles.greeting}>
+      <div className={todayStyles.hero}>
         <Heading
-          title={`${greeting}${displayName ? `, ${displayName}` : ""}.`}
-          subtitle="Your companies, upcoming events and research."
+          title="Today"
+          subtitle="Your holdings, the next checkpoints, and what deserves a closer look."
           actions={
             <span className="date-chip">
               {today.toLocaleDateString(undefined, {
@@ -220,90 +228,45 @@ function HomeOverview() {
         />
       </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <div className={homeStyles.quickLinks}>
-        <Link href={`${prefix}/discover`}>
-          Discover ideas <ArrowUpRight size={16} />
-        </Link>
-        <Link href={`${prefix}/watchlist`}>
-          Your watchlist <Bookmark size={16} />
-        </Link>
-        <Link href={`${prefix}/research`}>
-          Research a company <SearchIcon size={16} />
-        </Link>
+      <div className={homeStyles.dayOverview}>
+        <div className={homeStyles.attentionColumn}>
+          <ResearchInbox
+            today={day}
+            events={(feed.data?.events ?? []).filter(
+              (event) => event.date <= day,
+            )}
+            coverageIssue={!!feed.error || !readiness.eventsReady}
+          />
+          <TodaySequence
+            prefix={prefix}
+            decision={
+              best?.signal
+                ? {
+                    symbol: best.symbol,
+                    action: best.signal.view.actionLabel.replace(
+                      / · P[0-4]$/,
+                      "",
+                    ),
+                    code: best.signal.view.code,
+                  }
+                : null
+            }
+            headline={null}
+            concentration={null}
+          />
+        </div>
       </div>
-      <ContributionCompare symbols={symbols} prefix={prefix} />
-      <HomeMarketCards
-        symbols={symbols}
-        quotes={quotes.data}
+      <HomeQuarterHighlights
         research={loadedResearch}
+        asOf={today.toISOString()}
         prefix={prefix}
       />
-      <p>
-        <Link className="btn primary" href={`${prefix}/monthly-plan`}>
-          Build this month’s research plan →
-        </Link>
-      </p>
-      <ResearchInbox
-        today={day}
-        events={feed.data?.events ?? []}
-        coverageIssue={!!feed.error || !readiness.eventsReady}
-      />
-      {loadedResearch.length > 0 && (
-        <details className={homeStyles.marketRadar}>
-          <summary>
-            Market radar{" "}
-            <span>
-              {loadedResearch.length} loaded companies · historical breadth &
-              rotation
-            </span>
-          </summary>
-          <OpportunityMap
-            research={loadedResearch}
-            requested={symbols}
-            prefix={prefix}
-            demo={!!demo}
-          />
-          <MarketRadar research={loadedResearch} asOf={day} />
-        </details>
-      )}
       {symbols.length > 0 && (
         <>
-          <Coverage state={state} />
-          <div className="home-evidence-layout">
-            <section className="home-evidence-panel">
-              <SectionHead
-                title="Your companies"
-                subtitle="Prices and updates for companies you follow."
-                action={
-                  <Link className="text-link" href={`${prefix}/watchlist`}>
-                    View all <ArrowUpRight size={16} />
-                  </Link>
-                }
-              />
-              {symbols.length ? (
-                symbols
-                  .slice(0, 5)
-                  .map((symbol) => (
-                    <HomeCompany
-                      key={symbol}
-                      symbol={symbol}
-                      row={quotes.data[symbol]}
-                      prefix={prefix}
-                    />
-                  ))
-              ) : (
-                <Empty
-                  title="Begin with one company"
-                  action={
-                    <Link className="btn" href={`${prefix}/research`}>
-                      Find a company
-                    </Link>
-                  }
-                >
-                  Save an idea or record a holding to make this space yours.
-                </Empty>
-              )}
-            </section>
+          <div
+            className="home-evidence-layout"
+            data-calendar-empty={!eventGroups.length && !brief.reported.length}
+          >
             <section
               className="home-evidence-panel home-events-panel"
               id="home-earnings"
@@ -318,6 +281,11 @@ function HomeOverview() {
                     onClick={feed.refresh}
                     disabled={feed.loading}
                     aria-label="Refresh company events"
+                    title={
+                      feed.data?.retrievedAt
+                        ? `Updated ${quoteTime(feed.data.retrievedAt)}`
+                        : "Refresh events"
+                    }
                   >
                     <RefreshCw size={18} />
                   </button>
@@ -424,25 +392,20 @@ function HomeOverview() {
                     checked.
                   </p>
                 )}
-              <p className="home-source-note" role="status">
-                {demo
-                  ? "Illustrative workspace"
-                  : feed.loading
-                    ? "Checking company events…"
-                    : feed.error
-                      ? "Some company events could not be checked."
-                      : feed.data?.retrievedAt
-                        ? `Checked ${quoteTime(feed.data.retrievedAt)}.`
-                        : "Available calendar observations"}
-              </p>
+              {(feed.loading || feed.error) && (
+                <p className="home-source-note" role="status">
+                  {feed.loading
+                    ? "Checking events…"
+                    : "Some events could not be checked."}
+                </p>
+              )}
               {!feed.loading && !readiness.eventsReady && (
                 <button className="text-link" onClick={feed.refresh}>
                   Retry calendar <RefreshCw size={14} />
                 </button>
               )}
             </section>
-          </div>
-          <div className="home-evidence-layout home-secondary-layout">
+
             <section
               className="home-evidence-panel home-news-panel"
               aria-label="What changed"
@@ -460,32 +423,7 @@ function HomeOverview() {
               />
               {headlines.length ? (
                 <div className="home-news-list">
-                  {headlines.slice(0, 5).map((news) => (
-                    <article key={`${news.symbol}:${news.url}`}>
-                      <div className="home-news-meta">
-                        <SecurityLogo symbol={news.symbol} />
-                        <Link href={researchLink(news.symbol, prefix)}>
-                          {news.symbol}
-                        </Link>
-                        <time dateTime={news.date}>{dateLabel(news.date)}</time>
-                      </div>
-                      <a
-                        className="home-news-title"
-                        href={news.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {news.title}
-                        <ArrowUpRight size={17} />
-                      </a>
-                      <Link
-                        className="text-link"
-                        href={researchLink(news.symbol, prefix)}
-                      >
-                        Review the company <ArrowUpRight size={15} />
-                      </Link>
-                    </article>
-                  ))}
+                  {headlines.slice(0, 6).map(renderHeadline)}
                 </div>
               ) : (
                 <div className="home-quiet-state">
@@ -511,24 +449,12 @@ function HomeOverview() {
                   </Link>
                 </div>
               )}
-              {headlines.length > 5 && (
+              {headlines.length > 6 && (
                 <details className="home-more-updates">
-                  <summary>Show {headlines.length - 5} more updates</summary>
-                  {headlines.slice(5).map((news) => (
-                    <article key={news.url}>
-                      <span>
-                        {news.symbol} · {dateLabel(news.date)}
-                      </span>
-                      <a
-                        href={news.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {news.title}
-                        <ArrowUpRight size={15} />
-                      </a>
-                    </article>
-                  ))}
+                  <summary>Show {headlines.length - 6} more updates</summary>
+                  <div className="home-news-list">
+                    {headlines.slice(6).map(renderHeadline)}
+                  </div>
                 </details>
               )}
               {!feed.loading && symbols.length > 0 && (
@@ -547,9 +473,59 @@ function HomeOverview() {
                 </button>
               )}
             </section>
-            <PaceBoard {...state.paceScan} prefix={prefix} />
           </div>
+          <PaceBoard {...state.paceScan} prefix={prefix} />
         </>
+      )}
+      {symbols.length > 0 && <Coverage state={state} />}
+      <HomeMarketCards
+        symbols={symbols}
+        quotes={quotes.data}
+        research={loadedResearch}
+        prefix={prefix}
+      />
+      {!!workspace?.positions.length && (
+        <PortfolioDay
+          positions={workspace.positions}
+          quotes={quotes.data}
+          prefix={prefix}
+          now={today.getTime()}
+        />
+      )}
+      <div className={homeStyles.planRow}>
+        <div>
+          <h2>Your next contribution</h2>
+          <p>
+            Compare the evidence and your position limits before setting a plan.
+          </p>
+        </div>
+        <Link className="btn" href={`${prefix}/monthly-plan`}>
+          Build this month’s research plan →
+        </Link>
+      </div>
+      <ContributionCompare symbols={symbols} prefix={prefix} />
+      {symbols.length > 0 && (
+        <details
+          className={homeStyles.marketRadar}
+          open={radarOpen}
+          onToggle={(event) => setRadarOpen(event.currentTarget.open)}
+        >
+          <summary>
+            Market radar{" "}
+            <span>
+              {symbols.length} held or watched companies · daily price history
+            </span>
+          </summary>
+          {radarOpen && (
+            <HomeRadar
+              research={loadedResearch}
+              requested={symbols}
+              prefix={prefix}
+              demo={!!demo}
+              asOf={day}
+            />
+          )}
+        </details>
       )}
     </section>
   );
@@ -571,7 +547,7 @@ function HomeCompany({
         <strong>{row?.company?.name || symbol}</strong>
         <small>{symbol}</small>
       </span>
-      <CompanySparkline symbol={symbol} />
+      <CompanySparkline symbol={symbol} withinLink />
       <span className="row-quote">
         <strong>{amount(row?.quote?.price, row?.quote?.currency)}</strong>
         <small

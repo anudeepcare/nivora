@@ -134,13 +134,13 @@
   background: #fff4d6;
 }
 .groups section:nth-child(1) {
-  border-top: 3px solid #95b945;
+  border-top: 1px solid var(--line);
 }
 .groups section:nth-child(2) {
-  border-top: 3px solid #299d84;
+  border-top: 1px solid var(--line);
 }
 .groups section:nth-child(3) {
-  border-top: 3px solid #729ac5;
+  border-top: 1px solid var(--line);
 }
 
 .board {

@@ -1,4 +1,5 @@
 import type { Research } from "./types";
+import { scenarioResearchInput } from "./scenario-reference.ts";
 import { consensusOutlook, researchOutlook } from "./outlook.ts";
 import { priceRiskScenarios } from "./price-risk-scenarios.ts";
 
@@ -110,7 +111,7 @@ export function targetsEstimates(r: Research) {
     estimatesReason: !fresh
       ? "A current, dated estimate dataset is unavailable."
       : "No annual estimates with valid fiscal dates and a known reporting currency are available.",
-    forecast: researchOutlook(r),
+    forecast: researchOutlook(scenarioResearchInput(r)),
     risk: priceRiskScenarios(r),
   };
 }

@@ -133,9 +133,11 @@ test("a small daily price change leaves confirmed Pace and the business decision
   assert.equal(decisions[0].brief.accumulation.multiplier, 2);
   assert.equal(decisions[0].brief.accumulation.forming.multiplier, 4);
   for (const d of decisions) {
-    assert.equal(d.action, "Buy");
-    assert.equal(d.explanation.code, "accumulation");
-    assert.match(d.headline, /initial accumulation/i);
+    // Evidence rule, 10 Nov 2026: this fixture sits 30%+ below its one-year high,
+    // so a supported business reads Wait until the fall steadies. Stability is the point here.
+    assert.equal(d.action, "Wait");
+    assert.equal(d.explanation.code, "steady");
+    assert.match(d.headline, /deep fall/i);
     assert.ok(d.risks.some((r) => /model|valuation/i.test(r)));
     assert.doesNotMatch(d.changeConditions[0], /entry at/i);
     assert.equal(
@@ -147,7 +149,7 @@ test("a small daily price change leaves confirmed Pace and the business decision
 test("Pace explains the budget boundary and Review without calling the business bad", () => {
   assert.match(pacePresentation("Buy", 4).detail, /budget|limit/i);
   assert.match(pacePresentation("Review", 4).detail, /review|assessment/i);
-  assert.equal(pacePresentation("Review", 4).actionLabel, "Review business · P4");
+  assert.equal(pacePresentation("Review", 4).actionLabel, "Review business");
   assert.equal(pacePresentation("Review", 4).effectiveCode, null);
 });
 test("Review names missing business evidence instead of sending users to an unrelated valuation check", () => {
@@ -163,4 +165,19 @@ test("Review names missing business evidence instead of sending users to an unre
     assert.match(d.explanation.detail, expected);
     assert.match(d.changeConditions[0], expected);
   }
+});
+
+test("a recovered price zone cannot retain an old P4 buying instruction", () => {
+  const r=withPace();
+  r.history=r.history.map(row=>{
+    const close=row.time>='2026-10-01'?110:row.time>='2026-09-01'?60:100;
+    return {...row,open:close,high:close*1.01,low:close*.99,close};
+  });
+  const d=aurynDecision(r,{now:Date.parse(r.retrievedAt)});
+  assert.equal(d.brief.accumulation.multiplier,4);
+  assert.equal(d.pace.level,1);
+  assert.equal(d.pace.eligibleLevel,1);
+  assert.equal(d.action,'Watch');
+  assert.equal(d.actions.holding,'Hold');
+  assert.equal(d.actionLabel,'Watch');
 });

@@ -5,8 +5,10 @@ import { advancedDesk, type DeskMetric } from "@/lib/research-desks";
 import { amount, percent, dateLabel } from "@/lib/format";
 export default function AdvancedDashboard({
   research: r,
+  overviewPresent = false,
 }: {
   research: Research;
+  overviewPresent?: boolean;
 }) {
   const d = useMemo(() => advancedDesk(r), [r]);
   if (d.count < 2)
@@ -32,6 +34,11 @@ export default function AdvancedDashboard({
     1,
     ...d.volatility.flatMap((v) => (v.value == null ? [] : [v.value])),
   );
+  // These exact completed-session studies already have dated history above.
+  // Keep all unique risk metrics and the full standalone workbench.
+  const overviewKeys = new Set(["atr", "momentum20", "momentum60"]);
+  const notRepeated = (m: DeskMetric) =>
+    !overviewPresent || !overviewKeys.has(m.key);
   const display = (m: DeskMetric) =>
     m.value == null
       ? "History needed"
@@ -46,13 +53,16 @@ export default function AdvancedDashboard({
       aria-label="Advanced price and risk workbench"
     >
       <div className="desk-key-metrics">
-        {d.metrics.slice(0, 4).map((m) => (
-          <article key={m.key}>
-            <span>{m.label}</span>
-            <strong>{display(m)}</strong>
-            <small>{m.note}</small>
-          </article>
-        ))}
+        {d.metrics
+          .slice(0, 4)
+          .filter(notRepeated)
+          .map((m) => (
+            <article key={m.key}>
+              <span>{m.label}</span>
+              <strong>{display(m)}</strong>
+              <small>{m.note}</small>
+            </article>
+          ))}
       </div>
       <div className="advanced-chart-grid">
         <section className="drawdown-chart">
@@ -132,13 +142,16 @@ export default function AdvancedDashboard({
           <small>Completed prices · {dateLabel(d.asOf)}</small>
         </header>
         <div className="desk-secondary-metrics">
-          {d.metrics.slice(4).map((m) => (
-            <article key={m.key}>
-              <span>{m.label}</span>
-              <strong>{display(m)}</strong>
-              <small>{m.note}</small>
-            </article>
-          ))}
+          {d.metrics
+            .slice(4)
+            .filter(notRepeated)
+            .map((m) => (
+              <article key={m.key}>
+                <span>{m.label}</span>
+                <strong>{display(m)}</strong>
+                <small>{m.note}</small>
+              </article>
+            ))}
         </div>
       </section>
       <section className="volatility-comparison">

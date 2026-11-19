@@ -1,0 +1,242 @@
+.root {
+  min-width: 0;
+}
+.root h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+.root h3 {
+  font-size: 15px;
+  font-weight: 500;
+}
+.root p,
+.root small {
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 13px;
+}
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 10px;
+}
+.choices button {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+}
+.choices button[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: color-mix(in srgb, var(--blue) 7%, var(--card));
+}
+.choices span {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.root button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.board {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.headlines {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.headlines > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px;
+  background: var(--card);
+  border-radius: 8px;
+}
+.headlines strong {
+  font-size: 20px;
+  font-weight: 500;
+}
+.rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.rows article {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--card);
+  overflow-wrap: anywhere;
+}
+.rows header span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.rows dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 5px 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.rows dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.rows small {
+  grid-column: 1/-1;
+}
+.paging {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 16px 0;
+}
+.paging button {
+  min-height: 44px;
+}
+@media (max-width: 650px) {
+  .rows {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .paging {
+    flex-wrap: wrap;
+  }
+}
+
+.analystPicker {
+  display: grid;
+  gap: 6px;
+  width: min(100%, 420px);
+  font-size: 13px;
+  margin: 12px 0;
+}
+.analystPicker select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+}
+.analystPicker select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.analystViews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+.analystViews button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.analystViews button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+/* The selected board stays immediately below its compact chooser. */
+.trackerHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+}
+.trackerHeader span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.trackerPicker {
+  display: grid;
+  gap: 6px;
+  max-width: 540px;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.trackerPicker select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+.trackerPicker select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.trackerStatus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+.trackerStatus button {
+  min-height: 44px;
+  padding: 8px 14px;
+}
+.trackerInfo {
+  margin: 8px 0 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.trackerInfo summary {
+  cursor: pointer;
+  min-height: 32px;
+  display: list-item;
+}
+.trackerInfo p {
+  max-width: 80ch;
+}
+
+.researchLink {
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 44px;
+  justify-content: center;
+}
+.researchLink > span {
+  color: var(--blue);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.researchLink:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 4px;
+}

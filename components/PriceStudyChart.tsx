@@ -1,6 +1,9 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Layers, ArrowRight, Info } from "lucide-react";
+import { indicators } from "@/lib/analysis";
+import { consensusOutlook } from "@/lib/outlook";
+import s from "./ChartReferences.module.css";
 import { advancedStudies } from "@/lib/advanced-research";
 import type { Research, Candle } from "@/lib/types";
 import { amount, dateLabel } from "@/lib/format";
@@ -15,6 +18,7 @@ export default function PriceStudyChart({
   style,
   contrast,
   onOptions,
+  controls,
 }: {
   research: Research;
   bars: Candle[];
@@ -22,8 +26,28 @@ export default function PriceStudyChart({
   style: "line" | "candles";
   contrast?: boolean;
   onOptions?: () => void;
+  controls?: ReactNode;
 }) {
   const [overlay, setOverlay] = useState(false);
+  const [showReferences, setShowReferences] = useState(true);
+  const references = useMemo(() => {
+    const tech = indicators(
+      research.history,
+      research.priceObservedAt ?? research.retrievedAt,
+    );
+    const target = consensusOutlook(research);
+    return [
+      ...(target
+        ? [{ label: "Analyst target", price: target.target, color: "#8b6bc1" }]
+        : []),
+      ...(tech.ma50 != null
+        ? [{ label: "50-session", price: tech.ma50, color: "#328b94" }]
+        : []),
+      ...(tech.ma200 != null
+        ? [{ label: "200-session", price: tech.ma200, color: "#b87b23" }]
+        : []),
+    ];
+  }, [research]);
   const fib = useMemo(
     () =>
       overlay
@@ -41,7 +65,8 @@ export default function PriceStudyChart({
   );
   return (
     <>
-      <div className="signal-chart-tools">
+      <div className={`signal-chart-tools ${s.tools}`}>
+        {controls}
         <button
           className="btn"
           aria-label="Fibonacci levels"
@@ -65,6 +90,16 @@ export default function PriceStudyChart({
           Technicals for custom anchors, moving averages, momentum, volatility
           and volume studies.
         </Help>
+        {!overlay && references.length > 0 && (
+          <button
+            type="button"
+            className="btn"
+            aria-pressed={showReferences}
+            onClick={() => setShowReferences(!showReferences)}
+          >
+            {showReferences ? "Hide" : "Show"} references
+          </button>
+        )}
         {onOptions && (
           <button className="text-link" onClick={onOptions}>
             Gamma & options <ArrowRight size={15} />
@@ -76,9 +111,23 @@ export default function PriceStudyChart({
         range={range}
         style={style}
         contrast={contrast}
-        levels={levels}
+        compactLevelTitles={!overlay}
+        levels={overlay ? levels : showReferences ? references : []}
       />
-      <details className="chart-context">
+      {!overlay && references.length > 0 && (
+        <details className={s.referenceDetails} open>
+          <summary>Reference prices</summary>
+          <div className={s.references} aria-label="Chart references">
+            {references.map((row) => (
+              <span key={row.label}>
+                <i style={{ background: row.color }} />
+                {row.label} {amount(row.price, research.quote.currency)}
+              </span>
+            ))}
+          </div>
+        </details>
+      )}
+      <details className="chart-context" open>
         <summary>Price range & completed volume</summary>
         <StockFacts research={research} priceContext />
       </details>

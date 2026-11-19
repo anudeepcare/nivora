@@ -20,27 +20,50 @@ const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
   bindings = {
+    useState: React.useState,
     SectionIcon: () => null,
-    PaceBoard: () => React.createElement("section", {"aria-label":"Accumulation opportunities"}),
+    PaceBoard: () =>
+      React.createElement("section", {
+        "aria-label": "Accumulation opportunities",
+      }),
     ResearchInbox: () => null,
-    ContributionCompare: () => React.createElement("section", {"aria-label":"Compare your next contribution"}, "Compare companies"),
+    ContributionCompare: () =>
+      React.createElement(
+        "section",
+        { "aria-label": "Compare your next contribution" },
+        "Compare companies",
+      ),
     HomeMarketCards: () => null,
+    HomeQuarterHighlights: () => null,
     OpportunityMap: () => null,
-    MarketRadar: () => null,
+    HomeRadar: () => null,
+    PortfolioDay: () => null,
     SearchIcon: () => null,
     ...bindings,
   };
   bindings = {
     homeStyles: { home: "home" },
+    todayStyles: { hero: "hero" },
+    cockpit: { library: "library" },
+    styles: new Proxy({}, { get: (_, k) => k }),
+    Link,
+    ArrowUpRight: () => null,
     Search: () =>
       React.createElement("input", { "aria-label": "Company search" }),
     ResearchLens: () => React.createElement("aside", null, "Research lens"),
     ...bindings,
   };
   bindings = { PaceHelp: () => null, ...bindings };
-  if (name === "HomeOverview")
+  if (name === "HomeOverview") {
     bindings.EarningsNumbers = load("EarningsNumbers", {});
-  const file = name === "ResearchHome" ? "components/ResearchHomePage.tsx" : "components/HomeWorkspace.tsx";
+    bindings.TodaySequence = load("TodaySequence", {});
+  }
+  const file =
+    name === "TodaySequence"
+      ? "components/TodaySequence.tsx"
+      : name === "ResearchHome"
+        ? "components/ResearchHomePage.tsx"
+        : "components/HomeWorkspace.tsx";
   const ast = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),
@@ -51,13 +74,16 @@ function load(name, bindings) {
   const declaration = ast.statements.find(
     (node) => ts.isFunctionDeclaration(node) && node.name?.text === name,
   );
-  const code = ts.transpileModule(declaration.getText(ast), {
-    compilerOptions: {
-      jsx: ts.JsxEmit.React,
-      module: ts.ModuleKind.CommonJS,
-      target: ts.ScriptTarget.ES2022,
+  const code = ts.transpileModule(
+    declaration.getText(ast).replace(/^export default /, ""),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.React,
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2022,
+      },
     },
-  }).outputText;
+  ).outputText;
   return new Function(
     "React",
     ...Object.keys(bindings),
@@ -96,7 +122,8 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   let requested, radarProps;
   const loaded = { company: { symbol: symbols[0] } };
   const Home = load("HomeOverview", {
-    MarketRadar: (props) => {
+    useState: () => [true, () => {}],
+    HomeRadar: (props) => {
       radarProps = props;
       return null;
     },
@@ -159,7 +186,7 @@ test("Watchlist-only Home avoids an irrelevant zero-value portfolio summary", ()
   });
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requested, symbols);
-  assert.match(html,/Compare your next contribution/);
+  assert.match(html, /Compare your next contribution/);
   assert.deepEqual(radarProps.research, [loaded]);
   assert.equal(radarProps.asOf, marketDay(new Date()));
   assert.match(radarProps.asOf, /^\d{4}-\d{2}-\d{2}$/);
@@ -236,7 +263,8 @@ test("New account Home has research tools without empty personal feeds", () => {
     html,
     /aria-label="Portfolio summary"|Company earnings and events|What changed/,
   );
-  assert.match(html, /Research a company/);
+  assert.doesNotMatch(html, /Research a company|Begin with the evidence/);
+  assert.match(html, /Build this month’s research plan/);
 });
 
 test("Home accumulation panel excludes valuation-only entries without confirmed Pace", () => {
@@ -330,35 +358,113 @@ test("Home earnings preserves zero and negative actuals, estimates and pending r
       today: "2026-11-05",
     }),
   );
-  assert.match(pending, /EPS reported.*Pending/);
+  assert.doesNotMatch(pending, /EPS reported|Pending/);
   assert.match(pending, /Estimate.*0\.00/);
   assert.doesNotMatch(pending, /12\.00/);
 });
 
-
 test("Research chart pages keep every saved company reachable with four bounded charts and clamp after deletions", () => {
-  const symbols = Array.from({length: 9}, (_, i) => `STK${i}`);
+  const symbols = Array.from({ length: 9 }, (_, i) => `STK${i}`);
   for (const [page, expected, previousDisabled, nextDisabled] of [
-    [0, symbols.slice(0,4), true, false],
-    [1, symbols.slice(4,8), false, false],
+    [0, symbols.slice(0, 4), true, false],
+    [1, symbols.slice(4, 8), false, false],
     [99, symbols.slice(8), false, true],
   ]) {
     let cards;
     const View = load("ResearchHome", {
       exports: {},
-      useProduct: () => ({workspace:{watchlist:symbols.map(symbol=>({symbol})),positions:[]}}),
-      useWorkspaceQuotes: () => ({data:{},error:""}),
-      useState: () => [page,()=>{}],
-      HomeMarketCards: props => { cards=props; return React.createElement("section",null,props.symbols.join(",")); },
-      Heading: empty, Notice: empty, Empty:empty,
-      homeStyles:{research:"research",researchPaging:"paging"},
+      useProduct: () => ({
+        workspace: {
+          watchlist: symbols.map((symbol) => ({ symbol })),
+          positions: [],
+        },
+      }),
+      useWorkspaceQuotes: () => ({ data: {}, error: "" }),
+      useState: () => [page, () => {}],
+      HomeMarketCards: (props) => {
+        cards = props;
+        return React.createElement("section", null, props.symbols.join(","));
+      },
+      Heading: empty,
+      Notice: empty,
+      Empty: empty,
+      homeStyles: { research: "research", researchPaging: "paging" },
     });
-    const html=renderToStaticMarkup(React.createElement(View));
-    assert.deepEqual(cards.symbols,expected);
-    assert.equal(cards.total,9);
-    assert.equal(cards.context,"research");
-    assert.equal(cards.prefix,"");
-    assert.equal(/<button[^>]*disabled=""[^>]*>Previous/.test(html),previousDisabled);
-    assert.equal(/<button[^>]*disabled=""[^>]*>Next/.test(html),nextDisabled);
+    const html = renderToStaticMarkup(React.createElement(View));
+    assert.deepEqual(cards.symbols, expected);
+    assert.equal(cards.total, 9);
+    assert.equal(cards.context, "research");
+    assert.equal(cards.prefix, "");
+    assert.equal(
+      /<button[^>]*disabled=""[^>]*>Previous/.test(html),
+      previousDisabled,
+    );
+    assert.equal(/<button[^>]*disabled=""[^>]*>Next/.test(html), nextDisabled);
   }
+});
+
+test("expanded Home headlines retain the same logo, timestamp and article layout", () => {
+  const news = Array.from({ length: 9 }, (_, i) => ({
+    symbol: "MSFT",
+    date: new Date(Date.now() - 3600000).toISOString(),
+    title: `Company update ${i}`,
+    url: `https://example.com/story/${i}`,
+  }));
+  const Home = load("HomeOverview", {
+    useWorkspaceData: () => ({
+      research: () => undefined,
+      workspace: { positions: [], watchlist: [{ symbol: "MSFT" }] },
+      quotes: { data: {} },
+      model: { allocations: [] },
+      prefix: "",
+      pace: () => null,
+    }),
+    useHomeFeed: () => ({
+      data: {
+        news,
+        events: [],
+        issues: [],
+        followed: 1,
+        newsFollowed: 1,
+        retrievedAt: new Date().toISOString(),
+        eventsReady: true,
+        newsReady: true,
+      },
+      loading: false,
+      error: "",
+      refresh: empty,
+    }),
+    homeFeedReadiness,
+    homeBrief,
+    groupMarketEvents,
+    marketDay,
+    earningsEventState,
+    relevantHoldingHeadlines: (items) => items,
+    researchLink: (symbol) => `/research/${symbol}`,
+    ...format,
+    Link,
+    SecurityLogo: ({ symbol }) =>
+      React.createElement("i", { "data-logo": symbol }),
+    Heading: empty,
+    SectionHead: empty,
+    Coverage: empty,
+    Notice: empty,
+    HomeCompany: empty,
+    Empty: empty,
+    ArrowUpRight: empty,
+    CalendarDays: empty,
+    FileText: empty,
+    RefreshCw: empty,
+    Bookmark: empty,
+  });
+  const html = renderToStaticMarkup(React.createElement(Home));
+  if (process.env.AURYN_HOME_NEWS_FIXTURE)
+    fs.writeFileSync(process.env.AURYN_HOME_NEWS_FIXTURE, html);
+  const expanded = html.slice(html.indexOf('class="home-more-updates"'));
+  assert.match(expanded, /class="home-news-list"/);
+  assert.equal((expanded.match(/class="home-news-meta"/g) || []).length, 3);
+  assert.equal((expanded.match(/class="home-news-title"/g) || []).length, 3);
+  assert.equal((expanded.match(/data-logo="MSFT"/g) || []).length, 3);
+  assert.equal((expanded.match(/<time /g) || []).length, 3);
+  assert.equal((html.match(/class="home-news-title"/g) || []).length, 9);
 });

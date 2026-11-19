@@ -1,4 +1,6 @@
 "use client";
+import GuardrailReview from "./GuardrailReview";
+import QuickRead from "./QuickRead";
 import { optionsLiquidity } from "@/lib/options-liquidity";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
 import OptionsSnapshot from "./OptionsSnapshot";
@@ -22,6 +24,9 @@ import {
 } from "@/lib/options-analysis";
 import {
   listedExpiries,
+  contractSnapshotRows,
+  replaceChainSnapshot,
+  optionsObservationTime,
   leapsExpiry,
   displayedContracts,
 } from "@/lib/options-presentation";
@@ -172,16 +177,11 @@ export default function OptionsDesk({
           ...data,
           symbol: research.company.symbol,
           loadedExpiry: expiry || null,
-          contracts: [
-            ...new Map(
-              [
-                ...(old?.symbol === research.company.symbol
-                  ? old.contracts
-                  : []),
-                ...data.contracts,
-              ].map((c) => [c.id, c]),
-            ).values(),
-          ],
+          contracts: replaceChainSnapshot(
+            old?.symbol === research.company.symbol ? old.contracts : [],
+            data.contracts,
+            expiry || null,
+          ),
         }));
         setKnownExpiries((old) =>
           listedExpiries(data.contracts, [
@@ -224,15 +224,19 @@ export default function OptionsDesk({
     () => optionsLiquidity(summary.rows, active),
     [summary.rows, active],
   );
+  const displaySnapshot = useMemo(
+    () => contractSnapshotRows(contracts, active),
+    [contracts, active],
+  );
   const filteredRows = useMemo(
     () =>
       displayedContracts(
-        summary.rows,
+        displaySnapshot,
         kind,
         onlyLiquid,
         (c) => liquidity(c).eligible,
       ),
-    [summary.rows, kind, onlyLiquid],
+    [displaySnapshot, kind, onlyLiquid],
   );
   const rows = useMemo(
     () =>
@@ -389,76 +393,95 @@ export default function OptionsDesk({
   );
   return (
     <div className={deskStyles.desk}>
-      <div className={deskStyles.orientation}>
-        <strong>Options, in context</strong>
-        <p>
-          Choose an expiration, explore price levels, then inspect a contract or
-          try it with simulated cash.
-        </p>
-      </div>
-      <header className={deskStyles.commandBar}>
-        <label className={deskStyles.expiryControl}>
-          <span>Expiration date</span>
-          <select
-            aria-label="Expiration date"
-            value={active}
-            disabled={!expiries.length}
-            onChange={(e) => chooseExpiry(e.target.value)}
-          >
-            {!expiries.length && (
-              <option value="">Waiting for contracts</option>
-            )}
-            {expiries.map((date) => (
-              <option key={date} value={date}>
-                {expiryLabel(date)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <nav className={deskStyles.views} aria-label="Options sections">
-          {[
-            ["positioning", "Price levels"],
-            ["chain", "Calls & puts"],
-            ["simulation", "Practice"],
-            ["learn", "Guide"],
-          ].map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={view === id}
-              onClick={() => navigate(id)}
+      {!!contracts.length && (
+        <>
+          <div className={deskStyles.orientation}>
+            <strong>Options, in context</strong>
+            <p>
+              Choose an expiration, explore price levels, then inspect a
+              contract or try it with simulated cash.
+            </p>
+          </div>
+          <header className={deskStyles.commandBar}>
+            <label className={deskStyles.expiryControl}>
+              <span>Expiration date</span>
+              <select
+                aria-label="Expiration date"
+                value={active}
+                disabled={!expiries.length}
+                onChange={(e) => chooseExpiry(e.target.value)}
+              >
+                {!expiries.length && (
+                  <option value="">
+                    {busy ? "Loading contracts…" : "Contract data unavailable"}
+                  </option>
+                )}
+                {expiries.map((date) => (
+                  <option key={date} value={date}>
+                    {expiryLabel(date)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <nav
+              className={`${deskStyles.views} auryn-view-tabs`}
+              aria-label="Options sections"
             >
-              {label}
-            </button>
-          ))}
-        </nav>
-        <label className={deskStyles.advancedControl}>
-          <span>Advanced</span>
-          <select
-            aria-label="Advanced options tools"
-            value={
-              ["vanna", "flow", "leaps", "strategy", "diagnostics"].includes(
-                view,
-              )
-                ? view
-                : ""
-            }
-            onChange={(e) => navigate(e.target.value)}
-          >
-            <option value="" disabled>
-              Choose a tool
-            </option>
-            <option value="diagnostics">Volatility & gamma</option>
-            <option value="vanna">Vanna exposure</option>
-            <option value="flow">Trade tape</option>
-            <option value="leaps">Long-term contracts</option>
-            <option value="strategy">Strategy payoff</option>
-          </select>
-        </label>
-      </header>
+              {[
+                ["positioning", "Price levels"],
+                ["chain", "Calls & puts chain"],
+                ["diagnostics", "Volatility & gamma"],
+                ["simulation", "Practice"],
+                ["learn", "Guide"],
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={view === id}
+                  disabled={!contracts.length && id !== "learn"}
+                  onClick={() => navigate(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+            <label className={deskStyles.advancedControl}>
+              <span>Advanced</span>
+              <select
+                aria-label="Advanced options tools"
+                disabled={!contracts.length}
+                value={
+                  ["vanna", "flow", "leaps", "strategy"].includes(view)
+                    ? view
+                    : ""
+                }
+                onChange={(e) => navigate(e.target.value)}
+              >
+                <option value="" disabled>
+                  Choose a tool
+                </option>
+                <option value="vanna">Vanna exposure</option>
+                <option value="flow">Trade tape</option>
+                <option value="leaps">Long-term contracts</option>
+                <option value="strategy">Strategy payoff</option>
+              </select>
+            </label>
+          </header>
+        </>
+      )}
+      {!contracts.length && (
+        <button
+          type="button"
+          onClick={() => navigate(view === "learn" ? "positioning" : "learn")}
+        >
+          {view === "learn" ? "Back to coverage" : "Options guide"}
+        </button>
+      )}
       {error && (
         <p role="alert" className={deskStyles.options_notice}>
-          {error} Previously loaded observations remain dated as shown.{" "}
+          {error}
+          {contracts.length > 0 &&
+            " Previously loaded observations remain dated as shown."}{" "}
           <button
             type="button"
             disabled={busy}
@@ -468,6 +491,17 @@ export default function OptionsDesk({
           </button>
         </p>
       )}
+      {!!contracts.length && chain?.message && (
+        <p className={deskStyles.options_notice}>{chain.message}</p>
+      )}
+      {!!contracts.length && displaySnapshot.some((c) => !c.standard) && (
+        <p className={deskStyles.options_notice}>
+          Reported contract Greeks are available under Calls &amp; puts. Their
+          independent observation time is not supplied. Unverified deliverables
+          are excluded from position sizing, payoff and gamma-exposure
+          calculations.
+        </p>
+      )}
       {busy && (
         <p role="status" className={deskStyles.options_loading}>
           Loading contract prices…
@@ -475,7 +509,6 @@ export default function OptionsDesk({
       )}
       {!contracts.length ? (
         <section className={deskStyles.options_empty} hidden={view === "learn"}>
-          <Layers3 size={32} />
           <h3>
             {busy
               ? "Connecting your options workspace"
@@ -492,27 +525,55 @@ export default function OptionsDesk({
         </section>
       ) : (
         <>
+          <QuickRead
+            title="The options snapshot"
+            items={[
+              {
+                label: "Selected expiration",
+                value: expiryLabel(active),
+                detail: `${days} days · ${displaySnapshot.length} contracts in this snapshot.`,
+              },
+              ...(summary.straddle !== null && spot > 0
+                ? [
+                    {
+                      label: "Option-priced range",
+                      value: `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`,
+                      detail:
+                        "At-the-money straddle estimate, not a guaranteed range.",
+                      tone: "caution" as const,
+                    },
+                  ]
+                : []),
+              {
+                label: "Read before choosing a contract",
+                value: "Check spread and liquidity",
+                detail:
+                  "Exposure estimates describe positioning; they do not establish direction.",
+              },
+            ]}
+          />
           <div
             className={deskStyles.marketLine}
             aria-label="Selected options snapshot"
           >
             <strong>
               {research.company.symbol}{" "}
-              <span>{spot > 0 ? amount(spot) : "Not priced"}</span>
+              <span>
+                {spot > 0
+                  ? amount(spot, research.quote.currency)
+                  : "Not priced"}
+              </span>
             </strong>
-            <span>
-              {expiryLabel(active)} · {days} days · {summary.rows.length}{" "}
-              contracts
-            </span>
-            <span>
-              Option-priced range{" "}
-              <b>
-                {summary.straddle !== null && spot > 0
-                  ? `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`
-                  : "Not measured"}
-              </b>
-            </span>
-            <small>Options · {observed}</small>
+            <small>
+              Underlying quote · {optionsObservationTime(research.quote.asOf)} ·{" "}
+              {research.quote.source || "Source not supplied"} ·{" "}
+              {research.quote.session || "Session not supplied"}
+              {research.quote.stale ? " · stale" : ""}
+            </small>
+            <small>
+              Contract observation date · {observed}. The stock header may show
+              a settled close; this workspace uses the research quote above.
+            </small>
             <details className={deskStyles.dataHelp}>
               <summary>Data & definitions</summary>
               <div>
@@ -521,10 +582,8 @@ export default function OptionsDesk({
                   {!chain?.complete &&
                     "Partial chain; totals cover only returned contracts."}{" "}
                   Underlying observation:{" "}
-                  {research.quote.asOf
-                    ? dateLabel(research.quote.asOf)
-                    : "unavailable"}
-                  . Confirm execution prices with your broker.
+                  {optionsObservationTime(research.quote.asOf)}. Confirm
+                  execution prices with your broker.
                 </p>
                 <p>
                   Quote quality · {quoteQuality.twoSided}/
@@ -570,14 +629,6 @@ export default function OptionsDesk({
           )}
           {view === "positioning" && (
             <div className={deskStyles.secondaryTools}>
-              <details className={deskStyles.activity}>
-                <summary>Session activity</summary>
-                <OptionsSnapshot
-                  contracts={summary.rows}
-                  spot={spot}
-                  expiry={active}
-                />
-              </details>
               <OptionsExpiryComparison
                 contracts={contracts}
                 active={active}
@@ -588,6 +639,19 @@ export default function OptionsDesk({
           {view === "diagnostics" && (
             <section className={deskStyles.analytics}>
               <h3>Volatility & model diagnostics</h3>
+              {summary.rows.some(
+                (c) =>
+                  c.volume != null && Number.isFinite(c.volume) && c.volume > 0,
+              ) && (
+                <details>
+                  <summary>Most traded strikes</summary>
+                  <OptionsSnapshot
+                    contracts={summary.rows}
+                    spot={spot}
+                    expiry={active}
+                  />
+                </details>
+              )}
               {(hasGamma || hasOi) && (
                 <div>
                   <h4>Concentrations & gamma</h4>
@@ -840,7 +904,7 @@ export default function OptionsDesk({
                   </select>
                 </label>
                 <div
-                  className={deskStyles.options_segment}
+                  className="auryn-detail-tabs auryn-tab-inline"
                   aria-label="Contract type"
                 >
                   {[
@@ -892,6 +956,9 @@ export default function OptionsDesk({
                             "Open interest",
                             "IV",
                             "Delta",
+                            "Gamma",
+                            "Theta",
+                            "Vega",
                             "Spread",
                             "Explore",
                           ].map((h) => (
@@ -917,6 +984,9 @@ export default function OptionsDesk({
                                   {c.type}
                                 </span>
                                 <small>{expiryLabel(c.expiry)}</small>
+                                {c.quoteObservedAt && (
+                                  <small>Quote {c.quoteObservedAt}</small>
+                                )}
                               </th>
                               <td>{amount(c.strike)}</td>
                               <td>
@@ -924,15 +994,23 @@ export default function OptionsDesk({
                                 {c.ask === null ? "—" : amount(c.ask)}
                               </td>
                               <td>
-                                {c.ask === null ? "—" : amount(c.ask * 100)}
+                                {c.ask === null || !c.standard
+                                  ? "Not verified"
+                                  : amount(c.ask * c.multiplier)}
                               </td>
                               <td>
                                 {c.oi === null ? "Not supplied" : fmt(c.oi, 0)}
+                                {c.oiObservedAt && (
+                                  <small>OI {dateLabel(c.oiObservedAt)}</small>
+                                )}
                               </td>
                               <td>
                                 {c.iv === null ? "—" : fmt(c.iv * 100, 1) + "%"}
                               </td>
                               <td>{fmt(c.delta, 2)}</td>
+                              <td>{fmt(c.gamma, 4)}</td>
+                              <td>{fmt(c.theta, 4)}</td>
+                              <td>{fmt(c.vega, 4)}</td>
                               <td>
                                 {liquidity(c).spread === null
                                   ? "—"
@@ -1189,6 +1267,7 @@ export default function OptionsDesk({
                           </strong>
                         </article>
                       </div>
+                      <GuardrailReview maximumLoss={risk.maxLoss} />
                       <Plot
                         points={payoff}
                         label="Stock price at expiry → · profit / loss ($), one contract per leg"

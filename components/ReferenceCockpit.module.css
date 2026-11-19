@@ -1,0 +1,444 @@
+/* Reference-derived cockpit structure. Data components keep their existing behavior. */
+.root {
+  --research-chrome: #f8fafc;
+  --research-tab-ink: #536176;
+  --research-selection-mark: #5367cf;
+  --line: #d6dde8;
+  --ink: #172033;
+  --muted: #627086;
+  background: #edf1f6;
+  color: var(--ink);
+  --research-gutter: clamp(12px, 2vw, 28px);
+  --research-gap: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: auto;
+  min-width: 0;
+  overflow: visible;
+}
+.root > header {
+  flex: 0 0 auto;
+  background: var(--research-chrome);
+  min-height: 88px;
+  padding: 12px var(--research-gutter);
+}
+.lenses {
+  display: flex;
+  flex: 0 0 58px;
+  gap: 4px;
+  padding: 0 var(--research-gutter);
+  overflow-x: auto;
+  border-block: 1px solid var(--line);
+  background: var(--research-chrome);
+  scrollbar-width: thin;
+}
+.lenses button {
+  position: relative;
+  flex: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 16px;
+  color: var(--research-tab-ink);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.lenses button[aria-current="page"] {
+  color: var(--ink);
+}
+.lenses button[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: var(--research-selection-mark);
+}
+.supporting {
+  margin: 12px var(--research-gutter) 4px;
+  max-width: calc(100% - 2 * var(--research-gutter));
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+}
+.supporting button {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--muted);
+}
+.supporting button[aria-current="page"] {
+  color: var(--ink);
+  background: var(--surface);
+}
+.root > :global(#research-overview),
+.root > :global(.signal-research-panel) {
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow: visible;
+  padding: 16px var(--research-gutter);
+}
+.root > [hidden] {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  .root > header {
+    padding: 12px;
+    min-height: 82px;
+  }
+  .lenses {
+    flex-basis: 52px;
+    padding: 0 10px;
+  }
+  .lenses button {
+    padding: 0 11px;
+    font-size: 14px;
+  }
+
+  .root > :global(#research-overview),
+  .root > :global(.signal-research-panel) {
+    padding: 12px;
+  }
+}
+.deepEvidence {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+.deepEvidence > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 30px;
+}
+
+.preferenceNotice {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.preferenceNotice h2 {
+  font-size: 22px;
+  font-weight: 500;
+}
+.preferenceNotice p {
+  color: var(--muted);
+  max-width: 660px;
+  line-height: 1.6;
+}
+.preferenceNotice a {
+  display: inline-block;
+  padding-block: 12px;
+  color: var(--blue);
+}
+
+.lensHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  padding: 8px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+.lensHeading span {
+  color: var(--blue);
+  font:
+    10px "DM Mono",
+    monospace;
+  letter-spacing: 1px;
+}
+.lensHeading h2 {
+  margin: 12px 0 0;
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1.12;
+}
+.lensHeading p {
+  margin: 0;
+  max-width: 280px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.ownershipGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: var(--research-gap);
+  align-items: start;
+}
+.ownershipGrid > section {
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .ownershipGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lensHeading {
+    align-items: start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lensHeading p {
+    max-width: 100%;
+  }
+}
+
+/* One shared gutter and one in-flow disclosure row for every research lens. */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 8px var(--research-gutter);
+  border-bottom: 1px solid var(--line);
+}
+.facts {
+  margin-left: auto;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.facts summary {
+  cursor: pointer;
+  min-height: 36px;
+  display: list-item;
+  align-content: center;
+  list-style-position: inside;
+  padding: 8px 0;
+}
+.facts[open] {
+  flex-basis: 100%;
+  margin-left: 0;
+}
+.facts[open] > section {
+  margin: 8px 0 0;
+}
+.lenses button:focus-visible,
+.supporting button:focus-visible,
+.facts summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -3px;
+}
+.library {
+  width: min(1420px, calc(100% - 52px));
+  margin: 0 auto;
+  padding: 28px 0;
+  min-width: 0;
+}
+@media (max-width: 760px) {
+  .toolbar {
+    padding: 6px 12px;
+  }
+  .facts {
+    margin-left: 0;
+  }
+  .supporting {
+    gap: 5px;
+  }
+  .supporting button {
+    font-size: 11px;
+    min-height: 40px;
+  }
+  .library {
+    width: calc(100% - 24px);
+    padding: 18px 0;
+  }
+}
+
+.primaryChart {
+  min-width: 0;
+  margin: 16px 0;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--card);
+}
+
+:global([data-theme="dark"]) .root {
+  --research-chrome: #0b121f;
+  --research-tab-ink: #a6b2c5;
+  --research-selection-mark: #9baaff;
+  --line: #253146;
+  --ink: #eef2f8;
+  --muted: #8c99ac;
+  background: #080d18;
+}
+:global([data-theme="dark"]) .lenses button[aria-current="page"] {
+  color: #fff;
+}
+
+.facts.facts > summary {
+  width: fit-content;
+  min-height: 32px;
+  padding: 4px 8px;
+  font-size: 11px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.identityMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.identityMeta > span {
+  overflow-wrap: anywhere;
+}
+.identityMeta > button {
+  flex: 0 0 auto;
+}
+@media (max-width: 430px) {
+  .root {
+    max-width: 100%;
+  }
+  .lenses {
+    gap: 0;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .lenses button {
+    padding-inline: 12px;
+  }
+  .primaryChart {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .root :global(.plot-section .chart-head) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .root :global(.plot-section .chart-head h3) {
+    margin: 0;
+    font-size: 14px;
+  }
+  .root :global(.plot-section .chart-head .ranges) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    min-width: 0;
+    gap: 3px;
+  }
+  .root :global(.plot-section .chart-head .ranges button) {
+    flex: 0 0 auto;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 6px 8px;
+  }
+}
+
+/* Research navigation hierarchy: category hue in icons, readable neutral labels. */
+.root {
+  --workspace-accent: #4b7fce;
+}
+.root[data-active-lens="Thesis"] {
+  --workspace-accent: #8275b8;
+}
+.root[data-active-lens="Technicals"] {
+  --workspace-accent: #4b7fce;
+}
+.root[data-active-lens="News"] {
+  --workspace-accent: #ba8743;
+}
+.root[data-active-lens="Advanced"] {
+  --workspace-accent: #398f9a;
+}
+.root[data-active-lens="Options"] {
+  --workspace-accent: #9b73b1;
+}
+.root[data-active-lens="Pace"] {
+  --workspace-accent: #527db1;
+}
+.root[data-active-lens="Valuation"] {
+  --workspace-accent: #a6814e;
+}
+/* Approved primary navigation: small category icons and text, never boxed tabs. */
+.lenses button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-weight: 500;
+}
+.lenses button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.supporting button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.supporting button svg {
+  color: var(--workspace-accent);
+}
+
+.lenses button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #4b7fce;
+}
+.lenses button:is([data-section="Thesis"], [data-section="Options"]) svg {
+  color: #8275b8;
+}
+.lenses button:is([data-section="Valuation"], [data-section="News"]) svg {
+  color: #a77e3c;
+}
+.lenses button[data-section="Advanced"] svg {
+  color: #398f9a;
+}
+:global([data-theme="dark"]) .lenses button svg {
+  color: #91b5ef;
+}
+:global([data-theme="dark"])
+  .lenses
+  button:is([data-section="Thesis"], [data-section="Options"])
+  svg {
+  color: #b9a9ea;
+}
+:global([data-theme="dark"])
+  .lenses
+  button:is([data-section="Valuation"], [data-section="News"])
+  svg {
+  color: #d1b078;
+}
+:global([data-theme="dark"]) .lenses button[data-section="Advanced"] svg {
+  color: #7bbec5;
+}
+
+/* Main navigation stays flat, with a readable hover target and a stable underline. */
+.lenses button:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.lenses button svg {
+  stroke-width: 1.8;
+}
+.lenses button:focus-visible {
+  outline-offset: -3px;
+}
+.supporting button svg {
+  color: currentColor;
+  opacity: 0.9;
+}

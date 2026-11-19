@@ -52,10 +52,11 @@ export function restoreWhenReady(target: number, env: ScrollEnvironment) {
 }
 export function browserScrollEnvironment(): ScrollEnvironment {
   const content = document.getElementById("content");
+  const pane = content?.dataset?.workspaceScroll === "true" ? content : null;
   return {
-    readTop: () => window.scrollY,
+    readTop: () => (pane ? pane.scrollTop : window.scrollY),
     onScroll: (notify) => {
-      const target = window;
+      const target = pane ?? window;
       target.addEventListener("scroll", notify, { passive: true });
       return () => target.removeEventListener("scroll", notify);
     },
@@ -64,9 +65,14 @@ export function browserScrollEnvironment(): ScrollEnvironment {
         '#content [aria-busy="true"], #content [data-scroll-pending="true"]',
       ),
     maxScroll: () =>
-      Math.max(0, document.documentElement.scrollHeight - window.innerHeight),
+      Math.max(
+        0,
+        pane
+          ? pane.scrollHeight - pane.clientHeight
+          : document.documentElement.scrollHeight - window.innerHeight,
+      ),
     scrollTo: (top) =>
-      window.scrollTo({
+      (pane ?? window).scrollTo({
         top,
         left: 0,
         behavior: "instant",

@@ -1,11 +1,15 @@
 "use client";
+import layout from "./ValueStudio.module.css";
+import SentiSenseConsensus from "./SentiSenseConsensus";
+import AnalystTargets from "./AnalystTargets";
+import SelectedValuation from "./SelectedValuation";
+import { scenarioHeadline } from "@/lib/scenario-headline";
+import ScenarioLenses from "./ScenarioLenses";
 import SectionIcon from "./SectionIcon";
 import { useMemo } from "react";
 import type { Research } from "@/lib/types";
 import { valueDesk, type DeskMetric } from "@/lib/research-desks";
-import { percent, dateLabel } from "@/lib/format";
-import PriceProjection from "./PriceProjection";
-import ScenarioCompass from "./ScenarioCompass";
+import { percent } from "@/lib/format";
 import { modelAssessment } from "@/lib/model-assessment";
 const display = (m: DeskMetric) =>
   m.value == null
@@ -15,49 +19,50 @@ const display = (m: DeskMetric) =>
       : percent(m.value);
 export default function ValueStudio({
   research: r,
-  onWorkbench,
+  preview = false,
 }: {
   research: Research;
-  onWorkbench: () => void;
+  preview?: boolean;
 }) {
   const d = useMemo(() => valueDesk(r), [r]);
   const methods = useMemo(() => modelAssessment(r), [r]);
-  const available = d.metrics.filter((m) => m.value != null);
+  const headline = useMemo(() => {
+    const range = scenarioHeadline(r);
+    return range?.source === "history" ? range : null;
+  }, [r]);
+  const available = d.metrics.filter(
+    (m) =>
+      m.value != null &&
+      !["earningsYield", "forwardYield", "dividendYield"].includes(m.key),
+  );
   const missing = d.metrics.filter((m) => m.value == null);
   const yields = d.metrics.filter((m) =>
     ["earningsYield", "forwardYield"].includes(m.key),
   );
-  const maximum = Math.max(
-    10,
-    ...yields.flatMap((m) => (m.value == null ? [] : [m.value])),
-  );
+
   return (
-    <div className="value-studio depth-value">
-      <header className="desk-heading">
-        <div>
-          <span className="eyebrow">Value · what the price implies</span>
-          <h2>
-            <SectionIcon name="Valuation" size={25} />
-            Price in context.
-          </h2>
-          <p>Read the scenario, the multiple and the assumptions together.</p>
+    <div
+      className={`${layout.root} value-studio depth-value`}
+      data-has-consensus={!preview}
+    >
+      <div className={layout.scenarios}>
+        <SelectedValuation research={r} headline={headline} />
+      </div>
+      {!preview && (
+        <div className={layout.consensus}>
+          <SentiSenseConsensus
+            symbol={r.company.symbol}
+            preview={preview}
+            fallback={<AnalystTargets research={r} showUnavailable />}
+          />
         </div>
-        <button type="button" className="button" onClick={onWorkbench}>
-          Test assumptions →
-        </button>
-      </header>
-      <ScenarioCompass research={r} />
-      <details className="value-personal-model">
-        <summary>Your assumptions · optional workbench</summary>
-        <p className="desk-footnote">
-          These are your editable scenarios, separate from AURYN’s model and
-          published analyst targets.
-        </p>
-        <PriceProjection key={r.company.symbol} research={r} />
-      </details>
+      )}
+      <div className={layout.crosscheck}>
+        <ScenarioLenses research={r} hideSingle excludeAnalyst />
+      </div>
       {available.length > 0 && (
         <section
-          className="valuation-board"
+          className={`valuation-board ${layout.market}`}
           aria-labelledby="market-pricing-title"
         >
           <header className="section-head">
@@ -68,17 +73,27 @@ export default function ValueStudio({
                 What you are paying for
               </h3>
             </div>
-            <small>
-              {d.asOf
-                ? `Reported ${dateLabel(d.asOf)}`
-                : "Observation date not supplied"}
-            </small>
           </header>
           <div className="valuation-board-grid">
             {available.map((m) => (
               <article key={m.key} data-tone="neutral">
                 <span>{m.label}</span>
                 <strong>{display(m)}</strong>
+                {["pe", "forwardPe", "trailingPE", "forwardPE"].includes(
+                  m.key,
+                ) && (
+                  <small>
+                    {yields.find(
+                      (y) =>
+                        y.key ===
+                        (/forward/i.test(m.key)
+                          ? "forwardYield"
+                          : "earningsYield"),
+                    )?.value != null
+                      ? `Earnings yield ${yields.find((y) => y.key === (/forward/i.test(m.key) ? "forwardYield" : "earningsYield"))!.value!.toFixed(2)}%`
+                      : ""}
+                  </small>
+                )}
                 <p>{m.note}</p>
               </article>
             ))}
@@ -92,6 +107,12 @@ export default function ValueStudio({
           )}
         </section>
       )}
+      {d.metrics.find((m) => m.key === "dividendYield")?.value != null && (
+        <p className="desk-footnote">
+          Dividend yield{" "}
+          {percent(d.metrics.find((m) => m.key === "dividendYield")!.value)}
+        </p>
+      )}
       {!available.length && (
         <details className="value-data-note">
           <summary>About the pricing evidence</summary>
@@ -102,67 +123,34 @@ export default function ValueStudio({
           </p>
         </details>
       )}
-      {yields.some((m) => m.value != null) && (
-        <section
-          className="earnings-yield-view"
-          aria-label="Earnings represented per 100 units of equity price"
-        >
-          <div>
-            <span className="eyebrow">A different lens</span>
+      <details className={`value-model-fit ${layout.methods}`}>
+        <summary>Model fit & evidence</summary>
+        <div className={layout.methodGrid}>
+          <header className="section-head">
             <h3>
-              <SectionIcon name="Value" />
-              For every 100 you pay.
+              <SectionIcon name="Business" />
+              The right lens for this business.
             </h3>
-            <p>
-              Reported or estimated annual earnings represented by the multiple.
-              These amounts are neither cash distributions nor expected
-              investment returns.
-            </p>
-          </div>
-          <div className="yield-bars">
-            {yields.map((m) => (
-              <div key={m.key}>
-                <span>{m.label}</span>
-                <strong>
-                  {m.value == null ? "Not available" : `${m.value.toFixed(2)}%`}
-                </strong>
-                <i>
-                  <b
-                    style={{
-                      width: `${m.value == null ? 0 : (m.value / maximum) * 100}%`,
-                    }}
-                  />
-                </i>
+            <span className="eyebrow">Model fit</span>
+          </header>
+          {methods.methods.map((method) => (
+            <div key={method.key}>
+              <i data-state={method.status} />
+              <div>
+                <strong>{method.name}</strong>
+                <p>{method.reason}</p>
               </div>
-            ))}
-          </div>
-        </section>
-      )}
-      <section className="value-model-fit">
-        <header className="section-head">
-          <h3>
-            <SectionIcon name="Business" />
-            The right lens for this business.
-          </h3>
-          <span className="eyebrow">Model fit</span>
-        </header>
-        {methods.methods.map((method) => (
-          <div key={method.key}>
-            <i data-state={method.status} />
-            <div>
-              <strong>{method.name}</strong>
-              <p>{method.reason}</p>
+              <span>
+                {method.status === "available"
+                  ? "Available"
+                  : method.status === "unsuitable"
+                    ? "Different model"
+                    : "More evidence needed"}
+              </span>
             </div>
-            <span>
-              {method.status === "available"
-                ? "Available"
-                : method.status === "unsuitable"
-                  ? "Different model"
-                  : "More evidence needed"}
-            </span>
-          </div>
-        ))}
-      </section>
+          ))}
+        </div>
+      </details>
       <p className="desk-footnote">
         Multiples are reported observations and can use different dates from the
         quote. A low multiple alone does not establish value.{" "}

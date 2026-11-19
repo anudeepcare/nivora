@@ -31,7 +31,7 @@ function research() {
           analysts: 15,
         },
         {
-          date: "2027-05-31",
+          date: "2026-12-31",
           period: "FY2027",
           frequency: "annual",
           currency: "USD",
@@ -77,7 +77,7 @@ test("a missing EPS range cannot become fabricated bear and bull targets", () =>
   input.evidence.estimates[0].epsLow = null;
   const r = researchOutlook(input);
   assert.equal(r.available, false);
-  assert.match(r.reason, /range/i);
+  assert.match(r.reason, /range|share/i);
 });
 test("crypto, unreconciled foreign listings and mismatched currency withhold corporate targets", () => {
   const { researchOutlook } = load();
@@ -240,7 +240,7 @@ test("headline policy prefers eligible earnings cases and uses analyst fallback 
     },
   ];
   r.evidence.estimates.push({
-    date: "2027-03-31",
+    date: "2026-12-31",
     period: "FY2027",
     frequency: "Annual",
     currency: "USD",
@@ -288,4 +288,180 @@ test("missing near-year EPS and invalid manual multiples cannot silently use pro
       outlook.researchOutlook(r, { earningsMultiple }).available,
       false,
     );
+});
+
+test("price-anchored scenarios disclose the anchor and select only supplied fiscal ends", () => {
+  const r = research();
+  r.evidence.multiples.ForwardPE = 3;
+  r.evidence.estimates.push({
+    date: "2028-10-17",
+    period: "FY2028",
+    frequency: "annual",
+    currency: "USD",
+    eps: 7,
+    epsLow: 5,
+    epsHigh: 9,
+    analysts: 12,
+  });
+  assert.equal(outlook.researchOutlook(r).available, false);
+  const result = outlook.researchOutlook(r, {
+    priceAnchored: true,
+    fiscalEnd: "2028-10-17",
+  });
+  assert.equal(result.available, true);
+  assert.equal(result.multipleSource, "price-implied");
+  assert.equal(result.end, "2028-10-17");
+  assert.deepEqual(
+    result.cases.map((x) => x.target),
+    [80, 140, 216],
+  );
+  assert.match(result.caveat, /not independent fair value/);
+  assert.equal(
+    outlook.researchOutlook(r, { priceAnchored: true, fiscalEnd: "2030-10-17" })
+      .available,
+    false,
+  );
+  r.evidence.estimates[1].epsLow = null;
+  assert.equal(
+    outlook.researchOutlook(r, { priceAnchored: true }).available,
+    false,
+  );
+});
+
+test("analyst comparisons share the settled close used by the research header", () => {
+  const r = research();
+  r.company.exchange = "NASDAQ";
+  r.retrievedAt = "2026-10-27T01:00:00Z";
+  r.evidence.updatedAt = "2026-10-26";
+  r.evidence.consensus = { target: 150 };
+  r.quote.price = 120;
+  r.quote.asOf = "2026-10-23T20:00:00Z";
+  r.history = ["2026-10-23", "2026-10-26"].map((time, i) => ({
+    time,
+    open: 100 + i * 10,
+    high: 100 + i * 10,
+    low: 100 + i * 10,
+    close: 100 + i * 10,
+    volume: 100,
+  }));
+  const c = outlook.consensusOutlook(r);
+  assert.equal(c.referencePrice, 110);
+  assert.equal(c.change, (150 / 110 - 1) * 100);
+});
+
+test("an explicit P/E wins over price anchoring in both calculations and provenance", () => {
+  const result = outlook.researchOutlook(research(), {
+    earningsMultiple: 30,
+    priceAnchored: true,
+  });
+  assert.equal(result.available, true);
+  assert.equal(result.multipleSource, "user-assumption");
+  assert.equal(result.cases[1].multiple, 30);
+  assert.match(result.caveat, /explicit assumption/);
+  assert.doesNotMatch(result.caveat, /Price-anchored sensitivity/);
+});
+
+test("frontier and infrastructure failures offer a sourced funding path without automatic targets", () => {
+  for (const symbol of ["ASTS", "NBIS", "IREN"]) {
+    const r = research();
+    r.company.symbol = symbol;
+    const result = outlook.researchOutlook(r);
+    assert.equal(result.available, false);
+    assert.equal(result.recovery?.kind, "funded-assumptions");
+    assert.match(result.recovery.detail, /capex|financing/i);
+    assert.equal("cases" in result, false);
+  }
+  const insurer = research();
+  insurer.company.symbol = "OSCR";
+  insurer.evidence.profile = {
+    sector: "Healthcare",
+    industry: "Healthcare Plans",
+  };
+  assert.equal(outlook.researchOutlook(insurer).recovery, undefined);
+});
+
+test("complete annual EPS ranges 90–269 days away remain eligible without annualizing quarterly EPS", () => {
+  for (const symbol of ["HIMS", "CRM", "MSFT"]) {
+    const r = research();
+    r.company.symbol = symbol;
+    r.evidence.estimates = [{ ...r.evidence.estimates[1], date: "2027-05-31" }];
+    const result = load().researchOutlook(r);
+    assert.equal(result.available, true, symbol);
+    assert.equal(result.end, "2027-05-31");
+    assert.equal(result.cases[1].target, 100);
+    r.evidence.estimates[0].frequency = "quarterly";
+    assert.equal(load().researchOutlook(r).available, false);
+    r.evidence.estimates[0].frequency = "annual";
+    r.evidence.estimates[0].date = "2026-12-31";
+    assert.equal(load().researchOutlook(r).available, false);
+  }
+});
+
+test("selected analyst reference provenance survives a discarded stale quote", () => {
+  const r = research();
+  r.company.exchange = "NASDAQ";
+  r.retrievedAt = "2026-10-27T01:00:00Z";
+  r.evidence.updatedAt = "2026-10-26";
+  r.evidence.consensus = { target: 150 };
+  r.quote = {
+    ...r.quote,
+    price: 120,
+    stale: true,
+    asOf: "2026-10-23T20:00:00Z",
+  };
+  r.history = [
+    {
+      time: "2026-10-26",
+      open: 110,
+      high: 110,
+      low: 110,
+      close: 110,
+      volume: 100,
+    },
+  ];
+  const c = outlook.consensusOutlook(r);
+  assert.equal(c.referencePrice, 110);
+  assert.equal(c.referenceStatus, "current");
+  assert.equal(c.referenceAsOf, "2026-10-26");
+  assert.equal(c.referenceBasis, "settled-close");
+});
+
+test("provider estimates without evidence dates or fiscal endpoints never become model scenarios", () => {
+  const { researchOutlook } = load();
+  const missingObservation = research();
+  missingObservation.evidence.updatedAt = null;
+  assert.equal(researchOutlook(missingObservation).available, false);
+  const missingPeriod = research();
+  missingPeriod.evidence.estimates = missingPeriod.evidence.estimates.map(
+    (x) => ({ ...x, date: "", period: "+1y" }),
+  );
+  assert.equal(researchOutlook(missingPeriod).available, false);
+  const wrongCurrency = research();
+  wrongCurrency.evidence.estimates = wrongCurrency.evidence.estimates.map(
+    (x) => ({ ...x, currency: "EUR" }),
+  );
+  assert.equal(researchOutlook(wrongCurrency).available, false);
+  const consensusOnly = research();
+  consensusOnly.evidence.estimates = [];
+  consensusOnly.evidence.consensus = { low: 80, target: 100, high: 120 };
+  assert.equal(researchOutlook(consensusOnly).available, false);
+});
+
+test("scenario prices require an explicit matching listing and quote currency, not missing-unit equality", () => {
+  for (const currency of [null, undefined, "", "usd", "USD/share"]) {
+    const r = research();
+    r.company.symbol = "GOOG";
+    r.company.currency = currency;
+    r.quote.currency = currency;
+    r.evidence.estimates.forEach((e) => {
+      e.currency = currency;
+    });
+    const result = outlook.researchOutlook(r);
+    assert.equal(result.available, false, `must withhold currency ${currency}`);
+    assert.match(result.reason, /currency/i);
+  }
+  const mismatch = research();
+  mismatch.company.currency = "EUR";
+  assert.equal(outlook.researchOutlook(mismatch).available, false);
+  assert.equal(outlook.researchOutlook(research()).available, true);
 });

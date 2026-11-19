@@ -63,7 +63,7 @@
 .advancedControl {
   display: grid;
   gap: 4px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .expiryControl select {
@@ -76,6 +76,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+.views button {
+  min-height: 44px;
+  white-space: normal;
 }
 .views button[aria-pressed="true"],
 .options_segment button[aria-pressed="true"],
@@ -103,7 +107,7 @@
 }
 .marketLine > small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .marketLine b {
   font-weight: 600;
@@ -131,13 +135,10 @@
 }
 .secondaryTools {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
   margin-top: 8px;
   border-top: 1px solid var(--line);
-}
-.activity {
-  min-width: 0;
 }
 .analytics {
   padding: 12px 0;
@@ -148,14 +149,20 @@
   margin: 8px 0;
 }
 .options_empty {
-  padding: 22px 0;
+  padding: 12px 0;
   max-width: 75ch;
+  min-width: 0;
 }
 .options_empty h3 {
   margin: 8px 0;
 }
 .options_empty p {
   color: var(--muted);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  overflow: visible;
+  max-height: none;
+  -webkit-line-clamp: unset;
 }
 .options_empty_inline {
   display: flex;
@@ -187,7 +194,7 @@
 }
 .options_insight_grid p {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .options_card,
@@ -212,7 +219,7 @@
 }
 .eyebrow,
 .options_count {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .options_section_heading > div {
@@ -319,7 +326,7 @@
 }
 .options_strategies small {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 3px;
 }
 .options_plot {
@@ -338,7 +345,7 @@
 }
 .options_plot_axis,
 .options_plot figcaption {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .options_learn_grid {
@@ -360,7 +367,7 @@
   border-radius: 50%;
   background: var(--citron);
   color: #24272b;
-  font-size: 11px;
+  font-size: 12px;
 }
 .options_learn_grid p {
   font-size: 12px;
@@ -368,7 +375,7 @@
   margin: 0;
 }
 .options_disclosure {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   padding: 14px 0;
   border-top: 1px solid var(--line);
@@ -384,7 +391,7 @@
     width: 100%;
   }
   .views button {
-    flex: 1;
+    flex: 1 1 140px;
     padding: 8px;
   }
   .advancedControl {
@@ -428,4 +435,216 @@
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 12px;
+}
+.commandBar {
+  padding: 14px 0;
+  gap: 12px 20px;
+  align-items: center;
+}
+.views {
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface);
+  border-radius: 12px;
+}
+.views button {
+  border: 0;
+  background: transparent;
+  border-radius: 9px;
+  padding-inline: 14px;
+}
+.views button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: 0 3px 9px #112e2210;
+}
+.marketLine {
+  padding: 14px 0;
+  gap: 10px 24px;
+}
+.desk h3 {
+  font-size: 20px;
+  letter-spacing: -0.025em;
+}
+@media (max-width: 600px) {
+  .views {
+    width: 100%;
+  }
+  .views button {
+    flex: 1 1 140px;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .commandBar {
+    gap: 12px;
+  }
+}
+.orientation {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px 18px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.orientation strong {
+  font-size: 14px;
+}
+.orientation p {
+  margin: 0;
+  max-width: 70ch;
+  font-size: 12px;
+}
+.commandBar {
+  padding: 10px 0;
+}
+/* One toolbar surface groups navigation; data below uses a separate reading rhythm. */
+.desk {
+  font-size: 14px;
+}
+.commandBar {
+  padding: 16px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.views {
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--surface);
+}
+.views button {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+.views button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--card);
+}
+.marketLine {
+  font-size: 13px;
+  padding: 12px 4px;
+  gap: 10px 20px;
+}
+.orientation p {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.55;
+}
+@media (max-width: 700px) {
+  .commandBar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding: 12px;
+  }
+  .expiryControl,
+  .advancedControl {
+    width: 100%;
+    margin: 0;
+    min-width: 0;
+    font-size: 12px;
+  }
+  .expiryControl select,
+  .advancedControl select {
+    width: 100%;
+    min-width: 0;
+  }
+  .views {
+    grid-column: 1/-1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2px;
+  }
+  .views button {
+    padding: 8px 4px;
+    font-size: 12px;
+    min-height: 44px;
+  }
+  .marketLine {
+    gap: 8px 14px;
+  }
+  .orientation {
+    display: block;
+  }
+  .orientation p {
+    margin-top: 6px;
+  }
+}
+/* Fixed columns keep expiry, section navigation and advanced tools on a shared baseline. */
+.desk .commandBar {
+  display: grid;
+  grid-template-columns: minmax(160px, 200px) minmax(0, 1fr) minmax(
+      160px,
+      220px
+    );
+  align-items: end;
+  gap: 16px;
+}
+.desk .expiryControl,
+.desk .advancedControl {
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+}
+.desk .expiryControl select,
+.desk .advancedControl select {
+  width: 100%;
+  min-width: 0;
+}
+.desk .views {
+  justify-self: start;
+  align-self: end;
+  max-width: 100%;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.desk .views button {
+  white-space: normal;
+  min-height: 44px;
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .desk .commandBar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .desk .views {
+    grid-column: 1/-1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    width: 100%;
+    justify-self: stretch;
+  }
+  .desk .views button {
+    font-size: 13px;
+    padding: 8px 5px;
+  }
+}
+@media (max-width: 360px) {
+  .desk .views {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  /* Native controls keep their text readable without iOS focus zoom. */
+  .desk input:not([type="checkbox"]),
+  .desk select {
+    font-size: 16px;
+  }
+}
+
+.desk .views button[aria-pressed="true"],
+.desk .options_segment button[aria-pressed="true"],
+.desk .options_strategies button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--ink) 6%, var(--card));
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink) 28%, var(--line));
+  font-weight: 500;
 }

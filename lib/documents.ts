@@ -1,3 +1,4 @@
+import { cleanSavedScenario } from "./saved-scenarios.ts";
 import { cleanThesisRule } from "./thesis-rules.ts";
 import { parseBoardState } from "./exposure-board.ts";
 import { cleanSimulationLedger } from "./options-simulation.ts";
@@ -76,6 +77,16 @@ export function cleanDocument(
       throw Error("Check your symbols.");
     return {
       name: text("name", 80),
+      ...(kind === "view" && v.scenarioCase !== undefined
+        ? {
+            scenarioCase: (() => {
+              const scenario = cleanSavedScenario(v.scenarioCase);
+              if (symbols.length !== 1 || symbols[0] !== scenario.symbol)
+                throw Error("Saved case must match its company.");
+              return scenario;
+            })(),
+          }
+        : {}),
       ...(kind === "view" && v.marketViews !== undefined
         ? { marketViews: cleanMarketViews(v.marketViews) }
         : {}),

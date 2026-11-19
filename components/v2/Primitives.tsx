@@ -18,14 +18,8 @@ import s from "./Preview.module.css";
 export function Brand() {
   return (
     <span className={s.brand}>
-      <svg viewBox="0 0 36 38" aria-hidden="true">
-        <path d="M3 31 16 5h5L8 31Z" fill="currentColor" />
-        <path d="m18 15 10 16h6L22 10Z" fill="currentColor" opacity=".5" />
-        <path d="m13 25 4-8 5 8Z" fill="currentColor" />
-      </svg>
-      <span>
-        AURYN<span className={s.brandDot}>.</span>
-      </span>
+      <img src="/icon.svg" width="31" height="33" alt="" aria-hidden="true" />
+      <span>AURYN</span>
     </span>
   );
 }

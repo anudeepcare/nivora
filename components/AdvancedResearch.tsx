@@ -1,4 +1,5 @@
 "use client";
+import { navigateSelection } from "@/lib/selection-navigation";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import type { Research } from "@/lib/types";
@@ -24,9 +25,11 @@ const HistoryWorkbench = dynamic(
 export default function AdvancedResearch({
   research: r,
   initialSection = "risk",
+  overviewPresent = false,
 }: {
   research: Research;
   initialSection?: string;
+  overviewPresent?: boolean;
 }) {
   const s = useMemo(
     () => advancedStudies(r.history, r.retrievedAt),
@@ -57,7 +60,13 @@ export default function AdvancedResearch({
           Research tools · no order execution
         </span>
       </header>
-      <nav className="professional-tabs" aria-label="Advanced sections">
+      <nav
+        className="professional-tabs auryn-view-tabs"
+        data-selection-navigation
+        data-nested-navigation
+        onKeyDown={(event) => navigateSelection(event)}
+        aria-label="Advanced sections"
+      >
         {sections.map(([id, label]) => (
           <button
             key={id}
@@ -69,12 +78,13 @@ export default function AdvancedResearch({
               setVisited((old) => (old.includes(id) ? old : [...old, id]));
             }}
           >
-            {label}
+            <span aria-hidden="true" data-nav-icon={label} />
+            <span>{label}</span>
           </button>
         ))}
       </nav>
       <section id="professional-risk" hidden={active !== "risk"}>
-        <AdvancedDashboard research={r} />
+        <AdvancedDashboard research={r} overviewPresent={overviewPresent} />
       </section>
       {visited.includes("position") && (
         <section id="professional-position" hidden={active !== "position"}>

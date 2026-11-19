@@ -270,16 +270,28 @@ function SignedInPlans() {
           <Link className="button" href="/owner">
             Admin controls
           </Link>
-        ) : billing?.canManage && a.source === "subscription" ? (
+        ) : null}
+        {billing?.canManage ? (
           <button
             className="button"
             disabled={busy || !billing.ready}
             onClick={() => void open("portal")}
           >
-            Manage subscription
+            Manage or cancel subscription
           </button>
         ) : null}
       </section>
+      {billing && (
+        <p className="plans-footnote" role="status">
+          {billing.canManage
+            ? billing.ready
+              ? sub?.cancel_at_period_end
+                ? "Cancellation is scheduled. Open Stripe to review your access end date and available options."
+                : "Open Stripe to manage billing or cancel your subscription. Review the effective date and confirm there; opening the portal does not cancel anything. If cancellation is not offered, contact billing support using your Stripe receipt."
+              : "Subscription management is temporarily unavailable. No subscription has been cancelled. Contact billing support using your Stripe receipt."
+            : "No Stripe billing account is linked to this sign-in. Free and complimentary access do not require cancellation. If you paid using another account or provider, manage the subscription there."}
+        </p>
+      )}
       <PricingCards
         config={billing?.config}
         access={a}
@@ -331,9 +343,9 @@ export default function Plans({
       {publicPage ? <PricingCards /> : <SignedInPlans />}
       <p className="plans-footnote">
         Secure checkout by Stripe. AURYN does not store full card numbers or
-        security codes. Monthly billing. Cancel future renewals in Manage
-        subscription; paid access continues through the billing period. Research
-        support, not investment advice.
+        security codes. Monthly billing. Manage or cancel subscription opens
+        Stripe, where the effective date and any available cancellation options
+        are shown. Research support, not investment advice.
       </p>
       {publicPage && (
         <footer>

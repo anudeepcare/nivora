@@ -1,0 +1,558 @@
+.root.root {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 22px 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink);
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+.eyebrow {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.heading h2 {
+  margin: 7px 0 10px;
+  font-size: clamp(26px, 3vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+}
+.heading p {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.reasons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 32px 0 16px;
+}
+.root.root .case {
+  --case-color: #a38232;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.root.root .case[data-case="bear"] {
+  --case-color: #c65050;
+}
+.root.root .case[data-case="bull"] {
+  --case-color: #00866b;
+}
+.case span {
+  color: var(--case-color);
+  font-size: 12px;
+  font-weight: 650;
+}
+.case strong {
+  font-size: clamp(21px, 3.6vw, 36px);
+  font-weight: 550;
+  letter-spacing: -0.045em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.case small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.priceMap {
+  padding: 12px 36px 36px;
+}
+.rail {
+  position: relative;
+  height: 5px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #c6505055, #a3823244 50%, #00866b55);
+}
+.point {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a38232;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 3px var(--canvas, var(--card));
+}
+.point[data-side="bear"] {
+  background: #c65050;
+}
+.point[data-side="bull"] {
+  background: #00866b;
+}
+.now {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--ink);
+}
+.now > i {
+  display: block;
+  width: 2px;
+  height: 17px;
+  margin: auto;
+  background: currentColor;
+}
+.now small {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.root.root .assumptions {
+  padding: 14px 0 0;
+  margin: 0;
+  border: 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.root.root .assumptions summary {
+  padding: 8px 0;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 500;
+}
+.root.root .years {
+  display: flex;
+  gap: 14px;
+  margin: 14px 0;
+  flex-wrap: wrap;
+}
+.root.root .years button {
+  min-height: 40px;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.root.root .years button[aria-pressed="true"] {
+  color: var(--green);
+  font-weight: 700;
+}
+.root.root button:focus-visible,
+.root.root summary:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
+}
+@media (max-width: 480px) {
+  .reasons {
+    gap: 8px;
+  }
+  .case span {
+    font-size: 11px;
+  }
+  .root.root {
+    padding: 16px 0;
+  }
+}
+.root.root {
+  padding: 12px 0;
+  margin-bottom: 12px;
+}
+.heading h2 {
+  font-size: 26px;
+  margin: 6px 0;
+}
+.reasons {
+  gap: 24px;
+  margin: 22px 0 18px;
+}
+.root.root .case {
+  gap: 6px;
+}
+.case strong {
+  font-size: clamp(24px, 2.8vw, 34px);
+}
+.caseInput {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+.caseInput > span {
+  padding: 0 3px;
+}
+.priceMap {
+  padding: 8px 10px 32px;
+  max-width: 980px;
+}
+.root.root .assumptions {
+  padding-top: 6px;
+}
+@media (max-width: 600px) {
+  .heading h2 {
+    font-size: 23px;
+  }
+  .reasons {
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .caseInput {
+    font-size: 10px;
+  }
+  .case strong {
+    font-size: 24px;
+  }
+}
+/* Three deliberate scenario surfaces, with visible assumptions and shared price context. */
+.root.root {
+  padding: 24px;
+  border-radius: 22px;
+  background: var(--card);
+  box-shadow: 0 10px 36px #17342c09;
+  margin: 0;
+}
+.heading h2 {
+  font-size: 25px;
+}
+.heading {
+  align-items: center;
+}
+.reasons {
+  gap: 14px;
+  margin: 20px 0 18px;
+}
+.root.root .case {
+  padding: 20px;
+  border-radius: 16px;
+  gap: 8px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--case-color) 9%, var(--card)),
+    var(--card)
+  );
+  box-shadow: none;
+}
+.caseLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.caseLabel svg {
+  flex: none;
+}
+.case strong {
+  font-size: clamp(25px, 2.9vw, 38px);
+}
+.caseInput {
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--case-color) 12%, transparent);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--valuation-icon);
+  background: color-mix(in srgb, var(--valuation-icon) 9%, var(--card));
+  white-space: nowrap;
+}
+.missing {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.missing > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--valuation-icon);
+}
+.missing strong {
+  font-size: 12px;
+}
+.missing p {
+  margin: 4px 0;
+  color: var(--muted);
+}
+.missing small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.priceMap {
+  max-width: none;
+  padding: 8px 18px 32px;
+}
+@media (max-width: 600px) {
+  .root.root {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+  .heading {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .heading h2 {
+    font-size: 23px;
+  }
+  .root.root .case {
+    padding: 14px 10px;
+    gap: 7px;
+    border-radius: 12px;
+  }
+  .caseLabel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .case span {
+    font-size: 10px;
+  }
+  .case strong {
+    font-size: 22px;
+  }
+  .case small {
+    font-size: 11px;
+  }
+  .reasons {
+    gap: 8px;
+  }
+  .caseInput {
+    font-size: 10px;
+  }
+  .missing {
+    padding: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .reasons {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .root.root .case {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 5px 12px;
+    padding: 15px;
+  }
+  .caseLabel {
+    flex-direction: row;
+    align-items: center;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .case strong {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 26px;
+  }
+  .case small {
+    grid-column: 2;
+    text-align: right;
+  }
+  .caseInput {
+    grid-column: 1/-1;
+    margin-top: 4px;
+  }
+  .case span {
+    font-size: 12px;
+  }
+}
+:global([data-theme="dark"]) .root.root .case[data-case="bear"] {
+  --case-color: #f28c8c;
+}
+:global([data-theme="dark"]) .root.root .case[data-case="base"] {
+  --case-color: #dfbb65;
+}
+:global([data-theme="dark"]) .root.root .case[data-case="bull"] {
+  --case-color: #65d4b2;
+}
+:global([data-theme="dark"]) .status {
+  color: #ecc775;
+  background: #ecc77514;
+}
+:global([data-theme="dark"]) .missing > svg {
+  color: #ecc775;
+}
+
+.heading > :global(.button) {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 9px 13px;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .heading {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .root.root {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+}
+.root.root {
+  padding: 20px;
+  border-radius: 18px;
+}
+.root.root .heading {
+  gap: 12px;
+  align-items: start;
+}
+.root.root .heading h2 {
+  font-size: 23px;
+  margin: 5px 0 7px;
+}
+.root.root .heading p {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.root.root .reasons {
+  margin: 16px 0 12px;
+  gap: 10px;
+}
+.root.root .case {
+  padding: 16px;
+  border-radius: 13px;
+  gap: 7px;
+}
+.root.root .case strong {
+  font-size: clamp(24px, 2.4vw, 33px);
+}
+.root.root .case span {
+  font-size: 11px;
+}
+.root.root .case small {
+  font-size: 11px;
+}
+.root.root .priceMap {
+  padding: 8px 18px 34px;
+}
+@media (max-width: 650px) {
+  .root.root {
+    padding: 16px 14px;
+  }
+}
+
+.recovery {
+  margin-top: 16px;
+  min-width: 0;
+}
+.recovery > p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.recovery > button {
+  min-height: 44px;
+  margin-bottom: 12px;
+}
+
+/* Compact scenario boxes, without another enclosing panel. */
+.root.root {
+  padding: 12px 0;
+  margin: 0 0 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.root.root .heading h2 {
+  font-size: 20px;
+  margin: 4px 0;
+}
+.root.root .heading p {
+  font-size: 12px;
+}
+.root.root .reasons {
+  margin: 12px 0;
+  gap: 12px;
+}
+.root.root .case {
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--case-color) 5%, var(--card)),
+    var(--card)
+  );
+  box-shadow: 0 8px 28px #17342c08;
+  gap: 4px;
+}
+.root.root .case strong {
+  font-size: clamp(22px, 2vw, 28px);
+}
+.root.root .case span,
+.root.root .case small {
+  font-size: 12px;
+}
+.root.root .priceMap {
+  padding: 6px 18px 32px;
+}
+.root.root .assumptions {
+  padding: 0;
+}
+
+.referenceBasis {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.methodInfo {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.methodInfo summary {
+  cursor: pointer;
+  width: fit-content;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+}
+.methodInfo summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+.methodInfo p {
+  padding: 8px 0;
+}
+.root .reasons {
+  margin-top: 20px;
+}
+.root .heading h2 {
+  font-size: clamp(23px, 2.5vw, 30px);
+  font-weight: 500;
+}

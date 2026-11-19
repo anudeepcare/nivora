@@ -10,12 +10,14 @@ export default function OpportunityMap({
   prefix = "",
   demo = false,
   onSector,
+  compact = false,
 }: {
   research: Research[];
   requested: string[];
   prefix?: string;
   demo?: boolean;
   onSector?: (sector: string) => void;
+  compact?: boolean;
 }) {
   const map = opportunityMap(
     research,
@@ -23,11 +25,16 @@ export default function OpportunityMap({
     demo && research[0] ? Date.parse(research[0].retrievedAt) : Date.now(),
   );
   return (
-    <section className={styles.map} aria-label="Opportunity map">
+    <section
+      className={`${styles.map} ${compact ? styles.compact : ""}`}
+      aria-label="Opportunity map"
+    >
       <header>
         <div>
           <span className={styles.eyebrow}>YOUR RESEARCH UNIVERSE</span>
-          <h2>Opportunity map</h2>
+          <h2>
+            {compact ? "Business evidence · loaded sample" : "Opportunity map"}
+          </h2>
         </div>
         {!onSector && (
           <Link href={`${prefix}/discover`}>Explore Discover ↗</Link>

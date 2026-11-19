@@ -129,3 +129,11 @@
     font-size: 19px;
   }
 }
+.chart.chart :global(.approved-chart-empty) {
+  min-height: 150px;
+  height: auto;
+  border: 0;
+  border-radius: 12px;
+  padding: 28px 20px;
+  background: var(--surface);
+}

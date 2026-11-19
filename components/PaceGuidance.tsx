@@ -12,7 +12,7 @@ export default function PaceGuidance({
   readings: ReturnType<typeof pacePeriods>;
   compact?: boolean;
 }) {
-  const confirmed = readings.find((r) => r.key === "confirmed");
+  const confirmed = readings.find((r) => r.key === "forming");
   const available = readings.some((r) => r.level != null);
   const contributionAction = view.permitted
     ? view.actionLabel.startsWith("Add")
@@ -31,7 +31,7 @@ export default function PaceGuidance({
               : view.actionLabel.startsWith("Hold")
                 ? "Hold"
                 : "Wait";
-  const guide = contributionGuide(contributionAction, view.rawLevel);
+  const guide = contributionGuide(contributionAction, view.eligibleLevel);
   return (
     <div className={`pace-guidance${compact ? " pace-guidance-compact" : ""}`}>
       <div className="pace-action">
@@ -41,7 +41,7 @@ export default function PaceGuidance({
       {!compact && confirmed?.level != null && (
         <div
           className="signal-pace-scale"
-          aria-label={`Confirmed Pace P${confirmed.level}; P means Pace`}
+          aria-label={`Current provisional Pace P${confirmed.level}; P means Pace`}
         >
           {[0, 1, 2, 3, 4].map((level) => (
             <span
@@ -83,8 +83,7 @@ export default function PaceGuidance({
       )}
       {confirmed?.level != null && (
         <small className="pace-reading-note">
-          Confirmed{confirmed.date ? ` · ${confirmed.date}` : ""} · completed
-          period
+          Current{confirmed.date ? ` · ${confirmed.date}` : ""} · provisional
         </small>
       )}
       {!compact && available && (
@@ -96,8 +95,8 @@ export default function PaceGuidance({
           )}
           <PaceReadings readings={readings} compact={compact} />
           <small className="pace-reading-note">
-            The developing reading can change. The completed-period reading
-            guides the assessment.
+            The current zone may change. Historical zones remain evidence; they
+            cannot authorize additions after the current zone weakens.
           </small>
         </details>
       )}

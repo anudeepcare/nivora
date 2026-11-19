@@ -1,4 +1,5 @@
 import { modelCoverage, ttmPeriods } from "./research-depth.ts";
+import { selectPriceReference, settledPriceBars } from "./price-reference.ts";
 import type { Research } from "./types";
 import { listingReconciliation } from "./listing-reconciliation.ts";
 import { compareFinancialFacts } from "./financial-period-selection.ts";
@@ -14,7 +15,11 @@ export type OutlookCase = {
   annual: number;
 };
 export type Outlook =
-  | { available: false; reason: string }
+  | {
+      available: false;
+      reason: string;
+      recovery?: { kind: "funded-assumptions"; title: string; detail: string };
+    }
   | {
       available: true;
       cases: OutlookCase[];
@@ -25,13 +30,17 @@ export type Outlook =
       currency: string;
       analysts: number | null;
       forwardPE: number;
-      multipleSource?: "reported-compatible" | "user-assumption";
+      multipleSource?:
+        | "reported-compatible"
+        | "user-assumption"
+        | "price-implied";
       multipleReferencePeriod?: string;
       basis?: "earnings" | "revenue";
       shares?: number;
       netDebt?: number;
       balanceDate?: string;
       caveat?: string;
+      calculatedMultiple?: boolean;
     };
 
 export function consensusOutlook(r: Research): {
@@ -41,6 +50,9 @@ export function consensusOutlook(r: Research): {
   asOf: string;
   change: number | null;
   referenceStatus: "current" | "older" | "unavailable";
+  referencePrice: number | null;
+  referenceAsOf: string | null;
+  referenceBasis: "quote" | "settled-close";
 } | null {
   const e = r.evidence;
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
@@ -58,11 +70,18 @@ export function consensusOutlook(r: Research): {
     target <= 0
   )
     return null;
-  const stamp = Date.parse(r.quote.asOf ?? "");
+  // Analyst upside is compared with the finished daily session. A newer
+  // after-hours quote must not move this reference away from that close.
+  const last = r.history?.length ? settledPriceBars(r, now).at(-1) : null;
+  const selected = last
+    ? { price: last.close, asOf: last.time, basis: "settled-close" as const }
+    : null;
+  const price = selected?.price ?? r.quote.price;
+  const stamp = Date.parse(selected?.asOf ?? r.quote.asOf ?? "");
   const comparable =
-    r.quote.price != null &&
-    Number.isFinite(r.quote.price) &&
-    r.quote.price > 0 &&
+    price != null &&
+    Number.isFinite(price) &&
+    price > 0 &&
     Number.isFinite(stamp) &&
     stamp <= now + 60000 &&
     now - stamp <= 4 * 86400000;
@@ -81,10 +100,13 @@ export function consensusOutlook(r: Research): {
     target,
     ...(rangeValid ? { low: low!, high: high! } : {}),
     asOf: e!.updatedAt!,
-    change: comparable ? (target / r.quote.price! - 1) * 100 : null,
+    change: comparable ? (target / price! - 1) * 100 : null,
+    referencePrice: comparable ? price! : null,
+    referenceAsOf: comparable ? (selected?.asOf ?? r.quote.asOf) : null,
+    referenceBasis: selected?.basis ?? "quote",
     referenceStatus: !comparable
       ? "unavailable"
-      : r.quote.stale
+      : !selected && r.quote.stale
         ? "older"
         : "current",
   };
@@ -95,37 +117,70 @@ export function consensusOutlook(r: Research): {
  * compatible reported forward P/E (or an explicit user multiple) are stress assumptions. */
 export function researchOutlook(
   r: Research,
-  assumptions?: { earningsMultiple?: number },
+  assumptions?: {
+    earningsMultiple?: number;
+    fiscalEnd?: string;
+    priceAnchored?: boolean;
+  },
 ): Outlook {
+  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
+    sector: r.evidence?.profile?.sector || r.company.sector,
+    industry: r.evidence?.profile?.industry,
+  });
+  const recovery =
+    coverage.family === "frontier"
+      ? {
+          kind: "funded-assumptions" as const,
+          title: "Model deployment and financing",
+          detail:
+            "Connect delivered milestones and commercial revenue to capex, cash runway, financing terms and dilution. Enter sourced assumptions for each case; these are personal sensitivities, not validated forecasts.",
+        }
+      : coverage.family === "infrastructure"
+        ? {
+            kind: "funded-assumptions" as const,
+            title: "Reconcile capacity, capex and funding",
+            detail:
+              "Separate contracted capacity from operating revenue. Reconcile reported cash, debt, listed shares and currency, then test capex, utilization economics and financing assumptions. Missing values remain blank.",
+          }
+        : undefined;
   const unavailable = (reason: string): Outlook => ({
     available: false,
     reason,
+    ...(recovery ? { recovery } : {}),
   });
   if (r.company.assetType !== "stock")
     return unavailable(
       "Corporate earnings scenarios do not apply to this asset.",
     );
+  if (
+    typeof r.quote.currency !== "string" ||
+    !/^[A-Z]{3}$/.test(r.quote.currency) ||
+    r.company.currency !== r.quote.currency
+  )
+    return unavailable(
+      "Scenario prices require a matching, explicit listing and quote currency; no currency conversion is inferred.",
+    );
   const e = r.evidence;
   const now = Date.parse(r.priceObservedAt ?? r.retrievedAt);
   if (!e || !Number.isFinite(now))
     return unavailable("A dated annual earnings forecast is needed.");
-  const coverage = modelCoverage(r.company.symbol, r.company.assetType, {
-    sector: e.profile?.sector || r.company.sector,
-    industry: e.profile?.industry,
-  });
+
   if (
     !["operating-company", "infrastructure", "financial"].includes(
       coverage.family,
     )
   )
     return unavailable(
-      "This business needs a sector-specific valuation framework.",
+      coverage.family === "frontier"
+        ? "Deployment and commercial milestones, cash runway and future financing must be modeled explicitly. Current losses or an earnings multiple cannot establish automatic targets for this business."
+        : "This business needs a sector-specific valuation framework.",
     );
   const listing = listingReconciliation(r);
   const aggregateListingBasis = listing.status === "available";
   if (r.company.foreignListing && !aggregateListingBasis)
     return unavailable(
-      "The listing needs matching reporting currency and reconciled market-cap/share/price evidence before constructing per-share scenarios.",
+      "The listing needs matching reporting currency and reconciled market-cap/share/price evidence before constructing per-share scenarios. " +
+        listing.detail,
     );
   const updated = Date.parse(e.updatedAt ?? "");
   if (
@@ -167,7 +222,7 @@ export function researchOutlook(
     const days = (Date.parse(x.date) - now) / 86400000;
     return (
       /annual/i.test(x.frequency) &&
-      days >= 270 &&
+      days >= 90 &&
       days <= 1461 &&
       x.currency === r.quote.currency &&
       [x.epsLow, x.eps, x.epsHigh].every(
@@ -177,7 +232,39 @@ export function researchOutlook(
       x.eps! <= x.epsHigh!
     );
   };
-  const hasEarnings = (e.estimates ?? []).some(usableEps);
+  const selectedEstimates = (e.estimates ?? []).filter(
+    (x) => !assumptions?.fiscalEnd || x.date === assumptions.fiscalEnd,
+  );
+  const usableRevenue = (
+    x: NonNullable<Research["evidence"]>["estimates"][number],
+  ) => {
+    const days = (Date.parse(x.date) - now) / 86400000;
+    return (
+      /annual/i.test(x.frequency) &&
+      days >= 90 &&
+      days <= 1461 &&
+      x.currency === r.quote.currency &&
+      validFiscal(x) &&
+      [x.revenueLow, x.revenue, x.revenueHigh].every(
+        (v) => v != null && Number.isFinite(v) && v > 0,
+      ) &&
+      x.revenueLow! <= x.revenue! &&
+      x.revenue! <= x.revenueHigh!
+    );
+  };
+  // Eligibility must describe the requested fiscal period, not an unrelated
+  // profitable year that prevents the selected revenue sensitivity from running.
+  const hasEarnings = selectedEstimates.some(
+    (x) => usableEps(x) && validFiscal(x),
+  );
+  if (
+    !hasEarnings &&
+    selectedEstimates.some((x) => usableEps(x) && !validFiscal(x)) &&
+    !selectedEstimates.some(usableRevenue)
+  )
+    return unavailable(
+      "The supplied fiscal period and forecast date conflict.",
+    );
   if (
     coverage.family === "financial" &&
     (!hasEarnings || r.company.foreignListing)
@@ -194,7 +281,50 @@ export function researchOutlook(
       return unavailable(
         "A current quote is needed for a price-anchored revenue sensitivity; analyst targets remain separate.",
       );
-    const shares = e.ownership?.outstanding;
+    // A valid balance pair in another currency is present evidence, not
+    // missing cash/debt. Explain the conversion gap without relabelling values.
+    const pairedCurrencies = [
+      ...new Set(
+        r.facts
+          .filter(
+            (candidate) =>
+              candidate.metric === "cash" &&
+              candidate.scope === "instant" &&
+              candidate.currency != null &&
+              candidate.unit === candidate.currency &&
+              /^[A-Z]{3}$/.test(candidate.currency) &&
+              Number.isFinite(candidate.value) &&
+              candidate.value >= 0 &&
+              Number.isFinite(Date.parse(candidate.end)) &&
+              Number.isFinite(Date.parse(candidate.filed)) &&
+              candidate.end <= r.retrievedAt.slice(0, 10) &&
+              candidate.filed <= r.retrievedAt.slice(0, 10) &&
+              now - Date.parse(candidate.end) <= 400 * 86400000 &&
+              r.facts.some(
+                (f) =>
+                  f.metric === "debt" &&
+                  f.scope === "instant" &&
+                  f.currency === candidate.currency &&
+                  f.unit === candidate.unit &&
+                  f.basis === candidate.basis &&
+                  f.end === candidate.end &&
+                  f.accession === candidate.accession &&
+                  Number.isFinite(Date.parse(f.filed)) &&
+                  f.filed <= r.retrievedAt.slice(0, 10) &&
+                  Number.isFinite(f.value) &&
+                  f.value >= 0,
+              ),
+          )
+          .map((f) => f.currency!),
+      ),
+    ];
+    if (pairedCurrencies.length && !pairedCurrencies.includes(r.quote.currency))
+      return unavailable(
+        `Matched dated cash/debt evidence is available in ${pairedCurrencies.join(" / ")}, but the listing quote is ${r.quote.currency}. A dated currency conversion and compatible revenue/share evidence are required for per-share scenarios. No currency conversion is inferred.`,
+      );
+    if (listing.status !== "available")
+      return unavailable("Revenue sensitivity unavailable: " + listing.detail);
+    const shares = listing.shares;
     let multiple = e.multiples?.EnterpriseValueRevenue;
     const balances = r.facts
       .filter(
@@ -240,22 +370,8 @@ export function researchOutlook(
           f.currency === cash.currency &&
           f.filed <= r.retrievedAt.slice(0, 10),
       );
-    const estimate = (e.estimates ?? [])
-      .filter((x) => {
-        const days = (Date.parse(x.date) - now) / 86400000;
-        return (
-          /annual/i.test(x.frequency) &&
-          days >= 90 &&
-          days <= 1461 &&
-          x.currency === r.quote.currency &&
-          validFiscal(x) &&
-          [x.revenueLow, x.revenue, x.revenueHigh].every(
-            (v) => v != null && Number.isFinite(v) && v > 0,
-          ) &&
-          x.revenueLow! <= x.revenue! &&
-          x.revenue! <= x.revenueHigh!
-        );
-      })
+    const estimate = selectedEstimates
+      .filter(usableRevenue)
       .sort(
         (a, b) =>
           Math.abs(Date.parse(a.date) - now - 3 * 365.25 * 86400000) -
@@ -265,9 +381,6 @@ export function researchOutlook(
       !shares ||
       !Number.isFinite(shares) ||
       shares <= 0 ||
-      !multiple ||
-      !Number.isFinite(multiple) ||
-      multiple <= 0 ||
       !cash ||
       !debt ||
       ![cash.value, debt.value].every((v) => Number.isFinite(v) && v >= 0)
@@ -277,9 +390,6 @@ export function researchOutlook(
           [
             !shares || !Number.isFinite(shares) || shares <= 0
               ? "positive reported outstanding shares"
-              : null,
-            !multiple || !Number.isFinite(multiple) || multiple <= 0
-              ? "a positive EV/revenue multiple"
               : null,
             !cash ||
             !debt ||
@@ -331,6 +441,9 @@ export function researchOutlook(
           listing.detail,
       );
     const reportedMultipleValid =
+      multiple != null &&
+      Number.isFinite(multiple) &&
+      multiple > 0 &&
       reportedEV != null &&
       Number.isFinite(reportedEV) &&
       reportedEV > 0 &&
@@ -382,6 +495,10 @@ export function researchOutlook(
       multiple = comparableEV / ttmRevenue!;
       calculatedMultiple = true;
     }
+    if (multiple == null || !Number.isFinite(multiple) || multiple <= 0)
+      return unavailable(
+        "A finite positive corroborated EV/revenue multiple is needed.",
+      );
     const years = (Date.parse(estimate.date) - now) / (365.25 * 86400000);
     const cases = (
       [
@@ -426,12 +543,14 @@ export function researchOutlook(
       shares,
       netDebt,
       balanceDate: cash.end,
-      ...(calculatedMultiple
-        ? {
-            caveat:
-              "Calculated EV/revenue multiple: current quote × reported shares, plus dated net debt, divided by corroborated trailing revenue. Conflicting reported EV fields are excluded. This price-anchored sensitivity is not intrinsic fair value; future funding and capex are not forecast.",
-          }
-        : {}),
+      calculatedMultiple,
+      caveat: [
+        listing.detail,
+        calculatedMultiple
+          ? "Calculated EV/revenue multiple: current quote × the dated share count, plus dated net debt, divided by corroborated trailing revenue. Conflicting reported EV fields are excluded."
+          : "Reported EV/revenue is a conditional reference multiple, not an independently validated valuation.",
+        "This sensitivity is not intrinsic fair value. The share count and balance sheet are dated observations; subsequent issuance, funding and capex are not forecast. Case dilution and multiple changes are stress assumptions, not company forecasts.",
+      ].join(" "),
     };
   }
   const userMultiple = assumptions?.earningsMultiple;
@@ -440,7 +559,33 @@ export function researchOutlook(
     (!Number.isFinite(userMultiple) || userMultiple <= 0 || userMultiple > 500)
   )
     return unavailable("Enter a positive P/E assumption no greater than 500×.");
-  const forwardPE = userMultiple ?? e.multiples?.ForwardPE;
+  const anchor =
+    userMultiple === undefined && assumptions?.priceAnchored
+      ? (e.estimates ?? [])
+          .filter((x) => {
+            const days = (Date.parse(x.date) - now) / 86400000;
+            return (
+              /annual/i.test(x.frequency) &&
+              days >= 0 &&
+              days <= 550 &&
+              validFiscal(x) &&
+              x.currency === r.quote.currency &&
+              [x.epsLow, x.eps, x.epsHigh].every(
+                (v) => v != null && Number.isFinite(v) && v > 0,
+              ) &&
+              x.epsLow! <= x.eps! &&
+              x.eps! <= x.epsHigh!
+            );
+          })
+          .sort((a, b) => a.date.localeCompare(b.date))[0]
+      : undefined;
+  const forwardPE =
+    userMultiple ??
+    (anchor
+      ? price / anchor.eps!
+      : assumptions?.priceAnchored
+        ? undefined
+        : e.multiples?.ForwardPE);
   if (forwardPE == null || !Number.isFinite(forwardPE) || forwardPE <= 0)
     return unavailable(
       "A positive reported forward earnings multiple is needed.",
@@ -452,7 +597,7 @@ export function researchOutlook(
       const days = (Date.parse(x.date) - now) / 86400000;
       return (
         x.frequency.toLowerCase().includes("annual") &&
-        days >= 270 &&
+        days >= 90 &&
         days <= 1461 &&
         x.currency === r.quote.currency
       );
@@ -462,7 +607,9 @@ export function researchOutlook(
         Math.abs(Date.parse(a.date) - now - 3 * 365.25 * 86400000) -
         Math.abs(Date.parse(b.date) - now - 3 * 365.25 * 86400000),
     );
-  const estimate = annual[0];
+  const estimate = assumptions?.fiscalEnd
+    ? annual.find((x) => x.date === assumptions.fiscalEnd)
+    : annual[0];
   if (
     !estimate &&
     (e.estimates ?? []).some((x) => usableEps(x) && !validFiscal(x))
@@ -505,12 +652,13 @@ export function researchOutlook(
   const impliedEps = price / forwardPE;
   if (
     userMultiple === undefined &&
+    !assumptions?.priceAnchored &&
     (!referenceEstimate ||
       impliedEps < referenceEstimate.epsLow! * 0.9 ||
       impliedEps > referenceEstimate.epsHigh! * 1.1)
   )
     return unavailable(
-      "The reported forward P/E cannot be reconciled with the nearest annual EPS range at the reference price. Its earnings period and accounting/split basis are not supplied. Set an explicit P/E assumption to explore conditional outcomes; this does not validate the provider multiple.",
+      `Forward P/E cannot be reconciled with the nearest annual EPS range${referenceEstimate ? ` (${referenceEstimate.period}, ${referenceEstimate.date}; ${referenceEstimate.epsLow!.toFixed(2)}–${referenceEstimate.epsHigh!.toFixed(2)} ${referenceEstimate.currency})` : ""}. The reference price divided by forward P/E implies EPS of ${impliedEps.toFixed(2)} ${r.quote.currency}. A later forecast may differ, but the provider multiple does not identify its denominator period or accounting/split basis, so this model range is withheld.`,
     );
   const { epsLow: low, eps: base, epsHigh: high } = estimate;
   if (
@@ -549,15 +697,20 @@ export function researchOutlook(
   return {
     available: true,
     basis: "earnings",
-    multipleSource:
-      userMultiple === undefined ? "reported-compatible" : "user-assumption",
+    multipleSource: anchor
+      ? "price-implied"
+      : userMultiple === undefined
+        ? "reported-compatible"
+        : "user-assumption",
     multipleReferencePeriod: referenceEstimate
       ? `FY${referenceEstimate.date.slice(0, 4)}`
       : undefined,
     caveat:
-      (userMultiple === undefined
-        ? "Reported forward P/E is numerically compatible with the nearest annual EPS range (10% tolerance). This check does not verify its earnings period, accounting or split basis."
-        : "The exit P/E is your explicit assumption, not a verified provider multiple or an analyst target.") +
+      (anchor
+        ? `Price-anchored sensitivity: reference price divided by the nearest annual EPS estimate (${anchor.date}) sets the central P/E. Bear/base/bull use 0.8×/1×/1.2× that multiple with supplied low/average/high EPS. This assumes today’s market pricing persists; it is not independent fair value or an analyst price target.`
+        : userMultiple === undefined
+          ? "Reported forward P/E is numerically compatible with the nearest annual EPS range (10% tolerance). This check does not verify its earnings period, accounting or split basis."
+          : "The exit P/E is your explicit assumption, not a verified provider multiple or an analyst target.") +
       (coverage.family === "financial"
         ? " Capital adequacy, credit losses and tangible book value require a separate bank assessment."
         : ""),

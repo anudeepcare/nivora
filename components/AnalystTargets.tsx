@@ -1,4 +1,5 @@
 "use client";
+import styles from "./AnalystTargets.module.css";
 import type { Research } from "@/lib/types";
 import { consensusOutlook } from "@/lib/outlook";
 import { amount, percent, dateLabel } from "@/lib/format";
@@ -13,7 +14,7 @@ export default function AnalystTargets({
   if (!c)
     return showUnavailable ? (
       <section
-        className="analyst-target-fallback"
+        className={`analyst-target-fallback ${styles.root}`}
         aria-label="Analyst price targets"
       >
         <span className="analyst-target-kicker">Wall Street consensus</span>
@@ -26,7 +27,7 @@ export default function AnalystTargets({
         </small>
       </section>
     ) : null;
-  const reference = c.change == null ? null : r.quote.price;
+  const reference = c.referencePrice;
   const minimum = Math.min(c.low ?? c.target, reference ?? c.target) * 0.95;
   const maximum = Math.max(c.high ?? c.target, reference ?? c.target) * 1.05;
   const position = (n: number) =>
@@ -34,7 +35,7 @@ export default function AnalystTargets({
 
   return (
     <section
-      className="analyst-target-fallback"
+      className={`analyst-target-fallback ${styles.root}`}
       aria-label="Analyst price targets"
     >
       <span className="analyst-target-kicker">Wall Street consensus</span>
@@ -46,7 +47,7 @@ export default function AnalystTargets({
               ["Consensus", c.target],
               ["High", c.high],
             ].map(([label, value]) => (
-              <section key={label}>
+              <section key={label} data-target={label}>
                 <span>{label}</span>
                 <strong>{amount(Number(value), r.quote.currency)}</strong>
                 <small
@@ -71,7 +72,7 @@ export default function AnalystTargets({
             <line x1="10" x2="290" y1="20" y2="20" stroke="#e0e4e0" />
             {[
               [c.low, "#bd4a5b"],
-              [c.target, "#916bb8"],
+              [c.target, "#a38232"],
               [c.high, "#098770"],
             ].map(([value, color]) => (
               <circle
@@ -92,9 +93,7 @@ export default function AnalystTargets({
               />
             )}
           </svg>
-          <small>
-            Reported analyst targets · not calculated bear/base/bull valuations
-          </small>
+          <small>Analyst low · consensus · high</small>
         </div>
       ) : (
         <div className="analyst-target-main">
@@ -104,11 +103,15 @@ export default function AnalystTargets({
           </div>
           <div>
             <span>
-              {c.referenceStatus === "older"
-                ? "Versus older quote"
-                : c.referenceStatus === "unavailable"
-                  ? "Price comparison unavailable"
-                  : "Versus current price"}
+              {c.referenceStatus === "unavailable"
+                ? "Price comparison unavailable"
+                : c.referenceBasis === "settled-close"
+                  ? c.referenceStatus === "older"
+                    ? "Versus older settled close"
+                    : "Versus settled close"
+                  : c.referenceStatus === "older"
+                    ? "Versus older quote"
+                    : "Versus current quote"}
             </span>
             <strong
               className={
@@ -124,28 +127,18 @@ export default function AnalystTargets({
           </div>
         </div>
       )}
-      <p className="analyst-target-quote">
-        {c.referenceStatus === "older"
-          ? "Older quote"
-          : c.referenceStatus === "unavailable"
-            ? "Last recorded quote"
-            : "Current"}{" "}
-        {amount(r.quote.price, r.quote.currency)} · observed{" "}
-        {dateLabel(r.quote.asOf)}
+      <p>
+        Analyst opinion, not AURYN fair value or a guaranteed return. Dataset
+        observed {dateLabel(c.asOf)}; individual target revision dates and
+        forecast horizon are not supplied.
       </p>
-      <div className="analyst-target-note">
-        <small>Analyst opinion · not AURYN fair value</small>
-        <details>
-          <summary>Coverage & dates</summary>
-          <p>
-            Target dataset updated {dateLabel(c.asOf)}.{" "}
-            {c.low != null
-              ? "range shown only because both bounds are supplied and ordered."
-              : "low/high range not supplied."}{" "}
-            This is not a guaranteed return.
-          </p>
-        </details>
-      </div>
+      {c.referenceAsOf && (
+        <small>
+          Compared with {amount(c.referencePrice, r.quote.currency)} ·{" "}
+          {c.referenceBasis === "settled-close" ? "settled close" : "quote"} ·{" "}
+          {dateLabel(c.referenceAsOf)}
+        </small>
+      )}
     </section>
   );
 }

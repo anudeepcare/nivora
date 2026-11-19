@@ -1,0 +1,43 @@
+/* Paired theme tokens: never place light-theme accent fills behind dark-theme text. */
+.modelSelector {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.modelSelector.modelSelector button {
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--ink);
+  background: transparent;
+}
+.modelSelector.modelSelector button:hover {
+  background: color-mix(in srgb, var(--ink) 8%, var(--surface));
+}
+.modelSelector.modelSelector button[aria-pressed="true"] {
+  color: var(--surface);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.modelSelector.modelSelector button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.marketContext.marketContext table {
+  background: var(--surface);
+  color: var(--ink);
+}
+.marketContext.marketContext tbody :is(th, td) {
+  background: transparent;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.marketContext.marketContext tbody tr:hover {
+  background: color-mix(in srgb, var(--ink) 8%, var(--surface));
+}

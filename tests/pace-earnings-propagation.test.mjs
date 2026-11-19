@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
 import ts from "typescript";
+import { readPortfolioCalendar, invalidatePortfolioCalendar } from "../lib/portfolio-calendar-resource.ts";
+import { loadPortfolioCalendar } from "../lib/portfolio-calendar.ts";
 import { calendarHighlights, marketDay } from "../lib/home-feed.ts";
 import { evaluateAlert } from "../lib/alert-policy.ts";
 import { portfolioRiskSummary } from "../lib/product-attention.ts";
@@ -291,6 +293,9 @@ test("mounted Portfolio calendar refreshes reported results and revalidates on r
     readResource,
     invalidateResource,
     resourceSnapshot,
+    loadPortfolioCalendar,
+    readPortfolioCalendar,
+    invalidatePortfolioCalendar,
     api: async (key) => {
       assert.equal(key, "home-feed?kind=events&symbols=SOFI");
       requests++;

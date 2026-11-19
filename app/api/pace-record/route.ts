@@ -64,6 +64,7 @@ export async function POST(request: Request) {
       row = publicationInput(
         {
           symbol,
+          policy: c.monthly.policyVersion,
           period: c.monthly.month,
           pace: c.monthly.multiplier,
           price: r.quote.price,

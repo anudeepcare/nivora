@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import type { Research } from "../lib/types";
+import type { RadarResearch } from "../lib/market-radar";
 import {
   buildMarketRadar,
   radarCheckpoints,
@@ -36,7 +36,7 @@ export function MarketRadar({
   research,
   asOf,
 }: {
-  research: Research[];
+  research: RadarResearch[];
   asOf?: string;
 }) {
   const id = useId();

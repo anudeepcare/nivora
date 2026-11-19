@@ -20,14 +20,17 @@ export function PriceChart({
   levels = EMPTY_LEVELS,
   contrast = false,
   candleColors = EMPTY_COLORS,
+  compactLevelTitles = false,
 }: {
   bars: Candle[];
   range: string;
   style?: "line" | "candles";
-  levels?: { label: string; price: number }[];
+  levels?: { label: string; price: number; color?: string }[];
   contrast?: boolean;
   candleColors?: Record<string, string>;
+  compactLevelTitles?: boolean;
 }) {
+  const [compact, setCompact] = useState(false);
   const [hover, setHover] = useState<{ time: string; values: string } | null>(
     null,
   );
@@ -44,7 +47,8 @@ export function PriceChart({
     const ink =
       palette.getPropertyValue("--muted").trim() ||
       (theme === "dark" ? "#a8b9c5" : "#5e6e79");
-    const accent = palette.getPropertyValue("--ink").trim() || "#24272b";
+    // Blue identifies observed price, not a bullish/bearish judgment.
+    const accent = theme === "dark" ? "#75a7ff" : "#3268c8";
     const grid =
       palette.getPropertyValue("--line").trim() ||
       (theme === "dark" ? "#2a3b47" : "#e2e7ec");
@@ -68,15 +72,21 @@ export function PriceChart({
         borderVisible: false,
         visible: !contrast,
         autoScale: true,
+        scaleMargins: { top: 0.1, bottom: 0.15 },
       },
       leftPriceScale: {
         borderVisible: false,
         visible: contrast,
         autoScale: true,
+        scaleMargins: { top: 0.1, bottom: 0.15 },
       },
       timeScale: {
         borderVisible: false,
         timeVisible: false,
+        fixLeftEdge: true,
+        fixRightEdge: true,
+        ticksVisible: true,
+        tickMarkMaxCharacterLength: 10,
       },
       handleScroll: {
         mouseWheel: false,
@@ -155,11 +165,13 @@ export function PriceChart({
     lastRange.current = "";
     // A retained dialog starts at width zero. Fit again when it gains layout width.
     let previousWidth = 0;
+    let fitFrame = 0;
     const observer = new ResizeObserver(([entry]) => {
       const width = entry?.contentRect.width ?? 0;
+      if (width > 0) setCompact(width < 480);
       if (width > 0 && width !== previousWidth) {
-        api.applyOptions({ width });
-        api.timeScale().fitContent();
+        cancelAnimationFrame(fitFrame);
+        fitFrame = requestAnimationFrame(() => api.timeScale().fitContent());
       }
       previousWidth = width;
     });
@@ -167,6 +179,7 @@ export function PriceChart({
     return () => {
       api.unsubscribeCrosshairMove(readCrosshair);
       observer.disconnect();
+      cancelAnimationFrame(fitFrame);
       api.remove();
       chart.current = null;
       series.current = null;
@@ -214,8 +227,9 @@ export function PriceChart({
       .map((l, index) =>
         series.current!.createPriceLine({
           price: l.price,
-          title: l.label,
-          color: ["#68ae94", "#916bb8", "#809a39", "#b46f5a"][index % 4],
+          title: compactLevelTitles && compact ? "" : l.label,
+          color:
+            l.color ?? ["#68ae94", "#916bb8", "#809a39", "#b46f5a"][index % 4],
           lineWidth: 1,
           lineStyle: 2,
           axisLabelVisible: true,
@@ -227,12 +241,24 @@ export function PriceChart({
           series.current?.removePriceLine(l);
         } catch {}
     };
-  }, [bars, range, theme, style, levels, contrast, candleColors]);
+  }, [
+    bars,
+    range,
+    theme,
+    style,
+    levels,
+    contrast,
+    candleColors,
+    compactLevelTitles,
+    compact,
+  ]);
   return (
     <div className="chart-wrap">
       <div className="chart-readout" aria-label="Chart inspection">
         <span>{hover?.time ?? "Explore the chart"}</span>
-        <strong>{hover?.values ?? "Hover or touch to inspect a price"}</strong>
+        <span style={{ fontWeight: 400, fontSize: 12 }}>
+          {hover?.values ?? "Touch or hover to inspect"}
+        </span>
       </div>
       <div
         className="price-chart"

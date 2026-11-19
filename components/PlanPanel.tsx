@@ -22,7 +22,7 @@ export default function PlanPanel() {
         </p>
       </div>
       <Link className="button" href="/plans">
-        Membership
+        Membership & billing
       </Link>
     </section>
   );

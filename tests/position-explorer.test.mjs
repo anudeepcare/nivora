@@ -33,3 +33,21 @@ test('price-path geometry sorts observations, excludes bad values and preserves 
   const up=m.pricePath([{time:'2026-01-02',close:20},{time:'2026-01-01',close:10},{time:'2026-01-03',close:NaN}]);
   assert.equal(up.direction,'up'); assert.equal(up.from,'2026-01-01'); assert.equal(up.through,'2026-01-02');
 });
+test('funding review distinguishes cash-funded adds, trims and concentration basis', () => {
+  const input={portfolioValue:10000,currentValue:1000,targetValue:2500,cash:2000,complete:true,concentrationLimit:25};
+  const add=m.positionFundingReview(input);
+  assert.equal(add.cashAfter,500); assert.equal(add.shortfall,0);
+  assert.equal(add.afterInvestmentWeight,2500/9500*100);
+  assert.equal(add.exceedsLimit,true);
+  const trim=m.positionFundingReview({...input,targetValue:500});
+  assert.equal(trim.cashAfter,2500); assert.equal(trim.shortfall,0);
+  assert.equal(trim.afterInvestmentWeight,500/7500*100);
+  assert.equal(trim.exceedsLimit,false);
+});
+test('funding review never implies feasible funding from incomplete or impossible values', () => {
+  const input={portfolioValue:10000,currentValue:1000,targetValue:4000,cash:2000,complete:true};
+  assert.equal(m.positionFundingReview(input).shortfall,1000);
+  assert.equal(m.positionFundingReview(input).afterInvestmentWeight,null);
+  assert.equal(m.positionFundingReview({...input,complete:false}).available,false);
+  for (const patch of [{cash:NaN},{cash:-1},{cash:10001},{currentValue:9000},{targetValue:10001}]) assert.equal(m.positionFundingReview({...input,...patch}).available,false);
+});

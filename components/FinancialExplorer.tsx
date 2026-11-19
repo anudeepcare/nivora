@@ -21,13 +21,14 @@ export default function FinancialExplorer({
     [years, setYears] = useState(5),
     [style, setStyle] = useState<"bar" | "line" | "area">("bar");
   const plot = useRef<SVGSVGElement>(null);
+  const plotContainer = useRef<HTMLDivElement>(null);
   const [plotWidth, setPlotWidth] = useState(760);
   useEffect(() => {
-    if (!plot.current) return;
+    if (!plotContainer.current) return;
     const observer = new ResizeObserver(([entry]) =>
-      setPlotWidth(Math.max(280, entry.contentRect.width)),
+      setPlotWidth(Math.max(240, entry.contentRect.width)),
     );
-    observer.observe(plot.current);
+    observer.observe(plotContainer.current);
     return () => observer.disconnect();
   }, []);
   const catalog = useMemo(
@@ -160,7 +161,7 @@ export default function FinancialExplorer({
         </div>
       </header>
       <label className="explorer-mobile-picker">
-        Explore all financial metrics
+        All metrics
         <select
           aria-label="Financial chart metric"
           value={chosen}
@@ -181,25 +182,27 @@ export default function FinancialExplorer({
       </label>
       <div className="explorer-body">
         <nav className="explorer-metrics" aria-label="Financial metrics">
-          {[...new Set(catalog.map((m) => m.group))].map((g) => (
-            <div key={g}>
-              <span>{g}</span>
-              {catalog
-                .filter((m) => m.group === g)
-                .map((m) => (
-                  <button
-                    key={m.key}
-                    type="button"
-                    aria-pressed={chosen === m.key}
-                    onClick={() => setKey(m.key)}
-                  >
-                    {m.label}
-                  </button>
-                ))}
-            </div>
-          ))}
+          {[...new Set(catalog.map((m) => m.group))]
+            .filter((g) => g === "Essentials")
+            .map((g) => (
+              <div key={g}>
+                <span>{g}</span>
+                {catalog
+                  .filter((m) => m.group === g)
+                  .map((m) => (
+                    <button
+                      key={m.key}
+                      type="button"
+                      aria-pressed={chosen === m.key}
+                      onClick={() => setKey(m.key)}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+              </div>
+            ))}
         </nav>
-        <div className="explorer-plot">
+        <div className="explorer-plot" ref={plotContainer}>
           <div className="explorer-latest">
             <strong>{format(series.latest)}</strong>
             <span
@@ -229,7 +232,9 @@ export default function FinancialExplorer({
             <svg
               ref={plot}
               viewBox={`0 0 ${plotWidth} 240`}
-              preserveAspectRatio="none"
+              width={plotWidth}
+              height={240}
+              preserveAspectRatio="xMidYMid meet"
               role="slider"
               tabIndex={0}
               aria-valuemin={0}

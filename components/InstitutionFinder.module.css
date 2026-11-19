@@ -1,0 +1,70 @@
+.finder {
+  min-width: 0;
+  margin-block: 12px;
+}
+.finder > summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding-block: 12px;
+  color: var(--ink);
+}
+.finder form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+  margin-block: 12px;
+}
+.finder form label {
+  display: grid;
+  gap: 6px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.finder input {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+}
+.finder nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 12px;
+}
+.finder button {
+  min-height: 44px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.results {
+  list-style: none;
+  padding: 0;
+  max-height: min(60svh, 600px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.results li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.results li > span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.results:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .results li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+}

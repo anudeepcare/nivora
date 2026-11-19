@@ -209,3 +209,15 @@ test("crypto quote uses explicit USD pair when provider omits currency", () => {
   assert.equal(q.currency, "USD");
   assert.equal(q.stale, false);
 });
+
+test("AI qualitative output rejects non-ASCII numeric claims and currency symbols", () => {
+  for (const text of [
+    "Revenue grew ２０ percent.",
+    "Revenue grew ٢٠ percent.",
+    "The valuation target is ₹ high.",
+    "The claim implies ½ growth.",
+  ])
+    assert.throws(() =>
+      validateReport({ ...report, summary: { ...claim, text } }, evidence),
+    );
+});

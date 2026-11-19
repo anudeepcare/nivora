@@ -1,0 +1,52 @@
+.root {
+  min-width: 0;
+}
+.root > :global(.section-head) {
+  margin: 8px 0 20px;
+  align-items: center;
+}
+.root > :global(.section-head) h2 {
+  font-size: clamp(21px, 2vw, 28px);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.root > :global(.section-head) p {
+  margin: 0;
+  font-size: 13px;
+}
+.root :global(.segments) {
+  background: color-mix(in srgb, var(--muted) 7%, var(--card));
+  border: 0;
+  padding: 4px;
+  border-radius: 11px;
+  gap: 3px;
+}
+.root :global(.segments) button {
+  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 13px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  color: var(--muted);
+}
+.root :global(.segments) button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--blue);
+  box-shadow: 0 1px 5px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.root :global(.segments) button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .root > :global(.section-head) {
+    gap: 12px;
+  }
+  .root :global(.segments) {
+    width: 100%;
+  }
+  .root :global(.segments) button {
+    flex: 1;
+  }
+}
