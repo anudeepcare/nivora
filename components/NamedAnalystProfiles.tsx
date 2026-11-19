@@ -67,7 +67,7 @@ export default function NamedAnalystProfiles({ data }: { data: unknown }) {
       {slug && (
         <>
           <div
-            className={styles.analystViews}
+            className={`${styles.analystViews} auryn-detail-tabs`}
             role="group"
             aria-label="Analyst evidence views"
           >

@@ -115,7 +115,7 @@ export default function AlternativeIndexes() {
       )}
       {selected && (
         <div
-          className={`${styles.paging} ${visual.modes}`}
+          className="auryn-detail-tabs"
           role="group"
           aria-label="Selected index evidence"
         >

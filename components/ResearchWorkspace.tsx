@@ -18,13 +18,12 @@ export default function ResearchWorkspace({
   return (
     <section aria-label={label}>
       <div
-        className="segmented"
+        className="auryn-view-tabs"
         data-selection-navigation
         data-nested-navigation
         onKeyDown={(event) => navigateSelection(event)}
         role="group"
         aria-label={`${label} views`}
-        style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 12 }}
       >
         {views.map((view, index) => (
           <button

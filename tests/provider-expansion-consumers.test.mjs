@@ -457,6 +457,10 @@ test("standalone market page hides embedded duplicate heading and self-link", ()
     "components/OptionsMarketOverview.module.css",
     "utf8",
   );
-  assert.match(css, /\.universe button\[aria-pressed="true"\]/);
+  assert.match(
+    source,
+    /className="auryn-view-tabs" aria-label="Options universe"/,
+  );
+  assert.match(source, /aria-pressed=\{board === id\}/);
   assert.match(css, /\.pagination button:disabled/);
 });

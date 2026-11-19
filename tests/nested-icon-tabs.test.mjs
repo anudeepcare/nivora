@@ -2,12 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 test('nested views retain labelled buttons and explicit decorative icons without changing the main research bar',()=>{
- for(const name of ['ResearchWorkspace','SentiSensePanels','MarketMood']) {
+ for(const name of ['ResearchWorkspace','SentiSensePanels']) {
   const s=fs.readFileSync(`components/${name}.tsx`,'utf8');
   assert.match(s,/data-nested-navigation/);
   assert.match(s,/aria-hidden="true"[^>]*data-nav-icon|data-nav-icon[^>]*aria-hidden="true"/);
   assert.match(s,/aria-pressed=/);
  }
+ const market = fs.readFileSync('components/MarketMood.tsx','utf8');
+ assert.match(market,/auryn-view-tabs/);
+ assert.doesNotMatch(market,/data-nav-icon/);
  const s=fs.readFileSync('components/ResearchWorkspace.tsx','utf8');
  assert.match(s,/navigateSelection\(event\)/);
  assert.match(s,/preserveState/);

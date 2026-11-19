@@ -160,39 +160,9 @@
   min-height: 44px;
   align-items: center;
 }
-.viewSwitch,
-.universe {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 5px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
-}
 .viewSwitch {
   margin-bottom: 14px;
 }
-.viewSwitch button,
-.universe button {
-  min-height: 44px;
-  padding: 10px 18px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 400;
-}
-.viewSwitch button[aria-pressed="true"],
-.universe button[aria-pressed="true"] {
-  background: color-mix(in srgb, #6b79b5 12%, var(--card));
-  color: var(--ink);
-  border-color: color-mix(in srgb, #6b79b5 45%, var(--line));
-  font-weight: 500;
-}
-.viewSwitch button:focus-visible,
-.universe button:focus-visible,
 .pagination button:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;

@@ -40,7 +40,7 @@ export default function EodEventCalendar({
       </header>
       {open && (
         <>
-          <nav className={s.tabs} aria-label="Corporate event filters">
+          <nav className="auryn-view-tabs" aria-label="Corporate event filters">
             {(["ipos", "splits"] as const).map((k) => (
               <button
                 type="button"
@@ -51,6 +51,11 @@ export default function EodEventCalendar({
                 {k === "ipos" ? "IPO pipeline" : "Stock splits"}
               </button>
             ))}
+          </nav>
+          <nav
+            className="auryn-detail-tabs"
+            aria-label="Corporate event window"
+          >
             {[7, 30].map((d) => (
               <button
                 type="button"

@@ -81,7 +81,10 @@ export default function GrowCompanyEvents({ symbol }: { symbol: string }) {
     currency ? amount(n, currency) : n == null ? "—" : n.toFixed(2);
   return (
     <section className={s.workspace}>
-      <div className={s.filters} aria-label="Company event datasets">
+      <div
+        className={`${s.filters} auryn-detail-tabs`}
+        aria-label="Company event datasets"
+      >
         {(
           [
             ["earnings", "Earnings"],

@@ -41,7 +41,11 @@ export default function PortfolioCharts({
               : "What drives your gain or loss"}
           </h3>
         </div>
-        <div className="segments" role="group" aria-label="Portfolio chart">
+        <div
+          className="auryn-detail-tabs auryn-tab-inline"
+          role="group"
+          aria-label="Portfolio chart"
+        >
           {(["allocation", "returns"] as const).map((v) => (
             <button
               type="button"

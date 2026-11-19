@@ -59,65 +59,67 @@ export default function OptionsMarketPage() {
               <option value="etfs">ETF screener</option>
             </select>
           </label>
-          <div
-            className={layout.viewSwitch}
-            role="group"
-            aria-label="Market research views"
-          >
-            <button
-              aria-pressed={view === "options"}
-              onClick={() => setView("options")}
+          <div className={layout.viewSwitch}>
+            <div
+              className="auryn-view-tabs"
+              role="group"
+              aria-label="Market research views"
             >
-              Market options
-            </button>
-            <button
-              aria-pressed={view === "stocks"}
-              onClick={() => setView("stocks")}
-            >
-              Stock screener
-            </button>
-            <button
-              aria-pressed={view === "trackers"}
-              onClick={() => setView("trackers")}
-            >
-              Market trackers
-            </button>
-            <button
-              aria-pressed={view === "mood"}
-              onClick={() => setView("mood")}
-            >
-              Mood & breadth
-            </button>
-            <button
-              aria-pressed={view === "indexes"}
-              onClick={() => setView("indexes")}
-            >
-              Alternative indexes
-            </button>
-            <button
-              aria-pressed={view === "earnings"}
-              onClick={() => setView("earnings")}
-            >
-              Earnings calendar
-            </button>
-            <button
-              aria-pressed={view === "insiders"}
-              onClick={() => setView("insiders")}
-            >
-              Insider activity
-            </button>
-            <button
-              aria-pressed={view === "summary"}
-              onClick={() => setView("summary")}
-            >
-              Market summary
-            </button>
-            <button
-              aria-pressed={view === "etfs"}
-              onClick={() => setView("etfs")}
-            >
-              ETF screener
-            </button>
+              <button
+                aria-pressed={view === "options"}
+                onClick={() => setView("options")}
+              >
+                Market options
+              </button>
+              <button
+                aria-pressed={view === "stocks"}
+                onClick={() => setView("stocks")}
+              >
+                Stock screener
+              </button>
+              <button
+                aria-pressed={view === "trackers"}
+                onClick={() => setView("trackers")}
+              >
+                Market trackers
+              </button>
+              <button
+                aria-pressed={view === "mood"}
+                onClick={() => setView("mood")}
+              >
+                Mood & breadth
+              </button>
+              <button
+                aria-pressed={view === "indexes"}
+                onClick={() => setView("indexes")}
+              >
+                Alternative indexes
+              </button>
+              <button
+                aria-pressed={view === "earnings"}
+                onClick={() => setView("earnings")}
+              >
+                Earnings calendar
+              </button>
+              <button
+                aria-pressed={view === "insiders"}
+                onClick={() => setView("insiders")}
+              >
+                Insider activity
+              </button>
+              <button
+                aria-pressed={view === "summary"}
+                onClick={() => setView("summary")}
+              >
+                Market summary
+              </button>
+              <button
+                aria-pressed={view === "etfs"}
+                onClick={() => setView("etfs")}
+              >
+                ETF screener
+              </button>
+            </div>
           </div>
           {view === "etfs" ? (
             <EtfScreener />

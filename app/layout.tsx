@@ -11,6 +11,7 @@ import "./core/readability.css";
 import "./core/mobile-glass.css";
 import "./core/table-interaction.css";
 import "./core/nested-navigation.css";
+import "./core/reference-tabs.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

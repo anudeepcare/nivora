@@ -61,7 +61,7 @@ export default function AdvancedResearch({
         </span>
       </header>
       <nav
-        className="professional-tabs"
+        className="professional-tabs auryn-view-tabs"
         data-selection-navigation
         data-nested-navigation
         onKeyDown={(event) => navigateSelection(event)}

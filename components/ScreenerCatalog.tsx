@@ -17,7 +17,11 @@ export default function ScreenerCatalog({
         screens. These plans are inspected here, not executed. Current AURYN
         screen controls support a smaller validated subset.
       </p>
-      <div className={s.controls}>
+      <div
+        className="auryn-detail-tabs"
+        role="group"
+        aria-label="Screener catalog view"
+      >
         <button
           type="button"
           onClick={() => setKind("fields")}
@@ -151,7 +155,7 @@ function CatalogContent({
           ))}
         </>
       ) : null}
-      <div className={s.controls}>
+      <div className={s.controls} role="group" aria-label="Catalog pagination">
         <button
           type="button"
           disabled={resource.loading}

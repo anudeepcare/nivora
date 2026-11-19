@@ -22,7 +22,10 @@ export default function PublicationFeeds({ symbol }: { symbol: string }) {
   const data = resource.data;
   return (
     <section aria-label="Publication sources">
-      <nav className={s.tabs} aria-label="Publication mode">
+      <nav
+        className={`${s.tabs} auryn-view-tabs`}
+        aria-label="Publication mode"
+      >
         <button
           type="button"
           aria-pressed={!search}
@@ -42,7 +45,10 @@ export default function PublicationFeeds({ symbol }: { symbol: string }) {
         <PublicationSearch />
       ) : (
         <>
-          <nav className={s.tabs} aria-label="Publication source">
+          <nav
+            className={`${s.tabs} auryn-detail-tabs`}
+            aria-label="Publication source"
+          >
             {publicationSources.map((item) => (
               <button
                 key={item}

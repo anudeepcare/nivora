@@ -243,7 +243,10 @@ export default function ExposureBoard({
             <Layers3 size={18} /> Exposure levels
           </h3>
         </div>
-        <div className={s.tabs} aria-label="Exposure workspace views">
+        <div
+          className={`${s.tabs} auryn-view-tabs`}
+          aria-label="Exposure workspace views"
+        >
           {[
             ["map", "Exposure map"],
             ["changes", "Saved changes"],
@@ -459,7 +462,7 @@ export default function ExposureBoard({
       {mode === "map" && (
         <>
           <div
-            className={s.presentation}
+            className={`${s.presentation} auryn-detail-tabs`}
             role="group"
             aria-label="Exposure presentation"
           >

@@ -146,7 +146,7 @@ export default function SentiSensePanels({
       )}
       <div className={compact ? s.datasetToolbar : undefined}>
         <nav
-          className={s.tabs}
+          className={`${s.tabs} auryn-detail-tabs`}
           data-selection-navigation
           data-nested-navigation
           onKeyDown={(event) => navigateSelection(event)}

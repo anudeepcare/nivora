@@ -58,7 +58,7 @@ export default function OptionsMarketOverview({
           End-of-day observations. Stock and fund universes are separate, not a
           combined ranking. No trade direction is inferred.
         </p>
-        <nav className={picker.universe} aria-label="Options universe">
+        <nav className="auryn-view-tabs" aria-label="Options universe">
           {["stocks", "funds"].map((id) => (
             <button
               key={id}

@@ -50,7 +50,10 @@ export default function SentiSenseCoverage({
             entitlement. This list is separate from the quote universe. No calls
             are made for individual companies until you open one.
           </p>
-          <nav className={s.tabs} aria-label="Coverage type">
+          <nav
+            className={`${s.tabs} auryn-detail-tabs`}
+            aria-label="Coverage type"
+          >
             {[
               ["tracked", "Tracked stocks"],
               ["kpis", "Company KPI coverage"],

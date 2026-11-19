@@ -127,7 +127,10 @@ export default function AccumulationDesk({
             <PaceHelp trigger="What does P mean?" />
           </div>
         </div>
-        <div className="segments" aria-label="Accumulation time horizon">
+        <div
+          className="auryn-detail-tabs auryn-tab-inline"
+          aria-label="Accumulation time horizon"
+        >
           {(["monthly", "weekly"] as const).map((v) => (
             <button
               key={v}

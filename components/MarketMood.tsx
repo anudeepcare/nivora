@@ -53,14 +53,12 @@ export default function MarketMood() {
         </p>
       </header>
       <div
-        className={styles.choices}
-        data-nested-navigation
+        className="auryn-view-tabs"
         role="group"
         aria-label="Sentiment datasets"
       >
         {moodKinds.map((k) => (
           <button key={k} aria-pressed={kind === k} onClick={() => setKind(k)}>
-            <span aria-hidden="true" data-nav-icon={names[k]} />
             <span>{names[k]}</span>
           </button>
         ))}

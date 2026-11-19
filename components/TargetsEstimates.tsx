@@ -50,7 +50,7 @@ export default function TargetsEstimates({
         </div>
       </header>
       <div
-        className={styles.tabs}
+        className={`${styles.tabs} auryn-view-tabs`}
         data-selection-navigation
         data-nested-navigation
         role="tablist"

@@ -15,7 +15,11 @@ export default function MarketInsiderActivity() {
           or buy/sell recommendations.
         </p>
       </header>
-      <div className={s.controls} role="group" aria-label="Insider lookback">
+      <div
+        className="auryn-detail-tabs"
+        role="group"
+        aria-label="Insider lookback"
+      >
         {[30, 90].map((n) => (
           <button key={n} aria-pressed={days === n} onClick={() => setDays(n)}>
             Past {n} days
@@ -81,7 +85,11 @@ function Activity({ days }: { days: number }) {
         discretionary open-market selling. No net-flow or market-wide total is
         inferred from these ranked lists.
       </p>
-      <div className={s.controls} role="group" aria-label="Activity direction">
+      <div
+        className="auryn-detail-tabs"
+        role="group"
+        aria-label="Activity direction"
+      >
         {(["buys", "sells"] as const).map((d) => (
           <button
             key={d}

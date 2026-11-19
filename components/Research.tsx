@@ -586,7 +586,7 @@ export default function Research({ symbol }: { symbol: string }) {
   const evidenceToolbar =
     supportingSections.length > 1 ? (
       <nav
-        className={cockpit.supporting}
+        className={`${cockpit.supporting} auryn-view-tabs`}
         data-selection-navigation
         onKeyDown={(event) => navigateSelection(event)}
         aria-label={`${activeLens.label} evidence`}

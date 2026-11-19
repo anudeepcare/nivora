@@ -121,7 +121,7 @@ function Insights({
         </Help>
       </header>
       <div
-        className={s.tabs}
+        className={`${s.tabs} auryn-view-tabs`}
         data-selection-navigation
         onKeyDown={(event) => navigateSelection(event)}
         role="group"

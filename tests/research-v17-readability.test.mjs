@@ -120,11 +120,13 @@ test("research dataset selectors use restrained theme-aware styling, not hard-co
 });
 test("analyst evidence subgroup has visible scoped pressed selection, not ARIA alone", () => {
   const source = fs.readFileSync("components/NamedAnalystProfiles.tsx", "utf8");
-  assert.match(source, /className=\{styles\.analystViews\}/);
-  const css = fs.readFileSync("components/MarketTrackers.module.css", "utf8");
+  assert.match(source, /auryn-detail-tabs/);
+  assert.match(source, /aria-pressed=\{mode === "profile"\}/);
+  assert.match(source, /aria-pressed=\{mode === "calls"\}/);
+  const css = fs.readFileSync("app/core/reference-tabs.css", "utf8");
   assert.match(
     css,
-    /\.analystViews button\[aria-pressed="true"\][\s\S]*?background:/,
+    /\.auryn-detail-tabs[^{}]*\[aria-pressed="true"\][^{}]*\{[^}]*background:/s,
   );
-  assert.match(css, /\.analystViews\s*\{[^}]*flex-wrap:\s*wrap/s);
+  assert.match(css, /\.auryn-detail-tabs\s*\{[^}]*flex-wrap:\s*wrap/s);
 });

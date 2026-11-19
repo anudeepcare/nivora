@@ -423,7 +423,10 @@ export default function OptionsDesk({
                 ))}
               </select>
             </label>
-            <nav className={deskStyles.views} aria-label="Options sections">
+            <nav
+              className={`${deskStyles.views} auryn-view-tabs`}
+              aria-label="Options sections"
+            >
               {[
                 ["positioning", "Price levels"],
                 ["chain", "Calls & puts chain"],
@@ -901,7 +904,7 @@ export default function OptionsDesk({
                   </select>
                 </label>
                 <div
-                  className={deskStyles.options_segment}
+                  className="auryn-detail-tabs auryn-tab-inline"
                   aria-label="Contract type"
                 >
                   {[

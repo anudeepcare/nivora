@@ -30,7 +30,10 @@ export default function EtfAggregateEvidence({ symbol }: { symbol: string }) {
         Evidence from the fund’s holdings, not trading instructions or activity
         by the fund itself.
       </p>
-      <nav className={s.tabs} aria-label="Fund aggregate evidence">
+      <nav
+        className={`${s.tabs} auryn-detail-tabs`}
+        aria-label="Fund aggregate evidence"
+      >
         {(
           [
             ["insider30", "Insider · 30 days"],

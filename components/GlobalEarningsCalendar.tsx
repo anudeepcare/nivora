@@ -47,7 +47,7 @@ export default function GlobalEarningsCalendar() {
           Upcoming US reports · selected company coverage · dates may change.
         </p>
       </header>
-      <div className={s.controls} role="group" aria-label="Earnings view">
+      <div className="auryn-view-tabs" role="group" aria-label="Earnings view">
         {(
           [
             ["calendar", "Upcoming calendar"],
@@ -67,7 +67,11 @@ export default function GlobalEarningsCalendar() {
       </div>
       {view === "calendar" ? (
         <>
-          <div className={s.controls} role="group" aria-label="Calendar window">
+          <div
+            className="auryn-detail-tabs"
+            role="group"
+            aria-label="Calendar window"
+          >
             {[7, 14, 30].map((n) => (
               <button
                 key={n}

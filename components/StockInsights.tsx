@@ -30,7 +30,10 @@ export default function StockInsights({ symbol }: { symbol: string }) {
     data?.rows.filter((r) => type === "all" || r.type === type) ?? [];
   return (
     <section aria-label={`${symbol} stock Insights`}>
-      <nav className={s.tabs} aria-label="Insights window">
+      <nav
+        className={`${s.tabs} auryn-detail-tabs`}
+        aria-label="Insights window"
+      >
         {(["current", "month"] as const).map((value) => (
           <button
             key={value}

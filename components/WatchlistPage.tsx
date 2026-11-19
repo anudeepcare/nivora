@@ -200,7 +200,10 @@ export function Watchlist() {
         />
         {all.length > 0 && (
           <div className="approved-table-toolbar">
-            <div className="segment" aria-label="Watchlist asset type">
+            <div
+              className="auryn-detail-tabs auryn-tab-inline"
+              aria-label="Watchlist asset type"
+            >
               {["All", "Stocks", "Crypto"].map((t) => (
                 <button
                   type="button"
