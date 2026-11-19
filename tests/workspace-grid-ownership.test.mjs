@@ -21,10 +21,10 @@ test("current portfolio is isolated from obsolete twelve-column child placements
     assert.match(s, new RegExp("reference\\." + name));
   assert.match(s, /<AccountHistory\b[^>]*\breadOnly\b/);
   const css = read("components/PortfolioReference.module.css");
-  assert.doesNotMatch(css, /\.grid > \.history/);
+  assert.match(css, /\.grid > \.history/);
   assert.doesNotMatch(css, /:global\(\.portfolio-grid/);
   assert.match(css, /\.grid > \.holdings/);
-  assert.match(css, /\.grid > \.holdings\s*\{[^}]*grid-column: 1;/);
+  assert.match(css, /\.grid > \.holdings\s*\{[^}]*grid-column: 1 \/ -1/);
   assert.match(css, /@media \(max-width: 860px\)/);
 });
 test("workspace titles and panels share density tokens rather than independent oversized values", () => {

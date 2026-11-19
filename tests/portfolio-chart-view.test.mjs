@@ -70,6 +70,9 @@ test("real component renders only holdings slot by default when account evidence
     html,
     /Not (?:your historical account return|actual account performance)/,
   );
-  assert.match(html, /aria-pressed="true">Current holdings history/);
+  assert.match(
+    html,
+    /aria-label="Current holdings history" aria-pressed="true">Holdings prices/,
+  );
   assert.doesNotMatch(html, /aria-label="Chart series"/);
 });

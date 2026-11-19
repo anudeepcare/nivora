@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import postcss from "postcss";
 const read = (n) =>
   readFileSync(new URL("../components/" + n, import.meta.url), "utf8");
-test("holdings and allocation use a two-column body below open history", () => {
+test("portfolio history and allocation form a 3-to-1 desktop row", () => {
   const rules = postcss
     .parse(read("PortfolioReference.module.css"))
     .nodes.filter((n) => n.type === "rule" && n.selector === ".grid");
@@ -12,16 +12,21 @@ test("holdings and allocation use a two-column body below open history", () => {
     rules[0].nodes.some(
       (n) =>
         n.prop === "grid-template-columns" &&
-        n.value === "minmax(0, 2.12fr) minmax(250px, 1fr)",
+        n.value === "minmax(0, 3fr) minmax(260px, 1fr)",
     ),
   );
   assert.ok(
-    rules[0].nodes.some((n) => n.prop === "align-items" && n.value === "start"),
+    rules[0].nodes.some(
+      (n) => n.prop === "align-items" && n.value === "stretch",
+    ),
   );
 });
-test("desktop holdings and allocation align from the top and stack on narrow screens", () => {
+test("chart, allocation and holdings stack on narrow screens", () => {
   const css = read("PortfolioReference.module.css");
-  assert.match(css, /\.history\s*\{[^}]*min-width:\s*0/);
+  assert.match(
+    css,
+    /\.history,\s*\.capitalOverview,\s*\.holdings\s*\{[^}]*min-width:\s*0/,
+  );
   assert.match(css, /\.grid > \.capitalOverview\s*\{[^}]*grid-column:\s*2/);
   assert.match(
     css,

@@ -59,6 +59,7 @@ test("ten purchases render one holding and show all shares and the weighted aver
     X: Empty,
     Plus: Empty,
     portfolioStyles: { ledger: "ledger" },
+    composition: { mobileHoldings: "mobileHoldings" },
     reference: { holdingsScroll: "scroll", purchaseLots: "purchaseLots" },
   };
   const Component = new Function(

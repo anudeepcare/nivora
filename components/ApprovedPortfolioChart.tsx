@@ -234,10 +234,13 @@ export default function ApprovedPortfolioChart({
   const ticks = scale
     ? scale.ticks.filter((n) => n !== 0)
     : [0, 1, 2, 3].map((i) => bottom + ((top - bottom) * i) / 3);
-  const right = width - 12;
+  const plotHeight = compact ? (width < 480 ? 200 : 250) : 320;
+  const plotFloor = plotHeight - 50;
+  const right = width - (compact && width >= 480 ? 64 : 12);
   const x = (i: number) =>
     58 + (i / Math.max(1, values.length - 1)) * (right - 58);
-  const y = (v: number) => 260 - ((v - bottom) / (top - bottom)) * 225;
+  const y = (v: number) =>
+    plotFloor - ((v - bottom) / (top - bottom)) * (plotFloor - 30);
   const path = values
     .map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(2)} ${y(v).toFixed(2)}`)
     .join(" ");
@@ -250,7 +253,7 @@ export default function ApprovedPortfolioChart({
       {compact && (
         <div className={styles.chartToolbar}>
           <div>
-            <strong>Price comparison</strong>
+            <strong className={styles.axisLabel}>Price change</strong>
             <span>
               {chart.points.length > 1
                 ? `${dateLabel(chart.points[0].time)} – ${dateLabel(chart.points.at(-1)!.time)}`
@@ -333,6 +336,12 @@ export default function ApprovedPortfolioChart({
                 </div>
               );
             },
+          )}
+          {gap !== null && !loading && (
+            <aside className={styles.windowGap}>
+              {Math.abs(gap).toFixed(1)} pts {gap < 0 ? "behind" : "above"} the
+              S&amp;P 500
+            </aside>
           )}
           <p>
             {dateLabel((selectedPoint ?? chart.points.at(-1)!).time)} ·{" "}
@@ -450,7 +459,7 @@ export default function ApprovedPortfolioChart({
       )}
       {chart.points.length > 1 ? (
         <svg
-          viewBox={`0 0 ${width} 320`}
+          viewBox={`0 0 ${width} ${plotHeight}`}
           className="data-chart approved-portfolio-chart"
           data-direction={compact ? undefined : seriesDirection(values)}
           role="slider"
@@ -580,7 +589,7 @@ export default function ApprovedPortfolioChart({
             </g>
           )}
           <path
-            d={`${path} L${right} 270 L58 270 Z`}
+            d={`${path} L${right} ${plotFloor + 10} L58 ${plotFloor + 10} Z`}
             fill={`url(#${gradient})`}
           />
           <path
@@ -635,7 +644,7 @@ export default function ApprovedPortfolioChart({
                 x1={x(inspection)}
                 x2={x(inspection)}
                 y1="30"
-                y2="270"
+                y2={plotFloor + 10}
                 stroke="var(--holdings-series)"
                 strokeDasharray="4 4"
                 opacity=".5"
@@ -666,7 +675,26 @@ export default function ApprovedPortfolioChart({
               />
             </g>
           )}
-          <text x="58" y="301" className="chart-axis">
+          {compact &&
+            width >= 480 &&
+            [{ symbol: "HOLDINGS", points: chart.points }, ...overlays].map(
+              (b) => {
+                const value = plotted(b.points.at(-1)!.value);
+                return (
+                  <text
+                    key={b.symbol}
+                    x={right + 9}
+                    y={y(value) + 4}
+                    className={styles.endpointValue}
+                    data-benchmark={b.symbol}
+                  >
+                    {value > 0 ? "+" : ""}
+                    {value.toFixed(1)}%
+                  </text>
+                );
+              },
+            )}
+          <text x="58" y={plotHeight - 16} className="chart-axis">
             {dateLabel(chart.points[0].time)}
           </text>
           {compact &&
@@ -678,7 +706,7 @@ export default function ApprovedPortfolioChart({
                 <text
                   key={part}
                   x={x(i)}
-                  y="301"
+                  y={plotHeight - 16}
                   textAnchor="middle"
                   className="chart-axis"
                 >
@@ -686,7 +714,12 @@ export default function ApprovedPortfolioChart({
                 </text>
               );
             })}
-          <text x={right} y="301" textAnchor="end" className="chart-axis">
+          <text
+            x={right}
+            y={plotHeight - 16}
+            textAnchor="end"
+            className="chart-axis"
+          >
             {dateLabel(chart.points.at(-1)!.time)}
           </text>
         </svg>
@@ -706,61 +739,66 @@ export default function ApprovedPortfolioChart({
           </p>
         </div>
       )}
-      {compact && (
-        <p className={styles.chartCaption} role="status">
-          {loading ? "Loading history · " : ""}
-          {chart.included.length} of {symbols.length} holdings · Benchmarks use
-          the same starting dollars.
-          {!loading && chart.availableFrom && (
-            <> Available from {dateLabel(chart.availableFrom)}.</>
-          )}
-          {gap !== null && !loading && (
-            <>
-              {" "}
-              S&P 500 gap: {gap > 0 ? "+" : ""}
-              {gap.toFixed(1)} pp over the displayed window.
-            </>
-          )}
-          {!loading && overlays.length < 2 && (
-            <>
-              {" "}
-              {["SPY", "QQQ"]
-                .filter((symbol) => !overlays.some((b) => b.symbol === symbol))
-                .join(" / ")}
-              : matching closes unavailable.
-            </>
-          )}{" "}
-          Hover, tap or use arrow keys to inspect.
-        </p>
-      )}
-      {range && !loading && <PortfolioRange range={range} />}
-      {chart.points.length > 1 && (
-        <details className={styles.values}>
-          <summary>Data & calculation</summary>
-          <p>
-            Current quantities at historical prices · USD. Cash, managed
-            balances, margin, dividends and trades are excluded.
+      <div className={styles.chartFooter}>
+        {compact && (
+          <p className={styles.chartCaption} role="status">
+            {loading ? "Loading history · " : ""}
+            Current holdings at past prices · {chart.included.length} of{" "}
+            {symbols.length} covered.
+            {!loading && chart.availableFrom && (
+              <> Available from {dateLabel(chart.availableFrom)}.</>
+            )}
+            {gap !== null && !loading && (
+              <span className={styles.mobileGap}>
+                {" "}
+                {Math.abs(gap).toFixed(1)} pts {gap < 0 ? "behind" : "above"}{" "}
+                the S&amp;P 500.
+              </span>
+            )}
+            {!loading && overlays.length < 2 && (
+              <>
+                {" "}
+                {["SPY", "QQQ"]
+                  .filter(
+                    (symbol) => !overlays.some((b) => b.symbol === symbol),
+                  )
+                  .join(" / ")}
+                : matching closes unavailable.
+              </>
+            )}{" "}
+            Hover, tap or use arrow keys to inspect.
           </p>
-          <div>
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Date</th>
-                  <th scope="col">Modeled value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...chart.points].reverse().map((point) => (
-                  <tr key={point.time}>
-                    <td>{dateLabel(point.time)}</td>
-                    <td>{amount(point.value, "USD")}</td>
+        )}
+        {range && !loading && <PortfolioRange range={range} />}
+        {chart.points.length > 1 && (
+          <details className={styles.values}>
+            <summary>Data &amp; method</summary>
+            <p>
+              Price-only snapshot, not account return. Benchmarks use the same
+              starting value. Cash, managed balances, margin, dividends and
+              trades are excluded.
+            </p>
+            <div>
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Modeled value</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </details>
-      )}
+                </thead>
+                <tbody>
+                  {[...chart.points].reverse().map((point) => (
+                    <tr key={point.time}>
+                      <td>{dateLabel(point.time)}</td>
+                      <td>{amount(point.value, "USD")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        )}
+      </div>
       {!compact && (
         <p className="chart-note">
           {chart.included.length

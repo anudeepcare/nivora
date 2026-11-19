@@ -11,34 +11,40 @@
   margin-bottom: 12px;
 }
 .page.page.page.page h1 {
-  font-weight: 400;
-  letter-spacing: -0.045em;
+  font-weight: 750;
+  letter-spacing: -0.04em;
   font-size: var(--workspace-title-size, clamp(30px, 3vw, 44px));
 }
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 2.12fr) minmax(250px, 1fr);
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
   gap: var(--workspace-gap, 16px);
-  align-items: start;
+  align-items: stretch;
 }
 .grid > * {
   min-width: 0;
   max-width: 100%;
   margin: 0;
 }
+.grid > .history {
+  grid-column: 1;
+}
 .grid > .capitalOverview {
   grid-column: 2;
 }
 .grid > .holdings {
-  grid-column: 1;
+  grid-column: 1 / -1;
   width: 100%;
 }
-.history {
+.history,
+.capitalOverview,
+.holdings {
   min-width: 0;
-  padding: 18px 0 22px;
-  margin-bottom: 22px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  padding: 19px 20px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--card);
+  box-shadow: var(--portfolio-card-shadow);
 }
 .exposure {
   border-top: 1px solid var(--line);
@@ -100,6 +106,7 @@
   .grid {
     grid-template-columns: minmax(0, 1fr);
   }
+  .grid > .history,
   .grid > .capitalOverview,
   .grid > .holdings {
     grid-column: 1;
@@ -128,8 +135,10 @@
 
 /* Only data tables scroll horizontally; the portfolio page itself stays fluid. */
 @media (max-width: 700px) {
-  .page.page.page.page .grid :global(.card) {
-    padding: 14px;
+  .history,
+  .capitalOverview,
+  .holdings {
+    padding: 16px;
   }
   .page.page.page.page :global(.heading-actions) {
     display: flex;
@@ -144,6 +153,9 @@
     white-space: normal;
     min-height: 44px;
   }
+}
+
+@media (min-width: 601px) and (max-width: 700px) {
   .page.page.page.page .holdingsScroll :global(table.holdings-table) {
     display: table;
     min-width: 610px;
@@ -212,28 +224,30 @@
 }
 
 /* Explicit holdings columns keep units, value and return independently scannable. */
-.page.page.page.page .holdingsScroll :global(table.holdings-table) {
-  min-width: 610px;
-}
-.page.page.page.page .holdingsScroll :is(th, td) {
-  font-variant-numeric: tabular-nums;
-  vertical-align: middle;
-}
-.page.page.page.page .holdingsScroll th {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-  letter-spacing: 0.025em;
-}
-.page.page.page.page .holdingsScroll tbody td {
-  border-bottom: 1px solid var(--line);
-  padding: 14px 12px;
-}
-.page.page.page.page .holdingsScroll td:first-child {
-  min-width: 210px;
-}
-.page.page.page.page .holdingsScroll td:not(:first-child):not(:last-child) {
-  white-space: nowrap;
+@media (min-width: 601px) {
+  .page.page.page.page .holdingsScroll :global(table.holdings-table) {
+    min-width: 610px;
+  }
+  .page.page.page.page .holdingsScroll :is(th, td) {
+    font-variant-numeric: tabular-nums;
+    vertical-align: middle;
+  }
+  .page.page.page.page .holdingsScroll th {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.025em;
+  }
+  .page.page.page.page .holdingsScroll tbody td {
+    border-bottom: 1px solid var(--line);
+    padding: 14px 12px;
+  }
+  .page.page.page.page .holdingsScroll td:first-child {
+    min-width: 210px;
+  }
+  .page.page.page.page .holdingsScroll td:not(:first-child):not(:last-child) {
+    white-space: nowrap;
+  }
 }
 .purchaseLots {
   list-style: none;
@@ -271,6 +285,9 @@
 
 /* Stable series colors: direction is communicated by the move, not line color. */
 .page {
+  --portfolio-net: #20378b;
+  --portfolio-net-bg: #edf1ff;
+  --portfolio-card-shadow: 0 2px 0 #23396908;
   --portfolio-basket: #354fb9;
   --portfolio-spy: #087b70;
   --portfolio-qqq: #864cab;
@@ -278,6 +295,9 @@
   --red: var(--portfolio-loss);
 }
 :global(html[data-theme="dark"]) .page {
+  --portfolio-net: #cfdaff;
+  --portfolio-net-bg: #202c4a;
+  --portfolio-card-shadow: 0 2px 0 #080d1740;
   --portfolio-basket: #9eafff;
   --portfolio-spy: #68ddc8;
   --portfolio-qqq: #d1a4f0;
@@ -287,42 +307,52 @@
   color: var(--portfolio-loss);
 }
 
-/* Page-level financial snapshot. No enclosing card and no per-value tile. */
+/* Approved mock: separate peer cards without a second outer frame. */
 .snapshot {
   display: grid;
-  grid-template-columns: minmax(0, 1.26fr) repeat(3, minmax(0, 1fr));
-  gap: 12px clamp(16px, 3.6vw, 52px);
-  margin: 16px 0 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0 12px;
   padding: 0;
   border: 0;
   background: none;
 }
 .snapshot > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   min-width: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  background: none;
+  min-height: 110px;
+  padding: 14px 17px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  box-shadow: var(--portfolio-card-shadow);
+  background: var(--card);
+}
+.snapshot > div:first-child {
+  background: var(--portfolio-net-bg);
 }
 .snapshot > div > span {
   min-height: 0;
   color: var(--muted);
 }
 .snapshot > div > strong {
-  margin-block: 5px 3px;
-  font-size: clamp(18px, 2.1vw, 29px);
-  font-weight: 575;
+  margin-block: 6px 3px;
+  color: var(--ink);
+  font-size: clamp(20px, 2.2vw, 33px);
+  font-weight: 750;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.035em;
   overflow-wrap: anywhere;
 }
 .snapshot > div:first-child > strong {
-  color: var(--ink);
-  font-size: clamp(24px, 2.7vw, 38px);
-  font-weight: 650;
+  color: var(--portfolio-net);
 }
 .snapshot > div[data-tone="negative"] > strong {
   color: var(--portfolio-loss);
+}
+.snapshot > div[data-tone="green"] > strong {
+  color: var(--portfolio-spy);
 }
 .snapshot > div:nth-child(3) > strong {
   color: var(--portfolio-spy);
@@ -331,25 +361,27 @@
   color: var(--portfolio-qqq);
 }
 .snapshot > div > small {
+  margin-top: auto;
   color: var(--muted);
   line-height: 1.45;
 }
 @media (max-width: 840px) {
   .snapshot {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 }
 @media (max-width: 480px) {
-  .snapshot {
-    gap: 10px 12px;
+  .snapshot > div {
+    min-height: 88px;
+    padding: 10px 11px;
+    border-radius: 14px;
   }
   .snapshot > div > strong {
-    font-size: 17px;
+    font-size: clamp(16px, 4.8vw, 24px);
+    margin-block: 4px 3px;
   }
-  .snapshot > div:first-child > strong {
-    font-size: 23px;
-  }
-  .history {
-    padding-block: 13px 17px;
+  .snapshot > div > small {
+    font-size: 10px;
   }
 }

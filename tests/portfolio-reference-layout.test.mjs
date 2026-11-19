@@ -15,7 +15,7 @@ test("portfolio reference hierarchy preserves real positions and transaction con
     source,
     /<TransactionWorkspace\s+quotes=\{q\}\s+positions=\{positions\}/,
   );
-  assert.match(source, /model\.allocations\.map/);
+  assert.match(source, /model\.allocations\.slice\(0, 3\)\.map/);
   assert.doesNotMatch(source, /142,680|18,420|17,120/);
 });
 

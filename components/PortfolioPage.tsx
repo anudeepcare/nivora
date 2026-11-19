@@ -179,21 +179,155 @@ export function Portfolio() {
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
       <WealthStrip state={state} portfolio className={reference.snapshot} />
       <Coverage state={state} />
-      <section className={reference.history} aria-label="Portfolio history">
-        <AccountHistory
-          readOnly
-          key={historyVersion}
-          onReviewRecords={openTransaction}
-          currentHoldingsHistory={
-            <ApprovedPortfolioChart
-              positions={positions}
-              quotes={quotes.data}
-              compact
-            />
-          }
-        />
-      </section>
       <div className={reference.grid} data-portfolio-layout="reference">
+        <section className={reference.history} aria-label="Portfolio history">
+          <AccountHistory
+            readOnly
+            key={historyVersion}
+            onReviewRecords={openTransaction}
+            currentHoldingsHistory={
+              <ApprovedPortfolioChart
+                positions={positions}
+                quotes={quotes.data}
+                compact
+              />
+            }
+          />
+        </section>
+        <div className={reference.capitalOverview}>
+          <section className="portfolio-allocation-panel">
+            <SectionHead
+              title="Allocation"
+              subtitle="Priced investments only · excludes cash"
+            />
+            {model.allocations.length ? (
+              <>
+                <div
+                  className={composition.allocationTrack}
+                  role="img"
+                  aria-label={model.allocations
+                    .map((a) => `${a.symbol} ${percent(a.weight)}`)
+                    .join("; ")}
+                >
+                  {model.allocations.slice(0, 3).map((a, index) => (
+                    <i
+                      key={a.symbol}
+                      style={{
+                        width: `${a.weight}%`,
+                        background: [
+                          "var(--portfolio-basket)",
+                          "var(--portfolio-spy)",
+                          "var(--portfolio-qqq)",
+                        ][index],
+                      }}
+                    />
+                  ))}
+                  {model.allocations.length > 3 && (
+                    <i
+                      style={{
+                        width: `${model.allocations.slice(3).reduce((sum, a) => sum + a.weight, 0)}%`,
+                        background: "var(--line)",
+                      }}
+                    />
+                  )}
+                </div>
+                <div className={composition.allocationList}>
+                  {model.allocations.slice(0, 3).map((a, index) => (
+                    <Link key={a.symbol} href={researchLink(a.symbol, prefix)}>
+                      <span>
+                        <i
+                          style={{
+                            background: [
+                              "var(--portfolio-basket)",
+                              "var(--portfolio-spy)",
+                              "var(--portfolio-qqq)",
+                            ][index],
+                          }}
+                        />
+                        {a.symbol}
+                      </span>
+                      <strong>{percent(a.weight)}</strong>
+                    </Link>
+                  ))}
+                  {model.allocations.length > 3 && (
+                    <div>
+                      <span>
+                        <i style={{ background: "var(--line)" }} />
+                        Other holdings
+                      </span>
+                      <strong>
+                        {percent(
+                          model.allocations
+                            .slice(3)
+                            .reduce((sum, a) => sum + a.weight, 0),
+                        )}
+                      </strong>
+                    </div>
+                  )}
+                </div>
+                <div className={composition.concentration}>
+                  <span>
+                    {model.allocations.length >= 3
+                      ? "Top 3 concentration"
+                      : "Largest holdings share"}
+                  </span>
+                  <strong>
+                    {percent(
+                      model.allocations
+                        .slice(0, 3)
+                        .reduce((sum, a) => sum + a.weight, 0),
+                    )}
+                  </strong>
+                  <small>
+                    Share of priced investments; unpriced holdings excluded.
+                  </small>
+                </div>
+              </>
+            ) : (
+              <Empty title="See how your holdings fit together">
+                Available USD prices will reveal your allocation.
+              </Empty>
+            )}
+            {model.groups.length > 0 && (
+              <details
+                className={`${reference.exposure} ${composition.sectors}`}
+              >
+                <summary>View sector exposure</summary>
+                <div
+                  className="portfolio-exposure-rows"
+                  role="region"
+                  tabIndex={0}
+                  aria-label="Sector and crypto exposure groups"
+                >
+                  {model.groups.map((group, i) => (
+                    <div key={group.name}>
+                      <div>
+                        <strong>{group.name}</strong>
+                        <b>{percent(group.weight)}</b>
+                      </div>
+                      <span className="portfolio-exposure-track">
+                        <i
+                          style={{
+                            width: `${group.weight}%`,
+                            background: [
+                              "var(--portfolio-basket)",
+                              "var(--portfolio-spy)",
+                              "var(--portfolio-qqq)",
+                            ][i % 3],
+                          }}
+                        />
+                      </span>
+                      <small>
+                        {group.symbols.length}{" "}
+                        {group.symbols.length === 1 ? "company" : "companies"}
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            )}
+          </section>
+        </div>
         <section className={`portfolio-holdings-panel ${reference.holdings}`}>
           <div
             className={`${portfolioStyles.holdingsToolbar} ${composition.toolbar}`}
@@ -319,164 +453,6 @@ export function Portfolio() {
             )}
           </div>
         </section>
-        <div className={reference.capitalOverview}>
-          <section className="portfolio-allocation-panel">
-            <SectionHead
-              title="Allocation"
-              subtitle="Priced investments · excludes cash"
-            />
-            {model.allocations.length > 0 && (
-              <div className={composition.concentration}>
-                <span>
-                  {model.allocations.length >= 3
-                    ? "Largest three holdings"
-                    : "Priced holdings share"}
-                </span>
-                <strong>
-                  {percent(
-                    model.allocations
-                      .slice(0, 3)
-                      .reduce((sum, item) => sum + item.weight, 0),
-                  )}
-                </strong>
-                <small>
-                  Share of priced investments · cash and unpriced holdings
-                  excluded
-                </small>
-              </div>
-            )}
-            <div className={reference.allocationBody}>
-              {model.allocations.length ? (
-                <div className={reference.allocationLegend}>
-                  <div
-                    className="allocation-track"
-                    role="img"
-                    aria-label={model.allocations
-                      .map((a) => `${a.symbol} ${percent(a.weight)}`)
-                      .join("; ")}
-                  >
-                    {model.allocations.map((a) => (
-                      <i
-                        key={a.symbol}
-                        style={{
-                          width: `${a.weight}%`,
-                          background: [
-                            "var(--portfolio-basket)",
-                            "var(--portfolio-spy)",
-                            "var(--portfolio-qqq)",
-                          ][
-                            model.allocations.findIndex(
-                              (item) => item.symbol === a.symbol,
-                            ) % 3
-                          ],
-                        }}
-                      />
-                    ))}
-                  </div>
-                  {model.allocations.slice(0, 6).map((a) => (
-                    <Link
-                      key={a.symbol}
-                      href={researchLink(a.symbol, prefix)}
-                      className="allocation-row"
-                    >
-                      <span>
-                        <i
-                          className="dot"
-                          style={{
-                            background: [
-                              "var(--portfolio-basket)",
-                              "var(--portfolio-spy)",
-                              "var(--portfolio-qqq)",
-                            ][
-                              model.allocations.findIndex(
-                                (item) => item.symbol === a.symbol,
-                              ) % 3
-                            ],
-                          }}
-                        />
-                        {a.symbol}
-                      </span>
-                      <strong>{percent(a.weight)}</strong>
-                    </Link>
-                  ))}
-                  {model.allocations.length > 6 && (
-                    <details className="allocation-more">
-                      <summary>All {model.allocations.length} holdings</summary>
-                      {model.allocations.slice(6).map((a) => (
-                        <Link
-                          key={a.symbol}
-                          href={researchLink(a.symbol, prefix)}
-                          className="allocation-row"
-                        >
-                          <span>
-                            <i
-                              className="dot"
-                              style={{
-                                background: [
-                                  "var(--portfolio-basket)",
-                                  "var(--portfolio-spy)",
-                                  "var(--portfolio-qqq)",
-                                ][
-                                  model.allocations.findIndex(
-                                    (item) => item.symbol === a.symbol,
-                                  ) % 3
-                                ],
-                              }}
-                            />
-                            {a.symbol}
-                          </span>
-                          <strong>{percent(a.weight)}</strong>
-                        </Link>
-                      ))}
-                    </details>
-                  )}
-                </div>
-              ) : (
-                <Empty title="See how your holdings fit together">
-                  Available USD prices will reveal your allocation.
-                </Empty>
-              )}
-            </div>
-            {model.groups.length > 0 && (
-              <section
-                className={`${reference.exposure} ${composition.sectors}`}
-              >
-                <h3>Sector exposure</h3>
-                <div
-                  className="portfolio-exposure-rows"
-                  role="region"
-                  tabIndex={0}
-                  aria-label="Sector and crypto exposure groups"
-                >
-                  {model.groups.map((group, i) => (
-                    <div key={group.name}>
-                      <div>
-                        <strong>{group.name}</strong>
-                        <b>{percent(group.weight)}</b>
-                      </div>
-                      <span className="portfolio-exposure-track">
-                        <i
-                          style={{
-                            width: `${group.weight}%`,
-                            background: [
-                              "var(--portfolio-basket)",
-                              "var(--portfolio-spy)",
-                              "var(--portfolio-qqq)",
-                            ][i % 3],
-                          }}
-                        />
-                      </span>
-                      <small>
-                        {group.symbols.length}{" "}
-                        {group.symbols.length === 1 ? "company" : "companies"}
-                      </small>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-          </section>
-        </div>
       </div>
       <details className={reference.methodology}>
         <summary>About these values</summary>
@@ -692,7 +668,7 @@ function HoldingsTable({
   return (
     <>
       <div
-        className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll}`}
+        className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll} ${composition.mobileHoldings}`}
         role="region"
         aria-label="Portfolio holdings, scroll for more rows and columns"
         tabIndex={0}
@@ -708,7 +684,8 @@ function HoldingsTable({
               <th>Company / accumulation pace</th>
               <th>Weight</th>
               <th>Price</th>
-              <th>Value / unrealized return</th>
+              <th>Market value</th>
+              <th>Unrealized return</th>
               <th>
                 <span className="sr-only">Manage purchases</span>
               </th>
@@ -773,8 +750,10 @@ function HoldingsTable({
                       </Link>
                     )}
                   </td>
-                  <td>{cash ? "—" : percent(row.weight)}</td>
-                  <td>
+                  <td data-label="Weight">
+                    {cash ? "—" : percent(row.weight)}
+                  </td>
+                  <td data-label="Price">
                     <strong>
                       {cash ? "—" : amount(quote?.price, quote?.currency)}
                     </strong>
@@ -792,8 +771,10 @@ function HoldingsTable({
                       </small>
                     )}
                   </td>
-                  <td>
+                  <td data-label="Market value">
                     <strong>{amount(row.value)}</strong>
+                  </td>
+                  <td data-label="Unrealized return">
                     <small
                       className={
                         row.pnl == null

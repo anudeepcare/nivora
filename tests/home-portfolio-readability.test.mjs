@@ -2,10 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 const css = (n) => fs.readFileSync(`components/${n}.module.css`, "utf8");
-test("Portfolio chart and allocation remain content-height without stretched blank panels", () => {
+test("Portfolio chart and allocation align as peers in the approved layout", () => {
   assert.match(
     css("PortfolioReference"),
-    /\.grid\s*\{[^}]*align-items:\s*start/s,
+    /\.grid\s*\{[^}]*align-items:\s*stretch/s,
   );
 });
 test("Today quarter evidence is bounded and responds to card width rather than viewport", () => {

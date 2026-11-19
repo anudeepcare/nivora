@@ -197,37 +197,39 @@ export default function AccountHistory({
       .join(" ");
   const viewChoice = currentHoldingsHistory ? (
     <div
-      className="auryn-detail-tabs"
+      className={styles.lenses}
       role="group"
       aria-label="Portfolio chart basis"
     >
       <button
         type="button"
-        aria-pressed={displayHistory === "account"}
-        onClick={() => setHistoryView("account")}
-      >
-        Actual account & benchmarks
-      </button>
-      <button
-        type="button"
+        aria-label="Current holdings history"
         aria-pressed={displayHistory === "holdings"}
         onClick={() => setHistoryView("holdings")}
       >
-        Current holdings history
+        Holdings prices
+      </button>
+      <button
+        type="button"
+        aria-label="Actual account & benchmarks"
+        aria-pressed={displayHistory === "account"}
+        onClick={() => setHistoryView("account")}
+      >
+        Actual account
       </button>
     </div>
   ) : null;
   if (currentHoldingsHistory && displayHistory === "holdings")
     return (
-      <div className={styles.history}>
+      <div
+        className={styles.history}
+        aria-description="Current holdings at past prices. Not actual account performance."
+      >
         <header className={styles.historyToolbar}>
           <h2>Portfolio history</h2>
           {viewChoice}
         </header>
         {currentHoldingsHistory}
-        <p className={styles.scope}>
-          Today’s holdings at past prices. Not actual account performance.
-        </p>
       </div>
     );
   // Keep missing/error states discoverable without restoring a verbose empty panel.
@@ -261,9 +263,11 @@ export default function AccountHistory({
       className={styles.history}
       data-read-only={readOnly && !currentHoldingsHistory ? true : undefined}
     >
-      {viewChoice}
+      <header className={styles.historyToolbar}>
+        <h2>Portfolio history</h2>
+        {viewChoice}
+      </header>
       <header className={styles.chartHeader}>
-        <h2>Account value &amp; market comparison</h2>
         <div className={styles.periods} aria-label="Account history period">
           {["1M", "3M", "6M", "YTD", "1Y", "ALL"].map((value) => (
             <button

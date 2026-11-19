@@ -22,7 +22,11 @@ test("Portfolio uses one summary stylesheet so foreground and surface cannot cas
       .filter((d) => d.type === "decl")
       .map((d) => [d.prop, d.value]),
   );
-  assert.equal(f.color, "var(--ink)");
+  assert.equal(f.color, "var(--portfolio-net)");
+  assert.match(
+    css("PortfolioReference"),
+    /\.snapshot > div:first-child\s*\{[^}]*background: var\(--portfolio-net-bg\)/s,
+  );
   assert.ok(
     !f["--ink"] && !f["--muted"],
     "do not force a light palette on a theme-owned card",
