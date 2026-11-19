@@ -617,12 +617,23 @@ export default function Research({ symbol }: { symbol: string }) {
           </span>
         </span>
       ) : (
-        <span>Pace unavailable</span>
+        <span className={headerPaceStyles.paceUnavailable}>
+          Pace unavailable
+        </span>
       )}
+      <span className={headerPaceStyles.mobileCode}>
+        {headerPace ? paceCode(headerPace.multiplier) : "—"}
+      </span>
       {headerPaceProvisional && (
         <span className="sr-only">Provisional current-month reading</span>
       )}
       <Help label="this Pace reading">
+        {headerPace && (
+          <p>
+            {paceCode(headerPace.multiplier)} ·{" "}
+            {PACE_LEVELS[headerPace.multiplier]}
+          </p>
+        )}
         {headerPace ? (
           <>
             <p>
@@ -689,8 +700,11 @@ export default function Research({ symbol }: { symbol: string }) {
             </h1>
             <div className={cockpit.identityMeta}>
               <span>
-                {symbol} · {r.company.exchange || "Listing"} ·{" "}
-                {r.quote.currency}
+                {symbol} · {r.company.exchange || "Listing"}
+                <span className={headerPaceStyles.currency}>
+                  {" "}
+                  · {r.quote.currency}
+                </span>
               </span>
               {headerContext.sector && (
                 <span className={headerPaceStyles.sector}>

@@ -109,6 +109,7 @@
 }
 
 .mobileName,
+.mobileCode,
 .paceMobile {
   display: none;
 }
@@ -190,5 +191,116 @@
   }
   .priceMetrics > span {
     font-size: 11px;
+  }
+}
+
+/* Approved phone quote hierarchy: no changes to desktop or research rails. */
+@media (max-width: 700px) {
+  .header.header {
+    gap: 12px 6px;
+    padding-block: 12px;
+  }
+  .header.header .identity.identity {
+    gap: 12px;
+    align-items: center;
+  }
+  .header.header .identity.identity > :global(.security-logo) {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    flex-basis: 44px;
+  }
+  .header.header .identity.identity h1 {
+    font-size: clamp(22px, 6.9vw, 28px);
+    line-height: 1.15;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    margin: 0 0 4px;
+  }
+  .header.header .identity.identity > div > div {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+  .identity .currency {
+    display: none;
+  }
+  .header.header .identity.identity > div {
+    min-width: 0;
+  }
+  .header.header .quote.quote {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "metrics pace" "stamp pace";
+    gap: 2px 10px;
+    align-items: center;
+  }
+  .header.header .priceMetrics {
+    grid-area: metrics;
+    min-width: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .header.header .priceMetrics > strong {
+    font-size: clamp(26px, 8.2vw, 36px);
+    font-weight: 650;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+  }
+  .header.header .priceMetrics > span {
+    font-size: clamp(12px, 3.6vw, 16px);
+    gap: 0;
+  }
+  .header.header .quote > :global(.data-stamp) {
+    grid-area: stamp;
+    font-size: 11px;
+    line-height: 1.35;
+    min-width: 0;
+    flex-basis: auto;
+  }
+  .header.header .paceMobile {
+    grid-area: pace;
+    align-self: stretch;
+    align-items: center;
+    margin: 0;
+    padding-left: 12px;
+    border-left: 1px solid var(--line);
+  }
+  .header.header .paceMobile .pace {
+    background: #e9e6fe;
+    color: #5941d9;
+    border-radius: 999px;
+    padding: 0 2px 0 14px;
+    gap: 2px;
+    min-height: 48px;
+  }
+  .paceMobile .paceText,
+  .paceMobile .paceDot,
+  .paceMobile .paceUnavailable {
+    display: none;
+  }
+  .paceMobile .mobileCode {
+    display: inline;
+    font-size: clamp(27px, 8vw, 34px);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .header.header .paceMobile .pace > :global(button.help) {
+    width: 36px;
+    min-width: 36px;
+    height: 44px;
+    padding: 9px;
+    color: inherit;
+  }
+  .header.header .paceMobile .pace > :global(button.help) svg {
+    width: 16px;
+    height: 16px;
+  }
+  :global(html[data-theme="dark"]) .header.header .paceMobile .pace {
+    background: #30284d;
+    color: #c7baff;
   }
 }
