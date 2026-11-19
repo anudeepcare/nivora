@@ -177,28 +177,150 @@ export function Portfolio() {
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <WealthStrip state={state} portfolio />
+      <WealthStrip state={state} portfolio className={reference.snapshot} />
       <Coverage state={state} />
+      <section className={reference.history} aria-label="Portfolio history">
+        <AccountHistory
+          readOnly
+          key={historyVersion}
+          onReviewRecords={openTransaction}
+          currentHoldingsHistory={
+            <ApprovedPortfolioChart
+              positions={positions}
+              quotes={quotes.data}
+              compact
+            />
+          }
+        />
+      </section>
       <div className={reference.grid} data-portfolio-layout="reference">
-        <section
-          className={`card ${reference.history}`}
-          aria-label="Portfolio history"
-        >
-          <AccountHistory
-            readOnly
-            key={historyVersion}
-            onReviewRecords={openTransaction}
-            currentHoldingsHistory={
-              <ApprovedPortfolioChart
-                positions={positions}
-                quotes={quotes.data}
-                compact
-              />
-            }
-          />
+        <section className={`portfolio-holdings-panel ${reference.holdings}`}>
+          <div
+            className={`${portfolioStyles.holdingsToolbar} ${composition.toolbar}`}
+          >
+            <h2>
+              <Wallet size={20} aria-hidden="true" />
+              Holdings
+            </h2>
+            {earningsHoldingsCount > 0 && (
+              <span
+                className={reference.earnings}
+                title="Calendar coverage may be incomplete"
+              >
+                {earningsHoldingsCount} with earnings this week
+              </span>
+            )}
+            {positions.length > 0 && (
+              <label className={portfolioStyles.holdingsSearch}>
+                <SearchIcon size={18} aria-hidden="true" />
+                <input
+                  aria-label="Filter holdings"
+                  placeholder="Find a holding"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </label>
+            )}
+            <select
+              aria-label="Filter holdings by accumulation pace"
+              value={paceFilter}
+              onChange={(e) => setPaceFilter(e.target.value)}
+            >
+              <option value="all">All pace levels</option>
+              {[4, 3, 2, 1, 0].map((n) => (
+                <option key={n} value={n}>
+                  P{n}
+                </option>
+              ))}
+            </select>
+            <div className={portfolioStyles.refreshControls}>
+              {positions.length > 0 && (
+                <select
+                  aria-label="Portfolio price refresh interval"
+                  value={quotes.mode}
+                  onChange={(e) =>
+                    quotes.changeMode(e.target.value as typeof quotes.mode)
+                  }
+                >
+                  <option value="balanced">Every 5 min</option>
+                  <option value="live">Every 2 min</option>
+                  <option value="hourly">Hourly</option>
+                  <option value="manual">Manual</option>
+                </select>
+              )}
+              <button
+                type="button"
+                disabled={quotes.loading}
+                onClick={quotes.refresh}
+                aria-label={
+                  quotes.loading
+                    ? "Refreshing portfolio prices"
+                    : "Refresh portfolio prices"
+                }
+                aria-busy={quotes.loading}
+                title="Refresh prices now"
+              >
+                <RefreshCw size={18} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+          {visible.length ? (
+            <HoldingsTable
+              positions={visible}
+              allPositions={positions}
+              state={state}
+              earnings={earnings}
+              onEdit={setEditing}
+              onAddPurchase={(seed) => {
+                setCashDefault(false);
+                setPurchaseSeed(seed);
+                setEditing("new");
+              }}
+            />
+          ) : (
+            <Empty
+              title={
+                positions.length
+                  ? "No holdings match your filter"
+                  : "Bring your holdings into focus"
+              }
+              icon={Wallet}
+              action={
+                <button
+                  className="btn"
+                  onClick={() =>
+                    positions.length
+                      ? (setQuery(""), setPaceFilter("all"))
+                      : setEditing("new")
+                  }
+                >
+                  {positions.length
+                    ? "Clear filter"
+                    : "Add your first position"}
+                </button>
+              }
+            >
+              {positions.length
+                ? "Try another company name or ticker."
+                : "Record shares and average costs. Adding a position does not place a trade."}
+            </Empty>
+          )}
+          <div className="approved-holding-tools">
+            {positions.length > 0 && (
+              <button
+                className="text-link"
+                onClick={() => {
+                  setDepthOpen(true);
+                  depth.current?.showModal();
+                }}
+              >
+                Transactions &amp; analysis <ArrowUpRight size={15} />
+              </button>
+            )}
+          </div>
         </section>
         <div className={reference.capitalOverview}>
-          <section className="card portfolio-allocation-panel">
+          <section className="portfolio-allocation-panel">
             <SectionHead
               title="Allocation"
               subtitle="Priced investments · excludes cash"
@@ -355,133 +477,6 @@ export function Portfolio() {
             )}
           </section>
         </div>
-        <section
-          className={`card portfolio-holdings-panel ${reference.holdings}`}
-        >
-          <div
-            className={`${portfolioStyles.holdingsToolbar} ${composition.toolbar}`}
-          >
-            <h2>
-              <Wallet size={20} aria-hidden="true" />
-              Holdings
-            </h2>
-            {earningsHoldingsCount > 0 && (
-              <span
-                className={reference.earnings}
-                title="Calendar coverage may be incomplete"
-              >
-                {earningsHoldingsCount} with earnings this week
-              </span>
-            )}
-            {positions.length > 0 && (
-              <label className={portfolioStyles.holdingsSearch}>
-                <SearchIcon size={18} aria-hidden="true" />
-                <input
-                  aria-label="Filter holdings"
-                  placeholder="Find a holding"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </label>
-            )}
-            <select
-              aria-label="Filter holdings by accumulation pace"
-              value={paceFilter}
-              onChange={(e) => setPaceFilter(e.target.value)}
-            >
-              <option value="all">All pace levels</option>
-              {[4, 3, 2, 1, 0].map((n) => (
-                <option key={n} value={n}>
-                  P{n}
-                </option>
-              ))}
-            </select>
-            <div className={portfolioStyles.refreshControls}>
-              {positions.length > 0 && (
-                <select
-                  aria-label="Portfolio price refresh interval"
-                  value={quotes.mode}
-                  onChange={(e) =>
-                    quotes.changeMode(e.target.value as typeof quotes.mode)
-                  }
-                >
-                  <option value="balanced">Every 5 min</option>
-                  <option value="live">Every 2 min</option>
-                  <option value="hourly">Hourly</option>
-                  <option value="manual">Manual</option>
-                </select>
-              )}
-              <button
-                type="button"
-                disabled={quotes.loading}
-                onClick={quotes.refresh}
-                aria-label={
-                  quotes.loading
-                    ? "Refreshing portfolio prices"
-                    : "Refresh portfolio prices"
-                }
-                aria-busy={quotes.loading}
-                title="Refresh prices now"
-              >
-                <RefreshCw size={18} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-          {visible.length ? (
-            <HoldingsTable
-              positions={visible}
-              allPositions={positions}
-              state={state}
-              earnings={earnings}
-              onEdit={setEditing}
-              onAddPurchase={(seed) => {
-                setCashDefault(false);
-                setPurchaseSeed(seed);
-                setEditing("new");
-              }}
-            />
-          ) : (
-            <Empty
-              title={
-                positions.length
-                  ? "No holdings match your filter"
-                  : "Bring your holdings into focus"
-              }
-              icon={Wallet}
-              action={
-                <button
-                  className="btn"
-                  onClick={() =>
-                    positions.length
-                      ? (setQuery(""), setPaceFilter("all"))
-                      : setEditing("new")
-                  }
-                >
-                  {positions.length
-                    ? "Clear filter"
-                    : "Add your first position"}
-                </button>
-              }
-            >
-              {positions.length
-                ? "Try another company name or ticker."
-                : "Record shares and average costs. Adding a position does not place a trade."}
-            </Empty>
-          )}
-          <div className="approved-holding-tools">
-            {positions.length > 0 && (
-              <button
-                className="text-link"
-                onClick={() => {
-                  setDepthOpen(true);
-                  depth.current?.showModal();
-                }}
-              >
-                Transactions &amp; analysis <ArrowUpRight size={15} />
-              </button>
-            )}
-          </div>
-        </section>
       </div>
       <details className={reference.methodology}>
         <summary>About these values</summary>

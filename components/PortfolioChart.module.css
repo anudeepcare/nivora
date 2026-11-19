@@ -303,3 +303,82 @@
 .benchmarkMarker[data-benchmark="QQQ"] {
   fill: var(--qqq-series);
 }
+.chartToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.chartToolbar > div:first-child {
+  display: flex;
+  gap: 6px 12px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.chartToolbar strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.chartToolbar span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.seriesReadout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 20px;
+  margin: 0 0 2px;
+}
+.seriesReadout > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  color: var(--holdings-series);
+}
+.seriesReadout > div[data-benchmark="SPY"] {
+  color: var(--spy-series);
+}
+.seriesReadout > div[data-benchmark="QQQ"] {
+  color: var(--qqq-series);
+}
+.seriesReadout span {
+  font-size: 12px;
+  font-weight: 500;
+}
+.seriesReadout strong {
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.seriesReadout small {
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.seriesReadout p {
+  grid-column: 1/-1;
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.chartCaption {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 4px 0 10px;
+}
+@media (max-width: 480px) {
+  .chartToolbar .periods {
+    flex-basis: auto;
+  }
+  .seriesReadout {
+    gap: 6px 10px;
+  }
+  .seriesReadout small {
+    font-size: 11px;
+  }
+}

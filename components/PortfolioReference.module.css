@@ -29,24 +29,16 @@
 .grid > .capitalOverview {
   grid-column: 2;
 }
-.grid > .history {
-  grid-column: 1;
-}
 .grid > .holdings {
-  grid-column: 1 / -1;
-}
-.grid :global(.card) {
-  margin: 0;
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--workspace-panel-radius, 14px);
-  box-shadow: none;
-}
-.grid .holdings {
+  grid-column: 1;
   width: 100%;
 }
 .history {
   min-width: 0;
+  padding: 18px 0 22px;
+  margin-bottom: 22px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 .exposure {
   border-top: 1px solid var(--line);
@@ -82,10 +74,6 @@
   color: var(--muted);
   margin-top: 10px;
 }
-.page.page.page.page :global(.wealth-strip.four) > div {
-  background: var(--card);
-  box-shadow: none;
-}
 .holdingsScroll {
   min-width: 0;
   max-width: 100%;
@@ -113,25 +101,9 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .grid > .capitalOverview,
-  .grid > .history,
   .grid > .holdings {
     grid-column: 1;
   }
-}
-.page.page.page.page :global(.wealth-strip.four) > div {
-  background: var(--card);
-  border-radius: 0;
-  box-shadow: none;
-  padding: 14px 18px;
-}
-.page.page.page.page :global(.wealth-strip.four) {
-  gap: 0;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
-}
-.page.page.page.page :global(.wealth-strip.four) > div > strong {
-  font-size: clamp(22px, 2.4vw, 32px);
 }
 
 .capitalOverview {
@@ -208,13 +180,6 @@
   .page.page.page.page .holdingsScroll td::before {
     content: none;
   }
-  .page.page.page.page :global(.wealth-strip.four) > div {
-    padding: 12px;
-  }
-  .page.page.page.page :global(.wealth-strip.four) > div > strong {
-    font-size: 21px;
-    overflow-wrap: anywhere;
-  }
 }
 
 .actionsBar {
@@ -236,39 +201,6 @@
   }
   .actionsBar {
     justify-content: flex-start;
-  }
-  .page.page.page.page :global(.wealth-strip.four) {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-    margin-bottom: 12px;
-  }
-  .page.page.page.page :global(.wealth-strip.four) > div {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: baseline;
-    gap: 3px 12px;
-    padding: 10px 12px;
-    border: 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .page.page.page.page :global(.wealth-strip.four) > div:last-child {
-    border-bottom: 0;
-  }
-  .page.page.page.page :global(.wealth-strip.four) > div > span {
-    min-height: 0;
-    font-size: 11px;
-  }
-  .page.page.page.page :global(.wealth-strip.four) > div > strong {
-    margin: 0;
-    font-size: 18px;
-    line-height: 1.3;
-    text-align: right;
-  }
-  .page.page.page.page :global(.wealth-strip.four) > div > small {
-    grid-column: 1 / -1;
-    font-size: 10px;
-    line-height: 1.4;
   }
 }
 
@@ -336,14 +268,6 @@
   line-height: 1.4;
   color: var(--muted);
 }
-.page.page.page.page :global(.wealth-strip.four) > div > strong {
-  font-variant-numeric: tabular-nums;
-}
-@media (min-width: 701px) {
-  .page.page.page.page :global(.wealth-strip.four) > div + div {
-    border-inline-start: 1px solid var(--line);
-  }
-}
 
 /* Stable series colors: direction is communicated by the move, not line color. */
 .page {
@@ -362,35 +286,70 @@
 .page.page.page.page :global(.negative) {
   color: var(--portfolio-loss);
 }
-.page.page.page.page :global(.wealth-strip.four) > div[data-tone="negative"] {
-  background: color-mix(in srgb, var(--portfolio-loss) 5%, var(--card));
+
+/* Page-level financial snapshot. No enclosing card and no per-value tile. */
+.snapshot {
+  display: grid;
+  grid-template-columns: minmax(0, 1.26fr) repeat(3, minmax(0, 1fr));
+  gap: 12px clamp(16px, 3.6vw, 52px);
+  margin: 16px 0 12px;
+  padding: 0;
+  border: 0;
+  background: none;
 }
-.page.page.page.page :global(.wealth-strip.four) > div:first-child {
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--portfolio-basket) 12%, var(--card)),
-    var(--card) 92%
-  );
-  color: var(--ink);
+.snapshot > div {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
 }
-.page.page.page.page :global(.wealth-strip.four) > div:first-child > strong {
-  color: var(--ink);
-  font-weight: 650;
-}
-.page.page.page.page
-  :global(.wealth-strip.four)
-  > div:first-child
-  > :is(span, small) {
+.snapshot > div > span {
+  min-height: 0;
   color: var(--muted);
 }
-@media (min-width: 901px) {
-  .page.page.page.page :global(.wealth-strip.four) {
-    grid-template-columns: minmax(0, 1.18fr) repeat(3, minmax(0, 1fr));
-  }
+.snapshot > div > strong {
+  margin-block: 5px 3px;
+  font-size: clamp(18px, 2.1vw, 29px);
+  font-weight: 575;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
-.page.page.page.page :global(.wealth-strip.four) > div:nth-child(3) > strong {
+.snapshot > div:first-child > strong {
+  color: var(--ink);
+  font-size: clamp(24px, 2.7vw, 38px);
+  font-weight: 650;
+}
+.snapshot > div[data-tone="negative"] > strong {
+  color: var(--portfolio-loss);
+}
+.snapshot > div:nth-child(3) > strong {
   color: var(--portfolio-spy);
 }
-.page.page.page.page :global(.wealth-strip.four) > div:nth-child(4) > strong {
+.snapshot > div:nth-child(4) > strong {
   color: var(--portfolio-qqq);
+}
+.snapshot > div > small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+@media (max-width: 840px) {
+  .snapshot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .snapshot {
+    gap: 10px 12px;
+  }
+  .snapshot > div > strong {
+    font-size: 17px;
+  }
+  .snapshot > div:first-child > strong {
+    font-size: 23px;
+  }
+  .history {
+    padding-block: 13px 17px;
+  }
 }

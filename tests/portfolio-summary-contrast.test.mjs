@@ -9,8 +9,10 @@ test("Portfolio uses one summary stylesheet so foreground and surface cannot cas
   const first = [];
   ast.walkRules((r) => {
     if (
-      r.selector.includes("wealth-strip.four") &&
-      r.selector.endsWith("div:first-child")
+      r.selector === ".snapshot > div:first-child > strong" &&
+      r.nodes.some((d) =>
+        ["color", "background", "--ink", "--muted"].includes(d.prop),
+      )
     )
       first.push(r);
   });

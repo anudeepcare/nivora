@@ -20,6 +20,7 @@ import { api, ApiError } from "@/lib/client";
 import { readResource } from "@/lib/resource-cache";
 import { amount, dateLabel, percent } from "@/lib/format";
 import { useProduct } from "./Session";
+import { portfolioPercentScale } from "@/lib/portfolio-plot";
 import { portfolioRange } from "@/lib/portfolio-range";
 import PortfolioRange from "./PortfolioRange";
 
@@ -227,8 +228,12 @@ export default function ApprovedPortfolioChart({
     low = Math.min(...domain),
     high = Math.max(...domain),
     spread = Math.max(high - low, high * 0.03, 1),
-    bottom = low - spread * 0.12,
-    top = high + spread * 0.12;
+    scale = compact ? portfolioPercentScale(low, high) : null,
+    bottom = scale?.min ?? low - spread * 0.12,
+    top = scale?.max ?? high + spread * 0.12;
+  const ticks = scale
+    ? scale.ticks.filter((n) => n !== 0)
+    : [0, 1, 2, 3].map((i) => bottom + ((top - bottom) * i) / 3);
   const right = width - 12;
   const x = (i: number) =>
     58 + (i / Math.max(1, values.length - 1)) * (right - 58);
@@ -243,44 +248,99 @@ export default function ApprovedPortfolioChart({
       data-compact={compact || undefined}
     >
       {compact && (
-        <div
-          className={styles.periods}
-          role="group"
-          aria-label="Holdings history period"
-        >
-          {["1M", "3M", "6M", "1Y", "2Y"].map((value) => (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={period === value}
-              onClick={() => {
-                setInspection(null);
-                setPeriod(value);
-                if (value === "2Y") setHistoryRange("5Y");
-                else if (value === "1Y")
-                  setHistoryRange((range) => (range === "5Y" ? range : "1Y"));
-              }}
-            >
-              {value}
-            </button>
-          ))}
+        <div className={styles.chartToolbar}>
+          <div>
+            <strong>Price comparison</strong>
+            <span>
+              {chart.points.length > 1
+                ? `${dateLabel(chart.points[0].time)} – ${dateLabel(chart.points.at(-1)!.time)}`
+                : "Dated holdings history"}
+            </span>
+          </div>
+          <div
+            className={styles.periods}
+            role="group"
+            aria-label="Holdings history period"
+          >
+            {["1M", "3M", "6M", "1Y", "2Y"].map((value) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={period === value}
+                onClick={() => {
+                  setInspection(null);
+                  setPeriod(value);
+                  if (value === "2Y") setHistoryRange("5Y");
+                  else if (value === "1Y")
+                    setHistoryRange((range) => (range === "5Y" ? range : "1Y"));
+                }}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
         </div>
       )}
-      <p className="chart-note" role="status">
-        <strong>
-          {loading
-            ? "Loading holdings history…"
-            : chart.excluded.length
-              ? "Partial holdings history"
-              : "Holdings price history"}
-        </strong>{" "}
-        · {chart.included.length} of {symbols.length} holdings
-        {!compact && ". Cash, managed balances and margin are excluded."}
-        {!loading && chart.availableFrom && (
-          <> · Available history starts {dateLabel(chart.availableFrom)}</>
-        )}
-      </p>
-      {showBenchmarks && chart.points.length > 1 && (
+      {!compact && (
+        <p className="chart-note" role="status">
+          <strong>
+            {loading
+              ? "Loading holdings history…"
+              : chart.excluded.length
+                ? "Partial holdings history"
+                : "Holdings price history"}
+          </strong>{" "}
+          · {chart.included.length} of {symbols.length} holdings
+          {!compact && ". Cash, managed balances and margin are excluded."}
+          {!loading && chart.availableFrom && (
+            <> · Available history starts {dateLabel(chart.availableFrom)}</>
+          )}
+        </p>
+      )}
+      {compact && chart.points.length > 1 && (
+        <div
+          className={styles.seriesReadout}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {[{ symbol: "HOLDINGS", points: chart.points }, ...overlays].map(
+            (b) => {
+              const point =
+                b.points[
+                  Math.min(
+                    inspection ?? b.points.length - 1,
+                    b.points.length - 1,
+                  )
+                ];
+              const change = plotted(point.value);
+              return (
+                <div key={b.symbol} data-benchmark={b.symbol}>
+                  <span>
+                    {b.symbol === "HOLDINGS"
+                      ? "Your holdings"
+                      : b.symbol === "SPY"
+                        ? "S&P 500 · SPY"
+                        : "Nasdaq-100 · QQQ"}
+                  </span>
+                  <strong>
+                    {change > 0 ? "+" : ""}
+                    {change.toFixed(1)}%
+                  </strong>
+                  <small>
+                    {amount(point.value, "USD")}
+                    {b.symbol !== "HOLDINGS" ? " rebased" : " basket"}
+                  </small>
+                </div>
+              );
+            },
+          )}
+          <p>
+            {dateLabel((selectedPoint ?? chart.points.at(-1)!).time)} ·{" "}
+            {selectedPoint ? "Selected observation" : "Latest observation"}
+          </p>
+        </div>
+      )}
+      {!compact && showBenchmarks && chart.points.length > 1 && (
         <div className={styles.benchmarkLegend}>
           <header>
             <strong>
@@ -350,7 +410,7 @@ export default function ApprovedPortfolioChart({
           )}
         </>
       )}
-      {chart.points.length > 1 && (
+      {!compact && chart.points.length > 1 && (
         <div
           className={styles.inspection}
           aria-live="polite"
@@ -473,11 +533,9 @@ export default function ApprovedPortfolioChart({
               />
             </linearGradient>
           </defs>
-          {[0, 1, 2, 3].map((i) => {
-            const value = bottom + ((top - bottom) * i) / 3;
-            if (compact && Math.abs(y(value) - y(0)) < 14) return null;
+          {ticks.map((value) => {
             return (
-              <g key={i}>
+              <g key={value}>
                 <line
                   x1="58"
                   x2={right}
@@ -492,7 +550,7 @@ export default function ApprovedPortfolioChart({
                   className="chart-axis"
                 >
                   {compact
-                    ? `${value > 0 ? "+" : ""}${value.toFixed(1)}%`
+                    ? `${value > 0 ? "+" : ""}${Number(value.toFixed(1))}%`
                     : amount(value, "USD", true)}
                 </text>
               </g>
@@ -611,6 +669,23 @@ export default function ApprovedPortfolioChart({
           <text x="58" y="301" className="chart-axis">
             {dateLabel(chart.points[0].time)}
           </text>
+          {compact &&
+            width >= 640 &&
+            chart.points.length > 12 &&
+            [1, 2].map((part) => {
+              const i = Math.round((part / 3) * (chart.points.length - 1));
+              return (
+                <text
+                  key={part}
+                  x={x(i)}
+                  y="301"
+                  textAnchor="middle"
+                  className="chart-axis"
+                >
+                  {dateLabel(chart.points[i].time)}
+                </text>
+              );
+            })}
           <text x={right} y="301" textAnchor="end" className="chart-axis">
             {dateLabel(chart.points.at(-1)!.time)}
           </text>
@@ -630,6 +705,33 @@ export default function ApprovedPortfolioChart({
               : "Add your holdings to see their value, allocation and historical price context."}
           </p>
         </div>
+      )}
+      {compact && (
+        <p className={styles.chartCaption} role="status">
+          {loading ? "Loading history · " : ""}
+          {chart.included.length} of {symbols.length} holdings · Benchmarks use
+          the same starting dollars.
+          {!loading && chart.availableFrom && (
+            <> Available from {dateLabel(chart.availableFrom)}.</>
+          )}
+          {gap !== null && !loading && (
+            <>
+              {" "}
+              S&P 500 gap: {gap > 0 ? "+" : ""}
+              {gap.toFixed(1)} pp over the displayed window.
+            </>
+          )}
+          {!loading && overlays.length < 2 && (
+            <>
+              {" "}
+              {["SPY", "QQQ"]
+                .filter((symbol) => !overlays.some((b) => b.symbol === symbol))
+                .join(" / ")}
+              : matching closes unavailable.
+            </>
+          )}{" "}
+          Hover, tap or use arrow keys to inspect.
+        </p>
       )}
       {range && !loading && <PortfolioRange range={range} />}
       {chart.points.length > 1 && (
@@ -659,12 +761,14 @@ export default function ApprovedPortfolioChart({
           </div>
         </details>
       )}
-      <p className="chart-note">
-        {chart.included.length
-          ? `${chart.included.length} of ${symbols.length} USD instruments · ${[...new Set(chart.sources.map(customerText))].join("; ")}. `
-          : ""}
-        Current holdings at past prices—not account performance.
-      </p>
+      {!compact && (
+        <p className="chart-note">
+          {chart.included.length
+            ? `${chart.included.length} of ${symbols.length} USD instruments · ${[...new Set(chart.sources.map(customerText))].join("; ")}. `
+            : ""}
+          Current holdings at past prices—not account performance.
+        </p>
+      )}
       {!!chart.excluded.length && (
         <p className="chart-note">
           History excluded: {chart.excluded.join(", ")}. Dates are shared

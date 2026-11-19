@@ -12,7 +12,7 @@ test("portfolio's scoped return and chart colors preserve series identity withou
     s,
     /:global\(\.negative\)\s*\{\s*color: var\(--portfolio-loss\)/,
   );
-  assert.match(s, /linear-gradient\(/);
+  assert.match(s, /\.snapshot > div\s*\{[^}]*background: none/s);
   const actual = read("components/AccountHistory.tsx");
   assert.match(actual, /var\(--portfolio-spy/);
   assert.match(actual, /var\(--portfolio-qqq/);

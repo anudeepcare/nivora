@@ -23,12 +23,13 @@ test("comparison evidence footer aligns without hiding long reasons", () => {
   assert.match(css, /\.footer\s*\{[^}]*margin-top:\s*auto/s);
   assert.doesNotMatch(css, /line-clamp|text-overflow:\s*ellipsis/);
 });
-test("portfolio pairs wide chart and compact allocation, keeping holdings full width", () => {
+test("portfolio keeps the history outside the holdings and allocation grid", () => {
   const css = read("PortfolioReference.module.css");
   assert.match(
     css,
     /grid-template-columns: minmax\(0, 2\.12fr\) minmax\(250px, 1fr\)/,
   );
-  assert.match(css, /\.grid > \.holdings\s*\{\s*grid-column: 1 \/ -1/);
+  assert.match(css, /\.grid > \.holdings\s*\{\s*grid-column: 1;/);
+  assert.doesNotMatch(css, /\.grid > \.history/);
   assert.doesNotMatch(css, /\.ring/);
 });

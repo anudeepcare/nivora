@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import postcss from "postcss";
 const read = (n) =>
   readFileSync(new URL("../components/" + n, import.meta.url), "utf8");
-test("paired portfolio overview gives the chart more space beside allocation", () => {
+test("holdings and allocation use a two-column body below open history", () => {
   const rules = postcss
     .parse(read("PortfolioReference.module.css"))
     .nodes.filter((n) => n.type === "rule" && n.selector === ".grid");
@@ -19,9 +19,9 @@ test("paired portfolio overview gives the chart more space beside allocation", (
     rules[0].nodes.some((n) => n.prop === "align-items" && n.value === "start"),
   );
 });
-test("desktop chart and allocation align from the top and stack on narrow screens", () => {
+test("desktop holdings and allocation align from the top and stack on narrow screens", () => {
   const css = read("PortfolioReference.module.css");
-  assert.match(css, /\.grid > \.history\s*\{[^}]*grid-column:\s*1/);
+  assert.match(css, /\.history\s*\{[^}]*min-width:\s*0/);
   assert.match(css, /\.grid > \.capitalOverview\s*\{[^}]*grid-column:\s*2/);
   assert.match(
     css,

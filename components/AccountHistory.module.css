@@ -274,3 +274,18 @@
 .availability button {
   min-height: 44px;
 }
+
+.historyToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+}
+.historyToolbar h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(20px, 2vw, 25px);
+  font-weight: 625;
+  letter-spacing: -0.025em;
+}

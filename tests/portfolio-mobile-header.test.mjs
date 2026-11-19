@@ -19,16 +19,13 @@ test("portfolio title is concise and all three actions stay visible without an o
     assert.ok(s.includes(text));
   assert.doesNotMatch(s, /Where conviction and exposure disagree/);
 });
-test("phone financial summary uses compact labelled rows without hiding source notes", () => {
+test("phone financial summary uses two unboxed columns without hiding source notes", () => {
   const s = read("PortfolioReference.module.css");
   assert.match(
     s,
-    /\.page\.page\.page\.page :global\(\.wealth-strip\.four\)\s*\{[^}]*grid-template-columns: minmax\(0, 1fr\)/s,
+    /@media \(max-width: 840px\)\s*\{\s*\.snapshot\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/s,
   );
-  assert.match(
-    s,
-    /\.page\.page\.page\.page :global\(\.wealth-strip\.four\) > div > small\s*\{[^}]*grid-column: 1 \/ -1/s,
-  );
+  assert.match(s, /\.snapshot > div > small\s*\{[^}]*color: var\(--muted\)/s);
 });
 test("Portfolio primary uses the same stable brand fill in either theme", () => {
   const s = read("PortfolioReference.module.css");

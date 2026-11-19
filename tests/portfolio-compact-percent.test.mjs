@@ -52,7 +52,7 @@ test("period selector remains available before loading-dependent chart branches"
   const s = fs.readFileSync("components/ApprovedPortfolioChart.tsx", "utf8");
   assert.ok(
     s.indexOf('aria-label="Holdings history period"') <
-      s.indexOf("{showBenchmarks && chart.points.length > 1"),
+      s.indexOf("{compact && chart.points.length > 1"),
   );
 });
 

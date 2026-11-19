@@ -220,21 +220,14 @@ export default function AccountHistory({
   if (currentHoldingsHistory && displayHistory === "holdings")
     return (
       <div className={styles.history}>
-        {viewChoice}
-        <p className={styles.scope}>
-          Today’s holdings at past prices, compared from the same starting
-          value. Not actual account performance.
-        </p>
+        <header className={styles.historyToolbar}>
+          <h2>Portfolio history</h2>
+          {viewChoice}
+        </header>
         {currentHoldingsHistory}
-        {!hasAccountHistory && (
-          <div className={styles.availability}>
-            <p role="status">
-              {restoring
-                ? "Checking saved account comparison…"
-                : "Compare against SPY and QQQ after recording your dated account activity."}
-            </p>
-          </div>
-        )}
+        <p className={styles.scope}>
+          Today’s holdings at past prices. Not actual account performance.
+        </p>
       </div>
     );
   // Keep missing/error states discoverable without restoring a verbose empty panel.

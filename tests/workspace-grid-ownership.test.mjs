@@ -1,18 +1,123 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import postcss from 'postcss';
-const read=p=>fs.readFileSync(p,'utf8');
-const rules=(file,selector)=>{const out=[];postcss.parse(read(file)).walkRules(r=>{if(r.selector===selector)out.push(r);});return out;};
-test('current portfolio is isolated from obsolete twelve-column child placements',()=>{const s=read('components/PortfolioPage.tsx');assert.match(s,/className=\{reference.grid\} data-portfolio-layout="reference"/);assert.doesNotMatch(s,/className="portfolio-grid"/);for(const name of ['capitalOverview','history','exposure','holdings'])assert.match(s,new RegExp('reference\\.'+name));assert.match(s,/<AccountHistory\b[^>]*\breadOnly\b/);const css=read('components/PortfolioReference.module.css');assert.match(css,/\.grid > \.history/);assert.doesNotMatch(css,/:global\(\.portfolio-grid/);assert.match(css,/\.grid > \.holdings/);assert.match(css,/grid-column: 1 \/ -1/);assert.match(css,/@media \(max-width: 860px\)/);});
-test('workspace titles and panels share density tokens rather than independent oversized values',()=>{const shell=read('components/WorkspaceShell.module.css');for(const token of ['--workspace-gap','--workspace-panel-padding','--workspace-title-size','--workspace-panel-radius'])assert.ok(shell.includes(token));for(const file of ['DiscoverWorkspace','DecisionLists','PortfolioReference'])assert.ok(read('components/'+file+'.module.css').includes('--workspace-title-size'),file);const today=read('components/TodaySequence.module.css');assert.match(today,/font-size: clamp\(20px, 1.8vw, 25px\)/);assert.doesNotMatch(today,/min-height: 180px/);assert.match(today,/grid-template-rows: auto/);});
-test('review cards size to their containing column rather than forcing three narrow columns',()=>{const r=rules('components/DecisionAttention.module.css','.rows')[0];assert.ok(r.nodes.some(d=>d.prop==='grid-template-columns'&&d.value.includes('auto-fit')));});
-test('long workspace lists and tables own bounded scroll while surrounding pages flow',()=>{
- const watch=read('components/WatchlistPage.tsx');assert.match(watch,/Followed companies, scroll for more rows/);assert.match(watch,/<ul\s+tabIndex=\{0\}/);
- for(const file of ['DecisionLists','DiscoverWorkspace','PortfolioReference']){const css=read('components/'+file+'.module.css');assert.match(css,/75svh/);assert.match(css,/overflow: auto/);assert.match(css,/focus-visible/);}
- for(const [file,label] of [['Discover.tsx','Discovery results'],['SupportingViews.tsx','Company comparison'],['PortfolioPage.tsx','Portfolio holdings']])assert.ok(read('components/'+file).includes(label+', scroll for more'));
- const home=read('components/HomeWorkspace.module.css');const panel=rules('components/HomeWorkspace.module.css','.home.home.home :global(.home-events-panel)');assert.ok(panel.some(r=>r.nodes.some(d=>d.prop==='overflow'&&d.value==='visible')),'events panel must not nest another scroller around its list');
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import postcss from "postcss";
+const read = (p) => fs.readFileSync(p, "utf8");
+const rules = (file, selector) => {
+  const out = [];
+  postcss.parse(read(file)).walkRules((r) => {
+    if (r.selector === selector) out.push(r);
+  });
+  return out;
+};
+test("current portfolio is isolated from obsolete twelve-column child placements", () => {
+  const s = read("components/PortfolioPage.tsx");
+  assert.match(
+    s,
+    /className=\{reference.grid\} data-portfolio-layout="reference"/,
+  );
+  assert.doesNotMatch(s, /className="portfolio-grid"/);
+  for (const name of ["capitalOverview", "history", "exposure", "holdings"])
+    assert.match(s, new RegExp("reference\\." + name));
+  assert.match(s, /<AccountHistory\b[^>]*\breadOnly\b/);
+  const css = read("components/PortfolioReference.module.css");
+  assert.doesNotMatch(css, /\.grid > \.history/);
+  assert.doesNotMatch(css, /:global\(\.portfolio-grid/);
+  assert.match(css, /\.grid > \.holdings/);
+  assert.match(css, /\.grid > \.holdings\s*\{[^}]*grid-column: 1;/);
+  assert.match(css, /@media \(max-width: 860px\)/);
 });
-test('shared chrome uses one brand underline and neutral cards rather than old green banner',()=>{
- const nav=read('components/WorkspaceShell.module.css');assert.doesNotMatch(nav,/#d6f35a/);const active=rules('components/WorkspaceShell.module.css','.shell .header .nav a[aria-current="page"]::after');assert.ok(active.some(r=>r.nodes.some(d=>d.prop==='background'&&d.value==='var(--blue)')));assert.ok(active.every(r=>!r.nodes.some(d=>d.prop==='box-shadow'&&d.value!=='none')));
- const compare=read('components/ContributionCompare.module.css');assert.doesNotMatch(compare,/#d6f35a|#17292e|#27463f|#3a4d35/);assert.match(compare,/background: var\(--card\)/);
- const watch=read('components/WatchlistPage.tsx');assert.match(watch,/<details className=\{decisionStyles.reviewDetails\}>/);assert.match(watch,/Review priorities and risk context/);
- const portfolio=read('components/PortfolioPage.tsx');assert.match(portfolio,/<Coverage state=\{state\} \/>/);assert.doesNotMatch(portfolio,/reference.summaryDetails/);assert.match(portfolio,/<DecisionAttention\s+compact/);
+test("workspace titles and panels share density tokens rather than independent oversized values", () => {
+  const shell = read("components/WorkspaceShell.module.css");
+  for (const token of [
+    "--workspace-gap",
+    "--workspace-panel-padding",
+    "--workspace-title-size",
+    "--workspace-panel-radius",
+  ])
+    assert.ok(shell.includes(token));
+  for (const file of [
+    "DiscoverWorkspace",
+    "DecisionLists",
+    "PortfolioReference",
+  ])
+    assert.ok(
+      read("components/" + file + ".module.css").includes(
+        "--workspace-title-size",
+      ),
+      file,
+    );
+  const today = read("components/TodaySequence.module.css");
+  assert.match(today, /font-size: clamp\(20px, 1.8vw, 25px\)/);
+  assert.doesNotMatch(today, /min-height: 180px/);
+  assert.match(today, /grid-template-rows: auto/);
+});
+test("review cards size to their containing column rather than forcing three narrow columns", () => {
+  const r = rules("components/DecisionAttention.module.css", ".rows")[0];
+  assert.ok(
+    r.nodes.some(
+      (d) => d.prop === "grid-template-columns" && d.value.includes("auto-fit"),
+    ),
+  );
+});
+test("long workspace lists and tables own bounded scroll while surrounding pages flow", () => {
+  const watch = read("components/WatchlistPage.tsx");
+  assert.match(watch, /Followed companies, scroll for more rows/);
+  assert.match(watch, /<ul\s+tabIndex=\{0\}/);
+  for (const file of [
+    "DecisionLists",
+    "DiscoverWorkspace",
+    "PortfolioReference",
+  ]) {
+    const css = read("components/" + file + ".module.css");
+    assert.match(css, /75svh/);
+    assert.match(css, /overflow: auto/);
+    assert.match(css, /focus-visible/);
+  }
+  for (const [file, label] of [
+    ["Discover.tsx", "Discovery results"],
+    ["SupportingViews.tsx", "Company comparison"],
+    ["PortfolioPage.tsx", "Portfolio holdings"],
+  ])
+    assert.ok(read("components/" + file).includes(label + ", scroll for more"));
+  const home = read("components/HomeWorkspace.module.css");
+  const panel = rules(
+    "components/HomeWorkspace.module.css",
+    ".home.home.home :global(.home-events-panel)",
+  );
+  assert.ok(
+    panel.some((r) =>
+      r.nodes.some((d) => d.prop === "overflow" && d.value === "visible"),
+    ),
+    "events panel must not nest another scroller around its list",
+  );
+});
+test("shared chrome uses one brand underline and neutral cards rather than old green banner", () => {
+  const nav = read("components/WorkspaceShell.module.css");
+  assert.doesNotMatch(nav, /#d6f35a/);
+  const active = rules(
+    "components/WorkspaceShell.module.css",
+    '.shell .header .nav a[aria-current="page"]::after',
+  );
+  assert.ok(
+    active.some((r) =>
+      r.nodes.some((d) => d.prop === "background" && d.value === "var(--blue)"),
+    ),
+  );
+  assert.ok(
+    active.every(
+      (r) =>
+        !r.nodes.some((d) => d.prop === "box-shadow" && d.value !== "none"),
+    ),
+  );
+  const compare = read("components/ContributionCompare.module.css");
+  assert.doesNotMatch(compare, /#d6f35a|#17292e|#27463f|#3a4d35/);
+  assert.match(compare, /background: var\(--card\)/);
+  const watch = read("components/WatchlistPage.tsx");
+  assert.match(watch, /<details className=\{decisionStyles.reviewDetails\}>/);
+  assert.match(watch, /Review priorities and risk context/);
+  const portfolio = read("components/PortfolioPage.tsx");
+  assert.match(portfolio, /<Coverage state=\{state\} \/>/);
+  assert.doesNotMatch(portfolio, /reference.summaryDetails/);
+  assert.match(portfolio, /<DecisionAttention\s+compact/);
 });
