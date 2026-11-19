@@ -11,20 +11,28 @@ export function PositionEditor({
   position,
   onClose,
   cashDefault = false,
+  initialSymbol,
+  initialCurrency,
 }: {
   position: Position | null;
   onClose: () => void;
   cashDefault?: boolean;
+  initialSymbol?: string;
+  initialCurrency?: string | null;
 }) {
   const { mutate } = useProduct();
   const dialog = useRef<HTMLDialogElement>(null);
-  const [symbol, setSymbol] = useState(position?.symbol ?? "");
+  const [symbol, setSymbol] = useState(position?.symbol ?? initialSymbol ?? "");
   const [quantity, setQuantity] = useState(
     position ? String(position.quantity) : "",
   );
   const [cost, setCost] = useState(position ? String(position.cost) : "");
   const [currency, setCurrency] = useState(
-    position ? position.currency || "" : "USD",
+    position
+      ? position.currency || ""
+      : initialCurrency === null
+        ? ""
+        : (initialCurrency ?? "USD"),
   );
   const [cash, setCash] = useState(
     position ? position.assetType === "cash" : cashDefault,
@@ -91,7 +99,11 @@ export function PositionEditor({
       <h2 id="approved-position-title">
         {position ? "Edit position" : "Add a position"}
       </h2>
-      <p>Update your records. No trade will be placed.</p>
+      <p>
+        {!position && !cash
+          ? "Record a purchase. Holdings combines purchases of the same ticker. No trade will be placed."
+          : "Update your records. No trade will be placed."}
+      </p>
       <form onSubmit={save}>
         <label className="approved-check">
           <input

@@ -1,0 +1,76 @@
+:global(.approved-balances-dialog):has(.root) {
+  max-height: 85dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  scroll-padding-block: 20px;
+}
+.root.root.root :global(.account-money-input) {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 8px;
+}
+.root.root.root :global(.account-money-input) input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+  padding: 10px;
+  font-size: 16px;
+}
+.root.root.root :global(.account-money-input):focus-within {
+  outline: 2px solid var(--accent-text, var(--blue));
+  outline-offset: 2px;
+}
+.root.root.root :global(.account-money-input) input:focus-visible {
+  outline: none;
+}
+.root.root.root :global(.account-money-input) > span,
+.root.root.root :global(.account-balance-form) small,
+.root.root.root :global(.account-balance-form-head) span {
+  color: var(--muted);
+}
+.root.root.root :global(.account-balance-form) label {
+  color: var(--ink);
+}
+.root.root.root :global(.account-balance-confirm) {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  min-height: 44px;
+  padding-block: 10px;
+  line-height: 1.5;
+}
+.root.root.root :global(.account-balance-confirm) input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  padding: 0;
+  margin: 2px 0 0;
+}
+.root.root.root :global(.account-balance-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 8px;
+}
+.root.root.root :global(.account-balance-actions) button {
+  min-height: 44px;
+}
+@media (max-width: 540px) {
+  .root.root.root :global(.account-balance-fields) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root.root.root :global(.account-balance-actions) button {
+    flex: 1;
+  }
+}
