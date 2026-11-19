@@ -4,10 +4,11 @@ import fs from "node:fs";
 const source = fs.readFileSync("components/Research.tsx", "utf8");
 const css = fs.readFileSync("components/ResearchDeskLayout.module.css", "utf8");
 test("research disclosures retain facts without a repeated top-level metric strip", () => {
-  assert.match(
-    source,
-    /<Help label="Company facts and source dates">\s*<StockFacts research=\{r\} \/>[\s\S]*?<\/Help>/,
+  const disclosure = source.match(
+    /<Help label="Company facts and source dates">([\s\S]*?)<\/Help>/,
   );
+  assert.ok(disclosure);
+  assert.match(disclosure[1], /<StockFacts research=\{r\} \/>/);
   assert.equal((source.match(/<StockFacts/g) || []).length, 1);
 });
 test("Events uses the same direct child grid owner as its source and earnings layout", () => {

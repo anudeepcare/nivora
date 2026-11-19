@@ -158,6 +158,13 @@
   background: transparent;
   box-shadow: none;
 }
+/* Leave a small gap below the Atlas underline without moving the other rails. */
+#auryn-app
+  .approved-research-page
+  > .research-compact-tabs[aria-label="Atlas evidence"] {
+  margin-block-start: 8px;
+  margin-block-end: 8px;
+}
 #auryn-app
   :is(
     .research-compact-tabs.research-compact-tabs,

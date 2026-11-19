@@ -6,7 +6,7 @@ const css = postcss.parse(readFileSync("app/core/reference-tabs.css", "utf8"));
 function rules(fragment) {
   const result = [];
   css.walkRules((r) => {
-    if (r.selector.includes(fragment)) result.push(r);
+    if (r.selector.replace(/\s+/g, " ").includes(fragment)) result.push(r);
   });
   return result;
 }
@@ -78,5 +78,21 @@ test("Research secondary view controls share the style without changing the main
   assert.match(
     source,
     /className=\{cockpit.lenses\}\s+aria-label="Research sections"/,
+  );
+});
+
+test("Atlas evidence leaves a little room between the main underline and the subtab buttons", () => {
+  const atlas =
+    '.approved-research-page > .research-compact-tabs[aria-label="Atlas evidence"]';
+  const spacing = rules(atlas).find((rule) => rule.parent.type === "root");
+  assert.ok(spacing, "Atlas has a scoped spacing adjustment");
+  assert.deepEqual(
+    spacing.nodes
+      .filter((node) => node.type === "decl")
+      .map(({ prop, value }) => [prop, value]),
+    [
+      ["margin-block-start", "8px"],
+      ["margin-block-end", "8px"],
+    ],
   );
 });

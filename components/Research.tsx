@@ -590,6 +590,61 @@ export default function Research({ symbol }: { symbol: string }) {
   const headerContext = headerMarketContext(r);
   const headerPace = p?.dca.forming ?? p?.dca.confirmed;
   const headerPaceProvisional = p?.dca.forming != null;
+  const mobileCompanyName =
+    r.company.name
+      .trim()
+      .replace(
+        /,?\s+(?:holding\s+ltd\.?|incorporated|corporation|limited|inc\.?|corp\.?|ltd\.?|plc)$/i,
+        "",
+      ) || r.company.name;
+  const paceReading = (
+    <div
+      className={headerPaceStyles.pace}
+      data-pace-level={headerPace?.multiplier ?? "unavailable"}
+    >
+      <span className={headerPaceStyles.paceDot} aria-hidden="true" />
+      {headerPace ? (
+        <span className={headerPaceStyles.paceText}>
+          <span>Pace</span>
+          <span className={headerPaceStyles.paceStatus}>
+            {headerPace.multiplier === 1
+              ? "Watch"
+              : PACE_LEVELS[headerPace.multiplier]}
+          </span>
+          <span className={headerPaceStyles.paceLevel}>
+            · {paceCode(headerPace.multiplier)}
+            {headerPaceProvisional ? "*" : ""}
+          </span>
+        </span>
+      ) : (
+        <span>Pace unavailable</span>
+      )}
+      {headerPaceProvisional && (
+        <span className="sr-only">Provisional current-month reading</span>
+      )}
+      <Help label="this Pace reading">
+        {headerPace ? (
+          <>
+            <p>
+              {headerPaceProvisional
+                ? "* Current month · provisional"
+                : "Completed month"}{" "}
+              · {headerPace.month}
+            </p>
+            <p>{headerPace.reason}</p>
+          </>
+        ) : (
+          <p>
+            {p?.dca.reason || "A reliable monthly reading is not available."}
+          </p>
+        )}
+        <p>
+          Price conditions only, not business quality or a trade instruction. A
+          provisional reading can change before month-end.
+        </p>
+      </Help>
+    </div>
+  );
   const evidenceToolbar =
     supportingSections.length > 1 ? (
       <nav
@@ -624,14 +679,29 @@ export default function Research({ symbol }: { symbol: string }) {
         >
           <SecurityLogo symbol={symbol} size={52} />
           <div>
-            <h1>{r.company.name}</h1>
+            <h1 title={r.company.name}>
+              <span className={headerPaceStyles.desktopName}>
+                {r.company.name}
+              </span>
+              <span className={headerPaceStyles.mobileName}>
+                {mobileCompanyName}
+              </span>
+            </h1>
             <div className={cockpit.identityMeta}>
               <span>
                 {symbol} · {r.company.exchange || "Listing"} ·{" "}
                 {r.quote.currency}
               </span>
-              {headerContext.sector && <span>{headerContext.sector}</span>}
+              {headerContext.sector && (
+                <span className={headerPaceStyles.sector}>
+                  {headerContext.sector}
+                </span>
+              )}
               <Help label="Company facts and source dates">
+                <p>
+                  {r.company.name}
+                  {headerContext.sector ? ` · ${headerContext.sector}` : ""}
+                </p>
                 <StockFacts research={r} />
                 {r.issues.map((issue) => (
                   <p key={issue}>{customerText(issue)}</p>
@@ -646,56 +716,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 </button>
               </Help>
             </div>
-            <div
-              className={headerPaceStyles.pace}
-              data-pace-level={headerPace?.multiplier ?? "unavailable"}
-            >
-              <span className={headerPaceStyles.paceDot} aria-hidden="true" />
-              {headerPace ? (
-                <span className={headerPaceStyles.paceText}>
-                  <span>Pace</span>
-                  <span className={headerPaceStyles.paceStatus}>
-                    {headerPace.multiplier === 1
-                      ? "Watch"
-                      : PACE_LEVELS[headerPace.multiplier]}
-                  </span>
-                  <span className={headerPaceStyles.paceLevel}>
-                    · {paceCode(headerPace.multiplier)}
-                    {headerPaceProvisional ? "*" : ""}
-                  </span>
-                </span>
-              ) : (
-                <span>Pace unavailable</span>
-              )}
-              {headerPaceProvisional && (
-                <span className="sr-only">
-                  Provisional current-month reading
-                </span>
-              )}
-              <Help label="this Pace reading">
-                {headerPace ? (
-                  <>
-                    <p>
-                      {headerPaceProvisional
-                        ? "* Current month · provisional"
-                        : "Completed month"}{" "}
-                      · {headerPace.month}
-                    </p>
-                    <p>{headerPace.reason}</p>
-                  </>
-                ) : (
-                  <p>
-                    {p?.dca.reason ||
-                      "A reliable monthly reading is not available."}
-                  </p>
-                )}
-                <p>
-                  Price conditions only, not business quality or a trade
-                  instruction. A provisional reading can change before
-                  month-end.
-                </p>
-              </Help>
-            </div>
+            <div className={headerPaceStyles.paceDesktop}>{paceReading}</div>
           </div>
         </div>
         <div className={`${experience.stockPrice} ${headerPaceStyles.price}`}>
@@ -736,6 +757,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 </Help>
               </span>
             </div>
+            <div className={headerPaceStyles.paceMobile}>{paceReading}</div>
             <DataStamp
               source={
                 headerReference?.basis === "settled-close"

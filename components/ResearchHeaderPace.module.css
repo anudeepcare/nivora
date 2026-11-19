@@ -108,18 +108,62 @@
   height: 13px;
 }
 
+.mobileName,
+.paceMobile {
+  display: none;
+}
+
 @media (max-width: 700px) {
   .header.header {
     grid-template-columns: minmax(0, 1fr) 44px;
     grid-template-areas:
       "identity watch"
       "price price";
-    gap: 4px 8px;
+    gap: 5px 6px;
+    padding-block: 8px;
+    min-height: 0;
   }
   .header.loading {
     grid-template-areas:
       "identity identity"
       "price price";
+  }
+  .identity.identity {
+    gap: 8px;
+  }
+  .identity.identity > :global(.security-logo) {
+    /* SecurityLogo supplies its desktop dimensions as inline styles. */
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    flex: 0 0 32px;
+  }
+  .identity.identity h1 {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+  .desktopName,
+  .identity .sector,
+  .paceDesktop {
+    display: none;
+  }
+  .mobileName {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .paceMobile {
+    display: flex;
+    margin-inline-start: auto;
+    max-width: 100%;
+  }
+  .paceMobile .pace {
+    font-size: 10px;
+    gap: 3px;
+  }
+  .paceMobile .paceText {
+    column-gap: 3px;
   }
   .price.price {
     width: 100%;
@@ -129,13 +173,20 @@
   }
   .quote.quote {
     width: 100%;
-    align-items: flex-start;
+    max-width: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 6px;
+  }
+  .quote > :global(.data-stamp) {
+    flex-basis: 100%;
   }
   .priceMetrics {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    column-gap: clamp(8px, 2vw, 14px);
+    column-gap: 5px;
   }
   .priceMetrics > span {
     font-size: 11px;
