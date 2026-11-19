@@ -43,7 +43,7 @@ test('metric and event cards have no decorative colored top rails; chart legends
   for(const match of css.matchAll(/border-top(?:-color)?: ([^;]+);/g)) assert.ok(match[1].includes('var(--line)')||match[1]==='0',`${name}: ${match[0]}`);
  }
  assert.match(read('components/DirectResearchLenses.module.css'),/stroke: var\(--metric-accent\)/);
- assert.match(read('components/AccountHistory.module.css'),/border-top: 3px solid var\(--blue\)/);
+ assert.match(read('components/AccountHistory.module.css'),/border-top: 3px solid var\(--portfolio-basket, var\(--blue\)\)/);
 });
 test('legacy card rails are neutral without changing the Pace scale or loading spinner',()=>{
  const css=read('app/core/legacy-panels.css');

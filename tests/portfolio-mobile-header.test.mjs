@@ -34,3 +34,16 @@ test("Portfolio primary uses the same stable brand fill in either theme", () => 
     /\.page\.page\.page\.page :global\(\.btn\.primary\)\s*\{[^}]*background: var\(--accent-solid\);[^}]*color: #fff/s,
   );
 });
+
+test("approved phone action row fits three controls and preserves touch targets", () => {
+  const css = read("PortfolioReference.module.css");
+  assert.match(
+    css,
+    /\.actionsBar\s*\{[^}]*display: grid[^}]*grid-template-columns: minmax\(0, 1\.15fr\) minmax\(0, 1fr\) minmax\(0, 1\.05fr\)/s,
+  );
+  assert.match(css, /\.actionsBar > button\s*\{[^}]*min-block-size: 44px/s);
+  assert.match(
+    css,
+    /\.actionsBar > button\s*\{[^}]*padding-inline: clamp\(4px, 1\.6vw, 10px\)/s,
+  );
+});

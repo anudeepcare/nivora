@@ -1,4 +1,5 @@
 "use client";
+import headerPaceStyles from "./ResearchHeaderPace.module.css";
 import { navigateSelection } from "@/lib/selection-navigation";
 import { researchLenses, lensForSection } from "@/lib/reference-navigation";
 import cockpit from "./ReferenceCockpit.module.css";
@@ -583,10 +584,12 @@ export default function Research({ symbol }: { symbol: string }) {
     now: demo ? Date.parse(r.retrievedAt) : Date.now(),
   });
   const headerContext = headerMarketContext(r);
+  const headerPace = p?.dca.forming ?? p?.dca.confirmed;
+  const headerPaceProvisional = p?.dca.forming != null;
   const evidenceToolbar =
     supportingSections.length > 1 ? (
       <nav
-        className={`${cockpit.supporting} auryn-view-tabs`}
+        className={`${cockpit.supporting} auryn-view-tabs research-compact-tabs`}
         data-selection-navigation
         onKeyDown={(event) => navigateSelection(event)}
         aria-label={`${activeLens.label} evidence`}
@@ -638,7 +641,7 @@ export default function Research({ symbol }: { symbol: string }) {
           </div>
         </div>
         <div className={experience.stockPrice}>
-          <div className="quote">
+          <div className={`quote ${headerPaceStyles.quote}`}>
             <strong className="num">
               {amount(
                 headerReference?.price ?? r.quote.price,
@@ -673,6 +676,47 @@ export default function Research({ symbol }: { symbol: string }) {
                 </p>
               </Help>
             </span>
+            <div
+              className={headerPaceStyles.badge}
+              data-pace-state={headerPace ? "available" : "unavailable"}
+            >
+              <span aria-hidden="true" className={headerPaceStyles.diamond}>
+                ◆
+              </span>
+              <span>
+                {headerPace
+                  ? `Pace ${paceCode(headerPace.multiplier)}${headerPaceProvisional ? "*" : ""} · ${PACE_LEVELS[headerPace.multiplier]}`
+                  : "Pace unavailable"}
+              </span>
+              {headerPaceProvisional && (
+                <span className="sr-only">
+                  Provisional current-month reading
+                </span>
+              )}
+              <Help label="this Pace reading">
+                {headerPace ? (
+                  <>
+                    <p>
+                      {headerPaceProvisional
+                        ? "* Current month · provisional"
+                        : "Completed month"}{" "}
+                      · {headerPace.month}
+                    </p>
+                    <p>{headerPace.reason}</p>
+                  </>
+                ) : (
+                  <p>
+                    {p?.dca.reason ||
+                      "A reliable monthly reading is not available."}
+                  </p>
+                )}
+                <p>
+                  Price conditions only, not business quality or a trade
+                  instruction. A provisional reading can change before
+                  month-end.
+                </p>
+              </Help>
+            </div>
             <DataStamp
               source={
                 headerReference?.basis === "settled-close"
@@ -947,6 +991,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   views={[
                     {
                       title: "Business context & assistant",
+                      shortTitle: "Business & assistant",
                       content: (
                         <>
                           <BusinessMap

@@ -141,17 +141,10 @@
     padding: 16px;
   }
   .page.page.page.page :global(.heading-actions) {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    min-width: 0;
+    display: block;
+    width: 100%;
     max-width: 100%;
-  }
-  .page.page.page.page :global(.heading-actions) button {
     min-width: 0;
-    max-width: 100%;
-    white-space: normal;
-    min-height: 44px;
   }
 }
 
@@ -212,7 +205,28 @@
     letter-spacing: -0.025em;
   }
   .actionsBar {
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(4px, 1.4vw, 8px);
+    width: 100%;
+  }
+  .page.page.page.page .actionsBar > button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-block-size: 44px;
+    padding-inline: clamp(4px, 1.6vw, 10px);
+    gap: 4px;
+    white-space: normal;
+    text-align: center;
+    font-size: clamp(10px, 2.75vw, 12px);
+    line-height: 1.2;
+  }
+  .page.page.page.page .actionsBar > button > svg {
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
   }
 }
 
