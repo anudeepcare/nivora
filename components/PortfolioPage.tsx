@@ -2,7 +2,7 @@
 import DecisionAttention from "./DecisionAttention";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import dynamic from "next/dynamic";
-import { companyAccent } from "@/lib/visual-signals";
+import composition from "./PortfolioComposition.module.css";
 import reference from "./PortfolioReference.module.css";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { PaceBadge } from "./WorkspacePace";
@@ -53,7 +53,6 @@ const TransactionWorkspace = dynamic(() => import("./TransactionWorkspace"), {
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
 import {
-  colors,
   Coverage,
   Heading,
   SectionHead,
@@ -142,7 +141,7 @@ export function Portfolio() {
   }
   return (
     <section
-      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals} ${reference.page}`}
+      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals} ${reference.page} ${composition.root}`}
     >
       <Heading
         title="Portfolio"
@@ -172,7 +171,7 @@ export function Portfolio() {
               }}
             >
               <Plus size={16} aria-hidden="true" />
-              Add position
+              Add purchase
             </button>
           </div>
         }
@@ -204,6 +203,26 @@ export function Portfolio() {
               title="Allocation"
               subtitle="Priced investments · excludes cash"
             />
+            {model.allocations.length > 0 && (
+              <div className={composition.concentration}>
+                <span>
+                  {model.allocations.length >= 3
+                    ? "Largest three holdings"
+                    : "Priced holdings share"}
+                </span>
+                <strong>
+                  {percent(
+                    model.allocations
+                      .slice(0, 3)
+                      .reduce((sum, item) => sum + item.weight, 0),
+                  )}
+                </strong>
+                <small>
+                  Share of priced investments · cash and unpriced holdings
+                  excluded
+                </small>
+              </div>
+            )}
             <div className={reference.allocationBody}>
               {model.allocations.length ? (
                 <div className={reference.allocationLegend}>
@@ -219,7 +238,15 @@ export function Portfolio() {
                         key={a.symbol}
                         style={{
                           width: `${a.weight}%`,
-                          background: companyAccent(a.symbol),
+                          background: [
+                            "var(--portfolio-basket)",
+                            "var(--portfolio-spy)",
+                            "var(--portfolio-qqq)",
+                          ][
+                            model.allocations.findIndex(
+                              (item) => item.symbol === a.symbol,
+                            ) % 3
+                          ],
                         }}
                       />
                     ))}
@@ -233,7 +260,17 @@ export function Portfolio() {
                       <span>
                         <i
                           className="dot"
-                          style={{ background: companyAccent(a.symbol) }}
+                          style={{
+                            background: [
+                              "var(--portfolio-basket)",
+                              "var(--portfolio-spy)",
+                              "var(--portfolio-qqq)",
+                            ][
+                              model.allocations.findIndex(
+                                (item) => item.symbol === a.symbol,
+                              ) % 3
+                            ],
+                          }}
                         />
                         {a.symbol}
                       </span>
@@ -252,7 +289,17 @@ export function Portfolio() {
                           <span>
                             <i
                               className="dot"
-                              style={{ background: companyAccent(a.symbol) }}
+                              style={{
+                                background: [
+                                  "var(--portfolio-basket)",
+                                  "var(--portfolio-spy)",
+                                  "var(--portfolio-qqq)",
+                                ][
+                                  model.allocations.findIndex(
+                                    (item) => item.symbol === a.symbol,
+                                  ) % 3
+                                ],
+                              }}
                             />
                             {a.symbol}
                           </span>
@@ -269,13 +316,17 @@ export function Portfolio() {
               )}
             </div>
             {model.groups.length > 0 && (
-              <details className={reference.exposure}>
-                <summary>Sector exposure</summary>
+              <section
+                className={`${reference.exposure} ${composition.sectors}`}
+              >
+                <h3>Sector exposure</h3>
                 <div
                   className="portfolio-exposure-rows"
+                  role="region"
+                  tabIndex={0}
                   aria-label="Sector and crypto exposure groups"
                 >
-                  {model.groups.slice(0, 5).map((group, i) => (
+                  {model.groups.map((group, i) => (
                     <div key={group.name}>
                       <div>
                         <strong>{group.name}</strong>
@@ -285,7 +336,11 @@ export function Portfolio() {
                         <i
                           style={{
                             width: `${group.weight}%`,
-                            background: colors[i],
+                            background: [
+                              "var(--portfolio-basket)",
+                              "var(--portfolio-spy)",
+                              "var(--portfolio-qqq)",
+                            ][i % 3],
                           }}
                         />
                       </span>
@@ -296,14 +351,16 @@ export function Portfolio() {
                     </div>
                   ))}
                 </div>
-              </details>
+              </section>
             )}
           </section>
         </div>
         <section
           className={`card portfolio-holdings-panel ${reference.holdings}`}
         >
-          <div className={portfolioStyles.holdingsToolbar}>
+          <div
+            className={`${portfolioStyles.holdingsToolbar} ${composition.toolbar}`}
+          >
             <h2>
               <Wallet size={20} aria-hidden="true" />
               Holdings

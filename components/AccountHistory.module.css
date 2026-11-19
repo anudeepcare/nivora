@@ -117,18 +117,18 @@
 .legend span::before {
   content: "";
   width: 20px;
-  border-top: 3px solid var(--blue);
+  border-top: 3px solid var(--portfolio-basket, var(--blue));
 }
 .legend [data-series="contributions"]::before {
   border-color: var(--muted);
   border-top-style: dashed;
 }
 .legend [data-series="SPY"]::before {
-  border-color: var(--purple, #9b7ede);
+  border-color: var(--portfolio-spy, #087b70);
   border-top-style: dashed;
 }
 .legend [data-series="QQQ"]::before {
-  border-color: var(--amber, #bd7b17);
+  border-color: var(--portfolio-qqq, #864cab);
   border-top-style: dotted;
 }
 @media (max-width: 540px) {

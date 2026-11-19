@@ -61,3 +61,23 @@ test("portfolio chart summarizes matching dates and percentage price movements i
   assert.match(source, /priceMove\(chart.points\)/);
   assert.match(source, /priceMove\(b.points\)/);
 });
+
+test("comparison gap uses the exact same endpoints and signed percentage points", async () => {
+  const { priceChangeGap } = await import(
+    "../lib/holdings-benchmark-overlay.ts"
+  );
+  const spy = [
+    { time: "2026-11-02", value: 1000 },
+    { time: "2026-11-03", value: 1040 },
+  ];
+  assert.ok(Math.abs(priceChangeGap(basket, spy) - 6) < 1e-9);
+  assert.ok(Math.abs(priceChangeGap(spy, basket) + 6) < 1e-9);
+  assert.equal(
+    priceChangeGap(basket, [{ ...spy[0] }, { ...spy[1], time: "2026-11-04" }]),
+    null,
+  );
+  assert.equal(
+    priceChangeGap(basket, [{ ...spy[0], value: 0 }, { ...spy[1] }]),
+    null,
+  );
+});

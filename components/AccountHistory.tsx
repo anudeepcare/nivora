@@ -511,7 +511,7 @@ export default function AccountHistory({
               )}
               <polyline
                 fill="none"
-                stroke="var(--blue)"
+                stroke="var(--portfolio-basket, var(--blue))"
                 strokeWidth="3"
                 points={line("equity")}
               />
@@ -528,8 +528,8 @@ export default function AccountHistory({
                   fill="none"
                   stroke={
                     b.symbol === "SPY"
-                      ? "var(--purple, #9b7ede)"
-                      : "var(--amber, #bd7b17)"
+                      ? "var(--portfolio-spy, #087b70)"
+                      : "var(--portfolio-qqq, #864cab)"
                   }
                   strokeWidth="2"
                   strokeDasharray={b.symbol === "SPY" ? "9 3" : "2 3"}
@@ -546,7 +546,7 @@ export default function AccountHistory({
                   cx={x(inspected.date)}
                   cy={180 - ((inspected.equity - low) / span) * 160}
                   r="4"
-                  fill="var(--blue)"
+                  fill="var(--portfolio-basket, var(--blue))"
                 />
               )}
             </svg>

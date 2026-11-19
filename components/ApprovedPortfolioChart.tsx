@@ -1,6 +1,9 @@
 "use client";
 import { accountHistoryWindow } from "@/lib/account-history-window";
-import { holdingsBenchmarkOverlay } from "@/lib/holdings-benchmark-overlay";
+import {
+  holdingsBenchmarkOverlay,
+  priceChangeGap,
+} from "@/lib/holdings-benchmark-overlay";
 import { historyBatch } from "@/lib/history-batch";
 import { seriesDirection } from "@/lib/visual-signals";
 import styles from "./PortfolioChart.module.css";
@@ -202,6 +205,8 @@ export default function ApprovedPortfolioChart({
         }))
         .filter((b) => b.points.length > 1)
     : [];
+  const spy = overlays.find((b) => b.symbol === "SPY");
+  const gap = spy && !loading ? priceChangeGap(chart.points, spy.points) : null;
   const values = chart.points.map((p) => p.value),
     domain = [
       ...values,
@@ -266,7 +271,7 @@ export default function ApprovedPortfolioChart({
               </div>
             )}
           </header>
-          <span>
+          <span data-benchmark="HOLDINGS">
             Holdings <strong>{priceMove(chart.points)}</strong>
           </span>
           {overlays.map((b) => (
@@ -275,6 +280,13 @@ export default function ApprovedPortfolioChart({
               <strong>{priceMove(b.points)}</strong>
             </span>
           ))}
+          {compact && gap !== null && (
+            <small className={styles.gap}>
+              {Math.abs(gap) < 0.05
+                ? "In line with the S&P 500 over this window"
+                : `${Math.abs(gap).toFixed(1)} percentage points ${gap < 0 ? "behind" : "ahead of"} the S&P 500`}
+            </small>
+          )}
           {!loading && overlays.length < 2 && (
             <small>
               {["SPY", "QQQ"]
@@ -421,7 +433,7 @@ export default function ApprovedPortfolioChart({
         >
           <defs>
             <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="currentColor" stopOpacity=".18" />
+              <stop offset="0%" stopColor="currentColor" stopOpacity=".12" />
               <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
             </linearGradient>
           </defs>
@@ -447,6 +459,22 @@ export default function ApprovedPortfolioChart({
               </g>
             );
           })}
+          {overlays.length > 0 && (
+            <g aria-hidden="true">
+              <line
+                x1="58"
+                x2={right}
+                y1={y(values[0])}
+                y2={y(values[0])}
+                stroke="currentColor"
+                strokeDasharray="3 5"
+                opacity=".32"
+              />
+              <text x="66" y={y(values[0]) - 7} className="chart-axis">
+                Shared start
+              </text>
+            </g>
+          )}
           <path
             d={`${path} L${right} 270 L58 270 Z`}
             fill={`url(#${gradient})`}
@@ -471,10 +499,20 @@ export default function ApprovedPortfolioChart({
                 .join(" ")}
               fill="none"
               strokeWidth="2"
-              strokeDasharray={b.symbol === "QQQ" ? "6 4" : undefined}
+              strokeDasharray={b.symbol === "SPY" ? "8 4" : "2 4"}
             />
           ))}
           <circle cx={right} cy={y(values.at(-1)!)} r="4" fill="currentColor" />
+          {overlays.map((b) => (
+            <circle
+              key={b.symbol}
+              data-benchmark={b.symbol}
+              className={styles.benchmarkMarker}
+              cx={right}
+              cy={y(b.points.at(-1)!.value)}
+              r="3"
+            />
+          ))}
           {selectedPoint && inspection != null && (
             <g pointerEvents="none">
               <line
@@ -486,6 +524,20 @@ export default function ApprovedPortfolioChart({
                 strokeDasharray="4 4"
                 opacity=".5"
               />
+              {overlays.map((b) => (
+                <circle
+                  key={b.symbol}
+                  data-benchmark={b.symbol}
+                  className={styles.benchmarkMarker}
+                  cx={x(inspection)}
+                  cy={y(
+                    b.points[Math.min(inspection, b.points.length - 1)].value,
+                  )}
+                  r="4"
+                  stroke="var(--card)"
+                  strokeWidth="2"
+                />
+              ))}
               <circle
                 cx={x(inspection)}
                 cy={y(selectedPoint.value)}

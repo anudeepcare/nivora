@@ -37,3 +37,30 @@ export function holdingsBenchmarkOverlay(
   }));
   return result.every((p) => Number.isFinite(p.value)) ? result : [];
 }
+
+/** Difference in price changes, in percentage points. Never compares different date ranges. */
+export function priceChangeGap(
+  holdings: { time: string; value: number }[],
+  benchmark: { time: string; value: number }[],
+): number | null {
+  const a = holdings[0],
+    b = holdings.at(-1);
+  const c = benchmark[0],
+    d = benchmark.at(-1);
+  if (
+    !a ||
+    !b ||
+    !c ||
+    !d ||
+    a.time !== c.time ||
+    b.time !== d.time ||
+    a.time >= b.time ||
+    [a, b, c, d].some(
+      (point) => !Number.isFinite(point.value) || point.value <= 0,
+    )
+  )
+    return null;
+  const gap =
+    ((b.value - a.value) / a.value - (d.value - c.value) / c.value) * 100;
+  return Number.isFinite(gap) ? gap : null;
+}

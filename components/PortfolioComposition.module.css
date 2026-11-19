@@ -1,0 +1,59 @@
+.root {
+  min-width: 0;
+}
+.concentration {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+.concentration > span {
+  font-size: 14px;
+  color: var(--ink);
+  align-self: center;
+}
+.concentration > strong {
+  font-size: 26px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--portfolio-basket);
+}
+.concentration > small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.sectors h3 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 14px;
+}
+.sectors > div {
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+.toolbar {
+  align-items: center;
+  gap: 12px;
+}
+.toolbar h2 {
+  margin-right: auto;
+}
+.sectors > div:focus-visible {
+  outline: 2px solid var(--portfolio-basket);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+@media (max-width: 600px) {
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .concentration > strong {
+    font-size: 24px;
+  }
+}

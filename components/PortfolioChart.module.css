@@ -55,14 +55,18 @@
   }
 }
 
+.chart {
+  --holdings-series: var(--portfolio-basket, #354fb9);
+  --spy-series: var(--portfolio-spy, #087b70);
+  --qqq-series: var(--portfolio-qqq, #864cab);
+}
+:global([data-theme="dark"]) .chart {
+  --holdings-series: var(--portfolio-basket, #9eafff);
+  --spy-series: var(--portfolio-spy, #68ddc8);
+  --qqq-series: var(--portfolio-qqq, #d1a4f0);
+}
 .chart.chart svg {
-  color: var(--muted);
-}
-.chart.chart svg[data-direction="down"] {
-  color: var(--red);
-}
-.chart.chart svg[data-direction="up"] {
-  color: var(--green);
+  color: var(--holdings-series);
 }
 
 .inspection {
@@ -157,19 +161,19 @@
   vertical-align: middle;
 }
 .benchmarkLegend [data-benchmark="SPY"] {
-  color: var(--financial-icon);
+  color: var(--spy-series);
 }
 .benchmarkLegend [data-benchmark="QQQ"] {
-  color: var(--ownership-icon);
+  color: var(--qqq-series);
 }
 .benchmarkLegend [data-benchmark="QQQ"]::before {
   border-top-style: dashed;
 }
 .benchmarkLine[data-benchmark="SPY"] {
-  stroke: var(--financial-icon);
+  stroke: var(--spy-series);
 }
 .benchmarkLine[data-benchmark="QQQ"] {
-  stroke: var(--ownership-icon);
+  stroke: var(--qqq-series);
 }
 .benchmarkLegend > header {
   flex-basis: 100%;
@@ -223,4 +227,79 @@
     min-height: 44px;
     min-width: 44px;
   }
+}
+
+.benchmarkLegend {
+  gap: 12px 28px;
+  padding-block: 8px 14px;
+}
+.benchmarkLegend > span {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 6px;
+  font-weight: 500;
+}
+.benchmarkLegend > span > strong {
+  grid-column: 1 / -1;
+  margin: 5px 0 0;
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+.benchmarkLegend [data-benchmark="HOLDINGS"] {
+  color: var(--holdings-series);
+}
+.benchmarkLegend [data-benchmark="SPY"]::before {
+  border-top-style: dashed;
+}
+.benchmarkLegend [data-benchmark="QQQ"]::before {
+  border-top-style: dotted;
+}
+.periods > button {
+  min-height: 44px;
+  font-size: 13px;
+}
+.periods > button[aria-pressed="true"] {
+  color: var(--holdings-series);
+  background: color-mix(in srgb, var(--holdings-series) 10%, var(--card));
+  border-color: transparent;
+  font-weight: 600;
+}
+.chart.chart :global(.chart-note) {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.totals > div {
+  padding: 8px 0;
+  background: transparent;
+  border-radius: 0;
+}
+.totals dd {
+  color: var(--holdings-series);
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 600;
+}
+@media (max-width: 480px) {
+  .benchmarkLegend {
+    gap: 12px 18px;
+  }
+  .benchmarkLegend > span {
+    font-size: 11px;
+  }
+}
+
+.benchmarkLegend .gap {
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--ink);
+  line-height: 1.45;
+}
+.benchmarkMarker[data-benchmark="SPY"] {
+  fill: var(--spy-series);
+}
+.benchmarkMarker[data-benchmark="QQQ"] {
+  fill: var(--qqq-series);
 }

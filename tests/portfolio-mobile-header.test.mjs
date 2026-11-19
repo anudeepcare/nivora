@@ -14,7 +14,7 @@ test("portfolio title is concise and all three actions stay visible without an o
   for (const text of [
     "Record transaction",
     "Cash &amp; balances",
-    "Add position",
+    "Add purchase",
   ])
     assert.ok(s.includes(text));
   assert.doesNotMatch(s, /Where conviction and exposure disagree/);

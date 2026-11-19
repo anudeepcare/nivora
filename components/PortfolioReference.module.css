@@ -347,3 +347,43 @@
     border-inline-start: 1px solid var(--line);
   }
 }
+
+/* Stable series colors: direction is communicated by the move, not line color. */
+.page {
+  --portfolio-basket: #354fb9;
+  --portfolio-spy: #087b70;
+  --portfolio-qqq: #864cab;
+  --portfolio-loss: #805015;
+  --red: var(--portfolio-loss);
+}
+:global(html[data-theme="dark"]) .page {
+  --portfolio-basket: #9eafff;
+  --portfolio-spy: #68ddc8;
+  --portfolio-qqq: #d1a4f0;
+  --portfolio-loss: #edbf77;
+}
+.page.page.page.page :global(.negative) {
+  color: var(--portfolio-loss);
+}
+.page.page.page.page :global(.wealth-strip.four) > div[data-tone="negative"] {
+  --red: var(--portfolio-loss);
+  background: color-mix(in srgb, var(--portfolio-loss) 5%, var(--card));
+}
+.page.page.page.page :global(.wealth-strip.four) > div:first-child {
+  --ink: #f8faff;
+  --muted: #cad5e7;
+  background: linear-gradient(143deg, #26395e, #182744 70%, #202a51);
+  color: var(--ink);
+}
+.page.page.page.page
+  :global(.wealth-strip.four)
+  > div:first-child
+  :is(strong, button) {
+  color: inherit;
+}
+.page.page.page.page :global(.wealth-strip.four) > div:nth-child(3) > strong {
+  color: var(--portfolio-spy);
+}
+.page.page.page.page :global(.wealth-strip.four) > div:nth-child(4) > strong {
+  color: var(--portfolio-qqq);
+}
