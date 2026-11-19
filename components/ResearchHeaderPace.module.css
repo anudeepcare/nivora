@@ -55,3 +55,80 @@
     margin-left: 0;
   }
 }
+
+.header.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content 44px;
+  grid-template-areas: "identity price watch";
+  align-items: center;
+  gap: 8px 12px;
+}
+.identity {
+  grid-area: identity;
+}
+.price {
+  grid-area: price;
+}
+.watch {
+  grid-area: watch;
+  width: 44px;
+  height: 44px;
+  justify-self: end;
+}
+.priceMetrics {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.priceMetrics > strong {
+  white-space: nowrap;
+}
+.priceMetrics > span {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .header.header {
+    grid-template-columns: minmax(0, 1fr) 44px;
+    grid-template-areas:
+      "identity watch"
+      "price price";
+    gap: 4px 6px;
+  }
+  .quote.quote {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+    align-items: center;
+    gap: 4px clamp(5px, 1.8vw, 10px);
+  }
+  .quote > :global(.data-stamp) {
+    grid-column: 1 / -1;
+  }
+  .priceMetrics {
+    gap: 4px;
+  }
+  .priceMetrics > span {
+    font-size: 11px;
+  }
+  .badge {
+    justify-self: end;
+    margin-left: 0;
+    min-width: 0;
+    font-size: 11px;
+    text-align: left;
+    padding-left: 7px;
+    padding-right: 0;
+    gap: 4px;
+  }
+}
+@media (max-width: 340px) {
+  .priceMetrics > strong {
+    font-size: 20px;
+  }
+  .badge {
+    font-size: 10px;
+  }
+}

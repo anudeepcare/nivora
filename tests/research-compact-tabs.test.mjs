@@ -10,10 +10,10 @@ function rules(fragment) {
   });
   return result;
 }
-test("compact research rail is mobile scoped, single scroll line without changing primary tabs", () => {
+test("compact secondary research rail works at every size without changing primary tabs", () => {
   const matches = rules(".research-compact-tabs.research-compact-tabs");
   assert.ok(matches.length);
-  for (const r of matches) assert.equal(r.parent.params, "(max-width: 600px)");
+  assert.ok(matches.some((r) => r.parent.type === "root"));
   const rail = matches.find((r) => !r.selector.includes(">"));
   const props = Object.fromEntries(
     rail.nodes.filter((n) => n.type === "decl").map((n) => [n.prop, n.value]),
@@ -28,13 +28,14 @@ test("compact selection uses one quiet item fill without underline and retains t
     (r) => r.selector.includes('[aria-pressed="true"]'),
   );
   assert.ok(selected);
+  assert.equal(selected.parent.type, "root");
   const props = Object.fromEntries(
     selected.nodes
       .filter((n) => n.type === "decl")
       .map((n) => [n.prop, n.value]),
   );
   assert.equal(props["box-shadow"], "none");
-  assert.equal(props["border-bottom"], "0");
+  assert.doesNotMatch(props["border-color"], /var\(--blue\)/);
   assert.match(props.background, /view-tab-quiet/);
   const text = readFileSync("app/core/reference-tabs.css", "utf8");
   const mobile = text.slice(text.indexOf("/* Compact Research"));
@@ -56,4 +57,26 @@ test("compact labels retain the full accessible workspace name", () => {
   assert.match(source, /shortTitle\?: string/);
   assert.match(source, /aria-label=\{view.title\}/);
   assert.match(source, /view.shortTitle \?\? view.title/);
+});
+
+test("secondary active treatment matches the rounded Ownership selector", () => {
+  const selected = rules(".research-compact-tabs.research-compact-tabs").find(
+    (r) => r.selector.includes('[aria-pressed="true"]'),
+  );
+  const props = Object.fromEntries(
+    selected.nodes
+      .filter((n) => n.type === "decl")
+      .map((n) => [n.prop, n.value]),
+  );
+  assert.equal(props["border-radius"], "999px");
+  assert.match(props["border-color"], /var\(--line\)/);
+});
+
+test("Research secondary view controls share the style without changing the main lens navigation", () => {
+  assert.ok(rules(".approved-research-page .auryn-view-tabs").length);
+  const source = readFileSync("components/Research.tsx", "utf8");
+  assert.match(
+    source,
+    /className=\{cockpit.lenses\}\s+aria-label="Research sections"/,
+  );
 });

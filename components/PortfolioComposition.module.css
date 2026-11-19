@@ -135,8 +135,8 @@
   .root.root.root.root .mobileHoldings tr {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 10px 14px;
-    padding: 16px 0;
+    gap: 4px 12px;
+    padding: 12px 0;
     border: 0;
     border-bottom: 1px solid var(--line);
     border-radius: 0;
@@ -192,14 +192,53 @@
     justify-self: stretch;
   }
   .root.root.root.root .mobileHoldings td[data-label]::before {
-    content: attr(data-label);
-    display: block;
+    content: attr(data-label) " ";
+    display: inline;
     color: var(--muted);
     font-size: 11px;
-    margin-bottom: 3px;
+    margin-right: 4px;
   }
   .root.root.root.root .mobileHoldings td:nth-child(4)::before,
   .root.root.root.root .mobileHoldings td:nth-child(5)::before {
     display: none;
+  }
+  .root.root.root.root .mobileHoldings td:nth-child(2),
+  .root.root.root.root .mobileHoldings td:nth-child(3) {
+    font-size: 12px;
+    padding-top: 5px;
+  }
+  .root.root.root.root .mobileHoldings td:nth-child(3) > strong {
+    display: inline;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .root.root.root.root .mobileHoldings td:nth-child(4) > strong {
+    font-size: 17px;
+    line-height: 1.3;
+  }
+  .root.root.root.root .mobileHoldings td small {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .root.root.root.root .mobileHoldings td:last-child {
+    padding-top: 0;
+  }
+  .root.root.root.root .mobileHoldings td:last-child > div {
+    justify-content: flex-end;
+    gap: 4px;
+  }
+  .root.root.root.root .mobileHoldings td:last-child button {
+    min-height: 44px;
+    min-width: 44px;
+    width: 44px;
+    padding: 8px;
+  }
+  .root.root.root.root .mobileHoldings :global(.company-row) {
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .root.root.root.root .mobileHoldings :global(.company-row) b {
+    font-size: 15px;
+    line-height: 1.3;
   }
 }

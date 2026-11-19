@@ -1034,3 +1034,68 @@
     background: #080d18;
   }
 }
+
+/* One final phone dock geometry. The safe-area inset is counted once inside
+   the border-box dock, and the scrolling owner reserves that exact height. */
+@media (max-width: 767px) {
+  .shell {
+    --mobile-dock-clearance: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+  .shell .dock {
+    box-sizing: border-box;
+    height: var(--mobile-dock-clearance);
+    min-height: 0;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: 56px;
+    gap: 0;
+    padding: 3px max(8px, env(safe-area-inset-right, 0px))
+      env(safe-area-inset-bottom, 0px) max(8px, env(safe-area-inset-left, 0px));
+    align-items: start;
+    overflow: hidden;
+    background: var(--nav-solid);
+  }
+  .shell .dock :is(a, button) {
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 44px;
+    height: 56px;
+    margin: 0;
+    padding: 3px 0 7px;
+    gap: 4px;
+    line-height: 1.2;
+    font-size: 10px;
+    white-space: nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .shell .dock svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+  }
+  .shell .dock a[aria-current="page"]::after {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: 2px;
+    width: 22px;
+    height: 2px;
+  }
+  .shell .content {
+    padding-bottom: calc(var(--mobile-dock-clearance) + 16px);
+  }
+  .shell[data-page="research"] .workspace {
+    padding-bottom: var(--mobile-dock-clearance);
+  }
+  .shell[data-page="research"] .content {
+    padding-bottom: 0;
+  }
+  :global([data-keyboard-open="true"]) .shell .content,
+  :global(.keyboard-open) .shell .content {
+    padding-bottom: 16px;
+  }
+  :global([data-keyboard-open="true"]) .shell[data-page="research"] .workspace,
+  :global(.keyboard-open) .shell[data-page="research"] .workspace {
+    padding-bottom: 0;
+  }
+}

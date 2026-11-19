@@ -438,7 +438,9 @@ export default function Research({ symbol }: { symbol: string }) {
     const q = quick.data?.[symbol];
     return resource.loading ? (
       <section aria-busy="true" className="research-loading">
-        <header className={experience.stockHeader}>
+        <header
+          className={`${experience.stockHeader} ${headerPaceStyles.header}`}
+        >
           <div className="au-flex">
             <SecurityLogo symbol={symbol} />
             <div>
@@ -613,7 +615,9 @@ export default function Research({ symbol }: { symbol: string }) {
       data-active-lens={activeLens.sections[0]}
     >
       <header className={experience.stockHeader}>
-        <div className={experience.stockIdentity}>
+        <div
+          className={`${experience.stockIdentity} ${headerPaceStyles.identity}`}
+        >
           <SecurityLogo symbol={symbol} size={52} />
           <div>
             <h1>{r.company.name}</h1>
@@ -640,42 +644,44 @@ export default function Research({ symbol }: { symbol: string }) {
             </div>
           </div>
         </div>
-        <div className={experience.stockPrice}>
+        <div className={`${experience.stockPrice} ${headerPaceStyles.price}`}>
           <div className={`quote ${headerPaceStyles.quote}`}>
-            <strong className="num">
-              {amount(
-                headerReference?.price ?? r.quote.price,
-                r.quote.currency,
-              )}
-            </strong>
-            <span
-              className={
-                headerMovement.change == null || headerMovement.change === 0
-                  ? ""
-                  : headerMovement.change < 0
-                    ? "au-negative"
-                    : "au-positive"
-              }
-            >
-              <span className="sr-only">Session change </span>
-              {percent(headerMovement.change, true)}
-              <Help label="How this price change is calculated">
-                <p>
-                  {headerMovement.priceBasis === "settled-close"
-                    ? `This change compares completed daily closes${headerMovement.changeFrom ? ` against ${dateLabel(headerMovement.changeFrom)}` : ""}. It does not describe a live trading-session move.`
-                    : "This change follows the quote source’s session comparison. The quote’s session and timestamp appear below the price; extended-hours and regular-session comparisons can differ."}
-                </p>
-                <p>
-                  Displayed price source:{" "}
-                  {(headerReference?.basis === "settled-close"
-                    ? r.historySource
-                    : r.quote.source) || "not supplied"}
-                  .
-                  {headerReference?.basis === "settled-close" &&
-                    " This is a completed daily close; its date is not an intraday timestamp."}
-                </p>
-              </Help>
-            </span>
+            <div className={headerPaceStyles.priceMetrics}>
+              <strong className="num">
+                {amount(
+                  headerReference?.price ?? r.quote.price,
+                  r.quote.currency,
+                )}
+              </strong>
+              <span
+                className={
+                  headerMovement.change == null || headerMovement.change === 0
+                    ? ""
+                    : headerMovement.change < 0
+                      ? "au-negative"
+                      : "au-positive"
+                }
+              >
+                <span className="sr-only">Session change </span>
+                {percent(headerMovement.change, true)}
+                <Help label="How this price change is calculated">
+                  <p>
+                    {headerMovement.priceBasis === "settled-close"
+                      ? `This change compares completed daily closes${headerMovement.changeFrom ? ` against ${dateLabel(headerMovement.changeFrom)}` : ""}. It does not describe a live trading-session move.`
+                      : "This change follows the quote source’s session comparison. The quote’s session and timestamp appear below the price; extended-hours and regular-session comparisons can differ."}
+                  </p>
+                  <p>
+                    Displayed price source:{" "}
+                    {(headerReference?.basis === "settled-close"
+                      ? r.historySource
+                      : r.quote.source) || "not supplied"}
+                    .
+                    {headerReference?.basis === "settled-close" &&
+                      " This is a completed daily close; its date is not an intraday timestamp."}
+                  </p>
+                </Help>
+              </span>
+            </div>
             <div
               className={headerPaceStyles.badge}
               data-pace-state={headerPace ? "available" : "unavailable"}
@@ -733,16 +739,16 @@ export default function Research({ symbol }: { symbol: string }) {
               }
             />
           </div>
-          <button
-            className="icon-button"
-            aria-label={saved ? "Remove from watchlist" : "Save to watchlist"}
-            aria-pressed={saved}
-            disabled={saving}
-            onClick={save}
-          >
-            <Bookmark size={20} fill={saved ? "currentColor" : "none"} />
-          </button>
         </div>
+        <button
+          className={`icon-button ${headerPaceStyles.watch}`}
+          aria-label={saved ? "Remove from watchlist" : "Save to watchlist"}
+          aria-pressed={saved}
+          disabled={saving}
+          onClick={save}
+        >
+          <Bookmark size={20} fill={saved ? "currentColor" : "none"} />
+        </button>
       </header>
 
       {notice && <Notice error>{notice}</Notice>}
