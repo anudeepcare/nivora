@@ -1,4 +1,5 @@
 "use client";
+import headerPaceStyles from "./ResearchHeaderPace.module.css";
 import { navigateSelection } from "@/lib/selection-navigation";
 import { researchLenses, lensForSection } from "@/lib/reference-navigation";
 import cockpit from "./ReferenceCockpit.module.css";
@@ -437,15 +438,19 @@ export default function Research({ symbol }: { symbol: string }) {
     const q = quick.data?.[symbol];
     return resource.loading ? (
       <section aria-busy="true" className="research-loading">
-        <header className={experience.stockHeader}>
-          <div className="au-flex">
+        <header
+          className={`${experience.stockHeader} ${headerPaceStyles.header} ${headerPaceStyles.loading}`}
+        >
+          <div
+            className={`${experience.stockIdentity} ${headerPaceStyles.identity}`}
+          >
             <SecurityLogo symbol={symbol} />
             <div>
               <h1>{q?.company.name ?? symbol}</h1>
               <small>Loading research</small>
             </div>
           </div>
-          <div className="au-price">
+          <div className={`au-price ${headerPaceStyles.price}`}>
             {q ? amount(q.quote.price, q.quote.currency) : "—"}
           </div>
         </header>
@@ -583,10 +588,67 @@ export default function Research({ symbol }: { symbol: string }) {
     now: demo ? Date.parse(r.retrievedAt) : Date.now(),
   });
   const headerContext = headerMarketContext(r);
+  const headerPace = p?.dca.forming ?? p?.dca.confirmed;
+  const headerPaceProvisional = p?.dca.forming != null;
+  const mobileCompanyName =
+    r.company.name
+      .trim()
+      .replace(
+        /,?\s+(?:holding\s+ltd\.?|incorporated|corporation|limited|inc\.?|corp\.?|ltd\.?|plc)$/i,
+        "",
+      ) || r.company.name;
+  const paceReading = (
+    <div
+      className={headerPaceStyles.pace}
+      data-pace-level={headerPace?.multiplier ?? "unavailable"}
+    >
+      <span className={headerPaceStyles.paceDot} aria-hidden="true" />
+      {headerPace ? (
+        <span className={headerPaceStyles.paceText}>
+          <span>Pace</span>
+          <span className={headerPaceStyles.paceStatus}>
+            {headerPace.multiplier === 1
+              ? "Watch"
+              : PACE_LEVELS[headerPace.multiplier]}
+          </span>
+          <span className={headerPaceStyles.paceLevel}>
+            · {paceCode(headerPace.multiplier)}
+            {headerPaceProvisional ? "*" : ""}
+          </span>
+        </span>
+      ) : (
+        <span>Pace unavailable</span>
+      )}
+      {headerPaceProvisional && (
+        <span className="sr-only">Provisional current-month reading</span>
+      )}
+      <Help label="this Pace reading">
+        {headerPace ? (
+          <>
+            <p>
+              {headerPaceProvisional
+                ? "* Current month · provisional"
+                : "Completed month"}{" "}
+              · {headerPace.month}
+            </p>
+            <p>{headerPace.reason}</p>
+          </>
+        ) : (
+          <p>
+            {p?.dca.reason || "A reliable monthly reading is not available."}
+          </p>
+        )}
+        <p>
+          Price conditions only, not business quality or a trade instruction. A
+          provisional reading can change before month-end.
+        </p>
+      </Help>
+    </div>
+  );
   const evidenceToolbar =
     supportingSections.length > 1 ? (
       <nav
-        className={`${cockpit.supporting} auryn-view-tabs`}
+        className={`${cockpit.supporting} auryn-view-tabs research-compact-tabs`}
         data-selection-navigation
         onKeyDown={(event) => navigateSelection(event)}
         aria-label={`${activeLens.label} evidence`}
@@ -609,18 +671,37 @@ export default function Research({ symbol }: { symbol: string }) {
       data-research-mode={preferences.detail}
       data-active-lens={activeLens.sections[0]}
     >
-      <header className={experience.stockHeader}>
-        <div className={experience.stockIdentity}>
+      <header
+        className={`${experience.stockHeader} ${headerPaceStyles.header}`}
+      >
+        <div
+          className={`${experience.stockIdentity} ${headerPaceStyles.identity}`}
+        >
           <SecurityLogo symbol={symbol} size={52} />
           <div>
-            <h1>{r.company.name}</h1>
+            <h1 title={r.company.name}>
+              <span className={headerPaceStyles.desktopName}>
+                {r.company.name}
+              </span>
+              <span className={headerPaceStyles.mobileName}>
+                {mobileCompanyName}
+              </span>
+            </h1>
             <div className={cockpit.identityMeta}>
               <span>
                 {symbol} · {r.company.exchange || "Listing"} ·{" "}
                 {r.quote.currency}
               </span>
-              {headerContext.sector && <span>{headerContext.sector}</span>}
+              {headerContext.sector && (
+                <span className={headerPaceStyles.sector}>
+                  {headerContext.sector}
+                </span>
+              )}
               <Help label="Company facts and source dates">
+                <p>
+                  {r.company.name}
+                  {headerContext.sector ? ` · ${headerContext.sector}` : ""}
+                </p>
                 <StockFacts research={r} />
                 {r.issues.map((issue) => (
                   <p key={issue}>{customerText(issue)}</p>
@@ -635,44 +716,48 @@ export default function Research({ symbol }: { symbol: string }) {
                 </button>
               </Help>
             </div>
+            <div className={headerPaceStyles.paceDesktop}>{paceReading}</div>
           </div>
         </div>
-        <div className={experience.stockPrice}>
-          <div className="quote">
-            <strong className="num">
-              {amount(
-                headerReference?.price ?? r.quote.price,
-                r.quote.currency,
-              )}
-            </strong>
-            <span
-              className={
-                headerMovement.change == null || headerMovement.change === 0
-                  ? ""
-                  : headerMovement.change < 0
-                    ? "au-negative"
-                    : "au-positive"
-              }
-            >
-              <span className="sr-only">Session change </span>
-              {percent(headerMovement.change, true)}
-              <Help label="How this price change is calculated">
-                <p>
-                  {headerMovement.priceBasis === "settled-close"
-                    ? `This change compares completed daily closes${headerMovement.changeFrom ? ` against ${dateLabel(headerMovement.changeFrom)}` : ""}. It does not describe a live trading-session move.`
-                    : "This change follows the quote source’s session comparison. The quote’s session and timestamp appear below the price; extended-hours and regular-session comparisons can differ."}
-                </p>
-                <p>
-                  Displayed price source:{" "}
-                  {(headerReference?.basis === "settled-close"
-                    ? r.historySource
-                    : r.quote.source) || "not supplied"}
-                  .
-                  {headerReference?.basis === "settled-close" &&
-                    " This is a completed daily close; its date is not an intraday timestamp."}
-                </p>
-              </Help>
-            </span>
+        <div className={`${experience.stockPrice} ${headerPaceStyles.price}`}>
+          <div className={`quote ${headerPaceStyles.quote}`}>
+            <div className={headerPaceStyles.priceMetrics}>
+              <strong className="num">
+                {amount(
+                  headerReference?.price ?? r.quote.price,
+                  r.quote.currency,
+                )}
+              </strong>
+              <span
+                className={
+                  headerMovement.change == null || headerMovement.change === 0
+                    ? ""
+                    : headerMovement.change < 0
+                      ? "au-negative"
+                      : "au-positive"
+                }
+              >
+                <span className="sr-only">Session change </span>
+                {percent(headerMovement.change, true)}
+                <Help label="How this price change is calculated">
+                  <p>
+                    {headerMovement.priceBasis === "settled-close"
+                      ? `This change compares completed daily closes${headerMovement.changeFrom ? ` against ${dateLabel(headerMovement.changeFrom)}` : ""}. It does not describe a live trading-session move.`
+                      : "This change follows the quote source’s session comparison. The quote’s session and timestamp appear below the price; extended-hours and regular-session comparisons can differ."}
+                  </p>
+                  <p>
+                    Displayed price source:{" "}
+                    {(headerReference?.basis === "settled-close"
+                      ? r.historySource
+                      : r.quote.source) || "not supplied"}
+                    .
+                    {headerReference?.basis === "settled-close" &&
+                      " This is a completed daily close; its date is not an intraday timestamp."}
+                  </p>
+                </Help>
+              </span>
+            </div>
+            <div className={headerPaceStyles.paceMobile}>{paceReading}</div>
             <DataStamp
               source={
                 headerReference?.basis === "settled-close"
@@ -689,16 +774,16 @@ export default function Research({ symbol }: { symbol: string }) {
               }
             />
           </div>
-          <button
-            className="icon-button"
-            aria-label={saved ? "Remove from watchlist" : "Save to watchlist"}
-            aria-pressed={saved}
-            disabled={saving}
-            onClick={save}
-          >
-            <Bookmark size={20} fill={saved ? "currentColor" : "none"} />
-          </button>
         </div>
+        <button
+          className={`icon-button ${headerPaceStyles.watch}`}
+          aria-label={saved ? "Remove from watchlist" : "Save to watchlist"}
+          aria-pressed={saved}
+          disabled={saving}
+          onClick={save}
+        >
+          <Bookmark size={20} fill={saved ? "currentColor" : "none"} />
+        </button>
       </header>
 
       {notice && <Notice error>{notice}</Notice>}
@@ -947,6 +1032,7 @@ export default function Research({ symbol }: { symbol: string }) {
                   views={[
                     {
                       title: "Business context & assistant",
+                      shortTitle: "Business & assistant",
                       content: (
                         <>
                           <BusinessMap

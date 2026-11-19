@@ -11,14 +11,14 @@ export default function ResearchWorkspace({
   label: string;
   preserveState?: boolean;
   initialSelection?: number;
-  views: { title: string; content: ReactNode }[];
+  views: { title: string; shortTitle?: string; content: ReactNode }[];
 }) {
   const [selected, setSelected] = useState(initialSelection);
   const id = useId();
   return (
     <section aria-label={label}>
       <div
-        className="auryn-view-tabs"
+        className="auryn-view-tabs research-compact-tabs"
         data-selection-navigation
         data-nested-navigation
         onKeyDown={(event) => navigateSelection(event)}
@@ -29,12 +29,13 @@ export default function ResearchWorkspace({
           <button
             type="button"
             key={view.title}
+            aria-label={view.title}
             aria-pressed={selected === index}
             aria-controls={`${id}-content`}
             onClick={() => setSelected(index)}
           >
             <span aria-hidden="true" data-nav-icon={view.title} />
-            <span>{view.title}</span>
+            <span>{view.shortTitle ?? view.title}</span>
           </button>
         ))}
       </div>
