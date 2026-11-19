@@ -439,16 +439,18 @@ export default function Research({ symbol }: { symbol: string }) {
     return resource.loading ? (
       <section aria-busy="true" className="research-loading">
         <header
-          className={`${experience.stockHeader} ${headerPaceStyles.header}`}
+          className={`${experience.stockHeader} ${headerPaceStyles.header} ${headerPaceStyles.loading}`}
         >
-          <div className="au-flex">
+          <div
+            className={`${experience.stockIdentity} ${headerPaceStyles.identity}`}
+          >
             <SecurityLogo symbol={symbol} />
             <div>
               <h1>{q?.company.name ?? symbol}</h1>
               <small>Loading research</small>
             </div>
           </div>
-          <div className="au-price">
+          <div className={`au-price ${headerPaceStyles.price}`}>
             {q ? amount(q.quote.price, q.quote.currency) : "—"}
           </div>
         </header>
@@ -614,7 +616,9 @@ export default function Research({ symbol }: { symbol: string }) {
       data-research-mode={preferences.detail}
       data-active-lens={activeLens.sections[0]}
     >
-      <header className={experience.stockHeader}>
+      <header
+        className={`${experience.stockHeader} ${headerPaceStyles.header}`}
+      >
         <div
           className={`${experience.stockIdentity} ${headerPaceStyles.identity}`}
         >
@@ -640,6 +644,56 @@ export default function Research({ symbol }: { symbol: string }) {
                   <RefreshCw size={17} aria-hidden="true" />
                   Refresh research data
                 </button>
+              </Help>
+            </div>
+            <div
+              className={headerPaceStyles.pace}
+              data-pace-level={headerPace?.multiplier ?? "unavailable"}
+            >
+              <span className={headerPaceStyles.paceDot} aria-hidden="true" />
+              {headerPace ? (
+                <span className={headerPaceStyles.paceText}>
+                  <span>Pace</span>
+                  <span className={headerPaceStyles.paceStatus}>
+                    {headerPace.multiplier === 1
+                      ? "Watch"
+                      : PACE_LEVELS[headerPace.multiplier]}
+                  </span>
+                  <span className={headerPaceStyles.paceLevel}>
+                    · {paceCode(headerPace.multiplier)}
+                    {headerPaceProvisional ? "*" : ""}
+                  </span>
+                </span>
+              ) : (
+                <span>Pace unavailable</span>
+              )}
+              {headerPaceProvisional && (
+                <span className="sr-only">
+                  Provisional current-month reading
+                </span>
+              )}
+              <Help label="this Pace reading">
+                {headerPace ? (
+                  <>
+                    <p>
+                      {headerPaceProvisional
+                        ? "* Current month · provisional"
+                        : "Completed month"}{" "}
+                      · {headerPace.month}
+                    </p>
+                    <p>{headerPace.reason}</p>
+                  </>
+                ) : (
+                  <p>
+                    {p?.dca.reason ||
+                      "A reliable monthly reading is not available."}
+                  </p>
+                )}
+                <p>
+                  Price conditions only, not business quality or a trade
+                  instruction. A provisional reading can change before
+                  month-end.
+                </p>
               </Help>
             </div>
           </div>
@@ -681,47 +735,6 @@ export default function Research({ symbol }: { symbol: string }) {
                   </p>
                 </Help>
               </span>
-            </div>
-            <div
-              className={headerPaceStyles.badge}
-              data-pace-state={headerPace ? "available" : "unavailable"}
-            >
-              <span aria-hidden="true" className={headerPaceStyles.diamond}>
-                ◆
-              </span>
-              <span>
-                {headerPace
-                  ? `Pace ${paceCode(headerPace.multiplier)}${headerPaceProvisional ? "*" : ""} · ${PACE_LEVELS[headerPace.multiplier]}`
-                  : "Pace unavailable"}
-              </span>
-              {headerPaceProvisional && (
-                <span className="sr-only">
-                  Provisional current-month reading
-                </span>
-              )}
-              <Help label="this Pace reading">
-                {headerPace ? (
-                  <>
-                    <p>
-                      {headerPaceProvisional
-                        ? "* Current month · provisional"
-                        : "Completed month"}{" "}
-                      · {headerPace.month}
-                    </p>
-                    <p>{headerPace.reason}</p>
-                  </>
-                ) : (
-                  <p>
-                    {p?.dca.reason ||
-                      "A reliable monthly reading is not available."}
-                  </p>
-                )}
-                <p>
-                  Price conditions only, not business quality or a trade
-                  instruction. A provisional reading can change before
-                  month-end.
-                </p>
-              </Help>
             </div>
             <DataStamp
               source={
