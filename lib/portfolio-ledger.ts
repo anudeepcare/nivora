@@ -109,3 +109,137 @@ export function portfolioChartData(
     excluded: [...excluded],
   };
 }
+
+/** Display projection only: stored lots remain individually editable by ID. */
+export function groupedLedgerRows(
+  positions: Position[],
+  quotes: Record<string, Quote>,
+  total: number,
+  earnings = new Set<string>(),
+) {
+  const groups = new Map<string, Position[]>();
+  positions.forEach((p) => {
+    const key =
+      p.assetType === "cash"
+        ? JSON.stringify(["cash", p.id])
+        : JSON.stringify([p.assetType, p.symbol]);
+    const bucket = groups.get(key);
+    if (bucket) bucket.push(p);
+    else groups.set(key, [p]);
+  });
+  const finite = (n: number) => (Number.isFinite(n) ? n : null);
+  return [...groups].map(([groupKey, lots]) => {
+    const position = lots[0],
+      cash = position.assetType === "cash";
+    const quantitiesValid = lots.every(
+      (p) => Number.isFinite(p.quantity) && p.quantity > 0,
+    );
+    const quantity = quantitiesValid
+      ? finite(lots.reduce((sum, p) => sum + p.quantity, 0))
+      : null;
+    const currencies = new Set(
+      lots.flatMap((p) =>
+        typeof p.currency === "string" && /^[A-Z]{3}$/.test(p.currency)
+          ? [p.currency]
+          : [],
+      ),
+    );
+    const costsValid =
+      quantity != null &&
+      lots.every(
+        (p) =>
+          Number.isFinite(p.cost) &&
+          p.cost >= 0 &&
+          typeof p.currency === "string" &&
+          /^[A-Z]{3}$/.test(p.currency),
+      );
+    const costTotal =
+      costsValid && currencies.size === 1
+        ? finite(lots.reduce((sum, p) => sum + p.quantity * p.cost, 0))
+        : null;
+    const costState: "known" | "mixed" | "unknown" =
+      currencies.size > 1 ? "mixed" : costTotal == null ? "unknown" : "known";
+    const costCurrency = costState === "known" ? [...currencies][0] : null;
+    const avgCost =
+      costTotal != null && quantity != null
+        ? finite(costTotal / quantity)
+        : null;
+    const q = quotes[position.symbol];
+    const candidatePrice = cash
+      ? position.symbol === "USD" &&
+        position.currency === "USD" &&
+        position.cost === 1
+        ? 1
+        : null
+      : q?.currency === "USD" &&
+          typeof q.price === "number" &&
+          Number.isFinite(q.price) &&
+          q.price > 0
+        ? q.price
+        : null;
+    const value =
+      quantity != null && candidatePrice != null
+        ? finite(quantity * candidatePrice)
+        : null;
+    const price = value != null ? candidatePrice : null;
+    const pnl =
+      !cash && value != null && costTotal != null && costCurrency === "USD"
+        ? finite(value - costTotal)
+        : null;
+    const returnPct =
+      pnl != null && costTotal != null && costTotal > 0
+        ? finite((pnl / costTotal) * 100)
+        : null;
+    // workspaceOverview excludes malformed numeric-cost lots from its denominator.
+    const denominatorAdmissible = lots.every(
+      (p) => Number.isFinite(p.cost) && p.cost >= 0,
+    );
+    const weight =
+      denominatorAdmissible &&
+      value != null &&
+      Number.isFinite(total) &&
+      total > 0
+        ? finite((value / total) * 100)
+        : null;
+    const note =
+      quantity == null
+        ? "Quantity unavailable"
+        : costState === "mixed"
+          ? "Mixed cost currencies"
+          : costState === "unknown"
+            ? "Cost basis incomplete"
+            : !cash && costCurrency !== "USD"
+              ? "Cost currency differs"
+              : value == null
+                ? q?.currency && q.currency !== "USD"
+                  ? "USD price needed"
+                  : "Price unavailable"
+                : !cash && q?.stale
+                  ? "Older price"
+                  : !cash && earnings.has(position.symbol)
+                    ? "Earnings ≤7 days"
+                    : weight != null && weight >= 10
+                      ? "Concentration ≥10%"
+                      : "";
+    return {
+      position,
+      lots,
+      quantity,
+      avgCost,
+      costCurrency,
+      costState,
+      groupKey,
+      value,
+      pnl,
+      returnPct,
+      weight,
+      price,
+      note,
+      caution:
+        value == null ||
+        costState !== "known" ||
+        (!cash && (q?.stale === true || costCurrency !== "USD")) ||
+        (weight != null && weight >= 10),
+    };
+  });
+}

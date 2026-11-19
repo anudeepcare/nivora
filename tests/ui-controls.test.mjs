@@ -1190,6 +1190,7 @@ test("account equity displays debt separately without representing it as a losin
     "AccountBalances",
     {
       React,
+      styles: { root: "balance-root" },
       useState: React.useState,
       useEffect: React.useEffect,
       useProduct: () => ({ demo: false }),

@@ -287,70 +287,25 @@
   }
 }
 
-.manage {
-  position: relative;
+.actionsBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
   min-width: 0;
 }
-.manage > summary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+.actionsBar > button {
   min-height: 44px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 13px;
-  color: var(--ink);
-  background: var(--card);
-  cursor: pointer;
-  list-style: none;
 }
-.manage > summary::-webkit-details-marker {
-  display: none;
-}
-.manage > summary::after {
-  content: "+";
-}
-.manage[open] > summary::after {
-  content: "−";
-}
-.manage > div {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  z-index: 12;
-  display: grid;
-  gap: 6px;
-  padding: 8px;
-  width: 210px;
-  max-width: calc(100vw - 32px);
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  box-shadow: 0 8px 24px #00000018;
-}
-.manage > div button {
-  width: 100%;
-  justify-content: flex-start;
-}
-.manage > summary:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 3px;
-}
+
 @media (max-width: 700px) {
   .page.page.page.page h1 {
     font-size: 25px;
     line-height: 1.15;
     letter-spacing: -0.025em;
   }
-  .page.page.page.page :global(.heading-actions) {
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-  }
-  .manage > div {
-    right: auto;
-    left: 0;
+  .actionsBar {
+    justify-content: flex-start;
   }
   .page.page.page.page :global(.wealth-strip.four) {
     display: grid;
@@ -493,4 +448,32 @@
   flex: none;
   min-width: 44px;
   min-height: 44px;
+}
+
+.purchaseLots {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 16px;
+  max-block-size: min(52dvh, 420px);
+  overflow-y: auto;
+}
+.purchaseLots li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.purchaseLots li > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.purchaseLots small {
+  color: var(--muted);
+}
+.purchaseLots button {
+  flex-shrink: 0;
 }

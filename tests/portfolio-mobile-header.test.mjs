@@ -3,11 +3,19 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 const read = (n) =>
   readFileSync(new URL("../components/" + n, import.meta.url), "utf8");
-test("portfolio title is concise and secondary actions remain reachable in Manage", () => {
+test("portfolio title is concise and all three actions stay visible without an overlay", () => {
   const s = read("PortfolioPage.tsx");
   assert.match(s, /title="Portfolio"/);
-  assert.match(s, /<details className=\{reference.manage\}>/);
-  for (const text of ["Record transaction", "Cash & balances", "Add position"])
+  assert.doesNotMatch(s, /<details className=\{reference.manage\}>/);
+  assert.match(s, /role="group"\s+aria-label="Portfolio actions"/);
+  const css = read("PortfolioReference.module.css");
+  assert.match(css, /\.actionsBar\s*\{[^}]*flex-wrap: wrap/s);
+  assert.doesNotMatch(css, /\.manage > div/);
+  for (const text of [
+    "Record transaction",
+    "Cash &amp; balances",
+    "Add position",
+  ])
     assert.ok(s.includes(text));
   assert.doesNotMatch(s, /Where conviction and exposure disagree/);
 });

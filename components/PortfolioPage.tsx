@@ -11,7 +11,7 @@ import workspaceVisuals from "./WorkspaceVisuals.module.css";
 import { researchLink } from "@/lib/approved-workspace";
 import { amount, percent, quoteTime } from "@/lib/format";
 import { earningsEventState, marketDay } from "@/lib/home-feed";
-import { ledgerRows } from "@/lib/portfolio-ledger";
+import { groupedLedgerRows } from "@/lib/portfolio-ledger";
 import type { Position } from "@/lib/types";
 import {
   ArrowUpRight,
@@ -67,6 +67,10 @@ export function Portfolio() {
   const [query, setQuery] = useWorkspaceFilter("portfolio"),
     [editing, setEditing] = useState<Position | "new" | null>(null),
     [cashDefault, setCashDefault] = useState(false),
+    [purchaseSeed, setPurchaseSeed] = useState<{
+      symbol: string;
+      currency: string | null;
+    } | null>(null),
     [depthOpen, setDepthOpen] = useState(false),
     [currencySaving, setCurrencySaving] = useState(false),
     [currencyError, setCurrencyError] = useState("");
@@ -140,38 +144,40 @@ export function Portfolio() {
         title="Portfolio"
         subtitle="Value, decisions and exposure."
         actions={
-          <>
-            <details className={reference.manage}>
-              <summary>Manage</summary>
-              <div>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    setDepthOpen(true);
-                    depth.current?.showModal();
-                  }}
-                >
-                  Record transaction
-                </button>
-                <button
-                  className="btn"
-                  onClick={() => balances.current?.showModal()}
-                >
-                  Cash & balances
-                </button>
-              </div>
-            </details>
+          <div
+            className={reference.actionsBar}
+            role="group"
+            aria-label="Portfolio actions"
+          >
             <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setDepthOpen(true);
+                depth.current?.showModal();
+              }}
+            >
+              Record transaction
+            </button>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => balances.current?.showModal()}
+            >
+              Cash &amp; balances
+            </button>
+            <button
+              type="button"
               className="btn primary"
               onClick={() => {
                 setCashDefault(false);
                 setEditing("new");
               }}
             >
-              <Plus size={16} />
+              <Plus size={16} aria-hidden="true" />
               Add position
             </button>
-          </>
+          </div>
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
@@ -508,6 +514,11 @@ export function Portfolio() {
               state={state}
               earnings={earnings}
               onEdit={setEditing}
+              onAddPurchase={(seed) => {
+                setCashDefault(false);
+                setPurchaseSeed(seed);
+                setEditing("new");
+              }}
             />
           ) : (
             <Empty
@@ -564,7 +575,13 @@ export function Portfolio() {
           key={editing === "new" ? "new" : editing.id}
           position={editing === "new" ? null : editing}
           cashDefault={cashDefault}
-          onClose={() => setEditing(null)}
+          initialSymbol={purchaseSeed?.symbol}
+          initialCurrency={purchaseSeed?.currency}
+          onClose={() => {
+            setEditing(null);
+            setPurchaseSeed(null);
+            setCashDefault(false);
+          }}
         />
       )}
       <dialog
@@ -721,6 +738,7 @@ function HoldingsTable({
   state,
   earnings,
   onEdit,
+  onAddPurchase,
 }: {
   expandedMetrics: boolean;
   positions: Position[];
@@ -728,170 +746,260 @@ function HoldingsTable({
   state: ReturnType<typeof useWorkspaceData>;
   earnings: Set<string>;
   onEdit: (p: Position) => void;
+  onAddPurchase: (seed: { symbol: string; currency: string | null }) => void;
 }) {
   const { model, q, quotes, prefix } = state;
   const selected = new Set(positions.map((p) => p.id));
-  const rows = ledgerRows(allPositions, q, model.invested, earnings)
-    .filter((r) => selected.has(r.position.id))
+  const rows = groupedLedgerRows(allPositions, q, model.invested, earnings)
+    .filter((r) => r.lots.some((p) => selected.has(p.id)))
     .sort((a, b) => (b.value ?? -1) - (a.value ?? -1));
+  const purchaseDialog = useRef<HTMLDialogElement>(null);
+  const [activeKey, setActiveKey] = useState<string | null>(null);
+  const activeHolding = rows.find((row) => row.groupKey === activeKey);
   return (
-    <div
-      className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll}`}
-      role="region"
-      aria-label="Portfolio holdings, scroll for more rows and columns"
-      tabIndex={0}
-    >
-      <table className="holdings-table approved-holdings-table">
-        <caption className="sr-only">
-          Your recorded investments. Weights use priced invested value; cash is
-          excluded from weight. Returns require a USD cost basis.
-        </caption>
-        <thead>
-          <tr>
-            <th>Company / accumulation pace</th>
-            {expandedMetrics && (
-              <>
-                <th>Shares</th>
-                <th>Average cost</th>
-              </>
-            )}
-            <th>Weight</th>
-            <th>Price</th>
-            <th>Value</th>
-            <th>Return</th>
-            <th>
-              <span className="sr-only">Edit holding</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => {
-            const p = row.position,
-              cash = p.assetType === "cash",
-              quote = quotes.data[p.symbol]?.quote,
-              decision = cash ? null : state.pace(p.symbol);
-            return (
-              <tr key={p.id}>
-                <td>
-                  {cash ? (
-                    <div className="company-row">
-                      <span className="approved-cash-mark">
-                        <Wallet size={23} />
-                      </span>
-                      <span>
-                        <b>{p.symbol} cash</b>
-                        <small>Recorded balance</small>
-                      </span>
-                    </div>
-                  ) : (
-                    <Link
-                      className="company-row"
-                      href={researchLink(p.symbol, prefix)}
-                    >
-                      <SecurityLogo symbol={p.symbol} />
-                      <span>
-                        <b>{p.symbol}</b>
-                        <small>
-                          {quotes.data[p.symbol]?.company?.name ||
-                            "Open research"}
-                          {!expandedMetrics && (
-                            <>
-                              <br />
-                              {p.quantity.toLocaleString(undefined, {
-                                maximumFractionDigits: 6,
-                              })}{" "}
-                              {p.assetType === "crypto" ? "units" : "shares"} ·{" "}
-                              {p.currency
-                                ? amount(p.cost, p.currency)
-                                : "Unknown currency"}{" "}
-                              cost
-                            </>
+    <>
+      <div
+        className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll}`}
+        role="region"
+        aria-label="Portfolio holdings, scroll for more rows and columns"
+        tabIndex={0}
+      >
+        <table className="holdings-table approved-holdings-table">
+          <caption className="sr-only">
+            Your recorded investments. Weights use priced invested value; cash
+            is excluded from weight. Purchases are grouped by ticker. Returns
+            require a USD cost basis.
+          </caption>
+          <thead>
+            <tr>
+              <th>Company / accumulation pace</th>
+              {expandedMetrics && (
+                <>
+                  <th>Shares</th>
+                  <th>Average cost</th>
+                </>
+              )}
+              <th>Weight</th>
+              <th>Price</th>
+              <th>Value</th>
+              <th>Return</th>
+              <th>
+                <span className="sr-only">Manage purchases</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => {
+              const p = row.position,
+                cash = p.assetType === "cash",
+                quote = quotes.data[p.symbol]?.quote,
+                decision = cash ? null : state.pace(p.symbol),
+                quantityDisplay =
+                  row.quantity?.toLocaleString(undefined, {
+                    maximumFractionDigits: 8,
+                  }) ?? "—",
+                costDisplay =
+                  row.avgCost != null && row.costCurrency
+                    ? amount(row.avgCost, row.costCurrency)
+                    : row.costState === "mixed"
+                      ? "Mixed currencies"
+                      : "Cost unavailable";
+              return (
+                <tr key={row.groupKey}>
+                  <td>
+                    {cash ? (
+                      <div className="company-row">
+                        <span className="approved-cash-mark">
+                          <Wallet size={23} />
+                        </span>
+                        <span>
+                          <b>{p.symbol} cash</b>
+                          <small>Recorded balance</small>
+                        </span>
+                      </div>
+                    ) : (
+                      <Link
+                        className="company-row"
+                        href={researchLink(p.symbol, prefix)}
+                      >
+                        <SecurityLogo symbol={p.symbol} />
+                        <span>
+                          <b>{p.symbol}</b>
+                          <small>
+                            {quotes.data[p.symbol]?.company?.name ||
+                              "Open research"}
+                            {row.lots.length > 1
+                              ? ` · ${row.lots.length} purchases`
+                              : ""}
+                            {!expandedMetrics && (
+                              <>
+                                <br />
+                                {quantityDisplay}{" "}
+                                {p.assetType === "crypto" ? "units" : "shares"}{" "}
+                                · {costDisplay}
+                                {row.avgCost != null ? " avg cost" : ""}
+                              </>
+                            )}
+                          </small>
+                          {p.assetType !== "crypto" && (
+                            <PaceBadge
+                              signal={decision}
+                              loading={state.paceScan.loading}
+                            />
                           )}
-                        </small>
-                        {p.assetType !== "crypto" && (
-                          <PaceBadge
-                            signal={decision}
-                            loading={state.paceScan.loading}
-                          />
-                        )}
-                      </span>
-                    </Link>
+                        </span>
+                      </Link>
+                    )}
+                  </td>
+                  {expandedMetrics && (
+                    <>
+                      <td>{cash ? "—" : quantityDisplay}</td>
+                      <td>{cash ? "—" : costDisplay}</td>
+                    </>
                   )}
-                </td>
-                {expandedMetrics && (
-                  <>
-                    <td>
-                      {cash
-                        ? "—"
-                        : p.quantity.toLocaleString(undefined, {
-                            maximumFractionDigits: 6,
-                          })}
-                    </td>
-                    <td>
-                      {cash
-                        ? "—"
-                        : p.currency
-                          ? amount(p.cost, p.currency)
-                          : "Unknown currency"}
-                    </td>
-                  </>
-                )}
-                <td>{cash ? "—" : percent(row.weight)}</td>
-                <td>
-                  <strong>
-                    {cash ? "—" : amount(quote?.price, quote?.currency)}
-                  </strong>
-                  {!cash && (
+                  <td>{cash ? "—" : percent(row.weight)}</td>
+                  <td>
+                    <strong>
+                      {cash ? "—" : amount(quote?.price, quote?.currency)}
+                    </strong>
+                    {!cash && (
+                      <small
+                        title={
+                          quote
+                            ? `Price as of ${quoteTime(quote.asOf)}`
+                            : undefined
+                        }
+                      >
+                        {quote?.asOf
+                          ? `${quote.stale ? "Older · " : ""}${quoteTime(quote.asOf, true)}`
+                          : "Price unavailable"}
+                      </small>
+                    )}
+                  </td>
+                  <td>
+                    <strong>{amount(row.value)}</strong>
+                  </td>
+                  <td>
                     <small
-                      title={
-                        quote
-                          ? `Price as of ${quoteTime(quote.asOf)}`
-                          : undefined
+                      className={
+                        row.pnl == null
+                          ? "muted"
+                          : row.pnl < 0
+                            ? "negative"
+                            : "green"
                       }
                     >
-                      {quote?.asOf
-                        ? `${quote.stale ? "Older · " : ""}${quoteTime(quote.asOf, true)}`
-                        : "Price unavailable"}
+                      {row.pnl != null
+                        ? row.returnPct == null
+                          ? amount(row.pnl)
+                          : `${amount(row.pnl)} · ${percent(row.returnPct, true)}`
+                        : !cash
+                          ? "Return unavailable"
+                          : "Cash balance"}
                     </small>
-                  )}
-                </td>
-                <td>
-                  <strong>{amount(row.value)}</strong>
-                </td>
-                <td>
-                  <small
-                    className={
-                      row.pnl == null
-                        ? "muted"
-                        : row.pnl < 0
-                          ? "negative"
-                          : "green"
-                    }
-                  >
-                    {row.returnPct != null
-                      ? `${amount(row.pnl)} · ${percent(row.returnPct, true)}`
-                      : !cash
-                        ? "Return unavailable"
-                        : "Cash balance"}
-                  </small>
-                  {row.note && (
-                    <small className="approved-holding-note">{row.note}</small>
-                  )}
-                </td>
-                <td>
+                    {row.note && (
+                      <small className="approved-holding-note">
+                        {row.note}
+                      </small>
+                    )}
+                  </td>
+                  <td>
+                    <button
+                      className="icon-button"
+                      type="button"
+                      aria-label={
+                        cash
+                          ? `Edit ${p.symbol} cash`
+                          : `Manage ${p.symbol} purchases`
+                      }
+                      onClick={() => {
+                        if (cash) onEdit(p);
+                        else {
+                          setActiveKey(row.groupKey);
+                          purchaseDialog.current?.showModal();
+                        }
+                      }}
+                    >
+                      <MoreHorizontal size={19} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <dialog
+        ref={purchaseDialog}
+        className="dialog approved-workspace-dialog"
+        aria-labelledby="holding-purchases-heading"
+        onClose={() => setActiveKey(null)}
+      >
+        <div className="dialog-head">
+          <h2 id="holding-purchases-heading">
+            {activeHolding
+              ? `${activeHolding.position.symbol} purchases`
+              : "Holding purchases"}
+          </h2>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Close purchases"
+            onClick={() => purchaseDialog.current?.close()}
+          >
+            <X size={20} aria-hidden="true" />
+          </button>
+        </div>
+        {activeHolding && (
+          <>
+            <ul
+              className={reference.purchaseLots}
+              aria-label="Recorded purchases"
+            >
+              {activeHolding.lots.map((lot, index) => (
+                <li key={lot.id}>
+                  <span>
+                    <strong>Purchase {index + 1}</strong>
+                    <small>
+                      {lot.quantity.toLocaleString(undefined, {
+                        maximumFractionDigits: 8,
+                      })}{" "}
+                      {lot.assetType === "crypto" ? "units" : "shares"} ·{" "}
+                      {lot.currency
+                        ? `${amount(lot.cost, lot.currency)} per unit`
+                        : "Cost currency unknown"}
+                    </small>
+                  </span>
                   <button
-                    className="icon-button"
-                    aria-label={`Edit ${p.symbol}`}
-                    onClick={() => onEdit(p)}
+                    type="button"
+                    className="btn"
+                    aria-label={`Edit purchase ${index + 1}`}
+                    onClick={() => {
+                      purchaseDialog.current?.close();
+                      onEdit(lot);
+                    }}
                   >
-                    <MoreHorizontal size={19} />
+                    Edit
                   </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              className="btn primary"
+              onClick={() => {
+                purchaseDialog.current?.close();
+                onAddPurchase({
+                  symbol: activeHolding.position.symbol,
+                  currency: activeHolding.costCurrency,
+                });
+              }}
+            >
+              <Plus size={16} aria-hidden="true" /> Add another purchase
+            </button>
+          </>
+        )}
+      </dialog>
+    </>
   );
 }

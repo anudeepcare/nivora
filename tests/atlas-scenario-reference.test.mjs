@@ -67,7 +67,18 @@ test("no model and no valid reference range still render explicit missingness", 
   };
   assert.equal(referenceAtlas(r).referenceRange, null);
   const rendered = readFileSync("components/ReferenceAtlas.tsx", "utf8");
-  assert.match(rendered, /m\.referenceRange\.values\.map/);
-  assert.match(rendered, /m\.referenceRange\.note/);
+  assert.match(rendered, /referenceRange\.values\.map/);
+  assert.match(rendered, /referenceRange\.note/);
   assert.match(rendered, /Not available/);
+});
+
+test("Atlas maps every range through one styled card grid with source-specific captions", () => {
+  const rendered = readFileSync("components/ReferenceAtlas.tsx", "utf8");
+  assert.equal((rendered.match(/className=\{s\.caseGrid\}/g) ?? []).length, 1);
+  assert.match(rendered, /rangeCards\.map/);
+  assert.match(rendered, /data-tone=\{card\.tone\}/);
+  assert.match(rendered, /<small>\{card\.caption\}<\/small>/);
+  assert.match(rendered, /Lower bound.*Historical base.*Upper bound/s);
+  assert.match(rendered, /Published target/);
+  assert.match(rendered, /annualized/);
 });

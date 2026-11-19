@@ -1,4 +1,5 @@
 "use client";
+import styles from "./AccountBalances.module.css";
 import { useEffect, useState } from "react";
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
@@ -58,7 +59,7 @@ export default function AccountBalances({
     }
   }
   return (
-    <div className="account-equity">
+    <div className={`account-equity ${styles.root}`}>
       <div className="account-equity-primary">
         <span className="eyebrow">
           {b ? "Net equity · USD" : "Priced assets & cash · USD"}
@@ -169,7 +170,7 @@ export default function AccountBalances({
               checked={confirmed}
               onChange={(e) => setConfirmed(e.target.checked)}
             />
-            Managed investments are not already in my holdings.
+            <span>Managed investments are not already in my holdings.</span>
           </label>
           {message && (
             <p className="account-balance-error" role="alert">
