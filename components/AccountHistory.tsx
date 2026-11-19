@@ -272,7 +272,7 @@ export default function AccountHistory({
       <header className={styles.chartHeader}>
         <h2>Account value &amp; market comparison</h2>
         <div className={styles.periods} aria-label="Account history period">
-          {["1M", "6M", "YTD", "1Y", "ALL"].map((value) => (
+          {["1M", "3M", "6M", "YTD", "1Y", "ALL"].map((value) => (
             <button
               key={value}
               type="button"

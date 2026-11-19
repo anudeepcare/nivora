@@ -55,7 +55,7 @@ test("portfolio chart summarizes matching dates and percentage price movements i
     new URL("../components/ApprovedPortfolioChart.tsx", import.meta.url),
     "utf8",
   );
-  assert.match(source, />Price changes</);
+  assert.match(source, /Price change from shared start/);
   assert.match(source, /dateLabel\(chart.points\[0\].time\)/);
   assert.match(source, /dateLabel\(chart.points.at\(-1\)!\.time\)/);
   assert.match(source, /priceMove\(chart.points\)/);

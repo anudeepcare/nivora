@@ -336,9 +336,6 @@
   line-height: 1.4;
   color: var(--muted);
 }
-.page.page.page.page :global(.wealth-strip.four) > div:first-child {
-  background: color-mix(in srgb, var(--blue) 9%, var(--card));
-}
 .page.page.page.page :global(.wealth-strip.four) > div > strong {
   font-variant-numeric: tabular-nums;
 }
@@ -366,20 +363,30 @@
   color: var(--portfolio-loss);
 }
 .page.page.page.page :global(.wealth-strip.four) > div[data-tone="negative"] {
-  --red: var(--portfolio-loss);
   background: color-mix(in srgb, var(--portfolio-loss) 5%, var(--card));
 }
 .page.page.page.page :global(.wealth-strip.four) > div:first-child {
-  --ink: #f8faff;
-  --muted: #cad5e7;
-  background: linear-gradient(143deg, #26395e, #182744 70%, #202a51);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--portfolio-basket) 12%, var(--card)),
+    var(--card) 92%
+  );
   color: var(--ink);
+}
+.page.page.page.page :global(.wealth-strip.four) > div:first-child > strong {
+  color: var(--ink);
+  font-weight: 650;
 }
 .page.page.page.page
   :global(.wealth-strip.four)
   > div:first-child
-  :is(strong, button) {
-  color: inherit;
+  > :is(span, small) {
+  color: var(--muted);
+}
+@media (min-width: 901px) {
+  .page.page.page.page :global(.wealth-strip.four) {
+    grid-template-columns: minmax(0, 1.18fr) repeat(3, minmax(0, 1fr));
+  }
 }
 .page.page.page.page :global(.wealth-strip.four) > div:nth-child(3) > strong {
   color: var(--portfolio-spy);

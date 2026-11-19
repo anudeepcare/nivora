@@ -10,25 +10,23 @@ export function accountHistoryWindow(dates: string[], period: string) {
     .sort();
   const end = valid.at(-1) ?? null;
   let cutoff = -Infinity;
+  const months = (
+    { "1M": 1, "3M": 3, "6M": 6, "1Y": 12, "2Y": 24 } as Record<string, number>
+  )[period];
   if (end) {
     const time = Date.parse(end);
-    if (period === "3M" || period === "6M") {
+    if (months) {
       const d = new Date(time),
         target = new Date(
-          Date.UTC(
-            d.getUTCFullYear(),
-            d.getUTCMonth() - (period === "3M" ? 3 : 6),
-            1,
-          ),
+          Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - months, 1),
         );
       const lastDay = new Date(
         Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0),
       ).getUTCDate();
       target.setUTCDate(Math.min(d.getUTCDate(), lastDay));
       cutoff = target.getTime();
-    } else if (period === "1M") cutoff = time - 31 * 86400000;
-    else if (period === "1Y") cutoff = time - 365 * 86400000;
-    else if (period === "YTD") cutoff = Date.parse(end.slice(0, 4) + "-01-01");
+    } else if (period === "YTD")
+      cutoff = Date.parse(end.slice(0, 4) + "-01-01");
   }
   const actual = valid.filter((d) => Date.parse(d) >= cutoff);
   return {

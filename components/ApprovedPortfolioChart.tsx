@@ -54,6 +54,7 @@ export default function ApprovedPortfolioChart({
   const [width, setWidth] = useState(640);
   const [inspection, setInspection] = useState<number | null>(null);
   const [period, setPeriod] = useState("6M");
+  const [historyRange, setHistoryRange] = useState("6M");
   useEffect(() => {
     const element = container.current;
     if (!element) return;
@@ -94,17 +95,17 @@ export default function ApprovedPortfolioChart({
         (cache.get(`research/${encodeURIComponent(symbol.replace("/", "-"))}`)
           ?.value as Research | undefined);
       const chart = cache.get(
-        `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=6M`,
+        `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=${historyRange}`,
       )?.value as { candles: Candle[]; source: string } | undefined;
       if (chart?.candles?.length) saved[symbol] = chart;
-      else if (research?.history?.length)
+      else if (historyRange === "6M" && research?.history?.length)
         saved[symbol] = {
           candles: research.history,
           source: research.historySource || "Supplied research history",
         };
     }
     setHistory(saved);
-    const scope = `${owner}:${key}`;
+    const scope = `${owner}:${key}:${historyRange}`;
     if (attempted.current.scope !== scope)
       attempted.current = { scope, symbols: new Set() };
     const missing = historyBatch(
@@ -125,7 +126,7 @@ export default function ApprovedPortfolioChart({
       for (const symbol of missing) {
         if (!active) break;
         attempted.current.symbols.add(symbol);
-        const path = `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=6M`;
+        const path = `chart/${encodeURIComponent(symbol.replace("/", "-"))}?range=${historyRange}`;
         try {
           const result = await readResource(cache, path, 900000, () =>
             api<{ candles: Candle[]; source: string }>(
@@ -150,7 +151,7 @@ export default function ApprovedPortfolioChart({
       active = false;
       abort.abort();
     };
-  }, [key, cache, demo, owner, revision]);
+  }, [key, cache, demo, owner, revision, historyRange]);
   const fullHistory = useMemo(
     () =>
       portfolioHistory(
@@ -160,18 +161,24 @@ export default function ApprovedPortfolioChart({
         demo
           ? Object.values(demo.research)[0]?.retrievedAt.slice(0, 10)
           : undefined,
-        compact ? 190 : 60,
+        compact ? 760 : 60,
       ),
     [positions, quotes, history, demo, compact],
   );
   const chart = useMemo(() => {
-    if (!compact) return fullHistory;
-    const { cutoff } = accountHistoryWindow(
+    if (!compact) return { ...fullHistory, availableFrom: null };
+    const { cutoff, actualStart, requestedStart } = accountHistoryWindow(
       fullHistory.points.map((p) => p.time),
       period,
     );
     return {
       ...fullHistory,
+      availableFrom:
+        actualStart &&
+        requestedStart &&
+        Date.parse(actualStart) - Date.parse(requestedStart) > 5 * 86400000
+          ? actualStart
+          : null,
       points: fullHistory.points.filter((p) => Date.parse(p.time) >= cutoff),
     };
   }, [fullHistory, compact, period]);
@@ -207,10 +214,15 @@ export default function ApprovedPortfolioChart({
     : [];
   const spy = overlays.find((b) => b.symbol === "SPY");
   const gap = spy && !loading ? priceChangeGap(chart.points, spy.points) : null;
-  const values = chart.points.map((p) => p.value),
+  const plotted = (value: number) =>
+    compact && chart.points[0]?.value > 0
+      ? (value / chart.points[0].value - 1) * 100
+      : value;
+  const values = chart.points.map((p) => plotted(p.value)),
     domain = [
       ...values,
-      ...overlays.flatMap((b) => b.points.map((p) => p.value)),
+      ...overlays.flatMap((b) => b.points.map((p) => plotted(p.value))),
+      ...(compact ? [0] : []),
     ],
     low = Math.min(...domain),
     high = Math.max(...domain),
@@ -230,6 +242,30 @@ export default function ApprovedPortfolioChart({
       className={styles.chart}
       data-compact={compact || undefined}
     >
+      {compact && (
+        <div
+          className={styles.periods}
+          role="group"
+          aria-label="Holdings history period"
+        >
+          {["1M", "3M", "6M", "1Y", "2Y"].map((value) => (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={period === value}
+              onClick={() => {
+                setInspection(null);
+                setPeriod(value);
+                if (value === "2Y") setHistoryRange("5Y");
+                else if (value === "1Y")
+                  setHistoryRange((range) => (range === "5Y" ? range : "1Y"));
+              }}
+            >
+              {value}
+            </button>
+          ))}
+        </div>
+      )}
       <p className="chart-note" role="status">
         <strong>
           {loading
@@ -240,36 +276,20 @@ export default function ApprovedPortfolioChart({
         </strong>{" "}
         · {chart.included.length} of {symbols.length} holdings
         {!compact && ". Cash, managed balances and margin are excluded."}
+        {!loading && chart.availableFrom && (
+          <> · Available history starts {dateLabel(chart.availableFrom)}</>
+        )}
       </p>
       {showBenchmarks && chart.points.length > 1 && (
         <div className={styles.benchmarkLegend}>
           <header>
-            <strong>Price changes</strong>
+            <strong>
+              {compact ? "Price change from shared start" : "Price changes"}
+            </strong>
             <span>
               {dateLabel(chart.points[0].time)} –{" "}
               {dateLabel(chart.points.at(-1)!.time)}
             </span>
-            {compact && (
-              <div
-                className={styles.periods}
-                role="group"
-                aria-label="Holdings history period"
-              >
-                {["1M", "3M", "6M"].map((value) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={period === value}
-                    onClick={() => {
-                      setInspection(null);
-                      setPeriod(value);
-                    }}
-                  >
-                    {value}
-                  </button>
-                ))}
-              </div>
-            )}
           </header>
           <span data-benchmark="HOLDINGS">
             Holdings <strong>{priceMove(chart.points)}</strong>
@@ -336,17 +356,25 @@ export default function ApprovedPortfolioChart({
           aria-live="polite"
           aria-atomic="true"
         >
-          {selectedPoint ? (
+          {(selectedPoint ?? chart.points.at(-1)) ? (
             <>
               <span>
-                {dateLabel(selectedPoint.time)} · Value of included holdings
+                {dateLabel((selectedPoint ?? chart.points.at(-1)!).time)} ·
+                Value of included holdings
               </span>
-              <strong>{amount(selectedPoint.value, "USD")}</strong>
+              <strong>
+                {amount((selectedPoint ?? chart.points.at(-1)!).value, "USD")}
+              </strong>
               {overlays.map((b) => (
                 <span key={b.symbol}>
                   {b.symbol} rebased:{" "}
                   {amount(
-                    b.points[Math.min(inspection!, b.points.length - 1)].value,
+                    b.points[
+                      Math.min(
+                        inspection ?? b.points.length - 1,
+                        b.points.length - 1,
+                      )
+                    ].value,
                     "USD",
                   )}
                 </span>
@@ -364,7 +392,7 @@ export default function ApprovedPortfolioChart({
         <svg
           viewBox={`0 0 ${width} 320`}
           className="data-chart approved-portfolio-chart"
-          data-direction={seriesDirection(values)}
+          data-direction={compact ? undefined : seriesDirection(values)}
           role="slider"
           tabIndex={0}
           aria-valuemin={0}
@@ -433,12 +461,21 @@ export default function ApprovedPortfolioChart({
         >
           <defs>
             <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="currentColor" stopOpacity=".12" />
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+              <stop
+                offset="0%"
+                stopColor="var(--holdings-series)"
+                stopOpacity=".12"
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--holdings-series)"
+                stopOpacity="0"
+              />
             </linearGradient>
           </defs>
           {[0, 1, 2, 3].map((i) => {
             const value = bottom + ((top - bottom) * i) / 3;
+            if (compact && Math.abs(y(value) - y(0)) < 14) return null;
             return (
               <g key={i}>
                 <line
@@ -454,25 +491,34 @@ export default function ApprovedPortfolioChart({
                   textAnchor="end"
                   className="chart-axis"
                 >
-                  {amount(value, "USD", true)}
+                  {compact
+                    ? `${value > 0 ? "+" : ""}${value.toFixed(1)}%`
+                    : amount(value, "USD", true)}
                 </text>
               </g>
             );
           })}
-          {overlays.length > 0 && (
+          {(compact || overlays.length > 0) && (
             <g aria-hidden="true">
+              {compact && (
+                <text
+                  x="50"
+                  y={y(0) + 4}
+                  textAnchor="end"
+                  className="chart-axis"
+                >
+                  0%
+                </text>
+              )}
               <line
                 x1="58"
                 x2={right}
-                y1={y(values[0])}
-                y2={y(values[0])}
-                stroke="currentColor"
+                y1={y(compact ? 0 : values[0])}
+                y2={y(compact ? 0 : values[0])}
+                stroke="var(--holdings-series)"
                 strokeDasharray="3 5"
                 opacity=".32"
               />
-              <text x="66" y={y(values[0]) - 7} className="chart-axis">
-                Shared start
-              </text>
             </g>
           )}
           <path
@@ -482,7 +528,8 @@ export default function ApprovedPortfolioChart({
           <path
             d={path}
             fill="none"
-            stroke="currentColor"
+            stroke="var(--holdings-series)"
+            style={{ stroke: "var(--holdings-series)" }}
             strokeWidth="3"
             strokeLinejoin="round"
           />
@@ -491,10 +538,16 @@ export default function ApprovedPortfolioChart({
               key={b.symbol}
               data-benchmark={b.symbol}
               className={styles.benchmarkLine}
+              style={{
+                stroke:
+                  b.symbol === "SPY"
+                    ? "var(--spy-series)"
+                    : "var(--qqq-series)",
+              }}
               d={b.points
                 .map(
                   (p, i) =>
-                    `${i ? "L" : "M"}${x(i).toFixed(2)} ${y(p.value).toFixed(2)}`,
+                    `${i ? "L" : "M"}${x(i).toFixed(2)} ${y(plotted(p.value)).toFixed(2)}`,
                 )
                 .join(" ")}
               fill="none"
@@ -502,14 +555,19 @@ export default function ApprovedPortfolioChart({
               strokeDasharray={b.symbol === "SPY" ? "8 4" : "2 4"}
             />
           ))}
-          <circle cx={right} cy={y(values.at(-1)!)} r="4" fill="currentColor" />
+          <circle
+            cx={right}
+            cy={y(values.at(-1)!)}
+            r="4"
+            fill="var(--holdings-series)"
+          />
           {overlays.map((b) => (
             <circle
               key={b.symbol}
               data-benchmark={b.symbol}
               className={styles.benchmarkMarker}
               cx={right}
-              cy={y(b.points.at(-1)!.value)}
+              cy={y(plotted(b.points.at(-1)!.value))}
               r="3"
             />
           ))}
@@ -520,7 +578,7 @@ export default function ApprovedPortfolioChart({
                 x2={x(inspection)}
                 y1="30"
                 y2="270"
-                stroke="currentColor"
+                stroke="var(--holdings-series)"
                 strokeDasharray="4 4"
                 opacity=".5"
               />
@@ -531,7 +589,9 @@ export default function ApprovedPortfolioChart({
                   className={styles.benchmarkMarker}
                   cx={x(inspection)}
                   cy={y(
-                    b.points[Math.min(inspection, b.points.length - 1)].value,
+                    plotted(
+                      b.points[Math.min(inspection, b.points.length - 1)].value,
+                    ),
                   )}
                   r="4"
                   stroke="var(--card)"
@@ -540,9 +600,9 @@ export default function ApprovedPortfolioChart({
               ))}
               <circle
                 cx={x(inspection)}
-                cy={y(selectedPoint.value)}
+                cy={y(plotted(selectedPoint.value))}
                 r="5"
-                fill="currentColor"
+                fill="var(--holdings-series)"
                 stroke="var(--card)"
                 strokeWidth="2"
               />
