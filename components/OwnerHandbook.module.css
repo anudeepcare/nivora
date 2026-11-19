@@ -424,7 +424,6 @@
   font-size: 12px;
 }
 .topics button[aria-current="page"] {
-  box-shadow: inset 2px 0 var(--green);
   background: color-mix(in srgb, var(--green) 5%, transparent);
 }
 @media (max-width: 800px) {
@@ -482,9 +481,8 @@
   gap: 24px;
 }
 .topics button[aria-current="page"] {
-  color: var(--blue);
-  background: var(--blue-soft);
-  box-shadow: inset 2px 0 var(--blue);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--blue) 10%, var(--card));
 }
 .readerMeta > span {
   color: var(--blue);

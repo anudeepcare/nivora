@@ -306,12 +306,14 @@ export default function ReferenceAtlas({
         <section className={s.scenarios}>
           <header>
             <span className={s.eyebrow}>
-              Outcome range{" "}
+              {m.referenceRange?.title ?? "Outcome range"}{" "}
               {atlasHorizonLabel(m.horizon)
                 ? `· ${atlasHorizonLabel(m.horizon)}`
                 : ""}
             </span>
-            <button onClick={() => onTab("Valuation")}>Open model ↗</button>
+            <button onClick={() => onTab("Valuation")}>
+              {m.cases.length === 3 ? "Open model" : "Open Scenarios"} ↗
+            </button>
           </header>
           {m.cases.length === 3 ? (
             <>
@@ -338,6 +340,29 @@ export default function ReferenceAtlas({
                   <> Model dated {dateLabel(m.outcome.asOf)}.</>
                 )}
                 {m.outcome.end && <> Ends {dateLabel(m.outcome.end)}.</>}
+              </p>
+            </>
+          ) : m.referenceRange ? (
+            <>
+              <div className={s.caseGrid}>
+                {m.referenceRange.values.map((value, index) => (
+                  <button key={index} onClick={() => onTab("Valuation")}>
+                    <span>{m.referenceRange?.labels[index]}</span>
+                    <strong>{amount(value, m.referenceRange?.currency)}</strong>
+                  </button>
+                ))}
+              </div>
+              <p>
+                {m.referenceRange.note}
+                {m.referenceRange.asOf && (
+                  <>
+                    {" "}
+                    {m.referenceRange.source === "history"
+                      ? "Reference price dated"
+                      : "Observed"}{" "}
+                    {dateLabel(m.referenceRange.asOf)}.
+                  </>
+                )}
               </p>
             </>
           ) : (

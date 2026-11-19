@@ -1,3 +1,5 @@
+import { scenarioHeadline } from "./scenario-headline.ts";
+import { consensusOutlook } from "./outlook.ts";
 import { aurynDecision } from "./auryn-decision.ts";
 import { selectedScenarioProjection } from "./scenario-projection.ts";
 import { scenarioResearchInput } from "./scenario-reference.ts";
@@ -87,6 +89,47 @@ export function referenceAtlas(research: Research) {
           }),
         )
       : [];
+  // Mirror Scenarios' existing historical fallback without passing it off as
+  // a model. Published targets are a separate reference, never model inputs.
+  const fallback =
+    !cases.length &&
+    research.company.assetType === "stock" &&
+    typeof research.quote.currency === "string" &&
+    /^[A-Z]{3}$/.test(research.quote.currency) &&
+    research.company.currency === research.quote.currency
+      ? scenarioHeadline(research)
+      : null;
+  const analyst =
+    fallback?.source === "analyst" && !research.company.foreignListing
+      ? consensusOutlook(research)
+      : null;
+  const referenceRange =
+    fallback?.source === "history" &&
+    [fallback.bear, fallback.base, fallback.bull].every(
+      (value) => Number.isFinite(value) && value > 0,
+    )
+      ? {
+          source: "history" as const,
+          title: fallback.horizon
+            ? `${fallback.eyebrow} · ${fallback.horizon}`
+            : fallback.eyebrow,
+          note: "Same price-risk range as Scenarios. Not a valuation or forecast.",
+          values: [fallback.bear, fallback.base, fallback.bull],
+          labels: ["Bear", "Base", "Bull"],
+          asOf: fallback.referenceAsOf ?? null,
+          currency: research.quote.currency,
+        }
+      : analyst?.low != null && analyst.high != null
+        ? {
+            source: "analyst" as const,
+            title: "Published analyst targets",
+            note: "From the research snapshot. Analyst opinion, not AURYN fair value.",
+            values: [analyst.low, analyst.target, analyst.high],
+            labels: ["Low target", "Consensus", "High target"],
+            asOf: analyst.asOf,
+            currency: research.quote.currency,
+          }
+        : null;
   const outcome = {
     currency: usable?.currency ?? research.company.currency,
     method: usable
@@ -179,6 +222,7 @@ export function referenceAtlas(research: Research) {
     brief,
     signals,
     cases,
+    referenceRange,
     horizon: usable?.years ?? null,
     outcome,
     pace:

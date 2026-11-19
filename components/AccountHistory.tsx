@@ -616,6 +616,20 @@ export default function AccountHistory({
             const benchmark = result.benchmarks?.find(
               (b) => b.symbol === symbol,
             );
+            const matchedDates =
+              benchmark?.status === "available"
+                ? points
+                    .filter(
+                      (point) =>
+                        Number.isFinite(point.equity) &&
+                        benchmark.points.some(
+                          (candidate) =>
+                            candidate.date === point.date &&
+                            Number.isFinite(candidate.value),
+                        ),
+                    )
+                    .map((point) => point.date)
+                : [];
             const end =
               benchmark?.status === "available"
                 ? benchmark.points.find((point) => point.date === last?.date)
@@ -625,6 +639,13 @@ export default function AccountHistory({
                 <h3>
                   {symbol === "SPY" ? "S&P 500 (SPY)" : "Nasdaq-100 (QQQ)"}
                 </h3>
+                {matchedDates.length > 0 && (
+                  <small>
+                    Matched valuation dates: {matchedDates.length} of{" "}
+                    {points.length} displayed · {matchedDates[0]}–
+                    {matchedDates.at(-1)}
+                  </small>
+                )}
                 {end && last ? (
                   <>
                     <strong>{amount(end.value)}</strong>
@@ -637,9 +658,11 @@ export default function AccountHistory({
                   <p>
                     {benchmark?.status === "unavailable"
                       ? benchmark.reason
-                      : readOnly
-                        ? "No validated comparison available for this saved history."
-                        : "No comparison result supplied. Build complete account history to compare."}
+                      : matchedDates.length > 0 && last
+                        ? `No benchmark balance on the latest account date (${last.date}). Earlier matched observations remain in the chart.`
+                        : readOnly
+                          ? "No validated comparison available for this saved history."
+                          : "No comparison result supplied. Build complete account history to compare."}
                   </p>
                 )}
               </div>

@@ -335,7 +335,6 @@
   margin: 16px 0;
   border-radius: 12px;
   background: color-mix(in srgb, var(--blue) 7%, var(--card));
-  border-left: 3px solid var(--blue);
 }
 .helpContact strong {
   font-size: 15px;

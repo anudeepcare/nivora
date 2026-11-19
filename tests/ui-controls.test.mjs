@@ -1,3 +1,4 @@
+import { searchHighlightIndex, searchListingKey } from "../lib/search-selection.ts";
 import { selectedScenarioProjection } from "../lib/scenario-projection.ts";
 import { scenarioResearchInput } from "../lib/scenario-reference.ts";
 import { earningsCalendar } from "../lib/earnings-calendar.ts";
@@ -260,7 +261,7 @@ test("metric explanations do not inject dialog blocks into server-rendered parag
 });
 
 test("empty focused search does not expose a nonexistent listbox to assistive technology", () => {
-  const states = ["", [], true, -1, false, ""];
+  const states = ["", [], true, null, false, ""];
   const Search = loadComponent("components/Search.tsx", "Search", {
     React,
     useId: React.useId,
@@ -270,6 +271,8 @@ test("empty focused search does not expose a nonexistent listbox to assistive te
     useProduct: () => ({}),
     useRouter: () => ({ push: empty }),
     SearchIcon: empty,
+    searchHighlightIndex,
+    searchListingKey,
     X: empty,
     SecurityLogo: empty,
     ArrowUpRight: empty,
@@ -280,7 +283,7 @@ test("empty focused search does not expose a nonexistent listbox to assistive te
 });
 
 test("opening mobile search offers the account's saved instruments without fabricated suggestions", () => {
-  const states = ["", [], false, -1, false, ""];
+  const states = ["", [], false, null, false, ""];
   const Search = loadComponent("components/Search.tsx", "Search", {
     React,
     useId: React.useId,
@@ -296,6 +299,8 @@ test("opening mobile search offers the account's saved instruments without fabri
     }),
     useRouter: () => ({ push: empty }),
     SearchIcon: empty,
+    searchHighlightIndex,
+    searchListingKey,
     X: empty,
     SecurityLogo: empty,
     ArrowUpRight: empty,
