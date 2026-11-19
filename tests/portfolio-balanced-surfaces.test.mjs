@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import postcss from "postcss";
 const read = (n) =>
   readFileSync(new URL("../components/" + n, import.meta.url), "utf8");
-test("paired portfolio overview uses equivalent desktop columns", () => {
+test("portfolio history and allocation form a 3-to-1 desktop row", () => {
   const rules = postcss
     .parse(read("PortfolioReference.module.css"))
     .nodes.filter((n) => n.type === "rule" && n.selector === ".grid");
@@ -12,7 +12,7 @@ test("paired portfolio overview uses equivalent desktop columns", () => {
     rules[0].nodes.some(
       (n) =>
         n.prop === "grid-template-columns" &&
-        n.value === "repeat(2, minmax(0, 1fr))",
+        n.value === "minmax(0, 3fr) minmax(260px, 1fr)",
     ),
   );
   assert.ok(
@@ -21,17 +21,17 @@ test("paired portfolio overview uses equivalent desktop columns", () => {
     ),
   );
 });
-test("only unequal allocation and review panels opt out of stretch", () => {
+test("chart, allocation and holdings stack on narrow screens", () => {
   const css = read("PortfolioReference.module.css");
-  for (const selector of ["capitalOverview", "actions"]) {
-    assert.match(
-      css,
-      new RegExp(
-        "\\.grid > \\." + selector + "\\s*\\{[^}]*align-self:\\s*start",
-        "s",
-      ),
-    );
-  }
+  assert.match(
+    css,
+    /\.history,\s*\.capitalOverview,\s*\.holdings\s*\{[^}]*min-width:\s*0/,
+  );
+  assert.match(css, /\.grid > \.capitalOverview\s*\{[^}]*grid-column:\s*2/);
+  assert.match(
+    css,
+    /@media \(max-width: 860px\)\s*\{\s*\.grid\s*\{\s*grid-template-columns: minmax\(0, 1fr\)/,
+  );
 });
 test("summary surfaces never force inverse green cards or private text tokens", () => {
   const css = postcss.parse(read("PortfolioWorkspace.module.css"));

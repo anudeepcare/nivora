@@ -2,7 +2,7 @@
 import DecisionAttention from "./DecisionAttention";
 import { useWorkspacePreferences } from "./WorkspacePreferences";
 import dynamic from "next/dynamic";
-import { companyAccent } from "@/lib/visual-signals";
+import composition from "./PortfolioComposition.module.css";
 import reference from "./PortfolioReference.module.css";
 import portfolioStyles from "./PortfolioWorkspace.module.css";
 import { PaceBadge } from "./WorkspacePace";
@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { FeatureGate } from "./Access";
 import AccountBalances from "./AccountBalances";
+import ApprovedPortfolioChart from "./ApprovedPortfolioChart";
 import { PositionEditor } from "./ApprovedWorkspaceForms";
 const AccountHistory = dynamic(() => import("./AccountHistory"), {
   loading: () => null,
@@ -52,7 +53,6 @@ const TransactionWorkspace = dynamic(() => import("./TransactionWorkspace"), {
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
 import {
-  colors,
   Coverage,
   Heading,
   SectionHead,
@@ -74,11 +74,14 @@ export function Portfolio() {
     [depthOpen, setDepthOpen] = useState(false),
     [currencySaving, setCurrencySaving] = useState(false),
     [currencyError, setCurrencyError] = useState("");
-  const [expandedMetrics, setExpandedMetrics] = useState(true);
   const [paceFilter, setPaceFilter] = useState("all");
   const [historyVersion, setHistoryVersion] = useState(0);
-  const [comparisonOpen, setComparisonOpen] = useState(false);
-  const comparisonSetup = useRef<HTMLDialogElement>(null);
+  const [transactionOpen, setTransactionOpen] = useState(false);
+  const transactionDialog = useRef<HTMLDialogElement>(null);
+  const openTransaction = () => {
+    setTransactionOpen(true);
+    transactionDialog.current?.showModal();
+  };
   const balances = useRef<HTMLDialogElement>(null),
     depth = useRef<HTMLDialogElement>(null);
   const calendar = usePortfolioCalendar(positions);
@@ -138,25 +141,18 @@ export function Portfolio() {
   }
   return (
     <section
-      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals} ${reference.page}`}
+      className={`approved-workspace approved-portfolio ${portfolioStyles.portfolio} ${workspaceVisuals.workspaceVisuals} ${reference.page} ${composition.root}`}
     >
       <Heading
         title="Portfolio"
-        subtitle="Value, decisions and exposure."
+        subtitle="Holdings, performance and allocation."
         actions={
           <div
             className={reference.actionsBar}
             role="group"
             aria-label="Portfolio actions"
           >
-            <button
-              type="button"
-              className="btn"
-              onClick={() => {
-                setDepthOpen(true);
-                depth.current?.showModal();
-              }}
-            >
+            <button type="button" className="btn" onClick={openTransaction}>
               Record transaction
             </button>
             <button
@@ -175,220 +171,135 @@ export function Portfolio() {
               }}
             >
               <Plus size={16} aria-hidden="true" />
-              Add position
+              Add purchase
             </button>
           </div>
         }
       />
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <WealthStrip state={state} portfolio />
+      <WealthStrip state={state} portfolio className={reference.snapshot} />
       <Coverage state={state} />
-      {quotes.ready && positions.length > 0 && (
-        <section className={reference.checks} aria-label="Portfolio checks">
-          <dl>
-            {model.allocations[0] && (
-              <div>
-                <dt>Largest position</dt>
-                <dd>
-                  {model.allocations[0].symbol} ·{" "}
-                  {percent(model.allocations[0].weight)}
-                </dd>
-                <small>Of priced investments, excluding cash.</small>
-              </div>
-            )}
-            <div>
-              <dt>Earnings · next 7 days</dt>
-              <dd>
-                {calendar.data && calendar.data.followed > 0
-                  ? `${earningsHoldingsCount} holdings with supplied dates`
-                  : "Dates not confirmed"}
-              </dd>
-              <small>Calendar coverage may be incomplete.</small>
-            </div>
-            <div>
-              <dt>Price coverage</dt>
-              <dd>
-                {model.unpriced.length
-                  ? `${model.unpriced.length} holdings unpriced`
-                  : "All holdings priced"}
-              </dd>
-              <small>
-                {model.older
-                  ? `${model.older} use older prices. Check timestamps.`
-                  : "Snapshot values, not a live account balance."}
-              </small>
-            </div>
-          </dl>
-        </section>
-      )}
       <div className={reference.grid} data-portfolio-layout="reference">
-        <AccountHistory
-          readOnly
-          key={historyVersion}
-          onReviewRecords={() => {
-            setComparisonOpen(true);
-            comparisonSetup.current?.showModal();
-          }}
-        />
+        <section className={reference.history} aria-label="Portfolio history">
+          <AccountHistory
+            readOnly
+            key={historyVersion}
+            onReviewRecords={openTransaction}
+            currentHoldingsHistory={
+              <ApprovedPortfolioChart
+                positions={positions}
+                quotes={quotes.data}
+                compact
+              />
+            }
+          />
+        </section>
         <div className={reference.capitalOverview}>
-          <section className="card portfolio-allocation-panel">
+          <section className="portfolio-allocation-panel">
             <SectionHead
-              title="Capital allocation"
-              subtitle="Priced investments · excludes cash"
+              title="Allocation"
+              subtitle="Priced investments only · excludes cash"
             />
-            <div className={reference.allocationBody}>
-              {model.allocations.length > 0 && (
-                <div className={reference.ring}>
-                  <svg
-                    viewBox="0 0 240 240"
-                    role="img"
-                    aria-label="Allocation of priced investments, excluding cash and unpriced holdings"
-                  >
-                    <circle
-                      cx="120"
-                      cy="120"
-                      r="92"
-                      fill="none"
-                      stroke="var(--line)"
-                      strokeWidth="22"
-                    />
-                    {model.allocations.map((a, index) => (
-                      <circle
-                        key={a.symbol}
-                        cx="120"
-                        cy="120"
-                        r="92"
-                        fill="none"
-                        stroke={companyAccent(a.symbol)}
-                        strokeWidth="22"
-                        pathLength="100"
-                        strokeDasharray={`${a.weight} ${100 - a.weight}`}
-                        strokeDashoffset={
-                          -model.allocations
-                            .slice(0, index)
-                            .reduce((sum, row) => sum + row.weight, 0)
-                        }
-                        transform="rotate(-90 120 120)"
-                      />
-                    ))}
-                  </svg>
-                  <div>
-                    <strong>{amount(model.invested)}</strong>
-                    <small>priced investments</small>
-                  </div>
-                </div>
-              )}
-              {model.allocations.length ? (
-                <div className={reference.allocationLegend}>
-                  <div
-                    className="allocation-track"
-                    role="img"
-                    aria-label={model.allocations
-                      .map((a) => `${a.symbol} ${percent(a.weight)}`)
-                      .join("; ")}
-                  >
-                    {model.allocations.map((a) => (
-                      <i
-                        key={a.symbol}
-                        style={{
-                          width: `${a.weight}%`,
-                          background: companyAccent(a.symbol),
-                        }}
-                      />
-                    ))}
-                  </div>
-                  {model.allocations.slice(0, 6).map((a) => (
-                    <Link
+            {model.allocations.length ? (
+              <>
+                <div
+                  className={composition.allocationTrack}
+                  role="img"
+                  aria-label={model.allocations
+                    .map((a) => `${a.symbol} ${percent(a.weight)}`)
+                    .join("; ")}
+                >
+                  {model.allocations.slice(0, 3).map((a, index) => (
+                    <i
                       key={a.symbol}
-                      href={researchLink(a.symbol, prefix)}
-                      className="allocation-row"
-                    >
+                      style={{
+                        width: `${a.weight}%`,
+                        background: [
+                          "var(--portfolio-basket)",
+                          "var(--portfolio-spy)",
+                          "var(--portfolio-qqq)",
+                        ][index],
+                      }}
+                    />
+                  ))}
+                  {model.allocations.length > 3 && (
+                    <i
+                      style={{
+                        width: `${model.allocations.slice(3).reduce((sum, a) => sum + a.weight, 0)}%`,
+                        background: "var(--line)",
+                      }}
+                    />
+                  )}
+                </div>
+                <div className={composition.allocationList}>
+                  {model.allocations.slice(0, 3).map((a, index) => (
+                    <Link key={a.symbol} href={researchLink(a.symbol, prefix)}>
                       <span>
                         <i
-                          className="dot"
-                          style={{ background: companyAccent(a.symbol) }}
+                          style={{
+                            background: [
+                              "var(--portfolio-basket)",
+                              "var(--portfolio-spy)",
+                              "var(--portfolio-qqq)",
+                            ][index],
+                          }}
                         />
                         {a.symbol}
                       </span>
                       <strong>{percent(a.weight)}</strong>
                     </Link>
                   ))}
-                  {model.allocations.length > 6 && (
-                    <details className="allocation-more">
-                      <summary>All {model.allocations.length} holdings</summary>
-                      {model.allocations.slice(6).map((a) => (
-                        <Link
-                          key={a.symbol}
-                          href={researchLink(a.symbol, prefix)}
-                          className="allocation-row"
-                        >
-                          <span>
-                            <i
-                              className="dot"
-                              style={{ background: companyAccent(a.symbol) }}
-                            />
-                            {a.symbol}
-                          </span>
-                          <strong>{percent(a.weight)}</strong>
-                        </Link>
-                      ))}
-                    </details>
+                  {model.allocations.length > 3 && (
+                    <div>
+                      <span>
+                        <i style={{ background: "var(--line)" }} />
+                        Other holdings
+                      </span>
+                      <strong>
+                        {percent(
+                          model.allocations
+                            .slice(3)
+                            .reduce((sum, a) => sum + a.weight, 0),
+                        )}
+                      </strong>
+                    </div>
                   )}
-                  <p className="chart-note">
-                    Cash and managed balances excluded. Duplicate ticker
-                    positions combined.
-                    {model.unpriced.length
-                      ? " Unpriced instruments are excluded."
-                      : ""}
-                  </p>
                 </div>
-              ) : (
-                <Empty title="See how your holdings fit together">
-                  Available USD prices will reveal your allocation.
-                </Empty>
-              )}
-            </div>
-          </section>
-        </div>
-        <section className={reference.actions}>
-          <span className={reference.eyebrow}>ACTIONS BY IMPACT</span>
-          <DecisionAttention
-            compact
-            symbols={[
-              ...new Set(
-                positions
-                  .filter((p) => p.assetType !== "cash" && p.quantity > 0)
-                  .map((p) => p.symbol),
-              ),
-            ]}
-            held={positions
-              .filter((p) => p.assetType !== "cash" && p.quantity > 0)
-              .map((p) => p.symbol)}
-            rows={state.paceScan.rows}
-            allocations={model.allocations}
-            concentrationLimit={preferences.preferences.concentrationLimit}
-            prefix={prefix}
-            loading={state.paceScan.loading}
-          />
-          {!positions.length && (
-            <Empty title="Your next decisions appear here">
-              Record holdings to review dated evidence and concentration.
-            </Empty>
-          )}
-        </section>
-        <div className={reference.exposure}>
-          <section className="card portfolio-exposure-panel">
-            <SectionHead
-              title="Exposure"
-              subtitle="Shared sectors and themes"
-            />
-            {model.groups.length ? (
-              <>
+                <div className={composition.concentration}>
+                  <span>
+                    {model.allocations.length >= 3
+                      ? "Top 3 concentration"
+                      : "Largest holdings share"}
+                  </span>
+                  <strong>
+                    {percent(
+                      model.allocations
+                        .slice(0, 3)
+                        .reduce((sum, a) => sum + a.weight, 0),
+                    )}
+                  </strong>
+                  <small>
+                    Share of priced investments; unpriced holdings excluded.
+                  </small>
+                </div>
+              </>
+            ) : (
+              <Empty title="See how your holdings fit together">
+                Available USD prices will reveal your allocation.
+              </Empty>
+            )}
+            {model.groups.length > 0 && (
+              <details
+                className={`${reference.exposure} ${composition.sectors}`}
+              >
+                <summary>View sector exposure</summary>
                 <div
                   className="portfolio-exposure-rows"
+                  role="region"
+                  tabIndex={0}
                   aria-label="Sector and crypto exposure groups"
                 >
-                  {model.groups.slice(0, 5).map((group, i) => (
+                  {model.groups.map((group, i) => (
                     <div key={group.name}>
                       <div>
                         <strong>{group.name}</strong>
@@ -398,7 +309,11 @@ export function Portfolio() {
                         <i
                           style={{
                             width: `${group.weight}%`,
-                            background: colors[i],
+                            background: [
+                              "var(--portfolio-basket)",
+                              "var(--portfolio-spy)",
+                              "var(--portfolio-qqq)",
+                            ][i % 3],
                           }}
                         />
                       </span>
@@ -409,49 +324,26 @@ export function Portfolio() {
                     </div>
                   ))}
                 </div>
-                <p className="chart-note">
-                  Supplied sector labels, not measured correlations.
-                  Unclassified holdings remain visible. Weights use priced
-                  invested value.
-                </p>
-                <details className="approved-risk-details">
-                  <summary>See companies in each group</summary>
-                  {model.groups.map((g) => (
-                    <p key={g.name}>
-                      <strong>
-                        {g.name} · {percent(g.weight)}
-                      </strong>
-                      <br />
-                      {g.symbols.join(", ")}
-                    </p>
-                  ))}
-                </details>
-              </>
-            ) : (
-              <Empty title="Understand shared exposure">
-                Sector groups appear when your holdings have usable prices and
-                company evidence.
-              </Empty>
+              </details>
             )}
           </section>
         </div>
-        <section
-          className={`card portfolio-holdings-panel ${reference.holdings}`}
-        >
-          <span className={reference.eyebrow}>ALL HOLDINGS</span>
-          <div className={portfolioStyles.holdingsToolbar}>
+        <section className={`portfolio-holdings-panel ${reference.holdings}`}>
+          <div
+            className={`${portfolioStyles.holdingsToolbar} ${composition.toolbar}`}
+          >
             <h2>
               <Wallet size={20} aria-hidden="true" />
-              Positions, evidence, and next actions
+              Holdings
             </h2>
-            <button
-              type="button"
-              className="btn"
-              aria-pressed={expandedMetrics}
-              onClick={() => setExpandedMetrics((v) => !v)}
-            >
-              Columns & metrics
-            </button>
+            {earningsHoldingsCount > 0 && (
+              <span
+                className={reference.earnings}
+                title="Calendar coverage may be incomplete"
+              >
+                {earningsHoldingsCount} with earnings this week
+              </span>
+            )}
             {positions.length > 0 && (
               <label className={portfolioStyles.holdingsSearch}>
                 <SearchIcon size={18} aria-hidden="true" />
@@ -508,7 +400,6 @@ export function Portfolio() {
           </div>
           {visible.length ? (
             <HoldingsTable
-              expandedMetrics={expandedMetrics}
               positions={visible}
               allPositions={positions}
               state={state}
@@ -557,19 +448,22 @@ export function Portfolio() {
                   depth.current?.showModal();
                 }}
               >
-                Transactions & analysis <ArrowUpRight size={15} />
+                Transactions &amp; analysis <ArrowUpRight size={15} />
               </button>
             )}
           </div>
         </section>
       </div>
-      <p className="chart-note">
-        Unrealized returns exclude realized trades, dividends, fees and taxes.
-        Non-USD prices and costs are not converted.{" "}
-        {quotes.checkedAt
-          ? `Prices checked ${quoteTime(quotes.checkedAt)}.`
-          : ""}
-      </p>
+      <details className={reference.methodology}>
+        <summary>About these values</summary>
+        <p className="chart-note">
+          Unrealized returns exclude realized trades, dividends, fees and taxes.
+          Non-USD prices and costs are not converted.{" "}
+          {quotes.checkedAt
+            ? `Prices checked ${quoteTime(quotes.checkedAt)}.`
+            : ""}
+        </p>
+      </details>
       {editing && (
         <PositionEditor
           key={editing === "new" ? "new" : editing.id}
@@ -621,36 +515,31 @@ export function Portfolio() {
         </button>
       </dialog>
       <dialog
-        ref={comparisonSetup}
-        className={reference.historySetup}
-        aria-labelledby="comparison-setup-title"
-        onClose={() => {
-          setComparisonOpen(false);
-          setHistoryVersion((v) => v + 1);
-        }}
+        ref={transactionDialog}
+        className="dialog approved-workspace-dialog"
+        aria-labelledby="record-transaction-title"
+        onClose={() => setTransactionOpen(false)}
       >
-        <header>
-          <div>
-            <h2 id="comparison-setup-title">Set up your market comparison</h2>
-            <p>
-              Account history versus SPY and QQQ, using actual dated
-              transactions.
-            </p>
-          </div>
+        <div className="dialog-head">
+          <h2 id="record-transaction-title">Record transaction</h2>
           <button
             type="button"
             className="icon-button"
-            aria-label="Close market comparison setup"
-            onClick={() => comparisonSetup.current?.close()}
+            aria-label="Close record transaction"
+            onClick={() => transactionDialog.current?.close()}
           >
-            <X size={22} />
+            <X size={20} />
           </button>
-        </header>
-        {comparisonOpen && (
+        </div>
+        {transactionOpen && (
           <TransactionWorkspace
+            directRecord
             quotes={q}
             positions={positions}
-            comparisonFirst
+            onRecorded={() => {
+              transactionDialog.current?.close();
+              setHistoryVersion((v) => v + 1);
+            }}
           />
         )}
       </dialog>
@@ -666,7 +555,7 @@ export function Portfolio() {
         <header>
           <div>
             <span className="eyebrow">YOUR PORTFOLIO</span>
-            <h2 id="approved-depth-title">The full picture</h2>
+            <h2 id="approved-depth-title">Transactions &amp; analysis</h2>
           </div>
           <button
             className="icon-button"
@@ -700,7 +589,29 @@ export function Portfolio() {
                   {currencyError && <Notice error>{currencyError}</Notice>}
                 </section>
               )}
-              <TransactionWorkspace quotes={q} positions={positions} />
+              <TransactionWorkspace
+                quotes={q}
+                positions={positions}
+                hideComparison
+              />
+              <DecisionAttention
+                compact
+                symbols={[
+                  ...new Set(
+                    positions
+                      .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+                      .map((p) => p.symbol),
+                  ),
+                ]}
+                held={positions
+                  .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+                  .map((p) => p.symbol)}
+                rows={state.paceScan.rows}
+                allocations={model.allocations}
+                concentrationLimit={preferences.preferences.concentrationLimit}
+                prefix={prefix}
+                loading={state.paceScan.loading}
+              />
               <PortfolioLedger
                 positions={positions}
                 allPositions={positions}
@@ -732,7 +643,6 @@ export function Portfolio() {
   );
 }
 function HoldingsTable({
-  expandedMetrics,
   positions,
   allPositions,
   state,
@@ -740,7 +650,6 @@ function HoldingsTable({
   onEdit,
   onAddPurchase,
 }: {
-  expandedMetrics: boolean;
   positions: Position[];
   allPositions: Position[];
   state: ReturnType<typeof useWorkspaceData>;
@@ -759,7 +668,7 @@ function HoldingsTable({
   return (
     <>
       <div
-        className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll}`}
+        className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll} ${composition.mobileHoldings}`}
         role="region"
         aria-label="Portfolio holdings, scroll for more rows and columns"
         tabIndex={0}
@@ -773,16 +682,10 @@ function HoldingsTable({
           <thead>
             <tr>
               <th>Company / accumulation pace</th>
-              {expandedMetrics && (
-                <>
-                  <th>Shares</th>
-                  <th>Average cost</th>
-                </>
-              )}
               <th>Weight</th>
               <th>Price</th>
-              <th>Value</th>
-              <th>Return</th>
+              <th>Market value</th>
+              <th>Unrealized return</th>
               <th>
                 <span className="sr-only">Manage purchases</span>
               </th>
@@ -831,15 +734,11 @@ function HoldingsTable({
                             {row.lots.length > 1
                               ? ` · ${row.lots.length} purchases`
                               : ""}
-                            {!expandedMetrics && (
-                              <>
-                                <br />
-                                {quantityDisplay}{" "}
-                                {p.assetType === "crypto" ? "units" : "shares"}{" "}
-                                · {costDisplay}
-                                {row.avgCost != null ? " avg cost" : ""}
-                              </>
-                            )}
+                            <br />
+                            {quantityDisplay}{" "}
+                            {p.assetType === "crypto" ? "units" : "shares"} ·{" "}
+                            {costDisplay}
+                            {row.avgCost != null ? " avg cost" : ""}
                           </small>
                           {p.assetType !== "crypto" && (
                             <PaceBadge
@@ -851,14 +750,10 @@ function HoldingsTable({
                       </Link>
                     )}
                   </td>
-                  {expandedMetrics && (
-                    <>
-                      <td>{cash ? "—" : quantityDisplay}</td>
-                      <td>{cash ? "—" : costDisplay}</td>
-                    </>
-                  )}
-                  <td>{cash ? "—" : percent(row.weight)}</td>
-                  <td>
+                  <td data-label="Weight">
+                    {cash ? "—" : percent(row.weight)}
+                  </td>
+                  <td data-label="Price">
                     <strong>
                       {cash ? "—" : amount(quote?.price, quote?.currency)}
                     </strong>
@@ -876,10 +771,10 @@ function HoldingsTable({
                       </small>
                     )}
                   </td>
-                  <td>
+                  <td data-label="Market value">
                     <strong>{amount(row.value)}</strong>
                   </td>
-                  <td>
+                  <td data-label="Unrealized return">
                     <small
                       className={
                         row.pnl == null
@@ -904,24 +799,43 @@ function HoldingsTable({
                     )}
                   </td>
                   <td>
-                    <button
-                      className="icon-button"
-                      type="button"
-                      aria-label={
-                        cash
-                          ? `Edit ${p.symbol} cash`
-                          : `Manage ${p.symbol} purchases`
-                      }
-                      onClick={() => {
-                        if (cash) onEdit(p);
-                        else {
-                          setActiveKey(row.groupKey);
-                          purchaseDialog.current?.showModal();
+                    <div className={reference.rowActions}>
+                      {!cash && (
+                        <button
+                          className="icon-button"
+                          type="button"
+                          title="Add purchase"
+                          aria-label={`Add purchase for ${p.symbol}`}
+                          onClick={() =>
+                            onAddPurchase({
+                              symbol: p.symbol,
+                              currency: row.costCurrency,
+                            })
+                          }
+                        >
+                          <Plus size={17} aria-hidden="true" />
+                        </button>
+                      )}
+                      <button
+                        className="icon-button"
+                        type="button"
+                        title={cash ? "Edit cash" : "Manage purchases"}
+                        aria-label={
+                          cash
+                            ? `Edit ${p.symbol} cash`
+                            : `Manage ${p.symbol} purchases`
                         }
-                      }}
-                    >
-                      <MoreHorizontal size={19} />
-                    </button>
+                        onClick={() => {
+                          if (cash) onEdit(p);
+                          else {
+                            setActiveKey(row.groupKey);
+                            purchaseDialog.current?.showModal();
+                          }
+                        }}
+                      >
+                        <MoreHorizontal size={19} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -984,19 +898,6 @@ function HoldingsTable({
                 </li>
               ))}
             </ul>
-            <button
-              type="button"
-              className="btn primary"
-              onClick={() => {
-                purchaseDialog.current?.close();
-                onAddPurchase({
-                  symbol: activeHolding.position.symbol,
-                  currency: activeHolding.costCurrency,
-                });
-              }}
-            >
-              <Plus size={16} aria-hidden="true" /> Add another purchase
-            </button>
           </>
         )}
       </dialog>

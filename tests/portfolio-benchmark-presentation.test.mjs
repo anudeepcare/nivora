@@ -6,9 +6,7 @@ const read = (n) =>
 test("history leads portfolio and names its supported comparison before setup", () => {
   const p = read("PortfolioPage.tsx"),
     h = read("AccountHistory.tsx");
-  assert.ok(
-    p.indexOf("<AccountHistory") < p.indexOf('title="Capital allocation"'),
-  );
+  assert.ok(p.indexOf("<AccountHistory") < p.indexOf('title="Allocation"'));
   assert.match(h, /S&P 500 \(SPY\)/);
   assert.match(h, /Nasdaq-100 \(QQQ\)/);
   assert.match(h, /Crypto\s+and\s+non-US instruments\s+are not supported/);

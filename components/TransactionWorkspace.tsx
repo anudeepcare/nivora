@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 const AccountHistory = dynamic(() => import("./AccountHistory"), {
   loading: () => <p role="status">Loading account comparison controls…</p>,
@@ -7,6 +7,7 @@ const AccountHistory = dynamic(() => import("./AccountHistory"), {
 import { useProduct, useResource } from "./Session";
 import { api } from "@/lib/client";
 import {
+  cleanTransactions,
   holdingDifferences,
   mergeTransactionImport,
   parseTransactionCsv,
@@ -26,10 +27,18 @@ export default function TransactionWorkspace({
   quotes,
   positions,
   comparisonFirst = false,
+  hideComparison = false,
+  directRecord = false,
+  initialSymbol,
+  onRecorded,
 }: {
   quotes: Record<string, Quote>;
   positions: Position[];
   comparisonFirst?: boolean;
+  hideComparison?: boolean;
+  directRecord?: boolean;
+  initialSymbol?: string;
+  onRecorded?: () => void;
 }) {
   const { demo } = useProduct(),
     resource = useResource<Ledger>(
@@ -182,7 +191,7 @@ export default function TransactionWorkspace({
       ),
     ].join("\n");
   const comparison =
-    !demo && resource.data?.rows.length ? (
+    !hideComparison && !demo && resource.data?.rows.length ? (
       <details
         open={historyOpen}
         data-account-comparison
@@ -204,6 +213,14 @@ export default function TransactionWorkspace({
         ) : null}
       </details>
     ) : null;
+  if (directRecord)
+    return (
+      <DirectTransactionRecord
+        key={initialSymbol ?? "new"}
+        initialSymbol={initialSymbol}
+        onRecorded={onRecorded}
+      />
+    );
   return (
     <section className={s.root}>
       <header>
@@ -230,7 +247,7 @@ export default function TransactionWorkspace({
           </select>
         </label>
       </header>
-      {comparisonFirst && (
+      {comparisonFirst && !hideComparison && (
         <>
           <p>
             1. Import dated deposits, withdrawals and trades. 2. Review and save
@@ -462,6 +479,251 @@ export default function TransactionWorkspace({
           reconciliation and realized results.
         </p>
       )}
+    </section>
+  );
+}
+
+function DirectTransactionRecord({
+  initialSymbol,
+  onRecorded,
+}: {
+  initialSymbol?: string;
+  onRecorded?: () => void;
+}) {
+  const { demo } = useProduct();
+  const resource = useResource<Ledger>(
+    "transactions",
+    demo ? { rows: [], revision: 0, updated_at: null } : undefined,
+  );
+  const [type, setType] = useState<Transaction["type"]>("buy");
+  const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+  const pending = useRef(false);
+  const submission = useRef<Transaction | null>(null);
+  const trade = type === "buy" || type === "sell";
+  const symbolRequired = trade || type === "split" || type === "dividend";
+  async function record(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (
+      pending.current ||
+      saved ||
+      busy ||
+      demo ||
+      resource.loading ||
+      resource.error ||
+      !resource.data
+    )
+      return;
+    const form = new FormData(event.currentTarget);
+    const text = (key: string) => String(form.get(key) ?? "").trim();
+    const kind = text("type") as Transaction["type"];
+    const isTrade = kind === "buy" || kind === "sell";
+    pending.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      if (submission.current) {
+        const existing = resource.data.rows.find(
+          (row) => row.id === submission.current!.id,
+        );
+        if (existing) {
+          if (
+            JSON.stringify(cleanTransactions([existing])[0]) !==
+            JSON.stringify(submission.current)
+          )
+            throw Error(
+              "The saved transaction changed. Review the ledger before recording more activity.",
+            );
+          setSaved(true);
+          onRecorded?.();
+          return;
+        }
+      }
+      const candidate = cleanTransactions([
+        {
+          id: submission.current?.id ?? crypto.randomUUID(),
+          account: text("account"),
+          date: text("date"),
+          type: kind,
+          symbol:
+            isTrade || kind === "split" || kind === "dividend"
+              ? text("symbol")
+              : "",
+          quantity: isTrade || kind === "split" ? Number(text("quantity")) : 0,
+          price: isTrade ? Number(text("price")) : 0,
+          amount: isTrade || kind === "split" ? 0 : Number(text("amount")),
+          fee: kind === "split" ? 0 : Number(text("fee")),
+          currency: "USD",
+        },
+      ]);
+      const row = candidate[0];
+      if (
+        submission.current &&
+        JSON.stringify(row) !== JSON.stringify(submission.current)
+      )
+        throw Error(
+          "Previous save is unresolved. Reload the ledger and retry the original entry before making changes.",
+        );
+      const next = cleanTransactions([...resource.data.rows, row]);
+      submission.current = row;
+      await api("transactions", {
+        rows: next,
+        revision: resource.data.revision,
+      });
+      setSaved(true);
+      resource.refresh();
+      onRecorded?.();
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Transaction could not be saved.",
+      );
+    } finally {
+      pending.current = false;
+      setBusy(false);
+    }
+  }
+  return (
+    <section className={`${s.root} ${s.direct}`}>
+      <p>
+        Record dated activity in your USD transaction ledger. This does not add
+        or change snapshot Holdings.
+      </p>
+      <form onSubmit={record}>
+        <fieldset
+          disabled={
+            busy ||
+            saved ||
+            !!demo ||
+            resource.loading ||
+            !!resource.error ||
+            !resource.data
+          }
+        >
+          <div className={s.formGrid}>
+            <label>
+              Activity
+              <select
+                name="type"
+                value={type}
+                onChange={(e) => setType(e.target.value as Transaction["type"])}
+              >
+                <option value="buy">Purchase</option>
+                <option value="sell">Sale</option>
+                <option value="deposit">Deposit</option>
+                <option value="withdrawal">Withdrawal</option>
+                <option value="dividend">Dividend</option>
+                <option value="fee">Fee</option>
+                <option value="split">Share split</option>
+              </select>
+            </label>
+            <label>
+              Account
+              <input
+                name="account"
+                required
+                maxLength={80}
+                placeholder="Broker account name"
+              />
+            </label>
+            <label>
+              Transaction date
+              <input
+                name="date"
+                type="date"
+                required
+                max={new Date().toISOString().slice(0, 10)}
+              />
+            </label>
+            {symbolRequired && (
+              <label>
+                Ticker
+                <input
+                  name="symbol"
+                  defaultValue={initialSymbol ?? ""}
+                  required
+                  maxLength={20}
+                  autoCapitalize="characters"
+                />
+              </label>
+            )}
+            {(trade || type === "split") && (
+              <label>
+                {type === "split" ? "New / old share ratio" : "Quantity"}
+                <input
+                  name="quantity"
+                  type="number"
+                  step="any"
+                  min="0"
+                  required
+                />
+              </label>
+            )}
+            {trade && (
+              <label>
+                Price per share (USD)
+                <input name="price" type="number" step="any" min="0" required />
+              </label>
+            )}
+            {!trade && type !== "split" && (
+              <label>
+                Amount (USD)
+                <input
+                  name="amount"
+                  type="number"
+                  step="any"
+                  min="0"
+                  required
+                />
+              </label>
+            )}
+            {type !== "split" && (
+              <label>
+                Additional fee (USD)
+                <input
+                  name="fee"
+                  type="number"
+                  step="any"
+                  min="0"
+                  defaultValue="0"
+                />
+              </label>
+            )}
+          </div>
+          <button type="submit">
+            {busy
+              ? "Saving…"
+              : saved
+                ? "Transaction saved"
+                : "Save transaction"}
+          </button>
+        </fieldset>
+      </form>
+      {resource.loading && <p role="status">Loading saved ledger…</p>}
+      {demo && <p>Sign in to record actual transactions.</p>}
+      {(error || resource.error) && (
+        <p role="alert">
+          {error || resource.error}{" "}
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => resource.refresh()}
+          >
+            Reload saved ledger
+          </button>
+        </p>
+      )}
+      {saved && (
+        <p role="status">
+          Transaction saved. Snapshot Holdings are unchanged. Record another
+          transaction by opening a new entry.
+        </p>
+      )}
+      <small>
+        Each saved entry is a separate transaction, including identical
+        purchases. Same-day entries retain entry order. Record deposits and
+        complete activity before comparing account performance.
+      </small>
     </section>
   );
 }

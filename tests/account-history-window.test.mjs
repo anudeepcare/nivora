@@ -30,3 +30,21 @@ test("three months of evidence never become six months or a synthetic return", a
   assert.equal("returnPct" in w, false);
   assert.equal(accountHistoryWindow([], "6M").actualEnd, null);
 });
+
+test("portfolio ranges use calendar months and clamp leap or short months", async () => {
+  const { accountHistoryWindow } = await import(
+    "../lib/account-history-window.ts"
+  );
+  assert.equal(
+    accountHistoryWindow(["2024-02-29"], "2Y").requestedStart,
+    "2022-02-28",
+  );
+  assert.equal(
+    accountHistoryWindow(["2026-03-31"], "1M").requestedStart,
+    "2026-02-28",
+  );
+  assert.equal(
+    accountHistoryWindow(["2025-02-28"], "1Y").requestedStart,
+    "2024-02-28",
+  );
+});

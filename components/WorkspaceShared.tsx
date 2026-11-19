@@ -199,9 +199,11 @@ export function useWorkspaceData(
 export function WealthStrip({
   state,
   portfolio = false,
+  className,
 }: {
   state: ReturnType<typeof useWorkspaceData>;
   portfolio?: boolean;
+  className?: string;
 }) {
   const { model, balances, workspace, quotes, prefix } = state;
   const ready = !!workspace && quotes.ready;
@@ -210,7 +212,7 @@ export function WealthStrip({
   return (
     <>
       <section
-        className={`wealth-strip${portfolio ? " four" : ""}`}
+        className={className ?? `wealth-strip${portfolio ? " four" : ""}`}
         aria-label="Portfolio summary"
       >
         <Metric

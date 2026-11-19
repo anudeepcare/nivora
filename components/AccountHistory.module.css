@@ -117,18 +117,18 @@
 .legend span::before {
   content: "";
   width: 20px;
-  border-top: 3px solid var(--blue);
+  border-top: 3px solid var(--portfolio-basket, var(--blue));
 }
 .legend [data-series="contributions"]::before {
   border-color: var(--muted);
   border-top-style: dashed;
 }
 .legend [data-series="SPY"]::before {
-  border-color: var(--purple, #9b7ede);
+  border-color: var(--portfolio-spy, #087b70);
   border-top-style: dashed;
 }
 .legend [data-series="QQQ"]::before {
-  border-color: var(--amber, #bd7b17);
+  border-color: var(--portfolio-qqq, #864cab);
   border-top-style: dotted;
 }
 @media (max-width: 540px) {
@@ -237,6 +237,10 @@
     align-items: flex-start;
     flex-direction: column;
   }
+  .periods {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
   .history[data-read-only],
   .empty {
     padding: 14px;
@@ -269,4 +273,67 @@
 }
 .availability button {
   min-height: 44px;
+}
+
+.historyToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+}
+.historyToolbar h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(20px, 2vw, 25px);
+  font-weight: 625;
+  letter-spacing: -0.025em;
+}
+/* Lens control from approved mock; the parent owns the sole outer card. */
+.historyToolbar {
+  margin-bottom: 0;
+}
+.historyToolbar h2 {
+  font-size: 21px;
+  font-weight: 700;
+}
+.lenses {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--surface);
+}
+.lenses > button {
+  min-height: 34px;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lenses > button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: 0 1px 2px #00000008;
+}
+.lenses > button:focus-visible {
+  outline: 2px solid var(--accent-text, var(--blue));
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .historyToolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lenses > button {
+    min-height: 44px;
+  }
 }

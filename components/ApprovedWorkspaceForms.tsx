@@ -97,7 +97,11 @@ export function PositionEditor({
         </button>
       </div>
       <h2 id="approved-position-title">
-        {position ? "Edit position" : "Add a position"}
+        {position
+          ? "Edit position"
+          : initialSymbol
+            ? `Add ${initialSymbol} purchase`
+            : "Add a position"}
       </h2>
       <p>
         {!position && !cash

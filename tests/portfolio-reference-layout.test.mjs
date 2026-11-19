@@ -8,14 +8,14 @@ const source = readFileSync(
 test("portfolio reference hierarchy preserves real positions and transaction controls", () => {
   assert.match(source, /title="Portfolio"/);
   assert.match(source, /Record transaction/);
-  assert.match(source, /Columns & metrics/);
+  assert.match(source, /Price refresh interval/i);
   assert.match(source, /role="region"/);
   assert.match(source, /tabIndex=\{0\}/);
   assert.match(
     source,
-    /<TransactionWorkspace quotes=\{q\} positions=\{positions\}/,
+    /<TransactionWorkspace\s+quotes=\{q\}\s+positions=\{positions\}/,
   );
-  assert.match(source, /model\.allocations\.map/);
+  assert.match(source, /model\.allocations\.slice\(0, 3\)\.map/);
   assert.doesNotMatch(source, /142,680|18,420|17,120/);
 });
 
@@ -27,5 +27,6 @@ test("performance panel fails closed without corporate-action and transaction ev
   );
   assert.match(history, /No current-holdings backcast/);
   assert.match(history, /disabled=\{!confirmed \|\| !reviewed \|\| busy\}/);
-  assert.doesNotMatch(source, /<ApprovedPortfolioChart/);
+  assert.match(source, /<ApprovedPortfolioChart/);
+  assert.match(history, /Not actual account performance/);
 });

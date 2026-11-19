@@ -138,8 +138,25 @@ export async function POST(request: Request) {
             .from("portfolio_positions")
             .insert({ ...row, user_id: user.id })
             .select("id");
-      if (result.error || !result.data?.length)
+      if (
+        result.error?.code === "23505" &&
+        result.error.message.includes(
+          "portfolio_positions_user_account_symbol_uidx",
+        )
+      )
+        throw new HttpError(
+          "This portfolio needs a database update before it can save multiple purchases for the same ticker.",
+          409,
+        );
+      if (result.error || !result.data?.length) {
+        // Log only the SQLSTATE classification; never log portfolio rows or account IDs.
+        const code = result.error?.code ?? "";
+        console.warn("workspace_position_save_failed", {
+          code: /^[0-9A-Z]{5}$/.test(code) ? code : "unknown",
+          operation: body.id ? "update" : "insert",
+        });
         throw new HttpError("Position could not be saved.", 503);
+      }
     } else if (body.op === "remove-position") {
       const result = await db
         .from("portfolio_positions")

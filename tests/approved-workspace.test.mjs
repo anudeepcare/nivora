@@ -222,3 +222,16 @@ test("research routes preserve preview scope and canonical crypto navigation", (
   );
   assert.equal(researchLink("BRK.B"), "/research/BRK.B");
 });
+
+test("six-month holdings chart can use more matching observations without changing compact legacy defaults", () => {
+  const data = Array.from({ length: 120 }, (_, i) => [
+    new Date(Date.UTC(2026, 4, 1 + i)).toISOString().slice(0, 10),
+    100 + i,
+  ]);
+  const history = { A: { candles: bars(data), source: "Fixture" } };
+  const args = [[position("A")], { A: row(219) }, history, "2026-08-28"];
+  assert.equal(portfolioHistory(...args).points.length, 60);
+  const extended = portfolioHistory(...args, 190);
+  assert.equal(extended.points.length, 120);
+  assert.equal(extended.points[0].time, "2026-05-01");
+});

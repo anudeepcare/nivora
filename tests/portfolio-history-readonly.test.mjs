@@ -74,7 +74,11 @@ test("valid saved chart remains with benchmark meaning and without rebuild actio
     benchmarks: [],
     revision: 1,
   });
-  assert.match(html, /Account value &amp; market comparison/);
+  assert.match(html, /Portfolio history/);
+  assert.match(
+    html,
+    /Benchmarks are hypothetical balances, not percentage returns/,
+  );
   assert.match(html, /Account equity and net contributions/);
   assert.doesNotMatch(
     html,
@@ -112,14 +116,12 @@ test("missing history explains absence without a fabricated graph or verbose pan
     );
   }
 });
-test("holdings expose shares and cost by default with separate value and return columns", () => {
+test("holdings pair shares with cost and keep value and return in distinct columns without a toggle", () => {
   const source = fs.readFileSync("components/PortfolioPage.tsx", "utf8");
-  assert.match(
-    source,
-    /\[expandedMetrics, setExpandedMetrics\] = useState\(true\)/,
-  );
-  assert.match(source, /<th>Value<\/th>\s*<th>Return<\/th>/);
-  assert.match(source, /!expandedMetrics &&/);
+  assert.doesNotMatch(source, /expandedMetrics|Columns & metrics/);
+  assert.match(source, /<th>Market value<\/th>\s*<th>Unrealized return<\/th>/);
+  assert.match(source, /quantityDisplay/);
+  assert.match(source, /avg cost/);
 });
 
 test("closing the history workspace reloads the saved portfolio comparison", () => {

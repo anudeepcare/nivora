@@ -19,7 +19,12 @@ type History = {
 export default function AccountHistory({
   readOnly = false,
   onReviewRecords,
-}: { readOnly?: boolean; onReviewRecords?: () => void } = {}) {
+  currentHoldingsHistory,
+}: {
+  readOnly?: boolean;
+  onReviewRecords?: () => void;
+  currentHoldingsHistory?: React.ReactNode;
+} = {}) {
   const controller = useRef<AbortController | null>(null);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const [chartWidth, setChartWidth] = useState(800);
@@ -37,6 +42,9 @@ export default function AccountHistory({
   const [restoring, setRestoring] = useState(true);
   const [restoreNotice, setRestoreNotice] = useState("");
   const [period, setPeriod] = useState("ALL");
+  const [historyView, setHistoryView] = useState<"account" | "holdings" | null>(
+    null,
+  );
   useEffect(() => {
     const abort = new AbortController();
     controller.current = abort;
@@ -165,6 +173,9 @@ export default function AccountHistory({
     low = Math.min(0, ...values),
     high = Math.max(1, ...values),
     span = high - low || 1;
+  const hasAccountHistory = result?.status === "available" && !!last;
+  const displayHistory =
+    historyView ?? (hasAccountHistory ? "account" : "holdings");
   useEffect(() => {
     const node = chartRef.current;
     if (!node || typeof ResizeObserver === "undefined") return;
@@ -174,7 +185,7 @@ export default function AccountHistory({
     });
     observer.observe(node);
     return () => observer.disconnect();
-  }, [points.length]);
+  }, [points.length, displayHistory]);
   const x = (date: string) =>
     64 +
     ((Date.parse(date) - Date.parse(points[0].date)) /
@@ -184,10 +195,52 @@ export default function AccountHistory({
     points
       .map((p) => `${x(p.date)},${180 - ((p[key] - low) / span) * 160}`)
       .join(" ");
+  const viewChoice = currentHoldingsHistory ? (
+    <div
+      className={styles.lenses}
+      role="group"
+      aria-label="Portfolio chart basis"
+    >
+      <button
+        type="button"
+        aria-label="Current holdings history"
+        aria-pressed={displayHistory === "holdings"}
+        onClick={() => setHistoryView("holdings")}
+      >
+        Holdings prices
+      </button>
+      <button
+        type="button"
+        aria-label="Actual account & benchmarks"
+        aria-pressed={displayHistory === "account"}
+        onClick={() => setHistoryView("account")}
+      >
+        Actual account
+      </button>
+    </div>
+  ) : null;
+  if (currentHoldingsHistory && displayHistory === "holdings")
+    return (
+      <div
+        className={styles.history}
+        aria-description="Current holdings at past prices. Not actual account performance."
+      >
+        <header className={styles.historyToolbar}>
+          <h2>Portfolio history</h2>
+          {viewChoice}
+        </header>
+        {currentHoldingsHistory}
+      </div>
+    );
   // Keep missing/error states discoverable without restoring a verbose empty panel.
-  if (readOnly && (result?.status !== "available" || !last))
+  if (
+    readOnly &&
+    !currentHoldingsHistory &&
+    (result?.status !== "available" || !last)
+  )
     return (
       <div className={styles.availability}>
+        {viewChoice}
         <div>
           <strong>Market comparison · S&amp;P 500 / QQQ</strong>
           <p role="status">
@@ -200,17 +253,23 @@ export default function AccountHistory({
         </div>
         {!restoring && onReviewRecords && (
           <button type="button" className="btn" onClick={onReviewRecords}>
-            Set up comparison
+            Record transaction
           </button>
         )}
       </div>
     );
   return (
-    <div className={styles.history} data-read-only={readOnly || undefined}>
+    <div
+      className={styles.history}
+      data-read-only={readOnly && !currentHoldingsHistory ? true : undefined}
+    >
+      <header className={styles.historyToolbar}>
+        <h2>Portfolio history</h2>
+        {viewChoice}
+      </header>
       <header className={styles.chartHeader}>
-        <h2>Account value &amp; market comparison</h2>
         <div className={styles.periods} aria-label="Account history period">
-          {["1M", "6M", "YTD", "1Y", "ALL"].map((value) => (
+          {["1M", "3M", "6M", "YTD", "1Y", "ALL"].map((value) => (
             <button
               key={value}
               type="button"
@@ -231,7 +290,7 @@ export default function AccountHistory({
         Benchmarks are hypothetical balances, not percentage returns.{" "}
         {"No current-holdings backcast."}
       </p>
-      {!readOnly && (
+      {(!readOnly || currentHoldingsHistory) && (
         <>
           <div className={styles.actions}>
             <button className="btn" disabled={busy} onClick={review}>
@@ -239,10 +298,17 @@ export default function AccountHistory({
                 ? "Review ledger & rebuild"
                 : "Review ledger to build comparison"}
             </button>
-            <span className={styles.scope}>
-              Complete USD ledger · up to 50 US-listed instruments · from
-              inception, up to 1 year
-            </span>
+            {currentHoldingsHistory && !result && onReviewRecords && (
+              <button type="button" className="btn" onClick={onReviewRecords}>
+                Record transaction
+              </button>
+            )}
+            {!currentHoldingsHistory && (
+              <span className={styles.scope}>
+                Complete USD ledger · up to 50 US-listed instruments · from
+                inception, up to 1 year
+              </span>
+            )}
           </div>
           {restoring && (
             <p role="status" className={styles.scope}>
@@ -442,7 +508,7 @@ export default function AccountHistory({
               )}
               <polyline
                 fill="none"
-                stroke="var(--blue)"
+                stroke="var(--portfolio-basket, var(--blue))"
                 strokeWidth="3"
                 points={line("equity")}
               />
@@ -459,8 +525,8 @@ export default function AccountHistory({
                   fill="none"
                   stroke={
                     b.symbol === "SPY"
-                      ? "var(--purple, #9b7ede)"
-                      : "var(--amber, #bd7b17)"
+                      ? "var(--portfolio-spy, #087b70)"
+                      : "var(--portfolio-qqq, #864cab)"
                   }
                   strokeWidth="2"
                   strokeDasharray={b.symbol === "SPY" ? "9 3" : "2 3"}
@@ -477,7 +543,7 @@ export default function AccountHistory({
                   cx={x(inspected.date)}
                   cy={180 - ((inspected.equity - low) / span) * 160}
                   r="4"
-                  fill="var(--blue)"
+                  fill="var(--portfolio-basket, var(--blue))"
                 />
               )}
             </svg>
