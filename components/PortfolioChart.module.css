@@ -137,3 +137,90 @@
   padding: 28px 20px;
   background: var(--surface);
 }
+.benchmarkLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: var(--ink);
+  font-size: 12px;
+}
+.benchmarkLegend small {
+  flex-basis: 100%;
+  color: var(--muted);
+}
+.benchmarkLegend [data-benchmark]::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  border-top: 2px solid;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.benchmarkLegend [data-benchmark="SPY"] {
+  color: var(--financial-icon);
+}
+.benchmarkLegend [data-benchmark="QQQ"] {
+  color: var(--ownership-icon);
+}
+.benchmarkLegend [data-benchmark="QQQ"]::before {
+  border-top-style: dashed;
+}
+.benchmarkLine[data-benchmark="SPY"] {
+  stroke: var(--financial-icon);
+}
+.benchmarkLine[data-benchmark="QQQ"] {
+  stroke: var(--ownership-icon);
+}
+.benchmarkLegend > header {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.benchmarkLegend > header > strong {
+  font-size: 14px;
+}
+.benchmarkLegend > header > span {
+  color: var(--muted);
+}
+.benchmarkLegend > span > strong {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  margin-inline-start: 3px;
+}
+.periods {
+  display: inline-flex;
+  gap: 4px;
+  margin-inline-start: auto;
+}
+.periods > button {
+  min-width: 40px;
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 8px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.periods > button[aria-pressed="true"] {
+  background: var(--surface-2, var(--card));
+  border-color: var(--line);
+  color: var(--ink);
+}
+.periods > button:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: 2px;
+}
+@media (max-width: 480px) {
+  .periods {
+    flex-basis: 100%;
+    margin-inline-start: 0;
+  }
+  .periods > button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

@@ -43,7 +43,8 @@ test("Compare keeps the ticker form visible and secondary company lookup collaps
 });
 test("Portfolio starts with compact metrics and keeps coverage warnings visible", () => {
   const s = read("components/PortfolioPage.tsx");
-  assert.match(s, /<section className=\{reference.checks\} aria-label="Portfolio checks">/);
+  assert.match(s, /<Coverage state=\{state\} \/>/);
+  assert.match(s, /aria-label="Portfolio history"/);
   assert.doesNotMatch(
     s,
     /reference.summaryDetails|Your portfolio in 30 seconds/,

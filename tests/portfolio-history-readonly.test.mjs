@@ -112,14 +112,12 @@ test("missing history explains absence without a fabricated graph or verbose pan
     );
   }
 });
-test("holdings expose shares and cost by default with separate value and return columns", () => {
+test("holdings pair shares with cost and value with return without a duplicate column toggle", () => {
   const source = fs.readFileSync("components/PortfolioPage.tsx", "utf8");
-  assert.match(
-    source,
-    /\[expandedMetrics, setExpandedMetrics\] = useState\(true\)/,
-  );
-  assert.match(source, /<th>Value<\/th>\s*<th>Return<\/th>/);
-  assert.match(source, /!expandedMetrics &&/);
+  assert.doesNotMatch(source, /expandedMetrics|Columns & metrics/);
+  assert.match(source, /<th>Value \/ unrealized return<\/th>/);
+  assert.match(source, /quantityDisplay/);
+  assert.match(source, /avg cost/);
 });
 
 test("closing the history workspace reloads the saved portfolio comparison", () => {

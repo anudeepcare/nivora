@@ -21,7 +21,7 @@ test("Holdings renders grouped rows, with full group totals even when a lot matc
 test("purchase lots are editable individually and adding another pre-fills ticker but never reuses a stored id", () => {
   assert.match(page, /activeHolding\.lots\.map/);
   assert.match(page, /onEdit\(lot\)/);
-  assert.match(page, /Add another purchase/);
+  assert.match(page, /Add purchase for \$\{p.symbol\}/);
   assert.match(page, /initialSymbol=\{purchaseSeed\?\.symbol\}/);
   assert.match(page, /position=\{editing === "new" \? null : editing\}/);
   assert.match(form, /position\?\.symbol \?\? initialSymbol \?\? ""/);
@@ -75,7 +75,6 @@ test("ten purchases render one holding and show all shares and the weighted aver
   }));
   const html = renderToStaticMarkup(
     React.createElement(Component, {
-      expandedMetrics: true,
       positions: [lots[0]],
       allPositions: lots,
       state: {
@@ -97,7 +96,7 @@ test("ten purchases render one holding and show all shares and the weighted aver
     "one header and one holding row",
   );
   assert.match(html, /10 purchases/);
-  assert.match(html, /<td>55<\/td>/);
-  assert.match(html, /<td>\$16\.00<\/td>/);
+  assert.match(html, /55 shares/);
+  assert.match(html, /\$16\.00 avg cost/);
   assert.match(html, /Manage APP purchases/);
 });

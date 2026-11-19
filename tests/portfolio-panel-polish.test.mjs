@@ -23,14 +23,12 @@ test("comparison evidence footer aligns without hiding long reasons", () => {
   assert.match(css, /\.footer\s*\{[^}]*margin-top:\s*auto/s);
   assert.doesNotMatch(css, /line-clamp|text-overflow:\s*ellipsis/);
 });
-test("portfolio panels stretch together and center label stays inside donut hole", () => {
+test("portfolio pairs wide chart and compact allocation, keeping holdings full width", () => {
   const css = read("PortfolioReference.module.css");
-  assert.match(css, /\.grid\s*\{[^}]*align-items:\s*stretch/s);
   assert.match(
     css,
-    /\.capitalOverview > :global\(\.card\)\s*\{[^}]*flex:\s*1/s,
+    /grid-template-columns: minmax\(0, 2\.12fr\) minmax\(250px, 1fr\)/,
   );
-  assert.match(css, /\.ring\s*\{[^}]*container-type:\s*inline-size/s);
-  assert.match(css, /\.ring > div\s*\{[^}]*inset:\s*22%/s);
-  assert.match(css, /overflow-wrap:\s*anywhere/);
+  assert.match(css, /\.grid > \.holdings\s*\{\s*grid-column: 1 \/ -1/);
+  assert.doesNotMatch(css, /\.ring/);
 });

@@ -12,9 +12,15 @@ export function accountHistoryWindow(dates: string[], period: string) {
   let cutoff = -Infinity;
   if (end) {
     const time = Date.parse(end);
-    if (period === "6M") {
+    if (period === "3M" || period === "6M") {
       const d = new Date(time),
-        target = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - 6, 1));
+        target = new Date(
+          Date.UTC(
+            d.getUTCFullYear(),
+            d.getUTCMonth() - (period === "3M" ? 3 : 6),
+            1,
+          ),
+        );
       const lastDay = new Date(
         Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0),
       ).getUTCDate();

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import postcss from "postcss";
 const read = (n) =>
   readFileSync(new URL("../components/" + n, import.meta.url), "utf8");
-test("paired portfolio overview uses equivalent desktop columns", () => {
+test("paired portfolio overview gives the chart more space beside allocation", () => {
   const rules = postcss
     .parse(read("PortfolioReference.module.css"))
     .nodes.filter((n) => n.type === "rule" && n.selector === ".grid");
@@ -12,26 +12,21 @@ test("paired portfolio overview uses equivalent desktop columns", () => {
     rules[0].nodes.some(
       (n) =>
         n.prop === "grid-template-columns" &&
-        n.value === "repeat(2, minmax(0, 1fr))",
+        n.value === "minmax(0, 2.12fr) minmax(250px, 1fr)",
     ),
   );
   assert.ok(
-    rules[0].nodes.some(
-      (n) => n.prop === "align-items" && n.value === "stretch",
-    ),
+    rules[0].nodes.some((n) => n.prop === "align-items" && n.value === "start"),
   );
 });
-test("only unequal allocation and review panels opt out of stretch", () => {
+test("desktop chart and allocation align from the top and stack on narrow screens", () => {
   const css = read("PortfolioReference.module.css");
-  for (const selector of ["capitalOverview", "actions"]) {
-    assert.match(
-      css,
-      new RegExp(
-        "\\.grid > \\." + selector + "\\s*\\{[^}]*align-self:\\s*start",
-        "s",
-      ),
-    );
-  }
+  assert.match(css, /\.grid > \.history\s*\{[^}]*grid-column:\s*1/);
+  assert.match(css, /\.grid > \.capitalOverview\s*\{[^}]*grid-column:\s*2/);
+  assert.match(
+    css,
+    /@media \(max-width: 860px\)\s*\{\s*\.grid\s*\{\s*grid-template-columns: minmax\(0, 1fr\)/,
+  );
 });
 test("summary surfaces never force inverse green cards or private text tokens", () => {
   const css = postcss.parse(read("PortfolioWorkspace.module.css"));

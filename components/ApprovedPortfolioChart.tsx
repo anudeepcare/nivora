@@ -1,4 +1,6 @@
 "use client";
+import { accountHistoryWindow } from "@/lib/account-history-window";
+import { holdingsBenchmarkOverlay } from "@/lib/holdings-benchmark-overlay";
 import { historyBatch } from "@/lib/history-batch";
 import { seriesDirection } from "@/lib/visual-signals";
 import styles from "./PortfolioChart.module.css";
@@ -13,17 +15,29 @@ import {
 } from "@/lib/approved-workspace";
 import { api, ApiError } from "@/lib/client";
 import { readResource } from "@/lib/resource-cache";
-import { amount, dateLabel } from "@/lib/format";
+import { amount, dateLabel, percent } from "@/lib/format";
 import { useProduct } from "./Session";
 import { portfolioRange } from "@/lib/portfolio-range";
 import PortfolioRange from "./PortfolioRange";
 
+function priceMove(points: { value: number }[]) {
+  const first = points[0]?.value;
+  const last = points.at(-1)?.value;
+  return first > 0 && Number.isFinite(last)
+    ? percent(((last! - first) / first) * 100, true)
+    : "—";
+}
+
 export default function ApprovedPortfolioChart({
   positions,
   quotes,
+  compact = false,
+  showBenchmarks = compact,
 }: {
   positions: Position[];
   quotes: QuoteRows;
+  compact?: boolean;
+  showBenchmarks?: boolean;
 }) {
   const { cache, demo, owner } = useProduct();
   const [history, setHistory] = useState<WorkspaceHistory>({}),
@@ -36,6 +50,7 @@ export default function ApprovedPortfolioChart({
   });
   const [width, setWidth] = useState(640);
   const [inspection, setInspection] = useState<number | null>(null);
+  const [period, setPeriod] = useState("6M");
   useEffect(() => {
     const element = container.current;
     if (!element) return;
@@ -57,7 +72,14 @@ export default function ApprovedPortfolioChart({
         .map((p) => p.symbol),
     ),
   ].sort();
-  const key = symbols.join(",");
+  const key = [
+    ...new Set([
+      ...symbols,
+      ...(showBenchmarks && symbols.length ? ["SPY", "QQQ"] : []),
+    ]),
+  ]
+    .sort()
+    .join(",");
   useEffect(() => {
     let active = true;
     const abort = new AbortController();
@@ -126,7 +148,7 @@ export default function ApprovedPortfolioChart({
       abort.abort();
     };
   }, [key, cache, demo, owner, revision]);
-  const chart = useMemo(
+  const fullHistory = useMemo(
     () =>
       portfolioHistory(
         positions,
@@ -135,29 +157,58 @@ export default function ApprovedPortfolioChart({
         demo
           ? Object.values(demo.research)[0]?.retrievedAt.slice(0, 10)
           : undefined,
+        compact ? 190 : 60,
       ),
-    [positions, quotes, history, demo],
+    [positions, quotes, history, demo, compact],
   );
+  const chart = useMemo(() => {
+    if (!compact) return fullHistory;
+    const { cutoff } = accountHistoryWindow(
+      fullHistory.points.map((p) => p.time),
+      period,
+    );
+    return {
+      ...fullHistory,
+      points: fullHistory.points.filter((p) => Date.parse(p.time) >= cutoff),
+    };
+  }, [fullHistory, compact, period]);
   const range = useMemo(
     () =>
-      portfolioRange(
-        positions,
-        quotes,
-        history,
-        demo
-          ? Object.values(demo.research)[0]?.retrievedAt.slice(0, 10)
-          : undefined,
-      ),
-    [positions, quotes, history, demo],
+      compact
+        ? null
+        : portfolioRange(
+            positions,
+            quotes,
+            history,
+            demo
+              ? Object.values(demo.research)[0]?.retrievedAt.slice(0, 10)
+              : undefined,
+          ),
+    [positions, quotes, history, demo, compact],
   );
   useEffect(() => setInspection(null), [chart]);
   const selectedPoint =
     inspection == null
       ? null
       : chart.points[Math.min(inspection, chart.points.length - 1)];
+  const overlays = showBenchmarks
+    ? (["SPY", "QQQ"] as const)
+        .map((symbol) => ({
+          symbol,
+          points: holdingsBenchmarkOverlay(
+            chart.points,
+            history[symbol]?.candles ?? [],
+          ),
+        }))
+        .filter((b) => b.points.length > 1)
+    : [];
   const values = chart.points.map((p) => p.value),
-    low = Math.min(...values),
-    high = Math.max(...values),
+    domain = [
+      ...values,
+      ...overlays.flatMap((b) => b.points.map((p) => p.value)),
+    ],
+    low = Math.min(...domain),
+    high = Math.max(...domain),
     spread = Math.max(high - low, high * 0.03, 1),
     bottom = low - spread * 0.12,
     top = high + spread * 0.12;
@@ -169,7 +220,11 @@ export default function ApprovedPortfolioChart({
     .map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(2)} ${y(v).toFixed(2)}`)
     .join(" ");
   return (
-    <div ref={container} className={styles.chart}>
+    <div
+      ref={container}
+      className={styles.chart}
+      data-compact={compact || undefined}
+    >
       <p className="chart-note" role="status">
         <strong>
           {loading
@@ -178,10 +233,59 @@ export default function ApprovedPortfolioChart({
               ? "Partial holdings history"
               : "Holdings price history"}
         </strong>{" "}
-        · {chart.included.length} holdings included. Cash, managed balances and
-        margin are excluded.
+        · {chart.included.length} of {symbols.length} holdings
+        {!compact && ". Cash, managed balances and margin are excluded."}
       </p>
-      {chart.points.length > 1 && (
+      {showBenchmarks && chart.points.length > 1 && (
+        <div className={styles.benchmarkLegend}>
+          <header>
+            <strong>Price changes</strong>
+            <span>
+              {dateLabel(chart.points[0].time)} –{" "}
+              {dateLabel(chart.points.at(-1)!.time)}
+            </span>
+            {compact && (
+              <div
+                className={styles.periods}
+                role="group"
+                aria-label="Holdings history period"
+              >
+                {["1M", "3M", "6M"].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={period === value}
+                    onClick={() => {
+                      setInspection(null);
+                      setPeriod(value);
+                    }}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            )}
+          </header>
+          <span>
+            Holdings <strong>{priceMove(chart.points)}</strong>
+          </span>
+          {overlays.map((b) => (
+            <span key={b.symbol} data-benchmark={b.symbol}>
+              {b.symbol === "SPY" ? "S&P 500 (SPY)" : "Nasdaq-100 (QQQ)"}{" "}
+              <strong>{priceMove(b.points)}</strong>
+            </span>
+          ))}
+          {!loading && overlays.length < 2 && (
+            <small>
+              {["SPY", "QQQ"]
+                .filter((symbol) => !overlays.some((b) => b.symbol === symbol))
+                .join(" / ")}
+              : matching dated closes unavailable.
+            </small>
+          )}
+        </div>
+      )}
+      {!compact && chart.points.length > 1 && (
         <>
           <dl className={styles.totals}>
             <div>
@@ -207,9 +311,11 @@ export default function ApprovedPortfolioChart({
               </dd>
             </div>
           </dl>
-          <p className="chart-note">
-            Values cover the included holdings, not your full account balance.
-          </p>
+          {!compact && (
+            <p className="chart-note">
+              Values cover the included holdings, not your full account balance.
+            </p>
+          )}
         </>
       )}
       {chart.points.length > 1 && (
@@ -224,6 +330,15 @@ export default function ApprovedPortfolioChart({
                 {dateLabel(selectedPoint.time)} · Value of included holdings
               </span>
               <strong>{amount(selectedPoint.value, "USD")}</strong>
+              {overlays.map((b) => (
+                <span key={b.symbol}>
+                  {b.symbol} rebased:{" "}
+                  {amount(
+                    b.points[Math.min(inspection!, b.points.length - 1)].value,
+                    "USD",
+                  )}
+                </span>
+              ))}
             </>
           ) : (
             <span>
@@ -343,6 +458,22 @@ export default function ApprovedPortfolioChart({
             strokeWidth="3"
             strokeLinejoin="round"
           />
+          {overlays.map((b) => (
+            <path
+              key={b.symbol}
+              data-benchmark={b.symbol}
+              className={styles.benchmarkLine}
+              d={b.points
+                .map(
+                  (p, i) =>
+                    `${i ? "L" : "M"}${x(i).toFixed(2)} ${y(p.value).toFixed(2)}`,
+                )
+                .join(" ")}
+              fill="none"
+              strokeWidth="2"
+              strokeDasharray={b.symbol === "QQQ" ? "6 4" : undefined}
+            />
+          ))}
           <circle cx={right} cy={y(values.at(-1)!)} r="4" fill="currentColor" />
           {selectedPoint && inspection != null && (
             <g pointerEvents="none">
@@ -388,7 +519,7 @@ export default function ApprovedPortfolioChart({
           </p>
         </div>
       )}
-      {!loading && <PortfolioRange range={range} />}
+      {range && !loading && <PortfolioRange range={range} />}
       {chart.points.length > 1 && (
         <details className={styles.values}>
           <summary>Data & calculation</summary>

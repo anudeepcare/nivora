@@ -19,12 +19,12 @@ test("compact review surfaces evidence, date and trigger before disclosure, not 
 test("workspace signal reuses existing decision evidence without a second policy", () => {
   assert.match(read("lib/edge-research.ts"), /evidence: edge.decision.reasons/);
 });
-test("allocation puts a smaller donut beside its unchanged holdings legend", () => {
+test("allocation uses a thin composition bar and preserves weights for every holding", () => {
   const s = read("components/PortfolioPage.tsx"),
     css = read("components/PortfolioReference.module.css");
   assert.match(s, /className=\{reference.allocationBody\}/);
   assert.match(s, /className=\{reference.allocationLegend\}/);
-  assert.match(css, /width: min\(100%, 200px\)/);
+  assert.match(css, /allocation-track\)\s*\{[^}]*display: flex/s);
   assert.match(s, /model.allocations.slice\(0, 6\)/);
   assert.match(s, /model.allocations.slice\(6\)/);
 });

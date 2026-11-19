@@ -1,23 +1,22 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-test("comparison action opens a dedicated setup dialog, not unrelated full-picture analysis", () => {
-  const p = fs.readFileSync("components/PortfolioPage.tsx", "utf8");
-  const action = p.slice(
-    p.indexOf("onReviewRecords="),
-    p.indexOf("<div className={reference.capitalOverview}"),
+const p = fs.readFileSync("components/PortfolioPage.tsx", "utf8");
+test("portfolio shares one direct transaction dialog between the toolbar and history", () => {
+  assert.match(p, /onClick=\{openTransaction\}[\s\S]{0,150}Record transaction/);
+  assert.match(p, /<AccountHistory\b[^>]*onReviewRecords=\{openTransaction\}/s);
+  assert.match(p, /<TransactionWorkspace\b[^>]*\bdirectRecord\b/s);
+  assert.doesNotMatch(
+    p,
+    /comparisonSetup|comparisonFirst|Set up your market comparison/,
   );
-  assert.match(action, /comparisonSetup.current\?\.showModal\(\)/);
-  assert.doesNotMatch(action, /depth.current/);
-  assert.match(p, /aria-labelledby="comparison-setup-title"/);
-  assert.match(p, /<TransactionWorkspace[^>]*comparisonFirst/s);
 });
-test("comparison-first transaction flow exposes prerequisites and only saved-ledger build controls", () => {
-  const p = fs.readFileSync("components/TransactionWorkspace.tsx", "utf8");
-  assert.match(p, /comparisonFirst = false/);
-  assert.match(p, /useState\(comparisonFirst\)/);
-  assert.match(p, /open=\{historyOpen\}/);
-  assert.match(p, /complete saved ledger across all accounts/);
-  assert.match(p, /resource.data\?\.rows.length/);
-  assert.match(p, /Save or finish reviewing/);
+test("each holding can add a lot without opening its purchase list", () => {
+  const action = p.match(
+    /aria-label=\{\x60Add purchase for \$\{p\.symbol\}\x60\}([\s\S]*?)<\/button>/,
+  );
+  assert.ok(action);
+  assert.match(action[1], /onAddPurchase\(/);
+  assert.doesNotMatch(action[1], /showModal/);
+  assert.match(p, /Manage \$\{p\.symbol\} purchases/);
 });

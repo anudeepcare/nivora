@@ -24,11 +24,10 @@ test("phone holdings title and refresh occupy distinct full-width rows", () => {
   assert.equal(title["white-space"], "normal");
   assert.equal(title["min-width"], "0");
 });
-test("phone search, pace and column controls keep independent rows and all handlers", () => {
+test("phone search and pace controls keep independent rows and all handlers", () => {
   for (const [selector, row] of [
     [".holdingsSearch", "3"],
     ["select", "4"],
-    ["button", "5"],
   ])
     assert.equal(
       rule(`.portfolio.portfolio .holdingsToolbar > ${selector}`)["grid-row"],
@@ -39,7 +38,6 @@ test("phone search, pace and column controls keep independent rows and all handl
     "Portfolio price refresh interval",
     "Refresh portfolio prices",
     "Filter holdings",
-    "Columns & metrics",
   ])
     assert.ok(s.includes(label));
   assert.match(s, /onClick=\{quotes.refresh\}/);
