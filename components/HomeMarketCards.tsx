@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { companyAccent, seriesDirection } from "@/lib/visual-signals";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useId, useState } from "react";
 import {
   ArrowDownRight,
@@ -225,6 +225,7 @@ export default function HomeMarketCards({
   prefix,
   context = "home",
   total,
+  quoteContext,
 }: {
   symbols: string[];
   quotes: QuoteRows;
@@ -232,6 +233,7 @@ export default function HomeMarketCards({
   prefix: string;
   context?: "home" | "research";
   total?: number;
+  quoteContext?: ReactNode;
 }) {
   const { cache, demo, owner } = useProduct();
   const [logoAccents, setLogoAccents] = useState<Record<string, string>>({});
@@ -354,6 +356,9 @@ export default function HomeMarketCards({
               ? `${selected.length} of ${total ?? allSymbols.length} ${context === "research" ? "saved" : "followed"} companies · ${ready} quotes available`
               : "Follow a company to see its reported price history here."}
           </p>
+          {quoteContext && (
+            <div className={styles.quoteContext}>{quoteContext}</div>
+          )}
         </div>
         <Link href={`${prefix}/watchlist`} className={styles.explore}>
           View all followed companies{" "}

@@ -165,13 +165,22 @@ export function homeBrief(input: Input) {
 }
 export function dailyPerspective(today: string) {
   const thoughts = [
-    "Price moves faster than a business.",
-    "A clear thesis makes new evidence easier to judge.",
-    "Know what would change your mind.",
-    "A good process leaves room for uncertainty.",
-    "Patience works best with a plan.",
-    "Review the business, not just the price.",
-    "Concentration deserves as much attention as conviction.",
+    "After a price move, separate what changed in the business from what changed in expectations.",
+    "Write down what would change your view before you read the next headline.",
+    "Read the new guidance next to the last one. The change often matters more than the number.",
+    "If a result surprised you, check whether your assumption or the business changed.",
+    "When the news feels urgent, look for a dated filing or update before drawing a conclusion.",
+    "Check whether the revenue trend is making its way into cash flow.",
+    "Separate a lasting margin change from a cost that only appears this quarter.",
+    "Compare the same fiscal periods and units before calling a trend.",
+    "Look for the next date that can test the most important assumption in your thesis.",
+    "A strong company and an attractive price are two different judgments.",
+    "For a rising valuation, ask what the business must deliver to justify it.",
+    "Before comparing two businesses, check what their headline growth figures include.",
+    "Check how much one position drives the outcome before adding to it.",
+    "Use quiet days to update your evidence, not to force a decision.",
+    "A range of plausible outcomes tells you more than a single precise forecast.",
+    "If fresh evidence is missing, say what you do not know rather than filling the gap with price action.",
   ];
   const day = Math.floor(Date.parse(`${today}T00:00:00Z`) / 86400000);
   return thoughts[

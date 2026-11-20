@@ -15,7 +15,8 @@ test("Today puts events first and retains one compact portfolio summary and stoc
   assert.equal(source.match(/<PortfolioDay\b/g)?.length, 1);
   assert.equal(source.match(/<HomeMarketCards\b/g)?.length, 1);
   assert.match(source, /className={homeStyles.leadGrid}/);
-  assert.match(source, /<PaceBoard/);
+  assert.doesNotMatch(source, /<PaceBoard/);
+  assert.match(source, /scanPace: false/);
   assert.match(source, /<ContributionCompare/);
 });
 test("Plaid workspace compositions are theme aware, responsive and have readable numeric hierarchy", () => {

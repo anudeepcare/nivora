@@ -153,6 +153,7 @@ export default function SentiSensePanels({
           className={`${s.tabs} auryn-detail-tabs`}
           data-selection-navigation
           data-nested-navigation
+          data-research-nav="detail"
           onKeyDown={(event) => navigateSelection(event)}
           aria-label={`${group} intelligence datasets`}
         >

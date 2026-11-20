@@ -16,10 +16,13 @@ test("Today leads with attention and dated events before stock and portfolio con
   assert.doesNotMatch(home, /<summary>Followed company prices<\/summary>/);
   assert.match(home, /secondaryHeadlines = spotlight\s*\? headlines\.filter/);
   assert.equal((home.match(/<Coverage state=/g) || []).length, 1);
-  assert.ok(home.indexOf("<Coverage") < home.indexOf("<HomeMarketCards"));
+  assert.match(
+    home,
+    /<HomeMarketCards[\s\S]*?quoteContext=\{symbols.length \? <Coverage state=/,
+  );
 });
-test("loaded breadth and rotation metrics open by default without removing collapse controls", () => {
-  assert.match(home, /\[radarOpen, setRadarOpen\] = useState\(true\)/);
+test("radar diagnostics remain reachable on demand without eager loading", () => {
+  assert.match(home, /\[radarOpen, setRadarOpen\] = useState\(false\)/);
   assert.match(
     home,
     /onToggle=\{\(event\) => setRadarOpen\(event.currentTarget.open\)\}/,
@@ -67,9 +70,11 @@ test("exposure highlights the existing actual portfolio weight, never a syntheti
 test("contribution planning and market radar follow all primary Today evidence", () => {
   const body = home.slice(home.indexOf("function HomeOverview()"));
   assert.ok(
-    body.indexOf("Your next contribution") > body.indexOf("<PaceBoard"),
+    body.indexOf("Your workspace") > body.indexOf("<HomeQuarterHighlights"),
   );
-  assert.ok(body.indexOf("<ContributionCompare") > body.indexOf("<PaceBoard"));
+  assert.ok(
+    body.indexOf("<ContributionCompare") > body.indexOf("<PortfolioDay"),
+  );
   assert.ok(
     body.indexOf("Market radar") > body.indexOf("<ContributionCompare"),
   );

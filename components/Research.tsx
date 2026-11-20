@@ -685,6 +685,7 @@ export default function Research({ symbol }: { symbol: string }) {
     supportingSections.length > 1 ? (
       <nav
         className={`${cockpit.supporting} auryn-view-tabs research-compact-tabs`}
+        data-research-nav="secondary"
         data-selection-navigation
         onKeyDown={(event) => navigateSelection(event)}
         aria-label={`${activeLens.label} evidence`}
@@ -831,6 +832,8 @@ export default function Research({ symbol }: { symbol: string }) {
         className={cockpit.lenses}
         aria-label="Research sections"
         ref={researchNavigation}
+        data-research-nav="primary"
+        onKeyDown={(event) => navigateSelection(event)}
       >
         {availableLenses.map((lens) => (
           <button

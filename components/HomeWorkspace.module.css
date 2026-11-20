@@ -954,30 +954,7 @@
   border-radius: 0;
 }
 
-.planRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
-  margin: 24px 0 10px;
-}
-.planRow h2 {
-  font-size: 18px;
-  margin: 0 0 4px;
-}
-.planRow p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-.planRow > a {
-  flex-shrink: 0;
-}
 @media (max-width: 760px) {
-  .planRow {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 }
 
 /* Preserve name, price and trend without competing for one narrow row. */
@@ -1023,11 +1000,6 @@
     max-width: 160px;
     justify-self: start;
     min-width: 0;
-  }
-  .planRow > a {
-    max-width: 100%;
-    white-space: normal;
-    text-align: left;
   }
 }
 
@@ -1108,30 +1080,6 @@
   grid-column: 2;
   margin: 0;
 }
-@media (min-width: 1100px) {
-  .home.home.home.home
-    :global(.home-evidence-layout)[data-calendar-empty="true"]
-    :global(.home-news-list) {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0 20px;
-  }
-  .home.home.home.home
-    :global(.home-evidence-layout)[data-calendar-empty="true"]
-    :global(.home-events-panel) {
-    display: grid;
-    grid-template-columns: minmax(240px, 0.6fr) minmax(0, 1fr);
-    align-items: center;
-    gap: 6px 24px;
-  }
-  .home.home.home.home
-    :global(.home-evidence-layout)[data-calendar-empty="true"]
-    :global(.home-events-panel)
-    :global(.section-head) {
-    margin-bottom: 0;
-  }
-}
-
 /* Outcome-first workspace: actual holdings and price context precede the feed. */
 .home.home.home.home {
   color: var(--plaid-ink, var(--ink));
@@ -1197,17 +1145,6 @@
   border-radius: 16px;
   padding: 12px 16px;
 }
-.home.home.home.home .planRow {
-  background: linear-gradient(
-    115deg,
-    var(--plaid-card-purple, var(--card)),
-    var(--plaid-card-blue, var(--card))
-  );
-  border: 0;
-  border-radius: 22px;
-  padding: 22px;
-  gap: 16px;
-}
 .home.home.home.home :is(a, button, summary):focus-visible {
   outline: 2px solid var(--plaid-focus, var(--blue));
   outline-offset: 4px;
@@ -1225,9 +1162,6 @@
   .home.home.home.home :global(.home-evidence-panel) {
     padding: 16px;
     border-radius: 18px;
-  }
-  .home.home.home.home .planRow {
-    padding: 18px;
   }
 }
 
@@ -1267,21 +1201,6 @@
   outline: 2px solid var(--plaid-focus, var(--blue));
   outline-offset: 3px;
 }
-.home.home.home.home .planRow {
-  padding: 20px;
-  gap: 16px;
-  border: 0;
-  border-radius: 18px;
-}
-.home.home.home.home .planRow h2 {
-  font-size: 20px;
-  line-height: 1.3;
-}
-.home.home.home.home .planRow p {
-  max-width: 60ch;
-  font-size: 14px;
-  line-height: 1.5;
-}
 @media (max-width: 600px) {
   .home.home.home.home .marketRadar > summary {
     padding: 14px 16px;
@@ -1290,10 +1209,6 @@
   .home.home.home.home .marketRadar > summary span {
     flex-basis: 100%;
     padding-left: 18px;
-  }
-  .home.home.home.home .planRow {
-    padding: 16px;
-    display: grid;
   }
 }
 
@@ -1339,45 +1254,6 @@
 }
 
 /* Today keeps quote coverage inline and gives the contribution chart a useful companion. */
-.home.home.home.home .quoteStatus:empty {
-  display: none;
-}
-.home.home.home.home .quoteStatus :global(.approved-data-note) {
-  display: flex;
-  flex-wrap: wrap;
-  width: fit-content;
-  gap: 2px 10px;
-  margin: 2px 0 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--plaid-muted, var(--muted));
-  font-size: 13px;
-}
-.home.home.home.home .quoteStatus :global(.approved-data-note) button {
-  margin: 0;
-  min-height: 44px;
-  padding: 4px 8px;
-  border: 0;
-  background: transparent;
-  color: var(--plaid-ink, var(--ink));
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.home.home.home.home
-  .quoteStatus
-  :global(.approved-data-note)
-  button:focus-visible {
-  outline: 2px solid var(--plaid-focus, var(--blue));
-  outline-offset: 2px;
-}
-.home.home.home.home .quoteStatus :global(.approved-data-note) button:disabled {
-  opacity: 0.65;
-  cursor: wait;
-}
-.home.home.home.home .quoteStatus :global(.approved-data-note) button:hover {
-  background: var(--plaid-ice, var(--surface));
-}
 .leadGrid {
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
@@ -1386,33 +1262,14 @@
 .leadGrid:not(:has(section)) {
   display: none;
 }
-.home.home.home.home .leadGrid > :global(.home-evidence-layout) {
-  grid-template-columns: minmax(0, 1fr);
-  margin: 0;
-  gap: 0;
-}
-@media (min-width: 980px) {
-  .leadGrid:has(> .dayOverview section):has(> :global(.home-evidence-layout)) {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
-  }
-}
 .updateFeed {
   margin: 16px 0;
-}
-.home.home.home.home .planRow {
-  margin: 14px 0 4px;
-  padding: 4px 0;
-  background: transparent;
 }
 .actionGrid {
   margin-top: 6px;
 }
 
 /* Editorial hierarchy: use one outer rule rather than two full-surface cards. */
-.home.home.home.home
-  .leadGrid
-  > :global(.home-evidence-layout)
-  > :global(.home-events-panel),
 .home.home.home.home .updateFeed > :global(.home-news-panel) {
   border: 0;
   border-block-end: 1px solid var(--plaid-line, var(--line));
@@ -1466,23 +1323,6 @@
 .home .todayHeading h1 {
   margin: 0;
 }
-.home.home.home.home
-  .leadGrid
-  > :global(.home-evidence-layout)[data-calendar-empty="true"]
-  > :global(.home-events-panel) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 16px;
-}
-.home.home.home.home
-  .leadGrid
-  > :global(.home-evidence-layout)[data-calendar-empty="true"]
-  > :global(.home-events-panel)
-  > :first-child {
-  margin: 0;
-  gap: 8px;
-}
 .home .calendarRefresh {
   display: inline-grid;
   place-items: center;
@@ -1535,26 +1375,6 @@
   color: var(--plaid-ink, var(--ink));
   font-size: 13px;
   white-space: nowrap;
-}
-.home.home.home.home .researchTools .planRow {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 6px 14px;
-  border-radius: 0;
-  padding: 6px 0;
-  border-block-end: 1px solid var(--plaid-line, var(--line));
-}
-.home.home.home.home .researchTools .planRow > h2 {
-  margin: 0;
-}
-.home.home.home.home .researchTools .planRow > a {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  min-height: 44px;
 }
 @media (max-width: 700px) {
   .updateAction {
@@ -1663,14 +1483,13 @@
   );
   color: var(--plaid-ink, var(--ink));
 }
-.narrativeMain,
-.storyLens {
+.narrativeMain {
   min-width: 0;
   overflow-wrap: anywhere;
 }
 .home .narrativeMain h2 {
   margin: 6px 0 12px;
-  max-width: 32ch;
+  max-width: 55ch;
   font-size: clamp(25px, 3vw, 43px);
   line-height: 1.12;
   letter-spacing: -0.037em;
@@ -1678,7 +1497,7 @@
 }
 .storyLabel,
 .storyNote,
-.storyLens p {
+.storyCatalyst {
   margin: 0;
   color: var(--plaid-muted, var(--muted));
   font-size: 13px;
@@ -1712,16 +1531,6 @@
   font-size: 24px;
   font-variant-numeric: tabular-nums;
 }
-.storyLens {
-  display: grid;
-  gap: 12px;
-  padding-block: 8px 0;
-}
-.storyLens strong {
-  display: block;
-  color: var(--plaid-ink, var(--ink));
-  font-size: 14px;
-}
 .storyAction {
   display: inline-flex;
   align-items: center;
@@ -1737,11 +1546,6 @@
   outline: 2px solid var(--plaid-focus, var(--blue));
   outline-offset: 3px;
 }
-@media (min-width: 900px) {
-  .home .narrative {
-    grid-template-columns: minmax(0, 2.2fr) minmax(220px, 1fr);
-  }
-}
 @media (max-width: 650px) {
   .marketTape dt {
     align-items: start;
@@ -1750,5 +1554,174 @@
   }
   .marketTape dd > strong {
     font-size: 20px;
+  }
+}
+
+/* A dated editorial note is independent of the source selected for the story. */
+.dailyThought {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0 0 16px;
+  color: var(--plaid-ink, var(--ink));
+}
+.dailyThought svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--plaid-violet, var(--accent-text, var(--ink)));
+}
+.dailyThought > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 1px 12px;
+  min-width: 0;
+}
+.dailyThought span {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 7px;
+  font-size: 13px;
+}
+.dailyThought time {
+  color: var(--plaid-muted, var(--muted));
+  font-size: 12px;
+}
+.dailyThought p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.storyCatalyst strong {
+  color: var(--plaid-ink, var(--ink));
+}
+
+/* Aligned market context: use only the columns that actually have content. */
+.briefContainer {
+  container: daily-brief / inline-size;
+}
+.home .dailyBrief {
+  align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 16px 24px;
+  padding: 14px 0 16px;
+  border-block: 1px solid var(--plaid-line, var(--line));
+}
+.marketSnapshot {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+.home .marketHead h2 {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+.home .marketTape dt {
+  column-gap: 5px;
+}
+.home .marketTape > div {
+  padding: 8px 10px 10px;
+}
+.home .marketTape dd > strong {
+  font-size: clamp(17px, 1.6vw, 24px);
+}
+.home.home.home.home .dailyBrief > :global(.home-evidence-layout) {
+  display: block;
+  margin: 0;
+}
+.home.home.home.home .dailyBrief :global(.home-events-panel) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: stretch;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.home .dailyBrief .calendarHeader {
+  justify-content: space-between;
+  align-items: start;
+  flex-direction: row;
+  gap: 4px;
+  margin: 0;
+  text-align: start;
+}
+.calendarHeader > :first-child {
+  align-items: start;
+  min-width: 0;
+}
+.home.home.home.home .dailyBrief :global(.home-events-panel) h2 {
+  font-size: 18px;
+  line-height: 1.35;
+}
+.home.home.home.home .dailyBrief :global(.home-events-panel) .calendarState {
+  justify-content: flex-start;
+  text-align: start;
+}
+/* Three modules on a two-track rail: give dated company events the whole next row. */
+@container daily-brief (624px <= width < 948px) {
+  .dailyBrief:has(> :nth-child(3)) > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+@container daily-brief (width < 624px) or (width >= 948px) {
+  .home.home.home.home .dailyBrief :global(.home-event-day) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+  .home.home.home.home .dailyBrief :global(.home-event-day) > time {
+    grid-row: auto;
+    justify-self: start;
+    padding: 3px 7px;
+    margin: 0;
+  }
+}
+/* One account workspace footer; avoid a nested card for each destination. */
+.home.home.home.home .researchTools {
+  padding: clamp(12px, 2vw, 20px);
+  border-radius: 16px;
+  background: var(--plaid-surface, var(--card));
+}
+.home .workspaceTitle {
+  margin: 0 0 4px;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.workspaceShortcuts {
+  display: grid;
+  align-items: center;
+  gap: 0 16px;
+}
+.workspaceShortcuts > section {
+  margin: 0;
+  border: 0;
+  padding-block: 7px;
+}
+.workspaceLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  justify-self: start;
+  color: var(--plaid-ink, var(--ink));
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.home.home.home.home .researchTools .actionGrid {
+  margin-top: 1px;
+}
+.home.home.home.home .researchTools .actionGrid > * {
+  border-block-start: 1px solid var(--plaid-line, var(--line));
+  border-block-end: 0;
+}
+@media (min-width: 660px) {
+  .workspaceShortcuts:has(> section) {
+    grid-template-columns: minmax(0, 1fr) max-content;
   }
 }

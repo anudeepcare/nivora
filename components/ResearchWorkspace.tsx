@@ -21,6 +21,7 @@ export default function ResearchWorkspace({
         className="auryn-view-tabs research-compact-tabs"
         data-selection-navigation
         data-nested-navigation
+        data-research-nav="detail"
         onKeyDown={(event) => navigateSelection(event)}
         role="group"
         aria-label={`${label} views`}

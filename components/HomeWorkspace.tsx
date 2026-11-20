@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import todayStyles from "./TodaySequence.module.css";
 import { useResource } from "./Session";
 import { quoteHealth } from "@/lib/quote-health";
@@ -10,10 +10,10 @@ import HomeRadar from "./HomeRadar";
 import TodayMacroWatch from "./TodayMacroWatch";
 import ResearchInbox from "./ResearchInbox";
 import { useHomeFeed } from "./useHomeFeed";
-import { PaceBoard } from "./WorkspacePace";
 
 import { researchLink } from "@/lib/approved-workspace";
 import { amount, dateLabel, percent, quoteTime } from "@/lib/format";
+import { watchMarketDay } from "@/lib/today-market-clock";
 import { todayNarrative } from "@/lib/today-narrative";
 import type { EodNews } from "@/lib/eodhd";
 import { dailyPerspective, homeBrief } from "@/lib/home-brief";
@@ -26,7 +26,7 @@ import {
   relevantHoldingHeadlines,
 } from "@/lib/home-feed";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
-import { ArrowUpRight, RefreshCw } from "lucide-react";
+import { ArrowUpRight, Lightbulb, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { FeatureGate, useAccess } from "./Access";
 import CompanySparkline from "./CompanySparkline";
@@ -99,10 +99,16 @@ function EarningsNumbers({
 }
 
 function HomeOverview() {
-  const [radarOpen, setRadarOpen] = useState(true);
+  const [radarOpen, setRadarOpen] = useState(false);
+  const [, setMarketDay] = useState("");
   const { access } = useAccess();
-  const state = useWorkspaceData(),
+  const state = useWorkspaceData("all", { scanPace: false }),
     { workspace, quotes, model, prefix, demo } = state;
+  const preview = !!demo;
+  useEffect(
+    () => (preview ? undefined : watchMarketDay(setMarketDay)),
+    [preview],
+  );
   const today = new Date(
     demo
       ? Object.values(demo.research)[0]?.retrievedAt || Date.now()
@@ -391,110 +397,264 @@ function HomeOverview() {
             </Link>
           )}
         </div>
-        <div className={homeStyles.storyLens}>
-          <p>
-            <strong>Research question</strong>{" "}
-            {story?.question ??
-              "Which dated result or filing would change your view?"}
+        {story?.next && (
+          <p className={homeStyles.storyCatalyst}>
+            <strong>
+              {story.next.date === day
+                ? "Scheduled today"
+                : "Next supplied event"}
+            </strong>{" "}
+            {story.next.kind} ·{" "}
+            <time dateTime={story.next.date}>{dateLabel(story.next.date)}</time>
+            {story.next.detail ? ` · ${story.next.detail}` : ""}
           </p>
-          {story?.next && (
-            <p>
-              <strong>
-                {story.next.date === day
-                  ? "Scheduled today"
-                  : "Next supplied event"}
-              </strong>
-              {story.next.kind} ·{" "}
-              <time dateTime={story.next.date}>
-                {dateLabel(story.next.date)}
-              </time>
-              {story.next.detail ? ` · ${story.next.detail}` : ""}
-            </p>
-          )}
-          <p>
-            <strong>Auryn thought</strong> {dailyPerspective(day)}
-          </p>
-        </div>
+        )}
       </section>
-      <section
-        className={homeStyles.dailyBrief}
-        aria-label="Daily market briefing"
-      >
-        <div className={homeStyles.marketHead}>
-          <h2>Market snapshot</h2>
-          <span>U.S. market ETF proxies</span>
+      <aside className={homeStyles.dailyThought} aria-label="Auryn thought">
+        <Lightbulb size={18} aria-hidden="true" />
+        <div>
+          <span>
+            <strong>Auryn thought</strong>{" "}
+            <time dateTime={day}>{dateLabel(day)}</time>
+          </span>
+          <p>{dailyPerspective(day)}</p>
         </div>
-        <dl className={homeStyles.marketTape} aria-label="ETF market proxies">
-          {benchmarks.map((symbol) => {
-            const quote = quoteHealth(
-              quotes.data[symbol]?.quote ?? marketQuotes.data?.[symbol]?.quote,
-              today.getTime(),
-            );
-            const timestamp = Date.parse(quote?.asOf ?? "");
-            const price = quote?.price;
-            const available =
-              quote?.currency === "USD" &&
-              typeof price === "number" &&
-              Number.isFinite(price) &&
-              price > 0 &&
-              Number.isFinite(timestamp) &&
-              timestamp <= today.getTime();
-            const move =
-              available &&
-              typeof quote.changePct === "number" &&
-              Number.isFinite(quote.changePct)
-                ? quote.changePct
-                : null;
-            return (
-              <div key={symbol}>
-                <dt>
-                  <Link href={researchLink(symbol, prefix)}>{symbol}</Link>
-                  <span>
-                    {symbol === "SPY" ? "S&P 500 ETF" : "Nasdaq-100 ETF"}
-                  </span>
-                </dt>
-                <dd>
-                  {available ? (
-                    <>
-                      <strong
-                        data-direction={
-                          move == null || move === 0
-                            ? "flat"
-                            : move > 0
-                              ? "up"
-                              : "down"
-                        }
-                      >
-                        {move === null
-                          ? "Change unavailable"
-                          : percent(move, true)}
-                      </strong>
-                      <span>{amount(price, quote.currency)}</span>
-                      <small>
-                        {quote.stale ? "Older quote · " : ""}
-                        {quote.session || "Session not supplied"} ·{" "}
-                        {/^\d{4}-\d{2}-\d{2}$/.test(quote.asOf ?? "")
-                          ? dateLabel(quote.asOf)
-                          : quoteTime(quote.asOf, true, today)}
-                      </small>
-                    </>
-                  ) : (
+      </aside>
+      <div className={homeStyles.briefContainer}>
+        <section
+          className={homeStyles.dailyBrief}
+          aria-label="Daily market briefing"
+        >
+          <section
+            className={homeStyles.marketSnapshot}
+            aria-labelledby="today-market-snapshot"
+          >
+            <div className={homeStyles.marketHead}>
+              <h2 id="today-market-snapshot">Market snapshot</h2>
+              <span>U.S. market ETF proxies</span>
+            </div>
+            <dl
+              className={homeStyles.marketTape}
+              aria-label="ETF market proxies"
+            >
+              {benchmarks.map((symbol) => {
+                const quote = quoteHealth(
+                  quotes.data[symbol]?.quote ??
+                    marketQuotes.data?.[symbol]?.quote,
+                  today.getTime(),
+                );
+                const timestamp = Date.parse(quote?.asOf ?? "");
+                const price = quote?.price;
+                const available =
+                  quote?.currency === "USD" &&
+                  typeof price === "number" &&
+                  Number.isFinite(price) &&
+                  price > 0 &&
+                  Number.isFinite(timestamp) &&
+                  timestamp <= today.getTime();
+                const move =
+                  available &&
+                  typeof quote.changePct === "number" &&
+                  Number.isFinite(quote.changePct)
+                    ? quote.changePct
+                    : null;
+                return (
+                  <div key={symbol}>
+                    <dt>
+                      <Link href={researchLink(symbol, prefix)}>{symbol}</Link>
+                      <span>
+                        {symbol === "SPY" ? "S&P 500 ETF" : "Nasdaq-100 ETF"}
+                      </span>
+                    </dt>
+                    <dd>
+                      {available ? (
+                        <>
+                          <strong
+                            data-direction={
+                              move == null || move === 0
+                                ? "flat"
+                                : move > 0
+                                  ? "up"
+                                  : "down"
+                            }
+                          >
+                            {move === null
+                              ? "Change unavailable"
+                              : percent(move, true)}
+                          </strong>
+                          <span>{amount(price, quote.currency)}</span>
+                          <small>
+                            {quote.stale ? "Older quote · " : ""}
+                            {quote.session || "Session not supplied"} ·{" "}
+                            {/^\d{4}-\d{2}-\d{2}$/.test(quote.asOf ?? "")
+                              ? dateLabel(quote.asOf)
+                              : quoteTime(quote.asOf, true, today)}
+                          </small>
+                        </>
+                      ) : (
+                        <span>
+                          {demo
+                            ? "Not in this preview"
+                            : marketQuotes.loading ||
+                                (symbols.includes(symbol) && quotes.loading)
+                              ? "Checking quote…"
+                              : "Quote unavailable"}
+                        </span>
+                      )}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </section>
+          <TodayMacroWatch today={day} preview={!!demo} />
+          {symbols.length > 0 && (
+            <div
+              className="home-evidence-layout"
+              data-calendar-empty={
+                !eventGroups.length && !brief.reported.length
+              }
+            >
+              <section
+                className="home-evidence-panel home-events-panel"
+                id="home-earnings"
+                aria-label="Company earnings and events"
+              >
+                <SectionHead
+                  title="Earnings & events"
+                  subtitle={
+                    eventGroups.length
+                      ? "Next 7 days · held companies first on each date"
+                      : undefined
+                  }
+                  className={homeStyles.calendarHeader}
+                  action={
+                    <button
+                      className={homeStyles.calendarRefresh}
+                      onClick={feed.refresh}
+                      disabled={feed.loading}
+                      aria-label="Refresh company events"
+                      title={
+                        feed.data?.retrievedAt
+                          ? `Updated ${quoteTime(feed.data.retrievedAt)}`
+                          : "Refresh events"
+                      }
+                    >
+                      <RefreshCw size={18} />
+                    </button>
+                  }
+                />
+                {eventGroups.length ? (
+                  <div className="home-event-groups">
+                    {eventGroups.map((group) => (
+                      <div className="home-event-day" key={group.date}>
+                        <time dateTime={group.date}>
+                          {new Intl.DateTimeFormat("en-US", {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                            timeZone: "UTC",
+                          }).format(Date.parse(group.date))}
+                        </time>
+                        <div>
+                          {group.events.map((event) => (
+                            <Link
+                              className="home-event-row"
+                              key={`${event.symbol}:${event.kind}`}
+                              href={researchLink(event.symbol, prefix)}
+                            >
+                              <span>
+                                <strong>{event.symbol}</strong>
+                                <span>
+                                  {event.kind}
+                                  {heldSymbols.has(event.symbol)
+                                    ? " · Held"
+                                    : ""}
+                                </span>
+                                {/earnings/i.test(event.kind) && (
+                                  <b
+                                    className={`earnings-status earnings-${earningsEventState(event, day).status}`}
+                                  >
+                                    {earningsEventState(event, day).label}
+                                  </b>
+                                )}
+                                <small>
+                                  {event.detail || "Time not confirmed"}
+                                </small>
+                                {/earnings/i.test(event.kind) && (
+                                  <EarningsNumbers event={event} today={day} />
+                                )}
+                              </span>
+                              <ArrowUpRight size={16} />
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={homeStyles.calendarState} role="status">
                     <span>
-                      {demo
-                        ? "Not in this preview"
-                        : marketQuotes.loading ||
-                            (symbols.includes(symbol) && quotes.loading)
-                          ? "Checking quote…"
-                          : "Quote unavailable"}
+                      {feed.loading
+                        ? "Checking dated events for the next 7 days…"
+                        : !calendarReady
+                          ? "Calendar coverage is incomplete. Missing coverage does not mean no events."
+                          : "No upcoming events returned for the next 7 days."}
                     </span>
+                  </p>
+                )}
+                {brief.reported.length > 0 && (
+                  <div
+                    className="home-reported-results"
+                    aria-label="Recently reported earnings"
+                  >
+                    <h3>
+                      Recently reported <span>{brief.reported.length}</span>
+                    </h3>
+                    {brief.reported.map((event) => (
+                      <Link
+                        className="home-event-row"
+                        key={`${event.symbol}:${event.date}`}
+                        href={researchLink(event.symbol, prefix)}
+                      >
+                        <span>
+                          <strong>{event.symbol}</strong>
+                          <b className="earnings-status earnings-reported">
+                            Results reported
+                          </b>
+                          <small>{dateLabel(event.date)}</small>
+                          <EarningsNumbers event={event} today={day} />
+                        </span>
+                        <ArrowUpRight size={16} />
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {!feed.loading &&
+                  eventGroups.length > 0 &&
+                  !readiness.eventsReady && (
+                    <p className="home-source-note">
+                      These dates are available. Some company events could not
+                      be checked.
+                    </p>
                   )}
-                </dd>
-              </div>
-            );
-          })}
-        </dl>
-        <TodayMacroWatch today={day} preview={!!demo} />
-      </section>
+                {eventGroups.length > 0 && (feed.loading || feed.error) && (
+                  <p className="home-source-note" role="status">
+                    {feed.loading
+                      ? "Checking events…"
+                      : "Some events could not be checked."}
+                  </p>
+                )}
+                {!feed.loading && !calendarReady && (
+                  <button className="text-link" onClick={feed.refresh}>
+                    Retry calendar <RefreshCw size={14} />
+                  </button>
+                )}
+              </section>
+            </div>
+          )}
+        </section>
+      </div>
       <div className={homeStyles.leadGrid}>
         <div className={homeStyles.dayOverview}>
           <div className={homeStyles.attentionColumn}>
@@ -508,146 +668,6 @@ function HomeOverview() {
             />
           </div>
         </div>
-        {symbols.length > 0 && (
-          <div
-            className="home-evidence-layout"
-            data-calendar-empty={!eventGroups.length && !brief.reported.length}
-          >
-            <section
-              className="home-evidence-panel home-events-panel"
-              id="home-earnings"
-              aria-label="Company earnings and events"
-            >
-              <SectionHead
-                title="Earnings & events"
-                subtitle={
-                  eventGroups.length
-                    ? "Next 7 days · held companies first on each date"
-                    : undefined
-                }
-                action={
-                  <button
-                    className={homeStyles.calendarRefresh}
-                    onClick={feed.refresh}
-                    disabled={feed.loading}
-                    aria-label="Refresh company events"
-                    title={
-                      feed.data?.retrievedAt
-                        ? `Updated ${quoteTime(feed.data.retrievedAt)}`
-                        : "Refresh events"
-                    }
-                  >
-                    <RefreshCw size={18} />
-                  </button>
-                }
-              />
-              {eventGroups.length ? (
-                <div className="home-event-groups">
-                  {eventGroups.map((group) => (
-                    <div className="home-event-day" key={group.date}>
-                      <time dateTime={group.date}>
-                        {new Intl.DateTimeFormat("en-US", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                          timeZone: "UTC",
-                        }).format(Date.parse(group.date))}
-                      </time>
-                      <div>
-                        {group.events.map((event) => (
-                          <Link
-                            className="home-event-row"
-                            key={`${event.symbol}:${event.kind}`}
-                            href={researchLink(event.symbol, prefix)}
-                          >
-                            <span>
-                              <strong>{event.symbol}</strong>
-                              <span>
-                                {event.kind}
-                                {heldSymbols.has(event.symbol) ? " · Held" : ""}
-                              </span>
-                              {/earnings/i.test(event.kind) && (
-                                <b
-                                  className={`earnings-status earnings-${earningsEventState(event, day).status}`}
-                                >
-                                  {earningsEventState(event, day).label}
-                                </b>
-                              )}
-                              <small>
-                                {event.detail || "Time not confirmed"}
-                              </small>
-                              {/earnings/i.test(event.kind) && (
-                                <EarningsNumbers event={event} today={day} />
-                              )}
-                            </span>
-                            <ArrowUpRight size={16} />
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className={homeStyles.calendarState} role="status">
-                  <span>
-                    {feed.loading
-                      ? "Checking dated events for the next 7 days…"
-                      : !calendarReady
-                        ? "Calendar coverage is incomplete. Missing coverage does not mean no events."
-                        : "No upcoming events returned for the next 7 days."}
-                  </span>
-                </p>
-              )}
-              {brief.reported.length > 0 && (
-                <div
-                  className="home-reported-results"
-                  aria-label="Recently reported earnings"
-                >
-                  <h3>
-                    Recently reported <span>{brief.reported.length}</span>
-                  </h3>
-                  {brief.reported.map((event) => (
-                    <Link
-                      className="home-event-row"
-                      key={`${event.symbol}:${event.date}`}
-                      href={researchLink(event.symbol, prefix)}
-                    >
-                      <span>
-                        <strong>{event.symbol}</strong>
-                        <b className="earnings-status earnings-reported">
-                          Results reported
-                        </b>
-                        <small>{dateLabel(event.date)}</small>
-                        <EarningsNumbers event={event} today={day} />
-                      </span>
-                      <ArrowUpRight size={16} />
-                    </Link>
-                  ))}
-                </div>
-              )}
-              {!feed.loading &&
-                eventGroups.length > 0 &&
-                !readiness.eventsReady && (
-                  <p className="home-source-note">
-                    These dates are available. Some company events could not be
-                    checked.
-                  </p>
-                )}
-              {eventGroups.length > 0 && (feed.loading || feed.error) && (
-                <p className="home-source-note" role="status">
-                  {feed.loading
-                    ? "Checking events…"
-                    : "Some events could not be checked."}
-                </p>
-              )}
-              {!feed.loading && !calendarReady && (
-                <button className="text-link" onClick={feed.refresh}>
-                  Retry calendar <RefreshCw size={14} />
-                </button>
-              )}
-            </section>
-          </div>
-        )}
       </div>
       {symbols.length > 0 && (
         <>
@@ -714,43 +734,38 @@ function HomeOverview() {
               )}
             </section>
           </div>
-          <PaceBoard {...state.paceScan} prefix={prefix} />
         </>
-      )}
-      {symbols.length > 0 && (
-        <div className={homeStyles.quoteStatus}>
-          <Coverage state={state} />
-        </div>
       )}
       <HomeMarketCards
         symbols={symbols}
         quotes={quotes.data}
         research={loadedResearch}
         prefix={prefix}
+        quoteContext={symbols.length ? <Coverage state={state} /> : null}
       />
       <HomeQuarterHighlights
         research={loadedResearch}
         asOf={today.toISOString()}
         prefix={prefix}
       />
-      {!!workspace?.positions.length && (
-        <PortfolioDay
-          compact
-          positions={workspace.positions}
-          quotes={quotes.data}
-          prefix={prefix}
-          now={today.getTime()}
-        />
-      )}
       <section className={homeStyles.researchTools} aria-label="Research tools">
-        <div className={homeStyles.planRow}>
-          <h2>Your next contribution</h2>
+        <h2 className={homeStyles.workspaceTitle}>Your workspace</h2>
+        <div className={homeStyles.workspaceShortcuts}>
+          {!!workspace?.positions.length && (
+            <PortfolioDay
+              compact
+              positions={workspace.positions}
+              quotes={quotes.data}
+              prefix={prefix}
+              now={today.getTime()}
+            />
+          )}
           <Link
-            className="btn"
+            className={homeStyles.workspaceLink}
             href={`${prefix}/monthly-plan`}
             aria-label="Build this month’s research plan"
           >
-            Monthly plan <ArrowUpRight size={14} aria-hidden="true" />
+            Monthly plan <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </div>
         <div className={homeStyles.actionGrid}>
@@ -764,8 +779,7 @@ function HomeOverview() {
               <summary>
                 Market radar{" "}
                 <span>
-                  {symbols.length} held or watched companies · daily price
-                  history
+                  {symbols.length} held or watched · daily price history
                 </span>
               </summary>
               {radarOpen && (

@@ -76,11 +76,11 @@ test("price card layout targets real quote markup and keeps factual color with r
 });
 
 test("Home stale-price refresh is a visible 44px action without hiding data caveats", () => {
-  const css = fs.readFileSync("components/HomeWorkspace.module.css", "utf8");
-  assert.match(css, /\.approved-data-note\) button\s*\{[^}]*min-height: 44px/s);
+  const css = fs.readFileSync("components/HomeMarketCards.module.css", "utf8");
+  assert.match(css, /\.quoteContext button\s*\{[^}]*min-height: 44px/s);
   assert.match(
     css,
-    /\.quoteStatus :global\(\.approved-data-note\) button\s*\{[^}]*text-decoration: underline/s,
+    /\.quoteContext button\s*\{[^}]*text-decoration: underline/s,
   );
   assert.match(css, /button:focus-visible/);
   const source = fs.readFileSync("components/WorkspaceShared.tsx", "utf8");

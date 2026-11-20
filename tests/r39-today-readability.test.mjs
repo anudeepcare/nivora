@@ -17,7 +17,7 @@ test("Today trims repeated intro copy and preserves exact event availability and
   assert.match(view, /aria-label="Refresh company events"/);
   assert.match(
     css,
-    /\[data-calendar-empty="true"\][^{}]*\.home-events-panel[^{}]*\{[^}]*flex-wrap: wrap/,
+    /\.dailyBrief :global\(\.home-events-panel\) \{[^}]*grid-template-columns: minmax\(0, 1fr\)/,
   );
 });
 
@@ -45,7 +45,7 @@ test("contribution planning has no repeated instructions and retains both resear
   assert.match(view, /href=\{\x60\$\{prefix\}\/monthly-plan\x60\}/);
   assert.match(view, /<ContributionCompare/);
   assert.match(view, /<HomeRadar/);
-  assert.match(css, /\.planRow\s*\{[^}]*justify-content: flex-start/);
+  assert.match(css, /\.workspaceLink\s*\{[^}]*justify-self: start/);
 });
 
 test("earnings refresh has a local 44px target and visible keyboard focus", () => {
@@ -73,9 +73,10 @@ test("Today presents one narrative before benchmarks and the full company eviden
   assert.match(view, /\["SPY", "QQQ"\] as const/);
   assert.match(view, /useResource<QuoteRows>/);
   assert.match(view, /aria-label="ETF market proxies"/);
-  for (const label of ["Why it matters", "Research question", "Auryn thought"])
+  for (const label of ["Why it matters", "Auryn thought"])
     assert.ok(view.includes(label));
   assert.match(view, /secondaryHeadlines = spotlight\s*\? headlines\.filter/);
   assert.doesNotMatch(view, /aria-label="Daily priorities"/);
   assert.match(view, /dailyPerspective\(day\)/);
+  assert.doesNotMatch(view, /Research question/);
 });

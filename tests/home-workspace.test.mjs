@@ -4,10 +4,9 @@ import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { workspaceGuidance } from "../lib/edge-research.ts";
-import { demoData } from "./fixtures/demo.ts";
 import * as format from "../lib/format.ts";
 import { quoteHealth } from "../lib/quote-health.ts";
+import { watchMarketDay } from "../lib/today-market-clock.ts";
 import { todayNarrative } from "../lib/today-narrative.ts";
 import { dailyPerspective, homeBrief } from "../lib/home-brief.ts";
 import {
@@ -22,7 +21,10 @@ const Link = ({ children, ...props }) =>
   React.createElement("a", props, children);
 function load(name, bindings) {
   bindings = {
+    useEffect: React.useEffect,
     useState: React.useState,
+    watchMarketDay,
+    Lightbulb: empty,
     useResource: () => ({ data: null, loading: false }),
     quoteHealth,
     todayNarrative,
@@ -32,10 +34,6 @@ function load(name, bindings) {
     }),
     TodayMacroWatch: () => null,
     SectionIcon: () => null,
-    PaceBoard: () =>
-      React.createElement("section", {
-        "aria-label": "Accumulation opportunities",
-      }),
     ResearchInbox: () => null,
     ContributionCompare: () =>
       React.createElement(
@@ -276,23 +274,21 @@ test("New account Home has research tools without empty personal feeds", () => {
   assert.match(html, /Build this month’s research plan/);
 });
 
-test("Home accumulation panel excludes valuation-only entries without confirmed Pace", () => {
-  const r = structuredClone(demoData.research.MSFT);
-  r.evidence = undefined;
-  r.history = [];
-  r.quote = { ...r.quote, price: 50, asOf: r.retrievedAt, stale: false };
-  const signal = workspaceGuidance(r, false, Date.parse(r.retrievedAt));
-  assert.equal(signal.action, "Buy");
-  assert.equal(signal.view.rawLevel, null);
+test("Home does not scan or present a second Pace workspace", () => {
+  let scope;
+  let options;
   const Home = load("HomeOverview", {
-    useWorkspaceData: () => ({
-      research: () => undefined,
-      workspace: { positions: [], watchlist: [{ symbol: "MSFT" }] },
-      quotes: { data: {} },
-      model: { allocations: [] },
-      prefix: "",
-      pace: () => signal,
-    }),
+    useWorkspaceData: (scopeArg, optionsArg) => {
+      scope = scopeArg;
+      options = optionsArg;
+      return {
+        research: () => undefined,
+        workspace: { positions: [], watchlist: [{ symbol: "MSFT" }] },
+        quotes: { data: {} },
+        model: { allocations: [] },
+        prefix: "",
+      };
+    },
     useHomeFeed: () => ({
       data: {
         events: [],
@@ -333,8 +329,15 @@ test("Home accumulation panel excludes valuation-only entries without confirmed 
     Activity: empty,
   });
   const html = renderToStaticMarkup(React.createElement(Home));
-  assert.doesNotMatch(html, /confirmed Pending/);
-  assert.match(html, /Accumulation opportunities/);
+  assert.equal(scope, "all");
+  assert.deepEqual(options, { scanPace: false });
+  assert.doesNotMatch(
+    html,
+    /Accumulation opportunities|Refresh Pace|Research question/,
+  );
+  assert.match(html, /<aside[^>]*aria-label="Auryn thought"/);
+  assert.match(html, /Market radar/);
+  assert.doesNotMatch(html, /<details[^>]*\bopen(?:=""|>)/);
 });
 
 test("Home earnings preserves zero and negative actuals, estimates and pending releases", () => {

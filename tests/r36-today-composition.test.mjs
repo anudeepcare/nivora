@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 const jsx = readFileSync("components/HomeWorkspace.tsx", "utf8");
-const css = readFileSync("components/HomeWorkspace.module.css", "utf8");
+const css = readFileSync("components/HomeMarketCards.module.css", "utf8");
 
 test("Today opens with research priorities and dated events, ahead of price and account context", () => {
   assert.ok(
@@ -17,13 +17,13 @@ test("Today opens with research priorities and dated events, ahead of price and 
   assert.equal(jsx.match(/<HomeQuarterHighlights/g)?.length, 1);
 });
 
-test("Today keeps the original coverage behavior inside its quiet inline affordance", () => {
+test("Today keeps the original coverage behavior inside followed company quotes", () => {
   assert.match(
     jsx,
-    /className=\{homeStyles.quoteStatus\}[\s\S]+<Coverage state=/,
+    /<HomeMarketCards[\s\S]+quoteContext=\{symbols.length \? <Coverage state=/,
   );
   assert.match(
     css,
-    /\.quoteStatus :global\(\.approved-data-note\)[^{]*\{[^}]*background: transparent/s,
+    /\.quoteContext :global\(\.approved-data-note\)[^{]*\{[^}]*background: transparent/s,
   );
 });

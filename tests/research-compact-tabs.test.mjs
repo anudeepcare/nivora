@@ -81,18 +81,18 @@ test("Research secondary view controls share the style without changing the main
   );
 });
 
-test("Atlas evidence leaves a little room between the main underline and the subtab buttons", () => {
+test("Atlas evidence is a distinct spaced rail after the main navigation", () => {
   const atlas =
-    '.approved-research-page > .research-compact-tabs[aria-label="Atlas evidence"]';
-  const spacing = rules(atlas).find((rule) => rule.parent.type === "root");
-  assert.ok(spacing, "Atlas has a scoped spacing adjustment");
-  assert.deepEqual(
-    spacing.nodes
-      .filter((node) => node.type === "decl")
-      .map(({ prop, value }) => [prop, value]),
-    [
-      ["margin-block-start", "8px"],
-      ["margin-block-end", "8px"],
-    ],
+    '.approved-research-page > [data-research-nav="secondary"].research-compact-tabs';
+  const spacing = rules(atlas).find(
+    (rule) => rule.parent.type === "root" && !rule.selector.includes(","),
+  );
+  assert.ok(spacing, "Research has a scoped secondary spacing adjustment");
+  assert.ok(
+    spacing.nodes.some(
+      ({ prop, value }) =>
+        prop === "margin-block" && Number.parseInt(value, 10) >= 12,
+    ),
+    "the secondary rail leaves clear room below the primary",
   );
 });

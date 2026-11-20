@@ -620,3 +620,30 @@
     border-radius: 18px;
   }
 }
+
+.quoteContext:empty {
+  display: none;
+}
+.section .heading .quoteContext :global(.approved-data-note) {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  margin: 1px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+}
+.quoteContext button {
+  min-height: 44px;
+  padding: 2px 4px;
+  color: var(--plaid-ink, var(--ink));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.quoteContext button:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 2px;
+}

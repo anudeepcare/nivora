@@ -133,7 +133,7 @@
   }
 }
 
-/* Compact Research evidence rails: primary lenses intentionally keep their underline. */
+/* Compact Research evidence rails: primary lens navigation is styled separately. */
 #auryn-app
   :is(
     .research-compact-tabs.research-compact-tabs,
@@ -157,13 +157,6 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-}
-/* Leave a small gap below the Atlas underline without moving the other rails. */
-#auryn-app
-  .approved-research-page
-  > .research-compact-tabs[aria-label="Atlas evidence"] {
-  margin-block-start: 8px;
-  margin-block-end: 8px;
 }
 #auryn-app
   :is(
@@ -258,6 +251,91 @@
       [aria-selected="true"],
       [aria-current="page"]
     ) {
+    border-color: Highlight;
+    color: LinkText;
+  }
+}
+
+/* Research destinations and evidence selectors sit on separate visual tiers,
+   not inside a second framed navigation card. */
+#auryn-app
+  .approved-research-page
+  > [data-research-nav="secondary"].research-compact-tabs {
+  align-self: stretch;
+  width: auto;
+  max-width: calc(100% - 2 * var(--research-gutter));
+  margin-block: 12px 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+#auryn-app
+  .approved-research-page
+  [data-research-nav="detail"]:is(.auryn-view-tabs, .auryn-detail-tabs)
+  > button,
+#auryn-app
+  .approved-research-page
+  > [data-research-nav="secondary"].research-compact-tabs
+  > button {
+  color: var(--plaid-muted, var(--muted));
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+#auryn-app
+  .approved-research-page
+  [data-research-nav="detail"]:is(.auryn-view-tabs, .auryn-detail-tabs)
+  > button:is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    [aria-current="page"]
+  ),
+#auryn-app
+  .approved-research-page
+  > [data-research-nav="secondary"].research-compact-tabs
+  > button[aria-current="page"] {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--plaid-card-purple, var(--view-tab-quiet));
+  color: var(--plaid-ink, var(--ink));
+  font-weight: 600;
+  box-shadow: none;
+}
+#auryn-app
+  .approved-research-page
+  [data-research-nav="detail"]:is(.auryn-view-tabs, .auryn-detail-tabs)
+  > button:focus-visible,
+#auryn-app
+  .approved-research-page
+  > [data-research-nav="secondary"].research-compact-tabs
+  > button:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--accent-text, var(--blue)));
+  outline-offset: -2px;
+}
+:root[data-text-size="large"]
+  #auryn-app
+  .approved-research-page
+  [data-research-nav="detail"]:is(.auryn-view-tabs, .auryn-detail-tabs)
+  > button,
+:root[data-text-size="large"]
+  #auryn-app
+  .approved-research-page
+  > [data-research-nav="secondary"].research-compact-tabs
+  > button {
+  font-size: max(1rem, 16px);
+}
+@media (forced-colors: active) {
+  #auryn-app
+    .approved-research-page
+    [data-research-nav="detail"]:is(.auryn-view-tabs, .auryn-detail-tabs)
+    > button:is(
+      [aria-pressed="true"],
+      [aria-selected="true"],
+      [aria-current="page"]
+    ),
+  #auryn-app
+    .approved-research-page
+    > [data-research-nav="secondary"].research-compact-tabs
+    > button[aria-current="page"] {
     border-color: Highlight;
     color: LinkText;
   }

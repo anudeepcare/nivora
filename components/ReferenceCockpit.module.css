@@ -458,7 +458,7 @@
   min-height: 48px;
   gap: 0 6px;
   align-items: center;
-  padding-block: 0;
+  padding-block: 4px 8px;
   overflow: visible;
   border: 0;
   border-top: 0;
@@ -469,26 +469,47 @@
   max-width: 100%;
   padding: 0 12px;
   border-radius: 9px;
+  font-size: 0.9375rem;
+  font-weight: 600;
   white-space: normal;
   overflow-wrap: anywhere;
 }
 .root[data-active-lens] > .lenses button[aria-current="page"] {
   color: var(--ink);
   background: var(--plaid-ice, var(--surface));
-  font-weight: 650;
+  font-weight: 700;
 }
 .root[data-active-lens] > .lenses button[aria-current="page"]::after {
   content: none;
 }
-.root[data-active-lens] > .supporting {
-  margin-block: 6px 2px;
-}
 @media (max-width: 767px) {
   .root[data-active-lens] > .lenses {
+    flex-wrap: nowrap;
     gap: 0 3px;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scroll-padding-inline: var(--research-gutter);
   }
   .root[data-active-lens] > .lenses button {
-    padding-inline: 8px;
-    font-size: 13px;
+    min-width: 44px;
+    padding-inline: 9px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+}
+:global(:root[data-text-size="large"])
+  .root[data-active-lens]
+  > .lenses
+  button {
+  font-size: max(1rem, 16px);
+}
+@media (forced-colors: active) {
+  .root[data-active-lens] > .lenses button[aria-current="page"] {
+    border: 1px solid Highlight;
+    color: LinkText;
   }
 }

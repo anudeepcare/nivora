@@ -75,6 +75,7 @@ export default function TargetsEstimates({
         className={`${styles.tabs} auryn-view-tabs`}
         data-selection-navigation
         data-nested-navigation
+        data-research-nav="detail"
         role="tablist"
         aria-label="Target and estimate views"
       >
