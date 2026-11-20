@@ -114,3 +114,19 @@
   margin: 0;
   font-size: 14px;
 }
+
+.inlineAccount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  border-top: 1px solid var(--line);
+}
+.inlineAccount > .actions {
+  margin: 6px 0;
+}
+.inlineAccount > p {
+  margin: 0;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+}

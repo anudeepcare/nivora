@@ -14,14 +14,31 @@ export default function PortfolioDay({
   quotes,
   prefix,
   now,
+  compact = false,
 }: {
   positions: Position[];
   quotes: QuoteRows;
   prefix: string;
   now?: number;
+  compact?: boolean;
 }) {
   const d = portfolioDay(positions, quotes, now);
   if (!d.priced) return null;
+  if (compact)
+    return (
+      <section className={s.compact} aria-label="Holdings snapshot">
+        <div>
+          <span className={s.valueLabel}>Priced holdings · USD</span>
+          <strong>{amount(d.value, "USD", d.value >= 1e7)}</strong>
+          <small>
+            {d.priced} of {d.holdings} holdings priced · excludes cash
+          </small>
+        </div>
+        <Link className={s.open} href={`${prefix}/portfolio`}>
+          Open portfolio <ArrowUpRight size={15} aria-hidden="true" />
+        </Link>
+      </section>
+    );
   const largestMove = Math.max(
     1,
     ...[...d.gainers, ...d.decliners].map((m) => Math.abs(m.move)),

@@ -626,3 +626,35 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.snapshotStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: baseline;
+  margin: 0;
+  padding: 8px 0;
+}
+.snapshotStrip > div {
+  display: flex;
+  gap: 5px 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.snapshotStrip dt,
+.snapshotStrip small {
+  color: var(--plaid-muted, var(--muted));
+  font-size: 12px;
+}
+.snapshotStrip dd {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+.desk .commandBar {
+  margin-bottom: 8px;
+}
+.desk .marketLine {
+  padding: 8px 0;
+  gap: 5px 12px;
+}

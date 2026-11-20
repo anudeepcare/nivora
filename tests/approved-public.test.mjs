@@ -459,7 +459,7 @@ test("available OAuth choices call their provider and disabled choices do not se
   const previous = globalThis.window;
   globalThis.window = { location: { origin: "https://auryn.example" } };
   try {
-    for (const provider of ["google"]) {
+    for (const provider of ["google", "x"]) {
       const harness = accountHarness({
         auth: {
           signInWithOAuth: async (value) => {
@@ -483,7 +483,7 @@ test("available OAuth choices call their provider and disabled choices do not se
     }
     assert.deepEqual(
       calls.map((c) => c.provider),
-      ["google"],
+      ["google", "x"],
     );
     assert(
       calls.every(
@@ -504,7 +504,7 @@ test("available OAuth choices call their provider and disabled choices do not se
         n.type === "button" &&
         n.props["aria-label"]?.startsWith("Continue with"),
     );
-    assert.equal(buttons.length, 1);
+    assert.equal(buttons.length, 2);
     assert(buttons.every((b) => b.props.disabled));
   } finally {
     globalThis.window = previous;

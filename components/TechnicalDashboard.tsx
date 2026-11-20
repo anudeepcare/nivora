@@ -358,8 +358,8 @@ export default function TechnicalDashboard({
               <h3>
                 <SectionIcon name={g.title} />
                 {g.title}
+                <Help label={g.title}>{g.note}</Help>
               </h3>
-              <p>{g.note}</p>
             </header>
             <dl>
               {g.rows.map(([label, value, definition]) => (

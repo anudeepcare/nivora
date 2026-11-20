@@ -240,10 +240,6 @@ export default function PaceEvidenceJourney({
         <div>
           <span>BUSINESS PATH</span>
           <h3>What changed. What is expected next.</h3>
-          <p>
-            Read growth evidence alongside Pace’s price conditions, not as a
-            prediction of the stock price.
-          </p>
         </div>
         <div
           className={s.toggle}

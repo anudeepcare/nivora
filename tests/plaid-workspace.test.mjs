@@ -4,13 +4,13 @@ import fs from "node:fs";
 import postcss from "postcss";
 const read = (name) =>
   fs.readFileSync(new URL(`../components/${name}`, import.meta.url), "utf8");
-test("Today puts real holdings and stock context before the news feed without duplicating modules", () => {
+test("Today puts events first and retains one compact portfolio summary and stock context", () => {
   const source = read("HomeWorkspace.tsx");
   assert.ok(
-    source.indexOf("<PortfolioDay") < source.indexOf('id="home-earnings"'),
+    source.indexOf("<PortfolioDay") > source.indexOf('id="home-earnings"'),
   );
   assert.ok(
-    source.indexOf("<HomeMarketCards") < source.indexOf('id="home-earnings"'),
+    source.indexOf("<HomeMarketCards") > source.indexOf('id="home-earnings"'),
   );
   assert.equal(source.match(/<PortfolioDay\b/g)?.length, 1);
   assert.equal(source.match(/<HomeMarketCards\b/g)?.length, 1);

@@ -40,17 +40,16 @@ export default function AuthLegalLinks() {
 
   return (
     <div>
-      By continuing, you agree to our{" "}
+      By continuing, you agree to the{" "}
       <a href="/terms" onClick={preview("terms")}>
         Terms
       </a>{" "}
-      and acknowledge our{" "}
+      and acknowledge the{" "}
       <a href="/privacy" onClick={preview("privacy")}>
         Privacy Policy
       </a>
       .<br />
       <small>
-        Research supports your judgment.{" "}
         <a href="/risk" onClick={preview("risk")}>
           Investing involves risk.
         </a>

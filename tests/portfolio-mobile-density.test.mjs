@@ -17,23 +17,17 @@ const get = (tail, prop) => {
   });
   return v;
 };
-test("phone holdings retain compact secondary fields and full size purchase controls", () => {
-  assert.equal(get(".mobileHoldings tr", "gap"), "4px 12px");
-  assert.equal(get(".mobileHoldings tr", "padding"), "12px 0");
+test("phone holdings replace the wide table with readable rows, disclosure and touch targets", () => {
+  assert.equal(get(".desktopHoldings", "display"), "none");
+  assert.equal(get(".phoneHoldings", "display"), "block");
   assert.equal(
-    get(".mobileHoldings td[data-label]::before", "display"),
-    "inline",
+    get(".phoneLead", "grid-template-columns"),
+    "minmax(0, 1fr) minmax(0, 1fr)",
   );
+  assert.equal(get(".phoneDetails > summary", "min-height"), "44px");
+  assert.equal(get(".phoneActions button", "min-height"), "44px");
   assert.equal(
-    get(".mobileHoldings td:last-child button", "min-height"),
-    "44px",
-  );
-  assert.equal(
-    get(".mobileHoldings td:last-child button", "min-width"),
-    "44px",
-  );
-  assert.equal(
-    get(".mobileHoldings td:nth-child(4) > strong", "font-size"),
-    "17px",
+    get(".phoneHoldings :focus-visible", "outline"),
+    "2px solid var(--plaid-focus, var(--blue))",
   );
 });

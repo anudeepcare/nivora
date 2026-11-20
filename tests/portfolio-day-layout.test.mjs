@@ -116,4 +116,16 @@ test("rendered mover bars put losses left and gains right on a shared dollar sca
   assert.equal((html.match(/<ul/g) || []).length, 1);
   assert.ok(html.indexOf(">DOWN<") < html.indexOf(">UP<"));
   assert.match(html, /dateTime="2026-11-17"|datetime="2026-11-17"/i);
+  const compact = renderToStaticMarkup(
+    React.createElement(out.default, {
+      positions: [],
+      quotes: {},
+      prefix: "/preview",
+      compact: true,
+    }),
+  );
+  assert.match(compact, /Priced holdings · USD/);
+  assert.match(compact, /2 of 2 holdings priced · excludes cash/);
+  assert.match(compact, /href="\/preview\/portfolio"/);
+  assert.doesNotMatch(compact, /<rect|Largest quoted-dollar contributions/);
 });

@@ -18,7 +18,7 @@ test("workspace menus exclude Alerts but keep alert settings, routes and primary
   );
   assert.match(read("components/Product.tsx"), /import\("\.\/AlertCenter"\)/);
 });
-test("desktop chrome uses the workspace surface and a shared content rail rather than a floating capsule", () => {
+test("desktop chrome uses the workspace surface and a compact inset", () => {
   const css = postcss.parse(read("components/WorkspaceShell.module.css"));
   const values = {};
   css.walkRules((rule) => {
@@ -30,10 +30,9 @@ test("desktop chrome uses the workspace surface and a shared content rail rather
       rule.walkDecls((decl) => (values[decl.prop] = decl.value));
   });
   assert.equal(values.background, "var(--plaid-surface)");
-  assert.equal(values["border-radius"], "0");
-  assert.equal(values["box-shadow"], "none");
-  assert.equal(values.top, "0");
-  assert.match(values.padding, /--workspace-inline/);
+  assert.equal(values["border-radius"], "28px");
+  assert.equal(values.top, "8px");
+  assert.equal(values["padding-inline"], "var(--workspace-inset)");
 });
 test("research section navigation blends into its stage without decorative bars", () => {
   const source = read("components/ReferenceCockpit.module.css");

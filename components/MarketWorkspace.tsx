@@ -78,39 +78,49 @@ function AccountBoard(props: {
     }
   }
   const path = `market-workspace/${encodeURIComponent(props.symbol)}`;
-  const accountTools = (
+  const saveActions = (
+    <div className={s.actions}>
+      <button
+        type="button"
+        disabled={busy || !!demo}
+        onClick={() =>
+          void action(async () => {
+            await api(path, {
+              op: "capture",
+              expiry: props.expiry || null,
+            });
+            await resource.refresh();
+            setIndex(-1);
+            setMessage(
+              "Account checkpoint saved from server-loaded market data. Identical sources reuse the existing record.",
+            );
+          })
+        }
+      >
+        <Save size={16} /> Save to account
+      </button>
+      <button
+        type="button"
+        disabled={busy || !!demo}
+        onClick={() => resource.refresh()}
+      >
+        <RefreshCw size={16} /> Refresh
+      </button>
+    </div>
+  );
+  const accountTools = demo ? null : snapshots.length === 0 ? (
+    <section className={s.inlineAccount} aria-label="Account snapshot actions">
+      {saveActions}
+      {(resource.error || resource.data?.historyError) && (
+        <p role="status">{resource.error || resource.data?.historyError}</p>
+      )}
+    </section>
+  ) : (
     <details className={s.account} aria-label="Account market history">
       <summary>
-        <Cloud size={18} /> Account saves <small> · {snapshots.length}</small>
+        <Cloud size={18} /> Saved snapshots <small> · {snapshots.length}</small>
       </summary>
-      <div className={s.actions}>
-        <button
-          type="button"
-          disabled={busy || !!demo}
-          onClick={() =>
-            void action(async () => {
-              await api(path, {
-                op: "capture",
-                expiry: props.expiry || null,
-              });
-              await resource.refresh();
-              setIndex(-1);
-              setMessage(
-                "Account checkpoint saved from server-loaded market data. Identical sources reuse the existing record.",
-              );
-            })
-          }
-        >
-          <Save size={16} /> Save snapshot
-        </button>
-        <button
-          type="button"
-          disabled={busy || !!demo}
-          onClick={() => resource.refresh()}
-        >
-          <RefreshCw size={16} /> Refresh
-        </button>
-      </div>
+      {saveActions}
       {(resource.error || resource.data?.historyError) && (
         <p role="status">{resource.error || resource.data?.historyError}</p>
       )}

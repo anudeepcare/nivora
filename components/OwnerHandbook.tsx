@@ -205,15 +205,10 @@ export default function OwnerHandbook() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   return (
-    <section className={styles.root} id="admin-handbook">
+    <section className={styles.root} aria-labelledby="owner-handbook-title">
       <header className={styles.cover}>
         <div>
-          <span className={styles.kicker}>AURYN · Owner guide</span>
-          <h2>
-            Know the product.
-            <br />
-            Explain it simply.
-          </h2>
+          <h2 id="owner-handbook-title">Owner handbook</h2>
           <p>Daily answers up front. Every calculation one step deeper.</p>
         </div>
         <button disabled={!content} onClick={download}>
@@ -246,38 +241,29 @@ export default function OwnerHandbook() {
               />{" "}
               Technical reference
             </label>
+            <label className={styles.chapterControl}>
+              Chapter
+              <select
+                aria-label="Chapter"
+                disabled={!matches.length}
+                value={active?.id ?? ""}
+                onChange={(e) => chooseChapter(Number(e.target.value))}
+              >
+                {!matches.length && (
+                  <option value="">No matching chapters</option>
+                )}
+                {matches.map((chapter) => (
+                  <option key={chapter.id} value={chapter.id}>
+                    {!chapter.reference && topicGuides[chapter.id]
+                      ? topicGuides[chapter.id][0]
+                      : chapter.title.replace(/^\d+\.\s*/, "")}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className={styles.layout}>
-            <nav className={styles.topics} aria-label="Guide topics">
-              <span>{matches.length} topics</span>
-              {matches.map((chapter) => (
-                <button
-                  key={chapter.id}
-                  type="button"
-                  aria-current={chapter.id === active?.id ? "page" : undefined}
-                  onClick={() => chooseChapter(chapter.id)}
-                >
-                  {!chapter.reference && topicGuides[chapter.id]
-                    ? topicGuides[chapter.id][0]
-                    : chapter.title.replace(/^\d+\.\s*/, "")}
-                </button>
-              ))}
-            </nav>
             <div className={styles.reader}>
-              <label className={styles.mobileTopics}>
-                Chapter
-                <select
-                  aria-label="Chapter"
-                  value={active?.id ?? ""}
-                  onChange={(e) => chooseChapter(Number(e.target.value))}
-                >
-                  {matches.map((chapter) => (
-                    <option key={chapter.id} value={chapter.id}>
-                      {chapter.title}
-                    </option>
-                  ))}
-                </select>
-              </label>
               {active ? (
                 <article aria-live="polite">
                   <div className={styles.readerMeta}>

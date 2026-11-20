@@ -318,15 +318,3 @@
   font-weight: 700;
   letter-spacing: 0.09em;
 }
-.rememberHelp summary {
-  display: list-item;
-  box-sizing: border-box;
-  min-height: 44px;
-  padding-block: 12px;
-  color: var(--auth-link-ink);
-  cursor: pointer;
-  font-size: 13px;
-}
-.rememberHelp[open] {
-  flex-basis: 100%;
-}

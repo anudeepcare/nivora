@@ -3,13 +3,6 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 const source = (name) => readFileSync(`components/${name}`, "utf8");
 
-test("holdings spans the dashboard even if a research checkpoint is present", () => {
-  assert.match(
-    source("HomeWorkspace.module.css"),
-    /\.leadGrid > section \{\s*grid-column: 1 \/ -1/,
-  );
-});
-
 test("single reported quarter uses the available column and retains both sources", () => {
   assert.match(
     source("HomeQuarterHighlights.module.css"),

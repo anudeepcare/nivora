@@ -1,6 +1,5 @@
 "use client";
 import GuardrailReview from "./GuardrailReview";
-import QuickRead from "./QuickRead";
 import { optionsLiquidity } from "@/lib/options-liquidity";
 import { volatilityContext, rankContracts } from "@/lib/options-context";
 import OptionsSnapshot from "./OptionsSnapshot";
@@ -459,10 +458,6 @@ export default function OptionsDesk({
                 <option value="strategy">Strategy payoff</option>
               </select>
             </label>
-            <p className={deskStyles.orientation}>
-              Choose an expiration to explore price levels, inspect a contract,
-              or practice with simulated cash.
-            </p>
           </header>
         </>
       )}
@@ -522,33 +517,41 @@ export default function OptionsDesk({
         </section>
       ) : (
         <>
-          <QuickRead
-            title="The options snapshot"
-            items={[
-              {
-                label: "Selected expiration",
-                value: expiryLabel(active),
-                detail: `${days} days · ${displaySnapshot.length} contracts in this snapshot.`,
-              },
-              ...(summary.straddle !== null && spot > 0
-                ? [
-                    {
-                      label: "Option-priced range",
-                      value: `${amount(Math.max(0, spot - summary.straddle))} – ${amount(spot + summary.straddle)}`,
-                      detail:
-                        "At-the-money straddle estimate, not a guaranteed range.",
-                      tone: "caution" as const,
-                    },
-                  ]
-                : []),
-              {
-                label: "Read before choosing a contract",
-                value: "Check spread and liquidity",
-                detail:
-                  "Exposure estimates describe positioning; they do not establish direction.",
-              },
-            ]}
-          />
+          <dl
+            className={deskStyles.snapshotStrip}
+            aria-label="Options snapshot"
+          >
+            <div>
+              <dt>Selected expiration</dt>
+              <dd>
+                {expiryLabel(active)}{" "}
+                <small>
+                  · {days} days · {displaySnapshot.length} contracts
+                </small>
+              </dd>
+            </div>
+            {summary.straddle !== null && spot > 0 && (
+              <div>
+                <dt>Option-priced range</dt>
+                <dd>
+                  {amount(Math.max(0, spot - summary.straddle))} –{" "}
+                  {amount(spot + summary.straddle)}
+                </dd>
+              </div>
+            )}
+          </dl>
+          {view === "positioning" && (
+            <>
+              <MarketWorkspace
+                contracts={contracts}
+                spot={spot}
+                symbol={research.company.symbol}
+                complete={!!chain?.complete}
+                expiry={active}
+                onContracts={() => setView("chain")}
+              />
+            </>
+          )}
           <div
             className={deskStyles.marketLine}
             aria-label="Selected options snapshot"
@@ -613,18 +616,6 @@ export default function OptionsDesk({
             </details>
           </div>
           {view === "positioning" && (
-            <>
-              <MarketWorkspace
-                contracts={contracts}
-                spot={spot}
-                symbol={research.company.symbol}
-                complete={!!chain?.complete}
-                expiry={active}
-                onContracts={() => setView("chain")}
-              />
-            </>
-          )}
-          {view === "positioning" && (
             <div className={deskStyles.secondaryTools}>
               <OptionsExpiryComparison
                 contracts={contracts}
@@ -640,14 +631,13 @@ export default function OptionsDesk({
                 (c) =>
                   c.volume != null && Number.isFinite(c.volume) && c.volume > 0,
               ) && (
-                <details>
-                  <summary>Most traded strikes</summary>
+                <section aria-label="Most traded strikes">
                   <OptionsSnapshot
                     contracts={summary.rows}
                     spot={spot}
                     expiry={active}
                   />
-                </details>
+                </section>
               )}
               {(hasGamma || hasOi) && (
                 <div>
@@ -739,11 +729,11 @@ export default function OptionsDesk({
                   </article>
                 </div>
                 {volatility.term.length > 0 && (
-                  <details>
-                    <summary>
+                  <section aria-label="Volatility term structure">
+                    <h4>
                       Term structure · {volatility.term.length} loaded
                       expirations
-                    </summary>
+                    </h4>
                     <div className={deskStyles.options_scroll}>
                       <table>
                         <thead>
@@ -766,12 +756,8 @@ export default function OptionsDesk({
                         </tbody>
                       </table>
                     </div>
-                  </details>
+                  </section>
                 )}
-                <p>
-                  Implied volatility describes option pricing, not the direction
-                  of the next move.
-                </p>
               </section>
               {!!summary.profile.length && (
                 <section className={deskStyles.options_card}>

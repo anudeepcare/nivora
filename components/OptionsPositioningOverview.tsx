@@ -38,9 +38,8 @@ export default function OptionsPositioningOverview({
         <details data-info-disclosure>
           <summary aria-label="About options observations">ⓘ</summary>
           <p>
-            End-of-day research observations, not executable prices. Calls and
-            puts do not reveal buyer/seller direction. The expected range is an
-            estimate, not a guaranteed outcome.
+            End-of-day observations, not executable prices. Calls and puts do
+            not reveal trade direction; the expected range is not guaranteed.
           </p>
         </details>
       </header>
@@ -186,10 +185,7 @@ export default function OptionsPositioningOverview({
           <h4>Reported contract activity</h4>
           <span>{p.contracts.length} supplied contracts</span>
         </header>
-        <p>
-          Color intensity shows volume within this reported subset only. This is
-          not a full option chain or a signal to buy or sell.
-        </p>
+        <p>Shading shows reported volume. This is not a full option chain.</p>
         {p.contracts.length ? (
           <div
             className={styles.scroll}

@@ -11,58 +11,33 @@ const specificity = (s) =>
       .replace(/:global\(([^)]+)\)/g, "$1")
       .match(/\.[\w-]+|:(?!:)[\w-]+(?:\([^)]*\))?/g) || []
   ).length;
-test("phone composition outranks legacy ledger cell placement independent of import order", () => {
+test("phone composition hides the desktop ledger independent of import order", () => {
   const current = read("PortfolioComposition"),
     legacy = read("PortfolioWorkspace");
-  for (const tail of [
-    "tr",
-    "td",
-    "td:first-child",
-    "td:nth-child(2)",
-    "td:nth-child(3)",
-    "td:nth-child(4)",
-    "td:last-child",
-  ]) {
-    let chosen;
-    current.walkRules((r) => {
-      if (
-        r.parent.type === "atrule" &&
-        r.parent.params === "(max-width: 600px)" &&
-        r.selector.endsWith(" " + tail)
-      )
-        chosen = r;
-    });
-    assert.ok(chosen, tail);
-    legacy.walkRules((r) => {
-      for (const selector of r.selector.split(",")) {
-        if (
-          selector.includes(".ledger") &&
-          selector.trim().endsWith(" " + tail)
-        )
-          assert.ok(
-            specificity(chosen.selector) > specificity(selector),
-            `${chosen.selector} must beat ${selector}`,
-          );
-      }
-    });
-  }
-  const rules = [];
-  current.walkRules((r) => rules.push(r));
-  const get = (tail, prop) =>
-    rules
-      .filter((r) => r.selector.endsWith(" " + tail))
-      .flatMap((r) => r.nodes)
-      .filter((d) => d.prop === prop)
-      .at(-1)?.value;
-  assert.equal(get("td:last-child", "grid-row"), "4");
-  assert.equal(get("td:last-child", "justify-self"), "stretch");
-  assert.equal(get("td", "grid-template-columns"), "none");
-  assert.equal(get("td:nth-child(4)", "display"), "block");
-  assert.equal(get("td:nth-child(4)", "grid-row"), "1");
-  assert.equal(get("td:nth-child(5)", "grid-row"), "2");
-  assert.equal(get("td:nth-child(5)", "grid-column"), "2");
-  assert.equal(
-    get("tr", "grid-template-columns"),
-    "minmax(0, 1fr) minmax(0, 1fr)",
-  );
+  let chosen;
+  let defaultPhone;
+  let narrowPhone;
+  current.walkRules((r) => {
+    if (r.selector === ".phoneHoldings" && r.parent.type === "root")
+      defaultPhone = r;
+    if (r.parent.type !== "atrule" || r.parent.params !== "(max-width: 600px)")
+      return;
+    if (r.selector.endsWith(" .desktopHoldings")) chosen = r;
+    if (r.selector === ".phoneHoldings") narrowPhone = r;
+    assert.doesNotMatch(r.selector, /(?:^|\s)(?:td|tr|table)(?:\b|:)/);
+  });
+  const display = (rule) =>
+    rule?.nodes.find((d) => d.prop === "display")?.value;
+  assert.equal(display(chosen), "none");
+  assert.equal(display(defaultPhone), "none");
+  assert.equal(display(narrowPhone), "block");
+  legacy.walkRules((r) => {
+    for (const selector of r.selector.split(",")) {
+      if (selector.trim().endsWith(".ledger") && display(r))
+        assert.ok(
+          specificity(chosen.selector) > specificity(selector),
+          `${chosen.selector} must beat ${selector}`,
+        );
+    }
+  });
 });

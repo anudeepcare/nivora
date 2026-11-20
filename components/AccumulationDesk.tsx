@@ -108,6 +108,7 @@ export default function AccumulationDesk({
         : null,
     [showEvaluation, r.history, r.retrievedAt, cost, market, weekly],
   );
+  const [evidenceOpened, setEvidenceOpened] = useState(false);
   return (
     <section
       className={`accumulation-desk ${styles.paceChartFirst} ${detail.desk}`}
@@ -119,10 +120,7 @@ export default function AccumulationDesk({
               ? "Weekly conditions · separate time horizon"
               : "Cycle-relative · monthly discipline"}
           </span>
-          <h2>
-            AURYN Pace{" "}
-            <span className={detail.titleNote}>The price in perspective</span>
-          </h2>
+          <h2>AURYN Pace</h2>
           <div className={styles.paceMeta}>
             <small>Model {chosen.version} · settled prices</small>
             <PaceHelp trigger="What does P mean?" />
@@ -154,41 +152,50 @@ export default function AccumulationDesk({
             )}
           />
         </div>
-        <div className={detail.priceBasis} aria-label="Price observation basis">
-          <span>
-            Settled chart close{" "}
-            <strong>{amount(monthly.at(-1)?.close, r.quote.currency)}</strong> ·{" "}
-            {dateLabel(monthly.at(-1)?.time)}
-          </span>
-          <span>
-            Latest quoted price{" "}
-            <strong>{amount(r.quote.price, r.quote.currency)}</strong> ·{" "}
-            {r.quote.asOf &&
-            !/^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf) &&
-            Number.isFinite(Date.parse(r.quote.asOf))
-              ? new Date(r.quote.asOf)
-                  .toISOString()
-                  .replace("T", " ")
-                  .slice(0, 16) + " UTC"
-              : r.quote.asOf && /^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf)
-                ? `${dateLabel(r.quote.asOf)} · time not supplied`
-                : "Observation time not supplied"}
-            {r.quote.stale ? " · stale" : ""}
-          </span>
+        <div className={detail.priceBasis}>
+          <dl aria-label="Price observation basis">
+            <div>
+              <dt>Settled chart close</dt>
+              <dd>
+                <strong>
+                  {amount(monthly.at(-1)?.close, r.quote.currency)}
+                </strong>
+                <small>{dateLabel(monthly.at(-1)?.time)}</small>
+              </dd>
+            </div>
+            <div>
+              <dt>Latest quoted price</dt>
+              <dd>
+                <strong>{amount(r.quote.price, r.quote.currency)}</strong>
+                <small>
+                  {r.quote.asOf &&
+                  !/^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf) &&
+                  Number.isFinite(Date.parse(r.quote.asOf))
+                    ? new Date(r.quote.asOf)
+                        .toISOString()
+                        .replace("T", " ")
+                        .slice(0, 16) + " UTC"
+                    : r.quote.asOf && /^\d{4}-\d{2}-\d{2}$/.test(r.quote.asOf)
+                      ? `${dateLabel(r.quote.asOf)} · time not supplied`
+                      : "Observation time not supplied"}
+                  {r.quote.stale ? " · stale" : ""}
+                </small>
+              </dd>
+            </div>
+          </dl>
           <small>
-            The quote is not used to overwrite settled chart history. Different
-            observation times can produce different prices.
+            The quote is not used to overwrite settled chart history.
           </small>
         </div>
       </div>
-      <div className="accumulation-chart">
-        <div className={detail.chartHeading}>
+      <figure className="accumulation-chart">
+        <figcaption className={detail.chartHeading}>
           <span>{weekly ? "Weekly" : "Monthly"} price landscape</span>
           <small>
             {monthly.length} displayed {weekly ? "weeks" : "months"} · Pace
             colors, not price direction
           </small>
-        </div>
+        </figcaption>
         <PriceChart
           bars={monthly}
           range={weekly ? "weekly-policy-v1" : chosen.version}
@@ -196,23 +203,23 @@ export default function AccumulationDesk({
           candleColors={candleColors}
           levels={levels}
         />
-      </div>
-      <div className="accumulation-legend" aria-label="Chart zone legend">
-        {[0, 1, 2, 3, 4].map((n) => (
-          <span key={n}>
-            <i style={{ background: colours[n] }} />
-            {n === 0 ? "P0 · Pause" : paceCode(n)}
+        <div className="accumulation-legend" aria-label="Chart zone legend">
+          {[0, 1, 2, 3, 4].map((n) => (
+            <span key={n}>
+              <i style={{ background: colours[n] }} />
+              {n === 0 ? "P0 · Pause" : paceCode(n)}
+            </span>
+          ))}
+          <span>
+            <i style={{ background: paceExtensionColour }} />
+            Price-extension review
           </span>
-        ))}
-        <span>
-          <i style={{ background: paceExtensionColour }} />
-          Price-extension review
-        </span>
-        <span>
-          <i style={{ background: paceUnavailableColour }} />
-          No eligible signal
-        </span>
-      </div>
+          <span>
+            <i style={{ background: paceUnavailableColour }} />
+            No eligible signal
+          </span>
+        </div>
+      </figure>
       {!!levels.length && (
         <details open className={detail.levels}>
           <summary>Conditional zone prices</summary>
@@ -233,7 +240,6 @@ export default function AccumulationDesk({
           </dl>
         </details>
       )}
-      {!weekly && <PaceMonthHistory key={r.company.symbol} research={r} />}
       <div className="accumulation-summary">
         {chosen.forming && confirmed && (
           <div className={detail.formingContext}>
@@ -293,12 +299,18 @@ export default function AccumulationDesk({
           </span>
         </div>
       )}
-      <PaceEvidenceJourney research={r} />
-      {weekly && (
-        <p className="small muted">
-          Weekly v1 is a separate, shorter-horizon price policy. The available
-          historical simulation remains monthly only.
-        </p>
+      {!weekly && <PaceMonthHistory key={r.company.symbol} research={r} />}
+      {r.company.assetType === "stock" && (
+        <details
+          className={detail.businessEvidence}
+          data-research-disclosure
+          onToggle={(event) => {
+            if (event.currentTarget.open) setEvidenceOpened(true);
+          }}
+        >
+          <summary>Business evidence</summary>
+          {evidenceOpened && <PaceEvidenceJourney research={r} />}
+        </details>
       )}
       {!weekly && <PaceHistoryInsights research={r} />}
       <details className="policy-rules" data-research-disclosure>
@@ -323,8 +335,9 @@ export default function AccumulationDesk({
           {weekly
             ? "Weekly v1 uses 52 completed weeks and a robust fitted log-price trend. Its 2×/3×/4× gates use 12%/25%/40% drawdown and 0.7/1.35/2 robust spread units."
             : "The current monthly model uses a fixed technical classifier across monthly price position, daily trend, volatility and momentum. Existing extension rules remain in place. Earlier observations and insufficient-history cases retain their original policy version. Conditional price levels are local transitions, not guarantees for all prices beyond a threshold."}{" "}
-          Weekly and monthly calculations differ. Historical readings do not
-          establish future outperformance.
+          Weekly and monthly calculations differ. The historical simulation
+          remains monthly only. Historical readings do not establish future
+          outperformance.
         </p>
         <p>
           US observations settle after 5 PM New York; crypto uses completed UTC
@@ -348,7 +361,7 @@ export default function AccumulationDesk({
         >
           {showEvaluation
             ? "Hide historical comparison"
-            : "View legacy-policy backtest ↗"}
+            : "View legacy-policy backtest"}
         </button>
       )}
       {showEvaluation && !weekly && (

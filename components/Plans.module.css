@@ -251,9 +251,114 @@
   align-items: center;
   min-height: 44px;
 }
+/* The navigation floats; the public page title is an open introduction. */
 :global(#auryn-app) .page:global(.plans-public) > :global(.plans-heading) {
-  padding: clamp(18px, 3vw, 34px);
-  margin-block: 0 22px;
+  max-width: none;
+  min-height: 0;
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+:global(#auryn-app) .page:global(.plans-public) > :global(.plans-heading) h1 {
+  font-size: clamp(29px, 4vw, 43px);
+  line-height: 1.13;
+  margin: 4px 0 6px;
+  color: var(--plaid-ink, var(--ink));
+}
+.page:global(.plans-public) > :global(.plans-heading) p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--plaid-muted, var(--muted));
+}
+:global(#auryn-app) .page:global(.plans-public) .cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(12px, 1.5vw, 18px);
+  margin: 0;
+}
+:global(#auryn-app) .page:global(.plans-public) .cards > section {
+  padding: clamp(16px, 2.4vw, 25px);
+  gap: 8px;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 20px;
+  background: var(--plaid-surface, var(--card));
+  color: var(--plaid-ink, var(--ink));
+  box-shadow: 0 8px 22px
+    color-mix(in srgb, var(--plaid-ink, var(--ink)) 6%, transparent);
+}
+:global(#auryn-app) .page:global(.plans-public) .cards > :global(.pricing-pro) {
+  background: linear-gradient(
+    148deg,
+    var(--plaid-card-purple, var(--card)),
+    var(--plaid-surface, var(--card)) 65%
+  );
+}
+.page:global(.plans-public) .cards :global(.pricing-card-title) {
+  min-height: 52px;
+}
+.page:global(.plans-public) .cards :global(.pricing-card-title) h2 {
+  font-size: 23px;
+}
+.page:global(.plans-public) .cards :global(.pricing-recommended) {
+  color: var(--plaid-ink, var(--ink));
+  background: var(--plaid-card-purple, var(--surface));
+}
+:global(#auryn-app)
+  .page:global(.plans-public)
+  .cards
+  :global(.pricing-amount) {
+  margin: 0;
+  color: var(--plaid-ink, var(--ink));
+  font-size: clamp(30px, 4.5vw, 43px);
+  font-variant-numeric: tabular-nums;
+}
+.page:global(.plans-public) .cards > section > p:not(:global(.pricing-amount)) {
+  margin: 0;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 15px;
+}
+.page:global(.plans-public) .cards > section > :global(.button) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  margin: 4px 0 0;
+}
+.page:global(.plans-public) .cards ul {
+  margin: 8px 0 0;
+  gap: 5px;
+  font-size: 14px;
+}
+.page:global(.plans-public) > :global(.plans-footnote) {
+  margin: 16px 0 0;
+  padding-block: 12px;
+  border-top: 1px solid var(--plaid-line, var(--line));
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+}
+.page:global(.plans-public) > footer {
+  margin-top: 0;
+  flex-wrap: wrap;
+}
+.page:global(.plans-public) > footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.page:global(.plans-public) :focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}
+@media (max-width: 640px) {
+  :global(#auryn-app) .page:global(.plans-public) .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .page:global(.plans-public) .cards :global(.pricing-card-title) {
+    min-height: 0;
+  }
 }
 
 /* Signed-in membership only: compact heading and one account/billing rail. */

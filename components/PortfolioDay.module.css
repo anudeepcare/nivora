@@ -216,7 +216,7 @@
 }
 
 /* On a wide card, use the left rail for totals and the full remainder for contributions. */
-@media (min-width: 900px) {
+@media (min-width: 1220px) {
   .root:has(.movers) {
     grid-template-columns: minmax(240px, 0.65fr) minmax(0, 1fr);
     gap: 12px 28px;
@@ -273,4 +273,25 @@
     padding: 18px;
     border-radius: 18px;
   }
+}
+
+/* Today context only; the detailed contribution visualization is not mounted. */
+.compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 14px 0;
+  padding: 12px 0;
+  border-block: 1px solid var(--plaid-line, var(--line));
+}
+.compact strong {
+  display: block;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.compact small {
+  color: var(--plaid-muted, var(--muted));
+  font-size: 12px;
 }

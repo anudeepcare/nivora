@@ -538,3 +538,70 @@
 .root.root .fullDetail {
   margin: 14px 0;
 }
+
+/* One guide rail: open heading, tools, then the selected chapter. */
+.root.root {
+  margin: 0;
+  width: 100%;
+}
+.root.root .cover {
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.root.root .cover h2 {
+  margin: 0 0 5px;
+  font-size: clamp(21px, 3vw, 28px);
+}
+.root.root .tools {
+  padding: 14px 0;
+  align-items: end;
+}
+.root.root .tools > label:first-child {
+  flex: 1 1 220px;
+  max-width: none;
+  min-width: 0;
+}
+.root.root .chapterControl {
+  flex: 1 1 210px;
+  min-width: 0;
+}
+.root.root .chapterControl select {
+  text-overflow: ellipsis;
+}
+.root.root .layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+.root.root .reader {
+  width: 100%;
+  box-sizing: border-box;
+  padding: clamp(14px, 2.4vw, 24px);
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 16px;
+  background: var(--plaid-surface, var(--card));
+}
+.root.root .reader article {
+  max-width: none;
+  margin: 0;
+}
+.root.root .readerMeta > span {
+  color: var(--plaid-ink, var(--ink));
+}
+.root.root :is(button, input, select, summary):focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 2px;
+}
+@media (max-width: 640px) {
+  .root.root .tools {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .root.root .tools > label:first-child,
+  .root.root .tools > .chapterControl {
+    flex: none;
+  }
+}

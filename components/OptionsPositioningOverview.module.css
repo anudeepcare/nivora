@@ -46,15 +46,15 @@
   margin: 10px 0;
 }
 .metrics article {
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface);
+  min-width: 0;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
 }
 .metrics span {
   display: block;
-  font-size: 0.7rem;
-  color: var(--muted);
+  font-size: 0.76rem;
+  color: var(--plaid-muted, var(--muted));
   min-height: 2.5em;
 }
 .metrics strong {
@@ -71,8 +71,8 @@
 .volume,
 .activity {
   border-top: 1px solid var(--line);
-  padding: 12px 0;
-  margin-top: 8px;
+  padding: 10px 0;
+  margin-top: 4px;
 }
 .split {
   display: flex;
@@ -90,6 +90,7 @@
 .scroll {
   max-height: 340px;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 .grid {
   display: grid;

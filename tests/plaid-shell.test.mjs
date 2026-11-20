@@ -83,7 +83,7 @@ test("desktop nav uses an integrated header and compact selected controls while 
   };
   assert.equal(
     final('.shell[data-appearance="plaid"] .header', "border-radius"),
-    "0",
+    "28px",
   );
   assert.equal(
     final(

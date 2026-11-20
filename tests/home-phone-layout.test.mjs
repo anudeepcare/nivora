@@ -1,16 +1,26 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import postcss from "postcss";
 const css = (name) => readFileSync(`components/${name}.module.css`, "utf8");
 test("320px shell preserves all utilities, reducing only the wordmark", () => {
   assert.match(
     css("WorkspaceShell"),
     /@media \(max-width: 360px\)[\s\S]*\.shell \.brand span \{\s*display: none;/,
   );
-  assert.doesNotMatch(
-    css("WorkspaceShell").split("/* Four 44px utilities")[1],
-    /\.actions.*display: none/,
-  );
+  const hiddenUtilities = [];
+  postcss.parse(css("WorkspaceShell")).walkRules((rule) => {
+    if (
+      rule.parent.type !== "atrule" ||
+      rule.parent.params !== "(max-width: 360px)" ||
+      !rule.selector.includes(".actions")
+    )
+      return;
+    rule.walkDecls("display", (decl) => {
+      if (decl.value === "none") hiddenUtilities.push(rule.selector);
+    });
+  });
+  assert.deepEqual(hiddenUtilities, []);
 });
 test("phone followed names own available width; quote and chart occupy separate rows", () => {
   const phone = css("HomeWorkspace").split(

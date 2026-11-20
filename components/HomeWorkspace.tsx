@@ -180,6 +180,12 @@ function HomeOverview() {
       ]),
     ).values(),
   ];
+  // Keep earnings represented by their detailed calendar row, not a duplicate priority card.
+  const calendarKeys = new Set(
+    [...calendarEvents, ...brief.reported].map(
+      (event) => `${event.symbol}:${event.date}`,
+    ),
+  );
   const heldSymbols = new Set(
     (workspace?.positions ?? [])
       .filter(
@@ -226,7 +232,7 @@ function HomeOverview() {
       <div className={todayStyles.hero}>
         <Heading
           title="Today"
-          subtitle="Your holdings, the next checkpoints, and what deserves a closer look."
+          subtitle="Research priorities, upcoming events and what changed."
           actions={
             <span className="date-chip">
               {today.toLocaleDateString(undefined, {
@@ -244,24 +250,16 @@ function HomeOverview() {
         />
       </div>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      {symbols.length > 0 && <Coverage state={state} />}
       <div className={homeStyles.leadGrid}>
-        {!!workspace?.positions.length && (
-          <PortfolioDay
-            positions={workspace.positions}
-            quotes={quotes.data}
-            prefix={prefix}
-            now={today.getTime()}
-          />
-        )}
         <div className={homeStyles.dayOverview}>
           <div className={homeStyles.attentionColumn}>
             <ResearchInbox
               today={day}
               events={(feed.data?.events ?? []).filter(
-                (event) => event.date <= day,
+                (event) =>
+                  event.date <= day &&
+                  !calendarKeys.has(`${event.symbol}:${event.date}`),
               )}
-              coverageIssue={!!feed.error || !readiness.eventsReady}
             />
             <TodaySequence
               prefix={prefix}
@@ -282,20 +280,7 @@ function HomeOverview() {
             />
           </div>
         </div>
-      </div>
-      <HomeMarketCards
-        symbols={symbols}
-        quotes={quotes.data}
-        research={loadedResearch}
-        prefix={prefix}
-      />
-      <HomeQuarterHighlights
-        research={loadedResearch}
-        asOf={today.toISOString()}
-        prefix={prefix}
-      />
-      {symbols.length > 0 && (
-        <>
+        {symbols.length > 0 && (
           <div
             className="home-evidence-layout"
             data-calendar-empty={!eventGroups.length && !brief.reported.length}
@@ -441,7 +426,12 @@ function HomeOverview() {
                 </button>
               )}
             </section>
-
+          </div>
+        )}
+      </div>
+      {symbols.length > 0 && (
+        <>
+          <div className={homeStyles.updateFeed}>
             <section
               className="home-evidence-panel home-news-panel"
               aria-label="What changed"
@@ -512,6 +502,31 @@ function HomeOverview() {
           </div>
           <PaceBoard {...state.paceScan} prefix={prefix} />
         </>
+      )}
+      {symbols.length > 0 && (
+        <div className={homeStyles.quoteStatus}>
+          <Coverage state={state} />
+        </div>
+      )}
+      <HomeMarketCards
+        symbols={symbols}
+        quotes={quotes.data}
+        research={loadedResearch}
+        prefix={prefix}
+      />
+      <HomeQuarterHighlights
+        research={loadedResearch}
+        asOf={today.toISOString()}
+        prefix={prefix}
+      />
+      {!!workspace?.positions.length && (
+        <PortfolioDay
+          compact
+          positions={workspace.positions}
+          quotes={quotes.data}
+          prefix={prefix}
+          now={today.getTime()}
+        />
       )}
       <div className={homeStyles.planRow}>
         <div>

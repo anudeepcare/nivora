@@ -27,6 +27,7 @@ const dependencies = {
   "@/lib/format": format,
   "@/lib/financial-catalog": { researchPeriods: () => [] },
   "./Ui": { Source: () => null },
+  "./ResearchEvidenceDisclosures.css": {},
   "@/lib/decision-research": decision,
 };
 const mod = { exports: {} };
@@ -56,4 +57,17 @@ test("earnings snapshot checks upcoming dates against the supplied display clock
     );
   assert.match(render("2026-11-08T12:00:00Z"), /Next report/);
   assert.doesNotMatch(render("2026-12-10T12:00:00Z"), /Next report/);
+});
+
+test("context-only earnings renders a standalone annual filing disclosure", () => {
+  const html = renderToStaticMarkup(
+    React.createElement(mod.exports.default, {
+      research: demoData.research.MSFT,
+      contextOnly: true,
+    }),
+  );
+  assert.match(html, /^<details data-research-disclosure="true">/);
+  assert.match(html, /<summary>Annual filing comparison<\/summary>/);
+  assert.match(html, /Comparable filed annual evidence is unavailable/);
+  assert.doesNotMatch(html, /earnings-review|Earnings snapshot|Next report/);
 });

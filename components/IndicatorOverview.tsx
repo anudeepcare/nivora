@@ -38,7 +38,6 @@ export default function IndicatorOverview({
     >
       <header className={styles.heading}>
         <h2>Indicators</h2>
-        <span>Reported business performance and completed market evidence</span>
       </header>
       <div className={wall.grid}>
         {groups.flatMap((group) =>

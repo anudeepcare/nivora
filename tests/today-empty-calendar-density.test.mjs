@@ -17,9 +17,9 @@ test("empty calendar uses compact full-width status while keeping real news and 
   assert.match(src, /Calendar coverage is incomplete/);
   assert.match(src, /Missing coverage does not mean no events/);
   assert.match(src, /headlines.slice\(0, 6\).map\(renderHeadline\)/);
-  assert.ok(src.indexOf('title="What changed"') > src.indexOf("<PortfolioDay"));
+  assert.ok(src.indexOf('title="What changed"') < src.indexOf("<PortfolioDay"));
   assert.ok(
-    src.indexOf('title="What changed"') > src.indexOf("<HomeMarketCards"),
+    src.indexOf('title="What changed"') < src.indexOf("<HomeMarketCards"),
   );
   assert.equal((src.match(/<PortfolioDay\b/g) || []).length, 1);
 });

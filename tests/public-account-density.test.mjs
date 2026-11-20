@@ -6,13 +6,17 @@ test("public introduction uses content-sized spacing rather than a forced screen
   const css = read("PublicLanding.module.css");
   assert.doesNotMatch(css, /min-height: (620|570)px/);
 });
-test("mobile account access is directly below the single entry toolbar without marketing", () => {
+test("mobile account access is directly below the entry toolbar after the hidden desktop panel", () => {
   const source = read("Session.tsx");
   assert.match(
     source,
-    /<\/header>\s*<section className=\{experience.main\} aria-label="Account access">/,
+    /<\/header>\s*<aside data-auth-side[\s\S]*?<\/aside>\s*<section className=\{experience.main\} aria-label="Account access">/,
   );
   assert.doesNotMatch(source, /storyContent|researchCard/);
+  assert.match(
+    read("SessionAccess.css"),
+    /\[data-auth-side\]\s*\{\s*display: none/,
+  );
 });
 test("settings links to its notification section instead of duplicating the alert shortcut", () => {
   const source = read("SupportingViews.tsx").split(

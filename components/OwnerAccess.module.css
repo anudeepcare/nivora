@@ -530,8 +530,79 @@
   }
 }
 
+/* The heading, tabs and active section sit on the same working rail. */
 :global(#auryn-app) .root[data-plaid-page="owner"] > .heading {
-  padding: 14px 18px;
-  border-radius: 18px;
+  min-width: 0;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
+}
+:global(#auryn-app) .root[data-plaid-page="owner"] {
+  width: 100%;
+  min-width: 0;
+  color: var(--plaid-ink, var(--ink));
+}
+.root .heading h1 {
+  font-size: clamp(24px, 3vw, 31px);
+}
+.root .heading p {
+  font-size: 14px;
+}
+:global(#auryn-app)
+  .root[data-plaid-page="owner"]
+  > :global(.admin-section-nav) {
+  margin-bottom: 14px;
+  gap: 5px;
+  padding: 3px 0;
+}
+:global(#auryn-app) .root[data-plaid-page="owner"] :global(.membership-panel),
+:global(#auryn-app) .root[data-plaid-page="owner"] > :global(#admin-support) {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-width: none;
+  min-width: 0;
+  padding: clamp(14px, 2.3vw, 22px);
+  margin: 0 0 14px;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 16px;
+  background: var(--plaid-surface, var(--card));
+  box-shadow: none;
+}
+:global(#auryn-app) .root[data-plaid-page="owner"] :global(.owner-field-grid) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.root :global(.admin-plan-defaults) {
+  margin: 0;
+}
+.root :is(button, a, select, input, summary):focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 2px;
+}
+@media (max-width: 480px) {
+  :global(#auryn-app)
+    .root[data-plaid-page="owner"]
+    :global(.owner-field-grid) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root :global(.owner-feature-grid) > label {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .root .preview {
+    flex-direction: row;
+    align-items: center;
+  }
+  .root input:not([type="checkbox"]),
+  .root select {
+    font-size: 16px;
+  }
+  .root :global(.button) {
+    white-space: normal;
+  }
+  .sectionHeading {
+    flex-wrap: wrap;
+  }
 }

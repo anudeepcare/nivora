@@ -1,4 +1,5 @@
 "use client";
+import "./ResearchEvidenceDisclosures.css";
 import layout from "./ValueStudio.module.css";
 import SentiSenseConsensus from "./SentiSenseConsensus";
 import AnalystTargets from "./AnalystTargets";
@@ -113,25 +114,22 @@ export default function ValueStudio({
           {percent(d.metrics.find((m) => m.key === "dividendYield")!.value)}
         </p>
       )}
-      {!available.length && (
-        <details className="value-data-note">
-          <summary>About the pricing evidence</summary>
-          <p className="desk-footnote">
-            Reported market multiples are not supplied for this report.
-            Available scenarios remain above; missing measures are never treated
-            as zero.
-          </p>
-        </details>
+      {!available.length && r.company.assetType !== "crypto" && (
+        <p className="desk-footnote">
+          Market multiples not supplied; missing values are not zero.
+        </p>
       )}
-      <details className={`value-model-fit ${layout.methods}`}>
+      <details
+        className={`value-model-fit ${layout.methods}`}
+        data-research-disclosure
+      >
         <summary>Model fit & evidence</summary>
         <div className={layout.methodGrid}>
           <header className="section-head">
             <h3>
               <SectionIcon name="Business" />
-              The right lens for this business.
+              Valuation methods
             </h3>
-            <span className="eyebrow">Model fit</span>
           </header>
           {methods.methods.map((method) => (
             <div key={method.key}>

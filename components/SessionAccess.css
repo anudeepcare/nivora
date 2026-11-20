@@ -69,28 +69,66 @@
   margin-top: 10px;
 }
 
-/* Short branded contour band, never a competing illustration column. */
-.mp-auth[data-plaid-page="access"] [data-auth-banner] {
-  box-sizing: border-box;
-  min-height: 52px;
-  padding: 4px 12px;
-  border-radius: 16px;
-  background:
-    repeating-radial-gradient(
-      ellipse at 100% 180%,
-      transparent 0 16px,
-      #87ccff35 17px 18px,
-      transparent 19px 27px
-    ),
-    linear-gradient(115deg, #10283e, #174468 72%, #25345d);
+/* Original contour artwork belongs beside the desktop form, not above it. */
+.mp-auth[data-plaid-page="access"] [data-auth-side] {
+  display: none;
 }
-.mp-auth[data-plaid-page="access"] [data-auth-banner] > a {
-  color: #f4f8ff;
+#auryn-app .mp-auth[data-plaid-page="access"] .mp-social-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
-.mp-auth[data-plaid-page="access"] [data-auth-banner] button {
-  color: #f4f8ff;
-  background: #163950;
-  border-color: #7b9ab4;
+#auryn-app .mp-auth[data-plaid-page="access"] .mp-social-options button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px;
+}
+#auryn-app .mp-auth[data-plaid-page="access"] .mp-provider-note {
+  margin: 4px 0 0;
+  line-height: 1.4;
+  font-size: 12px;
+  color: var(--plaid-muted, var(--muted));
+}
+@media (min-width: 901px) {
+  #auryn-app .mp-auth[data-plaid-page="access"] {
+    grid-template-columns: minmax(0, 1.14fr) minmax(0, 1fr);
+    column-gap: clamp(16px, 3vw, 44px);
+    padding-inline: max(24px, calc((100% - 1120px) / 2));
+  }
+  .mp-auth[data-plaid-page="access"] > header {
+    grid-column: 1 / -1;
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] [data-auth-side] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    padding: clamp(24px, 5vw, 76px);
+    border-radius: 20px;
+    color: #f4f8ff;
+    background:
+      repeating-radial-gradient(
+        ellipse at 112% 94%,
+        transparent 0 20px,
+        rgb(125 205 255 / 0.17) 21px 22px,
+        transparent 23px 31px
+      ),
+      radial-gradient(ellipse at 96% 92%, #0c6d88 0, transparent 58%),
+      linear-gradient(145deg, #0d233c, #104d7c 70%, #302966);
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] [data-auth-side] h2 {
+    font-size: clamp(1.8rem, 3.5vw, 3.25rem);
+    line-height: 1.08;
+    margin: 12px 0;
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] [data-auth-side] p {
+    margin: 0;
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] > section {
+    align-self: start;
+    justify-content: flex-start;
+  }
 }
 .mp-auth[data-plaid-page="access"] .mp-auth-legal-dialog {
   box-sizing: border-box;

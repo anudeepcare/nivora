@@ -598,7 +598,7 @@ function Login({ initialError }: { initialError: string }) {
       data-auth-mode={mode}
       data-plaid-page="access"
     >
-      <header className={experience.accessBar} data-auth-banner>
+      <header className={experience.accessBar}>
         <a href="/" className={experience.accessBrand} aria-label="AURYN home">
           <img src="/icon.svg" alt="" width="28" height="28" />
           AURYN
@@ -623,6 +623,11 @@ function Login({ initialError }: { initialError: string }) {
           </button>
         </div>
       </header>
+      <aside data-auth-side aria-label="About AURYN">
+        <p>YOUR RESEARCH, CONTINUED</p>
+        <h2>Return to the reasons behind every position.</h2>
+        <p>See the business behind the price.</p>
+      </aside>
       <section className={experience.main} aria-label="Account access">
         <div
           className={`mp-auth-panel ${mode === "reset" ? "mp-reset-panel" : ""}`}
@@ -645,18 +650,18 @@ function Login({ initialError }: { initialError: string }) {
                 <input
                   type="checkbox"
                   checked={remember}
+                  aria-describedby={!remember ? "auth-session-note" : undefined}
                   disabled={busy}
                   onChange={(e) => setRemember(e.target.checked)}
                 />{" "}
                 Remember me on this browser
               </label>
-              <details className={experience.rememberHelp}>
-                <summary>Session info</summary>
-                <small>
-                  Unchecked uses browser-session cookies. Browser restore can
-                  retain them; sign out on shared devices.
+              {!remember && (
+                <small id="auth-session-note">
+                  Browser restore can retain session cookies. Sign out on shared
+                  devices.
                 </small>
-              </details>
+              )}
             </div>
           )}
           {mode !== "reset" && (
@@ -683,12 +688,46 @@ function Login({ initialError }: { initialError: string }) {
                       d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.6h3.3c1.9-1.8 2.9-4.4 2.9-7.5ZM12 22c2.7 0 5-1 6.7-2.4l-3.3-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.2H3v2.7A10 10 0 0 0 12 22ZM6.4 13.8a6 6 0 0 1 0-3.6V7.5H3a10 10 0 0 0 0 9l3.4-2.7ZM12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0 0 12 2a10 10 0 0 0-9 5.5l3.4 2.7C7.2 7.8 9.4 6 12 6Z"
                     />
                   </svg>
-                  <span>Continue with Google</span>
+                  <span>Google</span>
+                </button>
+                <button
+                  type="button"
+                  className="mp-social-button"
+                  aria-label="Continue with X"
+                  disabled={busy || socialProviders.x === false}
+                  aria-describedby={
+                    socialProviders.x === false
+                      ? "auth-x-unavailable"
+                      : undefined
+                  }
+                  onClick={() => social("x")}
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-7.4L5.6 22H2.4l7.3-8.4L1.9 2h6.5l4.4 6.8L18.9 2Zm-1.1 18h1.7L7.5 3.9H5.7L17.8 20Z"
+                    />
+                  </svg>
+                  <span>X</span>
                 </button>
               </div>
               {socialProviders.google === false && (
                 <p className="mp-provider-note" role="status">
                   Google sign-in is not enabled yet. Continue with email below.
+                </p>
+              )}
+              {socialProviders.x === false && (
+                <p
+                  className="mp-provider-note"
+                  id="auth-x-unavailable"
+                  role="status"
+                >
+                  X sign-in is unavailable. Continue with email.
                 </p>
               )}
               <div className="mp-form-divider">

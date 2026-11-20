@@ -6,13 +6,13 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { documents, legalConfiguration } from "../lib/legal-content.ts";
 const read = (path) => readFileSync(path, "utf8");
-test("sign-in brand returns home and the compact contour banner needs no exit affordance", () => {
+test("sign-in brand returns home and the desktop side contour banner needs no exit affordance", () => {
   const login = read("components/Session.tsx");
   assert.match(login, /href="\/" className=\{experience.accessBrand\}/);
   assert.doesNotMatch(login, /Close sign in and return to Auryn/);
   assert.match(
     read("components/SessionAccess.css"),
-    /\[data-auth-banner\][^{}]*\{[^}]*repeating-radial-gradient/,
+    /\[data-auth-side\][^{}]*\{[^}]*repeating-radial-gradient/,
   );
 });
 test("native legal dialog preserves the form and uses existing full legal document text", () => {

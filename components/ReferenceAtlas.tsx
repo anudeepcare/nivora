@@ -139,7 +139,6 @@ export default function ReferenceAtlas({
         <section className={s.copy}>
           <span className={s.eyebrow}>Decision Atlas</span>
           <h2>{b.business.title}</h2>
-          <p>Select an orbit to inspect the evidence behind this view.</p>
           <div className={s.active} aria-live="polite">
             <small>{signal.label}</small>
             <strong>{reading(signal, b.businessNumbers.currency)}</strong>

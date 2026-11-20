@@ -668,7 +668,7 @@ function HoldingsTable({
   return (
     <>
       <div
-        className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll} ${composition.mobileHoldings}`}
+        className={`table-scroll ${portfolioStyles.ledger} ${reference.holdingsScroll} ${composition.desktopHoldings}`}
         role="region"
         aria-label="Portfolio holdings, scroll for more rows and columns"
         tabIndex={0}
@@ -843,6 +843,164 @@ function HoldingsTable({
           </tbody>
         </table>
       </div>
+      <ul
+        className={composition.phoneHoldings}
+        role="list"
+        aria-label="Portfolio holdings"
+      >
+        {rows.map((row) => {
+          const p = row.position;
+          const cash = p.assetType === "cash";
+          const quote = quotes.data[p.symbol]?.quote;
+          const companyName = quotes.data[p.symbol]?.company?.name;
+          const quantity = row.quantity?.toLocaleString(undefined, {
+            maximumFractionDigits: 8,
+          });
+          const cost =
+            row.avgCost != null && row.costCurrency
+              ? amount(row.avgCost, row.costCurrency)
+              : row.costState === "mixed"
+                ? "Mixed currencies"
+                : "Cost unavailable";
+          return (
+            <li key={row.groupKey}>
+              <div className={composition.phoneLead}>
+                {cash ? (
+                  <div className={composition.phoneIdentity}>
+                    <strong>{p.symbol} cash</strong>
+                    <small>Recorded balance</small>
+                  </div>
+                ) : (
+                  <Link
+                    className={composition.phoneIdentity}
+                    href={researchLink(p.symbol, prefix)}
+                  >
+                    <strong>{p.symbol}</strong>
+                    {companyName && <small>{companyName}</small>}
+                  </Link>
+                )}
+                <div className={composition.phoneValue}>
+                  <strong>
+                    <span className="sr-only">
+                      {cash ? "Balance: " : "Market value: "}
+                    </span>
+                    {row.value == null
+                      ? "Value unavailable"
+                      : amount(row.value)}
+                  </strong>
+                  {!cash && (
+                    <small
+                      data-direction={
+                        row.pnl == null
+                          ? "unknown"
+                          : row.pnl < 0
+                            ? "loss"
+                            : row.pnl > 0
+                              ? "gain"
+                              : "flat"
+                      }
+                    >
+                      <span className="sr-only">Unrealized return: </span>
+                      {row.pnl == null
+                        ? "Return unavailable"
+                        : `${row.pnl > 0 ? "+" : ""}${amount(row.pnl)}${row.returnPct == null ? "" : ` · ${percent(row.returnPct, true)}`}`}
+                    </small>
+                  )}
+                </div>
+              </div>
+              <details className={composition.phoneDetails}>
+                <summary>
+                  Details &amp; actions
+                  <span className="sr-only"> for {p.symbol}</span>
+                </summary>
+                {!cash && (
+                  <>
+                    <dl>
+                      <div>
+                        <dt>{p.assetType === "crypto" ? "Units" : "Shares"}</dt>
+                        <dd>{quantity ?? "Unavailable"}</dd>
+                      </div>
+                      <div>
+                        <dt>Average cost</dt>
+                        <dd>{cost}</dd>
+                      </div>
+                      <div>
+                        <dt>Weight</dt>
+                        <dd>{percent(row.weight)}</dd>
+                      </div>
+                      <div>
+                        <dt>Quoted price</dt>
+                        <dd>
+                          {quote?.price == null
+                            ? "Price unavailable"
+                            : amount(quote.price, quote.currency)}
+                          {quote?.asOf && (
+                            <small>
+                              {quote.stale ? "Older · " : ""}
+                              {quoteTime(quote.asOf, true)}
+                            </small>
+                          )}
+                        </dd>
+                      </div>
+                      {p.assetType !== "crypto" && (
+                        <div>
+                          <dt>Accumulation Pace</dt>
+                          <dd>
+                            <PaceBadge
+                              signal={state.pace(p.symbol)}
+                              loading={state.paceScan.loading}
+                            />
+                          </dd>
+                        </div>
+                      )}
+                      <div>
+                        <dt>Recorded purchases</dt>
+                        <dd>{row.lots.length}</dd>
+                      </div>
+                    </dl>
+                    {row.note && <p>{row.note}</p>}
+                  </>
+                )}
+                <div className={composition.phoneActions}>
+                  {!cash && (
+                    <button
+                      className="btn"
+                      type="button"
+                      aria-label={`Add purchase for ${p.symbol}`}
+                      onClick={() =>
+                        onAddPurchase({
+                          symbol: p.symbol,
+                          currency: row.costCurrency,
+                        })
+                      }
+                    >
+                      Add purchase
+                    </button>
+                  )}
+                  <button
+                    className="btn"
+                    type="button"
+                    aria-label={
+                      cash
+                        ? `Edit ${p.symbol} cash`
+                        : `Manage ${p.symbol} purchases`
+                    }
+                    onClick={() => {
+                      if (cash) onEdit(p);
+                      else {
+                        setActiveKey(row.groupKey);
+                        purchaseDialog.current?.showModal();
+                      }
+                    }}
+                  >
+                    {cash ? "Edit balance" : "Manage purchases"}
+                  </button>
+                </div>
+              </details>
+            </li>
+          );
+        })}
+      </ul>
       <dialog
         ref={purchaseDialog}
         className="dialog approved-workspace-dialog"

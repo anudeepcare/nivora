@@ -40,27 +40,49 @@
 }
 
 .priceBasis {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 20px;
-  margin: 10px 0;
+  min-width: 0;
   font-size: 12px;
-  color: var(--muted);
+  color: var(--plaid-muted, var(--muted));
   line-height: 1.5;
 }
+.priceBasis dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--fact-gap);
+  margin: 0;
+}
+.priceBasis dt {
+  margin-bottom: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.priceBasis dd {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  min-width: 0;
+}
 .priceBasis strong {
-  color: var(--ink);
+  color: var(--plaid-ink, var(--ink));
+  font-size: var(--fact-size);
   font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 .priceBasis small {
-  flex-basis: 100%;
+  display: block;
   font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.priceBasis > small {
+  margin-top: 6px;
 }
 
 /* A single chart-led canvas, not a stack of competing panels. */
 .desk.desk {
-  padding: clamp(16px, 2.2vw, 28px);
+  padding: clamp(12px, 1.8vw, 22px);
   border: 0;
   border-radius: 20px;
   background: linear-gradient(
@@ -69,7 +91,7 @@
     var(--card) 45%
   );
   box-shadow: 0 10px 36px color-mix(in srgb, var(--ink) 4%, transparent);
-  gap: 20px 28px;
+  gap: 12px 20px;
 }
 .desk.desk > :global(.accumulation-desk-head) {
   align-items: center;
@@ -85,24 +107,20 @@
   font-weight: 500;
   letter-spacing: -0.045em;
 }
-.titleNote {
-  font-size: 13px;
-  letter-spacing: 0;
-  font-weight: 400;
-  color: var(--muted);
-}
 .observations {
+  --fact-size: clamp(19px, 2vw, 25px);
+  --fact-gap: clamp(10px, 1.9vw, 24px);
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  gap: 24px;
-  padding: 18px 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px var(--fact-gap);
+  padding: 10px 0;
   border-block: 1px solid var(--line);
-  align-items: center;
+  align-items: start;
 }
 .desk .observations :global(.pace-readings) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: var(--fact-gap);
 }
 .desk .observations :global(.pace-period) {
   display: grid;
@@ -117,12 +135,13 @@
 }
 .desk .observations :global(.pace-period) > span {
   grid-column: 1 / -1;
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--plaid-muted, var(--muted));
 }
 .desk .observations :global(.pace-period) > strong {
-  font-size: 29px;
-  line-height: 1.3;
+  font-size: var(--fact-size);
+  line-height: 1.25;
   font-weight: 500;
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
@@ -136,25 +155,26 @@
   font-size: 11px;
   color: var(--muted);
 }
-.observations .priceBasis {
-  margin: 0;
-  gap: 4px 12px;
-  font-size: 11px;
-}
-.observations .priceBasis > span {
-  flex-basis: 100%;
-}
-.observations .priceBasis small {
-  font-size: 10px;
-  line-height: 1.5;
-}
 .desk.desk > :global(.accumulation-chart) {
   border: 0;
+  margin: 0;
   padding: 0;
   background: transparent;
   border-radius: 0;
   box-shadow: none;
   min-width: 0;
+}
+:global(#auryn-app)
+  .desk.desk
+  > :global(.accumulation-chart)
+  :global(.price-chart) {
+  height: clamp(198px, 29svh, 245px);
+  min-height: 0;
+}
+.desk.desk > :global(.accumulation-chart) :global(.chart-readout) {
+  min-height: 24px;
+  padding-block: 2px;
+  gap: 2px 10px;
 }
 .chartHeading {
   display: flex;
@@ -162,8 +182,8 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: 5px 12px;
-  margin: 0 0 12px;
-  font-size: 13px;
+  margin: 0 0 3px;
+  font-size: 14px;
   font-weight: 500;
 }
 .chartHeading small {
@@ -212,22 +232,28 @@
   font-size: 17px;
   font-weight: 500;
 }
-@media (max-width: 1000px) {
+.observations > :first-child:has(:global(.pace-readings):empty) {
+  display: none;
+}
+.observations:has(:global(.pace-readings):empty) .priceBasis {
+  grid-column: 1 / -1;
+}
+.businessEvidence {
+  min-width: 0;
+}
+@media (max-width: 760px) {
   .observations {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .observations .priceBasis > span {
-    flex-basis: auto;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
   }
 }
 @media (max-width: 700px) {
   .desk.desk {
-    padding: 16px 12px;
+    padding: 12px;
     border-radius: 14px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 10px;
   }
   .desk.desk > * {
     width: 100%;
@@ -240,14 +266,11 @@
   .desk :global(.segments) {
     min-height: 44px;
   }
-  .observations {
-    padding: 14px 0;
-  }
-  .desk .observations :global(.pace-readings) {
-    gap: 12px;
-  }
-  .desk .observations :global(.pace-period) > strong {
-    font-size: 25px;
+  :global(#auryn-app)
+    .desk.desk
+    > :global(.accumulation-chart)
+    :global(.price-chart) {
+    height: clamp(175px, 28svh, 218px);
   }
   .desk.desk > :global(.accumulation-summary) {
     border-left: 0;
@@ -277,11 +300,11 @@
 }
 
 /* Keep explanations and keys with the observation they explain, without card rails. */
-.desk.desk > :global(.accumulation-legend) {
+.desk.desk > :global(.accumulation-chart) > :global(.accumulation-legend) {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 18px;
-  margin: 0;
+  gap: 5px 14px;
+  margin: 5px 0 0;
   font-size: 11px;
   color: var(--muted);
 }

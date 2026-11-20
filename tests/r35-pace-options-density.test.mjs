@@ -51,13 +51,8 @@ test("Options controls and guidance share a compact toolbar without removing sel
   assert.match(toolbar, /aria-label="Expiration date"/);
   assert.match(toolbar, /aria-label="Options sections"/);
   assert.match(toolbar, /aria-label="Advanced options tools"/);
-  assert.match(toolbar, /<p className=\{deskStyles.orientation\}>/);
+  assert.doesNotMatch(toolbar, /Choose an expiration to explore/);
   assert.doesNotMatch(source, /<strong>Options, in context<\/strong>/);
-  const css = read("OptionsDesk.module.css");
-  assert.match(
-    css,
-    /\.desk \.commandBar > \.orientation\s*\{[^}]*grid-column: 1\s*\/\s*-1/,
-  );
 });
 
 test("Pace historical evidence aligns to the chart rail and its tables remain keyboard-scrollable", () => {

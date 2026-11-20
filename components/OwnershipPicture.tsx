@@ -27,11 +27,6 @@ export default function OwnershipPicture({
         <header className="section-head">
           <h3>Additional source records</h3>
         </header>
-        <p className="small muted">
-          Source: {e.source || "not supplied"}. These records may use different
-          reporting dates and share bases from the institutional comparison
-          above. They are not a second current ownership estimate.
-        </p>
         <dl className={`ownership-source-aggregates ${layout.aggregates}`}>
           <div>
             <dt>Institutional aggregate</dt>
@@ -43,9 +38,10 @@ export default function OwnershipPicture({
           </div>
         </dl>
         <p className="small muted">
-          Aggregate reporting date not supplied. Provider retrieval is not the
-          reporting date; aggregates are not summed or reconciled with the other
-          source.
+          Source: {e.source || "not supplied"}. Aggregate reporting date not
+          supplied. Retrieval time is not the reporting date. Dates or share
+          bases can differ across sources, so these are not combined or shown as
+          a second current estimate.
         </p>
         {e.holders.length > 0 && (
           <div

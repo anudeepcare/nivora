@@ -22,11 +22,16 @@ export default function OptionsExpiryComparison({
   ).filter(([key]) => rows.some((row) => row[key] !== null));
   const hasVolume = columns.some(([key]) => key !== "oi");
   return (
-    <details className={s.comparison}>
-      <summary>
+    <section className={s.comparison} aria-label="Expiration comparison">
+      <h4>
         Expirations <span>{rows.length} loaded</span>
-      </summary>
-      <div className={s.scroll}>
+      </h4>
+      <div
+        className={s.scroll}
+        role="region"
+        aria-label="Loaded expirations table"
+        tabIndex={0}
+      >
         <table>
           <caption>
             Loaded expirations · select a date to inspect contracts
@@ -84,6 +89,6 @@ export default function OptionsExpiryComparison({
         </table>
       </div>
       <p>Loaded contracts only · — means missing data.</p>
-    </details>
+    </section>
   );
 }

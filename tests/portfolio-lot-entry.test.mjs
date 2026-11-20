@@ -59,7 +59,11 @@ test("ten purchases render one holding and show all shares and the weighted aver
     X: Empty,
     Plus: Empty,
     portfolioStyles: { ledger: "ledger" },
-    composition: { mobileHoldings: "mobileHoldings" },
+    composition: {
+      desktopHoldings: "desktopHoldings",
+      phoneHoldings: "phoneHoldings",
+      phoneLead: "phoneLead",
+    },
     reference: { holdingsScroll: "scroll", purchaseLots: "purchaseLots" },
   };
   const Component = new Function(
@@ -100,4 +104,25 @@ test("ten purchases render one holding and show all shares and the weighted aver
   assert.match(html, /55 shares/);
   assert.match(html, /\$16\.00 avg cost/);
   assert.match(html, /Manage APP purchases/);
+  const phone =
+    html.match(
+      /<ul[^>]+aria-label="Portfolio holdings"[^>]*>[\s\S]*?<\/ul>/,
+    )?.[0] ?? "";
+  assert.equal(
+    (phone.match(/<li>/g) ?? []).length,
+    1,
+    "one company summary despite ten purchases",
+  );
+  const [lead, details] = phone.split("<details");
+  assert.match(lead, /APP/);
+  assert.match(lead, /\$1,100/);
+  assert.match(lead, /\$220/);
+  assert.doesNotMatch(
+    lead,
+    /Quoted price|Weight|Average cost|Manage purchases/,
+  );
+  assert.match(details, /Quoted price/);
+  assert.match(details, /Average cost/);
+  assert.match(details, /Manage APP purchases/);
+  assert.match(details, /Add purchase for APP/);
 });

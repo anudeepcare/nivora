@@ -164,17 +164,16 @@ export default function CompanyEventCalendar({
             ) : (
               <p className={s.empty}>
                 No event dates supplied for{" "}
-                {selected ? "this day" : "this month"}. This does not establish
-                that no events exist.
+                {selected ? "this day" : "this month"}. Coverage may be
+                incomplete.
               </p>
             )}
           </div>
         </div>
       </div>
       <p className={s.footnote}>
-        Supplied earnings, filing and transaction dates only. Forecast periods
-        are not announcement dates. Impact rankings are not supplied; no
-        importance scores are inferred.
+        Supplied earnings, filing and transaction dates only. Fiscal periods are
+        not announcement dates. Impact rankings are not supplied.
       </p>
     </section>
   );

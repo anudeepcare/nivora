@@ -1031,42 +1031,6 @@
   }
 }
 
-/* Data-quality actions must not read like a faint inline link. */
-.home.home.home :global(.approved-data-note) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 16px;
-  padding: 12px 14px;
-  margin: 12px 0 18px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--amber-soft);
-  color: var(--ink);
-  font-size: 13px;
-  line-height: 1.5;
-}
-.home.home.home :global(.approved-data-note) button {
-  min-height: 44px;
-  padding: 8px 14px;
-  margin-left: auto;
-  border: 1px solid var(--ink);
-  border-radius: 9px;
-  color: var(--card);
-  background: var(--ink);
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-}
-.home.home.home :global(.approved-data-note) button:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-.home.home.home :global(.approved-data-note) button:disabled {
-  opacity: 0.65;
-  cursor: wait;
-}
-
 /* Two independent content-height columns; no stretched blank priority panel. */
 .home.home.home .dayOverview {
   display: grid;
@@ -1184,18 +1148,14 @@
   min-width: 0;
   margin: 0;
 }
-.leadGrid > section {
-  grid-column: 1 / -1;
-}
-.leadGrid > :only-child,
-.leadGrid > .dayOverview {
+.leadGrid > :only-child {
   grid-column: 1 / -1;
 }
 .home.home.home.home .leadGrid > .dayOverview {
   display: block;
   margin: 0;
 }
-.home.home.home.home .leadGrid > .dayOverview:not(:has(article, a, small)) {
+.home.home.home.home .leadGrid > .dayOverview:not(:has(section, nav)) {
   display: none;
 }
 .home.home.home.home :global(.home-evidence-panel) {
@@ -1366,4 +1326,74 @@
   .actionGrid {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Today keeps quote coverage inline and gives the contribution chart a useful companion. */
+.home.home.home.home .quoteStatus:empty {
+  display: none;
+}
+.home.home.home.home .quoteStatus :global(.approved-data-note) {
+  display: flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  gap: 2px 10px;
+  margin: 2px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+}
+.home.home.home.home .quoteStatus :global(.approved-data-note) button {
+  margin: 0;
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--plaid-ink, var(--ink));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.home.home.home.home
+  .quoteStatus
+  :global(.approved-data-note)
+  button:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 2px;
+}
+.home.home.home.home .quoteStatus :global(.approved-data-note) button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.home.home.home.home .quoteStatus :global(.approved-data-note) button:hover {
+  background: var(--plaid-ice, var(--surface));
+}
+.leadGrid {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+.leadGrid:empty,
+.leadGrid:not(:has(section)) {
+  display: none;
+}
+.home.home.home.home .leadGrid > :global(.home-evidence-layout) {
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  gap: 0;
+}
+@media (min-width: 980px) {
+  .leadGrid:has(> .dayOverview section):has(> :global(.home-evidence-layout)) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  }
+}
+.updateFeed {
+  margin: 16px 0;
+}
+.home.home.home.home .planRow {
+  margin: 14px 0 4px;
+  padding: 4px 0;
+  background: transparent;
+}
+.actionGrid {
+  margin-top: 6px;
 }

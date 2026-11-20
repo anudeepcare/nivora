@@ -1012,7 +1012,7 @@
   outline-offset: -2px;
 }
 
-/* Four 44px utilities plus the full wordmark cannot fit a 320px header. */
+/* At the narrowest phone widths, reserve room for accessible controls. */
 @media (max-width: 360px) {
   .shell .brand span {
     display: none;
@@ -1100,10 +1100,12 @@
   }
 }
 
-/* Plaid workspace chrome: an integrated surface, not a floating capsule.
+/* Keep the Plaid workspace chrome on the same rail as the content.
    Route selection, keyboard handling and the phone dock's geometry stay intact. */
 .shell[data-appearance="plaid"] {
-  --workspace-inline: max(24px, calc((100% - 1392px) / 2));
+  --workspace-measure: 1440px;
+  --workspace-edge: clamp(12px, 1.5vw, 24px);
+  --workspace-inset: clamp(12px, 1.4vw, 20px);
   --nav-ink: var(--plaid-muted);
   --nav-active: var(--plaid-ink);
   --nav-solid: var(--plaid-surface);
@@ -1117,22 +1119,37 @@
 }
 @media (min-width: 768px) {
   .shell[data-appearance="plaid"] .header {
-    top: 0;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 6px var(--workspace-inline);
+    top: 8px;
+    width: calc(100% - 2 * var(--workspace-edge));
+    max-width: var(--workspace-measure);
+    margin: 8px auto 0;
+    padding: 6px 0;
+    padding-inline: var(--workspace-inset);
     min-height: 60px;
-    border: 0;
-    border-bottom: 1px solid var(--plaid-line);
-    border-radius: 0;
+    border: 1px solid var(--plaid-line);
+    border-radius: 28px;
     background: var(--plaid-surface);
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    box-shadow: 0 5px 18px rgba(38, 57, 99, 0.05);
+  }
+  .shell[data-appearance="plaid"] .workspace {
+    width: calc(100% - 2 * var(--workspace-edge));
+    max-width: var(--workspace-measure);
+    margin-inline: auto;
+  }
+  .shell[data-appearance="plaid"]:not([data-page="research"]) .content {
+    padding: 18px var(--workspace-inset) 48px;
+  }
+  .shell[data-appearance="plaid"][data-page="research"] .content {
+    scrollbar-gutter: auto;
+  }
+  .shell[data-appearance="plaid"][data-page="research"]
+    .content
+    > :global(.research-page[data-active-lens]) {
+    --research-gutter: var(--workspace-inset);
+    padding-top: 10px;
   }
   .shell[data-appearance="plaid"] .header .nav a {
-    border-radius: 9px;
+    border-radius: 999px;
     font-weight: 500;
   }
   .shell[data-appearance="plaid"] .header .nav a[aria-current="page"] {
@@ -1152,7 +1169,7 @@
   color: var(--plaid-ink);
 }
 .shell[data-appearance="plaid"] .header .searchTrigger {
-  border-radius: 9px;
+  border-radius: 999px;
   color: var(--plaid-muted);
   background: var(--plaid-surface);
 }
@@ -1186,7 +1203,7 @@
 @media (min-width: 768px) and (max-width: 1080px) {
   .shell[data-appearance="plaid"] .header {
     gap: clamp(5px, 1vw, 10px);
-    padding-inline: 16px;
+    padding-inline: var(--workspace-inset);
   }
   .shell[data-appearance="plaid"] .header .nav {
     display: grid;
