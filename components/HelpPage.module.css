@@ -1,0 +1,112 @@
+.page {
+  width: 100%;
+  max-width: 1160px;
+  min-width: 0;
+  margin: 0 auto;
+  color: var(--ink);
+}
+.page :global(.page-heading) {
+  padding: clamp(20px, 4vw, 32px);
+  margin: 16px 0 24px;
+  border: 0;
+  border-radius: 24px;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, #a99be4 14%, var(--card)),
+    var(--card)
+  );
+}
+.page :global(.page-heading) h1 {
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 550;
+  letter-spacing: -0.04em;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.topics {
+  display: flex;
+  overflow-x: auto;
+  min-width: 0;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 24px;
+  background: var(--surface-2);
+}
+.topics a {
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding: 10px 14px;
+  min-height: 44px;
+  border-radius: 22px;
+  color: var(--ink);
+  font-size: 13px;
+  text-decoration: none;
+}
+.topics a:hover {
+  background: var(--blue-soft);
+}
+.topics a:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: -2px;
+}
+.reader {
+  min-width: 0;
+}
+.reader > section {
+  position: relative;
+  padding: 24px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  scroll-margin-top: 112px;
+}
+.reader > section:first-child {
+  padding-top: 0;
+}
+.number {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.reader h2 {
+  margin: 0 0 12px;
+  font-size: 21px;
+  font-weight: 550;
+  letter-spacing: -0.025em;
+}
+.reader p {
+  max-width: 72ch;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 40px;
+  }
+  .topics {
+    position: sticky;
+    top: 100px;
+    display: grid;
+    max-height: calc(100dvh - 130px);
+    overflow-y: auto;
+    border-radius: 24px;
+    padding: 12px;
+  }
+  .topics a {
+    white-space: normal;
+  }
+  .reader {
+    padding: 12px 0;
+  }
+}

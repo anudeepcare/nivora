@@ -177,6 +177,7 @@ export function Help({
   trigger?: React.ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null),
+    opener = useRef<HTMLButtonElement>(null),
     id = useId(),
     [open, setOpen] = useState(false);
   useEffect(() => {
@@ -193,6 +194,8 @@ export function Help({
         type="button"
         aria-label={`About ${label}`}
         aria-haspopup="dialog"
+        aria-expanded={open}
+        ref={opener}
         onClick={() => setOpen(true)}
       >
         {typeof trigger === "string" ? (
@@ -207,10 +210,14 @@ export function Help({
       {open &&
         createPortal(
           <dialog
+            data-auryn-dialog="explanation"
             className="dialog help-dialog"
             ref={dialog}
             aria-labelledby={id}
-            onClose={() => setOpen(false)}
+            onClose={() => {
+              setOpen(false);
+              opener.current?.focus({ preventScroll: true });
+            }}
             onClick={(e) => {
               if (e.target !== e.currentTarget) return;
               const bounds = e.currentTarget.getBoundingClientRect();
@@ -223,22 +230,32 @@ export function Help({
                 e.currentTarget.close();
             }}
           >
-            <button
-              className="icon-button close"
-              aria-label="Close explanation"
-              onClick={() => dialog.current?.close()}
-            >
-              <X size={20} />
-            </button>
-            <span className="eyebrow">UNDERSTAND THE METRIC</span>
-            <h2 id={id}>{label}</h2>
-            <div className="help-copy">{children}</div>
-            <button
-              className="button primary"
-              onClick={() => dialog.current?.close()}
-            >
-              Got it
-            </button>
+            <header className="auryn-dialog-heading">
+              <div>
+                <span className="auryn-help-kicker">
+                  <Info size={14} aria-hidden="true" /> About this metric
+                </span>
+                <h2 id={id}>{label}</h2>
+              </div>
+              <button
+                type="button"
+                className="icon-button"
+                aria-label="Close explanation"
+                onClick={() => dialog.current?.close()}
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </header>
+            <div className="auryn-dialog-content help-copy">{children}</div>
+            <footer className="auryn-dialog-actions">
+              <button
+                type="button"
+                className="button primary"
+                onClick={() => dialog.current?.close()}
+              >
+                Got it
+              </button>
+            </footer>
           </dialog>,
           document.body,
         )}

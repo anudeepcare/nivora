@@ -35,8 +35,8 @@
 .delivery {
   margin: 12px 0;
   padding: 12px;
-  background: color-mix(in srgb, #168e83 7%, var(--card));
-  border-radius: 10px;
+  background: color-mix(in srgb, #a99be4 10%, var(--card));
+  border-radius: 20px;
   font-size: 13px;
 }
 .delivery summary {
@@ -48,7 +48,7 @@
 }
 .ticket {
   margin: 4px 0;
-  border-radius: 10px;
+  border-radius: 20px;
   background: var(--card);
 }
 .ticket:nth-of-type(even) {
@@ -183,7 +183,7 @@
   flex-wrap: wrap;
   background: var(--surface-2);
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 20px;
   font-size: 12px;
 }
 .bulk label {
@@ -424,4 +424,13 @@
   .ticketControls .assignment button {
     width: 100%;
   }
+}
+
+.inbox button {
+  min-height: 44px;
+}
+.ticket > summary:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: -3px;
+  border-radius: 20px;
 }

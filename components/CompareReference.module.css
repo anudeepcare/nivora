@@ -192,3 +192,19 @@
     min-height: 44px;
   }
 }
+
+.contribution > summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.contribution > summary:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}
+.contribution:not([open]) {
+  padding-block: 8px;
+}

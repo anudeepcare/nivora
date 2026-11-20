@@ -1,4 +1,5 @@
 "use client";
+import "./PublicLandingRefresh.css";
 import PublicPlaidOpening from "./PublicPlaidOpening";
 import { ContextLink } from "./ContextLink";
 import PaceInstrument from "./PaceInstrument";
@@ -717,11 +718,12 @@ function ReferenceProductTour() {
     ],
   ];
   return (
-    <div className={landing.productTour}>
+    <div className={`${landing.productTour} public-tour`}>
       <div
         role="tablist"
+        aria-orientation="vertical"
         aria-label="Explore the research workspace"
-        className={landing.tourTabs}
+        className={`${landing.tourTabs} public-tour-tabs`}
       >
         {lenses.map(([title], index) => (
           <button
@@ -734,17 +736,18 @@ function ReferenceProductTour() {
             tabIndex={active === index ? 0 : -1}
             onClick={() => setActive(index)}
             onKeyDown={(event) => {
-              if (
-                !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)
-              )
+              if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key))
                 return;
               event.preventDefault();
               const next =
                 event.key === "Home"
                   ? 0
                   : event.key === "End"
-                    ? 4
-                    : (index + (event.key === "ArrowRight" ? 1 : 4)) % 5;
+                    ? lenses.length - 1
+                    : (index +
+                        (event.key === "ArrowDown" ? 1 : -1) +
+                        lenses.length) %
+                      lenses.length;
               setActive(next);
               event.currentTarget.parentElement
                 ?.querySelectorAll<HTMLButtonElement>("button")
@@ -763,7 +766,7 @@ function ReferenceProductTour() {
           id={`tour-panel-${index}`}
           aria-labelledby={`tour-tab-${index}`}
           hidden={active !== index}
-          className={landing.tourPanel}
+          className={`${landing.tourPanel} public-tour-panel`}
         >
           <ResearchDiagram lens={index} />
           <div className={landing.tourReadout}>
@@ -886,7 +889,7 @@ export default function PublicLanding({
 
   return (
     <main
-      className={`mp-public ap-public ${experience.public} ${landing.page} ${sampleOnly ? "ap-sample-page" : ""}`}
+      className={`mp-public ap-public public-reading-layout ${experience.public} ${landing.page} ${sampleOnly ? "ap-sample-page" : ""}`}
     >
       <a className="ap-skip-link" href="#ap-main">
         Skip to content
@@ -898,31 +901,25 @@ export default function PublicLanding({
 
       {sampleOnly && <ProductWalkthrough />}
       <section
-        className={landing.referenceStory}
+        className={`${landing.referenceStory} public-story`}
         id="how-it-works"
         aria-labelledby="reference-story-title"
       >
         <span className={landing.eyebrow}>
           ONE COMPANY · ONE CONNECTED STORY
         </span>
-        <h2 id="reference-story-title">
-          Stop rebuilding the decision in your head.
-        </h2>
-        <p>Five connected views. Open the evidence behind each conclusion.</p>
+        <h2 id="reference-story-title">One company. A clearer picture.</h2>
+        <p>Choose a view to see how the research connects.</p>
         {sampleOnly ? <InvestmentDemo /> : <ReferenceProductTour />}
       </section>
 
       <section
-        className={`${landing.evidence} ap-container`}
+        className={`${landing.evidence} ap-container public-continuity`}
         aria-labelledby="evidence-heading"
       >
         <div>
           <span className={landing.eyebrow}>STAY WITH THE CASE</span>
-          <h2 id="evidence-heading">
-            A decision is a starting point.
-            <br />
-            Keep the reasons in view.
-          </h2>
+          <h2 id="evidence-heading">Keep your research moving.</h2>
           <p>Follow the companies and changes that matter to you.</p>
           <ContextLink page="methodology">
             Explore our methodology <ArrowRight size={17} aria-hidden="true" />
@@ -958,7 +955,7 @@ export default function PublicLanding({
         </div>
       </section>
       <section
-        className={landing.referencePace}
+        className={`${landing.referencePace} public-pace`}
         id="pace-public"
         aria-labelledby="reference-pace-title"
       >
@@ -991,16 +988,14 @@ export default function PublicLanding({
         <Link href="/pace">Explore Pace methodology →</Link>
       </section>
       <section
-        className={landing.referenceCases}
+        className={`${landing.referenceCases} public-questions`}
         id="use-cases"
         aria-labelledby="reference-cases-title"
       >
         <span className={landing.eyebrow}>
           BUILT AROUND THE QUESTIONS INVESTORS ACTUALLY ASK
         </span>
-        <h2 id="reference-cases-title">
-          From interesting to a decision you can explain.
-        </h2>
+        <h2 id="reference-cases-title">Start with your question.</h2>
         <div>
           {[
             [
@@ -1034,17 +1029,20 @@ export default function PublicLanding({
               "/research/APP?tab=Options",
             ],
           ].map(([title, description, href], index) => (
-            <article key={title}>
-              <span>0{index + 1}</span>
-              <h3>{title}</h3>
+            <details key={title} className="public-question">
+              <summary>
+                <span>0{index + 1}</span>
+                <h3>{title}</h3>
+                <span aria-hidden="true">+</span>
+              </summary>
               <p>{description}</p>
               <Link href={href}>Explore use case →</Link>
-            </article>
+            </details>
           ))}
         </div>
       </section>
       <section
-        className={`${landing.closing} ap-container`}
+        className={`${landing.closing} ap-container public-start`}
         id="pricing"
         aria-labelledby="ap-closing-heading"
       >

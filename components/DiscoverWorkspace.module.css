@@ -220,3 +220,20 @@
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
+
+.optionalContext {
+  margin-block: 16px;
+  min-width: 0;
+}
+.optionalContext > summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.optionalContext > summary:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}

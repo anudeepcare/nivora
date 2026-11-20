@@ -1,0 +1,48 @@
+/* Bound decorative assets even when global SVG defaults change. */
+.mp-auth[data-plaid-page="access"] .mp-auth-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 24px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-disclaimer > svg {
+  width: 18px;
+  height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  flex: 0 0 18px;
+  margin-top: 2px;
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-end;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--ink);
+  border-radius: 12px;
+  text-decoration: none;
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-home > span {
+  font-size: 24px;
+  line-height: 1;
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-home:hover {
+  background: var(--blue-soft);
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-home:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-panel {
+  min-width: 0;
+}
+@media (max-width: 760px) {
+  .mp-auth[data-plaid-page="access"] .mp-auth-disclaimer {
+    margin-top: 18px;
+  }
+}

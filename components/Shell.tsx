@@ -275,6 +275,7 @@ export default function Shell({
       </nav>
       <dialog
         ref={tools}
+        data-auryn-dialog="workspace"
         className={`search-dialog approved-tools-dialog ${experience.toolsDialog}`}
         aria-label="Account & workspace"
       >
@@ -417,6 +418,7 @@ export default function Shell({
         </footer>
       </dialog>
       <dialog
+        data-auryn-dialog="search"
         className={`search-dialog ${experience.searchDialog}`}
         ref={search}
         aria-label="Search companies and crypto"

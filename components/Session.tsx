@@ -1,4 +1,5 @@
 "use client";
+import "./SessionAccess.css";
 import { settleWithDeadline } from "@/lib/request-deadline";
 import { invalidateResource } from "@/lib/resource-cache";
 import { usePathname, useRouter } from "next/navigation";
@@ -650,8 +651,12 @@ function Login({ initialError }: { initialError: string }) {
             <span>AURYN</span>
           </a>
         </div>
-        <a className="mp-auth-home" href="/">
-          ← Back to Auryn
+        <a
+          className="mp-auth-home"
+          aria-label="Close sign in and return to Auryn"
+          href="/"
+        >
+          <span aria-hidden="true">×</span> Close
         </a>
         <div
           className={`mp-auth-panel ${mode === "reset" ? "mp-reset-panel" : ""}`}
@@ -903,6 +908,8 @@ function Login({ initialError }: { initialError: string }) {
           <div className="mp-auth-disclaimer">
             <svg
               className="mp-icon"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

@@ -32,21 +32,30 @@ function HomeRadar(props: Props) {
   return (
     <>
       {props.demo ? (
-        <MarketRadar research={props.research} asOf={props.asOf} />
+        <>
+          <MarketRadar research={props.research} asOf={props.asOf} />
+          <OpportunityMap
+            compact
+            research={props.research}
+            requested={props.requested}
+            prefix={props.prefix}
+            demo={props.demo}
+          />
+        </>
       ) : (
         <DailyMarketRadar
           research={props.research}
           requested={props.requested}
           asOf={props.asOf}
-        />
-      )}
-      {props.research.length > 0 && (
-        <OpportunityMap
-          compact
-          research={props.research}
-          requested={props.requested}
-          prefix={props.prefix}
-          demo={props.demo}
+          sampleEvidence={
+            <OpportunityMap
+              compact
+              research={props.research}
+              requested={props.requested}
+              prefix={props.prefix}
+              demo={props.demo}
+            />
+          }
         />
       )}
     </>

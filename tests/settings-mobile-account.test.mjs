@@ -3,10 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import postcss from "postcss";
 test("final mobile account layout reserves identity width before account actions", () => {
-  const css = readFileSync("components/SettingsPage.module.css", "utf8").split(
-    "/* Last account-row rule:",
-  )[1];
-  assert.match(css, /max-width: 600px/);
+  const css = readFileSync("components/SettingsPage.module.css", "utf8");
+  // The consolidated stylesheet now uses this identity-first layout by default,
+  // rather than depending on a late mobile override.
   assert.match(css, /display: grid/);
   assert.match(css, /grid-template-columns: 44px minmax\(0, 1fr\)/);
   assert.match(css, /grid-column: 1 \/ -1/);

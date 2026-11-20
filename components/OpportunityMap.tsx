@@ -87,12 +87,15 @@ export default function OpportunityMap({
         </div>
       )}
       {map.covered > 0 && (
-        <p className={styles.note}>
-          {map.missingPace} without a confirmed Pace. Sector labels come from
-          company metadata; absent sectors stay unclassified. P2–P4 describes
-          price zones, not business quality or a forecast. Business checks can
-          block additions within those zones.
-        </p>
+        <details className={styles.evidence}>
+          <summary>Coverage &amp; interpretation</summary>
+          <p className={styles.note}>
+            {map.missingPace} without a confirmed Pace. Sector labels come from
+            company metadata; absent sectors stay unclassified. P2–P4 describes
+            price zones, not business quality or a forecast. Business checks can
+            block additions within those zones.
+          </p>
+        </details>
       )}
     </section>
   );

@@ -294,42 +294,6 @@ export default function ReferenceAtlas({
           </small>
         </aside>
       </div>
-      <section className={s.tape} aria-label="Company metric tape">
-        {values.map((item) => (
-          <button
-            key={item.label}
-            data-tone={item.tone}
-            onClick={() => onTab(item.target)}
-          >
-            <span>{item.label}</span>
-            <strong>{item.value}</strong>
-            <small>{item.detail}</small>
-            {trends[item.label] && (
-              <>
-                <svg
-                  className={s.metricTrend}
-                  viewBox="0 0 200 48"
-                  role="img"
-                  aria-label={`${item.label}: ${trends[item.label]!.observations}`}
-                >
-                  <title>{trends[item.label]!.observations}</title>
-                  <polyline
-                    points={trends[item.label]!.points}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-                <small>
-                  {trends[item.label]!.basis} · {trends[item.label]!.from}–
-                  {trends[item.label]!.to}
-                </small>
-              </>
-            )}
-          </button>
-        ))}
-      </section>
       <div className={s.lower}>
         <section className={s.scenarios}>
           <header>
@@ -396,6 +360,43 @@ export default function ReferenceAtlas({
           ))}
         </section>
       </div>
+      <h3 className={s.metricsHeading}>Business & timing metrics</h3>
+      <section className={s.tape} aria-label="Company metric tape">
+        {values.map((item) => (
+          <button
+            key={item.label}
+            data-tone={item.tone}
+            onClick={() => onTab(item.target)}
+          >
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+            <small>{item.detail}</small>
+            {trends[item.label] && (
+              <>
+                <svg
+                  className={s.metricTrend}
+                  viewBox="0 0 200 48"
+                  role="img"
+                  aria-label={`${item.label}: ${trends[item.label]!.observations}`}
+                >
+                  <title>{trends[item.label]!.observations}</title>
+                  <polyline
+                    points={trends[item.label]!.points}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+                <small>
+                  {trends[item.label]!.basis} · {trends[item.label]!.from}–
+                  {trends[item.label]!.to}
+                </small>
+              </>
+            )}
+          </button>
+        ))}
+      </section>
       <PaceMonthHistory key={research.company.symbol} research={research} />
     </section>
   );

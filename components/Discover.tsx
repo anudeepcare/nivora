@@ -335,16 +335,19 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
             }))}
           />
           {!!requested.length && (
-            <OpportunityMap
-              research={rows}
-              requested={requested}
-              prefix={prefix}
-              demo={!!demo}
-              onSector={(sector) => {
-                setFilter("all");
-                setCriteria({ ...criteria, sector });
-              }}
-            />
+            <details className={discoverStyles.optionalContext}>
+              <summary>Sector map &amp; relative opportunities</summary>
+              <OpportunityMap
+                research={rows}
+                requested={requested}
+                prefix={prefix}
+                demo={!!demo}
+                onSector={(sector) => {
+                  setFilter("all");
+                  setCriteria({ ...criteria, sector });
+                }}
+              />
+            </details>
           )}
           {rows.length > 0 && (
             <details className="panel">

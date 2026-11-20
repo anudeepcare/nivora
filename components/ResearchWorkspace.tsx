@@ -16,7 +16,7 @@ export default function ResearchWorkspace({
   const [selected, setSelected] = useState(initialSelection);
   const id = useId();
   return (
-    <section aria-label={label}>
+    <section aria-label={label} data-research-workspace>
       <div
         className="auryn-view-tabs research-compact-tabs"
         data-selection-navigation
@@ -40,6 +40,7 @@ export default function ResearchWorkspace({
         ))}
       </div>
       <div
+        data-research-view
         id={`${id}-content`}
         role="region"
         aria-label={views[selected]?.title}

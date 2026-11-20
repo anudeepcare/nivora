@@ -196,3 +196,84 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Evidence uses aligned values and restrained chart color, not another nested card stack. */
+.compact {
+  padding: 16px 0;
+  border: 0;
+}
+.grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+.tile {
+  border: 0;
+  border-radius: 12px;
+  background: var(--plaid-card-blue, var(--card));
+  padding: 16px;
+}
+.tile:nth-child(3n + 2) {
+  background: var(--plaid-card-purple, var(--card));
+}
+.tile:nth-child(3n) {
+  background: var(--plaid-card-teal, var(--card));
+}
+.tile h3,
+.tile button {
+  font-size: 14px;
+  color: var(--plaid-ink, var(--ink));
+}
+.tile strong {
+  font-variant-numeric: tabular-nums;
+  color: var(--plaid-ink, var(--ink));
+}
+.tile :is(p, small),
+.note {
+  font-size: 13px;
+  color: var(--plaid-muted, var(--muted));
+  line-height: 1.5;
+}
+.bar {
+  height: 5px;
+}
+.bar span {
+  background: var(--plaid-violet, var(--blue));
+}
+.evidence summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 13px;
+  color: var(--plaid-ink, var(--ink));
+}
+.evidence p {
+  max-width: 85ch;
+}
+.map :is(summary, button, a):focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}
+.map header > a,
+.empty a,
+.tile button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.compact .grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+.compact .tile {
+  padding: 14px;
+}
+.compact .tile strong {
+  font-size: 26px;
+}
+@media (max-width: 600px) {
+  .compact {
+    padding: 12px 0;
+  }
+  .map header {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}

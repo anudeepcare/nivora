@@ -8,14 +8,18 @@
   align-items: flex-end;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 24px;
-  padding: 36px;
+  gap: 16px;
+  padding: clamp(20px, 4vw, 32px);
   border-radius: 22px;
-  background: linear-gradient(120deg, #202c27, #29382d);
-  color: #f5f8ef;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, #a99be4 16%, var(--card)),
+    var(--card)
+  );
+  color: var(--ink);
 }
 .kicker {
-  color: #d6f35a;
+  color: var(--muted);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -23,14 +27,14 @@
 }
 .cover h2 {
   margin: 14px 0 12px;
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(26px, 3vw, 34px);
   line-height: 1.1;
   letter-spacing: -0.04em;
   font-weight: 600;
 }
 .cover p {
   margin: 0;
-  color: #c5d0c5;
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -46,9 +50,9 @@
   cursor: pointer;
 }
 .cover button {
-  background: #ffffff0b;
-  border-color: #ffffff35;
-  color: #e6f4c5;
+  background: var(--card);
+  border-color: var(--line);
+  color: var(--ink);
 }
 .root button:disabled {
   opacity: 0.4;
@@ -57,7 +61,7 @@
 .root button:focus-visible,
 .root input:focus-visible,
 .root select:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--accent-solid);
   outline-offset: 3px;
 }
 .tools {
@@ -99,7 +103,7 @@
 .referenceToggle input {
   width: 18px;
   height: 18px;
-  accent-color: var(--green);
+  accent-color: var(--accent-solid);
 }
 .layout {
   display: grid;
@@ -136,14 +140,14 @@
   color: var(--ink);
 }
 .topics button[aria-current="page"] {
-  background: color-mix(in srgb, var(--green) 9%, var(--card));
-  color: var(--green);
+  background: color-mix(in srgb, var(--accent-solid) 9%, var(--card));
+  color: var(--accent-solid);
   font-weight: 650;
 }
 .reader {
   padding: 30px;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 24px;
   background: var(--card);
   min-width: 0;
 }
@@ -162,7 +166,7 @@
   font-size: 11px;
 }
 .readerMeta > span {
-  color: var(--green);
+  color: var(--accent-solid);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 650;
@@ -201,7 +205,7 @@
   padding-left: 4px;
 }
 .body li::marker {
-  color: var(--green);
+  color: var(--accent-solid);
 }
 .body pre {
   padding: 16px;
@@ -283,7 +287,7 @@
 @media (max-width: 480px) {
   .cover {
     padding: 24px;
-    border-radius: 18px;
+    border-radius: 24px;
   }
   .tools {
     gap: 8px;
@@ -348,7 +352,7 @@
 }
 .intro li::before {
   content: "◆";
-  color: var(--green);
+  color: var(--accent-solid);
   font-size: 10px;
   position: absolute;
   left: 0;
@@ -380,7 +384,7 @@
   background:
     radial-gradient(ellipse at 100% 0, #b3da7a24, transparent 65%),
     linear-gradient(125deg, #172c2a, #2d4434);
-  border-radius: 18px;
+  border-radius: 24px;
 }
 .cover:after {
   content: "";
@@ -424,7 +428,7 @@
   font-size: 12px;
 }
 .topics button[aria-current="page"] {
-  background: color-mix(in srgb, var(--green) 5%, transparent);
+  background: color-mix(in srgb, var(--accent-solid) 5%, transparent);
 }
 @media (max-width: 800px) {
   .layout {
@@ -478,7 +482,7 @@
   gap: 12px 20px;
 }
 .layout {
-  gap: 24px;
+  gap: 16px;
 }
 .topics button[aria-current="page"] {
   color: var(--ink);

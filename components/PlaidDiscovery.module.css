@@ -157,3 +157,59 @@
   }
 }
 /* data-plaid-tone is retained as an explicit shared-theme hook. */
+
+/* Keep the working controls and results ahead of marketing-style page chrome. */
+.discovery.discovery > header,
+.compare.compare > header,
+.watchlist.watchlist > :global(.watch-summary) {
+  padding: 12px 0 20px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.discovery.discovery > header h1,
+.compare.compare > header h1 {
+  font-size: clamp(26px, 3vw, 36px);
+  margin-block: 4px 8px;
+}
+.discovery.discovery [data-plaid-layout="discovery"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.discovery.discovery [data-plaid-block="results"] {
+  padding: clamp(12px, 2vw, 22px);
+}
+.compare.compare :global(.compare-search),
+.discovery.discovery :global(.compare-search) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.compare.compare :global(.compare-search) input,
+.discovery.discovery :global(.compare-search) input {
+  flex: 1 1 220px;
+  min-width: 0;
+  min-height: 44px;
+}
+@media (max-width: 480px) {
+  .discovery.discovery,
+  .watchlist.watchlist,
+  .compare.compare {
+    overflow-wrap: anywhere;
+  }
+  .compare.compare :global(.compare-search) button,
+  .discovery.discovery :global(.compare-search) button {
+    width: 100%;
+    min-height: 44px;
+  }
+  .watchlist.watchlist [data-plaid-block="watch-queue"] {
+    padding: 12px;
+  }
+  .watchlist.watchlist [data-plaid-block="watch-queue"] ul > li {
+    padding-block: 12px;
+  }
+  .compare.compare :is(input, select),
+  .discovery.discovery :is(input, select) {
+    font-size: 16px;
+  }
+}

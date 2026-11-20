@@ -14,6 +14,7 @@ import "./core/nested-navigation.css";
 import "./core/reference-tabs.css";
 import "./core/plaid-theme.css";
 import "./core/plaid-secondary.css";
+import "./core/auryn-controls.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

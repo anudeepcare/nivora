@@ -1,4 +1,7 @@
-import { searchHighlightIndex, searchListingKey } from "../lib/search-selection.ts";
+import {
+  searchHighlightIndex,
+  searchListingKey,
+} from "../lib/search-selection.ts";
 import { selectedScenarioProjection } from "../lib/scenario-projection.ts";
 import { scenarioResearchInput } from "../lib/scenario-reference.ts";
 import { earningsCalendar } from "../lib/earnings-calendar.ts";
@@ -35,7 +38,12 @@ import {
   ArrowUpRight,
   Minus,
 } from "lucide-react";
-import { paceChartColours as colours, paceChartLevels, paceUnavailableColour, paceExtensionColour } from "../lib/pace-chart-levels.ts";
+import {
+  paceChartColours as colours,
+  paceChartLevels,
+  paceUnavailableColour,
+  paceExtensionColour,
+} from "../lib/pace-chart-levels.ts";
 import { paceCode, pacePeriods } from "../lib/pace-presentation.ts";
 import * as format from "../lib/format.ts";
 import { homeComposition } from "../lib/home-presentation.ts";
@@ -171,12 +179,23 @@ function loadComponent(file, name, bindings) {
   const declaration = ast.statements.find(
     (node) => ts.isFunctionDeclaration(node) && node.name?.text === name,
   );
-  const localConstants = ast.statements.filter((node) => ts.isVariableStatement(node) && node.declarationList.declarations.some((d) => d.name.getText(ast) === "lensColors")).map((node) => node.getText(ast)).join("\n");
+  const localConstants = ast.statements
+    .filter(
+      (node) =>
+        ts.isVariableStatement(node) &&
+        node.declarationList.declarations.some(
+          (d) => d.name.getText(ast) === "lensColors",
+        ),
+    )
+    .map((node) => node.getText(ast))
+    .join("\n");
   const code = ts.transpileModule(
-    localConstants + "\n" + declaration
-      .getText(ast)
-      .replace("export default ", "")
-      .replace("export ", ""),
+    localConstants +
+      "\n" +
+      declaration
+        .getText(ast)
+        .replace("export default ", "")
+        .replace("export ", ""),
     {
       compilerOptions: {
         jsx: ts.JsxEmit.React,
@@ -692,7 +711,8 @@ test("public legal and help documents render all cross-links and readable sectio
     {
       React,
       styles: { document: "document-owned" },
-      PublicHomeLink: ({children,...props}) => React.createElement("a", {...props,href:"/"},children),
+      PublicHomeLink: ({ children, ...props }) =>
+        React.createElement("a", { ...props, href: "/" }, children),
       useState: React.useState,
       ContextLink: loadComponent("components/ContextLink.tsx", "ContextLink", {
         React,
@@ -2458,11 +2478,19 @@ test("scenario change without a reference quote is neutral rather than a zero pe
 test("Pace help opens a labelled portal dialog and clears state when native close fires", () => {
   let open = false,
     modalCalls = 0,
-    closeCalls = 0;
+    closeCalls = 0,
+    focusCalls = 0,
+    refIndex = 0;
   let effect;
   const nativeDialog = {
     showModal: () => modalCalls++,
     close: () => closeCalls++,
+  };
+  const opener = {
+    focus: (options) => {
+      assert.deepEqual(options, { preventScroll: true });
+      focusCalls++;
+    },
   };
   const body = {};
   const Help = loadComponent("components/Ui.tsx", "Help", {
@@ -2470,7 +2498,7 @@ test("Pace help opens a labelled portal dialog and clears state when native clos
     styles: {},
     Info: empty,
     X: empty,
-    useRef: () => ({ current: nativeDialog }),
+    useRef: () => ({ current: refIndex++ % 2 === 0 ? nativeDialog : opener }),
     useId: () => "pace-explanation",
     useState: () => [
       open,
@@ -2511,10 +2539,15 @@ test("Pace help opens a labelled portal dialog and clears state when native clos
   assert.equal(modalCalls, 1);
   assert.equal(dialog.type, "dialog");
   assert.equal(dialog.props["aria-labelledby"], "pace-explanation");
-  dialog.props.children[0].props.onClick();
+  assert.equal(tree.props.children[0].props["aria-expanded"], true);
+  const close = dialog.props.children[0].props.children.find(
+    (child) => child.props["aria-label"] === "Close explanation",
+  );
+  close.props.onClick();
   assert.equal(closeCalls, 1);
   // Native Escape also dispatches close; the component must then unmount the portal.
   dialog.props.onClose();
+  assert.equal(focusCalls, 1);
   assert.equal(render().props.children[1], false);
 });
 

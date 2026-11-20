@@ -916,16 +916,45 @@ test("reference product tour switches all five lenses and links to their real re
       ).length,
     );
   }
-  let prevented = false;
-  nodes(Tour(), (n) => n.props?.role === "tab")[4].props.onKeyDown({
-    key: "Home",
-    preventDefault: () => {
-      prevented = true;
-    },
-    currentTarget: { parentElement: null },
-  });
-  assert.equal(active, 0);
-  assert.equal(prevented, true);
+  const tablist = nodes(Tour(), (n) => n.props?.role === "tablist")[0];
+  assert.equal(tablist.props["aria-orientation"], "vertical");
+  function press(key, next) {
+    let prevented = false;
+    let focused = null;
+    const buttons = nodes(Tour(), (n) => n.props?.role === "tab");
+    const before = active;
+    buttons[before].props.onKeyDown({
+      key,
+      preventDefault: () => {
+        prevented = true;
+      },
+      currentTarget: {
+        parentElement: {
+          querySelectorAll: () =>
+            buttons.map((_, index) => ({
+              focus: () => {
+                focused = index;
+              },
+            })),
+        },
+      },
+    });
+    assert.equal(active, next ?? before, key);
+    assert.equal(prevented, next !== null, key);
+    assert.equal(focused, next, key);
+    assert.deepEqual(
+      nodes(Tour(), (n) => n.props?.role === "tab").map(
+        (tab) => tab.props.tabIndex,
+      ),
+      expected.map((_, index) => (index === active ? 0 : -1)),
+    );
+  }
+  press("ArrowDown", 0);
+  press("ArrowUp", 4);
+  press("Home", 0);
+  press("ArrowDown", 1);
+  press("End", 4);
+  press("ArrowRight", null);
 });
 
 test("each public research lens has a labeled explanatory diagram without invented market scores", () => {

@@ -7,6 +7,7 @@ import decisionStyles from "./DecisionLists.module.css";
 import compareStyles from "./CompareReference.module.css";
 import { APP_VERSION } from "@/lib/releases";
 import settingsStyles from "./SettingsPage.module.css";
+import helpStyles from "./HelpPage.module.css";
 import { SettingsSignalPolicies } from "./SettingsExperience";
 import { sameProviderSymbol } from "@/lib/provider-symbol";
 import { SUPPORT_EMAIL } from "@/lib/site-metadata";
@@ -115,7 +116,8 @@ export function Settings() {
     (demo ? "Design preview" : "Loading account…");
   return (
     <section
-      data-plaid-page="settings" className={`settings-page workspace-settings ${settingsStyles.page}`}
+      data-plaid-page="settings"
+      className={`settings-page workspace-settings ${settingsStyles.page}`}
     >
       <div className="settings-page-toolbar">
         <Link
@@ -420,7 +422,9 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     })),
   );
   return (
-    <section className={`${decisionStyles.compare} ${compareStyles.page} ${plaidDiscovery.compare}`}>
+    <section
+      className={`${decisionStyles.compare} ${compareStyles.page} ${plaidDiscovery.compare}`}
+    >
       <header className={compareStyles.heading} data-plaid-tone="purple">
         <div>
           <span className={compareStyles.eyebrow}>CONTRIBUTION COMPARISON</span>
@@ -695,9 +699,8 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
         </Empty>
       )}
       {values.length >= 2 && (
-        <section className={compareStyles.contribution}>
-          <span className={compareStyles.eyebrow}>YOUR NEXT CONTRIBUTION</span>
-          <h2>Test your next addition</h2>
+        <details className={compareStyles.contribution}>
+          <summary>Test your next addition</summary>
           <p>
             Apply the same amount to each company independently. No suggested
             allocation is generated.
@@ -707,7 +710,7 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
             symbols={values.map(({ r }) => r.company.symbol)}
             prefix={prefix}
           />
-        </section>
+        </details>
       )}
       {values.length > 0 && (
         <div className={compareStyles.tools}>
@@ -722,52 +725,67 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
   );
 }
 export function HelpPage() {
+  const topics = [
+    [
+      "Business economics",
+      "AURYN separates reported financial results from a long-term investment thesis. Positive revenue or cash flow alone does not prove a moat. Company disclosures, competition and financing need their own evidence.",
+    ],
+    [
+      "Valuation scenarios",
+      "Cash-flow scenarios show how growth, dilution and required return affect estimated value. They are assumption-driven sensitivity analyses. Specialized businesses, ADRs and incomplete share records require further reconciliation.",
+    ],
+    [
+      "Monthly accumulation",
+      "Monthly Pace uses price history to assess pullbacks and extensions. For eligible U.S. equities, calibrated readings also use daily trend, volatility and momentum, subject to the model’s release date and sufficient data. Older or ineligible readings can use an earlier policy. The forming month is provisional; completed months and weekly readings are shown separately. A multiplier is not leverage, a return forecast or a trade instruction.",
+    ],
+    [
+      "Price history and technicals",
+      "Quotes and chart bars have separate observation timestamps. Filing links and calculation details remain available where supported. Chart ranges do not change the business assessment. Fibonacci prices are references based on displayed anchors, not confirmed support.",
+    ],
+    [
+      "Live and extended-session prices",
+      "Research streams available trades and checks quotes every minute when streaming is unavailable. Portfolio defaults to five-minute checks; Live adds streaming with a two-minute fallback, while Hourly and Manual reduce requests. Updates pause in hidden pages. Premarket and after-hours observations appear when available; closed markets retain the latest observation. Crypto can update continuously. A refresh checks for new data; it does not create a new trade or change an observation timestamp. Delays, coverage and connection limits can apply.",
+    ],
+    [
+      "Portfolio accounting",
+      "Holdings show recorded positions and unrealized gains or losses, with missing prices disclosed. Managed balances and margin debt are shown separately. After confirming a complete USD ledger, the account history view can compare account value and net contributions with SPY and QQQ using the same dated deposits and withdrawals. Only supported U.S.-listed instruments are covered. Benchmarks are hypothetical balances, not percentage returns.",
+    ],
+    [
+      "AI research",
+      "AI can summarize and challenge supplied evidence. A source citation is not a guarantee that the interpretation is correct. Reports require configured access and explicit generation; they do not place orders.",
+    ],
+    [
+      "Sources and access",
+      "Company statements use available financial data and SEC company facts. Period, currency and source details stay attached to the evidence. Availability varies by listing and reporting history. Commercial display rights must be confirmed with market-data providers before selling access.",
+    ],
+  ];
   return (
-    <article className="help-article">
+    <article className={`help-article ${helpStyles.page}`}>
       <PageHeading
         title="Methodology & data"
-        subtitle="How calculations work and where data is limited."
+        subtitle="Understand the numbers. Know their limits."
       />
-      {[
-        [
-          "Business economics",
-          "AURYN separates reported financial results from a long-term investment thesis. Positive revenue or cash flow alone does not prove a moat. Company disclosures, competition and financing need their own evidence.",
-        ],
-        [
-          "Valuation scenarios",
-          "Cash-flow scenarios show how growth, dilution and required return affect estimated value. They are assumption-driven sensitivity analyses. Specialized businesses, ADRs and incomplete share records require further reconciliation.",
-        ],
-        [
-          "Monthly accumulation",
-          "The monthly-v5 price policy measures pullbacks from the previous 12 completed monthly closes, with spread gates and at least 12 prior completed months; 12–23 months are explicitly limited history. Deeper cycle-relative pullbacks can produce 2×, 3× or 4× conditions; large positive extensions can produce a pause and light/strong trim review. Weekly v1 remains a separate policy. A multiplier is not leverage, a profit prediction or an instruction to trade. The forming month is separate.",
-        ],
-        [
-          "Price history and technicals",
-          "Quotes and chart bars have separate observation timestamps. Filing links and calculation details remain available where supported. Chart ranges do not change the business assessment. Fibonacci prices are references based on displayed anchors, not confirmed support.",
-        ],
-        [
-          "Live and extended-session prices",
-          "Research streams available trades and checks quotes every minute when streaming is unavailable. Portfolio defaults to five-minute checks; Live adds streaming with a two-minute fallback, while Hourly and Manual reduce requests. Updates pause in hidden pages. Premarket and after-hours observations appear when available; closed markets retain the latest observation. Crypto can update continuously. A refresh checks for new data; it does not create a new trade or change an observation timestamp. Delays, coverage and connection limits can apply.",
-        ],
-        [
-          "Portfolio accounting",
-          "The current view tracks recorded positions and unrealized profit or loss. It does not calculate a transaction-aware performance series. Older usable USD prices remain included and visibly labelled; never-priced investments are excluded, with incomplete coverage disclosed. Managed balances and margin debt are shown separately.",
-        ],
-        [
-          "AI research",
-          "AI can summarize and challenge supplied evidence. A source citation is not a guarantee that the interpretation is correct. Reports require configured access and explicit generation; they do not place orders.",
-        ],
-        [
-          "Sources and access",
-          "Company statements use available financial data and SEC company facts. Period, currency and source details stay attached to the evidence. Availability varies by listing and reporting history. Commercial display rights must be confirmed with market-data providers before selling access.",
-        ],
-      ].map(([title, text]) => (
-        <section key={title}>
-          <h2>{title}</h2>
-          <p>{text}</p>
-        </section>
-      ))}
-      <PwaDiagnostics />
+      <div className={helpStyles.layout}>
+        <nav className={helpStyles.topics} aria-label="Methodology topics">
+          {topics.map(([title], index) => (
+            <a key={title} href={`#methodology-${index}`}>
+              {title}
+            </a>
+          ))}
+        </nav>
+        <div className={helpStyles.reader}>
+          {topics.map(([title, text], index) => (
+            <section key={title} id={`methodology-${index}`}>
+              <span className={helpStyles.number} aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h2>{title}</h2>
+              <p>{text}</p>
+            </section>
+          ))}
+          <PwaDiagnostics />
+        </div>
+      </div>
     </article>
   );
 }

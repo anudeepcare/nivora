@@ -29,9 +29,16 @@ test("loaded breadth and rotation metrics open by default without removing colla
 test("public Product navigation targets the actual connected tour, without repeating the same three questions", () => {
   const source = readFileSync("components/PublicLanding.tsx", "utf8");
   assert.equal((source.match(/id="how-it-works"/g) || []).length, 1);
+  const story = source.match(
+    /<section\b(?=[^>]*\bid="how-it-works")[^>]*>([\s\S]*?)<\/section>/,
+  );
+  assert.ok(story, "the Product anchor identifies a public section");
+  assert.match(story[0], /\blanding\.referenceStory\b/);
+  assert.match(story[0], /aria-labelledby="reference-story-title"/);
+  assert.match(story[1], /<h2 id="reference-story-title">/);
   assert.match(
-    source,
-    /className=\{landing.referenceStory\}\s+id="how-it-works"/,
+    story[1],
+    /sampleOnly\s*\?\s*<InvestmentDemo \/>\s*:\s*<ReferenceProductTour \/>/,
   );
   assert.doesNotMatch(
     source,

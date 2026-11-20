@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { providerSymbol, providerIdentity } from "../lib/provider-symbol";
 import type { Research } from "../lib/types";
 import type { DailyRadarSnapshot } from "../lib/daily-radar";
@@ -13,10 +13,12 @@ export default function DailyMarketRadar({
   research,
   requested,
   asOf,
+  sampleEvidence,
 }: {
   research: Research[];
   requested: string[];
   asOf: string;
+  sampleEvidence?: ReactNode;
 }) {
   const { cache } = useProduct();
   const key = [...new Set(requested)].sort().join(",");
@@ -131,6 +133,17 @@ export default function DailyMarketRadar({
   return (
     <section
       className={s.daily}
+      data-state={
+        setupRequired
+          ? "setup"
+          : error ||
+              snapshot?.sourceStatus === "unavailable" ||
+              (snapshot && !snapshot.pending && !rows.length)
+            ? "unavailable"
+            : !snapshot || snapshot.pending > 0
+              ? "loading"
+              : "ready"
+      }
       aria-label="Daily holdings and watchlist radar"
     >
       <div className={s.summary}>
@@ -146,7 +159,7 @@ export default function DailyMarketRadar({
             <p>
               {setupRequired
                 ? "Daily radar storage needs an administrator check. Your saved holdings, watchlist and existing research are unchanged."
-                : error}
+                : "Your saved holdings, watchlist and existing research are unchanged. Retry to check daily history again."}
             </p>
             <button
               type="button"
@@ -155,9 +168,11 @@ export default function DailyMarketRadar({
             >
               {setupRequired ? "Check setup again" : "Retry daily radar"}
             </button>
-            {setupRequired && (
+            {error && (
               <details>
-                <summary>Setup detail</summary>
+                <summary>
+                  {setupRequired ? "Setup detail" : "Technical detail"}
+                </summary>
                 <p>{error}</p>
               </details>
             )}
@@ -167,13 +182,39 @@ export default function DailyMarketRadar({
             Checking today's saved holdings and watchlist history…
           </p>
         ) : null}
-        {snapshot && (
-          <p className={s.progress} role={error ? undefined : "status"}>
-            {rows.length} histories shown · {snapshot.ready} of{" "}
-            {snapshot.eligible} supported instruments cached ·{" "}
-            {snapshot.pending} pending · {snapshot.excluded} unsupported.
-            Snapshot {snapshot.day} (UTC).
+        {snapshot && !snapshot.pending && !rows.length && !error && (
+          <p role="status">
+            No daily histories are available for this selection.
           </p>
+        )}
+        {snapshot && (
+          <>
+            <dl className={s.metrics} aria-label="Daily radar coverage">
+              <div>
+                <dt>Histories shown</dt>
+                <dd>{rows.length}</dd>
+              </div>
+              <div>
+                <dt>Supported cached</dt>
+                <dd>
+                  {snapshot.ready}
+                  <small> / {snapshot.eligible}</small>
+                </dd>
+              </div>
+              <div>
+                <dt>Pending</dt>
+                <dd>{snapshot.pending}</dd>
+              </div>
+              <div>
+                <dt>Unsupported</dt>
+                <dd>{snapshot.excluded}</dd>
+              </div>
+            </dl>
+            <p className={s.progress} role={error ? undefined : "status"}>
+              {rows.length} histories shown · {snapshot.pending} pending ·
+              Snapshot {snapshot.day} (UTC).
+            </p>
+          </>
         )}
         {snapshot?.mode === "bulk-opt-in" &&
           snapshot.sourceStatus === "unavailable" && (
@@ -230,7 +271,7 @@ export default function DailyMarketRadar({
           </small>
         )}
       </div>
-      {!snapshot && error && research.length > 0 && (
+      {research.length > 0 && (
         <details
           className={s.fallback}
           open={sampleOpen}
@@ -243,7 +284,12 @@ export default function DailyMarketRadar({
             This sample is not the daily holdings/watchlist snapshot. It
             includes only company histories already loaded in this account.
           </p>
-          {sampleOpen && <MarketRadar research={research} asOf={asOf} />}
+          {sampleOpen && (
+            <>
+              {!snapshot && <MarketRadar research={research} asOf={asOf} />}
+              {sampleEvidence}
+            </>
+          )}
         </details>
       )}
       {rows.length > 0 && (

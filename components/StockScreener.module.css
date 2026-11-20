@@ -263,3 +263,22 @@
 .table a {
   color: var(--accent-text, var(--blue));
 }
+
+@media (max-width: 600px) {
+  .form {
+    padding: 12px;
+    gap: 12px;
+    margin-block: 12px;
+  }
+  .condition,
+  .additional {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .form :is(input, select) {
+    font-size: 16px;
+  }
+  .form .run {
+    width: 100%;
+  }
+}
