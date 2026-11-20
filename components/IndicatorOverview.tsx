@@ -6,6 +6,7 @@ import { indicatorOverview } from "@/lib/indicator-overview";
 import { dateLabel } from "@/lib/format";
 import wall from "./DirectResearchLenses.module.css";
 import styles from "./ResearchLens.module.css";
+import coverage from "./IndicatorOverview.module.css";
 
 export default function IndicatorOverview({
   research,
@@ -24,13 +25,94 @@ export default function IndicatorOverview({
     ...(business.length
       ? [
           {
-            label: "Business evidence · reported annual periods",
+            family: "business" as const,
+            label: "reported annual periods",
+            metricBasis: "annual-report",
+            noHistory: "No reported annual periods were supplied.",
+            partialHistory:
+              "Reported annual periods were supplied, but they do not support these metrics.",
             rows: business,
           },
         ]
       : []),
-    { label: "Market evidence · completed daily prices", rows },
-  ];
+    {
+      family: "market" as const,
+      label: "completed daily prices",
+      metricBasis: "daily-price",
+      noHistory: "No completed daily prices were supplied.",
+      partialHistory:
+        "Completed daily prices were supplied, but they do not support these metrics.",
+      rows,
+    },
+  ].map((group) => ({
+    ...group,
+    available: group.rows.filter((row) =>
+      row.points.some((point) => point.value != null),
+    ),
+    unavailable: group.rows.filter((row) =>
+      row.points.every((point) => point.value == null),
+    ),
+  }));
+  type Row = (typeof groups)[number]["rows"][number];
+  const display = (value: number | null | undefined, unit: string) =>
+    value == null ? "Unavailable" : `${value.toFixed(2)}${unit}`;
+  const observationDate = (point: Row["points"][number] | undefined) =>
+    point?.date && Number.isFinite(Date.parse(point.date)) ? (
+      <>
+        {"currency" in point ? "Period ended " : "Completed session "}
+        <time dateTime={point.date}>{dateLabel(point.date)}</time>
+      </>
+    ) : (
+      "Observation date unavailable"
+    );
+  const observations = (row: Row) => (
+    <details className={styles.observations}>
+      <summary>Dates &amp; values</summary>
+      <div tabIndex={0} role="region" aria-label={`${row.label} observations`}>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...row.points].reverse().map((point) => (
+              <tr key={point.date}>
+                <td>{dateLabel(point.date)}</td>
+                <td>
+                  {display(point.value, row.unit)}
+                  {"currency" in point && (
+                    <small>
+                      {" "}
+                      · {String(point.currency)} · {String(point.basis)}
+                      {point.filed
+                        ? ` · filed ${dateLabel(String(point.filed))}`
+                        : ""}
+                      {typeof point.sourceUrl === "string" &&
+                        /^https:\/\//.test(point.sourceUrl) && (
+                          <>
+                            {" "}
+                            ·{" "}
+                            <a
+                              href={point.sourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Source
+                            </a>
+                          </>
+                        )}
+                    </small>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  );
   return (
     <section
       aria-label="Historical indicator overview"
@@ -41,7 +123,7 @@ export default function IndicatorOverview({
       </header>
       <div className={wall.grid}>
         {groups.flatMap((group) =>
-          group.rows.map((row) => {
+          group.available.map((row) => {
             const values = row.points.flatMap((point) =>
               point.value == null ? [] : [point.value],
             );
@@ -61,16 +143,10 @@ export default function IndicatorOverview({
             });
             if (segment.length) segments.push(segment);
             const last = row.points.at(-1);
-            const display = (value: number | null | undefined) =>
-              value == null
-                ? "History needed"
-                : `${value.toFixed(2)}${row.unit}`;
             return (
               <article
                 key={row.key}
-                data-evidence-family={
-                  group.label.startsWith("Business") ? "business" : "market"
-                }
+                data-evidence-family={group.family}
                 className={`${styles.indicator} ${wall.metric}`}
               >
                 <header>
@@ -86,24 +162,15 @@ export default function IndicatorOverview({
                     </p>
                   </details>
                 </header>
-                <strong>{display(last?.value)}</strong>
+                <strong>
+                  {last?.value == null
+                    ? "Latest value unavailable"
+                    : display(last.value, row.unit)}
+                </strong>
                 <small className={wall.basis}>
-                  {group.label
-                    .replace("Business evidence · ", "")
-                    .replace("Market evidence · ", "")}
-                  {" · "}
-                  {last?.date && Number.isFinite(Date.parse(last.date)) ? (
-                    <>
-                      {"currency" in last
-                        ? "Period ended "
-                        : "Completed session "}
-                      <time dateTime={last.date}>{dateLabel(last.date)}</time>
-                    </>
-                  ) : (
-                    "Observation date unavailable"
-                  )}
+                  {group.label} · {observationDate(last)}
                 </small>
-                {values.length > 1 ? (
+                {values.length > 1 && (
                   <svg
                     viewBox="0 0 300 72"
                     role="img"
@@ -120,63 +187,48 @@ export default function IndicatorOverview({
                       />
                     ))}
                   </svg>
-                ) : (
-                  <p className={styles.empty}>Insufficient completed history</p>
                 )}
-                <details className={styles.observations}>
-                  <summary>Dates &amp; values</summary>
-                  <div
-                    tabIndex={0}
-                    role="region"
-                    aria-label={`${row.label} observations`}
-                  >
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {[...row.points].reverse().map((point) => (
-                          <tr key={point.date}>
-                            <td>{dateLabel(point.date)}</td>
-                            <td>
-                              {display(point.value)}
-                              {"currency" in point && (
-                                <small>
-                                  {" "}
-                                  · {String(point.currency)} ·{" "}
-                                  {String(point.basis)}
-                                  {point.filed
-                                    ? ` · filed ${dateLabel(String(point.filed))}`
-                                    : ""}
-                                  {typeof point.sourceUrl === "string" &&
-                                    /^https:\/\//.test(point.sourceUrl) && (
-                                      <>
-                                        {" "}
-                                        ·{" "}
-                                        <a
-                                          href={point.sourceUrl}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          Source
-                                        </a>
-                                      </>
-                                    )}
-                                </small>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </details>
+                {observations(row)}
               </article>
             );
           }),
+        )}
+        {groups.map((group) =>
+          group.unavailable.length ? (
+            <section
+              key={group.family}
+              className={coverage.missing}
+              aria-label={`${group.metricBasis} coverage`}
+            >
+              <p>
+                {group.rows.some((row) => row.points.length)
+                  ? group.partialHistory
+                  : group.noHistory}
+              </p>
+              <details className={coverage.disclosure}>
+                <summary>
+                  {group.unavailable.length} unavailable {group.metricBasis}{" "}
+                  {group.unavailable.length === 1 ? "metric" : "metrics"}
+                </summary>
+                <dl className={coverage.metrics}>
+                  {group.unavailable.map((row) => (
+                    <div key={row.key}>
+                      <dt>{row.label}</dt>
+                      <dd>
+                        {row.note}
+                        {row.points.length > 0 && (
+                          <>
+                            <small>{observationDate(row.points.at(-1))}</small>
+                            {observations(row)}
+                          </>
+                        )}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            </section>
+          ) : null,
         )}
       </div>
     </section>

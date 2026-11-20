@@ -21,6 +21,7 @@ export function useWorkspacePace(symbols: string[]) {
   const [rows, setRows] = useState<Record<string, Row>>({});
   const [loading, setLoading] = useState(false);
   const [revision, setRevision] = useState(0);
+  const [settledKey, setSettledKey] = useState("");
   useEffect(() => {
     let active = true;
     setRows((old) =>
@@ -57,6 +58,7 @@ export function useWorkspacePace(symbols: string[]) {
         ),
       );
       setLoading(false);
+      setSettledKey(key);
       return;
     }
     setLoading(names.length > 0);
@@ -85,26 +87,45 @@ export function useWorkspacePace(symbols: string[]) {
             }));
         }
       }
-      if (active) setLoading(false);
+      if (active) {
+        setLoading(false);
+        setSettledKey(key);
+      }
     })();
     return () => {
       active = false;
     };
   }, [key, cache, demo, revision]);
+  const requestedNames = key.split(",").filter(Boolean);
   const presented = Object.fromEntries(
-    Object.entries(rows).map(([symbol, row]) => [
-      symbol,
-      {
-        ...row,
-        signal: workspace?.positions.some(
-          (p) => p.symbol === symbol && p.quantity > 0,
-        )
-          ? row.signal
-          : (row.entrySignal ?? row.signal),
-      },
-    ]),
+    requestedNames.flatMap((symbol) => {
+      const row = Object.hasOwn(rows, symbol) ? rows[symbol] : undefined;
+      if (!row) return [];
+      return [
+        [
+          symbol,
+          {
+            ...row,
+            signal: workspace?.positions.some(
+              (p) => p.symbol === symbol && p.quantity > 0,
+            )
+              ? row.signal
+              : (row.entrySignal ?? row.signal),
+          },
+        ],
+      ];
+    }),
   );
-  return { rows: presented, loading, refresh: () => setRevision((n) => n + 1) };
+  return {
+    rows: presented,
+    loading: !!key && (loading || settledKey !== key),
+    requested: requestedNames.length,
+    refresh: () => {
+      if (!key) return;
+      setLoading(true);
+      setRevision((n) => n + 1);
+    },
+  };
 }
 export function PaceBadge({
   signal,
@@ -130,47 +151,73 @@ export function PaceBoard({
   loading,
   prefix,
   refresh,
-}: ReturnType<typeof useWorkspacePace> & { prefix: string }) {
-  const qualifying = Object.entries(rows).filter(
-    ([, r]) => r.signal?.view.permitted && (r.signal.view.rawLevel ?? 0) >= 2,
+  requested = Object.keys(rows).length,
+}: Omit<ReturnType<typeof useWorkspacePace>, "requested"> & {
+  prefix: string;
+  requested?: number;
+}) {
+  if (!requested) return null;
+  const readings = Object.entries(rows);
+  const available = readings.filter(
+    ([, r]) => !r.error && r.signal?.view.rawLevel != null,
   );
-  if (!qualifying.length) return null;
+  const qualifying = available.filter(
+    ([, r]) => r.signal!.view.permitted && r.signal!.view.rawLevel! >= 2,
+  );
+  const incomplete = Math.max(0, requested - available.length);
+  const coverage = `${available.length} of ${requested} Pace readings available.`;
+  const status = loading
+    ? "Checking Pace…"
+    : !available.length
+      ? "Pace readings unavailable."
+      : incomplete
+        ? "Coverage incomplete."
+        : !qualifying.length
+          ? "No qualifying Pace readings."
+          : "";
+  const quiet = qualifying.length === 0;
   return (
-    <section className={s.board} aria-label="Accumulation opportunities">
+    <section
+      className={quiet ? `${s.board} ${s.quiet}` : s.board}
+      aria-label="Accumulation opportunities"
+    >
       <header>
         <div>
           <h2>Auryn accumulation pace</h2>
-          <p>Your holdings and watchlist · confirmed readings</p>
+          {!quiet && <p>Your holdings and watchlist · confirmed readings</p>}
+          {(quiet || status) && (
+            <p className={s.scanStatus} role="status">
+              {status} {coverage}
+            </p>
+          )}
         </div>
         <button type="button" disabled={loading} onClick={refresh}>
-          {loading ? "Checking…" : "Refresh pace"}
+          {loading ? "Checking…" : "Refresh Pace"}
         </button>
       </header>
-      <div className={s.list}>
-        {qualifying
-          .sort(
-            (a, b) =>
-              (b[1].signal!.view.rawLevel ?? 0) -
-              (a[1].signal!.view.rawLevel ?? 0),
-          )
-          .map(([symbol, r]) => (
-            <Link key={symbol} href={researchLink(symbol, prefix)}>
-              <strong>{symbol}</strong>
-              <PaceBadge signal={r.signal} />
-              <span className={s.inspect}>View evidence →</span>
-            </Link>
-          ))}
-        {!qualifying.length && (
-          <p>
-            {loading ? "Checking your companies…" : "No qualifying readings"}
-          </p>
-        )}
-      </div>
-      <small>
-        {Object.keys(rows).length} checked ·{" "}
-        {Object.values(rows).filter((r) => r.error).length} unavailable. Pace is
-        a price zone; follow business checks and position limits.
-      </small>
+      {!quiet && (
+        <>
+          <div className={s.list}>
+            {qualifying
+              .sort(
+                (a, b) =>
+                  (b[1].signal!.view.rawLevel ?? 0) -
+                  (a[1].signal!.view.rawLevel ?? 0),
+              )
+              .map(([symbol, r]) => (
+                <Link key={symbol} href={researchLink(symbol, prefix)}>
+                  <strong>{symbol}</strong>
+                  <PaceBadge signal={r.signal} />
+                  <span className={s.inspect}>View evidence →</span>
+                </Link>
+              ))}
+          </div>
+          <small>
+            {!status && coverage} Pace is a price zone; follow business checks
+            and position limits.
+          </small>
+        </>
+      )}
     </section>
   );
 }

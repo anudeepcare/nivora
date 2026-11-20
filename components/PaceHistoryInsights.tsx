@@ -4,6 +4,12 @@ import type { Research } from "@/lib/types";
 import { paceHistoryInsights } from "@/lib/pace-history-insights";
 import styles from "./PaceHistoryInsights.module.css";
 const zoneLabel = (zone: number) => (zone === 0 ? "P0 · Pause" : `P${zone}`);
+const durationLabel = (range: readonly number[] | null) => {
+  if (!range) return "Not available";
+  const [shortest, longest] = range;
+  if (shortest !== longest) return `${shortest}–${longest} months`;
+  return `${shortest} ${shortest === 1 ? "month" : "months"}`;
+};
 const pct = (value: number | null) =>
   value === null
     ? "Not available"
@@ -101,11 +107,7 @@ export default function PaceHistoryInsights({
         <div>
           <dt>Duration range</dt>
           <dd>
-            <strong>
-              {zone.durationRange
-                ? `${zone.durationRange[0]}–${zone.durationRange[1]} months`
-                : "Not available"}
-            </strong>
+            <strong>{durationLabel(zone.durationRange)}</strong>
             <small>Shortest to longest completed stay</small>
           </dd>
         </div>

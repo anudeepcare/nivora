@@ -48,7 +48,10 @@ test("one chart toolbar retains interval, Fibonacci and reference toggle; price 
     useState: (v) => {
       const i = cursor++;
       state[i] ??= v;
-      return [state[i], (x) => (state[i] = x)];
+      return [
+        state[i],
+        (x) => (state[i] = typeof x === "function" ? x(state[i]) : x),
+      ];
     },
     indicators: () => ({ ma50: 100 }),
     consensusOutlook: () => null,
@@ -93,6 +96,7 @@ test("one chart toolbar retains interval, Fibonacci and reference toggle; price 
     (n) => n.type === "button" && !n.props["aria-label"],
   );
   assert.equal(toggle.props["aria-pressed"], true);
+  assert.equal(toggle.props.children, "Reference lines");
   toggle.props.onClick();
   tree = render();
   assert.equal(
@@ -100,6 +104,17 @@ test("one chart toolbar retains interval, Fibonacci and reference toggle; price 
       .length,
     0,
   );
+  const hiddenToggle = tree.find(
+    (n) => n.type === "button" && n.props.children === "Reference lines",
+  );
+  assert.equal(hiddenToggle.props["aria-pressed"], false);
+  const references = tree.find((n) => n.props.className === "referenceDetails");
+  const summary = nodes(references).find((n) => n.type === "summary");
+  assert.match(
+    React.Children.toArray(summary.props.children).join(""),
+    /not plotted/,
+  );
+  assert.match(renderToStaticMarkup(references), /50-session 100/);
   assert.ok(
     tree.findIndex((n) => n.type === marker && "bars" in n.props) <
       tree.findIndex((n) => n.props.className === "referenceDetails"),

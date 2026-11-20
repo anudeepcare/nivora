@@ -51,11 +51,15 @@ test("Pace chart precedes long interpretation and Indicators opens chart overvie
   const research = fs.readFileSync("components/Research.tsx", "utf8");
   assert.match(research, /<IndicatorsLens/);
   const lenses = fs.readFileSync("components/DirectResearchLenses.tsx", "utf8");
-  const indicators = lenses.slice(lenses.indexOf("export function IndicatorsLens"));
+  const indicators = lenses.slice(
+    lenses.indexOf("export function IndicatorsLens"),
+  );
   assert.ok(indicators.indexOf("<IndicatorOverview") >= 0);
-  assert.ok(indicators.indexOf("<IndicatorOverview") < indicators.indexOf("<AdvancedResearch"));
+  assert.ok(
+    indicators.indexOf("<IndicatorOverview") <
+      indicators.indexOf("<AdvancedResearch"),
+  );
   assert.doesNotMatch(indicators, /MoreEvidence|<details/);
-
 });
 test("indicator cards render six real charts, dated tables and no invented empty-history chart", async () => {
   const React = await import("react");
@@ -83,10 +87,12 @@ test("indicator cards render six real charts, dated tables and no invented empty
       if (name === "react") return React;
       if (name === "react/jsx-runtime") return jsx;
       if (name === "@/lib/indicator-overview") return logic;
-      if (name === "@/lib/business-indicator-overview") return {
-        ...business,
-        businessIndicatorOverview: research => projectedBusiness ?? business.businessIndicatorOverview(research),
-      };
+      if (name === "@/lib/business-indicator-overview")
+        return {
+          ...business,
+          businessIndicatorOverview: (research) =>
+            projectedBusiness ?? business.businessIndicatorOverview(research),
+        };
       if (name === "@/lib/format") return format;
       if (name.endsWith(".module.css"))
         return {
@@ -110,31 +116,108 @@ test("indicator cards render six real charts, dated tables and no invented empty
   assert.equal((html.match(/role="region"/g) || []).length, 6);
   assert.match(html, /About 20-session momentum/);
   assert.match(html, /Apr 10/);
-  const latestDates = [...html.matchAll(/<small class="basis">([\s\S]*?)<\/small>/g)];
+  const latestDates = [
+    ...html.matchAll(/<small class="basis">([\s\S]*?)<\/small>/g),
+  ];
   assert.equal(latestDates.length, 6);
   for (const [, basis] of latestDates) {
     assert.match(basis, /Completed session/);
     assert.match(basis, /<time dateTime="2025-04-10">/);
     assert.doesNotMatch(basis, /2025-05-01/);
   }
-  assert.equal((render([]).match(/Observation date unavailable/g) || []).length, 6);
-  assert.doesNotMatch(render([]), /<time/);
+  const emptyHtml = render([]);
+  assert.equal(
+    (emptyHtml.match(/No completed daily prices were supplied/g) || []).length,
+    1,
+  );
+  assert.match(emptyHtml, /6 unavailable daily-price metrics/);
+  assert.match(emptyHtml, /20-session momentum/);
+  assert.doesNotMatch(
+    emptyHtml,
+    /<article|<time|<table|<svg|History needed|Insufficient completed history/,
+  );
+  const sparseHtml = render(bars.slice(0, 10));
+  assert.equal(
+    (sparseHtml.match(/Completed daily prices were supplied/g) || []).length,
+    1,
+  );
+  assert.match(sparseHtml, /6 unavailable daily-price metrics/);
+  assert.match(sparseHtml, /Jan 10/);
+  assert.doesNotMatch(
+    sparseHtml,
+    /<article|<svg|Insufficient completed history/,
+  );
+  const mixedHtml = render(bars.slice(0, 25));
+  assert.ok((mixedHtml.match(/<article/g) || []).length > 0);
+  assert.ok((mixedHtml.match(/<article/g) || []).length < 6);
+  assert.match(mixedHtml, /unavailable daily-price metrics/);
+  assert.match(mixedHtml, /<svg/);
+  assert.match(mixedHtml, /Completed session/);
   projectedBusiness = business.businessIndicatorPeriods([
-    {end:"2023-12-31", currency:"USD", basis:"annual", revenue:100, operatingIncome:20, fcf:10, weightedShares:10},
-    {end:"2024-12-31", currency:"USD", basis:"annual", revenue:120, operatingIncome:24, fcf:12, weightedShares:11, filed:"2025-02-10"},
+    {
+      end: "2023-12-31",
+      currency: "USD",
+      basis: "annual",
+      revenue: 100,
+      operatingIncome: 20,
+      fcf: 10,
+      weightedShares: 10,
+    },
+    {
+      end: "2024-12-31",
+      currency: "USD",
+      basis: "annual",
+      revenue: 120,
+      operatingIncome: 24,
+      fcf: 12,
+      weightedShares: 11,
+      filed: "2025-02-10",
+    },
   ]);
   const annualHtml = render([]);
-  const annualDates = [...annualHtml.matchAll(/<small class="basis">([\s\S]*?)<\/small>/g)].slice(0,4);
-  assert.equal(annualDates.length,4);
+  const annualDates = [
+    ...annualHtml.matchAll(/<small class="basis">([\s\S]*?)<\/small>/g),
+  ].slice(0, 4);
+  assert.equal(annualDates.length, 4);
   for (const [, basis] of annualDates) {
     assert.match(basis, /Period ended/);
     assert.match(basis, /<time dateTime="2024-12-31">/);
     assert.doesNotMatch(basis, /2025-02-10|2025-05-01/);
   }
-  projectedBusiness = null;
-  assert.doesNotMatch(render([]), /<svg/);
-  assert.equal(
-    (render([]).match(/Insufficient completed history/g) || []).length,
-    6,
-  );
+  assert.equal((annualHtml.match(/<article/g) || []).length, 4);
+  assert.match(annualHtml, /6 unavailable daily-price metrics/);
+  assert.doesNotMatch(annualHtml, /unavailable annual-report metrics/);
+  projectedBusiness = business.businessIndicatorPeriods([
+    { end: "2024-12-31", currency: "USD", basis: "annual", revenue: 100 },
+  ]);
+  const separateSources = render([]);
+  assert.match(separateSources, /4 unavailable annual-report metrics/);
+  assert.match(separateSources, /Reported annual periods were supplied/);
+  assert.match(separateSources, /Period ended/);
+  assert.match(separateSources, /<time dateTime="2024-12-31">/);
+  assert.match(separateSources, /No completed daily prices were supplied/);
+  assert.doesNotMatch(separateSources, /<article|<svg/);
+  projectedBusiness = business.businessIndicatorPeriods([]);
+  assert.match(render([]), /No reported annual periods were supplied/);
+  projectedBusiness = business.businessIndicatorPeriods([
+    {
+      end: "2023-12-31",
+      currency: "USD",
+      basis: "annual",
+      revenue: 100,
+      operatingIncome: 0,
+    },
+    { end: "2024-12-31", currency: "USD", basis: "annual", revenue: 110 },
+  ]);
+  const mixedAnnual = render([]);
+  const operatingMargin = [
+    ...mixedAnnual.matchAll(/<article[^>]*>([\s\S]*?)<\/article>/g),
+  ]
+    .map(([, content]) => content)
+    .find((content) => content.includes("Operating margin"));
+  assert.ok(operatingMargin);
+  assert.match(operatingMargin, /Latest value unavailable/);
+  assert.match(operatingMargin, /<time dateTime="2024-12-31">/);
+  assert.match(operatingMargin, /0\.00%/);
+  assert.doesNotMatch(operatingMargin, /<svg/);
 });

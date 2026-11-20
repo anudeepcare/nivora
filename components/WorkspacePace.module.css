@@ -218,3 +218,35 @@
     flex-shrink: 0;
   }
 }
+
+/* Zero qualifying readings is coverage information, not an empty card. */
+.board.quiet {
+  margin: 8px 0 14px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--plaid-line, var(--line));
+  border-radius: 0;
+  background: transparent;
+}
+.board.quiet h2 {
+  font-size: 16px;
+}
+.board .scanStatus {
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+.board.quiet button {
+  flex: none;
+  border: 0;
+  background: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.board button:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 2px;
+}
+.board button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}

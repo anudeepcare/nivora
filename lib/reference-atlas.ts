@@ -220,6 +220,7 @@ export function referenceAtlas(research: Research) {
   const multiplier = finite(reading.multiplier);
   return {
     brief,
+    actionLabels: decision.actionLabels,
     signals,
     cases,
     referenceRange,

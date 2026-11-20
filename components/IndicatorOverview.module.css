@@ -1,0 +1,45 @@
+/* Missing evidence remains one compact, readable rail per source. */
+.missing {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding-block: 7px 0;
+  border-top: 1px solid var(--plaid-line, var(--line));
+}
+.missing p,
+.metrics dd {
+  margin: 0;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+  line-height: 1.5;
+}
+.disclosure > summary {
+  display: list-item;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 11px 10px 10px 19px;
+  color: var(--plaid-ink, var(--ink));
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.disclosure > summary:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--accent-solid));
+  outline-offset: -2px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 9px 18px;
+  margin: 0 0 10px;
+}
+.metrics dt {
+  color: var(--plaid-ink, var(--ink));
+  font-weight: 600;
+  font-size: 13px;
+}
+.metrics dd small {
+  display: block;
+}

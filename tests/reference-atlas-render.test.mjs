@@ -46,3 +46,19 @@ test('orbit selection changes real selected evidence and routes the action corre
  const detail=all(tree,node=>node.type==='button'&&node.props.children?.[0]==='Explore ');
  assert.equal(detail.length,1);detail[0].props.onClick();assert.deepEqual(routes,['Thesis']);
 });
+
+test("Atlas separates the two model stances from the independent price zone", async () => {
+  const Atlas = await load();
+  const research = demoData.research.MSFT;
+  const model = atlas.referenceAtlas(research);
+  const html = renderToStaticMarkup(React.createElement(Atlas, { research, onTab: () => {} }));
+  const card = html.match(/<aside[^>]+aria-label="Pace and decision conditions"[\s\S]+?<\/aside>/)?.[0];
+  assert.ok(card);
+  assert.match(card, /Model stance/);
+  assert.match(card, /Existing holding<\/dt><dd>/);
+  assert.match(card, /New purchase<\/dt><dd>/);
+  assert.match(card, /not an order or personal/);
+  assert.ok(card.includes(model.actionLabels.holding));
+  assert.ok(card.includes(model.actionLabels.entry));
+  assert.doesNotMatch(card, /Review planned accumulation/);
+});

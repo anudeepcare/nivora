@@ -878,3 +878,25 @@
     padding: 12px;
   }
 }
+
+/* The model stance and the price zone carry different evidence. */
+.action .stanceTitle {
+  margin-block-start: 14px;
+}
+.action .stances {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  margin: 7px 0 12px;
+}
+.action .stances > div {
+  padding: 0;
+  border: 0;
+}
+.action .stances dd {
+  margin-block-start: 3px;
+  color: var(--atlas-ink);
+  font-size: 13px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}

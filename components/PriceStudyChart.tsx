@@ -95,9 +95,9 @@ export default function PriceStudyChart({
             type="button"
             className="btn"
             aria-pressed={showReferences}
-            onClick={() => setShowReferences(!showReferences)}
+            onClick={() => setShowReferences((shown) => !shown)}
           >
-            {showReferences ? "Hide" : "Show"} references
+            Reference lines
           </button>
         )}
         {onOptions && (
@@ -116,7 +116,9 @@ export default function PriceStudyChart({
       />
       {!overlay && references.length > 0 && (
         <details className={s.referenceDetails} open>
-          <summary>Reference prices</summary>
+          <summary>
+            Reference prices{!showReferences && " · not plotted"}
+          </summary>
           <div className={s.references} aria-label="Chart references">
             {references.map((row) => (
               <span key={row.label}>

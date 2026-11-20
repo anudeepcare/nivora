@@ -242,16 +242,19 @@ export default function ReferenceAtlas({
               : "Last completed Pace"}
           </span>
           <strong>{m.pace === null ? "—" : `P${m.pace}`}</strong>
-          <h3>
-            {m.pace === null
-              ? "More history needed"
-              : m.pace === 0
-                ? "Pause condition"
-                : m.pace === 1
-                  ? "Watch / hold condition"
-                  : "Review planned accumulation"}
-          </h3>
+          {m.pace === null && <p>More history needed for Pace.</p>}
           <p>{m.paceReason}</p>
+          <h3 className={s.stanceTitle}>Model stance</h3>
+          <dl className={s.stances}>
+            <div>
+              <dt>Existing holding</dt>
+              <dd>{m.actionLabels.holding}</dd>
+            </div>
+            <div>
+              <dt>New purchase</dt>
+              <dd>{m.actionLabels.entry}</dd>
+            </div>
+          </dl>
           <dl>
             <div>
               <dt>

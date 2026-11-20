@@ -165,3 +165,111 @@ test("repeat scans reuse summary work but recheck access on every request", asyn
   assert.equal(r.calls.filter((x) => x === "research:A").length, 1);
   assert.equal(r.calls.filter((x) => x === "access:A").length, 2);
 });
+
+test("a nonempty Pace scan exposes honest inline coverage and a recovery action without qualifying results", () => {
+  const file = "components/WorkspacePace.tsx";
+  const ast = ts.createSourceFile(
+    file,
+    fs.readFileSync(file, "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const node = ast.statements.find(
+    (n) => ts.isFunctionDeclaration(n) && n.name?.text === "PaceBoard",
+  );
+  const code = ts.transpileModule(node.getText(ast).replace("export ", ""), {
+    compilerOptions: { jsx: ts.JsxEmit.React, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const PaceBoard = new Function(
+    "React",
+    "s",
+    "Link",
+    "PaceBadge",
+    "researchLink",
+    code + ";return PaceBoard",
+  )(
+    React,
+    {},
+    () => null,
+    () => null,
+    (s) => "/research/" + s,
+  );
+  const watch = { signal: { view: { rawLevel: 1, permitted: false } } };
+  const error = { error: "Reading unavailable" };
+  const props = { prefix: "", requested: 2 };
+  let refreshes = 0;
+  const refresh = () => ++refreshes;
+  const render = (rows, loading = false, requested = 2) =>
+    renderToStaticMarkup(
+      React.createElement(PaceBoard, {
+        ...props,
+        rows,
+        loading,
+        requested,
+        refresh,
+      }),
+    );
+  assert.match(render({}, true), /Checking Pace/);
+  assert.match(render({}, true), /disabled/);
+  assert.match(render({ A: watch, B: watch }), /No qualifying Pace readings/);
+  assert.match(render({ A: watch, B: error }), /Coverage incomplete/);
+  assert.doesNotMatch(
+    render({ A: watch, B: error }),
+    /No qualifying Pace readings/,
+  );
+  assert.match(render({ A: error, B: error }), /Pace readings unavailable/);
+  assert.doesNotMatch(
+    render({ A: error, B: error }),
+    /No qualifying Pace readings/,
+  );
+  assert.match(render({ A: error, B: error }), /Refresh Pace/);
+  assert.equal(render({}, false, 0), "");
+  const elements = PaceBoard({
+    ...props,
+    rows: { A: error, B: error },
+    loading: false,
+    refresh,
+  });
+  function findButton(node) {
+    if (node?.type === "button") return node;
+    return React.Children.toArray(node?.props?.children)
+      .map(findButton)
+      .find(Boolean);
+  }
+  findButton(elements).props.onClick();
+  assert.equal(refreshes, 1);
+});
+
+test("Pace scan only presents rows still in the current requested universe", () => {
+  const file = "components/WorkspacePace.tsx";
+  const ast = ts.createSourceFile(
+    file,
+    fs.readFileSync(file, "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const hook = ast.statements.find(
+    (n) => ts.isFunctionDeclaration(n) && n.name?.text === "useWorkspacePace",
+  );
+  const code = ts.transpileModule(hook.getText(ast).replace("export ", ""), {
+    compilerOptions: { target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const staleRows = { A: { signal: {} }, B: { signal: {} }, C: { signal: {} } };
+  const values = [staleRows, false, 0, "A,B,C"];
+  const useWorkspacePace = new Function(
+    "useProduct",
+    "useState",
+    "useEffect",
+    code + ";return useWorkspacePace",
+  )(
+    () => ({}),
+    () => [values.shift(), () => {}],
+    () => {},
+  );
+  const narrowed = useWorkspacePace(["B", "B"]);
+  assert.deepEqual(Object.keys(narrowed.rows), ["B"]);
+  assert.equal(narrowed.requested, 1);
+  assert.equal(narrowed.loading, true);
+});
