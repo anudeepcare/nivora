@@ -1,6 +1,10 @@
 .root {
+  --ownership-columns: minmax(0, 24fr) minmax(0, 76fr) 5rem;
   min-width: 0;
   margin: 18px 0;
+  padding: clamp(14px, 1.5vw, 20px);
+  border-radius: 16px;
+  background: var(--plaid-surface, var(--card));
   color: var(--ink);
 }
 .header {
@@ -16,7 +20,7 @@
   gap: 9px;
 }
 .header svg {
-  color: var(--blue);
+  color: var(--plaid-focus, var(--blue));
   flex: none;
 }
 .header h3 {
@@ -36,7 +40,7 @@
 }
 .axis {
   display: grid;
-  grid-template-columns: minmax(0, 34fr) minmax(0, 66fr) 70px;
+  grid-template-columns: var(--ownership-columns);
   gap: 14px;
   font-size: 11px;
   color: var(--muted);
@@ -49,7 +53,7 @@
 }
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 34fr) minmax(0, 66fr) 70px;
+  grid-template-columns: var(--ownership-columns);
   align-items: center;
   gap: 14px;
   min-height: 62px;
@@ -82,7 +86,7 @@
 .track > span {
   display: block;
   height: 100%;
-  background: var(--blue);
+  background: var(--plaid-focus, var(--blue));
   border-radius: 4px;
 }
 .value {
@@ -90,7 +94,7 @@
   font-weight: 500;
   font-size: 17px;
   font-variant-numeric: tabular-nums;
-  color: var(--blue);
+  color: var(--plaid-focus, var(--blue));
 }
 .missing {
   font-size: 12px;

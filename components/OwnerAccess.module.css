@@ -1,7 +1,7 @@
 .root {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 12px 0;
   color: var(--ink);
   font-size: 14px;
   line-height: 1.45;
@@ -528,4 +528,10 @@
   .root :global(.admin-section-nav) button {
     font-size: 12px;
   }
+}
+
+:global(#auryn-app) .root[data-plaid-page="owner"] > .heading {
+  padding: 14px 18px;
+  border-radius: 18px;
+  box-shadow: none;
 }

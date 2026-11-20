@@ -87,6 +87,21 @@ export function documentReturnHref(value: string | null) {
     return "/overview";
   }
 }
+/** A return hint is not authentication. Public origins are safe before verification. */
+export function documentBackTarget(from: string | null, verified: boolean) {
+  const href = documentReturnHref(from);
+  const page = href.split(/[/?#]/)[1];
+  const publicNames: Record<string, string> = {
+    pricing: "pricing",
+    about: "about AURYN",
+    pace: "the Pace guide",
+    sample: "the sample",
+  };
+  if (Object.hasOwn(publicNames, page))
+    return { href, label: `Back to ${publicNames[page]}` };
+  if (!verified || href === "/") return { href: "/", label: "Back to home" };
+  return { href, label: "Back to your workspace" };
+}
 export function documentHref(page: string, current: string) {
   if (!documentPages.has(page)) return "/help";
   const url = new URL(current, "https://auryn.invalid");

@@ -190,7 +190,8 @@
   max-width: 1420px;
   margin: auto;
 }
-.hero h1 {
+.hero h1#ap-hero-heading {
+  color: #f3f8ff;
   font-size: clamp(60px, 7vw, 108px);
   font-weight: 600;
   letter-spacing: -0.055em;
@@ -616,7 +617,7 @@
     padding: 50px 8px 32px;
     min-height: 0;
   }
-  .hero h1 {
+  .hero h1#ap-hero-heading {
     font-size: clamp(54px, 13vw, 82px);
   }
   .hero p {

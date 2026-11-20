@@ -19,11 +19,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: flex-end;
+  position: static;
+  margin: 0;
   gap: 8px;
   min-height: 44px;
   padding: 8px 12px;
-  color: var(--ink);
+  color: var(--plaid-ink, var(--ink));
   border-radius: 12px;
   text-decoration: none;
 }
@@ -35,7 +36,7 @@
   background: var(--blue-soft);
 }
 .mp-auth[data-plaid-page="access"] .mp-auth-home:focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--plaid-focus, var(--ink));
   outline-offset: 3px;
 }
 .mp-auth[data-plaid-page="access"] .mp-auth-panel {
@@ -45,4 +46,49 @@
   .mp-auth[data-plaid-page="access"] .mp-auth-disclaimer {
     margin-top: 18px;
   }
+}
+
+/* Keep the entry controls at the top, with ordinary document scrolling at
+   text zoom, on shorter viewports, or when the keyboard is open. */
+.mp-auth[data-plaid-page="access"] {
+  box-sizing: border-box;
+  min-height: 100svh;
+  height: auto;
+  overflow: visible;
+  align-content: start;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(8px, 2vh, 18px);
+  padding: max(8px, env(safe-area-inset-top, 0px))
+    max(16px, env(safe-area-inset-right, 0px))
+    max(16px, env(safe-area-inset-bottom, 0px))
+    max(16px, env(safe-area-inset-left, 0px));
+}
+#auryn-app .mp-auth[data-plaid-page="access"] .mp-auth-panel {
+  width: 100%;
+  max-width: 28rem;
+  padding: clamp(16px, 3vw, 24px);
+  border-radius: 20px;
+}
+#auryn-app .mp-auth[data-plaid-page="access"] .mp-auth-heading {
+  margin: 0 0 8px;
+}
+#auryn-app .mp-auth[data-plaid-page="access"] .mp-auth-heading h1 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin: 0;
+}
+#auryn-app
+  .mp-auth[data-plaid-page="access"]
+  :is(.mp-form-divider, .mp-form-field) {
+  margin: 8px 0 0;
+}
+#auryn-app .mp-auth[data-plaid-page="access"] .mp-form-field input {
+  margin-top: 4px;
+  min-height: 46px;
+  height: auto;
+  padding-block: 8px;
+}
+#auryn-app
+  .mp-auth[data-plaid-page="access"]
+  :is(.mp-form-submit, .mp-switch-auth, .mp-auth-disclaimer, .mp-auth-help) {
+  margin-top: 10px;
 }

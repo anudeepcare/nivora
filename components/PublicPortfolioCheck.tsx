@@ -5,6 +5,11 @@ import s from "./PublicFrame.module.css";
 import PublicFrame from "./PublicFrame";
 export default function PublicPortfolioCheck() {
   const [input, setInput] = useState("");
+  const [example, setExample] = useState(false);
+  const clear = () => {
+    setInput("");
+    setExample(false);
+  };
   const lines = input.trim() ? input.trim().split("\n") : [];
   const entries = lines.map((line) => {
     const [symbol, value, ...rest] = line.split(",");
@@ -33,38 +38,51 @@ export default function PublicPortfolioCheck() {
   const usable = valid && Number.isFinite(total);
   return (
     <PublicFrame
+      tool="portfolio-check"
       title="See where your portfolio is concentrated."
       intro="Enter current holding values to see each weight and your largest exposures. No account connection; entries stay in this page and are not saved."
     >
       <div className={s.layout}>
         <div className={s.entry}>
+          <h2>Enter holdings</h2>
           <label>
             One holding per line: symbol, current value in USD
             <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              aria-describedby="portfolio-input-format"
+              onChange={(e) => {
+                setInput(e.target.value);
+                setExample(false);
+              }}
               placeholder={"AAPL, 5000\nMSFT, 3000\nCASH, 2000"}
             />
           </label>
           <div className={s.actions}>
             <button
-              onClick={() => setInput("AAPL, 5000\nMSFT, 3000\nCASH, 2000")}
+              onClick={() => {
+                setInput("AAPL, 5000\nMSFT, 3000\nCASH, 2000");
+                setExample(true);
+              }}
             >
               Try an example
             </button>
-            <button disabled={!input} onClick={() => setInput("")}>
+            <button disabled={!input} onClick={clear}>
               Clear entries
             </button>
           </div>
-          <p className={s.hint}>
+          <p className={s.hint} id="portfolio-input-format">
             Up to 500 lines. Use current USD values without thousands
-            separators. Repeated symbols are combined.
+            separators. Example values are illustrative.
           </p>
         </div>
-        <section aria-label="Concentration results" aria-live="polite">
+        <section className={s.results} aria-labelledby="concentration-heading">
+          <h2 id="concentration-heading">Concentration results</h2>
           {usable ? (
             <>
-              <div className={s.summary}>
+              <div className={s.summary} aria-live="polite">
+                {example && (
+                  <span className={s.exampleLabel}>Illustrative example</span>
+                )}
                 <strong>
                   ${total.toLocaleString("en-US", { maximumFractionDigits: 2 })}{" "}
                   entered
@@ -79,7 +97,7 @@ export default function PublicPortfolioCheck() {
                   %.
                 </p>
               </div>
-              <ul className={s.weights}>
+              <ul className={s.weights} aria-label="Holding weights">
                 {sorted.map(([name, value]) => (
                   <li key={name}>
                     <strong>{name}</strong>
@@ -99,19 +117,34 @@ export default function PublicPortfolioCheck() {
                 funds, sector exposure, debt, correlations or investment
                 quality.
               </p>
-              <button onClick={() => setInput("")}>Clear my entries</button>
             </>
           ) : (
-            <p role="status">
-              Enter up to 500 lines with a symbol and a positive USD value. Use
-              plain numbers without thousands separators.
-            </p>
+            <div className={s.resultStatus} role="status">
+              <strong>
+                {!lines.length
+                  ? "No holdings entered"
+                  : lines.length > 500
+                    ? "Maximum 500 holdings"
+                    : !valid
+                      ? `Check line ${entries.findIndex((entry) => !entry.valid) + 1}`
+                      : "Total is too large"}
+              </strong>
+              <p>
+                {!lines.length
+                  ? "Enter a holding to see its weight, or try the illustrative example."
+                  : lines.length > 500
+                    ? "Remove extra lines to see results."
+                    : !valid
+                      ? "Each line needs one symbol and a positive USD value."
+                      : "Enter smaller USD values to see the breakdown."}
+              </p>
+            </div>
           )}
         </section>
       </div>
-      <p>
+      <nav className={s.nextLinks} aria-label="Next steps">
         <Link href="/track-record">See our evidence standards →</Link>
-      </p>
+      </nav>
     </PublicFrame>
   );
 }

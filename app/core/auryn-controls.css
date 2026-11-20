@@ -141,3 +141,67 @@ html[data-theme="dark"]
     border: 1px solid CanvasText;
   }
 }
+
+/* The same quiet footer serves all workspace pages. There is one copy of the
+   secondary links and no absolute dropdown that can escape a scroll pane. */
+#auryn-app [data-auryn-footer] {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 2px 16px;
+  min-width: 0;
+  margin-top: 24px;
+  border-top: 1px solid var(--plaid-line);
+  color: var(--plaid-muted);
+  font-size: 0.82rem;
+  text-align: start;
+}
+#auryn-app [data-auryn-footer] :is(nav, .auryn-footer-guides) {
+  min-width: 0;
+  margin: 0;
+}
+#auryn-app [data-auryn-footer] nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+}
+#auryn-app [data-auryn-footer] details:not([open]) > nav {
+  display: none;
+}
+#auryn-app [data-auryn-footer] details[open] {
+  flex: 1 1 min(100%, 380px);
+}
+#auryn-app [data-auryn-footer] details nav {
+  padding: 0 0 7px 12px;
+}
+#auryn-app [data-auryn-footer] :is(a, summary, .help-trigger) {
+  min-height: 38px;
+  margin: 0;
+  color: var(--plaid-ink);
+  font-size: inherit;
+  line-height: 1.4;
+}
+#auryn-app [data-auryn-footer] a {
+  display: inline-flex;
+  align-items: center;
+}
+#auryn-app [data-auryn-footer] summary {
+  cursor: pointer;
+  padding-block: 10px;
+}
+#auryn-app [data-auryn-footer] :is(a, summary, .help-trigger):hover {
+  color: var(--plaid-focus);
+}
+@media (max-width: 767px) {
+  #auryn-app [data-auryn-footer] {
+    gap: 0 14px;
+  }
+  #auryn-app [data-auryn-footer] > span:first-child {
+    flex: 0 0 100%;
+  }
+  #auryn-app [data-auryn-footer] :is(a, summary, .help-trigger) {
+    min-height: 44px;
+  }
+}

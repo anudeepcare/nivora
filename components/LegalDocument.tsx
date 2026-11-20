@@ -57,18 +57,6 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
             Updated {legalConfiguration.updated}
           </p>
           {id === "help" && (
-            <div className={styles.helpContact}>
-              <div>
-                <strong>Need a hand?</strong>
-                <p>
-                  For account, billing or technical issues, send a support
-                  request.
-                </p>
-              </div>
-              <ContextLink page="contact">Contact support ↗</ContextLink>
-            </div>
-          )}
-          {id === "help" && (
             <label className="help-search">
               Find a topic
               <input

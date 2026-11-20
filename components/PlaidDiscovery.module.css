@@ -213,3 +213,12 @@
     font-size: 16px;
   }
 }
+
+@media (max-width: 600px) {
+  /* Desktop input basis measures width; do not turn it into height in a stack. */
+  .compare.compare :global(.compare-search) input,
+  .discovery.discovery :global(.compare-search) input {
+    flex: none;
+    width: 100%;
+  }
+}

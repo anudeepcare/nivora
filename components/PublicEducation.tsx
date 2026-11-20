@@ -48,7 +48,10 @@ export default function PublicEducation({ pace = false }: { pace?: boolean }) {
             planned accumulation within your limits. Use confirmed completed
             periods; forming readings can change. When buying qualifies at P2,
             the action reads “Buy small · P2”. P4 is not a company-quality
-            rating. <Link href="/pace">Explore the scale →</Link>
+            rating.{" "}
+            <Link href={pace ? "/about" : "/pace"}>
+              {pace ? "Explore the research workflow →" : "Explore the scale →"}
+            </Link>
           </dd>
           <dt>4. Portfolio</dt>
           <dd>

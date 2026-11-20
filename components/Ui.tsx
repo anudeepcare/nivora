@@ -347,8 +347,6 @@ export function Notice({
 
 export function ProductFooter() {
   const links = Object.entries({
-    help: "Help",
-    contact: "Contact",
     changelog: "What’s new",
     methodology: "Methodology",
     terms: "Terms",
@@ -361,14 +359,15 @@ export function ProductFooter() {
     </ContextLink>
   ));
   return (
-    <footer className="product-footer">
+    <footer className="product-footer" data-auryn-footer>
       <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
-      <nav className="footer-desktop" aria-label="Help and legal">
-        {links}
+      <nav className="auryn-footer-support" aria-label="Support">
+        <ContextLink page="help">Help</ContextLink>
+        <ContextLink page="contact">Contact</ContextLink>
       </nav>
-      <details className="footer-links">
-        <summary>Help & legal</summary>
-        <nav aria-label="Help and legal">{links}</nav>
+      <details className="auryn-footer-guides">
+        <summary>Guides &amp; legal</summary>
+        <nav aria-label="Guides and legal">{links}</nav>
       </details>
       <Help label="Research disclosure" trigger="Research disclosure">
         <p>

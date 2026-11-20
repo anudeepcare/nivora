@@ -3,10 +3,11 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 const read = (p) =>
   fs.readFileSync(new URL("../" + p, import.meta.url), "utf8");
-test("public lower page uses a reading layout and expandable use cases, retaining all destinations", () => {
+test("public lower page uses a reading layout and direct use-case links, retaining all destinations", () => {
   const s = read("components/PublicLanding.tsx");
   assert.match(s, /public-reading-layout/);
-  assert.match(s, /<details key=\{title\}/);
+  assert.match(s, /className="public-route-map"/);
+  assert.match(s, /<Link href=\{href\}>/);
   for (const route of [
     "/compare",
     "/pace",

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { PublicSample } from "./PublicLanding";
 export default function PasswordRecovery() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -74,18 +73,11 @@ export default function PasswordRecovery() {
           <span>AURYN</span>
         </a>
         <div className="mp-auth-story-copy">
-          <span className="mp-overline">INVEST WITH UNDERSTANDING</span>
-          <h2>
-            Know the stock.
-            <br />
-            <em>Know your next move.</em>
-          </h2>
-          <p>Business first. A clear decision. Your pace for gradual buying.</p>
-        </div>
-        <PublicSample compact />
-        <div className="mp-auth-story-footer">
-          <span>A clearer case. A considered pace.</span>
-          <span>Research supports your judgment. Investing involves risk.</span>
+          <span className="mp-overline">ACCOUNT ACCESS</span>
+          <h2>Return to your workspace.</h2>
+          <p>
+            Reset your password to get back to your research and saved holdings.
+          </p>
         </div>
       </aside>
       <section className="mp-auth-main" aria-label="Account recovery">

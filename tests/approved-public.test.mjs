@@ -205,16 +205,28 @@ test("public home leads with the benefit and an account action without fabricate
   assert.doesNotMatch(html, /class="ap-benefits/);
   assert.match(html, /href="\/track-record"/);
   assert.match(html, /href="\/portfolio-check"/);
-  assert.match(html, /What does this price need to be true/);
-  assert.match(html, /growth, margins, horizon, and exit multiple/);
+  assert.match(html, /What expectations are in the price/);
   assert.match(
     html,
-    /Pace separates business qualification from price conditions/,
+    /href="\/research\/APP\?tab=Valuation"[^>]*><span><strong>What expectations/,
   );
-  assert.doesNotMatch(html, /Three questions before every contribution/);
-  assert.match(html, /Turn earnings into questions/);
-  assert.match(html, /alerts for supported conditions/);
-  assert.match(html, /updates from the companies you follow/);
+  assert.match(
+    html,
+    /Check the business first, then read the price conditions against your cash and position limits/,
+  );
+  assert.match(
+    html,
+    /href="\/research\/APP\?tab=News"[^>]*><span><strong>What changed/,
+  );
+  assert.match(
+    html,
+    /href="\/research\/APP\?tab=Thesis"[^>]*><span><strong>What could prove me wrong/,
+  );
+  assert.match(html, /Review risk and ownership/);
+  assert.doesNotMatch(
+    html,
+    /Three questions before every contribution|public-continuity/,
+  );
   for (const title of [
     "Decision Atlas",
     "Scenario engine",

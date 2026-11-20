@@ -104,3 +104,16 @@
     width: 100%;
   }
 }
+
+.page.page.page :global(.support-introduction) {
+  background: var(--plaid-ice, var(--surface-2));
+  color: var(--plaid-ink, var(--ink));
+  border-radius: 20px;
+}
+.page.page.page :global(.support-introduction) a:hover {
+  text-decoration: underline;
+}
+.page.page.page :global(.support-introduction) a:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: 3px;
+}

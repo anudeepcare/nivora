@@ -731,6 +731,9 @@ test("public legal and help documents render all cross-links and readable sectio
           React,
           useState: React.useState,
           useEffect: React.useEffect,
+          usePathname: () => "/help",
+          useSearchParams: () => new URLSearchParams(),
+
           Link: ({ children, ...props }) =>
             React.createElement("a", props, children),
         },
@@ -847,7 +850,7 @@ test("valuation tool withholds unsupported models rather than fabricating sensit
   assert.doesNotMatch(html, /type="range"|NaN|Infinity/);
 });
 
-test("authentication explains AURYN in sign-in, signup and recovery without fabricating investment results", () => {
+test("authentication exposes the required sign-in, signup and recovery controls without fabricating investment results", () => {
   const PublicSample = loadComponent(
     "components/PublicLanding.tsx",
     "PublicSample",
@@ -895,11 +898,22 @@ test("authentication explains AURYN in sign-in, signup and recovery without fabr
     if (mode === "signup") assert.match(html, /Resend confirmation email/);
     assert.match(html, /name="email"/);
     if (mode !== "reset") assert.match(html, /name="password"/);
-    assert.match(html, /About AURYN/);
-    assert.match(html, /Business/);
-    assert.match(html, /Expectations/);
-    assert.match(html, /Pace/);
-    assert.match(html, /Keep the evidence in view/);
+    assert.match(html, /aria-label="Close sign in and return to Auryn"/);
+    for (const href of ["/terms", "/privacy", "/risk", "/help"])
+      assert.ok(html.includes(`href="${href}"`));
+    if (mode === "login") {
+      assert.match(html, /Remember me on this browser/);
+      assert.match(html, /Forgot password/);
+      assert.match(html, /Create an account/);
+      assert.match(html, /Sign in<\/button>|Sign in<span/);
+    } else {
+      assert.match(html, /Back to sign in/);
+      assert.doesNotMatch(html, /Remember me on this browser/);
+    }
+    if (mode === "reset") {
+      assert.doesNotMatch(html, /name="password"|Continue with Google/);
+      assert.match(html, /Send reset link/);
+    }
     assert.doesNotMatch(html, /desktop-nav|mobile-dock|guaranteed returns/);
   }
 });
@@ -964,12 +978,14 @@ test("the single settings page preserves account, membership and help", () => {
   assert.doesNotMatch(html, /href="\/(discover|research-lab|trading)"/);
   assert.match(html, /Sign-in &amp; security/);
   assert.match(html, /href="\/help"/);
-  assert.equal((html.match(/<details/g) || []).length, 1);
-  assert.match(
-    html,
-    /<details class="settings-password-change"><summary>Change password<\/summary>/,
+  const password = html.match(/<details class="settings-password-change"><summary>Change password<\/summary>([\s\S]*?)<\/details>/);
+  assert.ok(password, "password change stays inside a closed disclosure");
+  assert.match(password[1], /autocomplete="new-password"/i);
+  assert.doesNotMatch(html.replace(password[0], ""), /autocomplete="new-password"/i);
+  assert.equal(
+    (html.match(/<strong title="reader@example\.com">reader@example\.com<\/strong>/g) || []).length,
+    1,
   );
-  assert.equal((html.match(/reader@example.com/g) || []).length, 1);
   assert.doesNotMatch(html, /hidden=""/);
   assert.match(html, /href="\/plans"/);
   assert.doesNotMatch(html, /<dialog/);

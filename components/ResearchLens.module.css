@@ -273,3 +273,21 @@
     gap: 12px;
   }
 }
+
+/* Equal peers within each responsive row; keep missing observations honest. */
+.indicators .indicator {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+.indicators .indicator > .observations {
+  margin-top: auto;
+}
+.indicators .indicator > .empty {
+  min-height: 48px;
+  height: auto;
+  margin: 0;
+}
+.indicators .indicator:has(> .observations[open]) {
+  align-self: start;
+}

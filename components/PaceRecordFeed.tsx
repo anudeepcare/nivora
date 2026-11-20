@@ -38,7 +38,7 @@ export default function PaceRecordFeed() {
     return () => c.abort();
   }, [retry]);
   return (
-    <section aria-label="Published Pace observations">
+    <section className={s.publication} aria-label="Published Pace observations">
       <h2>Dated observations</h2>
       {error ? (
         <div className={s.notice} role="status">

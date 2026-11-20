@@ -9,13 +9,8 @@ const css = fs.readFileSync(
   new URL("../components/Session.module.css", import.meta.url),
   "utf8",
 );
-test("login uses reference composition without pretending illustration is live market evidence", () => {
-  for (const text of [
-    "YOUR RESEARCH, CONTINUED",
-    "Return to the reasons behind every position.",
-    "Sign in to Auryn",
-    "Create your workspace",
-  ])
+test("login keeps account controls without pretending illustration is live market evidence", () => {
+  for (const text of ["Sign in to Auryn", "Create your workspace"])
     assert.ok(view.includes(text));
   assert.ok(!view.includes("APP entered your P4 zone"));
   assert.ok(view.includes("auth.signInWithPassword"));
@@ -23,12 +18,14 @@ test("login uses reference composition without pretending illustration is live m
   assert.ok(view.includes("auth.resetPasswordForEmail"));
 });
 test("login remains vertically accessible and explicitly owns form layout", () => {
-  assert.match(css, /grid-template-columns:\s*minmax\(0,\s*58fr\) minmax\(0,\s*42fr\)/);
+  assert.match(css, /grid-template-columns:\s*minmax\(0,\s*1fr\)/);
   assert.match(css, /height:\s*auto/);
   assert.match(css, /overflow:\s*visible/);
   assert.match(css, /\.mp-auth-form\)[\s\S]*?display:\s*block/);
-  assert.match(css, /@media\s*\(max-width:\s*900px\)/);
-  assert.match(css, /safe-area-inset-bottom/);
+  assert.match(
+    fs.readFileSync("components/SessionAccess.css", "utf8"),
+    /safe-area-inset-bottom/,
+  );
 });
 test("login theme control uses shared preference and accessible label", () => {
   assert.ok(view.includes('auryn-product-theme", next'));

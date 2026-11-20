@@ -1179,3 +1179,67 @@
     border-radius: 14px;
   }
 }
+
+/* Compact desktop fit */
+@media (min-width: 768px) and (max-width: 1080px) {
+  .shell[data-appearance="plaid"] .header {
+    gap: clamp(5px, 1vw, 10px);
+    padding-inline: clamp(10px, 1.5vw, 16px);
+  }
+  .shell[data-appearance="plaid"] .header .nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 2px;
+    overflow: visible;
+  }
+  .shell[data-appearance="plaid"] .header .nav a {
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    min-height: 44px;
+    padding: 4px 2px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    border-radius: 12px;
+  }
+  .shell[data-appearance="plaid"] .header .nav a > svg {
+    flex: 0 0 17px;
+  }
+  .shell[data-appearance="plaid"] .header .actions {
+    gap: 3px;
+  }
+}
+
+/* Phone shell fit */
+@media (max-width: 767px) {
+  .shell[data-appearance="plaid"] .header .actions :is(a, button) {
+    flex: 0 0 44px;
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .shell[data-appearance="plaid"]
+    .content
+    :is(a, button, input, select, summary, [tabindex]) {
+    scroll-margin-bottom: calc(var(--mobile-dock-clearance) + 8px);
+  }
+  :global([data-keyboard-open="true"]) .shell[data-appearance="plaid"] .dock,
+  :global(.keyboard-open) .shell[data-appearance="plaid"] .dock {
+    display: none;
+  }
+  :global([data-keyboard-open="true"])
+    .shell[data-appearance="plaid"]
+    .content
+    :is(a, button, input, select, summary, [tabindex]),
+  :global(.keyboard-open)
+    .shell[data-appearance="plaid"]
+    .content
+    :is(a, button, input, select, summary, [tabindex]) {
+    scroll-margin-bottom: 12px;
+  }
+}

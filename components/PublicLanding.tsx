@@ -768,7 +768,6 @@ function ReferenceProductTour() {
           hidden={active !== index}
           className={`${landing.tourPanel} public-tour-panel`}
         >
-          <ResearchDiagram lens={index} />
           <div className={landing.tourReadout}>
             <span className={landing.eyebrow}>{kicker}</span>
             <h3>{headline}</h3>
@@ -780,6 +779,9 @@ function ReferenceProductTour() {
             <Link href={`/research/APP?tab=${tab}`}>
               Open the live workspace <ArrowRight size={16} />
             </Link>
+          </div>
+          <div className="public-tour-visual">
+            <ResearchDiagram lens={index} />
           </div>
         </div>
       ))}
@@ -914,171 +916,131 @@ export default function PublicLanding({
       </section>
 
       <section
-        className={`${landing.evidence} ap-container public-continuity`}
-        aria-labelledby="evidence-heading"
-      >
-        <div>
-          <span className={landing.eyebrow}>STAY WITH THE CASE</span>
-          <h2 id="evidence-heading">Keep your research moving.</h2>
-          <p>Follow the companies and changes that matter to you.</p>
-          <ContextLink page="methodology">
-            Explore our methodology <ArrowRight size={17} aria-hidden="true" />
-          </ContextLink>
-        </div>
-        <div className={landing.evidenceList}>
-          <article>
-            <span>01</span>
-            <div>
-              <h3>Turn earnings into questions</h3>
-              <p>
-                Review the results, their dates and what could change your case.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>02</span>
-            <div>
-              <h3>Make waiting deliberate</h3>
-              <p>
-                Use alerts for supported conditions. Keep other checks in your
-                research notes.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>03</span>
-            <div>
-              <h3>Return to what matters to you</h3>
-              <p>Return to dated updates from the companies you follow.</p>
-            </div>
-          </article>
-        </div>
-      </section>
-      <section
-        className={`${landing.referencePace} public-pace`}
+        className="public-pace"
         id="pace-public"
         aria-labelledby="reference-pace-title"
       >
-        <span className={landing.eyebrow}>AURYN ACCUMULATION PACE</span>
-        <h2 id="reference-pace-title">A buying rhythm, not another rating.</h2>
-        <p>
-          Pace separates business qualification from price conditions and
-          portfolio capacity.
-        </p>
-        <div>
+        <div className="public-section-intro">
+          <span className={landing.eyebrow}>AURYN ACCUMULATION PACE</span>
+          <h2 id="reference-pace-title">
+            Five stages. One decision at a time.
+          </h2>
+          <p>
+            Check the business first, then read the price conditions against
+            your cash and position limits.
+          </p>
+        </div>
+        <ol className="public-pace-path" aria-label="Pace stages">
           {[
-            ["P0", "Pause", "Price extension or unsupported conditions"],
+            ["P0", "Pause", "Extended price or unsupported conditions"],
             ["P1", "Watch", "No accumulation zone established"],
             ["P2", "Start small", "Initial qualifying price zone"],
             ["P3", "Build", "Deeper qualifying price zone"],
             ["P4", "Deep zone", "Strongest planned accumulation zone"],
           ].map(([level, label, description]) => (
-            <article key={level}>
+            <li key={level} data-stage={level}>
               <span>{level}</span>
-              <h3>{label}</h3>
-              <p>{description}</p>
-            </article>
+              <strong>{label}</strong>
+              <small>{description}</small>
+            </li>
           ))}
+        </ol>
+        <div className="public-pace-note">
+          <p>
+            A stage describes conditions, not how much to buy. The current month
+            remains provisional.
+          </p>
+          <Link href="/pace">
+            Explore Pace methodology <ArrowRight size={16} aria-hidden="true" />
+          </Link>
         </div>
-        <p>
-          Pace is a condition, not a position-size instruction. Cash,
-          concentration, and your saved limits still apply. Current-month
-          readings remain forming.
-        </p>
-        <Link href="/pace">Explore Pace methodology →</Link>
       </section>
       <section
-        className={`${landing.referenceCases} public-questions`}
+        className="public-route-map"
         id="use-cases"
         aria-labelledby="reference-cases-title"
       >
-        <span className={landing.eyebrow}>
-          BUILT AROUND THE QUESTIONS INVESTORS ACTUALLY ASK
-        </span>
-        <h2 id="reference-cases-title">Start with your question.</h2>
-        <div>
+        <header>
+          <span className={landing.eyebrow}>EXPLORE THE WORKSPACE</span>
+          <h2 id="reference-cases-title">Start with a question.</h2>
+        </header>
+        <ul>
           {[
             [
-              "Where should my next contribution go?",
-              "Compare business evidence, valuation, Pace, and portfolio capacity across followed companies.",
+              "Where could my next contribution go?",
+              "Compare companies",
               "/compare",
             ],
             [
-              "What does this price need to be true?",
-              "Change growth, margins, horizon, and exit multiple in an interactive assumption engine.",
+              "What expectations are in the price?",
+              "Model scenarios",
               "/research/APP?tab=Valuation",
             ],
             [
-              "Did the business change, or just the stock?",
-              "Separate operating evidence from market moves and repeated news.",
+              "What changed since I last checked?",
+              "See dated news and events",
               "/research/APP?tab=News",
             ],
             [
               "What could prove me wrong?",
-              "Keep risk checks and explicit invalidation conditions beside the evidence.",
+              "Review risk and ownership",
               "/research/APP?tab=Thesis",
             ],
             [
-              "Who is buying or selling?",
-              "Inspect ownership and insider activity with filing-delay and coverage context.",
-              "/research/APP?tab=Thesis",
-            ],
-            [
-              "How should I express the view?",
-              "Explore accumulation conditions or defined-risk options with visible assumptions.",
+              "How could I express the view?",
+              "Explore options",
               "/research/APP?tab=Options",
             ],
-          ].map(([title, description, href], index) => (
-            <details key={title} className="public-question">
-              <summary>
-                <span>0{index + 1}</span>
-                <h3>{title}</h3>
-                <span aria-hidden="true">+</span>
-              </summary>
-              <p>{description}</p>
-              <Link href={href}>Explore use case →</Link>
-            </details>
+          ].map(([question, label, href]) => (
+            <li key={href}>
+              <Link href={href}>
+                <span>
+                  <strong>{question}</strong>
+                  <small>{label}</small>
+                </span>
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
       <section
-        className={`${landing.closing} ap-container public-start`}
+        className="public-account-strip"
         id="pricing"
         aria-labelledby="ap-closing-heading"
       >
+        <h2 id="ap-closing-heading">Find the right plan.</h2>
         <div>
-          <span className={landing.eyebrow}>YOUR RESEARCH. YOUR PACE.</span>
-          <h2 id="ap-closing-heading">A clearer view starts here.</h2>
-          <p>
-            Compare Free and Pro features, availability, and billing terms
-            before choosing.
-          </p>
-        </div>
-        <div className={landing.actions}>
-          <Link className={landing.primary} href="/login?mode=signup">
-            Get started <ArrowRight size={18} aria-hidden="true" />
-          </Link>
-          <Link className={landing.secondary} href="/pricing">
+          <Link href="/pricing">
             Compare plans <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+          <Link href="/login?mode=signup">
+            Create an account <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
       </section>
       <footer
-        className={`${experience.publicFooter} ${landing.footer} ap-container`}
+        className={`${experience.publicFooter} ${landing.footer} ap-container public-footer`}
       >
         <div className={experience.footerMain}>
           <PublicBrand />
-          <nav aria-label="Footer navigation">
-            <Link href="/#how-it-works">Product</Link>
-            <Link href="/sample">Product guide</Link>
-            <Link href="/pricing">Pricing</Link>
-            <ContextLink page="help">Help</ContextLink>
-            <Link href="/about">About</Link>
-            <Link href="/track-record">Evidence & track record</Link>
-            <Link href="/portfolio-check">Check your portfolio</Link>
-            <ContextLink page="changelog">What’s new</ContextLink>
-            <Link href="/pace">AURYN Accumulation Pace</Link>
-            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+          <nav aria-label="Footer navigation" className="public-footer-links">
+            <div>
+              <strong>Explore</strong>
+              <Link href="/#how-it-works">Product</Link>
+              <Link href="/sample">Product guide</Link>
+              <Link href="/pace">AURYN Accumulation Pace</Link>
+              <Link href="/pricing">Pricing</Link>
+              <Link href="/portfolio-check">Check your portfolio</Link>
+            </div>
+            <div>
+              <strong>Company &amp; support</strong>
+              <Link href="/about">About</Link>
+              <ContextLink page="help">Help</ContextLink>
+              <Link href="/track-record">Evidence &amp; track record</Link>
+              <ContextLink page="changelog">What’s new</ContextLink>
+              <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            </div>
           </nav>
         </div>
         <div className={experience.footerLegal}>

@@ -6,8 +6,8 @@
   color: var(--ink);
 }
 .page :global(.page-heading) {
-  padding: clamp(20px, 4vw, 32px);
-  margin: 16px 0 24px;
+  padding: clamp(14px, 3vw, 24px);
+  margin: 8px 0 16px;
   border: 0;
   border-radius: 24px;
   background: linear-gradient(
@@ -34,7 +34,7 @@
   gap: 6px;
   padding: 5px;
   border-radius: 24px;
-  background: var(--surface-2);
+  background: var(--plaid-ice, var(--surface-2));
 }
 .topics a {
   display: flex;
@@ -48,7 +48,7 @@
   text-decoration: none;
 }
 .topics a:hover {
-  background: var(--blue-soft);
+  background: var(--plaid-surface, var(--blue-soft));
 }
 .topics a:focus-visible {
   outline: 2px solid var(--accent-solid);
@@ -86,7 +86,7 @@
   margin: 0;
   font-size: 15px;
   line-height: 1.8;
-  color: var(--muted);
+  color: var(--ink);
   overflow-wrap: anywhere;
 }
 @media (min-width: 900px) {

@@ -272,3 +272,168 @@
     gap: 8px 18px;
   }
 }
+
+/* The two public tools share one readable layout without changing other guides. */
+.toolPage {
+  padding-top: 12px;
+  max-width: 1120px;
+}
+.toolPage .header {
+  gap: 8px 20px;
+  flex-wrap: wrap;
+  border-radius: 22px;
+  border: 1px solid var(--plaid-line, var(--line));
+  padding: 10px 14px;
+  background: var(--plaid-surface, var(--card));
+  box-shadow: 0 7px 24px color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.toolPage .brand {
+  min-height: 44px;
+}
+.toolPage .header nav {
+  gap: 2px 8px;
+}
+.toolPage .header nav a {
+  padding: 0 8px;
+  border-radius: 9px;
+}
+.toolPage .header nav a[aria-current="page"] {
+  color: var(--ink);
+  background: var(--plaid-card-blue, var(--surface));
+  font-weight: 650;
+}
+.toolPage .intro {
+  margin-block: 22px 24px;
+  max-width: none;
+  padding: clamp(18px, 4vw, 38px);
+  border-radius: 22px;
+  background: linear-gradient(
+    125deg,
+    var(--plaid-card-purple, var(--surface)),
+    var(--plaid-card-blue, var(--card))
+  );
+}
+.toolPage .intro h1 {
+  max-width: 22ch;
+  font-size: clamp(29px, 4.4vw, 46px);
+}
+.toolPage .intro p {
+  font-size: 16px;
+  margin: 0;
+}
+.toolLabel {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  margin-bottom: 10px;
+}
+.toolPage .layout,
+.recordLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.toolPage .entry,
+.toolPage .results,
+.toolPage .publication,
+.toolPage .method {
+  min-width: 0;
+  margin: 0;
+  padding: clamp(16px, 2.8vw, 26px);
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 18px;
+  background: var(--plaid-surface, var(--card));
+}
+.toolPage .results {
+  background: var(--plaid-card-blue, var(--surface));
+}
+.toolPage .entry .hint {
+  margin: 10px 0 0;
+  font-size: 14px;
+}
+.toolPage textarea {
+  margin-top: 8px;
+}
+.toolPage .summary {
+  display: block;
+}
+.toolPage .exampleLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.toolPage .weights {
+  max-height: min(52svh, 450px);
+  overflow: auto;
+  margin: 12px 0;
+}
+.toolPage .weights li {
+  grid-template-columns: minmax(50px, 1fr) minmax(34px, 2fr) minmax(50px, auto);
+  gap: 8px;
+  font-size: 14px;
+}
+.toolPage .weights strong {
+  overflow-wrap: anywhere;
+}
+.toolPage .resultStatus {
+  padding: 10px 0 0;
+}
+.toolPage .resultStatus p {
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+.toolPage .levels {
+  grid-template-columns: repeat(auto-fit, minmax(min(108px, 100%), 1fr));
+  gap: 8px;
+  margin: 0;
+}
+.toolPage .levels > div {
+  display: block;
+  padding: 10px 12px;
+  background: var(--plaid-card-purple, var(--surface));
+  border-radius: 12px;
+}
+.toolPage .levels p {
+  margin: 0;
+  font-size: 14px;
+}
+.toolPage .notice {
+  margin: 8px 0;
+  background: var(--plaid-card-blue, var(--surface));
+}
+.toolPage .method details {
+  margin-bottom: 0;
+}
+.toolPage .method details h2 {
+  font-size: 17px;
+}
+.toolPage .method details ul {
+  padding-inline-start: 20px;
+}
+.nextLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-block: 16px 0;
+}
+.nextLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+}
+.toolPage :focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}
+@media (min-width: 760px) {
+  .toolPage .layout,
+  .recordLayout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .toolPage .header {
+    padding-inline: 22px;
+  }
+}

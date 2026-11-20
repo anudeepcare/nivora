@@ -597,78 +597,43 @@ function Login({ initialError }: { initialError: string }) {
       data-auth-mode={mode}
       data-plaid-page="access"
     >
-      <aside className={experience.story} aria-label="About AURYN">
-        <a href="/" aria-label="AURYN home">
-          <img src="/icon.svg" alt="" width="30" height="30" /> AURYN
+      <header className={experience.accessBar}>
+        <a href="/" className={experience.accessBrand} aria-label="AURYN home">
+          <img src="/icon.svg" alt="" width="28" height="28" />
+          AURYN
         </a>
-        <div className={experience.storyContent}>
-          <span className={experience.eyebrow}>YOUR RESEARCH, CONTINUED</span>
-          <h2>Return to the reasons behind every position.</h2>
-          <div className={experience.researchCard}>
-            <small>YOUR DECISION WORKSPACE</small>
-            <h3>Keep the evidence in view.</h3>
-            <p>
-              Connect the business, its expectations and your accumulation
-              conditions before making a decision.
-            </p>
-            <div>
-              <span>
-                <b>Business</b>Understand the evidence
-              </span>
-              <span>
-                <b>Expectations</b>Explore the scenarios
-              </span>
-              <span>
-                <b>Pace</b>Review your conditions
-              </span>
-            </div>
-          </div>
-        </div>
-      </aside>
-      <button
-        type="button"
-        className={experience.themeToggle}
-        aria-label={`Use ${loginTheme === "dark" ? "day" : "night"} theme`}
-        onClick={() => {
-          const next = loginTheme === "dark" ? "light" : "dark";
-          document.documentElement.dataset.theme = next;
-          try {
-            localStorage.setItem("auryn-product-theme", next);
-          } catch {
-            /* Optional preference persistence. */
-          }
-          setLoginTheme(next);
-        }}
-      >
-        {loginTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-      </button>
-      <section className={experience.main} aria-label="Account access">
-        <div className="mp-auth-mobile-brand">
-          <a className="mp-brand" href="/" aria-label="Auryn home">
-            <span className="mp-brand-mark" aria-hidden="true">
-              <img src="/icon.svg" alt="" width="29" height="31" />
-            </span>
-            <span>AURYN</span>
+        <div className={experience.accessActions}>
+          <a
+            className="mp-auth-home"
+            aria-label="Close sign in and return to Auryn"
+            href="/"
+          >
+            <span aria-hidden="true">×</span> Close
           </a>
+          <button
+            type="button"
+            className={experience.themeToggle}
+            aria-label={`Use ${loginTheme === "dark" ? "day" : "night"} theme`}
+            onClick={() => {
+              const next = loginTheme === "dark" ? "light" : "dark";
+              document.documentElement.dataset.theme = next;
+              try {
+                localStorage.setItem("auryn-product-theme", next);
+              } catch {
+                /* Optional preference persistence. */
+              }
+              setLoginTheme(next);
+            }}
+          >
+            {loginTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
         </div>
-        <a
-          className="mp-auth-home"
-          aria-label="Close sign in and return to Auryn"
-          href="/"
-        >
-          <span aria-hidden="true">×</span> Close
-        </a>
+      </header>
+      <section className={experience.main} aria-label="Account access">
         <div
           className={`mp-auth-panel ${mode === "reset" ? "mp-reset-panel" : ""}`}
         >
           <div className="mp-auth-heading">
-            <span className="mp-overline">
-              {mode === "reset"
-                ? "RESET PASSWORD"
-                : mode === "signup"
-                  ? "START WITH YOUR JUDGMENT"
-                  : "WELCOME BACK"}
-            </span>
             <h1>
               {mode === "login"
                 ? "Sign in to Auryn"
@@ -676,13 +641,9 @@ function Login({ initialError }: { initialError: string }) {
                   ? "Create your workspace"
                   : "A fresh start."}
             </h1>
-            <p>
-              {mode === "signup"
-                ? "Build a research system around the way you invest."
-                : mode === "reset"
-                  ? "We’ll email a secure link to restore access to your workspace."
-                  : "Continue your research and saved decisions."}
-            </p>
+            {mode === "reset" && (
+              <p>We’ll email a link to reset your password.</p>
+            )}
           </div>
           {mode === "login" && (
             <div className={experience.remember}>
@@ -695,10 +656,13 @@ function Login({ initialError }: { initialError: string }) {
                 />{" "}
                 Remember me on this browser
               </label>
-              <small>
-                Unchecked uses browser-session cookies. Browser restore can
-                retain them; sign out on shared devices.
-              </small>
+              <details className={experience.rememberHelp}>
+                <summary>Session info</summary>
+                <small>
+                  Unchecked uses browser-session cookies. Browser restore can
+                  retain them; sign out on shared devices.
+                </small>
+              </details>
             </div>
           )}
           {mode !== "reset" && (

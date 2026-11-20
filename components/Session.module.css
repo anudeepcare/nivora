@@ -8,95 +8,11 @@
   color: var(--ink);
   background: #f7f7f5;
   display: grid;
-  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  grid-template-columns: minmax(0, 1fr);
   min-height: 100svh;
   height: auto;
   overflow: visible;
   font-family: Manrope, sans-serif;
-}
-.story {
-  color: #f5f7fb;
-  background:
-    radial-gradient(circle at 80% 5%, #334364 0, transparent 35%), #151e2f;
-  padding: 156px clamp(45px, 8vw, 130px) 32px;
-  min-width: 0;
-}
-.story > a {
-  position: absolute;
-  top: 27px;
-  left: 34px;
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  color: #fff;
-  letter-spacing: 2px;
-  font-weight: 700;
-  text-decoration: none;
-}
-.story > a img {
-  width: 30px;
-  height: 30px;
-}
-.eyebrow {
-  color: #aebbd0;
-  letter-spacing: 1px;
-  font:
-    11px "DM Mono",
-    monospace;
-}
-.storyContent > h2 {
-  max-width: 750px;
-  margin: 22px 0 0;
-  font-size: clamp(45px, 5.18vw, 74px);
-  line-height: 1.02;
-  letter-spacing: -3.5px;
-  font-weight: 500;
-}
-.researchCard {
-  background: #1c2940;
-  border: 1px solid #3a4860;
-  border-radius: 13px;
-  max-width: 650px;
-  margin-top: 64px;
-  padding: 28px;
-}
-.researchCard > small {
-  color: #91a0b8;
-  font:
-    10px "DM Mono",
-    monospace;
-}
-.researchCard h3 {
-  margin: 13px 0 0;
-  font-size: 25px;
-  font-weight: 500;
-}
-.researchCard p {
-  color: #b2bfd1;
-  margin: 10px 0 0;
-  font-size: 13px;
-  line-height: 1.55;
-}
-.researchCard > div {
-  border-top: 1px solid #3b4960;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 24px;
-}
-.researchCard > div span {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding-top: 18px;
-  color: #9dabc0;
-  font-size: 11px;
-}
-.researchCard b {
-  color: #fff;
-  font:
-    500 13px "DM Mono",
-    monospace;
 }
 .main {
   --ink: #171c27;
@@ -112,7 +28,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 100px 50px 30px;
+  padding: 0;
 }
 .auth .main :global(.mp-auth-panel) {
   width: 100%;
@@ -122,24 +38,6 @@
   border: 0;
   box-shadow: none;
   background: transparent;
-}
-.auth .main :global(.mp-auth-home) {
-  position: static;
-  align-self: flex-end;
-  margin: 0 0 24px;
-  font-size: 12px;
-  color: var(--muted);
-}
-.auth .main :global(.mp-auth-mobile-brand) {
-  display: none;
-}
-.auth .main :global(.mp-overline) {
-  display: block;
-  color: var(--auth-link-ink);
-  letter-spacing: 0.9px;
-  font:
-    11px "DM Mono",
-    monospace;
 }
 .auth .main :global(.mp-auth-heading) {
   margin: 0 0 26px;
@@ -250,14 +148,10 @@
   color: var(--muted);
 }
 .themeToggle {
-  position: absolute;
-  top: 24px;
-  right: 28px;
-  z-index: 3;
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  min-height: 44px;
   border-radius: 9px;
   border: 1px solid #d8dde5;
   background: #fff;
@@ -284,46 +178,6 @@
   background: #111b2b;
   border-color: #344055;
 }
-@media (max-width: 900px) {
-  .auth.auth {
-    grid-template-columns: 1fr;
-  }
-  .story {
-    padding: 110px 22px 40px;
-  }
-  .story > a {
-    top: 20px;
-    left: 22px;
-  }
-  .storyContent > h2 {
-    font-size: 43px;
-    letter-spacing: -2px;
-    max-width: 650px;
-  }
-  .researchCard {
-    margin-top: 45px;
-  }
-  .main {
-    padding: 55px 22px max(40px, env(safe-area-inset-bottom));
-  }
-  .themeToggle {
-    top: 20px;
-    right: 22px;
-  }
-}
-@media (max-width: 380px) {
-  .researchCard {
-    padding: 20px;
-  }
-  .researchCard > div {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  .storyContent > h2 {
-    font-size: 37px;
-  }
-}
-
 .secondaryOptions {
   margin-top: 12px;
   color: var(--muted);
@@ -348,51 +202,13 @@
 .auth .main .secondaryOptions :global(.mp-social-x) {
   font-size: 13px !important;
 }
-@media (min-width: 901px) {
-  .main {
-    justify-content: flex-start;
-  }
-  .auth .main :global(.mp-auth-home) {
-    margin-bottom: 20px;
-  }
-}
-
-/* On narrow screens the requested task comes before the product introduction. */
-@media (max-width: 900px) {
-  .main {
-    order: -1;
-    padding: 24px 22px 32px;
-  }
-  .auth .main :global(.mp-auth-mobile-brand) {
-    display: block;
-    align-self: flex-start;
-    margin-bottom: 24px;
-  }
-  .auth .main :global(.mp-auth-mobile-brand a) {
-    color: var(--ink);
-  }
-  .auth .main :global(.mp-auth-home) {
-    align-self: flex-start;
-    margin-bottom: 18px;
-  }
-  .story {
-    padding: 32px 22px;
-  }
-  .story > a {
-    display: none;
-  }
-  .storyContent > h2 {
-    font-size: 30px;
-    letter-spacing: -1px;
-  }
-  .researchCard {
-    margin-top: 24px;
-  }
-}
 .remember {
-  display: grid;
-  gap: 5px;
-  margin: 12px 0 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0 10px;
+  margin: 0 0 6px;
 }
 .remember label {
   display: flex;
@@ -476,4 +292,41 @@
   gap: 6px;
   color: var(--muted);
   font-size: 13px;
+}
+
+.accessBar,
+.accessActions,
+.accessBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.accessBar {
+  width: 100%;
+  max-width: 70rem;
+  margin-inline: auto;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.accessActions {
+  flex-wrap: wrap;
+}
+.accessBrand {
+  min-height: 44px;
+  color: var(--plaid-ink, var(--ink));
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+.rememberHelp summary {
+  display: list-item;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding-block: 12px;
+  color: var(--auth-link-ink);
+  cursor: pointer;
+  font-size: 13px;
+}
+.rememberHelp[open] {
+  flex-basis: 100%;
 }

@@ -144,7 +144,7 @@ export function Settings() {
           {email[0]?.toUpperCase() || "A"}
         </span>
         <div>
-          <strong>{email}</strong>
+          <strong title={email}>{email}</strong>
           <p>
             {access.owner
               ? "Owner access"

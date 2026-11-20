@@ -1,8 +1,14 @@
+import { researchLenses } from "../lib/reference-navigation.ts";
 import fs from "node:fs/promises";
 const { chromium } = await import(
   process.env.AURYN_PLAYWRIGHT_PATH || "playwright"
 );
 const base = process.env.AURYN_TEST_URL || "http://127.0.0.1:3031";
+if (!["127.0.0.1", "localhost"].includes(new URL(base).hostname)) {
+  throw new Error(
+    "This fixture browser audit is loopback-only. Do not point it at a deployment.",
+  );
+}
 const { spawn } = await import("node:child_process");
 const server =
   process.env.AURYN_BROWSER_START === "true"
@@ -10,7 +16,7 @@ const server =
         process.execPath,
         [
           "node_modules/next/dist/bin/next",
-          "start",
+          "dev",
           "--hostname",
           "127.0.0.1",
           "--port",
@@ -24,7 +30,7 @@ const server =
     : null;
 if (server) {
   let ready = false;
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     try {
       await fetch(base);
       ready = true;
@@ -48,10 +54,13 @@ const screenshotDir =
 const report = [];
 await fs.mkdir(screenshotDir, { recursive: true });
 try {
-  for (const width of [1440, 402, 320])
+  for (const width of [1440, 1180, 860, 402, 320])
     for (const theme of ["light", "dark"]) {
       const context = await browser.newContext({
-        viewport: { width, height: width === 1440 ? 1000 : 874 },
+        viewport: {
+          width,
+          height: width === 1440 ? 900 : width >= 768 ? 757 : 844,
+        },
         deviceScaleFactor: 1,
         isMobile: width < 500,
         hasTouch: width < 500,
@@ -78,7 +87,27 @@ try {
         "/sample",
         "/login",
         "/login?mode=signup",
+        "/about",
+        "/track-record",
+        "/pace",
+        "/portfolio-check",
+        "/pricing",
+        "/methodology",
+        "/terms",
+        "/privacy",
+        "/reliability",
+        "/risk",
+        "/changelog",
         "/preview/overview",
+        "/preview/research",
+        "/preview/options",
+        "/preview/discover",
+        "/preview/compare",
+        "/preview/alerts",
+        "/preview/owner",
+        "/preview/monthly-plan",
+        "/preview/trading",
+        "/preview/research-lab",
         "/preview/research/MSFT",
         "/preview/portfolio",
         "/preview/watchlist",
@@ -90,7 +119,8 @@ try {
       ]) {
         const before = errors.length;
         const response = await page.goto(base + route, {
-          waitUntil: "networkidle",
+          waitUntil: "domcontentloaded",
+          timeout: 90000,
         });
         await page.waitForTimeout(150);
         const audit = await page.evaluate(() => ({
@@ -114,6 +144,23 @@ try {
           ...audit,
           errors: errors.slice(before),
         });
+        if (route === "/login") {
+          const submit = page.locator('form button[type="submit"]');
+          await submit.waitFor({ state: "visible", timeout: 15000 });
+          const fit = await submit.evaluate((element) => {
+            const viewport = window.visualViewport?.height ?? innerHeight;
+            const box = element.getBoundingClientRect();
+            return box.top >= 0 && box.bottom <= viewport;
+          });
+          report.push({
+            width,
+            theme,
+            route,
+            interaction: "Sign-in submit visible without scrolling",
+            passed: fit,
+            errors: fit ? [] : ["Sign-in submit is below the fold"],
+          });
+        }
         if (
           route === "/contact" &&
           !(await page
@@ -127,62 +174,81 @@ try {
             errors: ["Public contact form is not reachable"],
           });
         if (route === "/preview/research/MSFT") {
-          await page
-            .getByRole("button", { name: "About AURYN Pace", exact: true })
-            .click();
-          const explanation = await page.getByRole("dialog").isVisible();
-          await page
-            .getByRole("button", { name: "Close explanation", exact: true })
-            .click();
-          report.push({
-            width,
-            theme,
-            interaction: "Metric explanation open and close",
-            passed: explanation,
-            errors: explanation ? [] : ["Explanation not visible"],
+          const nav = page.getByRole("navigation", {
+            name: "Research sections",
           });
-          await page.screenshot({
-            path: `${screenshotDir}/${name}-viewport.png`,
-            fullPage: false,
-          });
-          for (const label of [
-            "Business",
-            "Financials",
-            "Value",
-            "Technicals",
-            "Analysts",
-            "News",
-            "Advanced",
-            "Options",
-          ]) {
-            const tab = page.getByRole("tab", { name: label, exact: true });
-            if (await tab.count()) {
-              const priorErrors = errors.length;
-              await tab.click();
-              await page.waitForFunction(
-                () =>
-                  !/Opening valuation|Loading advanced research|Opening options/.test(
-                    document.getElementById("research-content")?.innerText ||
-                      "",
-                  ),
-                undefined,
-                { timeout: 15000 },
-              );
-              await page.waitForTimeout(200);
+          await nav.waitFor({ state: "visible", timeout: 15000 });
+          try {
+            await page
+              .getByRole("button", {
+                name: "About this Pace reading",
+                exact: true,
+              })
+              .click({ timeout: 8000 });
+            const help = page.getByRole("dialog", {
+              name: "this Pace reading",
+              exact: true,
+            });
+            await help.waitFor({ state: "visible", timeout: 5000 });
+            await help
+              .getByRole("button", { name: "Close explanation", exact: true })
+              .click();
+            await help.waitFor({ state: "hidden", timeout: 5000 });
+            report.push({
+              width,
+              theme,
+              route,
+              interaction: "Pace explanation open and close",
+              passed: true,
+            });
+          } catch (error) {
+            report.push({
+              width,
+              theme,
+              route,
+              interaction: "Pace explanation open and close",
+              passed: false,
+              errors: [String(error)],
+            });
+          }
+          for (const { label, sections } of researchLenses) {
+            const region =
+              sections[0] === "Snapshot"
+                ? "research-overview"
+                : "research-content";
+            const target = nav.getByRole("button", {
+              name: label,
+              exact: true,
+            });
+            const priorErrors = errors.length;
+            try {
+              await target.click({ timeout: 8000 });
+              await page
+                .locator("#" + region)
+                .waitFor({ state: "visible", timeout: 15000 });
+              const selected =
+                (await target.getAttribute("aria-current")) === "page";
               const state = await page.evaluate(() => ({
                 overflow: document.documentElement.scrollWidth > innerWidth + 1,
                 invalid: /\bNaN\b|\bInfinity\b/.test(document.body.innerText),
               }));
-              await page.screenshot({
-                path: `${screenshotDir}/${width}-${theme}-research-${label}.png`,
-                fullPage: true,
-              });
               report.push({
                 width,
                 theme,
+                route,
                 tab: label,
                 ...state,
+                passed: selected,
                 errors: errors.slice(priorErrors),
+              });
+            } catch (error) {
+              report.push({
+                width,
+                theme,
+                route,
+                tab: label,
+                passed: false,
+                errors: [String(error)],
               });
             }
           }
@@ -195,11 +261,16 @@ try {
   server?.kill();
 }
 await fs.writeFile(
-  "verification/approved-experience-browser-report.json",
+  screenshotDir + "/approved-experience-browser-report.json",
   JSON.stringify(report, null, 2),
 );
 const failures = report.filter(
-  (r) => r.overflow || r.invalid || r.status >= 400 || r.errors?.length,
+  (r) =>
+    r.overflow ||
+    r.invalid ||
+    r.passed === false ||
+    r.status >= 400 ||
+    r.errors?.length,
 );
 console.log(JSON.stringify({ checks: report.length, failures }, null, 2));
 if (failures.length) process.exitCode = 1;

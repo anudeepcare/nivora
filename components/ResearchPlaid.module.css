@@ -29,7 +29,8 @@
 }
 .root.root [data-research-section]:not([hidden]) {
   margin-top: 20px;
-  padding: 0;
+  padding-block: 0;
+  padding-inline: var(--research-gutter);
   min-width: 0;
   border: 0;
   border-radius: 0;
@@ -110,7 +111,7 @@
 @media (max-width: 600px) {
   .root.root [data-research-section]:not([hidden]) {
     margin-top: 16px;
-    padding: 0;
+    padding-block: 0;
     border-radius: 0;
   }
   .root.root

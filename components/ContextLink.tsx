@@ -1,9 +1,14 @@
 "use client";
 import Link from "next/link";
+import { authClient } from "@/lib/client";
 import { restoreWhenReady, browserScrollEnvironment } from "@/lib/navigation";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
-import { documentHref, documentReturnHref } from "@/lib/settings-navigation";
+import {
+  documentBackTarget,
+  documentHref,
+  documentReturnHref,
+} from "@/lib/settings-navigation";
 
 export function ContextLink({
   page,
@@ -71,17 +76,55 @@ export function ContextLink({
   );
 }
 export function DocumentBack() {
-  const [href, setHref] = useState("/overview");
+  const [target, setTarget] = useState(() => ({
+    href: "/",
+    label: "Back to home",
+  }));
+  const pathname = usePathname();
+  const query = useSearchParams().toString();
   useEffect(() => {
-    setHref(
-      documentReturnHref(
-        new URLSearchParams(window.location.search).get("from"),
-      ),
-    );
-  }, []);
+    const from = new URLSearchParams(query).get("from");
+    let active = true;
+    let revision = 0;
+    let unsubscribe: (() => void) | undefined;
+    setTarget(documentBackTarget(from, false));
+    try {
+      const auth = authClient().auth;
+      const verify = () => {
+        const attempt = ++revision;
+        void auth
+          .getUser()
+          .then(({ data, error }) => {
+            if (active && revision === attempt)
+              setTarget(documentBackTarget(from, !error && !!data.user));
+          })
+          .catch(() => {});
+      };
+      const subscription = auth.onAuthStateChange((_event, session) => {
+        const attempt = ++revision;
+        if (!session?.user) {
+          if (active) setTarget(documentBackTarget(from, false));
+          return;
+        }
+        // Leave the auth callback lock before verifying with the server.
+        setTimeout(() => {
+          if (active && revision === attempt) verify();
+        }, 0);
+      });
+      unsubscribe = () => subscription.data.subscription.unsubscribe();
+      verify();
+    } catch {
+      // Never infer sign-in from a return URL or from missing authentication.
+    }
+    return () => {
+      active = false;
+      unsubscribe?.();
+    };
+  }, [pathname, query]);
   return (
-    <Link href={href} scroll={false}>
-      ← Back to {href === "/" ? "home" : "your workspace"}
+    <Link href={target.href} scroll={false}>
+      <span aria-hidden="true">← </span>
+      {target.label}
     </Link>
   );
 }

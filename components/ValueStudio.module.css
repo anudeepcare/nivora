@@ -17,6 +17,12 @@
 }
 .root.root.root > .consensus {
   grid-column: span 4;
+  align-self: stretch;
+  min-width: 0;
+  padding: clamp(14px, 1.5vw, 20px);
+  border-radius: 18px;
+  color: var(--plaid-ink, var(--ink));
+  background: var(--plaid-surface, var(--card));
 }
 .root.root.root > .market {
   grid-column: 1 / -1;
