@@ -164,6 +164,7 @@ function loadComponent(file, name, bindings) {
     useEffect: () => {},
     useState: React.useState,
     PaceHistoryInsights: () => null,
+    paceStyles: { palette: "pacePalette" },
     PaceMonthHistory: () => null,
     ComparisonCharts: () => null,
     DecisionInsights: () => null,
@@ -681,7 +682,7 @@ test("News earnings do not infer estimate currency from a stock listing or compa
       React,
       amount: format.amount,
       dateLabel: format.dateLabel,
-      NewsAndFilings: empty,
+      NewsAndFilings: ({ additionalEvidence }) => additionalEvidence,
     },
   );
   const html = renderToStaticMarkup(
@@ -856,12 +857,16 @@ test("authentication exposes the required sign-in, signup and recovery controls 
     "PublicSample",
     { React, Layers3, Scale, ShieldCheck, ChartNoAxesCombined },
   );
-  const AuthLegalLinks = loadComponent("components/AuthLegalLinks.tsx", "AuthLegalLinks", {
-    React,
-    useState: React.useState,
-    useRef: React.useRef,
-    useId: React.useId,
-  });
+  const AuthLegalLinks = loadComponent(
+    "components/AuthLegalLinks.tsx",
+    "AuthLegalLinks",
+    {
+      React,
+      useState: React.useState,
+      useRef: React.useRef,
+      useId: React.useId,
+    },
+  );
   for (const mode of ["login", "signup", "reset"]) {
     let i = 0;
     const values = [
@@ -986,12 +991,21 @@ test("the single settings page preserves account, membership and help", () => {
   assert.doesNotMatch(html, /href="\/(discover|research-lab|trading)"/);
   assert.match(html, /Sign-in &amp; security/);
   assert.match(html, /href="\/help"/);
-  const password = html.match(/<details class="settings-password-change"><summary>Change password<\/summary>([\s\S]*?)<\/details>/);
+  const password = html.match(
+    /<details class="settings-password-change"><summary>Change password<\/summary>([\s\S]*?)<\/details>/,
+  );
   assert.ok(password, "password change stays inside a closed disclosure");
   assert.match(password[1], /autocomplete="new-password"/i);
-  assert.doesNotMatch(html.replace(password[0], ""), /autocomplete="new-password"/i);
+  assert.doesNotMatch(
+    html.replace(password[0], ""),
+    /autocomplete="new-password"/i,
+  );
   assert.equal(
-    (html.match(/<strong title="reader@example\.com">reader@example\.com<\/strong>/g) || []).length,
+    (
+      html.match(
+        /<strong title="reader@example\.com">reader@example\.com<\/strong>/g,
+      ) || []
+    ).length,
     1,
   );
   assert.doesNotMatch(html, /hidden=""/);
@@ -1807,11 +1821,12 @@ test("News leads with company coverage before earnings and transaction records",
     {
       React,
       dateLabel: format.dateLabel,
-      NewsAndFilings: () =>
+      NewsAndFilings: ({ additionalEvidence }) =>
         React.createElement(
           "section",
           { "data-news": "first" },
           "Company headlines and filings",
+          additionalEvidence,
         ),
     },
   );
@@ -1820,9 +1835,9 @@ test("News leads with company coverage before earnings and transaction records",
       research: { retrievedAt: "2026-10-22", evidence: { earnings: [] } },
     }),
   );
+  assert.match(html, /Reported activity/);
   assert.ok(
-    html.indexOf('data-news="first"') <
-      html.indexOf("Events &amp; reported transactions"),
+    html.indexOf('data-news="first"') < html.indexOf("Reported activity"),
   );
 });
 

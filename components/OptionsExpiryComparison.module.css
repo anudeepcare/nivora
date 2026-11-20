@@ -9,8 +9,8 @@
 .comparison > h4 {
   margin: 0;
   line-height: 20px;
-  padding: 12px 0;
-  font-size: 13px;
+  padding: 8px 0;
+  font-size: 15px;
   font-weight: 600;
 }
 .comparison > h4 span {
@@ -28,8 +28,7 @@
 }
 .scroll {
   overflow-x: auto;
-  max-height: 260px;
-  overscroll-behavior: contain;
+  overscroll-behavior-inline: contain;
 }
 .comparison table {
   width: 100%;
@@ -73,11 +72,33 @@
   color: var(--muted);
 }
 .comparison button:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--plaid-focus, var(--blue));
   outline-offset: 2px;
 }
 
 .scroll:focus-visible {
   outline: 2px solid var(--plaid-focus, var(--blue));
   outline-offset: -2px;
+}
+
+.comparison tbody th[scope="row"] {
+  position: static;
+  background: transparent;
+}
+.comparison tr[data-selected="true"] > :is(th, td) {
+  background: var(--plaid-ice, var(--surface));
+}
+.pages {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.pages button[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: default;
 }

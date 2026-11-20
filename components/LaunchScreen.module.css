@@ -11,12 +11,17 @@
   padding: max(24px, env(safe-area-inset-top))
     max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom))
     max(24px, env(safe-area-inset-left));
-  color: #24342c;
+  color: var(--plaid-ink, #13243e);
   background:
-    radial-gradient(ellipse at 50% 42%, #eaf1e580, transparent 58%), #f7f8f5;
+    radial-gradient(
+      ellipse at 50% 44%,
+      var(--plaid-card-purple, #efebfc),
+      transparent 52%
+    ),
+    var(--plaid-canvas, #f5f7fc);
 }
 .content {
-  width: min(100%, 360px);
+  width: min(100%, 420px);
   text-align: center;
   position: relative;
 }
@@ -28,26 +33,26 @@
 }
 .mark img {
   display: block;
-  filter: drop-shadow(0 5px 10px #527f3c20);
+  filter: drop-shadow(0 7px 18px #6b5cb34d);
 }
 .content h1 {
   margin: 0;
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: 500;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  line-height: 1.2;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 .recovery {
-  position: absolute;
-  top: 100%;
-  width: 100%;
   padding-top: 16px;
+}
+.recovery:empty {
+  display: none;
 }
 .recovery p {
   margin: 0 0 16px;
   font-size: 14px;
   line-height: 1.6;
-  color: #53645b;
+  color: var(--plaid-muted, #53647e);
 }
 .actions {
   display: flex;
@@ -58,29 +63,20 @@
 .actions button {
   min-height: 44px;
   padding: 10px 20px;
-  border: 1px solid #aebdaf;
+  border: 1px solid var(--plaid-line, #dce3ef);
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--plaid-surface, #fff);
   color: inherit;
   font: inherit;
   font-size: 14px;
   cursor: pointer;
 }
 .actions button:focus-visible {
-  outline: 2px solid #458b69;
+  outline: 2px solid var(--plaid-focus, #365ac5);
   outline-offset: 3px;
 }
 :global([data-theme="dark"]) .launch {
-  color: #eef2ec;
-  background:
-    radial-gradient(ellipse at 50% 42%, #34403866, transparent 58%), #24272b;
-}
-:global([data-theme="dark"]) .recovery p {
-  color: #c0ccc4;
-}
-:global([data-theme="dark"]) .actions button {
-  background: #303a34;
-  border-color: #63766a;
+  color: var(--plaid-ink, #ecf0fa);
 }
 .skeleton {
   padding: 24px 0;

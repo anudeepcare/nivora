@@ -36,19 +36,21 @@ export default function NamedAnalystProfiles({ data }: { data: unknown }) {
       : null;
   return (
     <section className={styles.root} aria-label="Named analyst profiles">
-      <h3>Named analysts & published notes</h3>
-      <details className={styles.analystNotes}>
-        <summary>Coverage &amp; target notes</summary>
-        <p>
-          Named profiles use attributed coverage. Unnamed firm notes remain in
-          coverage; these records are not accuracy rankings.
-        </p>
-        <p>
-          Target units are as published; currency is not supplied here. Original
-          and split-adjusted targets are separate, not returns. Note dates are
-          not employment dates.
-        </p>
-      </details>
+      <header className={styles.analystHeading}>
+        <h3>Named analysts & published notes</h3>
+        <details className={styles.analystNotes}>
+          <summary>Coverage &amp; target notes</summary>
+          <p>
+            Named profiles use attributed coverage. Unnamed firm notes remain in
+            coverage; these records are not accuracy rankings.
+          </p>
+          <p>
+            Target units are as published; currency is not supplied here.
+            Original and split-adjusted targets are separate, not returns. Note
+            dates are not employment dates.
+          </p>
+        </details>
+      </header>
       <div className={styles.analystControls}>
         {!people.length ? (
           <p>

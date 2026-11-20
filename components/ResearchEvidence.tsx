@@ -1,7 +1,7 @@
 "use client";
 import evidenceScroll from "./EvidenceScroll.module.css";
 import { customerText } from "@/lib/customer-language";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -388,7 +388,13 @@ function Ownership({ research: r }: { research: Research }) {
     </section>
   );
 }
-export function NewsAndFilings({ research: r }: { research: Research }) {
+export function NewsAndFilings({
+  research: r,
+  additionalEvidence,
+}: {
+  research: Research;
+  additionalEvidence?: ReactNode;
+}) {
   const { demo } = useProduct();
   const preview = useMemo(
     () =>
@@ -424,7 +430,13 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
     return filing.title;
   };
   return (
-    <div className="au-two coverage-grid">
+    <div
+      className={
+        additionalEvidence
+          ? "au-two coverage-grid evidence-with-activity"
+          : "au-two coverage-grid"
+      }
+    >
       <section className="au-panel">
         <header className="au-panel-head">
           <h2>Recent coverage</h2>
@@ -510,6 +522,7 @@ export function NewsAndFilings({ research: r }: { research: Research }) {
           )}
         </section>
       )}
+      {additionalEvidence}
     </div>
   );
 }

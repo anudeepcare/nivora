@@ -173,13 +173,7 @@ function MethodPreview({ kind }: { kind: string }) {
     </div>
   );
 }
-export default function PublicPlaidOpening({
-  brand,
-  themeControl,
-}: {
-  brand: ReactNode;
-  themeControl: ReactNode;
-}) {
+export default function PublicPlaidOpening({ brand }: { brand: ReactNode }) {
   const [open, setOpen] = useState(false),
     [category, setCategory] = useState(0);
   const container = useRef<HTMLElement>(null),
@@ -232,11 +226,10 @@ export default function PublicPlaidOpening({
               <Link href="/help">Help</Link>
             </nav>
             <div className={s.navActions}>
-              {themeControl}
               <Link href="/login">Sign in</Link>
-              <Link className={s.demo} href="/sample">
+              <a className={s.demo} href="/sample#product-guide">
                 Try the demo
-              </Link>
+              </a>
             </div>
           </div>
           {open && (
@@ -274,9 +267,9 @@ export default function PublicPlaidOpening({
                   </Link>
                 ))}
               </nav>
-              <Link
+              <a
                 className={s.featured}
-                href="/sample"
+                href="/sample#product-guide"
                 onClick={() => setOpen(false)}
               >
                 <strong>See Atlas in action</strong>
@@ -284,7 +277,7 @@ export default function PublicPlaidOpening({
                 <span>
                   Open the product guide <ArrowRight size={20} />
                 </span>
-              </Link>
+              </a>
               <nav
                 className={s.mobileLinks}
                 aria-label="More public navigation"
@@ -324,9 +317,9 @@ export default function PublicPlaidOpening({
               <br />
               Connect evidence, expectations and your next decision.
             </p>
-            <Link href="/sample" className={s.heroCta}>
+            <a href="/sample#product-guide" className={s.heroCta}>
               Explore the demo <ArrowRight size={21} />
-            </Link>
+            </a>
             <small>A product walkthrough. No invented live market data.</small>
           </div>
           <div className={s.heroArt} aria-hidden="true">

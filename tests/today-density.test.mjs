@@ -9,7 +9,10 @@ test("Today stacks actual priorities and attention without stretching empty boxe
     source.indexOf("className={homeStyles.attentionColumn}"),
     source.indexOf("<HomeMarketCards"),
   );
-  assert.match(column, /<TodaySequence/);
+  assert.match(
+    source.slice(0, source.indexOf("className={homeStyles.attentionColumn}")),
+    /aria-label="Today’s story"/,
+  );
   assert.match(column, /<ResearchInbox/);
   assert.match(column, /event.date <= day/);
   assert.match(

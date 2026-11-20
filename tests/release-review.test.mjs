@@ -13,6 +13,7 @@ import * as format from "../lib/format.ts";
 import { latestFinancialEvidence } from "../lib/analysis.ts";
 import { selectPriceReference } from "../lib/price-reference.ts";
 import { movementContext } from "../lib/movement-context.ts";
+import { currentPace } from "../lib/current-pace.ts";
 import { headerMarketContext } from "../lib/business-history.ts";
 import { retainResearchQuote } from "../lib/research-quote.ts";
 import { normalizeBars } from "../lib/market.ts";
@@ -307,6 +308,8 @@ function researchMarkup(issues = [], options = {}) {
   bindings.lensForSection = lensForSection;
   bindings.cockpit = new Proxy({}, { get: (_, key) => String(key) });
   bindings.headerPaceStyles = new Proxy({}, { get: (_, key) => String(key) });
+  bindings.workspacePaceStyles = { palette: "pace-palette" };
+  bindings.currentPace = currentPace;
   bindings.ReferenceAtlas = () =>
     React.createElement("section", { "data-reference-atlas": true });
   bindings.tabVisuals = { root: "research-tab-visuals" };

@@ -28,6 +28,8 @@ test("mobile Pace displays only real code or missing dash, never sample or statu
     "headerPaceStyles",
     "headerPace",
     "paceCode",
+    "headerPaceProvisional",
+    "headerPaceCarry",
     js,
   );
   for (const level of [0, 1, 2, 3, 4])
@@ -41,10 +43,28 @@ test("mobile Pace displays only real code or missing dash, never sample or statu
     renderToStaticMarkup(render(React, { mobileCode: "code" }, null, paceCode)),
     '<span class="code">—</span>',
   );
+  for (const [provisional, carry, marker] of [
+    [true, false, "*"],
+    [false, true, "†"],
+  ]) {
+    assert.equal(
+      renderToStaticMarkup(
+        render(
+          React,
+          { mobileCode: "code" },
+          { multiplier: 4 },
+          paceCode,
+          provisional,
+          carry,
+        ),
+      ),
+      `<span class="code">P4<sup aria-hidden="true">${marker}</sup></span>`,
+    );
+  }
   assert.match(source, /Help label="this Pace reading"/);
   assert.match(source, /Provisional current-month reading/);
 });
-test("approved mobile hero has enlarged identity, grid quote and separated purple code without changing desktop", () => {
+test("approved mobile hero has enlarged identity, grid quote and separated category-colored code without changing desktop", () => {
   const css = postcss.parse(
     fs.readFileSync("components/ResearchHeaderPace.module.css", "utf8"),
   );

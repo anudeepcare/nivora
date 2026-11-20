@@ -20,12 +20,21 @@ const tabs = [
 export default function TargetsEstimates({
   research: r,
   ratings,
+  providerEvidence,
 }: {
   research: Research;
   ratings?: ReactNode;
+  providerEvidence?: ReactNode;
 }) {
-  const model = useMemo(() => targetsEstimates(r), [r]);
   const [active, setActive] = useState(0);
+  const hasProvider = providerEvidence != null;
+  const views = hasProvider ? ["Provider evidence", ...tabs] : tabs;
+  const modelView = active - (hasProvider ? 1 : 0);
+  const showModel = modelView >= 0;
+  const model = useMemo(
+    () => (showModel ? targetsEstimates(r) : null),
+    [r, showModel],
+  );
   const id = `auryn-targets-${encodeURIComponent(r.company.symbol)}`;
   const [multipleInput, setMultipleInput] = useState({
     symbol: r.company.symbol,
@@ -35,25 +44,31 @@ export default function TargetsEstimates({
     multipleInput.symbol === r.company.symbol ? multipleInput.value : "";
   const forecast = useMemo(
     () =>
-      multipleValue.trim()
+      model && multipleValue.trim()
         ? researchOutlook(scenarioResearchInput(r), {
             earningsMultiple: Number(multipleValue),
           })
-        : model.forecast,
-    [r, model.forecast, multipleValue],
+        : model?.forecast,
+    [r, model, multipleValue],
   );
   return (
-    <section className={styles.root} aria-label="Targets and estimates">
+    <section
+      className={styles.root}
+      aria-label="Targets and estimates"
+      data-flat-analysts={hasProvider || undefined}
+    >
       <header className={styles.header}>
         <div>
           <h2>Targets & estimates</h2>
-          <details className={styles.sourceNote}>
-            <summary>Sources &amp; reporting periods</summary>
-            <p>
-              These separately sourced figures are not merged with the consensus
-              feed.
-            </p>
-          </details>
+          {modelView >= 0 && (
+            <details className={styles.sourceNote}>
+              <summary>Sources &amp; reporting periods</summary>
+              <p>
+                These separately sourced figures are not merged with the
+                consensus feed.
+              </p>
+            </details>
+          )}
         </div>
       </header>
       <div
@@ -63,7 +78,7 @@ export default function TargetsEstimates({
         role="tablist"
         aria-label="Target and estimate views"
       >
-        {tabs.map((label, index) => (
+        {views.map((label, index) => (
           <button
             key={label}
             type="button"
@@ -76,13 +91,13 @@ export default function TargetsEstimates({
             onKeyDown={(event) => {
               const next =
                 event.key === "ArrowRight"
-                  ? (index + 1) % tabs.length
+                  ? (index + 1) % views.length
                   : event.key === "ArrowLeft"
-                    ? (index + tabs.length - 1) % tabs.length
+                    ? (index + views.length - 1) % views.length
                     : event.key === "Home"
                       ? 0
                       : event.key === "End"
-                        ? tabs.length - 1
+                        ? views.length - 1
                         : null;
               if (next != null) {
                 event.preventDefault();
@@ -97,19 +112,20 @@ export default function TargetsEstimates({
         ))}
       </div>
       <div
-        className={`${styles.panel} ${active === 0 && ratings ? styles.consensusGrid : ""}`}
+        className={`${styles.panel} ${modelView === 0 && ratings ? styles.consensusGrid : ""}`}
         role="tabpanel"
         id={`${id}-panel-${active}`}
         aria-labelledby={`${id}-tab-${active}`}
         tabIndex={0}
       >
-        {active === 0 && (
+        {modelView < 0 && providerEvidence}
+        {modelView === 0 && (
           <>
             <AnalystTargets research={r} showUnavailable />
             {ratings}
           </>
         )}
-        {active === 1 && (
+        {modelView === 1 && model && (
           <>
             <div className={styles.subhead}>
               <h3>Annual EPS & revenue consensus</h3>
@@ -176,7 +192,7 @@ export default function TargetsEstimates({
             <EstimateRevisions research={r} />
           </>
         )}
-        {active === 2 && (
+        {modelView === 2 && model && forecast && (
           <>
             <section
               className={styles.assumptionBar}
@@ -302,7 +318,7 @@ export default function TargetsEstimates({
             )}
           </>
         )}
-        {active === 3 && (
+        {modelView === 3 && model && (
           <>
             <div className={styles.subhead}>
               <h3>Historical price risk</h3>
@@ -320,6 +336,17 @@ export default function TargetsEstimates({
           </>
         )}
       </div>
+      {views.map((label, index) =>
+        active === index ? null : (
+          <div
+            key={label}
+            role="tabpanel"
+            id={`${id}-panel-${index}`}
+            aria-labelledby={`${id}-tab-${index}`}
+            hidden
+          />
+        ),
+      )}
     </section>
   );
 }

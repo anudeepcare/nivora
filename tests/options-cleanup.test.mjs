@@ -13,8 +13,14 @@ test("open interest uses accessible themed bar rather than native meter colors",
     "components/OptionsPositioningOverview.module.css",
     "utf8",
   );
-  assert.match(css, /\.wallMeter > span\s*\{[^}]*background: var\(--option-call\)/s);
-  assert.match(css, /\.wall\[data-side="Put"\] \.wallMeter > span\s*\{[^}]*background: var\(--option-put\)/s);
+  assert.match(
+    css,
+    /\.wallMeter > span\s*\{[^}]*background: var\(--option-call\)/s,
+  );
+  assert.match(
+    css,
+    /\.wall\[data-side="Put"\] \.wallMeter > span\s*\{[^}]*background: var\(--option-put\)/s,
+  );
   assert.match(source, /data-side=\{wall.side\}/);
 });
 test("market overview opens with real loading state rather than a second browse action", () => {
@@ -36,7 +42,7 @@ test("options and ownership consolidate heading and source into dataset toolbar"
   const source = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");
   assert.match(
     source,
-    /const compact = group === "options" \|\| group === "ownership"/,
+    /const compact =\s*(?:compactPresentation \|\| )?group === "options" \|\| group === "ownership"/,
   );
   assert.match(source, /!compact && \(/);
   assert.match(source, /className=\{compact \? s.datasetToolbar : undefined\}/);

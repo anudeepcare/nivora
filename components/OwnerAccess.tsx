@@ -12,7 +12,7 @@ import {
 import styles from "./OwnerAccess.module.css";
 import Link from "next/link";
 import SupportInbox from "./SupportInbox";
-import OwnerHandbook from "./OwnerHandbook";
+import OwnerHandbook, { handbookChapterFromHash } from "./OwnerHandbook";
 import OwnerEvidenceTools from "./OwnerEvidenceTools";
 import { api } from "@/lib/client";
 import { useAccess } from "./Access";
@@ -60,6 +60,17 @@ export default function OwnerAccess() {
   };
   useEffect(() => {
     if (access.owner) void load().catch((e) => setMessage(e.message));
+  }, [access.owner]);
+  useEffect(() => {
+    if (!access.owner) return;
+    function openBookmarkedHandbook() {
+      if (handbookChapterFromHash(window.location.hash) !== null)
+        setPanel("handbook");
+    }
+    openBookmarkedHandbook();
+    window.addEventListener("hashchange", openBookmarkedHandbook);
+    return () =>
+      window.removeEventListener("hashchange", openBookmarkedHandbook);
   }, [access.owner]);
   async function checkBilling() {
     setBusy(true);
@@ -168,6 +179,15 @@ export default function OwnerAccess() {
             aria-pressed={panel === id}
             aria-controls={`admin-${id}`}
             onClick={() => {
+              if (
+                id !== "handbook" &&
+                handbookChapterFromHash(window.location.hash) !== null
+              )
+                window.history.replaceState(
+                  null,
+                  "",
+                  window.location.pathname + window.location.search,
+                );
               setPanel(id);
               setMessage("");
             }}

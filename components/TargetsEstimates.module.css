@@ -548,3 +548,22 @@
   box-shadow: none;
   background: transparent;
 }
+
+.root[data-flat-analysts="true"] {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+.root[data-flat-analysts="true"] .tabs {
+  min-width: 0;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+.root[data-flat-analysts="true"] .tabs > button {
+  white-space: normal;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.root[data-flat-analysts="true"] .panel {
+  padding-top: 10px;
+}

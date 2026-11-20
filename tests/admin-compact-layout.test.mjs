@@ -16,5 +16,5 @@ test('observation fields use a scoped responsive grid with full-width notes and 
  assert.match(css, /@media \(max-width: 640px\)/);
 });
 test('handbook short instructions keep compact spacing', () => {
- assert.match(read('OwnerHandbook.module.css'), /\.intro li\s*\{\s*margin: 0;\s*padding: 8px 0 8px 20px;/);
+ assert.match(read('OwnerHandbook.module.css'), /\.intro li\s*\{\s*margin: 0;\s*padding: 3px 0;/);
 });

@@ -1,18 +1,22 @@
 "use client";
 import { useState } from "react";
 import todayStyles from "./TodaySequence.module.css";
-import TodaySequence from "./TodaySequence";
+import { useResource } from "./Session";
+import { quoteHealth } from "@/lib/quote-health";
 import ContributionCompare from "./ContributionCompare";
 import HomeQuarterHighlights from "./HomeQuarterHighlights";
 import HomeMarketCards from "./HomeMarketCards";
 import HomeRadar from "./HomeRadar";
+import TodayMacroWatch from "./TodayMacroWatch";
 import ResearchInbox from "./ResearchInbox";
 import { useHomeFeed } from "./useHomeFeed";
 import { PaceBoard } from "./WorkspacePace";
 
 import { researchLink } from "@/lib/approved-workspace";
 import { amount, dateLabel, percent, quoteTime } from "@/lib/format";
-import { homeBrief } from "@/lib/home-brief";
+import { todayNarrative } from "@/lib/today-narrative";
+import type { EodNews } from "@/lib/eodhd";
+import { dailyPerspective, homeBrief } from "@/lib/home-brief";
 import type { MarketEvent } from "@/lib/home-feed";
 import {
   earningsEventState,
@@ -22,9 +26,9 @@ import {
   relevantHoldingHeadlines,
 } from "@/lib/home-feed";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
-import { ArrowUpRight, CalendarDays, RefreshCw } from "lucide-react";
+import { ArrowUpRight, RefreshCw } from "lucide-react";
 import Link from "next/link";
-import { FeatureGate } from "./Access";
+import { FeatureGate, useAccess } from "./Access";
 import CompanySparkline from "./CompanySparkline";
 import homeStyles from "./HomeWorkspace.module.css";
 import PortfolioDay from "./PortfolioDay";
@@ -96,8 +100,9 @@ function EarningsNumbers({
 
 function HomeOverview() {
   const [radarOpen, setRadarOpen] = useState(true);
+  const { access } = useAccess();
   const state = useWorkspaceData(),
-    { workspace, quotes, model, prefix, demo, pace } = state;
+    { workspace, quotes, model, prefix, demo } = state;
   const today = new Date(
     demo
       ? Object.values(demo.research)[0]?.retrievedAt || Date.now()
@@ -113,6 +118,19 @@ function HomeOverview() {
       ...(workspace?.watchlist.map((w) => w.symbol) ?? []),
     ]),
   ];
+  const benchmarks = ["SPY", "QQQ"] as const;
+  // Reuse workspace quotes for benchmarks already followed; at most one
+  // separate request for the remaining fixed proxies, never private symbols.
+  const missingBenchmarks = benchmarks.filter(
+    (symbol) => !symbols.includes(symbol),
+  );
+  const marketQuotes = useResource<QuoteRows>(
+    demo || !missingBenchmarks.length
+      ? null
+      : `quotes?symbols=${encodeURIComponent([...missingBenchmarks].sort().join(","))}`,
+    undefined,
+    120_000,
+  );
   const feedSymbols = symbols.filter((symbol) =>
     /^[A-Z][A-Z0-9.-]{0,14}$/.test(symbol),
   );
@@ -148,18 +166,49 @@ function HomeOverview() {
     newsReady: readiness.newsReady && !feed.error,
     hasHoldings: !!workspace?.positions.length,
   });
-  const signals = symbols
-    .map((symbol) => ({ symbol, signal: pace(symbol) }))
-    .filter(
-      (x) =>
-        x.signal?.view.permitted &&
-        x.signal.view.rawLevel != null &&
-        x.signal.view.rawLevel >= 2,
-    )
-    .sort(
-      (a, b) => (b.signal!.multiplier ?? -1) - (a.signal!.multiplier ?? -1),
-    );
-  const best = signals[0];
+  const narrativeInput = {
+    day,
+    now: today.toISOString(),
+    reports: brief.reported,
+    headlines,
+    checkpoints: brief.checkpoints,
+  };
+  const personalStory = todayNarrative(narrativeInput);
+  const marketNewsKey =
+    access.admitted &&
+    !access.sampleOnly &&
+    !!access.features.news &&
+    !demo &&
+    !personalStory &&
+    (!symbols.length || !feed.loading)
+      ? "news?symbol=SPY"
+      : null;
+  const marketCoverage = useResource<EodNews>(
+    marketNewsKey,
+    undefined,
+    3_600_000,
+  );
+  const story =
+    personalStory ??
+    (marketNewsKey
+      ? todayNarrative({
+          ...narrativeInput,
+          market: true,
+          reports: [],
+          checkpoints: [],
+          headlines: (marketCoverage.data?.items ?? []).map((item) => ({
+            symbol: "SPY",
+            date: item.date,
+            title: item.title,
+            url: item.url,
+          })),
+        })
+      : null);
+  const spotlight =
+    personalStory?.kind === "headline" ? personalStory.headline : null;
+  const secondaryHeadlines = spotlight
+    ? headlines.filter((item) => item !== spotlight)
+    : headlines;
 
   const pastPending = (feed.data?.events ?? []).filter(
     (event) =>
@@ -209,48 +258,243 @@ function HomeOverview() {
     return research ? [research] : [];
   });
   const renderHeadline = (news: (typeof headlines)[number]) => (
-    <article key={`${news.symbol}:${news.url}`}>
-      <div className="home-news-meta">
-        <SecurityLogo symbol={news.symbol} />
-        <Link href={researchLink(news.symbol, prefix)}>{news.symbol}</Link>
-        <time dateTime={news.date}>{dateLabel(news.date)}</time>
+    <article
+      className={homeStyles.headlineRow}
+      key={`${news.symbol}:${news.url}`}
+    >
+      <SecurityLogo symbol={news.symbol} size={32} />
+      <div className={homeStyles.headlineCopy}>
+        <div className="home-news-meta">
+          <Link href={researchLink(news.symbol, prefix)}>{news.symbol}</Link>
+          <time dateTime={news.date}>{dateLabel(news.date)}</time>
+        </div>
+        <a
+          className="home-news-title"
+          href={news.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {news.title}
+          <ArrowUpRight size={15} aria-hidden="true" />
+        </a>
       </div>
-      <a
-        className="home-news-title"
-        href={news.url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {news.title}
-        <ArrowUpRight size={17} />
-      </a>
     </article>
   );
   return (
     <section
       className={`approved-workspace approved-home home-decision-view ${homeStyles.home}`}
     >
-      <div className={todayStyles.hero}>
-        <Heading
-          title="Today"
-          subtitle="Research priorities, upcoming events and what changed."
-          actions={
-            <span className="date-chip">
-              {today.toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-              })}
-              <small>
-                {demo
-                  ? "Illustrative workspace"
-                  : `${symbols.length} companies followed`}
-              </small>
-            </span>
-          }
-        />
-      </div>
+      <header className={`${todayStyles.hero} ${homeStyles.todayHeading}`}>
+        <h1>Today</h1>
+        <span className="date-chip">
+          <time dateTime={day}>
+            {new Date(`${day}T00:00:00Z`).toLocaleDateString(undefined, {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              timeZone: "UTC",
+            })}
+          </time>
+          <small>
+            {demo
+              ? "Illustrative workspace"
+              : `${symbols.length} ${symbols.length === 1 ? "symbol" : "symbols"} followed`}
+          </small>
+        </span>
+      </header>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
+      <section className={homeStyles.narrative} aria-label="Today’s story">
+        <div className={homeStyles.narrativeMain}>
+          <p className={homeStyles.storyLabel}>
+            {story?.kind === "report" ? (
+              <>
+                Reported earnings ·{" "}
+                <time dateTime={story.report.date}>
+                  {dateLabel(story.report.date)}
+                </time>
+              </>
+            ) : story?.kind === "headline" ? (
+              <>
+                {personalStory
+                  ? `${story.headline.symbol} · Source headline`
+                  : "SPY market coverage · Source headline"}{" "}
+                · {story.source} ·{" "}
+                <time dateTime={story.headline.date}>
+                  {dateLabel(story.headline.date)}
+                </time>
+              </>
+            ) : (
+              "Daily briefing"
+            )}
+          </p>
+          <h2>
+            {story?.kind === "report"
+              ? `${story.report.symbol} reported earnings`
+              : story?.kind === "headline"
+                ? story.headline.title
+                : "Start with what you can verify."}
+          </h2>
+          {story?.kind === "report" && (
+            <>
+              <dl className={homeStyles.storyFacts}>
+                <div>
+                  <dt>Reported EPS</dt>
+                  <dd>{story.report.actual?.toFixed(2)}</dd>
+                </div>
+                {typeof story.report.estimate === "number" &&
+                  Number.isFinite(story.report.estimate) && (
+                    <div>
+                      <dt>Feed estimate</dt>
+                      <dd>{story.report.estimate.toFixed(2)}</dd>
+                    </div>
+                  )}
+              </dl>
+              <p className={homeStyles.storyNote}>
+                From the earnings feed. Currency and EPS basis not supplied;
+                verify the filing before comparing.
+              </p>
+            </>
+          )}
+          {story ? (
+            <p className={homeStyles.storyReason}>
+              <strong>Why it matters</strong> {story.why}
+            </p>
+          ) : (
+            <p className={homeStyles.storyReason}>
+              {feed.loading || marketCoverage.loading
+                ? "Checking for dated company and market coverage."
+                : "No matching company report or market headline is available in this brief."}
+            </p>
+          )}
+          {story?.kind === "headline" ? (
+            <a
+              className={homeStyles.storyAction}
+              href={story.headline.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read the source <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          ) : (
+            <Link
+              className={homeStyles.storyAction}
+              href={
+                story?.kind === "report"
+                  ? `${researchLink(story.report.symbol, prefix)}?tab=News`
+                  : `${prefix}/research`
+              }
+            >
+              {story?.kind === "report"
+                ? "Open earnings evidence"
+                : "Open company research"}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+          )}
+        </div>
+        <div className={homeStyles.storyLens}>
+          <p>
+            <strong>Research question</strong>{" "}
+            {story?.question ??
+              "Which dated result or filing would change your view?"}
+          </p>
+          {story?.next && (
+            <p>
+              <strong>
+                {story.next.date === day
+                  ? "Scheduled today"
+                  : "Next supplied event"}
+              </strong>
+              {story.next.kind} ·{" "}
+              <time dateTime={story.next.date}>
+                {dateLabel(story.next.date)}
+              </time>
+              {story.next.detail ? ` · ${story.next.detail}` : ""}
+            </p>
+          )}
+          <p>
+            <strong>Auryn thought</strong> {dailyPerspective(day)}
+          </p>
+        </div>
+      </section>
+      <section
+        className={homeStyles.dailyBrief}
+        aria-label="Daily market briefing"
+      >
+        <div className={homeStyles.marketHead}>
+          <h2>Market snapshot</h2>
+          <span>U.S. market ETF proxies</span>
+        </div>
+        <dl className={homeStyles.marketTape} aria-label="ETF market proxies">
+          {benchmarks.map((symbol) => {
+            const quote = quoteHealth(
+              quotes.data[symbol]?.quote ?? marketQuotes.data?.[symbol]?.quote,
+              today.getTime(),
+            );
+            const timestamp = Date.parse(quote?.asOf ?? "");
+            const price = quote?.price;
+            const available =
+              quote?.currency === "USD" &&
+              typeof price === "number" &&
+              Number.isFinite(price) &&
+              price > 0 &&
+              Number.isFinite(timestamp) &&
+              timestamp <= today.getTime();
+            const move =
+              available &&
+              typeof quote.changePct === "number" &&
+              Number.isFinite(quote.changePct)
+                ? quote.changePct
+                : null;
+            return (
+              <div key={symbol}>
+                <dt>
+                  <Link href={researchLink(symbol, prefix)}>{symbol}</Link>
+                  <span>
+                    {symbol === "SPY" ? "S&P 500 ETF" : "Nasdaq-100 ETF"}
+                  </span>
+                </dt>
+                <dd>
+                  {available ? (
+                    <>
+                      <strong
+                        data-direction={
+                          move == null || move === 0
+                            ? "flat"
+                            : move > 0
+                              ? "up"
+                              : "down"
+                        }
+                      >
+                        {move === null
+                          ? "Change unavailable"
+                          : percent(move, true)}
+                      </strong>
+                      <span>{amount(price, quote.currency)}</span>
+                      <small>
+                        {quote.stale ? "Older quote · " : ""}
+                        {quote.session || "Session not supplied"} ·{" "}
+                        {/^\d{4}-\d{2}-\d{2}$/.test(quote.asOf ?? "")
+                          ? dateLabel(quote.asOf)
+                          : quoteTime(quote.asOf, true, today)}
+                      </small>
+                    </>
+                  ) : (
+                    <span>
+                      {demo
+                        ? "Not in this preview"
+                        : marketQuotes.loading ||
+                            (symbols.includes(symbol) && quotes.loading)
+                          ? "Checking quote…"
+                          : "Quote unavailable"}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            );
+          })}
+        </dl>
+        <TodayMacroWatch today={day} preview={!!demo} />
+      </section>
       <div className={homeStyles.leadGrid}>
         <div className={homeStyles.dayOverview}>
           <div className={homeStyles.attentionColumn}>
@@ -261,23 +505,6 @@ function HomeOverview() {
                   event.date <= day &&
                   !calendarKeys.has(`${event.symbol}:${event.date}`),
               )}
-            />
-            <TodaySequence
-              prefix={prefix}
-              decision={
-                best?.signal
-                  ? {
-                      symbol: best.symbol,
-                      action: best.signal.view.actionLabel.replace(
-                        / · P[0-4]$/,
-                        "",
-                      ),
-                      code: best.signal.view.code,
-                    }
-                  : null
-              }
-              headline={null}
-              concentration={null}
             />
           </div>
         </div>
@@ -293,10 +520,14 @@ function HomeOverview() {
             >
               <SectionHead
                 title="Earnings & events"
-                subtitle="Recent results and the next 7 days. Held companies first within each date."
+                subtitle={
+                  eventGroups.length
+                    ? "Next 7 days · held companies first on each date"
+                    : undefined
+                }
                 action={
                   <button
-                    className="icon-btn"
+                    className={homeStyles.calendarRefresh}
                     onClick={feed.refresh}
                     disabled={feed.loading}
                     aria-label="Refresh company events"
@@ -358,13 +589,12 @@ function HomeOverview() {
                 </div>
               ) : (
                 <p className={homeStyles.calendarState} role="status">
-                  <CalendarDays size={16} aria-hidden="true" />
                   <span>
                     {feed.loading
                       ? "Checking dated events for the next 7 days…"
                       : !calendarReady
                         ? "Calendar coverage is incomplete. Missing coverage does not mean no events."
-                        : "No upcoming company events returned for the next 7 days."}
+                        : "No upcoming events returned for the next 7 days."}
                   </span>
                 </p>
               )}
@@ -428,7 +658,6 @@ function HomeOverview() {
             >
               <SectionHead
                 title="What changed"
-                subtitle="Recent company updates, with the source attached."
                 action={
                   <div className={homeStyles.updateAction}>
                     {headlines.length > 0 && (
@@ -443,9 +672,9 @@ function HomeOverview() {
                   </div>
                 }
               />
-              {headlines.length ? (
+              {secondaryHeadlines.length ? (
                 <div className="home-news-list">
-                  {headlines.slice(0, 6).map(renderHeadline)}
+                  {secondaryHeadlines.slice(0, 6).map(renderHeadline)}
                 </div>
               ) : (
                 <p className={homeStyles.feedState} role="status">
@@ -453,14 +682,18 @@ function HomeOverview() {
                     ? "Checking followed companies for updates…"
                     : feed.error || !readiness.newsReady
                       ? "News coverage is incomplete. Retry to check missing sources."
-                      : "No recent company-matched headlines returned."}
+                      : spotlight
+                        ? "The selected update is in today’s story."
+                        : "No recent company-matched headlines returned."}
                 </p>
               )}
-              {headlines.length > 6 && (
+              {secondaryHeadlines.length > 6 && (
                 <details className="home-more-updates">
-                  <summary>Show {headlines.length - 6} more updates</summary>
+                  <summary>
+                    Show {secondaryHeadlines.length - 6} more updates
+                  </summary>
                   <div className="home-news-list">
-                    {headlines.slice(6).map(renderHeadline)}
+                    {secondaryHeadlines.slice(6).map(renderHeadline)}
                   </div>
                 </details>
               )}
@@ -511,12 +744,13 @@ function HomeOverview() {
       )}
       <section className={homeStyles.researchTools} aria-label="Research tools">
         <div className={homeStyles.planRow}>
-          <div>
-            <h2>Your next contribution</h2>
-            <p>Review the evidence and position limits before adding.</p>
-          </div>
-          <Link className="btn" href={`${prefix}/monthly-plan`}>
-            Build this month’s research plan →
+          <h2>Your next contribution</h2>
+          <Link
+            className="btn"
+            href={`${prefix}/monthly-plan`}
+            aria-label="Build this month’s research plan"
+          >
+            Monthly plan <ArrowUpRight size={14} aria-hidden="true" />
           </Link>
         </div>
         <div className={homeStyles.actionGrid}>

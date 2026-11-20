@@ -1,6 +1,7 @@
 "use client";
 import "./ResearchEvidenceDisclosures.css";
 import detail from "./PaceDeskDetails.module.css";
+import paceStyles from "./WorkspacePace.module.css";
 import PaceEvidenceJourney from "./PaceEvidenceJourney";
 import PaceMonthHistory from "./PaceMonthHistory";
 import PaceReadings from "./PaceReadings";
@@ -204,18 +205,31 @@ export default function AccumulationDesk({
           levels={levels}
         />
         <div className="accumulation-legend" aria-label="Chart zone legend">
-          {[0, 1, 2, 3, 4].map((n) => (
-            <span key={n}>
-              <i style={{ background: colours[n] }} />
-              {n === 0 ? "P0 · Pause" : paceCode(n)}
-            </span>
-          ))}
+          <p className={detail.zoneKeyLabel}>
+            Pace zones · Price conditions, not recommendations
+          </p>
+          <div className={detail.stageScale}>
+            {[0, 1, 2, 3, 4].map((n) => (
+              <span key={n} className={paceStyles.palette} data-pace-level={n}>
+                <strong>
+                  <i style={{ background: colours[n] }} aria-hidden="true" />
+                  {paceCode(n)}
+                </strong>
+                <small>
+                  {["Pause", "Watch", "Start small", "Build", "Deep zone"][n]}
+                </small>
+              </span>
+            ))}
+          </div>
           <span>
-            <i style={{ background: paceExtensionColour }} />
+            <i style={{ background: paceExtensionColour }} aria-hidden="true" />
             Price-extension review
           </span>
           <span>
-            <i style={{ background: paceUnavailableColour }} />
+            <i
+              style={{ background: paceUnavailableColour }}
+              aria-hidden="true"
+            />
             No eligible signal
           </span>
         </div>

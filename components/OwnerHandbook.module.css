@@ -1,619 +1,287 @@
+/* One document surface: stable contents and one measured reading column. */
 .root {
   min-width: 0;
-  margin: 20px 0;
-  color: var(--ink);
+  color: var(--plaid-ink, var(--ink));
 }
 .cover {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
+  gap: 8px 16px;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: clamp(20px, 4vw, 32px);
-  border-radius: 22px;
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, #a99be4 16%, var(--card)),
-    var(--card)
-  );
-  color: var(--ink);
-}
-.kicker {
-  color: var(--muted);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 650;
 }
 .cover h2 {
-  margin: 14px 0 12px;
-  font-size: clamp(26px, 3vw, 34px);
-  line-height: 1.1;
-  letter-spacing: -0.04em;
+  margin: 0 0 4px;
+  font-size: clamp(23px, 3vw, 30px);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
   font-weight: 600;
 }
 .cover p {
   margin: 0;
-  color: var(--muted);
+  color: var(--plaid-muted, var(--muted));
   font-size: 14px;
-  line-height: 1.6;
 }
 .root button {
   min-height: 44px;
-  padding: 9px 14px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
-  color: var(--ink);
+  padding: 7px 11px;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
   font: inherit;
   font-size: 13px;
   cursor: pointer;
 }
-.cover button {
-  background: var(--card);
-  border-color: var(--line);
-  color: var(--ink);
-}
 .root button:disabled {
-  opacity: 0.4;
+  opacity: 0.55;
   cursor: default;
 }
-.root button:focus-visible,
-.root input:focus-visible,
-.root select:focus-visible {
-  outline: 2px solid var(--accent-solid);
-  outline-offset: 3px;
+.root :is(a, input, select, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--accent-solid));
+  outline-offset: 2px;
 }
 .tools {
   display: flex;
-  align-items: center;
+  align-items: end;
   flex-wrap: wrap;
-  gap: 16px 28px;
-  padding: 24px 0;
+  gap: 6px 16px;
+  margin-block: 12px 16px;
 }
 .tools > label:first-child {
-  flex: 1;
-  min-width: 220px;
-  max-width: 650px;
-  font-size: 12px;
-  font-weight: 600;
+  min-width: 0;
+  max-width: min(100%, 440px);
+  flex: 1 1 175px;
 }
-.root input:not([type="checkbox"]),
+.tools label {
+  font-size: 13px;
+  color: var(--plaid-muted, var(--muted));
+}
+.root input[type="search"],
 .root select {
+  box-sizing: border-box;
   display: block;
-  margin-top: 8px;
-  min-height: 46px;
+  min-width: 0;
   width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
-  color: var(--ink);
+  min-height: 44px;
+  margin-top: 4px;
+  padding: 6px 10px;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 8px;
+  background: var(--plaid-surface, var(--card));
+  color: var(--plaid-ink, var(--ink));
   font: inherit;
   font-size: 16px;
 }
 .referenceToggle {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--muted);
+  gap: 7px;
   min-height: 44px;
+  cursor: pointer;
 }
 .referenceToggle input {
+  flex: none;
   width: 18px;
   height: 18px;
+  margin: 0;
   accent-color: var(--accent-solid);
+}
+.chapterControl {
+  display: none;
 }
 .layout {
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: 28px;
+  grid-template-columns: minmax(174px, 226px) minmax(0, 1fr);
   align-items: start;
+  gap: clamp(18px, 3vw, 38px);
+  border-top: 1px solid var(--plaid-line, var(--line));
+  padding-top: 12px;
 }
 .topics {
   position: sticky;
-  top: 100px;
-  display: grid;
-  gap: 3px;
-  max-height: 70vh;
+  top: 80px;
+  max-height: calc(100dvh - 102px);
+  min-width: 0;
   overflow-y: auto;
-  padding-right: 10px;
-  overscroll-behavior: contain;
+  padding: 4px 8px 4px 2px;
+  border-inline-end: 1px solid var(--plaid-line, var(--line));
 }
-.topics > span {
-  padding: 6px 12px 12px;
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.topics h3 {
+  position: sticky;
+  top: 0;
+  margin: 0;
+  padding: 5px 7px 7px;
+  background: var(--plaid-canvas, var(--bg));
+  color: var(--plaid-ink, var(--ink));
+  font-size: 13px;
+  font-weight: 600;
 }
-.topics button {
-  text-align: left;
-  border: 0;
-  background: transparent;
-  line-height: 1.45;
-  color: var(--muted);
+.topics h3 small {
+  margin-inline-start: 4px;
+  color: var(--plaid-muted, var(--muted));
+  font-weight: 400;
 }
-.topics button:hover {
-  background: var(--card);
-  color: var(--ink);
+.topics ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.topics button[aria-current="page"] {
-  background: color-mix(in srgb, var(--accent-solid) 9%, var(--card));
-  color: var(--accent-solid);
+.topics a {
+  display: grid;
+  align-content: center;
+  grid-template-columns: minmax(22px, max-content) minmax(0, 1fr);
+  gap: 6px;
+  min-height: 44px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+.topics a > span {
+  font-variant-numeric: tabular-nums;
+}
+.topics a:hover,
+.topics a[aria-current="location"] {
+  background: var(--plaid-ice, var(--surface-2));
+  color: var(--plaid-ink, var(--ink));
+}
+.topics a[aria-current="location"] {
+  background: var(--plaid-ice, var(--surface-2));
   font-weight: 650;
 }
-.reader {
-  padding: 30px;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: var(--card);
+.topics a:focus-visible {
+  outline-offset: -2px;
+}
+.root.root .reader {
   min-width: 0;
+  border: 0;
+  background: transparent;
 }
 .reader article {
-  max-width: 82ch;
-  margin: auto;
+  max-width: 74ch;
+  min-width: 0;
 }
 .readerMeta {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 18px;
-  color: var(--muted);
-  font-size: 11px;
-}
-.readerMeta > span {
-  color: var(--accent-solid);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 650;
+  gap: 5px 12px;
+  margin-bottom: 5px;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 12px;
 }
 .reader h3 {
-  scroll-margin-top: 112px;
-  margin: 0 0 24px;
-  font-size: clamp(23px, 3vw, 32px);
+  margin: 0 0 10px;
+  scroll-margin-top: 90px;
+  font-size: clamp(24px, 3vw, 33px);
   line-height: 1.2;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
+}
+.intro p,
+.intro ul {
+  margin: 0 0 10px;
+  line-height: 1.55;
+}
+.intro ul,
+.body :is(ol, ul) {
+  padding-inline-start: 20px;
+}
+.intro li {
+  margin: 0;
+  padding: 3px 0;
 }
 .body {
+  margin-top: 14px;
   font-size: 15px;
-  line-height: 1.8;
+  line-height: 1.65;
   overflow-wrap: anywhere;
 }
 .body p {
-  margin: 0 0 18px;
+  margin: 0 0 12px;
   white-space: pre-line;
 }
 .body h4 {
+  margin: 19px 0 6px;
   font-size: 17px;
-  margin: 28px 0 12px;
+  line-height: 1.35;
 }
-.body strong {
-  color: var(--ink);
-  font-weight: 650;
-}
-.body ul,
-.body ol {
-  padding-left: 22px;
-  margin: 0 0 22px;
+.body :is(ol, ul) {
+  margin-block: 6px 15px;
 }
 .body li {
-  margin: 8px 0;
-  padding-left: 4px;
-}
-.body li::marker {
-  color: var(--accent-solid);
+  margin-block: 5px;
 }
 .body pre {
-  padding: 16px;
-  border-radius: 12px;
-  background: var(--bg);
+  padding: 10px 12px;
+  background: var(--plaid-canvas, var(--bg));
+  border-radius: 8px;
   font-size: 12px;
-  line-height: 1.7;
+  line-height: 1.55;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 .body code {
-  padding: 2px 5px;
-  background: var(--bg);
-  border-radius: 4px;
-  font-size: 0.88em;
+  font-size: 0.9em;
 }
 .table {
   max-width: 100%;
   overflow-x: auto;
-  margin: 20px 0;
+  margin-block: 10px 15px;
 }
 .table table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
-.table th,
-.table td {
-  overflow-wrap: normal;
-  word-break: normal;
-  padding: 12px;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-}
-.table th {
-  color: var(--muted);
-  font-weight: 600;
+.table :is(th, td) {
+  border-collapse: collapse;
+  padding: 7px 9px;
+  border-bottom: 1px solid var(--plaid-line, var(--line));
+  text-align: start;
+  vertical-align: top;
 }
 .chapterNav {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
-  border-top: 1px solid var(--line);
-  padding-top: 20px;
-  margin-top: 32px;
+  gap: 6px 10px;
+  padding-top: 9px;
+  border-top: 1px solid var(--plaid-line, var(--line));
 }
-.chapterNav span {
-  color: var(--muted);
-  font-size: 12px;
-}
-.mobileTopics {
-  display: none;
-}
-.empty {
-  padding: 24px 0;
-}
+.chapterNav span,
 .empty p {
-  color: var(--muted);
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
 }
 @media (max-width: 800px) {
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .topics {
     display: none;
   }
-  .mobileTopics {
+  .chapterControl {
     display: block;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 26px;
+    flex: 1 1 165px;
+    min-width: 0;
   }
-  .reader {
-    padding: 22px;
+  .chapterControl select {
+    text-overflow: ellipsis;
   }
-}
-@media (max-width: 480px) {
-  .cover {
-    padding: 24px;
-    border-radius: 24px;
-  }
-  .tools {
-    gap: 8px;
-  }
-  .referenceToggle {
-    width: 100%;
-  }
-  .reader {
-    padding: 18px;
-  }
-  .body {
-    font-size: 14px;
-  }
-  .chapterNav button {
-    padding: 9px 10px;
-    font-size: 12px;
+  .reader h3 {
+    scroll-margin-top: 18px;
   }
 }
-
-.root.root .mobileTopics {
-  display: none;
-}
-.root.root .referenceToggle {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-.root.root .referenceToggle input {
-  flex: none;
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  margin: 0;
-}
-.root.root .reader {
-  min-width: 0;
-}
-.root.root .reader h3 {
-  font-size: clamp(25px, 3vw, 36px);
-  line-height: 1.15;
-  letter-spacing: -0.035em;
-}
-.intro > p {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--muted);
-  max-width: 58ch;
-}
-.intro ul {
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0;
-  margin: 24px 0 30px;
-}
-.intro li {
-  padding: 16px 0 16px 26px;
-  border-bottom: 1px solid var(--line);
-  position: relative;
-  line-height: 1.6;
-}
-.intro li::before {
-  content: "◆";
-  color: var(--accent-solid);
-  font-size: 10px;
-  position: absolute;
-  left: 0;
-  top: 21px;
-}
-.root.root .fullDetail {
-  margin: 20px 0;
-  border-top: 1px solid var(--line);
-}
-.root.root .fullDetail > summary {
-  background: transparent;
-  padding: 16px 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-@media (max-width: 800px) {
-  .root.root .mobileTopics {
-    display: block;
+@media (max-width: 440px) {
+  .tools > label:first-child {
+    flex-basis: 100%;
   }
-  .root.root .topics {
-    display: none;
+  .chapterControl {
+    flex-basis: 100%;
   }
-}
-/* An editorial guide, with navigation separate from the reading surface. */
-.cover {
-  position: relative;
-  overflow: hidden;
-  padding: 26px 30px;
-  background:
-    radial-gradient(ellipse at 100% 0, #b3da7a24, transparent 65%),
-    linear-gradient(125deg, #172c2a, #2d4434);
-  border-radius: 24px;
-}
-.cover:after {
-  content: "";
-  position: absolute;
-  right: 30%;
-  top: -70px;
-  width: 200px;
-  height: 260px;
-  background: url("/pace-diamond.svg") center/contain no-repeat;
-  opacity: 0.12;
-  transform: rotate(14deg);
-  pointer-events: none;
-}
-.cover h2 {
-  font-size: 32px;
-  margin: 8px 0;
-}
-.layout {
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 40px;
-}
-.reader {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  padding: 16px 0 24px;
-}
-.reader article {
-  max-width: 70ch;
-}
-.reader h1,
-.reader h2 {
-  font-size: clamp(24px, 3vw, 34px);
-  line-height: 1.2;
-  letter-spacing: -0.035em;
-}
-.topics button {
-  border-radius: 0;
-  padding: 10px 12px;
-  min-height: 44px;
-  font-size: 12px;
-}
-.topics button[aria-current="page"] {
-  background: color-mix(in srgb, var(--accent-solid) 5%, transparent);
-}
-@media (max-width: 800px) {
-  .layout {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-  .cover {
-    padding: 22px;
-  }
-  .cover h2 {
-    font-size: 28px;
-  }
-  .reader {
-    padding-top: 10px;
-  }
-}
-
-/* Match Settings and support rather than a separate marketing cover. */
-.cover {
-  padding: 20px 24px;
-  gap: 16px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--card);
-  color: var(--ink);
-}
-.cover:after {
-  display: none;
-}
-.cover h2 {
-  font-size: clamp(24px, 3vw, 30px);
-  font-weight: 500;
-  margin: 8px 0;
-}
-.cover p {
-  color: var(--muted);
-  font-size: 13px;
-  max-width: 70ch;
-}
-.kicker {
-  color: var(--blue);
-  font-weight: 500;
-}
-.cover button {
-  color: var(--ink);
-  background: var(--card);
-  border-color: var(--line);
-}
-.tools {
-  padding: 16px 0;
-  gap: 12px 20px;
-}
-.layout {
-  gap: 16px;
-}
-.topics button[aria-current="page"] {
-  color: var(--ink);
-  background: color-mix(in srgb, var(--blue) 10%, var(--card));
-}
-.readerMeta > span {
-  color: var(--blue);
-}
-.root :is(button, input, select):focus-visible {
-  outline-color: var(--blue);
-}
-.body {
-  font-size: 14px;
-  line-height: 1.7;
-}
-.body p {
-  margin-bottom: 14px;
-}
-@media (max-width: 800px) {
-  .layout {
-    gap: 16px;
-  }
-  .cover {
-    padding: 18px;
-  }
-}
-
-/* Short chapter introductions should read as a list, not three empty panels. */
-.intro > p {
-  font-size: 15px;
-  line-height: 1.65;
-}
-.intro ul {
-  margin: 12px 0 18px;
-}
-.intro li {
-  margin: 0;
-  padding: 8px 0 8px 20px;
-  line-height: 1.6;
-}
-.intro li::before {
-  top: 12px;
-  color: var(--blue);
-  font-size: 8px;
-}
-.root.root .reader h3 {
-  font-size: clamp(22px, 2.5vw, 28px);
-  margin-bottom: 16px;
-}
-.readerMeta {
-  margin-bottom: 12px;
-}
-.root.root .fullDetail {
-  margin: 14px 0;
-}
-
-/* One guide rail: open heading, tools, then the selected chapter. */
-.root.root {
-  margin: 0;
-  width: 100%;
-}
-.root.root .cover {
-  align-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.root.root .cover h2 {
-  margin: 0 0 5px;
-  font-size: clamp(21px, 3vw, 28px);
-}
-.root.root .tools {
-  padding: 14px 0;
-  align-items: end;
-}
-.root.root .tools > label:first-child {
-  flex: 1 1 220px;
-  max-width: none;
-  min-width: 0;
-}
-.root.root .chapterControl {
-  flex: 1 1 210px;
-  min-width: 0;
-}
-.root.root .chapterControl select {
-  text-overflow: ellipsis;
-}
-.root.root .layout {
-  grid-template-columns: minmax(0, 1fr);
-}
-.root.root .reader {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px 0 4px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.root.root .reader article {
-  max-width: none;
-  margin: 0;
-}
-.root.root .readerMeta > span {
-  color: var(--plaid-ink, var(--ink));
-}
-.root.root :is(button, input, select, summary):focus-visible {
-  outline: 2px solid var(--plaid-focus, var(--blue));
-  outline-offset: 2px;
-}
-@media (max-width: 640px) {
-  .root.root .tools {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-  .root.root .tools > label:first-child,
-  .root.root .tools > .chapterControl {
-    flex: none;
-  }
-}
-
-.root.root .intro li {
-  border: 0;
-  padding-block: 5px;
-}
-.root.root .fullDetail,
-.root.root .chapterNav {
-  border: 0;
-}
-.root.root .chapterNav {
-  margin-top: 16px;
 }

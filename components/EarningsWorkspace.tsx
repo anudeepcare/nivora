@@ -26,7 +26,12 @@ export default function EarningsWorkspace({
         </div>
       </header>
       {rows.length > 0 && (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="EPS results and surprise"
+        >
           <table>
             <caption>EPS results and surprise</caption>
             <thead>
@@ -66,7 +71,12 @@ export default function EarningsWorkspace({
         </div>
       )}
       {future.length > 0 && (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Future earnings estimates"
+        >
           <table>
             <caption>Future estimates · not reported results</caption>
             <thead>

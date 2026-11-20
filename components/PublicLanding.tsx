@@ -11,43 +11,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Sun,
-  Moon,
   ChartNoAxesCombined,
   Check,
   ShieldCheck,
   Layers3,
   Scale,
 } from "lucide-react";
-
-function PublicThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
-  useEffect(() => {
-    setTheme(
-      document.documentElement.dataset.theme === "light" ? "light" : "dark",
-    );
-  }, []);
-  return (
-    <button
-      type="button"
-      className={landing.themeToggle}
-      aria-label={`Use ${theme === "dark" ? "day" : "night"} theme`}
-      onClick={() => {
-        const next = theme === "dark" ? "light" : "dark";
-        document.documentElement.dataset.theme = next;
-        document.documentElement.style.colorScheme = next;
-        try {
-          localStorage.setItem("auryn-product-theme", next);
-        } catch {
-          /* Optional preference. */
-        }
-        setTheme(next);
-      }}
-    >
-      {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-    </button>
-  );
-}
 
 function PublicBrand() {
   return (
@@ -896,10 +865,7 @@ export default function PublicLanding({
       <a className="ap-skip-link" href="#ap-main">
         Skip to content
       </a>
-      <PublicPlaidOpening
-        brand={<PublicBrand />}
-        themeControl={<PublicThemeToggle />}
-      />
+      <PublicPlaidOpening brand={<PublicBrand />} />
 
       {sampleOnly && <ProductWalkthrough />}
       <section

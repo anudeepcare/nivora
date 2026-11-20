@@ -361,6 +361,12 @@ export default function OptionsDesk({
         .sort((a, b) => b.putOi - a.putOi)
         .find((b) => b.putOi > 0)
     : null;
+  const unverifiedDeliverables = displaySnapshot.some((c) => !c.standard);
+  const indicativeContracts = /^indicative feed\b/i.test(
+    chain?.frequency ?? "",
+  );
+  const underlyingBasis =
+    research.quote.session?.trim() || dateLabel(research.quote.asOf);
   const observed = summary.asOf
     ? dateLabel(summary.asOf)
     : "No observation for this expiry";
@@ -483,17 +489,6 @@ export default function OptionsDesk({
           </button>
         </p>
       )}
-      {!!contracts.length && chain?.message && (
-        <p className={deskStyles.options_notice}>{chain.message}</p>
-      )}
-      {!!contracts.length && displaySnapshot.some((c) => !c.standard) && (
-        <p className={deskStyles.options_notice}>
-          Reported contract Greeks are available under Calls &amp; puts. Their
-          independent observation time is not supplied. Unverified deliverables
-          are excluded from position sizing, payoff and gamma-exposure
-          calculations.
-        </p>
-      )}
       {busy && (
         <p role="status" className={deskStyles.options_loading}>
           Loading contract prices…
@@ -522,13 +517,11 @@ export default function OptionsDesk({
             aria-label="Options snapshot"
           >
             <div>
-              <dt>Selected expiration</dt>
-              <dd>
-                {expiryLabel(active)}{" "}
-                <small>
-                  · {days} days · {displaySnapshot.length} contracts
-                </small>
-              </dd>
+              <dt>Loaded contracts</dt>
+              <dd>{displaySnapshot.length.toLocaleString()}</dd>
+              <small>
+                · {days} {days === 1 ? "day" : "days"} to expiry
+              </small>
             </div>
             {summary.straddle !== null && spot > 0 && (
               <div>
@@ -564,27 +557,46 @@ export default function OptionsDesk({
                   : "Not priced"}
               </span>
             </strong>
-            <small>
-              Underlying quote · {optionsObservationTime(research.quote.asOf)} ·{" "}
-              {research.quote.source || "Source not supplied"} ·{" "}
-              {research.quote.session || "Session not supplied"}
-              {research.quote.stale ? " · stale" : ""}
-            </small>
-            <small>
-              Contract observation date · {observed}. The stock header may show
-              a settled close; this workspace uses the research quote above.
+            <small className={deskStyles.snapshotBasis}>
+              Underlying · {underlyingBasis} ·{" "}
+              {summary.asOf ? `Contracts dated ${observed}` : observed}
+              {indicativeContracts &&
+                " · Indicative contracts · not executable"}
+              {!chain?.complete && " · Partial snapshot"}
+              {unverifiedDeliverables &&
+                " · Verified contracts only for sizing"}
+              {research.quote.stale && " · Stale underlying quote"}
             </small>
             <details className={deskStyles.dataHelp}>
               <summary>Data & definitions</summary>
               <div>
                 <p>
+                  Underlying quote ·{" "}
+                  {optionsObservationTime(research.quote.asOf)} ·{" "}
+                  {research.quote.source || "Source not supplied"} ·{" "}
+                  {research.quote.session || "Session not supplied"}
+                  {research.quote.stale ? " · stale" : ""}.
+                </p>
+                <p>
+                  Contract observation date · {observed}. The stock header may
+                  show a settled close; this workspace uses the research quote
+                  above.
+                </p>
+                <p>
                   {chain?.frequency || "Snapshot pricing"}.{" "}
                   {!chain?.complete &&
                     "Partial chain; totals cover only returned contracts."}{" "}
-                  Underlying observation:{" "}
-                  {optionsObservationTime(research.quote.asOf)}. Confirm
-                  execution prices with your broker.
+                  Confirm execution prices with your broker.
                 </p>
+                {chain?.message && <p>{chain.message}</p>}
+                {unverifiedDeliverables && (
+                  <p>
+                    Reported contract Greeks are available under Calls &amp;
+                    puts. Their independent observation time is not supplied.
+                    Unverified deliverables are excluded from position sizing,
+                    payoff and gamma-exposure calculations.
+                  </p>
+                )}
                 <p>
                   Quote quality · {quoteQuality.twoSided}/
                   {quoteQuality.contracts} contracts have two-sided quotes.

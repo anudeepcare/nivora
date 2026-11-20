@@ -12,6 +12,7 @@ import {
   handbookChapters,
   findHandbookChapters,
   handbookBlocks,
+  type HandbookChapter,
 } from "@/lib/handbook-reader";
 import styles from "./OwnerHandbook.module.css";
 const topicGuides = [
@@ -126,6 +127,16 @@ const topicGuides = [
     "Open the technical reference for formulas.|Use the same period and price when comparing values.|Keep technical explanations out of the everyday workflow.",
   ],
 ];
+const chapterLocation = (id: number) => `#handbook-chapter-${id + 1}`;
+export function handbookChapterFromHash(hash: string): number | null {
+  if (hash === "#admin-handbook") return 0;
+  const match = /^#handbook-chapter-([1-9]\d{0,3})$/.exec(hash);
+  return match ? Number(match[1]) - 1 : null;
+}
+const chapterTitle = (chapter: HandbookChapter) =>
+  (!chapter.reference && topicGuides[chapter.id]?.[0]) ||
+  chapter.title.replace(/^\d+\.\s*/, "");
+
 function Inline({ text }: { text: string }) {
   return (
     <>
@@ -162,28 +173,71 @@ export default function OwnerHandbook() {
     return () => controller.abort();
   }, [retry]);
   const chapters = useMemo(() => handbookChapters(content), [content]);
-  const matches = useMemo(
-    () => findHandbookChapters(chapters, deferredQuery, references),
-    [chapters, deferredQuery, references],
-  );
+  const matches = useMemo(() => {
+    const q = deferredQuery.trim().toLowerCase();
+    const byContent = new Set(
+      findHandbookChapters(chapters, q, references).map(
+        (chapter) => chapter.id,
+      ),
+    );
+    return chapters.filter(
+      (chapter) =>
+        byContent.has(chapter.id) ||
+        (!chapter.reference &&
+          topicGuides[chapter.id]?.join(" ").toLowerCase().includes(q)),
+    );
+  }, [chapters, deferredQuery, references]);
   const readerHeading = useRef<HTMLHeadingElement>(null);
-  const moveToHeading = useRef(false);
+  const moveToHeading = useRef<number | null>(null);
   const active = matches.find((x) => x.id === selected) ?? matches[0];
-  function chooseChapter(id: number) {
-    if (id === active?.id) return;
-    moveToHeading.current = true;
+  function focusChapter() {
+    if (!readerHeading.current) return;
+    readerHeading.current.focus({ preventScroll: true });
+    readerHeading.current.scrollIntoView({
+      block: "start",
+      behavior: "instant",
+    });
+  }
+  function chooseChapter(id: number, focusReader = true) {
+    const hash = chapterLocation(id);
+    if (window.location.hash !== hash) window.history.pushState(null, "", hash);
+    moveToHeading.current = focusReader && id !== active?.id ? id : null;
     setSelected(id);
+    if (focusReader && id === active?.id) focusChapter();
   }
   useEffect(() => {
-    if (moveToHeading.current && readerHeading.current) {
-      moveToHeading.current = false;
-      readerHeading.current.focus({ preventScroll: true });
-      readerHeading.current.scrollIntoView({
-        block: "start",
-        behavior: "instant",
-      });
+    function syncBookmark(event?: HashChangeEvent) {
+      const hash = window.location.hash;
+      const id =
+        handbookChapterFromHash(hash) ??
+        (!hash && event ? chapters[0]?.id : null);
+      if (id == null) return;
+      const chapter = chapters.find((item) => item.id === id);
+      if (!chapter) return;
+      moveToHeading.current = id;
+      setQuery("");
+      setSelected(chapter.id);
+      if (chapter.reference) setReferences(true);
+      if (readerHeading.current?.id === chapterLocation(id).slice(1)) {
+        moveToHeading.current = null;
+        focusChapter();
+      }
     }
-  }, [active?.id]);
+    syncBookmark();
+    window.addEventListener("hashchange", syncBookmark);
+    return () => window.removeEventListener("hashchange", syncBookmark);
+  }, [chapters]);
+  const activeId = active?.id;
+  useEffect(() => {
+    if (
+      activeId != null &&
+      moveToHeading.current === activeId &&
+      readerHeading.current
+    ) {
+      moveToHeading.current = null;
+      focusChapter();
+    }
+  }, [activeId]);
   const index = active ? matches.indexOf(active) : 0;
   const blocks = useMemo(
     () => handbookBlocks(active?.body ?? ""),
@@ -209,7 +263,7 @@ export default function OwnerHandbook() {
       <header className={styles.cover}>
         <div>
           <h2 id="owner-handbook-title">Owner handbook</h2>
-          <p>Daily answers up front. Every calculation one step deeper.</p>
+          <p>Read the product guide or look up the underlying calculations.</p>
         </div>
         <button disabled={!content} onClick={download}>
           Download full reference ↓
@@ -247,25 +301,56 @@ export default function OwnerHandbook() {
                 aria-label="Chapter"
                 disabled={!matches.length}
                 value={active?.id ?? ""}
-                onChange={(e) => chooseChapter(Number(e.target.value))}
+                onChange={(e) => chooseChapter(Number(e.target.value), false)}
               >
                 {!matches.length && (
                   <option value="">No matching chapters</option>
                 )}
                 {matches.map((chapter) => (
                   <option key={chapter.id} value={chapter.id}>
-                    {!chapter.reference && topicGuides[chapter.id]
-                      ? topicGuides[chapter.id][0]
-                      : chapter.title.replace(/^\d+\.\s*/, "")}
+                    {chapterTitle(chapter)}
                   </option>
                 ))}
               </select>
             </label>
           </div>
           <div className={styles.layout}>
+            <nav className={styles.topics} aria-label="Handbook contents">
+              <h3>
+                Contents <small>{matches.length}</small>
+              </h3>
+              <ol>
+                {matches.map((chapter) => (
+                  <li key={chapter.id}>
+                    <a
+                      href={chapterLocation(chapter.id)}
+                      aria-current={
+                        active?.id === chapter.id ? "location" : undefined
+                      }
+                      onClick={(event) => {
+                        if (
+                          event.defaultPrevented ||
+                          event.button !== 0 ||
+                          event.ctrlKey ||
+                          event.metaKey ||
+                          event.shiftKey ||
+                          event.altKey
+                        )
+                          return;
+                        event.preventDefault();
+                        chooseChapter(chapter.id);
+                      }}
+                    >
+                      <span aria-hidden="true">{chapter.id + 1}</span>
+                      {chapterTitle(chapter)}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
             <div className={styles.reader}>
               {active ? (
-                <article aria-live="polite">
+                <article aria-labelledby={chapterLocation(active.id).slice(1)}>
                   <div className={styles.readerMeta}>
                     <span>
                       {active.reference
@@ -276,8 +361,12 @@ export default function OwnerHandbook() {
                       {minutes} min read · {index + 1} of {matches.length}
                     </small>
                   </div>
-                  <h3 ref={readerHeading} tabIndex={-1}>
-                    {guide?.[0] ?? active.title.replace(/^\d+\.\s*/, "")}
+                  <h3
+                    id={chapterLocation(active.id).slice(1)}
+                    ref={readerHeading}
+                    tabIndex={-1}
+                  >
+                    {chapterTitle(active)}
                   </h3>
                   {guide && (
                     <div className={styles.intro}>
@@ -289,78 +378,77 @@ export default function OwnerHandbook() {
                       </ul>
                     </div>
                   )}
-                  <details
-                    key={active.id}
-                    className={styles.fullDetail}
-                    open={active.reference || !!query.trim()}
-                  >
-                    <summary>Full explanation & technical details</summary>
-                    <div className={styles.body}>
-                      {active.reference ? (
-                        <pre>{active.body}</pre>
-                      ) : (
-                        blocks.map((block, i) =>
-                          block.kind === "heading" ? (
-                            <h4 key={i}>
-                              <Inline text={block.text} />
-                            </h4>
-                          ) : block.kind === "code" ? (
-                            <pre key={i}>{block.text}</pre>
-                          ) : block.kind === "list" ? (
-                            block.ordered ? (
-                              <ol key={i}>
-                                {block.items.map((item, j) => (
-                                  <li key={j}>
-                                    <Inline text={item} />
-                                  </li>
-                                ))}
-                              </ol>
-                            ) : (
-                              <ul key={i}>
-                                {block.items.map((item, j) => (
-                                  <li key={j}>
-                                    <Inline text={item} />
-                                  </li>
-                                ))}
-                              </ul>
-                            )
-                          ) : block.kind === "table" ? (
-                            <div key={i} className={styles.table}>
-                              <table>
-                                <thead>
-                                  <tr>
-                                    {block.header.map((cell, j) => (
-                                      <th key={j} scope="col">
+                  <div className={styles.body} key={active.id}>
+                    {active.reference ? (
+                      <pre>{active.body}</pre>
+                    ) : (
+                      blocks.map((block, i) =>
+                        block.kind === "heading" ? (
+                          <h4 key={i}>
+                            <Inline text={block.text} />
+                          </h4>
+                        ) : block.kind === "code" ? (
+                          <pre key={i}>{block.text}</pre>
+                        ) : block.kind === "list" ? (
+                          block.ordered ? (
+                            <ol key={i}>
+                              {block.items.map((item, j) => (
+                                <li key={j}>
+                                  <Inline text={item} />
+                                </li>
+                              ))}
+                            </ol>
+                          ) : (
+                            <ul key={i}>
+                              {block.items.map((item, j) => (
+                                <li key={j}>
+                                  <Inline text={item} />
+                                </li>
+                              ))}
+                            </ul>
+                          )
+                        ) : block.kind === "table" ? (
+                          <div
+                            key={i}
+                            className={styles.table}
+                            role="region"
+                            tabIndex={0}
+                            aria-label={block.header.join(" · ")}
+                          >
+                            <table>
+                              <thead>
+                                <tr>
+                                  {block.header.map((cell, j) => (
+                                    <th key={j} scope="col">
+                                      <Inline text={cell} />
+                                    </th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {block.rows.map((row, j) => (
+                                  <tr key={j}>
+                                    {row.map((cell, k) => (
+                                      <td key={k}>
                                         <Inline text={cell} />
-                                      </th>
+                                      </td>
                                     ))}
                                   </tr>
-                                </thead>
-                                <tbody>
-                                  {block.rows.map((row, j) => (
-                                    <tr key={j}>
-                                      {row.map((cell, k) => (
-                                        <td key={k}>
-                                          <Inline text={cell} />
-                                        </td>
-                                      ))}
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          ) : (
-                            <p key={i}>
-                              <Inline text={block.text} />
-                            </p>
-                          ),
-                        )
-                      )}
-                    </div>
-                  </details>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <p key={i}>
+                            <Inline text={block.text} />
+                          </p>
+                        ),
+                      )
+                    )}
+                  </div>
                   <nav
                     className={styles.chapterNav}
-                    aria-label="Handbook chapters"
+                    aria-label="Previous or next handbook chapter"
                   >
                     <button
                       disabled={index === 0}
@@ -380,7 +468,7 @@ export default function OwnerHandbook() {
                   </nav>
                 </article>
               ) : (
-                <div className={styles.empty}>
+                <div className={styles.empty} role="status">
                   <h3>No matching topics</h3>
                   <p>
                     Try a shorter phrase or include the technical reference.

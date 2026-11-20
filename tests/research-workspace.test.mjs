@@ -132,7 +132,7 @@ test("Options, analyst sources and Business retain default evidence and unique s
   const evidence = fs.readFileSync("components/TargetsEstimates.tsx", "utf8");
   assert.match(
     evidence,
-    /Sources &amp; reporting periods[\s\S]*not merged with the consensus\s+feed/,
+    /Sources &amp; reporting periods[\s\S]*not merged with the\s+consensus\s+feed/,
   );
   const business = section("Financials", "Valuation");
   for (const name of ["Financials", "BusinessHistory", "FinancingContext"])

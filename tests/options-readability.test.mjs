@@ -226,10 +226,45 @@ test("empty contract tools have no disabled toolbar clutter and guide stays reac
 test("Options exposes quote basis and exact time separately from contract dates without changing price", () => {
   const html = render({ symbol: "TEST", contracts, complete: true });
   assert.match(html, /Underlying quote/);
+  assert.match(html, /Underlying · regular · Contracts dated/);
   assert.match(html, /2026-11-17 20:42:31 UTC/);
   assert.match(html, /Synthetic quote source/);
   assert.match(html, /stale/);
   assert.match(html, /Contract observation date/);
   assert.match(html, /stock header may show a settled close/);
   assert.match(html, /\$100/);
+});
+
+test("scope remains visible while operational evidence and source detail are consolidated", () => {
+  const html = render(
+    {
+      symbol: "TEST",
+      contracts: contracts.map((c) => ({ ...c, standard: false })),
+      complete: false,
+      message: "Long provider caveat for diagnostics",
+      frequency: "Indicative feed: modified quotes and delayed trades",
+    },
+    "diagnostics",
+  );
+  const main = html.split('<details class="dataHelp"')[0];
+  assert.match(main, /Underlying · regular/);
+  assert.match(main, /No observation for this expiry/);
+  assert.match(main, /Indicative contracts · not executable/);
+  assert.match(main, /Partial snapshot/);
+  assert.match(main, /Verified contracts only for sizing/);
+  assert.match(main, /Stale underlying quote/);
+  assert.doesNotMatch(
+    main,
+    /Long provider caveat|Synthetic quote source|2026-11-17 20:42:31 UTC|Selected expiration/,
+  );
+  const definitions = html.match(
+    /<details class="dataHelp"[^>]*>([\s\S]*?)<\/details>/,
+  )?.[1];
+  assert.match(definitions, /Long provider caveat/);
+  assert.match(definitions, /Synthetic quote source/);
+  assert.match(definitions, /2026-11-17 20:42:31 UTC/);
+  assert.match(
+    definitions,
+    /excluded from position sizing, payoff and gamma-exposure/,
+  );
 });

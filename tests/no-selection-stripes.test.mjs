@@ -5,7 +5,7 @@ import postcss from "postcss";
 
 test("selected or expanded admin rows use a surface fill rather than an edge stripe", () => {
   for (const [name, selector] of [
-    ["OwnerHandbook", '.topics button[aria-current="page"]'],
+    ["OwnerHandbook", '.topics a[aria-current="location"]'],
     ["SupportInbox", ".ticket[open]"],
   ]) {
     let hasFill = false;

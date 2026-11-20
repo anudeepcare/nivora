@@ -206,7 +206,7 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /id="pricing"/);
   assert.match(html, /Method preview · not live data/);
 
-  assert.match(html, /href="\/sample"[^>]*>Explore the demo/);
+  assert.match(html, /href="\/sample#product-guide"[^>]*>Explore the demo/);
   assert.match(html, /AURYN Accumulation Pace/);
   assert.doesNotMatch(html, /id="investment-demo"/);
   assert.doesNotMatch(html, /class="ap-benefits/);
@@ -282,7 +282,7 @@ test("public navigation opens accessibly, closes on Escape, and closes after a d
   });
   const render = () => {
     cursor = 0;
-    return PublicOpening({ brand: "AURYN", themeControl: null });
+    return PublicOpening({ brand: "AURYN" });
   };
   const toggle = () =>
     nodes(

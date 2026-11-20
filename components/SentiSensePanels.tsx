@@ -75,13 +75,16 @@ export default function SentiSensePanels({
   group,
   preview = false,
   supplementalOwnership,
+  compactPresentation = false,
 }: {
   symbol: string;
   group: SentiSenseGroupName;
   preview?: boolean;
   supplementalOwnership?: Research;
+  compactPresentation?: boolean;
 }) {
-  const compact = group === "options" || group === "ownership";
+  const compact =
+    compactPresentation || group === "options" || group === "ownership";
   const { preferences } = useWorkspacePreferences();
   const hidden = preferences.hiddenSignals ?? [];
   const categories: Partial<Record<SentiSenseDataset, string>> = {

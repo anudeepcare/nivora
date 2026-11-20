@@ -5,7 +5,10 @@ const jsx = readFileSync("components/HomeWorkspace.tsx", "utf8");
 const css = readFileSync("components/HomeWorkspace.module.css", "utf8");
 
 test("Today opens with research priorities and dated events, ahead of price and account context", () => {
-  assert.ok(jsx.indexOf("<TodaySequence") < jsx.indexOf('id="home-earnings"'));
+  assert.ok(
+    jsx.indexOf('aria-label="Today’s story"') <
+      jsx.indexOf('id="home-earnings"'),
+  );
   assert.ok(
     jsx.indexOf('id="home-earnings"') < jsx.indexOf('title="What changed"'),
   );

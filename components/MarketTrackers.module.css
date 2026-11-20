@@ -265,3 +265,17 @@
 .analystControls .analystViews {
   margin-block: 0;
 }
+
+.analystHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+.analystHeading .analystNotes {
+  margin: 0;
+}
+.analystHeading .analystNotes[open] {
+  flex-basis: 100%;
+}

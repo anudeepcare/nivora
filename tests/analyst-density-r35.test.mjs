@@ -16,7 +16,7 @@ test("separate target model evidence retains source note without a standalone pr
   const view = read("TargetsEstimates.tsx");
   assert.match(
     view,
-    /<summary>Sources &amp; reporting periods<\/summary>[\s\S]*?not merged with the consensus\s+feed/,
+    /<summary>Sources &amp; reporting periods<\/summary>[\s\S]*?not merged with the\s+consensus\s+feed/,
   );
   assert.doesNotMatch(
     read("Research.tsx"),

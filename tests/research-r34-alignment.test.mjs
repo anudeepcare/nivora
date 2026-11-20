@@ -203,12 +203,12 @@ test("populated Research routes open their actual top-level evidence branch", ()
       ResearchWorkspace,
       FeatureGate,
       SentiSensePanels: stub("SentiSensePanels"),
+      TargetsEstimates: ({ providerEvidence }) => providerEvidence,
       ...Object.fromEntries(
         [
           "FreeSnapshot",
           "TimingContext",
           "OptionsDesk",
-          "TargetsEstimates",
           "AnalystRatings",
           "BusinessHistory",
           "FinancingContext",

@@ -40,7 +40,6 @@ function render() {
   return renderToStaticMarkup(
     React.createElement(load(), {
       brand: React.createElement("span", null, "AURYN"),
-      themeControl: null,
     }),
   );
 }
@@ -104,7 +103,7 @@ test("Explore opens, switches real destinations and closes on Escape/outside poi
   const render = () => {
     index = 0;
     refIndex = 0;
-    return Component({ brand: "AURYN", themeControl: null });
+    return Component({ brand: "AURYN" });
   };
   const nodes = (n) =>
     !n || typeof n !== "object"

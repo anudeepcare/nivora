@@ -13,18 +13,19 @@ test("owner controls use one open rail, without a decorative title capsule", () 
   for (const value of ["owner", "free", "pro"])
     assert.match(jsx, new RegExp(`<option value="${value}">`));
 });
-test("handbook uses one full-width reader and one shared chapter selector, retaining download and detail", () => {
+test("handbook uses one measured reader and a mobile chapter selector, retaining download and document text", () => {
   const jsx = read("OwnerHandbook.tsx");
   assert.doesNotMatch(jsx, /aria-label="Guide topics"|id="admin-handbook"/);
   assert.match(jsx, /aria-label="Chapter"/);
   assert.match(
     jsx,
-    /onChange=\{\(e\) => chooseChapter\(Number\(e.target.value\)\)\}/,
+    /onChange=\{\(e\) => chooseChapter\(Number\(e.target.value\), false\)\}/,
   );
   assert.match(jsx, /onClick=\{download\}/);
-  assert.match(jsx, /Full explanation & technical details/);
+  assert.match(jsx, /handbookBlocks\(active\?\.body/);
+  assert.match(jsx, /<div className=\{styles.body\}/);
   assert.match(
     read("OwnerHandbook.module.css"),
-    /\.root\.root \.reader article\s*\{[^}]*max-width: none/,
+    /\.reader article\s*\{[^}]*max-width: 74ch/,
   );
 });

@@ -135,13 +135,16 @@ export function PaceBadge({
   loading?: boolean;
 }) {
   const reading = signal?.periods.find((p) => p.key === "confirmed");
+  const code = signal?.view.code ?? (loading ? "Checking…" : "Unavailable");
+  // A category colors the technical code only; the business action stays separate.
+  const level = /^P([0-4])$/.exec(code)?.[1];
   return (
     <span
-      className={s.badge}
+      className={`${s.badge} ${s.palette}`}
       title={reading?.date ? `Confirmed ${dateLabel(reading.date)}` : undefined}
-      data-level={signal?.view.permitted ? reading?.level : undefined}
+      data-pace-level={level}
     >
-      <b>{signal?.view.code ?? (loading ? "Checking…" : "Unavailable")}</b>
+      <b>{code}</b>
       <span>{signal?.view.actionLabel.replace(/ · P[0-4]$/, "") ?? ""}</span>
     </span>
   );

@@ -7,7 +7,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { workspaceGuidance } from "../lib/edge-research.ts";
 import { demoData } from "./fixtures/demo.ts";
 import * as format from "../lib/format.ts";
-import { homeBrief } from "../lib/home-brief.ts";
+import { quoteHealth } from "../lib/quote-health.ts";
+import { todayNarrative } from "../lib/today-narrative.ts";
+import { dailyPerspective, homeBrief } from "../lib/home-brief.ts";
 import {
   groupMarketEvents,
   marketDay,
@@ -21,6 +23,14 @@ const Link = ({ children, ...props }) =>
 function load(name, bindings) {
   bindings = {
     useState: React.useState,
+    useResource: () => ({ data: null, loading: false }),
+    quoteHealth,
+    todayNarrative,
+    dailyPerspective,
+    useAccess: () => ({
+      access: { admitted: true, features: { news: false } },
+    }),
+    TodayMacroWatch: () => null,
     SectionIcon: () => null,
     PaceBoard: () =>
       React.createElement("section", {
@@ -56,7 +66,6 @@ function load(name, bindings) {
   bindings = { PaceHelp: () => null, ...bindings };
   if (name === "HomeOverview") {
     bindings.EarningsNumbers = load("EarningsNumbers", {});
-    bindings.TodaySequence = load("TodaySequence", {});
   }
   const file =
     name === "TodaySequence"
@@ -407,7 +416,7 @@ test("expanded Home headlines retain the same logo, timestamp and article layout
   const news = Array.from({ length: 9 }, (_, i) => ({
     symbol: "MSFT",
     date: new Date(Date.now() - 3600000).toISOString(),
-    title: `Company update ${i}`,
+    title: i === 0 ? "Microsoft files its 10-Q" : `Company update ${i}`,
     url: `https://example.com/story/${i}`,
   }));
   const Home = load("HomeOverview", {
@@ -462,9 +471,130 @@ test("expanded Home headlines retain the same logo, timestamp and article layout
     fs.writeFileSync(process.env.AURYN_HOME_NEWS_FIXTURE, html);
   const expanded = html.slice(html.indexOf('class="home-more-updates"'));
   assert.match(expanded, /class="home-news-list"/);
-  assert.equal((expanded.match(/class="home-news-meta"/g) || []).length, 3);
-  assert.equal((expanded.match(/class="home-news-title"/g) || []).length, 3);
-  assert.equal((expanded.match(/data-logo="MSFT"/g) || []).length, 3);
-  assert.equal((expanded.match(/<time /g) || []).length, 3);
-  assert.equal((html.match(/class="home-news-title"/g) || []).length, 9);
+  assert.equal((expanded.match(/class="home-news-meta"/g) || []).length, 2);
+  assert.equal((expanded.match(/class="home-news-title"/g) || []).length, 2);
+  assert.equal((expanded.match(/data-logo="MSFT"/g) || []).length, 2);
+  assert.equal((expanded.match(/<time /g) || []).length, 2);
+  assert.equal((html.match(/class="home-news-title"/g) || []).length, 8);
+  assert.equal(
+    (html.match(/https:\/\/example\.com\/story\/0"/g) || []).length,
+    1,
+  );
+  assert.match(
+    html,
+    /aria-label="Today’s story"[\s\S]*href="https:\/\/example\.com\/story\/0"/,
+  );
+});
+
+test("daily briefing reuses followed benchmarks, labels the reported session and withholds future prices", () => {
+  const requests = [];
+  const quote = (changePct, asOf) => ({
+    price: 400,
+    changePct,
+    asOf,
+    currency: "USD",
+    session: "Closed",
+    source: "Fixture",
+    stale: true,
+  });
+  const Home = load("HomeOverview", {
+    useResource(key) {
+      requests.push(key);
+      return { data: { QQQ: { quote: quote(-5, "2099-01-01") } } };
+    },
+    useWorkspaceData: () => ({
+      research: empty,
+      workspace: { positions: [], watchlist: [{ symbol: "SPY" }] },
+      quotes: { data: { SPY: { quote: quote(1.55, "2026-11-18") } } },
+      model: { allocations: [] },
+      prefix: "",
+      pace: empty,
+    }),
+    useHomeFeed: () => ({ data: null, loading: false, error: "" }),
+    homeBrief,
+    homeFeedReadiness,
+    groupMarketEvents,
+    marketDay,
+    earningsEventState,
+    relevantHoldingHeadlines,
+    researchLink: (symbol) => `/research/${symbol}`,
+    ...format,
+    Heading: empty,
+    SectionHead: empty,
+    Coverage: empty,
+    Notice: empty,
+    RefreshCw: empty,
+  });
+  const html = renderToStaticMarkup(React.createElement(Home));
+  assert.deepEqual(requests, ["quotes?symbols=QQQ", null]);
+  assert.match(html, /SPY<\/a>[\s\S]*data-direction="up">\+1.6%/);
+  assert.match(html, /Older quote · Closed ·/);
+  assert.match(html, /QQQ<\/a>[\s\S]*Quote unavailable/);
+  assert.doesNotMatch(html, /2099|-5\.0%/);
+  assert.match(html, new RegExp(`<time dateTime="${marketDay(new Date())}"`));
+  assert.match(html, /href="\/research">Open company research/);
+});
+
+test("new users get scoped market context while preview or unentitled sessions never request it", () => {
+  for (const [admitted, news, sampleOnly, enabled] of [
+    [true, true, false, true],
+    [true, false, false, false],
+    [true, true, true, false],
+    [false, true, false, false],
+  ]) {
+    const queries = [];
+    const Home = load("HomeOverview", {
+      useAccess: () => ({
+        access: { admitted, sampleOnly, features: { news } },
+      }),
+      useResource: (key) => {
+        queries.push(key);
+        return {
+          data: {
+            items: [
+              {
+                date: new Date(Date.now() - 60_000).toISOString(),
+                title:
+                  "U.S. inflation data put Federal Reserve decision in focus",
+                url: "https://example.com/macro",
+              },
+            ],
+          },
+        };
+      },
+      useWorkspaceData: () => ({
+        research: empty,
+        workspace: { positions: [], watchlist: [] },
+        quotes: { data: {} },
+        model: { allocations: [] },
+        prefix: "",
+      }),
+      useHomeFeed: () => ({ data: null, loading: false, error: "" }),
+      homeBrief,
+      homeFeedReadiness,
+      groupMarketEvents,
+      marketDay,
+      earningsEventState,
+      relevantHoldingHeadlines,
+      researchLink: (symbol) => `/research/${symbol}`,
+      ...format,
+      Heading: empty,
+      SectionHead: empty,
+      Coverage: empty,
+      Notice: empty,
+    });
+    const html = renderToStaticMarkup(React.createElement(Home));
+    assert.equal(
+      queries.filter((key) => key === "news?symbol=SPY").length,
+      enabled ? 1 : 0,
+    );
+    if (enabled) {
+      assert.match(html, /SPY market coverage · Source headline/);
+      assert.match(html, /href="https:\/\/example\.com\/macro"/);
+      assert.doesNotMatch(html, /Next supplied event|Scheduled today/);
+    } else {
+      assert.match(html, /Start with what you can verify/);
+      assert.doesNotMatch(html, /example\.com\/macro/);
+    }
+  }
 });

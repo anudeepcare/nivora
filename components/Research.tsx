@@ -1,5 +1,7 @@
 "use client";
 import headerPaceStyles from "./ResearchHeaderPace.module.css";
+import workspacePaceStyles from "./WorkspacePace.module.css";
+import { currentPace } from "@/lib/current-pace";
 import { navigateSelection } from "@/lib/selection-navigation";
 import { researchLenses, lensForSection } from "@/lib/reference-navigation";
 import cockpit from "./ReferenceCockpit.module.css";
@@ -589,8 +591,19 @@ export default function Research({ symbol }: { symbol: string }) {
     now: demo ? Date.parse(r.retrievedAt) : Date.now(),
   });
   const headerContext = headerMarketContext(r);
-  const headerPace = p?.dca.forming ?? p?.dca.confirmed;
-  const headerPaceProvisional = p?.dca.forming != null;
+  const headerPaceNow = demo ? Date.parse(r.retrievedAt) : Date.now();
+  const headerPaceState = currentPace(
+    { ...p?.dca.confirmed, forming: p?.dca.forming },
+    headerPaceNow,
+  );
+  const headerPaceProvisional = headerPaceState.provisional;
+  const headerPace = headerPaceProvisional
+    ? (p?.dca.forming ?? null)
+    : headerPaceState.historicalLevel !== null &&
+        Date.parse(headerPaceState.historicalDate ?? "") <= headerPaceNow
+      ? (p?.dca.confirmed ?? null)
+      : null;
+  const headerPaceCarry = headerPace !== null && headerPaceState.level === null;
   const mobileCompanyName =
     r.company.name
       .trim()
@@ -600,7 +613,7 @@ export default function Research({ symbol }: { symbol: string }) {
       ) || r.company.name;
   const paceReading = (
     <div
-      className={headerPaceStyles.pace}
+      className={`${headerPaceStyles.pace} ${workspacePaceStyles.palette}`}
       data-pace-level={headerPace?.multiplier ?? "unavailable"}
     >
       <span className={headerPaceStyles.paceDot} aria-hidden="true" />
@@ -615,6 +628,7 @@ export default function Research({ symbol }: { symbol: string }) {
           <span className={headerPaceStyles.paceLevel}>
             · {paceCode(headerPace.multiplier)}
             {headerPaceProvisional ? "*" : ""}
+            {headerPaceCarry ? "†" : ""}
           </span>
         </span>
       ) : (
@@ -624,9 +638,17 @@ export default function Research({ symbol }: { symbol: string }) {
       )}
       <span className={headerPaceStyles.mobileCode}>
         {headerPace ? paceCode(headerPace.multiplier) : "—"}
+        {(headerPaceProvisional || headerPaceCarry) && (
+          <sup aria-hidden="true">{headerPaceProvisional ? "*" : "†"}</sup>
+        )}
       </span>
       {headerPaceProvisional && (
         <span className="sr-only">Provisional current-month reading</span>
+      )}
+      {headerPaceCarry && (
+        <span className="sr-only">
+          Last completed month; current reading unavailable
+        </span>
       )}
       <Help label="this Pace reading">
         {headerPace && (
@@ -640,7 +662,9 @@ export default function Research({ symbol }: { symbol: string }) {
             <p>
               {headerPaceProvisional
                 ? "* Current month · provisional"
-                : "Completed month"}{" "}
+                : headerPaceCarry
+                  ? "† Last completed month; current reading unavailable"
+                  : "Completed month"}{" "}
               · {headerPace.month}
             </p>
             <p>{headerPace.reason}</p>
@@ -914,34 +938,19 @@ export default function Research({ symbol }: { symbol: string }) {
               </section>
             )}
             {tab === "Analysts" && (
-              <ResearchWorkspace
-                key={`${r.company.symbol}-analysts`}
-                label="Analyst evidence"
-                views={[
-                  {
-                    title: "Consensus & revisions",
-                    content: (
-                      <SentiSensePanels
-                        group="analysts"
-                        symbol={r.company.symbol}
-                        preview={!!demo}
-                      />
-                    ),
-                  },
-                  {
-                    title: "Estimates & model evidence",
-                    content: (
-                      <section aria-label="Separate estimates and model evidence">
-                        <TargetsEstimates
-                          research={r}
-                          ratings={
-                            <AnalystRatings research={r} hideConsensus />
-                          }
-                        />
-                      </section>
-                    ),
-                  },
-                ]}
+              <TargetsEstimates
+                key={r.company.symbol}
+                research={r}
+                providerEvidence={
+                  !demo ? (
+                    <SentiSensePanels
+                      group="analysts"
+                      symbol={r.company.symbol}
+                      compactPresentation
+                    />
+                  ) : undefined
+                }
+                ratings={<AnalystRatings research={r} hideConsensus />}
               />
             )}
             {tab === "Financials" && (

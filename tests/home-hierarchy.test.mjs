@@ -7,11 +7,14 @@ test("Today leads with attention and dated events before stock and portfolio con
   assert.ok(
     home.indexOf('id="home-earnings"') < home.indexOf("<HomeMarketCards"),
   );
-  assert.match(home, /concentration=\{null\}/);
-  assert.ok(home.indexOf("<TodaySequence") < home.indexOf("<HomeMarketCards"));
+  assert.match(home, /<PortfolioDay\s+compact/);
+  assert.ok(
+    home.indexOf('aria-label="Today’s story"') <
+      home.indexOf("<HomeMarketCards"),
+  );
   assert.ok(home.indexOf("<ResearchInbox") < home.indexOf("<HomeMarketCards"));
   assert.doesNotMatch(home, /<summary>Followed company prices<\/summary>/);
-  assert.match(home, /headline=\{null\}/);
+  assert.match(home, /secondaryHeadlines = spotlight\s*\? headlines\.filter/);
   assert.equal((home.match(/<Coverage state=/g) || []).length, 1);
   assert.ok(home.indexOf("<Coverage") < home.indexOf("<HomeMarketCards"));
 });
