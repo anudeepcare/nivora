@@ -15,30 +15,6 @@
   flex: 0 0 18px;
   margin-top: 2px;
 }
-.mp-auth[data-plaid-page="access"] .mp-auth-home {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: static;
-  margin: 0;
-  gap: 8px;
-  min-height: 44px;
-  padding: 8px 12px;
-  color: var(--plaid-ink, var(--ink));
-  border-radius: 12px;
-  text-decoration: none;
-}
-.mp-auth[data-plaid-page="access"] .mp-auth-home > span {
-  font-size: 24px;
-  line-height: 1;
-}
-.mp-auth[data-plaid-page="access"] .mp-auth-home:hover {
-  background: var(--blue-soft);
-}
-.mp-auth[data-plaid-page="access"] .mp-auth-home:focus-visible {
-  outline: 2px solid var(--plaid-focus, var(--ink));
-  outline-offset: 3px;
-}
 .mp-auth[data-plaid-page="access"] .mp-auth-panel {
   min-width: 0;
 }
@@ -91,4 +67,87 @@
   .mp-auth[data-plaid-page="access"]
   :is(.mp-form-submit, .mp-switch-auth, .mp-auth-disclaimer, .mp-auth-help) {
   margin-top: 10px;
+}
+
+/* Short branded contour band, never a competing illustration column. */
+.mp-auth[data-plaid-page="access"] [data-auth-banner] {
+  box-sizing: border-box;
+  min-height: 52px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background:
+    repeating-radial-gradient(
+      ellipse at 100% 180%,
+      transparent 0 16px,
+      #87ccff35 17px 18px,
+      transparent 19px 27px
+    ),
+    linear-gradient(115deg, #10283e, #174468 72%, #25345d);
+}
+.mp-auth[data-plaid-page="access"] [data-auth-banner] > a {
+  color: #f4f8ff;
+}
+.mp-auth[data-plaid-page="access"] [data-auth-banner] button {
+  color: #f4f8ff;
+  background: #163950;
+  border-color: #7b9ab4;
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-legal-dialog {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  width: min(42rem, calc(100% - 28px));
+  max-height: min(42rem, 88dvh);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 18px;
+  overflow: hidden;
+  color: var(--plaid-ink, var(--ink));
+  background: var(--plaid-surface, var(--card));
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-legal-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.mp-auth[data-plaid-page="access"] .mp-auth-legal-dialog::backdrop {
+  background: #101a35a6;
+}
+.mp-auth-legal-dialog > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--plaid-line, var(--line));
+}
+.mp-auth-legal-dialog > header > h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.mp-auth-legal-dialog > header > button {
+  flex: 0 0 44px;
+  min-height: 44px;
+  color: inherit;
+  border-radius: 9px;
+  font-size: 1.5rem;
+  background: var(--plaid-ice, var(--card));
+}
+.mp-auth-legal-body {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 16px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.mp-auth-legal-body:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: -3px;
+}
+.mp-auth-legal-body a {
+  color: var(--plaid-focus, var(--blue));
+}
+body:has(.mp-auth-legal-dialog[open]) {
+  overflow: hidden;
 }

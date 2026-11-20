@@ -47,6 +47,13 @@ export default function TargetsEstimates({
       <header className={styles.header}>
         <div>
           <h2>Targets & estimates</h2>
+          <details className={styles.sourceNote}>
+            <summary>Sources &amp; reporting periods</summary>
+            <p>
+              These separately sourced figures are not merged with the consensus
+              feed.
+            </p>
+          </details>
         </div>
       </header>
       <div

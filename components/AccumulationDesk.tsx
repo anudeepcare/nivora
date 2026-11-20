@@ -1,4 +1,5 @@
 "use client";
+import "./ResearchEvidenceDisclosures.css";
 import detail from "./PaceDeskDetails.module.css";
 import PaceEvidenceJourney from "./PaceEvidenceJourney";
 import PaceMonthHistory from "./PaceMonthHistory";
@@ -300,7 +301,7 @@ export default function AccumulationDesk({
         </p>
       )}
       {!weekly && <PaceHistoryInsights research={r} />}
-      <details className="policy-rules">
+      <details className="policy-rules" data-research-disclosure>
         <summary>See the rules and price assumptions</summary>
         <p className="small muted">
           P means Pace. Levels describe accumulation zones, not purchase

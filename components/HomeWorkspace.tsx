@@ -516,38 +516,38 @@ function HomeOverview() {
       <div className={homeStyles.planRow}>
         <div>
           <h2>Your next contribution</h2>
-          <p>
-            Compare the evidence and your position limits before setting a plan.
-          </p>
+          <p>Review the evidence and position limits before adding.</p>
         </div>
         <Link className="btn" href={`${prefix}/monthly-plan`}>
           Build this month’s research plan →
         </Link>
       </div>
-      <ContributionCompare symbols={symbols} prefix={prefix} />
-      {symbols.length > 0 && (
-        <details
-          className={homeStyles.marketRadar}
-          open={radarOpen}
-          onToggle={(event) => setRadarOpen(event.currentTarget.open)}
-        >
-          <summary>
-            Market radar{" "}
-            <span>
-              {symbols.length} held or watched companies · daily price history
-            </span>
-          </summary>
-          {radarOpen && (
-            <HomeRadar
-              research={loadedResearch}
-              requested={symbols}
-              prefix={prefix}
-              demo={!!demo}
-              asOf={day}
-            />
-          )}
-        </details>
-      )}
+      <div className={homeStyles.actionGrid}>
+        <ContributionCompare symbols={symbols} prefix={prefix} />
+        {symbols.length > 0 && (
+          <details
+            className={homeStyles.marketRadar}
+            open={radarOpen}
+            onToggle={(event) => setRadarOpen(event.currentTarget.open)}
+          >
+            <summary>
+              Market radar{" "}
+              <span>
+                {symbols.length} held or watched companies · daily price history
+              </span>
+            </summary>
+            {radarOpen && (
+              <HomeRadar
+                research={loadedResearch}
+                requested={symbols}
+                prefix={prefix}
+                demo={!!demo}
+                asOf={day}
+              />
+            )}
+          </details>
+        )}
+      </div>
     </section>
   );
 }

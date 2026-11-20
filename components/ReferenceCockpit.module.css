@@ -442,3 +442,40 @@
   color: currentColor;
   opacity: 0.9;
 }
+
+/* Primary research sections belong to the company stage, not another panel. */
+.root[data-active-lens] > .lenses {
+  flex-basis: auto;
+  min-height: 52px;
+  gap: 4px;
+  align-items: center;
+  padding-block: 3px;
+  border-top: 0;
+  background: var(--research-chrome);
+}
+
+.root[data-active-lens] > .lenses button {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 9px;
+}
+
+.root[data-active-lens] > .lenses button[aria-current="page"] {
+  color: var(--ink);
+  background: var(--plaid-ice, var(--surface));
+  font-weight: 650;
+}
+
+.root[data-active-lens] > .lenses button[aria-current="page"]::after {
+  content: none;
+}
+
+.root[data-active-lens] > .supporting {
+  margin-block: 8px 2px;
+}
+
+@media (max-width: 767px) {
+  .root[data-active-lens] > .lenses button {
+    padding-inline: 10px;
+  }
+}

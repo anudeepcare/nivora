@@ -6,10 +6,10 @@ import postcss from "postcss";
 const view = fs.readFileSync("components/Session.tsx", "utf8");
 test("account entry uses one compact toolbar and no competing marketing area", () => {
   const toolbar = view.match(
-    /<header className=\{experience\.accessBar\}>([\s\S]*?)<\/header>/,
+    /<header className=\{experience\.accessBar\} data-auth-banner>([\s\S]*?)<\/header>/,
   )?.[1];
   assert.ok(toolbar);
-  for (const control of ["AURYN", "Close sign in", "themeToggle"])
+  for (const control of ["AURYN", "themeToggle"])
     assert.ok(toolbar.includes(control));
   assert.doesNotMatch(view, /storyContent|researchCard|WELCOME BACK/);
   assert.match(

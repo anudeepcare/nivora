@@ -1,10 +1,10 @@
 .history {
-  margin-top: 14px;
-  padding: 16px;
-  border: 1px solid var(--line, #dce3df);
-  border-radius: 14px;
-  background: var(--surface, #fff);
-  color: var(--ink, #18372c);
+  min-width: 0;
+  margin-top: 10px;
+  padding-block: 16px 0;
+  padding-inline: 0;
+  border-top: 1px solid var(--plaid-line, var(--line));
+  color: var(--plaid-ink, var(--ink));
 }
 .history h3 {
   margin: 7px 0;
@@ -24,6 +24,7 @@
   gap: 14px;
 }
 .controls select {
+  min-height: 44px;
   padding: 8px 14px;
   border: 1px solid var(--line, #dce3df);
   border-radius: 8px;
@@ -57,7 +58,13 @@
   color: var(--muted, #596f65);
 }
 .scroll {
+  min-width: 0;
   overflow-x: auto;
+}
+.scroll:focus-visible,
+.controls select:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--accent-solid));
+  outline-offset: -2px;
 }
 .history table {
   width: 100%;
@@ -92,9 +99,6 @@
   padding: 8px 0;
 }
 @media (max-width: 650px) {
-  .history {
-    padding: 16px;
-  }
   .stats {
     grid-template-columns: 1fr;
     gap: 16px;

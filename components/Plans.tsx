@@ -280,18 +280,18 @@ function SignedInPlans() {
             Manage or cancel subscription
           </button>
         ) : null}
+        {billing && (
+          <p className="plans-footnote plan-billing-status" role="status">
+            {billing.canManage
+              ? billing.ready
+                ? sub?.cancel_at_period_end
+                  ? "Cancellation is scheduled. Open Stripe to review your access end date and available options."
+                  : "Open Stripe to manage billing or cancel your subscription. Review the effective date and confirm there; opening the portal does not cancel anything. If cancellation is not offered, contact billing support using your Stripe receipt."
+                : "Subscription management is temporarily unavailable. No subscription has been cancelled. Contact billing support using your Stripe receipt."
+              : "No Stripe billing account is linked to this sign-in. Free and complimentary access do not require cancellation. If you paid using another account or provider, manage the subscription there."}
+          </p>
+        )}
       </section>
-      {billing && (
-        <p className="plans-footnote" role="status">
-          {billing.canManage
-            ? billing.ready
-              ? sub?.cancel_at_period_end
-                ? "Cancellation is scheduled. Open Stripe to review your access end date and available options."
-                : "Open Stripe to manage billing or cancel your subscription. Review the effective date and confirm there; opening the portal does not cancel anything. If cancellation is not offered, contact billing support using your Stripe receipt."
-              : "Subscription management is temporarily unavailable. No subscription has been cancelled. Contact billing support using your Stripe receipt."
-            : "No Stripe billing account is linked to this sign-in. Free and complimentary access do not require cancellation. If you paid using another account or provider, manage the subscription there."}
-        </p>
-      )}
       <PricingCards
         config={billing?.config}
         access={a}
@@ -320,6 +320,7 @@ export default function Plans({
   return (
     <div
       data-plaid-page="plans"
+      data-membership={!publicPage ? "account" : undefined}
       className={`plans-page ${layout.page} ${publicPage ? "plans-public" : ""}`}
     >
       {publicPage && (

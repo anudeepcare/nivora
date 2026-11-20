@@ -86,7 +86,7 @@ function shell(
     Sun: empty,
     Moon: empty,
     X: empty,
-    Bell: empty,
+    History: empty,
     LayoutGrid: empty,
     Compass: empty,
     FlaskConical: empty,

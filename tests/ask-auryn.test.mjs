@@ -96,7 +96,7 @@ test("fact-only citations remain linked and ticker changes remount question stat
     1,
   );
   assert.equal((analyst.match(/<AskAurynQuestion/g) || []).length, 1);
-  assert.equal((analyst.match(/\{questionPane\}/g) || []).length, 2);
+  // Both rendered variants are covered in analyst-availability-ui.test.mjs.
 });
 
 test("arbitrary prose is not publishable even with valid revenue citation", () => {

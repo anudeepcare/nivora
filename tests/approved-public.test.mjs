@@ -122,6 +122,12 @@ function nodes(root, predicate) {
   walk(root);
   return found;
 }
+const AuthLegalLinks = load("components/AuthLegalLinks.tsx", "AuthLegalLinks", {
+  React,
+  useState: React.useState,
+  useRef: React.useRef,
+  useId: React.useId,
+});
 function accountHarness({
   mode = "login",
   provider = { google: true, x: true },
@@ -147,6 +153,7 @@ function accountHarness({
   const component = load("components/Session.tsx", "Login", {
     ...common,
     PublicSample,
+    AuthLegalLinks,
     useState,
     useEffect,
     authErrorMessage,

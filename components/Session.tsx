@@ -1,5 +1,6 @@
 "use client";
 import "./SessionAccess.css";
+import AuthLegalLinks from "./AuthLegalLinks";
 import { settleWithDeadline } from "@/lib/request-deadline";
 import { invalidateResource } from "@/lib/resource-cache";
 import { usePathname, useRouter } from "next/navigation";
@@ -597,19 +598,12 @@ function Login({ initialError }: { initialError: string }) {
       data-auth-mode={mode}
       data-plaid-page="access"
     >
-      <header className={experience.accessBar}>
+      <header className={experience.accessBar} data-auth-banner>
         <a href="/" className={experience.accessBrand} aria-label="AURYN home">
           <img src="/icon.svg" alt="" width="28" height="28" />
           AURYN
         </a>
         <div className={experience.accessActions}>
-          <a
-            className="mp-auth-home"
-            aria-label="Close sign in and return to Auryn"
-            href="/"
-          >
-            <span aria-hidden="true">×</span> Close
-          </a>
           <button
             type="button"
             className={experience.themeToggle}
@@ -883,14 +877,7 @@ function Login({ initialError }: { initialError: string }) {
               <rect x="5" y="10" width="14" height="11" rx="3" />
               <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" />
             </svg>
-            <span>
-              By continuing, you agree to our <a href="/terms">Terms</a> and
-              acknowledge our <a href="/privacy">Privacy Policy</a>.<br />
-              <small>
-                Research supports your judgment.{" "}
-                <a href="/risk">Investing involves risk.</a>
-              </small>
-            </span>
+            <AuthLegalLinks />
           </div>
         </div>
         <div className="mp-auth-help">

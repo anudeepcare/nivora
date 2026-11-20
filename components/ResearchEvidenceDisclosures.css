@@ -1,0 +1,45 @@
+/* These native Pace and Options disclosures use only the space their
+   labels need when closed. Open evidence keeps its entire reading rail. */
+#auryn-app details[data-research-disclosure] {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  margin-block: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+#auryn-app details[data-research-disclosure]:not([open]) {
+  inline-size: fit-content;
+  align-self: start;
+  justify-self: start;
+}
+#auryn-app details[data-research-disclosure][open] {
+  inline-size: 100%;
+  padding-block-end: 8px;
+}
+#auryn-app details[data-research-disclosure] > summary {
+  box-sizing: border-box;
+  display: list-item;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-block-size: 44px;
+  padding: 11px 10px 11px 20px;
+  border: 0;
+  border-radius: 8px;
+  list-style: revert;
+  background: transparent;
+  color: var(--plaid-ink, var(--ink));
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+#auryn-app details[data-research-disclosure] > summary:hover {
+  background: var(--plaid-ice, var(--surface-2));
+}
+#auryn-app details[data-research-disclosure] > summary:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--accent-solid));
+  outline-offset: -2px;
+}

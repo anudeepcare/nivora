@@ -100,3 +100,15 @@ test("example and clear controls update only the local portfolio calculation", (
   assert.match(view.render(), /No holdings entered/);
   assert.doesNotMatch(view.render(), /\$10,000/);
 });
+
+test("holding weights remain a named list and can be focused to scroll", () => {
+  const html = renderCheck("AAPL, 20\nMSFT, 10").render();
+  const list =
+    html.match(/<ul[^>]*aria-label="Holding weights"[^>]*>/)?.[0] ?? "";
+  assert.match(list, /tabindex="0"/i);
+  assert.match(list, /role="list"/);
+  assert.match(
+    read("components/PublicFrame.module.css"),
+    /\.toolPage :focus-visible\s*\{[^}]*outline: 2px solid/,
+  );
+});

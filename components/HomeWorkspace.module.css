@@ -1184,7 +1184,11 @@
   min-width: 0;
   margin: 0;
 }
-.leadGrid > :only-child {
+.leadGrid > section {
+  grid-column: 1 / -1;
+}
+.leadGrid > :only-child,
+.leadGrid > .dayOverview {
   grid-column: 1 / -1;
 }
 .home.home.home.home .leadGrid > .dayOverview {
@@ -1193,9 +1197,6 @@
 }
 .home.home.home.home .leadGrid > .dayOverview:not(:has(article, a, small)) {
   display: none;
-}
-.leadGrid:has(> .dayOverview:not(:has(article, a, small))) > section {
-  grid-column: 1 / -1;
 }
 .home.home.home.home :global(.home-evidence-panel) {
   padding: 20px;
@@ -1333,5 +1334,36 @@
   .home.home.home.home .planRow {
     padding: 16px;
     display: grid;
+  }
+}
+
+/* Center the real holdings data and keep lower tools beside each other until a detailed view needs room. */
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+  margin: 12px 0 20px;
+}
+.home.home.home.home .actionGrid > * {
+  min-width: 0;
+  margin: 0;
+}
+.actionGrid > :only-child,
+.actionGrid > section:has(> button[aria-expanded="true"]),
+.actionGrid
+  > details[open]:has(
+    [data-state="ready"],
+    section[aria-labelledby],
+    details[open]
+  ) {
+  grid-column: 1 / -1;
+}
+.home.home.home.home .actionGrid > section > button {
+  min-height: 52px;
+}
+@media (max-width: 860px) {
+  .actionGrid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

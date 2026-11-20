@@ -97,7 +97,12 @@ export default function PublicPortfolioCheck() {
                   %.
                 </p>
               </div>
-              <ul className={s.weights} aria-label="Holding weights">
+              <ul
+                className={s.weights}
+                role="list"
+                aria-label="Holding weights"
+                tabIndex={0}
+              >
                 {sorted.map(([name, value]) => (
                   <li key={name}>
                     <strong>{name}</strong>

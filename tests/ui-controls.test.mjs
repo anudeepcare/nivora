@@ -856,6 +856,12 @@ test("authentication exposes the required sign-in, signup and recovery controls 
     "PublicSample",
     { React, Layers3, Scale, ShieldCheck, ChartNoAxesCombined },
   );
+  const AuthLegalLinks = loadComponent("components/AuthLegalLinks.tsx", "AuthLegalLinks", {
+    React,
+    useState: React.useState,
+    useRef: React.useRef,
+    useId: React.useId,
+  });
   for (const mode of ["login", "signup", "reset"]) {
     let i = 0;
     const values = [
@@ -887,6 +893,7 @@ test("authentication exposes the required sign-in, signup and recovery controls 
       useState: () => [values[i++], () => {}],
       Logo: () => React.createElement("span", null, "AURYN"),
       PublicSample,
+      AuthLegalLinks,
     });
     const html = renderToStaticMarkup(
       React.createElement(Login, { initialError: "" }),
@@ -898,7 +905,8 @@ test("authentication exposes the required sign-in, signup and recovery controls 
     if (mode === "signup") assert.match(html, /Resend confirmation email/);
     assert.match(html, /name="email"/);
     if (mode !== "reset") assert.match(html, /name="password"/);
-    assert.match(html, /aria-label="Close sign in and return to Auryn"/);
+    assert.match(html, /href="\/"[^>]*aria-label="AURYN home"/);
+    assert.doesNotMatch(html, /Close sign in and return to Auryn/);
     for (const href of ["/terms", "/privacy", "/risk", "/help"])
       assert.ok(html.includes(`href="${href}"`));
     if (mode === "login") {

@@ -8,7 +8,7 @@ test('desktop navigation uses one top header and keeps secondary destinations re
  assert.doesNotMatch(source,/aria-label="More research and workspace tools"/);
  assert.match(source,/aria-label="Account & workspace"/);
  assert.doesNotMatch(source,/<aside/);
- for(const route of ['compare','research-lab','settings','plans','alerts','trading','help']) assert.ok(source.includes('path: "'+route+'"'));
+ for(const route of ['compare','research-lab','settings','plans','trading','help']) assert.ok(source.includes('path: "'+route+'"'));
 });
 test('crypto overview cannot open company-only financial or valuation tabs',()=>{
  const source=readFileSync(new URL('../components/ResearchEvidenceGrid.tsx',import.meta.url),'utf8');

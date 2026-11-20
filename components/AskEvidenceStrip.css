@@ -1,0 +1,82 @@
+.ask-evidence-strip {
+  border-block: 1px solid var(--line);
+  padding-block: 14px;
+  margin-block: 16px;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.ask-evidence-strip .ask-evidence-header,
+.ask-evidence-strip .ask-evidence-status,
+.ask-evidence-strip .ask-evidence-meta,
+.ask-evidence-strip .ask-evidence-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.ask-evidence-strip .ask-evidence-header > h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+}
+.ask-evidence-strip .ask-evidence-status p,
+.ask-evidence-strip .ask-evidence-meta span {
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.45;
+  font-size: 13px;
+}
+.ask-evidence-strip .ask-evidence-meta > strong {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.ask-evidence-strip .ask-evidence-recheck,
+.ask-evidence-strip .ask-evidence-actions > button {
+  min-height: 44px;
+  max-width: 100%;
+  font-size: 13px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.ask-evidence-strip .ask-evidence-recheck {
+  padding: 4px 2px;
+  background: none;
+  border: 0;
+  color: var(--accent-text, var(--ink));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ask-evidence-strip .ask-evidence-actions {
+  gap: 6px;
+}
+.ask-evidence-strip .ask-evidence-actions > button {
+  text-align: left;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.ask-evidence-strip .ask-evidence-actions > button:enabled:hover {
+  background: var(--blue-soft);
+}
+.ask-evidence-strip
+  :is(.ask-evidence-recheck, .ask-evidence-actions > button):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.ask-evidence-strip .ask-evidence-actions > button:disabled {
+  cursor: wait;
+}
+.ask-evidence-strip .ask-evidence-answer {
+  padding-block: 10px;
+  border-top: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.ask-evidence-strip .ask-evidence-answer > p {
+  max-width: 78ch;
+  margin-block: 6px;
+  line-height: 1.55;
+}

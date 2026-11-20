@@ -127,7 +127,7 @@ test("switching workspace tabs restores their own position; tapping the active t
     Sun: icon,
     Moon: icon,
     X: icon,
-    Bell: icon,
+    History: icon,
     LayoutGrid: icon,
     Compass: icon,
     FlaskConical: icon,

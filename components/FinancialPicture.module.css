@@ -50,3 +50,27 @@
     flex: 1;
   }
 }
+
+/* The date, period and first evidence belong to one compact reading. */
+.root.root.root.root:global(.financial-picture) {
+  gap: 10px;
+}
+.root.root:global(.financial-picture) > :global(.section-head) {
+  margin: 0;
+  gap: 10px 20px;
+}
+.root.root > section[aria-label="The business in 30 seconds"] {
+  margin: 0;
+}
+.root.root :global(.segments) button {
+  min-height: 44px;
+}
+@media (max-width: 600px) {
+  .root.root:global(.financial-picture) > :global(.section-head) {
+    gap: 10px;
+  }
+  .root.root :global(.segments) button {
+    min-width: 0;
+    padding-inline: 8px;
+  }
+}

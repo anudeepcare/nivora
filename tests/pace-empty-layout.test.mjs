@@ -18,11 +18,8 @@ test("unavailable history exits before populated evidence heading, retaining exa
 });
 test("mobile caveat stays concise while methodology remains accessible", () => {
   const s = fs.readFileSync("components/PaceEvidenceJourney.tsx", "utf8");
-  const note = s.slice(
-    s.indexOf("<p className={s.note}>"),
-    s.indexOf("<details className={s.explain}>"),
-  );
-  assert.ok(note.length < 260);
+  const note = s.match(/<p className=\{s\.note\}>[\s\S]*?<\/p>/)?.[0];
+  assert.ok(note && note.length < 260);
   assert.match(s, /Missing or incompatible periods break/);
   assert.match(s, /Estimates can be revised/);
 });

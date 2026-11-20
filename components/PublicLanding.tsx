@@ -1020,7 +1020,7 @@ export default function PublicLanding({
         </div>
       </section>
       <footer
-        className={`${experience.publicFooter} ${landing.footer} ap-container public-footer`}
+        className={`${experience.publicFooter} ${landing.footer} public-footer`}
       >
         <div className={experience.footerMain}>
           <PublicBrand />
@@ -1039,7 +1039,12 @@ export default function PublicLanding({
               <ContextLink page="help">Help</ContextLink>
               <Link href="/track-record">Evidence &amp; track record</Link>
               <ContextLink page="changelog">What’s new</ContextLink>
-              <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+              <a
+                href={`mailto:${SUPPORT_EMAIL}`}
+                aria-label={`Email support at ${SUPPORT_EMAIL}`}
+              >
+                Email support
+              </a>
             </div>
           </nav>
         </div>

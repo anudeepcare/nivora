@@ -1,4 +1,5 @@
 "use client";
+import "./ResearchEvidenceDisclosures.css";
 import PublicOfficialsEvidence from "./PublicOfficialsEvidence";
 import OwnershipPicture from "./OwnershipPicture";
 import type { Research } from "@/lib/types";
@@ -361,14 +362,17 @@ function Dataset({
               {tables}
             </details>
           ) : dataset === "options" ? (
-            <details>
+            <details data-research-disclosure>
               <summary>Detailed positioning observations</summary>
               {tables}
             </details>
           ) : (
             tables
           )}
-          <details className={s.provenance}>
+          <details
+            className={s.provenance}
+            data-research-disclosure={dataset === "options" ? "" : undefined}
+          >
             <summary>Evidence dates & coverage</summary>
             <span>Source: {result?.source ?? "SentiSense"}</span>
             <span>

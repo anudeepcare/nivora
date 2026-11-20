@@ -1100,9 +1100,10 @@
   }
 }
 
-/* Plaid workspace chrome: layered surfaces, not decorative accent strips.
+/* Plaid workspace chrome: an integrated surface, not a floating capsule.
    Route selection, keyboard handling and the phone dock's geometry stay intact. */
 .shell[data-appearance="plaid"] {
+  --workspace-inline: max(24px, calc((100% - 1392px) / 2));
   --nav-ink: var(--plaid-muted);
   --nav-active: var(--plaid-ink);
   --nav-solid: var(--plaid-surface);
@@ -1116,21 +1117,22 @@
 }
 @media (min-width: 768px) {
   .shell[data-appearance="plaid"] .header {
-    top: 10px;
-    width: calc(100% - 32px);
-    max-width: 1440px;
-    margin: 0 auto 10px;
-    padding: 10px 18px;
-    min-height: 68px;
-    border: 1px solid var(--plaid-line);
-    border-radius: 28px;
-    background: var(--plaid-glass);
-    box-shadow: var(--plaid-shadow);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    top: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 6px var(--workspace-inline);
+    min-height: 60px;
+    border: 0;
+    border-bottom: 1px solid var(--plaid-line);
+    border-radius: 0;
+    background: var(--plaid-surface);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
   .shell[data-appearance="plaid"] .header .nav a {
-    border-radius: 999px;
+    border-radius: 9px;
     font-weight: 500;
   }
   .shell[data-appearance="plaid"] .header .nav a[aria-current="page"] {
@@ -1150,12 +1152,12 @@
   color: var(--plaid-ink);
 }
 .shell[data-appearance="plaid"] .header .searchTrigger {
-  border-radius: 999px;
+  border-radius: 9px;
   color: var(--plaid-muted);
   background: var(--plaid-surface);
 }
 .shell[data-appearance="plaid"] .header .actions :is(button, a) {
-  border-radius: 50%;
+  border-radius: 10px;
   color: var(--plaid-ink);
   background: var(--plaid-ice);
 }
@@ -1184,7 +1186,7 @@
 @media (min-width: 768px) and (max-width: 1080px) {
   .shell[data-appearance="plaid"] .header {
     gap: clamp(5px, 1vw, 10px);
-    padding-inline: clamp(10px, 1.5vw, 16px);
+    padding-inline: 16px;
   }
   .shell[data-appearance="plaid"] .header .nav {
     display: grid;

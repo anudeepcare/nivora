@@ -910,3 +910,79 @@
   svg {
   color: color-mix(in srgb, var(--study-accent) 65%, white);
 }
+
+/* Price context reads as part of the plot, not a pair of full-width buttons. */
+.panel.panel.panel .technicalChart :global(.plot-section) {
+  padding: clamp(12px, 1.6vw, 20px);
+  background: var(--plaid-surface, var(--card));
+}
+.panel.panel.panel
+  .technicalChart
+  :global(.plot-section > .signal-chart-tools) {
+  gap: 7px;
+  margin: 4px 0 9px;
+}
+.panel.panel.panel .technicalChart :global(.signal-chart-tools > button.btn) {
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 9px;
+  min-height: 44px;
+  background: transparent;
+  color: var(--plaid-ink, var(--ink));
+  font-size: 13px;
+}
+.panel.panel.panel
+  .technicalChart
+  :global(.signal-chart-tools > button.btn[aria-pressed="true"]) {
+  background: var(--plaid-card-blue, var(--surface));
+}
+.panel.panel.panel
+  .technicalChart
+  :is(
+    :global(details:has([aria-label="Chart references"])),
+    :global(.chart-context)
+  ) {
+  margin: 4px 0 0;
+  padding-block: 2px;
+  border: 0;
+  border-bottom: 1px solid var(--plaid-line, var(--line));
+  border-radius: 0;
+  background: transparent;
+}
+.panel.panel.panel
+  .technicalChart
+  :is(
+    :global(details:has([aria-label="Chart references"])),
+    :global(.chart-context)
+  )
+  > :global(summary) {
+  background: transparent;
+  color: var(--plaid-ink, var(--ink));
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+}
+.panel.panel.panel .technicalChart :global([aria-label="Chart references"]) {
+  margin: 0 0 8px;
+  gap: 7px 16px;
+}
+.panel.panel.panel
+  .technicalChart
+  :global([aria-label="Chart references"] > span) {
+  white-space: normal;
+  padding: 2px 0;
+  background: transparent;
+  font-size: 13px;
+}
+.panel.panel.panel .technicalChart :global(.plot-section > .chart-note) {
+  margin-block: 10px 0;
+  color: var(--plaid-muted, var(--muted));
+}
+.panel.panel.panel .technicalChart :global(summary:focus-visible),
+.panel.panel.panel
+  .technicalChart
+  :global(.signal-chart-tools button:focus-visible) {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 2px;
+}

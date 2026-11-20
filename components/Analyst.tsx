@@ -1,4 +1,5 @@
 "use client";
+import "./AskEvidenceStrip.css";
 import AskAurynQuestion from "./AskAurynQuestion";
 import { customerText } from "@/lib/customer-language";
 import { useMemo, useState } from "react";
@@ -107,45 +108,49 @@ export default function Analyst({
     a.click();
     URL.revokeObjectURL(url);
   }
-  const questionPane =
-    availability.data?.available && !demo ? (
-      <AskAurynQuestion
-        key={research.company.symbol}
-        symbol={research.company.symbol}
-      />
-    ) : (
-      <div className="analyst-availability" role="status">
-        <p>
-          {availability.loading
-            ? "Checking AI availability…"
-            : availability.error ||
-              availability.data?.message ||
-              "AI availability could not be confirmed."}
-        </p>
-        {!availability.loading && !demo && (
-          <button
-            type="button"
-            className="button"
-            onClick={availability.refresh}
-          >
-            Check AI availability
-          </button>
-        )}
-      </div>
-    );
+  const aiAvailable = Boolean(availability.data?.available && !demo);
+  const availabilityMessage = availability.loading
+    ? "Checking AI availability…"
+    : availability.error ||
+      (compact && availability.data?.reason === "disabled"
+        ? "AI generation is disabled."
+        : availability.data?.message) ||
+      "AI availability could not be confirmed.";
+  const capability = (
+    <div className={compact ? "ask-evidence-status" : "analyst-availability"}>
+      <p role="status">{availabilityMessage}</p>
+      {!availability.loading && !demo && (
+        <button
+          type="button"
+          className={compact ? "ask-evidence-recheck" : "button"}
+          onClick={availability.refresh}
+        >
+          Check AI availability
+        </button>
+      )}
+    </div>
+  );
+  const questionPane = aiAvailable ? (
+    <AskAurynQuestion
+      key={research.company.symbol}
+      symbol={research.company.symbol}
+    />
+  ) : (
+    capability
+  );
   const evidence = perspective(research);
   if (compact) {
     const prompts = [
-      "What does cash after capex tell me?",
-      "What is the biggest missing piece?",
-      "What would strengthen the bull case?",
+      "Cash after capex",
+      "Evidence gaps",
+      "Strengthen the bull case",
       "Challenge the case",
     ];
     const respond = (prompt: string, index: number) => {
       setQuestion(prompt);
       setError("");
       setReport(null);
-      if (availability.data?.available && !demo) {
+      if (aiAvailable) {
         setPrepared("");
         void generate(
           index === 1 || index === 3
@@ -171,29 +176,30 @@ export default function Analyst({
       );
     };
     return (
-      <section className="ask-auryn">
-        <h2>Ask AURYN</h2>
-        {questionPane}
-        <p className="analyst-context">
-          <strong>{research.company.symbol}</strong> · Evidence through{" "}
-          {dateLabel(research.retrievedAt)} · Answers use this company’s
-          supplied evidence.
-        </p>
-        <header className="section-head">
-          <div>
-            <h3>
-              {availability.data?.available
-                ? "Guided AI questions"
-                : "Local evidence guide"}
-            </h3>
-            <p>
-              {availability.data?.available
-                ? "Choose a question for source-linked AI review."
-                : "Prepared explanations of supplied evidence, not an AI conversation."}
-            </p>
-          </div>
+      <section className="ask-evidence-strip">
+        <header className="ask-evidence-header">
+          <h2>Ask AURYN</h2>
+          {!aiAvailable && questionPane}
         </header>
-        <div className="prompt-row">
+        {aiAvailable && questionPane}
+        <div className="ask-evidence-meta">
+          <strong>
+            {aiAvailable ? "Guided AI questions" : "Local evidence guide"}
+          </strong>
+          <span>
+            {research.company.symbol} · Loaded{" "}
+            <time dateTime={research.retrievedAt}>
+              {dateLabel(research.retrievedAt)}
+            </time>
+          </span>
+        </div>
+        <div
+          className="ask-evidence-actions"
+          role="group"
+          aria-label={
+            aiAvailable ? "Guided AI questions" : "Local evidence guide"
+          }
+        >
           {prompts.map((prompt, index) => (
             <button
               type="button"
@@ -212,7 +218,7 @@ export default function Analyst({
         )}
         {error && <Notice error>{error}</Notice>}
         {(prepared || report) && (
-          <div className="answer" aria-live="polite">
+          <div className="ask-evidence-answer" aria-live="polite">
             <strong>{question}</strong>
             <p>{customerText(report?.summary.text || prepared)}</p>
             <p className="small muted">

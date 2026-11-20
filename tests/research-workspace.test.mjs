@@ -79,8 +79,14 @@ test("Ownership retains unique evidence and controls without duplicated investme
   );
   assert.match(ownership, /Additional ownership evidence/);
   const panels = fs.readFileSync("components/SentiSensePanels.tsx", "utf8");
-  const officials = fs.readFileSync("components/PublicOfficialsEvidence.tsx", "utf8");
-  assert.match(panels, /dataset === "politicians" \? \([\s\S]*?<PublicOfficialsEvidence/);
+  const officials = fs.readFileSync(
+    "components/PublicOfficialsEvidence.tsx",
+    "utf8",
+  );
+  assert.match(
+    panels,
+    /dataset === "politicians" \? \([\s\S]*?<PublicOfficialsEvidence/,
+  );
   assert.match(officials, /congress\?symbol=/);
   assert.match(officials, /dataset=politicians/);
   assert.match(officials, /href: r.filingUrl/);
@@ -122,7 +128,12 @@ test("Options, analyst sources and Business retain default evidence and unique s
   const analysts = section("Analysts", "Financials");
   for (const name of ["SentiSensePanels", "TargetsEstimates", "AnalystRatings"])
     assert.match(analysts, new RegExp("<" + name + "[ \\n]"));
-  assert.match(analysts, /not merged with the consensus feed/);
+  assert.doesNotMatch(analysts, /not merged with the consensus feed/);
+  const evidence = fs.readFileSync("components/TargetsEstimates.tsx", "utf8");
+  assert.match(
+    evidence,
+    /Sources &amp; reporting periods[\s\S]*not merged with the consensus\s+feed/,
+  );
   const business = section("Financials", "Valuation");
   for (const name of ["Financials", "BusinessHistory", "FinancingContext"])
     assert.match(business, new RegExp("<" + name + "[ \\n]"));

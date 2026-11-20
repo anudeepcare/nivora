@@ -37,35 +37,44 @@ export default function NamedAnalystProfiles({ data }: { data: unknown }) {
   return (
     <section className={styles.root} aria-label="Named analyst profiles">
       <h3>Named analysts & published notes</h3>
-      <p>
-        Names come from the coverage response. Unnamed firm notes remain in
-        coverage; no analyst identity is guessed. Profiles describe published
-        records, not accuracy rankings.
-      </p>
-      {!people.length ? (
-        <p>No linked analyst profiles were supplied in this coverage slice.</p>
-      ) : (
-        <label className={styles.analystPicker}>
-          Analyst · {people.length} linked analysts
-          <select
-            value={slug ?? ""}
-            onChange={(event) => {
-              setSlug(event.target.value || null);
-              setMode("profile");
-              setOffset(0);
-            }}
-          >
-            <option value="">Choose an analyst</option>
-            {people.map((person) => (
-              <option key={person.slug} value={person.slug}>
-                {person.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      )}
-      {slug && (
-        <>
+      <details className={styles.analystNotes}>
+        <summary>Coverage &amp; target notes</summary>
+        <p>
+          Named profiles use attributed coverage. Unnamed firm notes remain in
+          coverage; these records are not accuracy rankings.
+        </p>
+        <p>
+          Target units are as published; currency is not supplied here. Original
+          and split-adjusted targets are separate, not returns. Note dates are
+          not employment dates.
+        </p>
+      </details>
+      <div className={styles.analystControls}>
+        {!people.length ? (
+          <p>
+            No linked analyst profiles were supplied in this coverage slice.
+          </p>
+        ) : (
+          <label className={styles.analystPicker}>
+            Analyst · {people.length} linked analysts
+            <select
+              value={slug ?? ""}
+              onChange={(event) => {
+                setSlug(event.target.value || null);
+                setMode("profile");
+                setOffset(0);
+              }}
+            >
+              <option value="">Choose an analyst</option>
+              {people.map((person) => (
+                <option key={person.slug} value={person.slug}>
+                  {person.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {slug && (
           <div
             className={`${styles.analystViews} auryn-detail-tabs`}
             role="group"
@@ -90,6 +99,10 @@ export default function NamedAnalystProfiles({ data }: { data: unknown }) {
               Published calls
             </button>
           </div>
+        )}
+      </div>
+      {slug && (
+        <>
           {resource.loading ? (
             <p role="status">Loading selected analyst…</p>
           ) : resource.error ? (
@@ -107,18 +120,23 @@ export default function NamedAnalystProfiles({ data }: { data: unknown }) {
                   complete history or coverage book.
                 </p>
               )}
-              <p>
-                Retrieved {resource.data?.retrievedAt}. Target units are as
-                published; currency is not supplied here. Original and
-                split-adjusted targets are separate, not returns.
-              </p>
+              {resource.data?.retrievedAt && (
+                <p>
+                  Retrieved{" "}
+                  <time
+                    dateTime={resource.data.retrievedAt}
+                    title={resource.data.retrievedAt}
+                  >
+                    {resource.data.retrievedAt.slice(0, 10)}
+                  </time>
+                </p>
+              )}
               {profile && (
                 <>
                   <h3>{profile.name}</h3>
                   <p>
-                    Most recent publishing firm: {profile.firm}. Observed notes{" "}
-                    {profile.first} to {profile.last}; these are not employment
-                    dates or confirmation of a current employer.
+                    {profile.firm} · Most recent publishing firm
+                    <br /> Observed notes: {profile.first} to {profile.last}
                   </p>
                   <p>
                     {profile.noteCount} attributed notes · {profile.tickerCount}{" "}

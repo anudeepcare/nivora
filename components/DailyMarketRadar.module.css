@@ -175,3 +175,16 @@
     margin-top: 4px;
   }
 }
+
+.daily[data-state="setup"] {
+  padding-block: 6px 12px;
+}
+.daily[data-state="setup"] .summary {
+  gap: 4px;
+}
+.daily[data-state="setup"] .summary strong {
+  font-size: 16px;
+}
+.daily[data-state="setup"] .fallback {
+  margin-top: 8px;
+}

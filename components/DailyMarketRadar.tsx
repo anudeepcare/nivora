@@ -158,7 +158,7 @@ export default function DailyMarketRadar({
             </strong>
             <p>
               {setupRequired
-                ? "Daily radar storage needs an administrator check. Your saved holdings, watchlist and existing research are unchanged."
+                ? "An administrator needs to check daily price history setup. Your saved holdings and watchlist are unchanged."
                 : "Your saved holdings, watchlist and existing research are unchanged. Retry to check daily history again."}
             </p>
             <button

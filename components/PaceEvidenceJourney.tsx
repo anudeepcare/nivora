@@ -280,7 +280,7 @@ export default function PaceEvidenceJourney({
         Separate scales · dashed paths are supplied estimates, not predictions.
         Snapshot {dateLabel(r.retrievedAt)}.
       </p>
-      <details className={s.explain}>
+      <details className={s.explain} data-research-disclosure>
         <summary>What would change the reading?</summary>
         <p>
           Reported results and estimates use separate accounting bases. Dashed

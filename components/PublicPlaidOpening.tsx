@@ -197,6 +197,7 @@ export default function PublicPlaidOpening({
       <div className={s.opening}>
         <Contours />
         <header
+          data-public-menu
           className={s.header}
           ref={container}
           onKeyDown={(event) => {
@@ -347,7 +348,7 @@ export default function PublicPlaidOpening({
         </section>
       </div>
       <section
-        className={s.productSection}
+        className={`${s.productSection} public-product-width`}
         id="product"
         aria-labelledby="public-products"
       >

@@ -20,8 +20,8 @@ export default function HomeQuarterHighlights({
       <header>
         <h2>Latest reported quarter</h2>
         <p>
-          Revenue versus the preceding reported quarter, among loaded company
-          research. Not the unfinished calendar quarter or a forecast.
+          Revenue compared with the prior reported quarter, for loaded research.
+          Not the unfinished calendar quarter or a forecast.
         </p>
       </header>
       <div className={s.grid}>

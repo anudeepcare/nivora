@@ -932,10 +932,6 @@ export default function Research({ symbol }: { symbol: string }) {
                     title: "Estimates & model evidence",
                     content: (
                       <section aria-label="Separate estimates and model evidence">
-                        <p className="small muted">
-                          Separate source coverage and reporting periods. These
-                          figures are not merged with the consensus feed.
-                        </p>
                         <TargetsEstimates
                           research={r}
                           ratings={

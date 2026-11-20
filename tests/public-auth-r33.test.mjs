@@ -18,14 +18,14 @@ test("public lower page uses a reading layout and direct use-case links, retaini
   assert.match(s, /role="tablist"/);
   assert.match(s, /ArrowLeft/);
 });
-test("login close is a home link and decorative lock has intrinsic bounds", () => {
+test("login brand is its home link and the decorative lock has intrinsic bounds", () => {
   const s = read("components/Session.tsx");
-  assert.match(s, /aria-label="Close sign in and return to Auryn"/);
-  assert.match(s, /className="mp-icon"\s+width="18"\s+height="18"/);
   assert.match(
     s,
-    /href="\/"[^>]*>\s*<span aria-hidden="true">×<\/span> Close/s,
+    /href="\/" className=\{experience.accessBrand\} aria-label="AURYN home"/,
   );
+  assert.match(s, /className="mp-icon"\s+width="18"\s+height="18"/);
+  assert.doesNotMatch(s, /Close sign in and return to Auryn/);
 });
 test("scoped lower layout and auth sizing cover narrow screens without global overrides", () => {
   const s = read("components/PublicLandingRefresh.css");

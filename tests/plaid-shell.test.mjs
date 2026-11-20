@@ -70,7 +70,7 @@ test("shared theme exports full light and dark contract with readable ink and mu
   assert.equal(Object.keys(sets).length, 2);
   assert.ok(root.nodes.some((n) => n.selector === ".plaid-surface"));
 });
-test("desktop nav uses frosted rounded selected pills while phone dock geometry remains intact", () => {
+test("desktop nav uses an integrated header and compact selected controls while phone dock geometry remains intact", () => {
   const css = postcss.parse(
     fs.readFileSync("components/WorkspaceShell.module.css", "utf8"),
   );
@@ -83,7 +83,7 @@ test("desktop nav uses frosted rounded selected pills while phone dock geometry 
   };
   assert.equal(
     final('.shell[data-appearance="plaid"] .header', "border-radius"),
-    "28px",
+    "0",
   );
   assert.equal(
     final(

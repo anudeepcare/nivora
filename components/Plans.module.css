@@ -229,3 +229,167 @@
     padding: 18px;
   }
 }
+
+/* Public pricing uses the same inset rail; account billing stays unchanged. */
+:global(#auryn-app) .page:global(.plans-public) {
+  inline-size: min(calc(100% - 32px), 1080px);
+  max-inline-size: none;
+  margin: 20px auto 0;
+  padding: 0 0 28px;
+  box-sizing: border-box;
+  background: transparent;
+}
+:global(#auryn-app) .page:global(.plans-public) > nav:first-child {
+  position: static;
+  margin-block-end: 22px;
+  padding: 8px clamp(12px, 2.3vw, 24px);
+  min-height: 64px;
+  border-radius: 22px;
+}
+:global(#auryn-app) .page:global(.plans-public) > nav:first-child a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+:global(#auryn-app) .page:global(.plans-public) > :global(.plans-heading) {
+  padding: clamp(18px, 3vw, 34px);
+  margin-block: 0 22px;
+}
+
+/* Signed-in membership only: compact heading and one account/billing rail. */
+:global(#auryn-app) .page[data-membership="account"] {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 12px 0 32px;
+  background: transparent;
+  color: var(--plaid-ink, var(--ink));
+}
+
+:global(#auryn-app) .page[data-membership="account"] > :global(.plans-heading) {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page[data-membership="account"] :global(.plans-heading) :is(h1, p) {
+  margin: 4px 0;
+}
+
+.page[data-membership="account"] :global(.plans-heading) h1 {
+  font-size: clamp(27px, 3.5vw, 34px);
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+}
+
+.page[data-membership="account"] :global(.plans-heading) p,
+.page[data-membership="account"] :global(.plans-footnote) {
+  color: var(--plaid-muted, var(--muted));
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+:global(#auryn-app)
+  .page[data-membership="account"]
+  :global(.plan-account-row) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0 0 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 16px;
+  background: var(--plaid-surface, var(--card));
+  box-shadow: none;
+}
+
+.page[data-membership="account"] :global(.plan-account-row) > div {
+  min-width: 0;
+  flex: 1 1 190px;
+}
+
+.page[data-membership="account"] :global(.plan-account-row) > div p {
+  margin: 4px 0 0;
+  color: var(--plaid-muted, var(--muted));
+  line-height: 1.5;
+}
+
+.page[data-membership="account"] :global(.plan-account-row) > :global(.button) {
+  min-height: 44px;
+  margin: 0;
+  max-width: 100%;
+  white-space: normal;
+}
+
+:global(#auryn-app)
+  .page[data-membership="account"]
+  :global(.plan-billing-status) {
+  flex: 1 0 100%;
+  margin: 2px 0 0;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--plaid-line, var(--line));
+  font-size: 13px;
+}
+
+:global(#auryn-app) .page[data-membership="account"] .cards {
+  align-items: start;
+  gap: 12px;
+}
+
+:global(#auryn-app) .page[data-membership="account"] .cards > section {
+  min-height: 0;
+  padding: clamp(15px, 2.3vw, 22px);
+  border-radius: 18px;
+  box-shadow: none;
+  color: var(--plaid-ink, var(--ink));
+}
+
+.page[data-membership="account"] .cards :global(.pricing-card-title) {
+  min-height: 0;
+}
+
+.page[data-membership="account"] .cards :global(.pricing-recommended) {
+  margin-top: 4px;
+  color: var(--plaid-ink, var(--ink));
+}
+
+.page[data-membership="account"] .cards :global(.pricing-amount) {
+  margin: 8px 0 4px;
+  font-size: clamp(28px, 4vw, 36px);
+}
+
+.page[data-membership="account"]
+  .cards
+  > section
+  > p:not(:global(.pricing-amount)) {
+  margin: 5px 0 9px;
+  color: var(--plaid-muted, var(--muted));
+}
+
+.page[data-membership="account"] .cards > section > :global(.button) {
+  min-height: 44px;
+  margin: 0;
+}
+
+.page[data-membership="account"] .cards > section > :global(.button):disabled {
+  color: var(--plaid-muted, var(--muted));
+  background: var(--plaid-surface, var(--card));
+  border: 1px solid var(--plaid-line, var(--line));
+  box-shadow: none;
+  opacity: 1;
+}
+
+.page[data-membership="account"] .cards ul {
+  margin: 12px 0 0;
+  gap: 4px;
+}
+
+@media (max-width: 640px) {
+  :global(#auryn-app) .page[data-membership="account"] .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

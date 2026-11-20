@@ -1,58 +1,107 @@
-.search :global(.search-box) {
-  min-height: 44px;
-  border-radius: 10px;
-}
-.search :global(.search-box):focus-within {
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
-  box-shadow: none;
-}
-.search :global(.search-box) input:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-.search input {
-  min-width: 0;
-  font-size: 16px;
-}
-.search :global(.search-results) {
-  max-height: min(440px, 55dvh);
-  overflow-y: auto;
-}
 .search {
   width: 100%;
   min-width: 0;
   max-width: none;
 }
-.search > :global(form.search-box) {
-  display: flex;
+
+:global(#auryn-app) .search > :global(form.search-box) {
+  display: grid;
+  grid-template-columns: 19px minmax(0, 1fr) 44px;
+  align-items: center;
+  box-sizing: border-box;
   width: 100%;
   max-width: none;
   min-width: 0;
-  min-height: 48px;
   height: auto;
-  padding: 0 12px;
-  gap: 10px;
-  box-sizing: border-box;
+  min-height: 48px;
+  padding: 0 4px 0 12px;
+  gap: 8px;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 12px;
+  background: var(--plaid-surface, var(--card));
+  color: var(--plaid-muted, var(--muted));
+  box-shadow: none;
 }
-.search > :global(form.search-box) input {
+
+/* The text field uses the composite control's one visible focus boundary.
+   A focused clear action instead gets its own ring, never both outlines. */
+:global(#auryn-app) .search > :global(form.search-box):focus-within {
+  border-color: transparent;
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: -1px;
+  box-shadow: none;
+}
+:global(#auryn-app)
+  .search
+  > :global(form.search-box):focus-within:has(> button:focus-visible) {
+  border-color: var(--plaid-line, var(--line));
+  outline: none;
+}
+:global(#auryn-app) .search > :global(form.search-box) input,
+:global(#auryn-app)
+  .search
+  > :global(form.search-box)
+  input:is(:focus, :focus-visible) {
   display: block;
-  flex: 1 1 0%;
-  width: 0;
+  width: 100%;
   min-width: 0;
   max-width: none;
-  height: 48px;
+  height: 46px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  color: var(--plaid-ink, var(--ink));
   font-size: 16px;
   line-height: 1.4;
-  color: var(--ink);
 }
-.search > :global(form.search-box) > svg {
-  flex: 0 0 19px;
+.search input::placeholder {
+  opacity: 1;
+  color: var(--plaid-muted, var(--muted));
 }
-.search > :global(form.search-box) > button {
-  flex: 0 0 40px;
+.search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }
+
+:global(#auryn-app) .search > :global(form.search-box) > button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--plaid-muted, var(--muted));
+}
+.search > :global(form.search-box) > button:hover {
+  background: var(--plaid-ice, var(--surface-2));
+}
+:global(#auryn-app) .search > :global(form.search-box) > button:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: -3px;
+}
+
+.search > :global(form.search-box) > kbd {
+  justify-self: center;
+  margin: 0;
+  white-space: nowrap;
+  color: var(--plaid-muted, var(--muted));
+}
+
+.search :global(.search-results) {
+  max-height: min(440px, 55dvh);
+  overflow-y: auto;
+}
+
 @media (max-width: 767px) {
+  :global(#auryn-app) .search > :global(form.search-box):not(:has(> button)) {
+    grid-template-columns: 19px minmax(0, 1fr);
+    padding-inline-end: 12px;
+  }
   .search > :global(form.search-box) > kbd {
     display: none;
   }
@@ -63,17 +112,4 @@
   .search :global(.search-suggestions) h3 {
     font-size: 15px;
   }
-}
-
-.search > :global(form.search-box):focus-within {
-  outline: none;
-  border-color: #227f73;
-  box-shadow: 0 0 0 3px #76b6aa26;
-}
-.search > :global(form.search-box) input:focus {
-  outline: none;
-  box-shadow: none;
-}
-.search input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
 }

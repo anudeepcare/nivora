@@ -17,7 +17,7 @@ import {
   Bookmark,
   PieChart,
   Search as SearchIcon,
-  Bell,
+  History,
   X,
   Settings,
   Sun,
@@ -236,9 +236,6 @@ export default function Shell({
           >
             {theme === "dark" ? <Moon size={19} /> : <Sun size={19} />}
           </button>
-          <Link href={`${prefix}/alerts`} aria-label="Price alerts">
-            <Bell size={19} />
-          </Link>
           <button
             aria-label="More tools and account"
             aria-haspopup="dialog"
@@ -281,8 +278,7 @@ export default function Shell({
       >
         <header className="dialog-head">
           <div>
-            <span className="eyebrow">Your workspace</span>
-            <h2>Research tools &amp; workspace</h2>
+            <h2>Account &amp; workspace</h2>
           </div>
           <button
             className="icon-button"
@@ -292,9 +288,6 @@ export default function Shell({
             <X size={21} />
           </button>
         </header>
-        <p className="tools-intro">
-          Discover ideas, compare companies, and test your thinking.
-        </p>
         <div className="dialog-tools">
           {[
             {
@@ -331,7 +324,7 @@ export default function Shell({
               path: "changelog",
               label: "What’s new",
               detail: "Release notes and current version",
-              icon: Bell,
+              icon: History,
             },
             {
               path: "settings",
@@ -344,12 +337,6 @@ export default function Shell({
               label: "Plans",
               detail: "Membership and access",
               icon: Scale,
-            },
-            {
-              path: "alerts",
-              label: "Price alerts",
-              detail: "Review your saved alerts",
-              icon: Bell,
             },
           ]
             .filter(

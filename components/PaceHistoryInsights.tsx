@@ -116,7 +116,12 @@ export default function PaceHistoryInsights({
             gap are excluded from duration statistics.
           </p>
           <h4>After entering {zoneLabel(zone.zone)}</h4>
-          <div className={styles.scroll}>
+          <div
+            className={styles.scroll}
+            tabIndex={0}
+            role="region"
+            aria-label="Price change after entering the selected zone"
+          >
             <table>
               <caption>Price changes after a newly confirmed visit</caption>
               <thead>
@@ -192,11 +197,16 @@ export default function PaceHistoryInsights({
             descriptive, not independent evidence or a forecast. Dividends, fees
             and business fundamentals are excluded.
           </p>
-          <details>
+          <details data-research-disclosure>
             <summary>
               Confirmed vs temporary readings · latest 12 observed months
             </summary>
-            <div className={styles.scroll}>
+            <div
+              className={styles.scroll}
+              tabIndex={0}
+              role="region"
+              aria-label="Settled and temporary monthly readings"
+            >
               <table>
                 <caption>
                   {data.version} · available settled observations; earlier

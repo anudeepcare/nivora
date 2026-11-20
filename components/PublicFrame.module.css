@@ -437,3 +437,36 @@
     padding-inline: 22px;
   }
 }
+
+/* One rail for guide navigation, content and footer, with real top air. */
+:global(#auryn-app) .page.page {
+  inline-size: min(calc(100% - 32px), 1080px);
+  max-inline-size: none;
+  margin: 20px auto 0;
+  padding: 0 0 28px;
+  min-height: calc(100dvh - 20px);
+  box-sizing: border-box;
+}
+:global(#auryn-app) .page.page > .header {
+  position: static;
+  margin-block-end: 22px;
+  min-height: 64px;
+  padding: 8px clamp(12px, 2.3vw, 24px);
+  border-radius: 22px;
+}
+:global(#auryn-app) .page.page > .intro {
+  max-width: none;
+  margin-block: 0 22px;
+  padding: clamp(18px, 3vw, 34px);
+}
+@media (max-width: 700px) {
+  :global(#auryn-app) .page.page > .header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+  }
+  .page.page .header nav {
+    gap: 2px 9px;
+  }
+}

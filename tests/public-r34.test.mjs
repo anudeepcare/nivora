@@ -5,10 +5,10 @@ const read = (name) =>
   fs.readFileSync(new URL("../components/" + name, import.meta.url), "utf8");
 
 test("contour headline foreground is explicit and outranks public theme defaults", () => {
-  const css = read("PublicPlaidOpening.module.css");
+  const css = read("PublicLandingRefresh.css");
   assert.match(
     css,
-    /\.hero h1#ap-hero-heading\s*\{[^}]*color:\s*#f[0-9a-f]{5}/i,
+    /#auryn-app \.public-reading-layout h1#ap-hero-heading\s*\{[^}]*color:\s*#f[0-9a-f]{5}/i,
   );
 });
 
