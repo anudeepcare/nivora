@@ -103,3 +103,19 @@ test("the curated Auryn thought does not repeat every week", async () => {
   );
   assert.equal(new Set(thoughts).size, 14);
 });
+
+test("Today has a compact evidence lead and routes to Portfolio instead of repeating the holdings total", () => {
+  assert.match(
+    home,
+    /<nav\s+className=\{homeStyles.workspaceShortcuts\}[\s\S]*?href=\{[^\n]+\/portfolio/,
+  );
+  assert.doesNotMatch(home, /<PortfolioDay|Your workspace/);
+  assert.match(
+    css,
+    /\.narrative\[data-story="empty"\]\s*\{[^}]*background: transparent/,
+  );
+  assert.match(
+    css,
+    /\.quoteMeta \[data-freshness="older"\][^{}]*\{[^}]*var\(--amber\)/,
+  );
+});

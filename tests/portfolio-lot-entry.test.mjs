@@ -78,23 +78,36 @@ test("ten purchases render one holding and show all shares and the weighted aver
     cost: index + 10,
     currency: "USD",
   }));
-  const html = renderToStaticMarkup(
-    React.createElement(Component, {
-      positions: [lots[0]],
-      allPositions: lots,
-      state: {
-        model: { invested: 1100 },
-        q: { APP: { price: 20, currency: "USD" } },
-        quotes: { data: { APP: { quote: { price: 20, currency: "USD" } } } },
-        prefix: "",
-        pace: () => null,
-        paceScan: { loading: false },
-      },
-      earnings: new Set(),
-      onEdit() {},
-      onAddPurchase() {},
-    }),
-  );
+  const renderHoldings = (positions = [lots[0]], allPositions = lots) =>
+    renderToStaticMarkup(
+      React.createElement(Component, {
+        positions,
+        allPositions,
+        state: {
+          model: { invested: 1100 },
+          q: { APP: { price: 20, currency: "USD" } },
+          quotes: {
+            data: {
+              APP: {
+                quote: {
+                  price: 20,
+                  currency: "USD",
+                  asOf: "2026-11-19T20:30:00Z",
+                  stale: true,
+                },
+              },
+            },
+          },
+          prefix: "",
+          pace: () => null,
+          paceScan: { loading: false },
+        },
+        earnings: new Set(),
+        onEdit() {},
+        onAddPurchase() {},
+      }),
+    );
+  const html = renderHoldings();
   assert.equal(
     (html.match(/<tr>/g) ?? []).length,
     2,
@@ -113,16 +126,44 @@ test("ten purchases render one holding and show all shares and the weighted aver
     1,
     "one company summary despite ten purchases",
   );
-  const [lead, details] = phone.split("<details");
-  assert.match(lead, /APP/);
-  assert.match(lead, /\$1,100/);
-  assert.match(lead, /\$220/);
+  assert.doesNotMatch(phone, /<details|Details &amp; actions/);
+  for (const text of [
+    "APP",
+    "$1,100",
+    "$220",
+    "Shares",
+    "55",
+    "Quoted price",
+    "Older",
+    "Average cost",
+    "$16.00",
+    "Weight",
+    "Accumulation Pace",
+    "Manage APP purchases",
+    "Add purchase for APP",
+    "Purchases (10)",
+  ])
+    assert.ok(phone.includes(text), text);
+  assert.match(phone, /href="\/research\/APP"/);
+  assert.equal((phone.match(/Manage APP purchases/g) ?? []).length, 1);
+  assert.equal((phone.match(/Add purchase for APP/g) ?? []).length, 1);
+  const cash = {
+    id: "cash",
+    symbol: "USD",
+    assetType: "cash",
+    quantity: 500,
+    cost: 1,
+    currency: "USD",
+  };
+  const cashPhone =
+    renderHoldings([cash], [cash]).match(
+      /<ul[^>]+aria-label="Portfolio holdings"[^>]*>[\s\S]*?<\/ul>/,
+    )?.[0] ?? "";
+  assert.match(cashPhone, /USD cash/);
+  assert.match(cashPhone, /\$500/);
+  assert.match(cashPhone, /Edit USD cash/);
   assert.doesNotMatch(
-    lead,
-    /Quoted price|Weight|Average cost|Manage purchases/,
+    cashPhone,
+    /<details|Add purchase|Quoted price|Unrealized return/,
   );
-  assert.match(details, /Quoted price/);
-  assert.match(details, /Average cost/);
-  assert.match(details, /Manage APP purchases/);
-  assert.match(details, /Add purchase for APP/);
 });

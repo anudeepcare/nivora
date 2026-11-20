@@ -20,8 +20,8 @@ export default function HomeQuarterHighlights({
       <header>
         <h2>Latest reported quarter</h2>
         <p>
-          Revenue compared with the prior reported quarter, for loaded research.
-          Not the unfinished calendar quarter or a forecast.
+          Reported revenue versus the prior quarter. Not the unfinished calendar
+          quarter or a forecast.
         </p>
       </header>
       <div className={s.grid}>
@@ -35,7 +35,11 @@ export default function HomeQuarterHighlights({
                 >
                   {r.symbol} <span>{r.name}</span>
                 </Link>
-                <strong>
+                <strong
+                  data-direction={
+                    r.changePct > 0 ? "up" : r.changePct < 0 ? "down" : "flat"
+                  }
+                >
                   {r.changePct > 0 ? "+" : ""}
                   {r.changePct.toFixed(1)}% <small>quarter over quarter</small>
                 </strong>
@@ -45,7 +49,7 @@ export default function HomeQuarterHighlights({
                   { label: "Prior", date: r.from, value: r.previous },
                   { label: "Latest", date: r.to, value: r.current },
                 ].map((v, i) => (
-                  <div key={v.label}>
+                  <div key={v.label} data-latest={i === 1}>
                     <span>
                       {v.label} · <time dateTime={v.date}>{v.date}</time>
                     </span>
@@ -54,7 +58,6 @@ export default function HomeQuarterHighlights({
                       viewBox="0 0 100 8"
                       preserveAspectRatio="none"
                       aria-hidden="true"
-                      data-latest={i === 1}
                     >
                       <rect width={(v.value / max) * 100} height="8" rx="2" />
                     </svg>

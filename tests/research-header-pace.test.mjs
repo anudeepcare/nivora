@@ -100,7 +100,7 @@ test("header renders status-first Pace, showing actual level and provisional sta
 test("header never substitutes a stale forming zone for current conditions", async () => {
   const { currentPace } = await import("../lib/current-pace.ts");
   const declaration = source.match(
-    /const headerPaceNow = [\s\S]+?(?=  const mobileCompanyName)/,
+    /const headerPaceNow = [\s\S]+?(?=  const paceReading)/,
   );
   assert.ok(declaration, "evaluate the actual header selection");
   const select = new Function(

@@ -9,14 +9,12 @@ test("Atlas uses balanced zero-minimum tracks and all six actual metric tiles st
     css,
     /\.tape\s*\{\s*display: grid;\s*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/,
   );
-  const action = css.slice(
-    css.indexOf(".action button {"),
-    css.indexOf(".action > small"),
-  );
-  assert.match(action, /color: var\(--atlas-ink\)/);
-  assert.match(action, /background: var\(--atlas-panel\)/);
-  assert.doesNotMatch(action, /#79eadc/);
+  assert.doesNotMatch(css, /\.action button\s*\{/);
   const source = fs.readFileSync("components/ReferenceAtlas.tsx", "utf8");
+  assert.match(
+    source,
+    /className="auryn-inline-link"[\s\S]*?Open Pace evidence/,
+  );
   assert.match(source, /value: percent\(b.businessNumbers.dilution\)/);
   assert.match(source, /Comparable reported periods; not a price return/);
 });
@@ -43,5 +41,8 @@ test("Outcome evidence keeps missing status visible and diagnostics accessible w
   assert.match(source, /\{m.outcome.method\} · \{m.outcome.caveat\}/);
   const model = fs.readFileSync("lib/reference-atlas.ts", "utf8");
   assert.match(model, /Forecast-multiple sensitivity/);
-  assert.match(model, /Conditional scenario prices, not independent fair value/);
+  assert.match(
+    model,
+    /Conditional scenario prices, not independent fair value/,
+  );
 });

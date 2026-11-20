@@ -604,13 +604,6 @@ export default function Research({ symbol }: { symbol: string }) {
       ? (p?.dca.confirmed ?? null)
       : null;
   const headerPaceCarry = headerPace !== null && headerPaceState.level === null;
-  const mobileCompanyName =
-    r.company.name
-      .trim()
-      .replace(
-        /,?\s+(?:holding\s+ltd\.?|incorporated|corporation|limited|inc\.?|corp\.?|ltd\.?|plc)$/i,
-        "",
-      ) || r.company.name;
   const paceReading = (
     <div
       className={`${headerPaceStyles.pace} ${workspacePaceStyles.palette}`}
@@ -721,7 +714,7 @@ export default function Research({ symbol }: { symbol: string }) {
                 {r.company.name}
               </span>
               <span className={headerPaceStyles.mobileName}>
-                {mobileCompanyName}
+                {r.company.name}
               </span>
             </h1>
             <div className={cockpit.identityMeta}>

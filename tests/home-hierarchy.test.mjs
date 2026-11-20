@@ -3,11 +3,15 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 const home = readFileSync("components/HomeWorkspace.tsx", "utf8");
 test("Today leads with attention and dated events before stock and portfolio context", () => {
-  assert.ok(home.indexOf("<PortfolioDay") > home.indexOf("<HomeMarketCards"));
+  assert.ok(
+    home.indexOf('aria-label="Workspace shortcuts"') >
+      home.indexOf("<HomeMarketCards"),
+  );
   assert.ok(
     home.indexOf('id="home-earnings"') < home.indexOf("<HomeMarketCards"),
   );
-  assert.match(home, /<PortfolioDay\s+compact/);
+  assert.doesNotMatch(home, /<PortfolioDay/);
+  assert.match(home, /href=\{[^\n]+\/portfolio/);
   assert.ok(
     home.indexOf('aria-label="Today’s story"') <
       home.indexOf("<HomeMarketCards"),
@@ -70,10 +74,12 @@ test("exposure highlights the existing actual portfolio weight, never a syntheti
 test("contribution planning and market radar follow all primary Today evidence", () => {
   const body = home.slice(home.indexOf("function HomeOverview()"));
   assert.ok(
-    body.indexOf("Your workspace") > body.indexOf("<HomeQuarterHighlights"),
+    body.indexOf('aria-label="Workspace shortcuts"') >
+      body.indexOf("<HomeQuarterHighlights"),
   );
   assert.ok(
-    body.indexOf("<ContributionCompare") > body.indexOf("<PortfolioDay"),
+    body.indexOf("<ContributionCompare") >
+      body.indexOf('aria-label="Workspace shortcuts"'),
   );
   assert.ok(
     body.indexOf("Market radar") > body.indexOf("<ContributionCompare"),

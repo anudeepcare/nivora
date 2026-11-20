@@ -145,6 +145,7 @@ html[data-theme="dark"]
 /* The same quiet footer serves all workspace pages. There is one copy of the
    secondary links and no absolute dropdown that can escape a scroll pane. */
 #auryn-app [data-auryn-footer] {
+  --auryn-footer-text: 0.875rem;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -155,7 +156,7 @@ html[data-theme="dark"]
   margin-top: 24px;
   border-top: 1px solid var(--plaid-line);
   color: var(--plaid-muted);
-  font-size: 0.82rem;
+  font-size: var(--auryn-footer-text);
   text-align: start;
 }
 #auryn-app [data-auryn-footer] :is(nav, .auryn-footer-guides) {
@@ -176,12 +177,19 @@ html[data-theme="dark"]
 #auryn-app [data-auryn-footer] details nav {
   padding: 0 0 7px 12px;
 }
+#auryn-app
+  [data-auryn-footer]
+  :is(.auryn-footer-copy, a, summary, .help-trigger) {
+  font-family: inherit;
+  font-size: var(--auryn-footer-text);
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.4;
+}
 #auryn-app [data-auryn-footer] :is(a, summary, .help-trigger) {
   min-height: 38px;
   margin: 0;
   color: var(--plaid-ink);
-  font-size: inherit;
-  line-height: 1.4;
 }
 #auryn-app [data-auryn-footer] a {
   display: inline-flex;
@@ -198,10 +206,48 @@ html[data-theme="dark"]
   #auryn-app [data-auryn-footer] {
     gap: 0 14px;
   }
-  #auryn-app [data-auryn-footer] > span:first-child {
+  #auryn-app [data-auryn-footer] > .auryn-footer-copy {
     flex: 0 0 100%;
   }
   #auryn-app [data-auryn-footer] :is(a, summary, .help-trigger) {
+    min-height: 44px;
+  }
+}
+
+/* Secondary evidence/navigation actions are links visually, even when the
+   destination is an in-page tab and the control must remain a button. */
+#auryn-app .auryn-inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  max-width: 100%;
+  width: fit-content;
+  min-height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--plaid-link, var(--plaid-focus, currentColor));
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: start;
+  text-decoration: none;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+#auryn-app .auryn-inline-link:hover,
+#auryn-app .auryn-inline-link:focus-visible {
+  text-decoration: underline;
+}
+#auryn-app .auryn-inline-link > svg {
+  flex: none;
+}
+@media (max-width: 767px) {
+  #auryn-app .auryn-inline-link {
     min-height: 44px;
   }
 }

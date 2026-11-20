@@ -137,9 +137,8 @@
   }
   .mobileName {
     display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
   .paceMobile {
     display: flex;
@@ -184,28 +183,28 @@
 /* Approved phone quote hierarchy: no changes to desktop or research rails. */
 @media (max-width: 700px) {
   .header.header {
-    gap: 12px 6px;
-    padding-block: 12px;
+    gap: 7px 6px;
+    padding-block: 9px;
   }
   .header.header .identity.identity {
-    gap: 12px;
+    gap: 9px;
     align-items: center;
   }
   .header.header .identity.identity > :global(.security-logo) {
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    flex-basis: 44px;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex-basis: 36px;
   }
   .header.header .identity.identity h1 {
-    font-size: clamp(22px, 6.9vw, 28px);
-    line-height: 1.15;
-    font-weight: 650;
+    font-size: clamp(18px, 5.1vw, 22px);
+    line-height: 1.2;
+    font-weight: 550;
     letter-spacing: -0.025em;
     margin: 0 0 4px;
   }
   .header.header .identity.identity > div > div {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.35;
   }
   .identity .currency {
@@ -217,7 +216,7 @@
   .header.header .quote.quote {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: "metrics pace" "stamp pace";
+    grid-template-areas: "metrics pace" "stamp stamp";
     gap: 2px 10px;
     align-items: center;
   }
@@ -230,14 +229,14 @@
     gap: 6px;
   }
   .header.header .priceMetrics > strong {
-    font-size: clamp(26px, 8.2vw, 36px);
-    font-weight: 650;
+    font-size: clamp(23px, 6.2vw, 29px);
+    font-weight: 550;
     line-height: 1.12;
     letter-spacing: -0.03em;
     overflow-wrap: anywhere;
   }
   .header.header .priceMetrics > span {
-    font-size: clamp(12px, 3.6vw, 16px);
+    font-size: clamp(12px, 3.4vw, 14px);
     gap: 0;
   }
   .header.header .quote > :global(.data-stamp) {
@@ -252,16 +251,15 @@
     align-self: stretch;
     align-items: center;
     margin: 0;
-    padding-left: 12px;
-    border-left: 1px solid var(--line);
+    padding: 0;
   }
   .header.header .paceMobile .pace {
     background: var(--workspace-pace-fill, var(--surface-2));
     color: var(--workspace-pace-ink, var(--muted));
     border-radius: 999px;
-    padding: 0 2px 0 14px;
-    gap: 2px;
-    min-height: 48px;
+    padding: 0 0 0 9px;
+    gap: 0;
+    min-height: 44px;
   }
   .paceMobile .paceText,
   .paceMobile .paceDot,
@@ -270,14 +268,14 @@
   }
   .paceMobile .mobileCode {
     display: inline;
-    font-size: clamp(27px, 8vw, 34px);
-    font-weight: 650;
+    font-size: clamp(18px, 5.5vw, 22px);
+    font-weight: 550;
     line-height: 1;
     letter-spacing: -0.03em;
   }
   .header.header .paceMobile .pace > :global(button.help) {
-    width: 36px;
-    min-width: 36px;
+    width: 44px;
+    min-width: 44px;
     height: 44px;
     padding: 9px;
     color: inherit;

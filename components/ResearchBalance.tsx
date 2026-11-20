@@ -46,7 +46,10 @@ export default function ResearchBalance({
             ) : (
               <p className="balance-unavailable">
                 No supporting evidence available.{" "}
-                <button onClick={() => onTab("Thesis")}>
+                <button
+                  className="auryn-inline-link"
+                  onClick={() => onTab("Thesis")}
+                >
                   Review evidence coverage <ArrowUpRight size={15} />
                 </button>
               </p>
@@ -72,7 +75,10 @@ export default function ResearchBalance({
         <div className="balance-checkpoint">
           <span>NEXT CHECKPOINT</span>
           <p>{edge.turningPoint}</p>
-          <button className="text-button" onClick={() => onTab("Thesis")}>
+          <button
+            className="text-button auryn-inline-link"
+            onClick={() => onTab("Thesis")}
+          >
             Open the evidence <ArrowUpRight size={15} />
           </button>
         </div>

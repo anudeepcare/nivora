@@ -908,95 +908,94 @@ function HoldingsTable({
                   )}
                 </div>
               </div>
-              <details className={composition.phoneDetails}>
-                <summary>
-                  Details &amp; actions
-                  <span className="sr-only"> for {p.symbol}</span>
-                </summary>
-                {!cash && (
-                  <>
-                    <dl>
+              {!cash && (
+                <>
+                  <dl
+                    className={composition.phoneFacts}
+                    aria-label="Position metrics"
+                  >
+                    <div>
+                      <dt>{p.assetType === "crypto" ? "Units" : "Shares"}</dt>
+                      <dd>{quantity ?? "Unavailable"}</dd>
+                    </div>
+                    <div>
+                      <dt>Average cost</dt>
+                      <dd>{cost}</dd>
+                    </div>
+                    <div>
+                      <dt>Weight</dt>
+                      <dd>{percent(row.weight)}</dd>
+                    </div>
+                  </dl>
+                  <dl
+                    className={composition.phoneEvidence}
+                    aria-label="Position evidence"
+                  >
+                    <div>
+                      <dt>Quoted price</dt>
+                      <dd>
+                        {quote?.price == null
+                          ? "Unavailable"
+                          : amount(quote.price, quote.currency)}
+                        {quote?.asOf && (
+                          <small>
+                            {quote.stale ? "Older · " : ""}
+                            {quoteTime(quote.asOf, true)}
+                          </small>
+                        )}
+                      </dd>
+                    </div>
+                    {p.assetType !== "crypto" && (
                       <div>
-                        <dt>{p.assetType === "crypto" ? "Units" : "Shares"}</dt>
-                        <dd>{quantity ?? "Unavailable"}</dd>
-                      </div>
-                      <div>
-                        <dt>Average cost</dt>
-                        <dd>{cost}</dd>
-                      </div>
-                      <div>
-                        <dt>Weight</dt>
-                        <dd>{percent(row.weight)}</dd>
-                      </div>
-                      <div>
-                        <dt>Quoted price</dt>
+                        <dt>Accumulation Pace</dt>
                         <dd>
-                          {quote?.price == null
-                            ? "Price unavailable"
-                            : amount(quote.price, quote.currency)}
-                          {quote?.asOf && (
-                            <small>
-                              {quote.stale ? "Older · " : ""}
-                              {quoteTime(quote.asOf, true)}
-                            </small>
-                          )}
+                          <PaceBadge
+                            signal={state.pace(p.symbol)}
+                            loading={state.paceScan.loading}
+                          />
                         </dd>
                       </div>
-                      {p.assetType !== "crypto" && (
-                        <div>
-                          <dt>Accumulation Pace</dt>
-                          <dd>
-                            <PaceBadge
-                              signal={state.pace(p.symbol)}
-                              loading={state.paceScan.loading}
-                            />
-                          </dd>
-                        </div>
-                      )}
-                      <div>
-                        <dt>Recorded purchases</dt>
-                        <dd>{row.lots.length}</dd>
-                      </div>
-                    </dl>
-                    {row.note && <p>{row.note}</p>}
-                  </>
-                )}
-                <div className={composition.phoneActions}>
-                  {!cash && (
-                    <button
-                      className="btn"
-                      type="button"
-                      aria-label={`Add purchase for ${p.symbol}`}
-                      onClick={() =>
-                        onAddPurchase({
-                          symbol: p.symbol,
-                          currency: row.costCurrency,
-                        })
-                      }
-                    >
-                      Add purchase
-                    </button>
+                    )}
+                  </dl>
+                  {row.note && (
+                    <p className={composition.phoneNote}>{row.note}</p>
                   )}
+                </>
+              )}
+              <div className={composition.phoneActions}>
+                {!cash && (
                   <button
-                    className="btn"
                     type="button"
-                    aria-label={
-                      cash
-                        ? `Edit ${p.symbol} cash`
-                        : `Manage ${p.symbol} purchases`
+                    aria-label={`Add purchase for ${p.symbol}`}
+                    onClick={() =>
+                      onAddPurchase({
+                        symbol: p.symbol,
+                        currency: row.costCurrency,
+                      })
                     }
-                    onClick={() => {
-                      if (cash) onEdit(p);
-                      else {
-                        setActiveKey(row.groupKey);
-                        purchaseDialog.current?.showModal();
-                      }
-                    }}
                   >
-                    {cash ? "Edit balance" : "Manage purchases"}
+                    <Plus size={15} aria-hidden="true" />
+                    Add purchase
                   </button>
-                </div>
-              </details>
+                )}
+                <button
+                  type="button"
+                  aria-label={
+                    cash
+                      ? `Edit ${p.symbol} cash`
+                      : `Manage ${p.symbol} purchases (${row.lots.length} recorded)`
+                  }
+                  onClick={() => {
+                    if (cash) onEdit(p);
+                    else {
+                      setActiveKey(row.groupKey);
+                      purchaseDialog.current?.showModal();
+                    }
+                  }}
+                >
+                  {cash ? "Edit balance" : `Purchases (${row.lots.length})`}
+                </button>
+              </div>
             </li>
           );
         })}

@@ -33,3 +33,26 @@ test("shared footer wraps at narrow widths and retains readable keyboard and tou
   assert.match(css, /min-height: 44px/);
   assert.match(css, /max-width: 767px/);
 });
+test("copyright, footer links and disclosure trigger share one type scale", () => {
+  const css = read("app/core/auryn-controls.css");
+  assert.match(css, /--auryn-footer-text:\s*0\.875rem/);
+  assert.match(
+    css,
+    /:is\(\.auryn-footer-copy, a, summary, \.help-trigger\)\s*\{[^}]*font-size:\s*var\(--auryn-footer-text\)/,
+  );
+});
+test("secondary evidence actions use the shared link treatment without a boxed surface", () => {
+  const css = read("app/core/auryn-controls.css");
+  assert.match(
+    css,
+    /\.auryn-inline-link\s*\{[^}]*border:\s*0;[^}]*background:\s*transparent;/,
+  );
+  for (const file of [
+    "DecisionOverview",
+    "DecisionInsights",
+    "ResearchBalance",
+    "ContributionCompare",
+    "ResearchNotes",
+  ])
+    assert.match(read(`components/${file}.tsx`), /auryn-inline-link/);
+});

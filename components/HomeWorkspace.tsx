@@ -31,7 +31,6 @@ import Link from "next/link";
 import { FeatureGate, useAccess } from "./Access";
 import CompanySparkline from "./CompanySparkline";
 import homeStyles from "./HomeWorkspace.module.css";
-import PortfolioDay from "./PortfolioDay";
 import { Empty, Notice, SecurityLogo } from "./Ui";
 
 import {
@@ -179,14 +178,8 @@ function HomeOverview() {
     headlines,
     checkpoints: brief.checkpoints,
   };
-  const personalStory = todayNarrative(narrativeInput);
   const marketNewsKey =
-    access.admitted &&
-    !access.sampleOnly &&
-    !!access.features.news &&
-    !demo &&
-    !personalStory &&
-    (!symbols.length || !feed.loading)
+    access.admitted && !access.sampleOnly && !!access.features.news && !demo
       ? "news?symbol=SPY"
       : null;
   const marketCoverage = useResource<EodNews>(
@@ -194,26 +187,20 @@ function HomeOverview() {
     undefined,
     3_600_000,
   );
-  const story =
-    personalStory ??
-    (marketNewsKey
-      ? todayNarrative({
-          ...narrativeInput,
-          market: true,
-          reports: [],
-          checkpoints: [],
-          headlines: (marketCoverage.data?.items ?? []).map((item) => ({
-            symbol: "SPY",
-            date: item.date,
-            title: item.title,
-            url: item.url,
-          })),
-        })
-      : null);
-  const spotlight =
-    personalStory?.kind === "headline" ? personalStory.headline : null;
+  const story = todayNarrative({
+    ...narrativeInput,
+    marketHeadlines: marketNewsKey
+      ? (marketCoverage.data?.items ?? []).map((item) => ({
+          symbol: "SPY",
+          date: item.date,
+          title: item.title,
+          url: item.url,
+        }))
+      : [],
+  });
+  const spotlight = story?.kind === "headline" ? story.headline.url : null;
   const secondaryHeadlines = spotlight
-    ? headlines.filter((item) => item !== spotlight)
+    ? headlines.filter((item) => item.url !== spotlight)
     : headlines;
 
   const pastPending = (feed.data?.events ?? []).filter(
@@ -309,7 +296,11 @@ function HomeOverview() {
         </span>
       </header>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <section className={homeStyles.narrative} aria-label="Today’s story">
+      <section
+        className={homeStyles.narrative}
+        data-story={story ? "evidence" : "empty"}
+        aria-label="Today’s story"
+      >
         <div className={homeStyles.narrativeMain}>
           <p className={homeStyles.storyLabel}>
             {story?.kind === "report" ? (
@@ -321,9 +312,9 @@ function HomeOverview() {
               </>
             ) : story?.kind === "headline" ? (
               <>
-                {personalStory
-                  ? `${story.headline.symbol} · Source headline`
-                  : "SPY market coverage · Source headline"}{" "}
+                {story.scope === "market"
+                  ? "SPY market coverage · Source headline"
+                  : `${story.headline.symbol} · Source headline`}{" "}
                 · {story.source} ·{" "}
                 <time dateTime={story.headline.date}>
                   {dateLabel(story.headline.date)}
@@ -483,12 +474,26 @@ function HomeOverview() {
                               : percent(move, true)}
                           </strong>
                           <span>{amount(price, quote.currency)}</span>
-                          <small>
-                            {quote.stale ? "Older quote · " : ""}
-                            {quote.session || "Session not supplied"} ·{" "}
-                            {/^\d{4}-\d{2}-\d{2}$/.test(quote.asOf ?? "")
-                              ? dateLabel(quote.asOf)
-                              : quoteTime(quote.asOf, true, today)}
+                          <small className={homeStyles.quoteMeta}>
+                            {quote.stale && (
+                              <span data-freshness="older">Older quote</span>
+                            )}
+                            {(!quote.stale ||
+                              (quote.session &&
+                                !/^last available quote$/i.test(
+                                  quote.session,
+                                ))) && (
+                              <span>
+                                {quote.session || "Session not supplied"}
+                              </span>
+                            )}
+                            <time dateTime={quote.asOf ?? undefined}>
+                              {/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(
+                                quote.asOf ?? "",
+                              )
+                                ? dateLabel(quote.asOf)
+                                : quoteTime(quote.asOf, !quote.stale, today)}
+                            </time>
                           </small>
                         </>
                       ) : (
@@ -749,17 +754,16 @@ function HomeOverview() {
         prefix={prefix}
       />
       <section className={homeStyles.researchTools} aria-label="Research tools">
-        <h2 className={homeStyles.workspaceTitle}>Your workspace</h2>
-        <div className={homeStyles.workspaceShortcuts}>
-          {!!workspace?.positions.length && (
-            <PortfolioDay
-              compact
-              positions={workspace.positions}
-              quotes={quotes.data}
-              prefix={prefix}
-              now={today.getTime()}
-            />
-          )}
+        <nav
+          className={homeStyles.workspaceShortcuts}
+          aria-label="Workspace shortcuts"
+        >
+          <Link
+            className={homeStyles.workspaceLink}
+            href={`${prefix}/portfolio`}
+          >
+            Portfolio <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
           <Link
             className={homeStyles.workspaceLink}
             href={`${prefix}/monthly-plan`}
@@ -767,7 +771,7 @@ function HomeOverview() {
           >
             Monthly plan <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
-        </div>
+        </nav>
         <div className={homeStyles.actionGrid}>
           <ContributionCompare symbols={symbols} prefix={prefix} />
           {symbols.length > 0 && (

@@ -339,7 +339,10 @@ function Candidate({
               Financial period {dateLabel(d.period)} · quote{" "}
               {dateLabel(r.quote.asOf)}
             </small>
-            <Link href={`${prefix}/research/${encodeURIComponent(symbol)}`}>
+            <Link
+              className="auryn-inline-link"
+              href={`${prefix}/research/${encodeURIComponent(symbol)}`}
+            >
               Review the evidence →
             </Link>
           </footer>

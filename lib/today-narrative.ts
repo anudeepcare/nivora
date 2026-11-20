@@ -1,3 +1,4 @@
+import { marketDay } from "./home-feed.ts";
 import type { MarketEvent, MarketHeadline } from "./home-feed";
 
 type Input = {
@@ -6,7 +7,7 @@ type Input = {
   reports: MarketEvent[];
   headlines: MarketHeadline[];
   checkpoints: MarketEvent[];
-  market?: boolean;
+  marketHeadlines?: MarketHeadline[];
 };
 
 const dayMs = 86_400_000;
@@ -20,24 +21,27 @@ const dateOnly = (date: string) => {
 };
 
 function headlinePrompt(title: string, market: boolean) {
-  if (market)
-    return /\b(?:federal reserve|fed (?:rates?|decision|minutes)|inflation|CPI|PCE|jobs report|nonfarm payrolls|GDP)\b/i.test(
-      title,
-    )
+  if (market) {
+    const subject =
+      /\b(?:federal reserve|fed (?:rates?|decision|minutes)|inflation|CPI|PCE|jobs report|nonfarm payrolls|GDP)\b/i;
+    const evidence =
+      /\b(?:data|figures|reading|release|report|print|decision|minutes|rates?|cuts?|hikes?|accelerates?|slows?|rises?|falls?|jumps?|drops?|holds?|forecast)\b/i;
+    return subject.test(title) && evidence.test(title)
       ? {
-          rank: 3,
-          why: "A scheduled release or policy decision can reset expectations; the headline alone does not establish the result.",
+          rank: 5,
+          why: "A broad economic release or policy decision can shift expectations beyond a single company.",
           question:
             "What does the official scheduled release or actual decision say, and how does it compare with expectations?",
         }
       : null;
+  }
   if (
     /\b(?:10-[QK]|8-K|files?\s+(?:its\s+|an?\s+)?(?:quarterly|annual|regulatory)\s+report)\b/i.test(
       title,
     )
   )
     return {
-      rank: 4,
+      rank: 6,
       why: "A filing can separate what the company disclosed from the market reaction.",
       question:
         "Which figure or risk in the filing changes the earlier assumptions?",
@@ -48,7 +52,7 @@ function headlinePrompt(title: string, market: boolean) {
     )
   )
     return {
-      rank: 3,
+      rank: 4,
       why: "An outlook change matters if it alters expectations for future results.",
       question:
         "What changed from the previous outlook: sales, margins, or timing?",
@@ -59,7 +63,7 @@ function headlinePrompt(title: string, market: boolean) {
     )
   )
     return {
-      rank: 3,
+      rank: 4,
       why: "Reported results can test the expectations already reflected in the price.",
       question:
         "Does the company release show a change in revenue or cash generation?",
@@ -70,7 +74,7 @@ function headlinePrompt(title: string, market: boolean) {
     )
   )
     return {
-      rank: 2,
+      rank: 3,
       why: "An announcement matters more when the company discloses its timing and economics.",
       question:
         "Does the company disclose a financial impact, or only the announcement?",
@@ -85,7 +89,7 @@ export function todayNarrative({
   reports,
   headlines,
   checkpoints,
-  market = false,
+  marketHeadlines = [],
 }: Input) {
   const start = dateOnly(day),
     time = Date.parse(now);
@@ -121,17 +125,13 @@ export function todayNarrative({
       );
     })
     .sort((a, b) => b.date.localeCompare(a.date))[0];
-  if (report)
-    return {
-      kind: "report" as const,
-      report,
-      next: nextFor(report.symbol),
-      why: "A reported result gives you a concrete reason to revisit earlier expectations.",
-      question:
-        "What explains the reported EPS in the company release: operations or one-time items?",
-    };
-  const selected = headlines
-    .flatMap((headline) => {
+  const rank = (quality: number, observedDay: number) =>
+    quality - (start - observedDay) / dayMs;
+  const rankedHeadlines = (
+    items: MarketHeadline[],
+    scope: "market" | "company",
+  ) =>
+    items.flatMap((headline) => {
       const at = Date.parse(headline.date);
       if (
         !headline.title.trim() ||
@@ -148,30 +148,66 @@ export function todayNarrative({
           url.password
         )
           return [];
-        const prompt = headlinePrompt(headline.title, market);
-        return prompt
-          ? [
-              {
-                headline,
-                at,
-                source: url.hostname.replace(/^www\./, ""),
-                ...prompt,
-              },
-            ]
-          : [];
+        const prompt = headlinePrompt(headline.title, scope === "market");
+        const observedDay = dateOnly(
+          dateOnly(headline.date) === at ? headline.date : marketDay(at),
+        );
+        if (!prompt || !Number.isFinite(observedDay) || observedDay > start)
+          return [];
+        return [
+          {
+            headline,
+            scope,
+            at,
+            observedDay,
+            score: rank(prompt.rank, observedDay),
+            source: url.hostname.replace(/^www\./, ""),
+            why: prompt.why,
+            question: prompt.question,
+          },
+        ];
       } catch {
         return [];
       }
-    })
-    .sort((a, b) => b.rank - a.rank || b.at - a.at)[0];
+    });
+  const selected = [
+    ...rankedHeadlines(headlines, "company"),
+    ...rankedHeadlines(marketHeadlines, "market"),
+  ].sort(
+    (a, b) => b.score - a.score || b.observedDay - a.observedDay || b.at - a.at,
+  )[0];
+  // Recency competes with evidence strength. A comparable dated result gets
+  // priority without reserving the lead for company data indefinitely.
+  if (report) {
+    const reportDay = dateOnly(report.date);
+    const score = rank(7, reportDay);
+    if (
+      !selected ||
+      score > selected.score ||
+      (score === selected.score && reportDay >= selected.observedDay)
+    )
+      return {
+        kind: "report" as const,
+        scope: "company" as const,
+        report,
+        next: nextFor(report.symbol),
+        why: "A reported result gives you a concrete reason to revisit earlier expectations.",
+        question:
+          "What explains the reported EPS in the company release: operations or one-time items?",
+      };
+  }
   return selected
     ? {
         kind: "headline" as const,
+        scope: selected.scope,
         headline: selected.headline,
         source: selected.source,
         why: selected.why,
         question: selected.question,
-        next: nextFor(selected.headline.symbol),
+        next:
+          selected.scope === "company"
+            ? nextFor(selected.headline.symbol)
+            : null,
       }
     : null;
 }

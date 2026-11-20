@@ -210,6 +210,7 @@ export default function ResearchNotes({ research: r }: { research: Research }) {
             </p>
           )}
           <Link
+            className="auryn-inline-link"
             href={`${demo ? "/preview" : ""}/research/${encodeURIComponent(r.company.symbol.replace("/", "-"))}?tab=Snapshot`}
           >
             Review evidence & save threshold alerts →

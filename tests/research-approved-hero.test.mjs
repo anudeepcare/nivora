@@ -64,7 +64,7 @@ test("mobile Pace displays only real code or missing dash, never sample or statu
   assert.match(source, /Help label="this Pace reading"/);
   assert.match(source, /Provisional current-month reading/);
 });
-test("approved mobile hero has enlarged identity, grid quote and separated category-colored code without changing desktop", () => {
+test("phone hero keeps the full readable name, visible quote, and compact category-colored Pace code", () => {
   const css = postcss.parse(
     fs.readFileSync("components/ResearchHeaderPace.module.css", "utf8"),
   );
@@ -82,15 +82,26 @@ test("approved mobile hero has enlarged identity, grid quote and separated categ
   };
   assert.equal(
     val(".header.header .identity.identity h1", "font-size"),
-    "clamp(22px, 6.9vw, 28px)",
+    "clamp(18px, 5.1vw, 22px)",
   );
   assert.equal(
     val(".header.header .quote.quote", "grid-template-areas"),
-    '"metrics pace" "stamp pace"',
+    '"metrics pace" "stamp stamp"',
+  );
+  assert.equal(val(".header.header .paceMobile", "border-left"), undefined);
+  assert.equal(val(".mobileName", "white-space"), "normal");
+  assert.equal(val(".mobileName", "overflow-wrap"), "anywhere");
+  assert.match(
+    source,
+    /className=\{headerPaceStyles.mobileName\}>\s*\{r.company.name\}/,
   );
   assert.equal(
-    val(".header.header .paceMobile", "border-left"),
-    "1px solid var(--line)",
+    val(".header.header .priceMetrics > strong", "font-size"),
+    "clamp(23px, 6.2vw, 29px)",
+  );
+  assert.equal(
+    val(".header.header .paceMobile .pace > :global(button.help)", "height"),
+    "44px",
   );
   assert.equal(
     val(
@@ -129,6 +140,6 @@ test("narrow mobile quote wraps within its track and listing stays readable", ()
   );
   assert.equal(
     values(".header.header .identity.identity > div > div")["font-size"],
-    "14px",
+    "12px",
   );
 });

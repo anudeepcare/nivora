@@ -1472,9 +1472,9 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: clamp(16px, 3vw, 38px);
-  margin-block: 2px 18px;
-  padding: clamp(18px, 3vw, 36px);
+  gap: 10px;
+  margin-block: 2px 14px;
+  padding: clamp(14px, 2.2vw, 26px);
   border-radius: 20px;
   background: linear-gradient(
     120deg,
@@ -1483,14 +1483,21 @@
   );
   color: var(--plaid-ink, var(--ink));
 }
+.home .narrative[data-story="empty"] {
+  background: transparent;
+  padding: 5px 0 8px;
+}
+.home .narrative[data-story="empty"] h2 {
+  font-size: clamp(19px, 2vw, 26px);
+}
 .narrativeMain {
   min-width: 0;
   overflow-wrap: anywhere;
 }
 .home .narrativeMain h2 {
   margin: 6px 0 12px;
-  max-width: 55ch;
-  font-size: clamp(25px, 3vw, 43px);
+  max-width: 64ch;
+  font-size: clamp(23px, 2.55vw, 36px);
   line-height: 1.12;
   letter-spacing: -0.037em;
   text-wrap: balance;
@@ -1686,28 +1693,18 @@
   border-radius: 16px;
   background: var(--plaid-surface, var(--card));
 }
-.home .workspaceTitle {
-  margin: 0 0 4px;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-}
 .workspaceShortcuts {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0 16px;
-}
-.workspaceShortcuts > section {
-  margin: 0;
-  border: 0;
-  padding-block: 7px;
+  gap: 2px 18px;
 }
 .workspaceLink {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  justify-self: start;
-  color: var(--plaid-ink, var(--ink));
+  color: var(--plaid-violet, var(--ink));
   font-size: 14px;
   font-weight: 650;
   text-decoration: underline;
@@ -1720,8 +1717,18 @@
   border-block-start: 1px solid var(--plaid-line, var(--line));
   border-block-end: 0;
 }
-@media (min-width: 660px) {
-  .workspaceShortcuts:has(> section) {
-    grid-template-columns: minmax(0, 1fr) max-content;
-  }
+.marketTape .quoteMeta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 1px 8px;
+  font-variant-numeric: tabular-nums;
+}
+.quoteMeta time {
+  display: block;
+  flex-basis: 100%;
+}
+.quoteMeta [data-freshness="older"] {
+  color: color-mix(in srgb, var(--amber) 86%, var(--plaid-ink, var(--ink)));
+  font-weight: 650;
 }

@@ -210,7 +210,7 @@ export default function DecisionOverview({
                   </details>
                 )}
                 <button
-                  className="text-button"
+                  className="text-button auryn-inline-link"
                   onClick={() => onTab("Valuation")}
                 >
                   Review valuation evidence ↗

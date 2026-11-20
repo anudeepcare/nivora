@@ -1594,6 +1594,15 @@
   min-height: 42px;
   padding: 9px 14px;
 }
+.display-preferences .theme-segments {
+  flex-wrap: wrap;
+}
+.display-preferences .theme-daylight-note {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  margin: 0 0 12px;
+}
 .display-preferences .appearance-controls {
   padding: 18px 0 0;
   border: 0;

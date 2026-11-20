@@ -45,7 +45,10 @@ test("contribution planning has no repeated instructions and retains both resear
   assert.match(view, /href=\{\x60\$\{prefix\}\/monthly-plan\x60\}/);
   assert.match(view, /<ContributionCompare/);
   assert.match(view, /<HomeRadar/);
-  assert.match(css, /\.workspaceLink\s*\{[^}]*justify-self: start/);
+  assert.match(
+    css,
+    /\.workspaceShortcuts\s*\{[^}]*display: flex;[^}]*flex-wrap: wrap/,
+  );
 });
 
 test("earnings refresh has a local 44px target and visible keyboard focus", () => {

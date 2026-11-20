@@ -39,6 +39,24 @@
     max(16px, env(safe-area-inset-bottom, 0px))
     max(16px, env(safe-area-inset-left, 0px));
 }
+@media (max-width: 760px) {
+  #auryn-app .mp-auth[data-plaid-page="access"] {
+    gap: 8px;
+    padding-block-start: max(6px, env(safe-area-inset-top, 0px));
+    background:
+      linear-gradient(
+        180deg,
+        var(--chrome-surface) env(safe-area-inset-top, 0px),
+        transparent calc(env(safe-area-inset-top, 0px) + 44px)
+      ),
+      var(--plaid-canvas);
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] > header {
+    min-height: 44px;
+    padding: 0;
+    align-items: center;
+  }
+}
 #auryn-app .mp-auth[data-plaid-page="access"] .mp-auth-panel {
   width: 100%;
   max-width: 28rem;

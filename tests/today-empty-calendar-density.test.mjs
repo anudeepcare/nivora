@@ -20,11 +20,17 @@ test("empty calendar uses compact content-height status while keeping real news 
   assert.match(src, /Calendar coverage is incomplete/);
   assert.match(src, /Missing coverage does not mean no events/);
   assert.match(src, /secondaryHeadlines.slice\(0, 6\).map\(renderHeadline\)/);
-  assert.ok(src.indexOf('title="What changed"') < src.indexOf("<PortfolioDay"));
+  assert.ok(
+    src.indexOf('title="What changed"') <
+      src.indexOf('aria-label="Workspace shortcuts"'),
+  );
   assert.ok(
     src.indexOf('title="What changed"') < src.indexOf("<HomeMarketCards"),
   );
-  assert.equal((src.match(/<PortfolioDay\b/g) || []).length, 1);
+  assert.equal(
+    (src.match(/aria-label="Workspace shortcuts"/g) || []).length,
+    1,
+  );
 });
 test("secondary holdings comparison keeps totals beside bounded contribution rows on desktop", () => {
   const css = fs.readFileSync("components/PortfolioDay.module.css", "utf8");

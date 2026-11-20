@@ -360,7 +360,9 @@ export function ProductFooter() {
   ));
   return (
     <footer className="product-footer" data-auryn-footer>
-      <span>© {new Date().getFullYear()} AURYN. All rights reserved.</span>
+      <span className="auryn-footer-copy">
+        © {new Date().getFullYear()} AURYN. All rights reserved.
+      </span>
       <nav className="auryn-footer-support" aria-label="Support">
         <ContextLink page="help">Help</ContextLink>
         <ContextLink page="contact">Contact</ContextLink>

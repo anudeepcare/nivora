@@ -8,6 +8,7 @@
   --plaid-ice: #e7effb;
   --plaid-violet: #6547af;
   --plaid-focus: #365ac5;
+  --plaid-link: #0b6765;
   --plaid-card-blue: #eef4fd;
   --plaid-card-purple: #f1edfc;
   --plaid-card-teal: #e9f5f6;
@@ -23,6 +24,7 @@ html[data-theme="dark"] {
   --plaid-ice: #263550;
   --plaid-violet: #c6b7ff;
   --plaid-focus: #acc3ff;
+  --plaid-link: #75ded3;
   --plaid-card-blue: #1c2b43;
   --plaid-card-purple: #2a2540;
   --plaid-card-teal: #1c3039;

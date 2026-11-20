@@ -2,6 +2,8 @@ import AnalyticsConsent from "@/components/AnalyticsConsent";
 import { SITE_URL } from "@/lib/site-metadata";
 import { AppearanceSync } from "@/components/AppearanceControls";
 import Pwa from "@/components/Pwa";
+import ThemeDaylightSync from "@/components/ThemeDaylightSync";
+import { DAYLIGHT_START, DAYLIGHT_END } from "@/lib/theme-preference";
 import AppSession from "@/components/AppSession";
 import type { Metadata, Viewport } from "next";
 import "./core/foundation.css";
@@ -43,7 +45,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#f7f7f5" },
   ],
 };
-const boot = `try{const x=JSON.parse(localStorage.getItem('auryn-appearance-v4')||JSON.stringify({accent:'blue',density:JSON.parse(localStorage.getItem('auryn-appearance-v1')||'{}').density}));document.documentElement.dataset.accent=['blue','teal','violet','rose'].includes(x.accent)?x.accent:'blue';document.documentElement.dataset.density=x.density==='compact'?'compact':'comfortable'}catch(e){};try{document.documentElement.dataset.pwa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true?'true':'false'}catch(e){};try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=s==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='light'?'light':'dark';r.style.colorScheme=r.dataset.theme;document.querySelectorAll('meta[name="theme-color"]').forEach(m=>{m.content=r.dataset.theme==='dark'?'#080d18':'#f7f7f5';m.removeAttribute('media')});r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
+const boot = `try{const x=JSON.parse(localStorage.getItem('auryn-appearance-v4')||JSON.stringify({accent:'blue',density:JSON.parse(localStorage.getItem('auryn-appearance-v1')||'{}').density}));document.documentElement.dataset.accent=['blue','teal','violet','rose'].includes(x.accent)?x.accent:'blue';document.documentElement.dataset.density=x.density==='compact'?'compact':'comfortable'}catch(e){};try{document.documentElement.dataset.pwa=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true?'true':'false'}catch(e){};try{const r=document.documentElement,s=localStorage.getItem('auryn-product-theme');r.dataset.theme=s==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):s==='daylight'?((h=>h>=${DAYLIGHT_START}&&h<${DAYLIGHT_END})(new Date().getHours())?'light':'dark'):s==='light'?'light':'dark';r.style.colorScheme=r.dataset.theme;document.querySelectorAll('meta[name="theme-color"]').forEach(m=>{m.content=r.dataset.theme==='dark'?'#080d18':'#f7f7f5';m.removeAttribute('media')});r.dataset.textSize=localStorage.getItem('auryn-product-text')==='large'?'large':'standard';r.dataset.motion=localStorage.getItem('auryn-product-motion')==='reduce'?'reduce':'system'}catch(e){}`;
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -58,6 +60,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body id="auryn-app">
         <div className="pwa-status-surface" aria-hidden="true" />
         <Pwa />
+        <ThemeDaylightSync />
         <AppearanceSync />
         <AppSession>{children}</AppSession>
         <AnalyticsConsent />

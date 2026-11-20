@@ -531,7 +531,10 @@ test("daily briefing reuses followed benchmarks, labels the reported session and
   const html = renderToStaticMarkup(React.createElement(Home));
   assert.deepEqual(requests, ["quotes?symbols=QQQ", null]);
   assert.match(html, /SPY<\/a>[\s\S]*data-direction="up">\+1.6%/);
-  assert.match(html, /Older quote · Closed ·/);
+  assert.match(
+    html,
+    /data-freshness="older">Older quote<\/span><span>Closed<\/span><time dateTime="2026-11-18"/,
+  );
   assert.match(html, /QQQ<\/a>[\s\S]*Quote unavailable/);
   assert.doesNotMatch(html, /2099|-5\.0%/);
   assert.match(html, new RegExp(`<time dateTime="${marketDay(new Date())}"`));
@@ -600,4 +603,81 @@ test("new users get scoped market context while preview or unentitled sessions n
       assert.doesNotMatch(html, /example\.com\/macro/);
     }
   }
+});
+
+test("a followed lead renders while market coverage loads and competes once a fresher broad report is available", () => {
+  let marketReady = false;
+  const requests = [];
+  const now = Date.now();
+  const company = {
+    symbol: "NBIS",
+    date: new Date(now - 30 * 3_600_000).toISOString(),
+    title: "Nebius cuts 2026 outlook",
+    url: "https://example.com/nbis-outlook",
+  };
+  const market = {
+    date: new Date(now - 60_000).toISOString(),
+    title: "New Federal Reserve minutes as inflation data arrive",
+    url: "https://example.com/market-report",
+  };
+  const Home = load("HomeOverview", {
+    useAccess: () => ({ access: { admitted: true, features: { news: true } } }),
+    useResource(key) {
+      requests.push(key);
+      return key === "news?symbol=SPY"
+        ? {
+            data: marketReady ? { items: [market] } : null,
+            loading: !marketReady,
+          }
+        : { data: null, loading: false };
+    },
+    useWorkspaceData: () => ({
+      research: empty,
+      workspace: { positions: [], watchlist: [{ symbol: "NBIS" }] },
+      quotes: { data: {} },
+      model: { allocations: [] },
+      prefix: "",
+    }),
+    useHomeFeed: () => ({
+      data: {
+        news: [company],
+        events: [],
+        followed: 1,
+        newsFollowed: 1,
+        issues: [],
+      },
+      loading: true,
+      error: "",
+      refresh: empty,
+    }),
+    relevantHoldingHeadlines: (items) => items,
+    homeBrief,
+    homeFeedReadiness,
+    groupMarketEvents,
+    marketDay,
+    earningsEventState,
+    researchLink: (symbol) => `/research/${symbol}`,
+    ...format,
+    SectionHead: empty,
+    SecurityLogo: empty,
+    RefreshCw: empty,
+    Coverage: empty,
+    Notice: empty,
+  });
+  const lead = (html) =>
+    html.match(/aria-label="Today’s story"[\s\S]*?<\/section>/)?.[0];
+  const first = renderToStaticMarkup(React.createElement(Home));
+  assert.ok(requests.includes("news?symbol=SPY"));
+  assert.match(lead(first), /NBIS · Source headline/);
+  assert.match(lead(first), /nbis-outlook/);
+  assert.doesNotMatch(lead(first), /Checking for dated/);
+  marketReady = true;
+  const settled = renderToStaticMarkup(React.createElement(Home));
+  assert.match(lead(settled), /SPY market coverage · Source headline/);
+  assert.doesNotMatch(lead(settled), /nbis-outlook/);
+  assert.equal(
+    (settled.match(/href="https:\/\/example\.com\/nbis-outlook"/g) ?? [])
+      .length,
+    1,
+  );
 });

@@ -6,6 +6,8 @@ import { invalidateResource } from "@/lib/resource-cache";
 import { usePathname, useRouter } from "next/navigation";
 import { authDestination, authErrorMessage } from "@/lib/auth-navigation";
 import {
+  DAYLIGHT_EVENT,
+  type ThemePreference,
   themePreference as parseThemePreference,
   resolvedTheme,
 } from "@/lib/theme-preference";
@@ -44,8 +46,8 @@ type Store = {
   mutate: (body: unknown) => Promise<void>;
   cache: Map<string, { at: number; value: unknown }>;
   theme: "light" | "dark";
-  setTheme: (v: "light" | "dark" | "system") => void;
-  themePreference: "light" | "dark" | "system";
+  setTheme: (v: ThemePreference) => void;
+  themePreference: ThemePreference;
   textSize: "standard" | "large";
   setTextSize: (v: "standard" | "large") => void;
   reduceMotion: boolean;
@@ -214,9 +216,7 @@ function StoreProvider({
     [workspaceError, setWorkspaceError] = useState(""),
     [theme, setThemeState] = useState<"light" | "dark">("dark"),
     // Match the server render; the boot script already applies saved appearance.
-    [themePreference, setThemePreference] = useState<
-      "light" | "dark" | "system"
-    >("dark"),
+    [themePreference, setThemePreference] = useState<ThemePreference>("dark"),
     [textSize, setTextSizeState] = useState<"standard" | "large">("standard"),
     [reduceMotion, setReduceMotionState] = useState(false),
     [preferencesReady, setPreferencesReady] = useState(false);
@@ -275,6 +275,10 @@ function StoreProvider({
       setThemeState(value);
     };
     apply();
+    if (themePreference === "daylight") {
+      window.addEventListener(DAYLIGHT_EVENT, apply);
+      return () => window.removeEventListener(DAYLIGHT_EVENT, apply);
+    }
     media.addEventListener("change", apply);
     return () => media.removeEventListener("change", apply);
   }, [preferencesReady, themePreference]);
@@ -288,7 +292,7 @@ function StoreProvider({
       ? "reduce"
       : "system";
   }, [preferencesReady, reduceMotion]);
-  const setTheme = useCallback((value: "light" | "dark" | "system") => {
+  const setTheme = useCallback((value: ThemePreference) => {
     setThemePreference(value);
     try {
       localStorage.setItem("auryn-product-theme", value);
@@ -472,9 +476,16 @@ function Login({ initialError }: { initialError: string }) {
   }>({ google: null, x: null });
   const [loginTheme, setLoginTheme] = useState<"light" | "dark">("dark");
   useEffect(() => {
-    setLoginTheme(
-      document.documentElement.dataset.theme === "light" ? "light" : "dark",
-    );
+    const root = document.documentElement;
+    const sync = () =>
+      setLoginTheme(root.dataset.theme === "light" ? "light" : "dark");
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => observer.disconnect();
   }, []);
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -713,7 +724,6 @@ function Login({ initialError }: { initialError: string }) {
                       d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-7.4L5.6 22H2.4l7.3-8.4L1.9 2h6.5l4.4 6.8L18.9 2Zm-1.1 18h1.7L7.5 3.9H5.7L17.8 20Z"
                     />
                   </svg>
-                  <span>X</span>
                 </button>
               </div>
               {socialProviders.google === false && (

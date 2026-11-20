@@ -51,8 +51,11 @@ test("Pace uses the same reading on both sizes with exactly one visible instance
   assert.doesNotMatch(css, /\.badge\b/);
 });
 
-test("mobile title stays on one line and the full name stays available", () => {
-  assert.match(jsx, /headerPaceStyles\.mobileName/);
+test("phone title wraps the full company name without a clipped listing label", () => {
+  assert.match(
+    jsx,
+    /className=\{headerPaceStyles.mobileName\}>\s*\{r.company.name\}/,
+  );
   assert.match(
     jsx,
     /Help label="Company facts and source dates">\s*<p>\s*\{r.company.name}/,
@@ -60,38 +63,7 @@ test("mobile title stays on one line and the full name stays available", () => {
   const mobile = css.slice(css.indexOf("@media (max-width: 700px)"));
   assert.match(
     mobile,
-    /\.mobileName\s*\{[^}]*white-space: nowrap;[^}]*text-overflow: ellipsis/,
+    /\.mobileName\s*\{[^}]*white-space: normal;[^}]*overflow-wrap: anywhere/,
   );
-});
-
-test("mobile removes the extra listing suffix without hardcoding the example ticker", async () => {
-  const { default: ts } = await import("typescript");
-  const ast = ts.createSourceFile(
-    "Research.tsx",
-    jsx,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TSX,
-  );
-  let expression;
-  function visit(node) {
-    if (
-      ts.isVariableDeclaration(node) &&
-      node.name.getText(ast) === "mobileCompanyName"
-    )
-      expression = node.initializer.getText(ast);
-    ts.forEachChild(node, visit);
-  }
-  visit(ast);
-  assert.ok(expression);
-  const label = new Function("r", "return " + expression);
-  assert.equal(
-    label({ company: { name: "Credo Technology Group Holding Ltd" } }),
-    "Credo Technology Group",
-  );
-  assert.equal(
-    label({ company: { name: "Bloom Energy Corp" } }),
-    "Bloom Energy",
-  );
-  assert.equal(label({ company: { name: "Bitcoin" } }), "Bitcoin");
+  assert.doesNotMatch(mobile, /text-overflow: ellipsis/);
 });

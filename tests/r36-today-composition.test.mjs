@@ -12,8 +12,12 @@ test("Today opens with research priorities and dated events, ahead of price and 
   assert.ok(
     jsx.indexOf('id="home-earnings"') < jsx.indexOf('title="What changed"'),
   );
-  assert.ok(jsx.indexOf('title="What changed"') < jsx.indexOf("<PortfolioDay"));
-  assert.match(jsx, /<PortfolioDay\s+compact/);
+  assert.ok(
+    jsx.indexOf('title="What changed"') <
+      jsx.indexOf('aria-label="Workspace shortcuts"'),
+  );
+  assert.doesNotMatch(jsx, /<PortfolioDay/);
+  assert.match(jsx, /href=\{[^\n]+\/portfolio/);
   assert.equal(jsx.match(/<HomeQuarterHighlights/g)?.length, 1);
 });
 

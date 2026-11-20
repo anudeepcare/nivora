@@ -151,7 +151,11 @@ export default function ReferenceAtlas({
             ) : (
               <p>{signal.detail}</p>
             )}
-            <button onClick={() => onTab(signal.target)}>
+            <button
+              className="auryn-inline-link"
+              type="button"
+              onClick={() => onTab(signal.target)}
+            >
               Explore {signal.label.toLowerCase()}{" "}
               <span aria-hidden="true">↗</span>
             </button>
@@ -161,87 +165,91 @@ export default function ReferenceAtlas({
           className={s.graphic}
           aria-label="Interactive evidence orbit, not a composite score"
         >
-          <svg
-            viewBox="0 0 300 300"
-            role="img"
-            aria-label="Six company evidence areas. Use the labeled buttons to inspect each area."
-          >
-            <defs>
-              <radialGradient id={glow}>
-                <stop offset="0" stopColor="currentColor" stopOpacity=".18" />
-                <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            <circle cx="150" cy="145" r="122" fill={`url(#${glow})`} />
-            {[35, 68, 102].map((radius) => (
-              <circle
-                key={radius}
-                cx="150"
-                cy="145"
-                r={radius}
-                className={s.ring}
-              />
-            ))}
-            {coordinates.map(([x, y], i) => (
-              <line
-                key={i}
-                x1="150"
-                y1="145"
-                x2={x}
-                y2={y}
-                className={s.axis}
-              />
-            ))}
-            {coordinates.map(([x, y], i) => (
-              <circle
-                key={i}
-                cx={x}
-                cy={y}
-                r="22"
-                className={selected === i ? s.selectedNode : s.node}
-              />
-            ))}
-            <circle cx="150" cy="145" r="38" className={s.core} />
-            <text x="150" y="137" textAnchor="middle" className={s.coreLabel}>
-              {centerLabel}
-            </text>
-            <text
-              x="150"
-              y="157"
-              textAnchor="middle"
-              className={s.coreValue}
-              style={centerValue.length > 8 ? { fontSize: 10 } : undefined}
+          <div className={s.diagram}>
+            <svg
+              viewBox="0 0 300 300"
+              role="img"
+              aria-label="Six company evidence areas. Use the labeled buttons to inspect each area."
             >
-              {centerValue}
-            </text>
-          </svg>
-          <div
-            className={s.orbitButtons}
-            role="group"
-            aria-label="Select evidence orbit"
-          >
-            {m.signals.map((item, i) => (
-              <button
-                key={item.label}
-                className={s[`orbit${i}`]}
-                aria-pressed={selected === i}
-                aria-label={`${item.label}: ${item.value === null && !item.valueLabel ? "review evidence" : reading(item, b.businessNumbers.currency)}`}
-                onClick={() => setSelected(i)}
+              <defs>
+                <radialGradient id={glow}>
+                  <stop offset="0" stopColor="currentColor" stopOpacity=".18" />
+                  <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="150" cy="145" r="122" fill={`url(#${glow})`} />
+              {[35, 68, 102].map((radius) => (
+                <circle
+                  key={radius}
+                  cx="150"
+                  cy="145"
+                  r={radius}
+                  className={s.ring}
+                />
+              ))}
+              {coordinates.map(([x, y], i) => (
+                <line
+                  key={i}
+                  x1="150"
+                  y1="145"
+                  x2={x}
+                  y2={y}
+                  className={s.axis}
+                />
+              ))}
+              {coordinates.map(([x, y], i) => (
+                <circle
+                  key={i}
+                  cx={x}
+                  cy={y}
+                  r="22"
+                  className={selected === i ? s.selectedNode : s.node}
+                />
+              ))}
+              <circle cx="150" cy="145" r="38" className={s.core} />
+              <text x="150" y="137" textAnchor="middle" className={s.coreLabel}>
+                {centerLabel}
+              </text>
+              <text
+                x="150"
+                y="157"
+                textAnchor="middle"
+                className={s.coreValue}
+                style={centerValue.length > 8 ? { fontSize: 10 } : undefined}
               >
-                <span>{reading(item, b.businessNumbers.currency)}</span>
-                <small>{item.metricLabel ?? item.label}</small>
-              </button>
-            ))}
+                {centerValue}
+              </text>
+            </svg>
+            <div
+              className={s.orbitButtons}
+              role="group"
+              aria-label="Select evidence orbit"
+            >
+              {m.signals.map((item, i) => (
+                <button
+                  key={item.label}
+                  className={s[`orbit${i}`]}
+                  aria-pressed={selected === i}
+                  aria-label={`${item.label}: ${item.value === null && !item.valueLabel ? "review evidence" : reading(item, b.businessNumbers.currency)}`}
+                  onClick={() => setSelected(i)}
+                >
+                  <span>{reading(item, b.businessNumbers.currency)}</span>
+                  <small>{item.metricLabel ?? item.label}</small>
+                </button>
+              ))}
+            </div>
           </div>
           <p className={s.graphicNote}>Evidence map · not a synthetic score</p>
         </section>
         <aside className={s.action} aria-label="Pace and decision conditions">
-          <span className={s.eyebrow}>
-            {m.paceState === "forming"
-              ? "Current forming Pace"
-              : "Last completed Pace"}
-          </span>
-          <strong>{m.pace === null ? "—" : `P${m.pace}`}</strong>
+          <header className={s.actionReading}>
+            <span className={s.eyebrow}>
+              {m.paceState === "forming"
+                ? "Current forming Pace"
+                : "Last completed Pace"}
+            </span>
+            <strong>{m.pace === null ? "—" : `P${m.pace}`}</strong>
+          </header>
           {m.pace === null && <p>More history needed for Pace.</p>}
           <p>{m.paceReason}</p>
           <h3 className={s.stanceTitle}>Model stance</h3>
@@ -286,7 +294,11 @@ export default function ReferenceAtlas({
               <dd>{b.risk}</dd>
             </div>
           </dl>
-          <button onClick={() => onTab("Pace")}>
+          <button
+            className="auryn-inline-link"
+            type="button"
+            onClick={() => onTab("Pace")}
+          >
             Open Pace evidence <span aria-hidden="true">↗</span>
           </button>
           <small>
@@ -306,7 +318,11 @@ export default function ReferenceAtlas({
                 ? `· ${atlasHorizonLabel(m.horizon)}`
                 : ""}
             </span>
-            <button onClick={() => onTab("Valuation")}>
+            <button
+              className="auryn-inline-link"
+              type="button"
+              onClick={() => onTab("Valuation")}
+            >
               {modeled ? "Open model" : "Open Scenarios"} ↗
             </button>
           </header>

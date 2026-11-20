@@ -17,14 +17,17 @@ const get = (tail, prop) => {
   });
   return v;
 };
-test("phone holdings replace the wide table with readable rows, disclosure and touch targets", () => {
+test("phone holdings replace the wide table with readable rows, direct facts and touch targets", () => {
   assert.equal(get(".desktopHoldings", "display"), "none");
   assert.equal(get(".phoneHoldings", "display"), "block");
   assert.equal(
     get(".phoneLead", "grid-template-columns"),
     "minmax(0, 1fr) minmax(0, 1fr)",
   );
-  assert.equal(get(".phoneDetails > summary", "min-height"), "44px");
+  assert.equal(
+    get(".phoneFacts", "grid-template-columns"),
+    "repeat(3, minmax(0, 1fr))",
+  );
   assert.equal(get(".phoneActions button", "min-height"), "44px");
   assert.equal(
     get(".phoneHoldings :focus-visible", "outline"),

@@ -22,8 +22,12 @@ export default function DisplayPreferences() {
       </header>
       <div className="setting-row">
         <span>Theme</span>
-        <div className="segments" role="group" aria-label="Appearance">
-          {(["light", "dark", "system"] as const).map((t) => (
+        <div
+          className="segments theme-segments"
+          role="group"
+          aria-label="Appearance"
+        >
+          {(["light", "dark", "system", "daylight"] as const).map((t) => (
             <button
               type="button"
               key={t}
@@ -36,6 +40,11 @@ export default function DisplayPreferences() {
           ))}
         </div>
       </div>
+      {themePreference === "daylight" && (
+        <p className="theme-daylight-note">
+          Light from 7 AM to 7 PM, using this device’s local time.
+        </p>
+      )}
       <div className="setting-row">
         <span>Text size</span>
         <div className="segments" role="group" aria-label="Text size">

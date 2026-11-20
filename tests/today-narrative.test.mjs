@@ -81,8 +81,7 @@ test("routine price moves stay in the news list; substantive SPY macro coverage 
     null,
   );
   const item = await choose({
-    market: true,
-    headlines: [
+    marketHeadlines: [
       headline(
         "SPY",
         "Federal Reserve decision in focus as inflation data arrive",
@@ -92,4 +91,59 @@ test("routine price moves stay in the news list; substantive SPY macro coverage 
   assert.equal(item.kind, "headline");
   assert.match(item.question, /scheduled release|actual decision/);
   assert.equal(item.next, null);
+});
+
+test("a fresh market release story can replace an older followed outlook without hiding the company while market loads", async () => {
+  const company = headline(
+    "NBIS",
+    "Nebius cuts 2026 outlook",
+    "2026-11-19T16:00:00Z",
+  );
+  const market = headline(
+    "SPY",
+    "Fed rate decision follows new inflation data",
+  );
+  const first = await choose({ headlines: [company] });
+  assert.equal(first.headline.symbol, "NBIS");
+  assert.equal(first.scope, "company");
+  const settled = await choose({
+    headlines: [company],
+    marketHeadlines: [market],
+    checkpoints: [report("SPY", day, null)],
+  });
+  assert.equal(settled.headline.symbol, "SPY");
+  assert.equal(settled.scope, "market");
+  assert.equal(settled.next, null);
+});
+
+test("fresh dated earnings can beat a fresh broad headline, but stale results do not suppress current market evidence", async () => {
+  const marketHeadlines = [
+    headline("SPY", "U.S. GDP growth data show a slowdown"),
+  ];
+  const result = await choose({
+    reports: [report("APP", day, -0.25)],
+    marketHeadlines,
+  });
+  assert.equal(result.kind, "report");
+  assert.equal(result.report.symbol, "APP");
+  const old = await choose({
+    reports: [report("APP", "2026-11-15", -0.25)],
+    marketHeadlines,
+  });
+  assert.equal(old.scope, "market");
+});
+
+test("a market keyword alone does not bump a credible company story", async () => {
+  const company = headline(
+    "NBIS",
+    "Nebius cuts 2026 outlook",
+    "2026-11-19T16:00:00Z",
+  );
+  const result = await choose({
+    headlines: [company],
+    marketHeadlines: [
+      headline("SPY", "Five stocks investors like in an inflation era"),
+    ],
+  });
+  assert.equal(result.headline.symbol, "NBIS");
 });

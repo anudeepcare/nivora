@@ -7,12 +7,13 @@ const read = (name) =>
 test("Today puts events first and retains one compact portfolio summary and stock context", () => {
   const source = read("HomeWorkspace.tsx");
   assert.ok(
-    source.indexOf("<PortfolioDay") > source.indexOf('id="home-earnings"'),
+    source.indexOf('aria-label="Workspace shortcuts"') >
+      source.indexOf('id="home-earnings"'),
   );
   assert.ok(
     source.indexOf("<HomeMarketCards") > source.indexOf('id="home-earnings"'),
   );
-  assert.equal(source.match(/<PortfolioDay\b/g)?.length, 1);
+  assert.equal(source.match(/aria-label="Workspace shortcuts"/g)?.length, 1);
   assert.equal(source.match(/<HomeMarketCards\b/g)?.length, 1);
   assert.match(source, /className={homeStyles.leadGrid}/);
   assert.doesNotMatch(source, /<PaceBoard/);

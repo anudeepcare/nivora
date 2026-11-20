@@ -47,6 +47,7 @@ function HomeRadar(props: Props) {
           research={props.research}
           requested={props.requested}
           asOf={props.asOf}
+          prefix={props.prefix}
           sampleEvidence={
             <OpportunityMap
               compact

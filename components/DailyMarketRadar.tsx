@@ -1,9 +1,11 @@
 "use client";
+import Link from "next/link";
+import { researchLink } from "../lib/approved-workspace";
 import { useEffect, useState, type ReactNode } from "react";
 import { providerSymbol, providerIdentity } from "../lib/provider-symbol";
 import type { Research } from "../lib/types";
 import type { DailyRadarSnapshot } from "../lib/daily-radar";
-import type { RadarResearch } from "../lib/market-radar";
+import { buildMarketRadar, type RadarResearch } from "../lib/market-radar";
 import { api } from "../lib/client";
 import { useProduct } from "./Session";
 import { MarketRadar } from "./MarketRadar";
@@ -14,11 +16,13 @@ export default function DailyMarketRadar({
   requested,
   asOf,
   sampleEvidence,
+  prefix = "",
 }: {
   research: Research[];
   requested: string[];
   asOf: string;
   sampleEvidence?: ReactNode;
+  prefix?: string;
 }) {
   const { cache } = useProduct();
   const key = [...new Set(requested)].sort().join(",");
@@ -130,6 +134,10 @@ export default function DailyMarketRadar({
   const setupRequired =
     !!error &&
     /database migration|database schema|storage is not configured/i.test(error);
+  const comparableSample =
+    sampleOpen &&
+    research.length > 1 &&
+    buildMarketRadar(research, asOf).breadthEligible >= 2;
   return (
     <section
       className={s.daily}
@@ -278,16 +286,36 @@ export default function DailyMarketRadar({
           onToggle={(event) => setSampleOpen(event.currentTarget.open)}
         >
           <summary>
-            View locally loaded sample ({research.length} of {requested.length})
+            Loaded research sample ({research.length} of {requested.length})
           </summary>
-          <p>
-            This sample is not the daily holdings/watchlist snapshot. It
-            includes only company histories already loaded in this account.
-          </p>
           {sampleOpen && (
             <>
-              {!snapshot && <MarketRadar research={research} asOf={asOf} />}
-              {sampleEvidence}
+              <p>
+                This is already-loaded company evidence, not the daily holdings
+                and watchlist snapshot or market-wide breadth.
+              </p>
+              {comparableSample ? (
+                <>
+                  {!snapshot && <MarketRadar research={research} asOf={asOf} />}
+                  {sampleEvidence}
+                </>
+              ) : (
+                <>
+                  <p>
+                    At least two companies with eligible daily histories are
+                    needed for a sample comparison.
+                  </p>
+                  <ul className={s.sampleLinks}>
+                    {research.slice(0, 4).map(({ company }) => (
+                      <li key={company.symbol}>
+                        <Link href={researchLink(company.symbol, prefix)}>
+                          Research {company.symbol}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </>
           )}
         </details>

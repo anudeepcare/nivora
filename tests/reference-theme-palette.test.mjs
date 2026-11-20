@@ -2,10 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import postcss from "postcss";
-const decls = (file, selector) => {
+const decls = (file, selector, media) => {
   const result = {};
   postcss.parse(fs.readFileSync(file, "utf8")).walkRules((r) => {
-    if (r.selector === selector) r.walkDecls((d) => (result[d.prop] = d.value));
+    if (
+      r.selector === selector &&
+      (media ? r.parent.params === media : r.parent.type === "root")
+    )
+      r.walkDecls((d) => (result[d.prop] = d.value));
   });
   return result;
 };
@@ -45,9 +49,16 @@ test("nav and research have explicit reference surface and active-state distinct
   const research = decls("components/ReferenceCockpit.module.css", ".root");
   assert.equal(research.background, "#edf1f6");
   assert.equal(research["--research-chrome"], "#f8fafc");
-  const cta = decls("components/ReferenceAtlas.module.css", ".action button");
-  assert.equal(cta.background, "var(--atlas-panel)");
-  assert.equal(cta.color, "var(--atlas-ink)");
+  const cta = decls(
+    "app/core/auryn-controls.css",
+    "#auryn-app .auryn-inline-link",
+  );
+  assert.equal(cta.background, "transparent");
+  assert.equal(cta.border, "0");
+  assert.equal(
+    cta.color,
+    "var(--plaid-link, var(--plaid-focus, currentColor))",
+  );
 });
 
 const luminance = (hex) => {
@@ -62,24 +73,30 @@ const contrast = (a, b) => {
   const values = [luminance(a), luminance(b)].sort((a, b) => b - a);
   return (values[0] + 0.05) / (values[1] + 0.05);
 };
-test("neutral Atlas action retains accessible contrast, focus and real Pace navigation in both themes", () => {
+test("Atlas evidence link retains contrast, keyboard affordance, mobile touch size and real Pace navigation", () => {
   const file = "components/ReferenceAtlas.module.css";
-  const action = decls(file, ".action button");
-  assert.equal(action["min-height"], "44px");
+  const controls = "app/core/auryn-controls.css";
+  const theme = "app/core/plaid-theme.css";
+  const selector = "#auryn-app .auryn-inline-link";
   assert.equal(
-    decls(file, ".action button:hover").background,
-    "var(--atlas-mid)",
+    decls(controls, selector, "(max-width: 767px)")["min-height"],
+    "44px",
   );
   assert.equal(
-    decls(file, ".action button:focus-visible").outline,
-    "2px solid var(--atlas-cyan)",
+    decls(controls, selector + ":hover,\n" + selector + ":focus-visible")[
+      "text-decoration"
+    ],
+    "underline",
   );
   const light = decls(file, ".atlas");
   const dark = {
     ...light,
     ...decls(file, ':global([data-theme="dark"]) .atlas'),
   };
-  for (const palette of [light, dark]) {
+  for (const [palette, appearance] of [
+    [light, decls(theme, ":root")],
+    [dark, decls(theme, 'html[data-theme="dark"]')],
+  ]) {
     const expand = (x) =>
       x.length === 4
         ? "#" +
@@ -89,13 +106,29 @@ test("neutral Atlas action retains accessible contrast, focus and real Pace navi
             .map((c) => c + c)
             .join("")
         : x;
-    const ink = expand(palette["--atlas-ink"]),
-      surface = expand(palette["--atlas-panel"]);
-    assert.ok(contrast(ink, surface) >= 4.5);
-    assert.ok(contrast(ink, expand(palette["--atlas-mid"])) >= 4.5);
-    assert.ok(contrast(expand(palette["--atlas-cyan"]), surface) >= 3);
+    const ink = expand(palette["--atlas-ink"]);
+    const surfaces = [
+      palette["--atlas-panel"],
+      palette["--atlas-mid"],
+      appearance["--plaid-card-purple"],
+      appearance["--plaid-card-blue"],
+    ].map(expand);
+    for (const surface of surfaces) {
+      assert.ok(contrast(ink, surface) >= 4.5);
+      assert.ok(
+        contrast(appearance["--plaid-link"], surface) >= 4.5,
+        "link contrast on Atlas surfaces",
+      );
+      assert.ok(
+        contrast(palette["--atlas-label"], surface) >= 4.5,
+        "orbit caption contrast",
+      );
+    }
+    assert.ok(contrast(expand(palette["--atlas-cyan"]), surfaces[0]) >= 3);
   }
   const view = fs.readFileSync("components/ReferenceAtlas.tsx", "utf8");
-  assert.match(view, /<button onClick=\{\(\) => onTab\("Pace"\)\}>/);
-  assert.match(view, /Open Pace evidence/);
+  assert.match(
+    view,
+    /<button\s+className="auryn-inline-link"\s+type="button"\s+onClick=\{\(\) => onTab\("Pace"\)\}\s*>\s*Open Pace evidence/,
+  );
 });

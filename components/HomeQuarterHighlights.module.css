@@ -23,9 +23,13 @@
 .grid article {
   container: quarter-highlight / inline-size;
   padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    115deg,
+    var(--plaid-card-purple, var(--card)),
+    var(--plaid-surface, var(--card)) 70%
+  );
   min-width: 0;
 }
 .grid article > header {
@@ -85,10 +89,10 @@
   border-radius: 4px;
 }
 .comparison rect {
-  fill: var(--muted);
+  fill: var(--plaid-violet, var(--muted));
 }
 .comparison [data-latest="true"] rect {
-  fill: var(--blue);
+  fill: var(--plaid-focus, var(--blue));
 }
 .grid footer {
   display: flex;
@@ -155,4 +159,17 @@
 .grid header strong small,
 .grid footer {
   font-size: 12px;
+}
+
+.grid header strong[data-direction="up"] {
+  color: color-mix(in srgb, var(--green) 88%, var(--plaid-ink, var(--ink)));
+}
+.grid header strong[data-direction="down"] {
+  color: color-mix(in srgb, var(--red) 90%, var(--plaid-ink, var(--ink)));
+}
+.comparison > div > span {
+  color: var(--plaid-violet, var(--ink));
+}
+.comparison > [data-latest="true"] > span {
+  color: var(--plaid-focus, var(--ink));
 }

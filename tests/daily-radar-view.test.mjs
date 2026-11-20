@@ -3,8 +3,15 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 import React from "react";
+import { buildMarketRadar } from "../lib/market-radar.ts";
+import { researchLink } from "../lib/approved-workspace.ts";
 import { renderToStaticMarkup } from "react-dom/server";
-function render({ error = "", snapshot = null, sampleOpen = false } = {}) {
+function render({
+  error = "",
+  snapshot = null,
+  sampleOpen = false,
+  research = [{ company: { symbol: "TEST" } }],
+} = {}) {
   const cache = new Map();
   let hook = 0,
     charts = 0;
@@ -38,26 +45,42 @@ function render({ error = "", snapshot = null, sampleOpen = false } = {}) {
     (name) =>
       name === "react"
         ? react
-        : name === "./Session"
-          ? { useProduct: () => ({ cache }) }
-          : name === "./MarketRadar"
-            ? {
-                MarketRadar: () => {
-                  charts++;
-                  return React.createElement("div", { "data-chart": true });
-                },
-              }
-            : name.includes("provider-symbol")
-              ? { providerSymbol: (s) => s, providerIdentity: (s) => s }
-              : name.endsWith(".css")
-                ? { default: new Proxy({}, { get: (_, k) => k }) }
-                : {},
+        : name === "next/link"
+          ? {
+              default: ({ children, ...props }) =>
+                React.createElement("a", props, children),
+            }
+          : name.endsWith("/approved-workspace")
+            ? { researchLink }
+            : name.endsWith("/market-radar")
+              ? { buildMarketRadar }
+              : name === "./Session"
+                ? { useProduct: () => ({ cache }) }
+                : name === "./MarketRadar"
+                  ? {
+                      MarketRadar: () => {
+                        charts++;
+                        return React.createElement("div", {
+                          "data-chart": true,
+                        });
+                      },
+                    }
+                  : name.includes("provider-symbol")
+                    ? { providerSymbol: (s) => s, providerIdentity: (s) => s }
+                    : name.endsWith(".css")
+                      ? { default: new Proxy({}, { get: (_, k) => k }) }
+                      : {},
     exports,
     React,
   );
   const html = renderToStaticMarkup(
     React.createElement(exports.default, {
-      research: [{ company: { symbol: "TEST" } }],
+      research,
+      sampleEvidence: React.createElement(
+        "p",
+        null,
+        "Loaded business comparison",
+      ),
       requested: ["TEST", "OTHER"],
       asOf: "2026-11-18",
     }),
@@ -123,4 +146,42 @@ test("schema cache absence offers setup check without asserting missing configur
     html,
     /cache is not configured yet|requires its database migration/,
   );
+});
+
+test("opening a single locally loaded company offers research without sector averages or rotation", () => {
+  const { html, charts } = render({
+    sampleOpen: true,
+    error: "Daily radar requires its database migration.",
+  });
+  assert.equal(charts, 0);
+  assert.match(html, /At least two companies with eligible daily histories/);
+  assert.match(html, /href="\/research\/TEST"/);
+  assert.match(html, /Check setup again/);
+});
+
+test("loaded radar still shows scoped aggregates when two stock histories really qualify", () => {
+  const end = Date.parse("2026-11-17");
+  const history = Array.from(
+    { length: 80 },
+    (_, i) => new Date(end - i * 86400000),
+  )
+    .filter((date) => date.getUTCDay() > 0 && date.getUTCDay() < 6)
+    .map((date) => ({
+      time: date.toISOString().slice(0, 10),
+      open: 100,
+      high: 100,
+      low: 100,
+      close: 100,
+    }));
+  const research = ["TEST", "OTHER"].map((symbol) => ({
+    company: { symbol, name: symbol, assetType: "stock", sector: "Technology" },
+    history,
+  }));
+  const { html, charts } = render({ sampleOpen: true, research });
+  assert.equal(charts, 1);
+  assert.match(
+    html,
+    /not the daily holdings and watchlist snapshot or market-wide breadth/,
+  );
+  assert.match(html, /Loaded business comparison/);
 });

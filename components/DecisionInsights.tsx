@@ -210,6 +210,7 @@ function Insights({
             </p>
           )}
           <Link
+            className="auryn-inline-link"
             href={`${prefix}/research/${encodeURIComponent(r.company.symbol)}?tab=Financials`}
           >
             View business evidence →

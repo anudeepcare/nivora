@@ -135,11 +135,36 @@
 :global([data-motion="reduce"]) .mark {
   animation: none;
 }
+@media (max-width: 760px) {
+  .launch {
+    align-items: safe center;
+    background:
+      linear-gradient(
+        180deg,
+        var(--chrome-surface) env(safe-area-inset-top, 0px),
+        transparent calc(env(safe-area-inset-top, 0px) + 44px)
+      ),
+      radial-gradient(
+        ellipse at 50% 44%,
+        var(--plaid-card-purple, #efebfc),
+        transparent 52%
+      ),
+      var(--plaid-canvas, #f5f7fc);
+  }
+  .mark {
+    margin-bottom: 18px;
+  }
+}
 @media (max-height: 500px) {
   .launch {
     align-items: start;
   }
   .content {
     margin-block: 20px 160px;
+  }
+}
+@media (max-width: 760px) and (max-height: 500px) {
+  .content {
+    margin-block: 16px;
   }
 }

@@ -7,6 +7,8 @@
   --atlas-line: #d6dde8;
   --atlas-ink: #172033;
   --atlas-muted: #627086;
+  --atlas-label: #495970;
+  --atlas-guide: #b4c0d0;
   color: var(--atlas-ink);
 }
 :global([data-theme="dark"]) .atlas {
@@ -18,6 +20,8 @@
   --atlas-line: #253146;
   --atlas-ink: #eef2f8;
   --atlas-muted: #8f9caf;
+  --atlas-label: #b2bed0;
+  --atlas-guide: #465571;
 }
 .stage {
   display: grid;
@@ -77,38 +81,34 @@
   margin: 10px 0;
   font-weight: 500;
 }
-.active button,
-.scenarios header button {
-  border: 0;
-  background: none;
-  color: var(--atlas-cyan);
-  padding: 8px 0;
-  min-height: 40px;
-  font: 600 11px var(--font-ui);
-  cursor: pointer;
-}
 .graphic {
   display: grid;
   place-items: center;
   position: relative;
   min-width: 0;
-  min-height: 340px;
+  min-height: 0;
   padding: 14px;
   color: var(--atlas-cyan);
 }
-.graphic svg {
+.diagram {
+  position: relative;
   width: 100%;
   max-width: 460px;
   aspect-ratio: 1;
+}
+.diagram svg {
+  display: block;
+  width: 100%;
+  height: 100%;
   overflow: visible;
 }
 .ring {
   fill: none;
-  stroke: var(--atlas-line);
+  stroke: var(--atlas-guide);
   stroke-width: 1;
 }
 .axis {
-  stroke: var(--atlas-line);
+  stroke: var(--atlas-guide);
   stroke-dasharray: 3 5;
 }
 .node {
@@ -125,7 +125,7 @@
   stroke-width: 1;
 }
 .coreLabel {
-  fill: var(--atlas-muted);
+  fill: var(--atlas-label);
   font: 6px var(--font-mono, monospace);
   letter-spacing: 1px;
 }
@@ -134,13 +134,8 @@
   font: 500 14px var(--font-mono, monospace);
 }
 .orbitButtons {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   position: absolute;
-  width: calc(100% - 28px);
-  max-width: 460px;
-  aspect-ratio: 1;
+  inset: 0;
 }
 .orbitButtons button {
   position: absolute;
@@ -166,6 +161,7 @@
 }
 .orbitButtons button small {
   font: 500 8px var(--font-mono, monospace);
+  color: var(--atlas-label);
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
@@ -198,11 +194,10 @@
   top: 28.67%;
 }
 .graphicNote {
-  position: absolute;
-  bottom: 14px;
+  margin: 12px 0 0;
   text-align: center;
-  color: var(--atlas-muted);
-  font-size: 10px;
+  color: var(--atlas-label);
+  font-size: 11px;
 }
 .action {
   padding: 26px 24px;
@@ -210,7 +205,7 @@
   background: color-mix(in srgb, var(--atlas-panel) 75%, transparent);
   min-width: 0;
 }
-.action > strong {
+.actionReading > strong {
   display: block;
   font: 500 36px/1 var(--font-mono, monospace);
   letter-spacing: -4px;
@@ -240,18 +235,6 @@
   margin: 6px 0 0;
   font-size: 11px;
   line-height: 1.6;
-}
-.action button {
-  width: 100%;
-  min-height: 44px;
-  padding: 10px;
-  border: 1px solid var(--atlas-line);
-  color: var(--atlas-ink);
-  background: var(--atlas-panel);
-  border-radius: 7px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
 }
 .action > small {
   display: block;
@@ -427,16 +410,13 @@
     border-left: 0;
     padding: 24px;
   }
-  .action > strong {
+  .actionReading > strong {
     font-size: 48px;
   }
   .action dl {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-  }
-  .action button {
-    max-width: 280px;
   }
   .copy {
     padding: 28px 22px;
@@ -464,8 +444,7 @@
     order: 2;
     min-height: 320px;
   }
-  .graphic svg,
-  .orbitButtons {
+  .diagram {
     max-width: 340px;
   }
   .action {
@@ -605,9 +584,6 @@
     min-height: 260px;
     padding: 10px;
   }
-  .orbitButtons {
-    width: calc(100% - 20px);
-  }
   .orbitButtons button {
     width: 60px;
     margin-left: -30px;
@@ -647,14 +623,6 @@
   }
 }
 
-.action button:hover {
-  background: var(--atlas-mid);
-  border-color: var(--atlas-cyan);
-}
-.action button:focus-visible {
-  outline: 2px solid var(--atlas-cyan);
-  outline-offset: 3px;
-}
 @media (min-width: 761px) and (max-width: 1100px) {
   .tape {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -899,4 +867,55 @@
   font-size: 13px;
   font-weight: 650;
   overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .graphic.graphic {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 0;
+    padding-block: 12px 16px;
+  }
+  .action.action {
+    padding: 16px 14px;
+  }
+  .actionReading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    align-items: baseline;
+  }
+  .action .actionReading strong {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: -0.04em;
+  }
+  .action > p {
+    margin: 6px 0;
+    line-height: 1.5;
+  }
+  .action .stanceTitle {
+    margin-block-start: 10px;
+    font-size: 15px;
+  }
+  .action .stances dd {
+    font-weight: 550;
+  }
+  .action > dl:not(.stances) {
+    margin: 10px 0;
+  }
+  .action > dl:not(.stances) > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: baseline;
+    gap: 4px 8px;
+    padding-block: 7px;
+  }
+  .action > dl:not(.stances) dd {
+    margin: 0;
+    font-size: 12px;
+  }
+  .action > small {
+    margin-top: 6px;
+  }
 }

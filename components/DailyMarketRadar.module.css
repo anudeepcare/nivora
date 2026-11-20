@@ -188,3 +188,24 @@
 .daily[data-state="setup"] .fallback {
   margin-top: 8px;
 }
+
+.sampleLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.sampleLinks a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--plaid-ink, var(--ink));
+  text-underline-offset: 3px;
+  text-decoration: underline;
+}
+.sampleLinks a:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}
