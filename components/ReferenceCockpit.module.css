@@ -443,13 +443,18 @@
   opacity: 0.9;
 }
 
-/* Navigation labels sit on the same reading rail as the company, without
-   sharing an uninterrupted white card with its identity or secondary views. */
+/* Shade the stock summary only. Inset the surface without moving the
+   shared reading rail or clipping the header's information popovers. */
 .root[data-active-lens] > header {
+  --research-stock-inset: clamp(4px, 1.3vw, 14px);
+  width: auto;
   min-height: 0;
+  margin-block: 8px 14px;
+  margin-inline: var(--research-stock-inset);
+  padding-inline: calc(var(--research-gutter) - var(--research-stock-inset));
   border: 0;
-  border-radius: 0;
-  background: transparent;
+  border-radius: clamp(10px, 1.3vw, 14px);
+  background: var(--plaid-ice, var(--surface-2));
   box-shadow: none;
 }
 .root[data-active-lens] > .lenses {

@@ -3,12 +3,19 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 const read = (file) =>
   fs.readFileSync(new URL("../components/" + file, import.meta.url), "utf8");
-test("research stage distinguishes identity from selected views without cutting off labels", () => {
+test("stock header occupies its own surface while the existing Research tab bar stays open", () => {
   const css = read("ReferenceCockpit.module.css");
+  const header =
+    css.match(/\.root\[data-active-lens\] > header\s*\{([^}]*)\}/)?.[1] ?? "";
+  assert.match(header, /background: var\(--plaid-ice, var\(--surface-2\)\);/);
+  assert.match(header, /margin-block: 8px 14px;/);
   assert.match(
-    css,
-    /\.root\[data-active-lens\] > header\s*\{[^}]*background:\s*transparent/,
+    header,
+    /padding-inline: calc\(var\(--research-gutter\) - var\(--research-stock-inset\)\);/,
   );
+  assert.match(header, /width: auto;/);
+  assert.match(header, /border: 0;/);
+  assert.doesNotMatch(header, /overflow: hidden|z-index|position:/);
   assert.match(
     css,
     /\.root\[data-active-lens\] > \.lenses\s*\{[^}]*flex-wrap:\s*wrap/,
