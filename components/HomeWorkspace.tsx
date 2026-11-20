@@ -22,7 +22,7 @@ import {
   relevantHoldingHeadlines,
 } from "@/lib/home-feed";
 import type { QuoteRows } from "@/lib/portfolio-quotes";
-import { ArrowUpRight, CalendarDays, FileText, RefreshCw } from "lucide-react";
+import { ArrowUpRight, CalendarDays, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { FeatureGate } from "./Access";
 import CompanySparkline from "./CompanySparkline";
@@ -120,6 +120,7 @@ function HomeOverview() {
   const readiness = feed.data
     ? homeFeedReadiness(feed.data)
     : { eventsReady: false, newsReady: false };
+  const calendarReady = readiness.eventsReady && !feed.error;
   const exposure = new Map(model.allocations.map((a) => [a.symbol, a.value]));
   const names = Object.fromEntries(
     Object.entries(quotes.data).flatMap(([s, r]) =>
@@ -143,7 +144,7 @@ function HomeOverview() {
     events: feed.data?.events ?? [],
     headlines,
     exposure,
-    eventsReady: readiness.eventsReady && !feed.error,
+    eventsReady: calendarReady,
     newsReady: readiness.newsReady && !feed.error,
     hasHoldings: !!workspace?.positions.length,
   });
@@ -356,27 +357,16 @@ function HomeOverview() {
                   ))}
                 </div>
               ) : (
-                <div className="home-quiet-state">
-                  <CalendarDays size={24} />
-                  <h3>
+                <p className={homeStyles.calendarState} role="status">
+                  <CalendarDays size={16} aria-hidden="true" />
+                  <span>
                     {feed.loading
-                      ? "Checking the calendar…"
-                      : !symbols.length
-                        ? "Your next checkpoint."
-                        : !readiness.eventsReady
-                          ? "Calendar coverage is incomplete."
-                          : "No dated events returned."}
-                  </h3>
-                  <p>
-                    {!symbols.length
-                      ? "Follow a company to see upcoming earnings and other dated events."
-                      : feed.loading
-                        ? "Looking up dated company events for the week ahead."
-                        : !readiness.eventsReady
-                          ? "Some scheduled events could not be checked. Missing coverage does not mean no events."
-                          : "No scheduled company event was returned for the next 7 days."}
-                  </p>
-                </div>
+                      ? "Checking dated events for the next 7 days…"
+                      : !calendarReady
+                        ? "Calendar coverage is incomplete. Missing coverage does not mean no events."
+                        : "No upcoming company events returned for the next 7 days."}
+                  </span>
+                </p>
               )}
               {brief.reported.length > 0 && (
                 <div
@@ -413,14 +403,14 @@ function HomeOverview() {
                     checked.
                   </p>
                 )}
-              {(feed.loading || feed.error) && (
+              {eventGroups.length > 0 && (feed.loading || feed.error) && (
                 <p className="home-source-note" role="status">
                   {feed.loading
                     ? "Checking events…"
                     : "Some events could not be checked."}
                 </p>
               )}
-              {!feed.loading && !readiness.eventsReady && (
+              {!feed.loading && !calendarReady && (
                 <button className="text-link" onClick={feed.refresh}>
                   Retry calendar <RefreshCw size={14} />
                 </button>
@@ -440,11 +430,17 @@ function HomeOverview() {
                 title="What changed"
                 subtitle="Recent company updates, with the source attached."
                 action={
-                  <span className="home-section-count">
-                    {headlines.length
-                      ? `${headlines.length} updates`
-                      : "This week"}
-                  </span>
+                  <div className={homeStyles.updateAction}>
+                    {headlines.length > 0 && (
+                      <span className="home-section-count">
+                        {headlines.length} updates
+                      </span>
+                    )}
+                    <Link href={`${prefix}/research`}>
+                      Open research{" "}
+                      <ArrowUpRight size={15} aria-hidden="true" />
+                    </Link>
+                  </div>
                 }
               />
               {headlines.length ? (
@@ -452,28 +448,13 @@ function HomeOverview() {
                   {headlines.slice(0, 6).map(renderHeadline)}
                 </div>
               ) : (
-                <div className="home-quiet-state">
-                  <FileText size={24} />
-                  <h3>
-                    {feed.loading
-                      ? "Checking your companies…"
-                      : feed.error || !readiness.newsReady
-                        ? "News could not be fully checked."
-                        : "No recent matched headlines."}
-                  </h3>
-                  <p>
-                    {!symbols.length
-                      ? "Save a company to bring its updates here."
-                      : feed.loading
-                        ? "Looking for recent updates across your followed companies."
-                        : feed.error || !readiness.newsReady
-                          ? "Available research is still ready to read. Retry to check the missing sources."
-                          : "No recent company-matched story was returned by the news source."}
-                  </p>
-                  <Link className="text-link" href={`${prefix}/research`}>
-                    Open research <ArrowUpRight size={15} />
-                  </Link>
-                </div>
+                <p className={homeStyles.feedState} role="status">
+                  {feed.loading
+                    ? "Checking followed companies for updates…"
+                    : feed.error || !readiness.newsReady
+                      ? "News coverage is incomplete. Retry to check missing sources."
+                      : "No recent company-matched headlines returned."}
+                </p>
               )}
               {headlines.length > 6 && (
                 <details className="home-more-updates">
@@ -528,41 +509,44 @@ function HomeOverview() {
           now={today.getTime()}
         />
       )}
-      <div className={homeStyles.planRow}>
-        <div>
-          <h2>Your next contribution</h2>
-          <p>Review the evidence and position limits before adding.</p>
+      <section className={homeStyles.researchTools} aria-label="Research tools">
+        <div className={homeStyles.planRow}>
+          <div>
+            <h2>Your next contribution</h2>
+            <p>Review the evidence and position limits before adding.</p>
+          </div>
+          <Link className="btn" href={`${prefix}/monthly-plan`}>
+            Build this month’s research plan →
+          </Link>
         </div>
-        <Link className="btn" href={`${prefix}/monthly-plan`}>
-          Build this month’s research plan →
-        </Link>
-      </div>
-      <div className={homeStyles.actionGrid}>
-        <ContributionCompare symbols={symbols} prefix={prefix} />
-        {symbols.length > 0 && (
-          <details
-            className={homeStyles.marketRadar}
-            open={radarOpen}
-            onToggle={(event) => setRadarOpen(event.currentTarget.open)}
-          >
-            <summary>
-              Market radar{" "}
-              <span>
-                {symbols.length} held or watched companies · daily price history
-              </span>
-            </summary>
-            {radarOpen && (
-              <HomeRadar
-                research={loadedResearch}
-                requested={symbols}
-                prefix={prefix}
-                demo={!!demo}
-                asOf={day}
-              />
-            )}
-          </details>
-        )}
-      </div>
+        <div className={homeStyles.actionGrid}>
+          <ContributionCompare symbols={symbols} prefix={prefix} />
+          {symbols.length > 0 && (
+            <details
+              className={homeStyles.marketRadar}
+              open={radarOpen}
+              onToggle={(event) => setRadarOpen(event.currentTarget.open)}
+            >
+              <summary>
+                Market radar{" "}
+                <span>
+                  {symbols.length} held or watched companies · daily price
+                  history
+                </span>
+              </summary>
+              {radarOpen && (
+                <HomeRadar
+                  research={loadedResearch}
+                  requested={symbols}
+                  prefix={prefix}
+                  demo={!!demo}
+                  asOf={day}
+                />
+              )}
+            </details>
+          )}
+        </div>
+      </section>
     </section>
   );
 }

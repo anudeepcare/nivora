@@ -159,23 +159,26 @@ export default function OptionsPositioningOverview({
           <h4>Published large prints</h4>
           <span>Latest published prints session; date not supplied</span>
         </header>
-        <div className={styles.metrics}>
-          <article>
-            <span>Published event count</span>
-            <strong>{number(p.prints.count)}</strong>
-          </article>
-          <article>
-            <span>Largest premium percentile · 0–100</span>
-            <strong>{number(p.prints.percentile)}</strong>
-          </article>
-        </div>
-        <p>
-          One event groups a contract’s fills into an order after the close. The
-          percentile compares premium with this ticker’s own trailing prints; it
-          is not a probability or trade direction. The prints session need not
-          match the snapshot date above. Contract strikes, sides and a
-          contract-level tape are not supplied by this summary.
-        </p>
+        <dl className={styles.printMetrics}>
+          <div>
+            <dt>Published event count</dt>
+            <dd>{number(p.prints.count)}</dd>
+          </div>
+          <div>
+            <dt>Largest premium percentile · 0–100</dt>
+            <dd>{number(p.prints.percentile)}</dd>
+          </div>
+        </dl>
+        <details className={styles.printMethod}>
+          <summary>How large prints are measured</summary>
+          <p>
+            One event groups a contract’s fills into an order after the close.
+            The percentile compares premium with this ticker’s trailing prints;
+            it is not a probability or trade direction. This prints session may
+            differ from the snapshot above. Strikes, sides and a contract-level
+            tape are not supplied by this summary.
+          </p>
+        </details>
       </section>
       <section
         className={styles.activity}
@@ -183,7 +186,10 @@ export default function OptionsPositioningOverview({
       >
         <header>
           <h4>Reported contract activity</h4>
-          <span>{p.contracts.length} supplied contracts</span>
+          <span>
+            {p.contracts.length} supplied{" "}
+            {p.contracts.length === 1 ? "contract" : "contracts"}
+          </span>
         </header>
         <p>Shading shows reported volume. This is not a full option chain.</p>
         {p.contracts.length ? (
@@ -191,34 +197,36 @@ export default function OptionsPositioningOverview({
             className={styles.scroll}
             tabIndex={0}
             role="region"
-            aria-label="Contract activity grid"
+            aria-label="Contract activity list"
           >
-            <div className={styles.grid}>
+            <ul className={styles.contractList}>
               {p.contracts.map((c) => (
-                <details
-                  key={c.contract}
-                  style={{
-                    background:
-                      c.volume != null && maximum > 0
-                        ? `color-mix(in srgb, var(--blue) ${Math.round(5 + (c.volume / maximum) * 23)}%, var(--surface))`
-                        : undefined,
-                  }}
-                >
-                  <summary>
-                    <span>
-                      {dateLabel(c.expiry)} · {c.type}
-                    </span>
-                    <strong>${number(c.strike)}</strong>
-                    <span>Volume {number(c.volume)}</span>
-                  </summary>
-                  <p>
-                    {c.contract}
-                    <br />
-                    Open interest {number(c.oi)}
-                  </p>
-                </details>
+                <li key={c.contract}>
+                  <details>
+                    <summary
+                      style={{
+                        background:
+                          c.volume != null && maximum > 0
+                            ? `color-mix(in srgb, var(--plaid-violet, var(--blue)) ${Math.round((c.volume / maximum) * 6)}%, transparent)`
+                            : undefined,
+                      }}
+                    >
+                      <span>{dateLabel(c.expiry)}</span>
+                      <span className={styles.contractSide} data-side={c.type}>
+                        {c.type}
+                      </span>
+                      <strong>${number(c.strike)}</strong>
+                      <span>Volume {number(c.volume)}</span>
+                    </summary>
+                    <p>
+                      {c.contract}
+                      <br />
+                      Open interest {number(c.oi)}
+                    </p>
+                  </details>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         ) : (
           <p>
@@ -229,7 +237,7 @@ export default function OptionsPositioningOverview({
         {!!p.omitted && (
           <small>
             {p.omitted} incomplete or ambiguous contract records omitted from
-            the activity grid; available source fields remain in the table
+            the activity list; available source fields remain in the table
             below.
           </small>
         )}

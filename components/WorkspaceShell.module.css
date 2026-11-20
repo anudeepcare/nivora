@@ -1174,13 +1174,15 @@
   background: var(--plaid-surface);
 }
 .shell[data-appearance="plaid"] .header .actions :is(button, a) {
-  border-radius: 10px;
+  border-radius: 999px;
   color: var(--plaid-ink);
+  background: transparent;
+}
+.shell[data-appearance="plaid"] .header .actions :is(button, a):hover {
   background: var(--plaid-ice);
 }
 .shell[data-appearance="plaid"] .header .actions button:last-child {
   color: var(--plaid-violet);
-  background: var(--plaid-card-purple);
 }
 @media (max-width: 767px) {
   .shell[data-appearance="plaid"] .header {

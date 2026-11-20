@@ -578,10 +578,10 @@
 .root.root .reader {
   width: 100%;
   box-sizing: border-box;
-  padding: clamp(14px, 2.4vw, 24px);
-  border: 1px solid var(--plaid-line, var(--line));
-  border-radius: 16px;
-  background: var(--plaid-surface, var(--card));
+  padding: 12px 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 .root.root .reader article {
   max-width: none;
@@ -604,4 +604,16 @@
   .root.root .tools > .chapterControl {
     flex: none;
   }
+}
+
+.root.root .intro li {
+  border: 0;
+  padding-block: 5px;
+}
+.root.root .fullDetail,
+.root.root .chapterNav {
+  border: 0;
+}
+.root.root .chapterNav {
+  margin-top: 16px;
 }

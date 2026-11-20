@@ -606,3 +606,26 @@
     flex-wrap: wrap;
   }
 }
+
+/* Quiet selected tabs, no second decorative rail between the title and tools. */
+:global(#auryn-app)
+  .root[data-plaid-page="owner"]
+  > :global(.admin-section-nav) {
+  border: 0;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--plaid-surface, var(--card));
+}
+.root.root :global(.admin-section-nav) button {
+  color: var(--plaid-muted, var(--muted));
+}
+.root.root :global(.admin-section-nav) button[aria-pressed="true"] {
+  color: var(--plaid-ink, var(--ink));
+  background: var(--plaid-ice, var(--surface-2));
+}
+:global(#auryn-app) .root[data-plaid-page="owner"] > :global(#admin-support) {
+  border: 0;
+  border-radius: 0;
+  padding-inline: 0;
+  background: transparent;
+}

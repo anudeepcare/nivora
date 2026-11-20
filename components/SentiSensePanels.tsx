@@ -374,20 +374,37 @@ function Dataset({
             data-research-disclosure={dataset === "options" ? "" : undefined}
           >
             <summary>Evidence dates & coverage</summary>
-            <span>Source: {result?.source ?? "SentiSense"}</span>
-            <span>
-              Evidence date {result?.asOf?.slice(0, 10) ?? "not supplied"}
-            </span>
-            <span>
-              Retrieved {result?.retrievedAt?.slice(0, 19).replace("T", " ")}{" "}
-              UTC
-            </span>
-            {result?.totalCount != null && (
-              <span>
-                {result.totalCount.toLocaleString()} provider records in scope;
-                this view may be a subset
-              </span>
-            )}
+            <dl className={s.provenanceFields}>
+              <div>
+                <dt>Source</dt>
+                <dd>{result?.source ?? "SentiSense"}</dd>
+              </div>
+              <div>
+                <dt>Evidence date</dt>
+                <dd>{result?.asOf?.slice(0, 10) ?? "Not supplied"}</dd>
+              </div>
+              <div>
+                <dt>Retrieved</dt>
+                <dd>
+                  {result?.retrievedAt ? (
+                    <time dateTime={result.retrievedAt}>
+                      {result.retrievedAt.slice(0, 19).replace("T", " ")} UTC
+                    </time>
+                  ) : (
+                    "Not supplied"
+                  )}
+                </dd>
+              </div>
+              {result?.totalCount != null && (
+                <div>
+                  <dt>Coverage</dt>
+                  <dd>
+                    {result.totalCount.toLocaleString()} provider records in
+                    scope; this view may be a subset.
+                  </dd>
+                </div>
+              )}
+            </dl>
           </details>
         </>
       )}

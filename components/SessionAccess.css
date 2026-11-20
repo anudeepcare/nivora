@@ -91,12 +91,31 @@
 }
 @media (min-width: 901px) {
   #auryn-app .mp-auth[data-plaid-page="access"] {
-    grid-template-columns: minmax(0, 1.14fr) minmax(0, 1fr);
-    column-gap: clamp(16px, 3vw, 44px);
-    padding-inline: max(24px, calc((100% - 1120px) / 2));
+    grid-template-columns: minmax(0, 54fr) minmax(0, 46fr);
+    grid-template-rows: auto minmax(min-content, 1fr);
+    gap: 0;
+    padding: 0;
+    align-content: stretch;
   }
-  .mp-auth[data-plaid-page="access"] > header {
+  #auryn-app .mp-auth[data-plaid-page="access"] > header {
     grid-column: 1 / -1;
+    grid-row: 1;
+    z-index: 1;
+    box-sizing: border-box;
+    max-width: none;
+    min-height: 64px;
+    padding: max(8px, env(safe-area-inset-top, 0px))
+      max(24px, env(safe-area-inset-right, 0px)) 8px
+      max(24px, env(safe-area-inset-left, 0px));
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] > header > a {
+    color: #f4f8ff;
+    /* Keep the brand on the blue plane even when default text is enlarged. */
+    overflow-wrap: anywhere;
+    max-width: 42%;
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] > header > a:focus-visible {
+    outline-color: #d9e7ff;
   }
   #auryn-app .mp-auth[data-plaid-page="access"] [data-auth-side] {
     display: flex;
@@ -104,8 +123,11 @@
     justify-content: center;
     min-width: 0;
     min-height: 0;
-    padding: clamp(24px, 5vw, 76px);
-    border-radius: 20px;
+    grid-column: 1;
+    grid-row: 1 / -1;
+    padding: max(76px, env(safe-area-inset-top, 0px)) clamp(36px, 7vw, 124px)
+      max(40px, env(safe-area-inset-bottom, 0px));
+    border-radius: 0;
     color: #f4f8ff;
     background:
       repeating-radial-gradient(
@@ -126,8 +148,20 @@
     margin: 0;
   }
   #auryn-app .mp-auth[data-plaid-page="access"] > section {
-    align-self: start;
-    justify-content: flex-start;
+    grid-column: 2;
+    grid-row: 2;
+    align-self: stretch;
+    justify-content: center;
+    padding: 10px clamp(24px, 4vw, 60px)
+      max(28px, env(safe-area-inset-bottom, 0px));
+  }
+  #auryn-app .mp-auth[data-plaid-page="access"] .mp-auth-panel {
+    max-width: 26rem;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    background: transparent;
   }
 }
 .mp-auth[data-plaid-page="access"] .mp-auth-legal-dialog {

@@ -33,7 +33,7 @@ export function EventsLens({
     <section className={s.lens} aria-label="Events lens">
       <CompanyEventCalendar research={research} />
       <EconomicContext symbol={research.company.symbol} preview={preview} />
-      <div className={s.supporting}>
+      <div className={s.eventsSupporting}>
         <CompanyUpdates research={research} preview={preview} />
         <EarningsWorkspace research={research} />
         <EarningsReview research={research} contextOnly />
@@ -66,7 +66,7 @@ export function IndicatorsLens({
         symbol={research.company.symbol}
         preview={preview}
       />
-      <div className={s.supporting}>
+      <div className={s.indicatorSupporting}>
         <AdvancedResearch research={research} overviewPresent />
         <SentiSensePanels
           symbol={research.company.symbol}

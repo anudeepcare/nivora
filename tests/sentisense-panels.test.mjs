@@ -115,9 +115,13 @@ function harness(hiddenSignals = [], customResult) {
     click: (props, label) => {
       const tree = Component(props),
         nav = tree.props.children[1].props.children[0],
-        button = nav.props.children.find(
-          (child) => React.Children.toArray(child.props.children).some(
-            (part) => part === label || (React.isValidElement(part) && part.props["aria-hidden"] !== "true" && part.props.children === label),
+        button = nav.props.children.find((child) =>
+          React.Children.toArray(child.props.children).some(
+            (part) =>
+              part === label ||
+              (React.isValidElement(part) &&
+                part.props["aria-hidden"] !== "true" &&
+                part.props.children === label),
           ),
         );
       assert.ok(button);
@@ -138,7 +142,10 @@ test("intelligence picker rerenders selected dataset, preserves labels and lazil
   assert.doesNotMatch(next, /Fund A/);
   assert.equal(h.requests.length, 2);
   assert.match(h.requests[1], /dataset=insiders/);
-  assert.match(next, /aria-pressed="true"><span aria-hidden="true" data-nav-icon="Insiders"><\/span><span>Insiders<\/span>/);
+  assert.match(
+    next,
+    /aria-pressed="true"><span aria-hidden="true" data-nav-icon="Insiders"><\/span><span>Insiders<\/span>/,
+  );
 });
 test("demo does not make paid provider calls", () => {
   const h = harness();
@@ -263,4 +270,27 @@ test("GOOG estimates explicitly display verified primary-class records without r
     assert.match(rejected, /unverified for the primary share class/);
     assert.doesNotMatch(rejected, /Limited provider preview/);
   }
+});
+
+test("expanded provenance exposes distinct labels and retains the exact retrieval timestamp", () => {
+  const h = harness([], {
+    status: "available",
+    source: "SentiSense",
+    isPreview: false,
+    asOf: "2026-10-30",
+    retrievedAt: "2026-11-17T12:00:00Z",
+    totalCount: 0,
+    data: { holders: [{ filerName: "Fund A", shares: 200 }] },
+  });
+  const html = h.render({ symbol: "AAPL", group: "ownership" });
+  assert.match(
+    html,
+    /<summary>Evidence dates &amp; coverage<\/summary><dl class="provenanceFields">/,
+  );
+  assert.match(html, /<dt>Evidence date<\/dt><dd>2026-10-30<\/dd>/);
+  assert.match(
+    html,
+    /<dt>Retrieved<\/dt><dd><time dateTime="2026-11-17T12:00:00Z">2026-11-17 12:00:00 UTC<\/time><\/dd>/,
+  );
+  assert.match(html, /<dt>Coverage<\/dt><dd>0 provider records in scope/);
 });

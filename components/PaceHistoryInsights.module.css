@@ -1,31 +1,41 @@
 .history {
   min-width: 0;
-  margin-top: 10px;
-  padding-block: 16px 0;
+  margin-top: 4px;
+  padding-block: 12px 0;
   padding-inline: 0;
   border-top: 1px solid var(--plaid-line, var(--line));
   color: var(--plaid-ink, var(--ink));
 }
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 20px;
+}
 .history h3 {
-  margin: 7px 0;
-  font-size: 17px;
+  margin: 3px 0 0;
+  font-size: clamp(17px, 1.8vw, 22px);
+  font-weight: 600;
+  line-height: 1.3;
 }
 .history h4 {
-  margin: 16px 0 8px;
-}
-.history header p {
-  margin: 6px 0 12px;
-  color: var(--muted, #596f65);
-  line-height: 1.6;
+  margin: 13px 0 4px;
+  font-size: 14px;
 }
 .controls {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 6px 9px;
+  font-size: 12px;
+  color: var(--plaid-muted, var(--muted));
 }
 .controls select {
   min-height: 44px;
-  padding: 8px 14px;
+  padding: 6px 9px;
+  inline-size: max-content;
+  max-inline-size: 100%;
   border: 1px solid var(--line, #dce3df);
   border-radius: 8px;
   background: var(--surface, #fff);
@@ -34,28 +44,48 @@
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 14px 0;
+  gap: 8px clamp(10px, 2vw, 24px);
+  margin: 8px 0 0;
+  padding-block: 9px;
+  border-block: 1px solid var(--plaid-line, var(--line));
+}
+.stats > div {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  gap: 3px;
+  min-width: 0;
 }
 .stats dt {
   font-size: 12px;
-  color: var(--muted, #596f65);
+  color: var(--plaid-muted, var(--muted));
 }
 .stats dd {
-  font-size: 18px;
-  margin: 8px 0;
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.stats strong {
+  font-size: clamp(16px, 1.7vw, 21px);
+  line-height: 1.25;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 .stats small,
 .history td small {
   display: block;
-  color: var(--muted, #596f65);
+  color: var(--plaid-muted, var(--muted));
   font-size: 11px;
 }
 .note {
+  margin-block: 5px;
   font-size: 12px;
-  line-height: 1.7;
-  color: var(--muted, #596f65);
+  line-height: 1.55;
+  color: var(--plaid-muted, var(--muted));
+}
+.methods {
+  max-width: 85ch;
 }
 .scroll {
   min-width: 0;
@@ -89,22 +119,21 @@
   font-weight: 500;
   color: var(--muted, #596f65);
 }
-.history details {
-  margin-top: 20px;
+.history .outcomeCaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
 }
-.history summary {
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 0;
-}
-@media (max-width: 650px) {
+@media (max-width: 520px) {
   .stats {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .stats dd {
-    font-size: 20px;
+  .controls select {
+    font-size: 16px;
   }
 }
 

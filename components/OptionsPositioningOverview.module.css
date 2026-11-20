@@ -92,36 +92,6 @@
   overflow: auto;
   overscroll-behavior: contain;
 }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
-}
-.grid details {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px;
-  min-width: 0;
-}
-.grid summary {
-  cursor: pointer;
-  list-style: none;
-}
-.grid span,
-.grid strong {
-  display: block;
-  font-size: 0.7rem;
-  font-variant-numeric: tabular-nums;
-}
-.grid strong {
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 4px 0;
-}
-.grid p {
-  overflow-wrap: anywhere;
-  margin-bottom: 0;
-}
 .activity small {
   display: block;
   margin-top: 8px;
@@ -129,8 +99,7 @@
   color: var(--muted);
 }
 @media (max-width: 700px) {
-  .metrics,
-  .grid {
+  .metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -253,4 +222,129 @@
 :global([data-theme="dark"]) .root {
   --option-call: #72afff;
   --option-put: #edb35e;
+}
+
+/* Large prints and contract evidence share the surrounding surface. */
+.printMetrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 32px;
+  margin: 10px 0 4px;
+}
+.printMetrics dt {
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+}
+.printMetrics dd {
+  margin: 4px 0 0;
+  color: var(--plaid-ink, var(--ink));
+  font-size: clamp(17px, 2vw, 21px);
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+}
+.root .printMethod {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.printMethod summary {
+  min-height: 44px;
+  width: fit-content;
+  align-content: center;
+  padding-inline: 4px;
+  cursor: pointer;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+}
+.printMethod p {
+  max-width: 78ch;
+  margin: 0 0 10px;
+}
+.contractList {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+.root .contractList li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+.root .contractList details {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.root .contractList details > summary {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr) minmax(3.5em, 0.45fr) minmax(0, 0.6fr)
+    minmax(0, 1fr);
+  gap: 6px 14px;
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 32px 8px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--plaid-ink, var(--ink));
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.root .contractList summary::-webkit-details-marker {
+  display: none;
+}
+.root .contractList summary::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 14px;
+  inset-block-start: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  border-block-end: 1px solid currentColor;
+  border-inline-end: 1px solid currentColor;
+  color: var(--plaid-muted, var(--muted));
+  transform: rotate(45deg);
+}
+.root .contractList details[open] summary::after {
+  transform: rotate(225deg);
+}
+.root .contractList summary:is(:hover, :focus-visible) {
+  outline: 1px solid var(--plaid-line, var(--line));
+  outline-offset: -1px;
+}
+.root .contractList summary:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: -2px;
+}
+.contractList strong {
+  font-weight: 600;
+}
+.contractSide {
+  text-transform: capitalize;
+}
+.root .contractList details > p {
+  margin: 4px 12px 10px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 520px) {
+  .root .contractList details > summary {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4px 12px;
+    padding-inline: 8px 30px;
+  }
 }

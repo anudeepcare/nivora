@@ -1297,35 +1297,45 @@
   }
 }
 
-/* Center the real holdings data and keep lower tools beside each other until a detailed view needs room. */
+/* A single aligned tool list remains compact even when only one tool is open. */
 .actionGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  align-items: start;
-  margin: 12px 0 20px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+}
+.home.home.home.home .researchTools {
+  margin: 14px 0 20px;
 }
 .home.home.home.home .actionGrid > * {
   min-width: 0;
   margin: 0;
+  border-radius: 0;
+  border-block-end: 1px solid var(--plaid-line, var(--line));
+  background: transparent;
 }
-.actionGrid > :only-child,
-.actionGrid > section:has(> button[aria-expanded="true"]),
-.actionGrid
-  > details[open]:has(
-    [data-state="ready"],
-    section[aria-labelledby],
-    details[open]
-  ) {
-  grid-column: 1 / -1;
+.home.home.home.home .actionGrid > section > button,
+.home.home.home.home .actionGrid > details > summary {
+  min-height: 48px;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
 }
-.home.home.home.home .actionGrid > section > button {
-  min-height: 52px;
+.home.home.home.home
+  .actionGrid
+  > details
+  > section[aria-label="Daily holdings and watchlist radar"] {
+  padding-inline: 0;
+  background: transparent;
 }
-@media (max-width: 860px) {
-  .actionGrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.home.home.home.home
+  .actionGrid
+  > :is(section, details)
+  > :is(button, summary):hover {
+  color: var(--plaid-violet, var(--blue));
 }
 
 /* Today keeps quote coverage inline and gives the contribution chart a useful companion. */
@@ -1396,4 +1406,78 @@
 }
 .actionGrid {
   margin-top: 6px;
+}
+
+/* Editorial hierarchy: use one outer rule rather than two full-surface cards. */
+.home.home.home.home
+  .leadGrid
+  > :global(.home-evidence-layout)
+  > :global(.home-events-panel),
+.home.home.home.home .updateFeed > :global(.home-news-panel) {
+  border: 0;
+  border-block-end: 1px solid var(--plaid-line, var(--line));
+  border-radius: 0;
+  padding: 12px 0;
+  background: transparent;
+  box-shadow: none;
+}
+.home.home.home.home .updateFeed {
+  margin: 8px 0 12px;
+}
+.home.home.home.home .updateFeed :global(.home-news-list) article {
+  padding: 12px 0;
+  border-radius: 0;
+}
+.home.home.home.home
+  .updateFeed
+  :global(.home-news-list)
+  > article:first-child
+  :global(.home-news-title) {
+  font-size: 17px;
+  font-weight: 600;
+}
+.calendarState,
+.feedState {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 4px 0;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+  line-height: 1.55;
+}
+.calendarState svg {
+  flex: none;
+  margin-top: 2px;
+}
+.updateAction {
+  display: flex;
+  gap: 6px 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+.updateAction a {
+  display: inline-flex;
+  gap: 5px;
+  min-height: 44px;
+  align-items: center;
+  color: var(--plaid-ink, var(--ink));
+  font-size: 13px;
+  white-space: nowrap;
+}
+.home.home.home.home .researchTools .planRow {
+  margin: 0;
+  border-radius: 0;
+  padding: 10px 0 12px;
+  border-block-end: 1px solid var(--plaid-line, var(--line));
+}
+@media (max-width: 700px) {
+  .updateAction {
+    justify-content: flex-start;
+  }
+  .home.home.home.home .actionGrid > details > summary span {
+    flex-basis: auto;
+    padding-left: 0;
+  }
 }

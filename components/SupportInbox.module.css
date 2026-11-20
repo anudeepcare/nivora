@@ -434,3 +434,30 @@
   outline-offset: -3px;
   border-radius: 20px;
 }
+
+/* Delivery is a status disclosure, not a second container around the inbox. */
+.inbox.inbox .delivery {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.inbox.inbox .delivery summary {
+  min-height: 44px;
+  align-content: center;
+  color: var(--plaid-ink, var(--ink));
+  font-size: 14px;
+}
+.inbox .search {
+  margin-top: 10px;
+}
+.inbox .bulk {
+  padding-inline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.inbox .ticket {
+  border: 0;
+  border-bottom: 1px solid var(--plaid-line, var(--line));
+}

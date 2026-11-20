@@ -105,10 +105,10 @@ test("overview renders metric units and subset disclaimer, never a synthetic cha
   assert.match(html, /42%/);
   assert.match(html, /Calls 25.0%, puts 75.0%/);
   assert.match(html, /not a full option chain/);
-  assert.match(html, /Contract activity grid/);
+  assert.match(html, /Contract activity list/);
   const empty = render({});
   assert.match(empty, /No dated, unambiguous contract observations/);
-  assert.doesNotMatch(empty, /role="img"|Contract activity grid/);
+  assert.doesNotMatch(empty, /role="img"|Contract activity list/);
 });
 test("open-interest walls preserve dated strike evidence, not synthetic gamma", async () => {
   const { optionsPositioning } = await import("../lib/options-positioning.ts");

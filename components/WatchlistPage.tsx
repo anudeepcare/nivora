@@ -110,16 +110,24 @@ export function Watchlist() {
     >
       <span className={decisionStyles.eyebrow}>DECISION QUEUE</span>
       <Heading
-        title="Your companies. Decisions to review."
-        subtitle="Business context, Pace and the next conditions worth watching."
+        title="Watchlist"
+        subtitle={`${all.length} ${all.length === 1 ? "company" : "companies"} followed`}
         actions={
-          <button
-            className="btn primary"
-            onClick={() => dialog.current?.showModal()}
+          <div
+            className={decisionStyles.watchActions}
+            aria-label="Watchlist actions"
+            role="group"
           >
-            <Plus size={16} />
-            Follow company
-          </button>
+            <button
+              className="btn primary"
+              onClick={() => dialog.current?.showModal()}
+            >
+              <Plus size={16} aria-hidden="true" /> Follow company
+            </button>
+            <Link className="btn" href={`${prefix}/alerts`}>
+              Create a price alert <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
         }
       />
       {(state.workspaceError || error) && (
@@ -151,31 +159,6 @@ export function Watchlist() {
           </button>
         </div>
       )}
-      <div className="watch-summary" data-plaid-tone="purple">
-        <div>
-          <span className="eyebrow">FOLLOWING</span>
-          <strong>{all.length}</strong>
-          <span className="watch-count-label">followed</span>
-          <p>Companies in your watchlist</p>
-        </div>
-        <Link className="btn" href={`${prefix}/alerts`}>
-          Create a price alert <ArrowUpRight size={16} />
-        </Link>
-      </div>
-      <details className={decisionStyles.reviewDetails}>
-        <summary>Review priorities and risk context</summary>
-        <DecisionAttention
-          symbols={symbols}
-          held={(workspace?.positions ?? [])
-            .filter((p) => p.assetType !== "cash" && p.quantity > 0)
-            .map((p) => p.symbol)}
-          rows={state.paceScan.rows}
-          allocations={state.model.allocations}
-          concentrationLimit={accountPrefs.preferences.concentrationLimit}
-          prefix={prefix}
-          loading={state.paceScan.loading}
-        />
-      </details>
       <section className="card" data-plaid-block="watch-queue">
         <SectionHead
           title="Your watchlist"
@@ -199,6 +182,20 @@ export function Watchlist() {
             </button>
           }
         />
+        <details className={decisionStyles.reviewDetails}>
+          <summary>Review priorities and risk context</summary>
+          <DecisionAttention
+            symbols={symbols}
+            held={(workspace?.positions ?? [])
+              .filter((p) => p.assetType !== "cash" && p.quantity > 0)
+              .map((p) => p.symbol)}
+            rows={state.paceScan.rows}
+            allocations={state.model.allocations}
+            concentrationLimit={accountPrefs.preferences.concentrationLimit}
+            prefix={prefix}
+            loading={state.paceScan.loading}
+          />
+        </details>
         {all.length > 0 && (
           <div className="approved-table-toolbar">
             <div

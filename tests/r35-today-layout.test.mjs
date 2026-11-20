@@ -18,13 +18,13 @@ test("single reported quarter uses the available column and retains both sources
   );
 });
 
-test("Today groups lower actions together and allows either opened detail to use full width", () => {
+test("Today groups lower actions together in the same width", () => {
   assert.match(
     source("HomeWorkspace.tsx"),
     /className=\{homeStyles.actionGrid\}[\s\S]+<ContributionCompare[\s\S]+<HomeRadar/,
   );
   assert.match(
     source("HomeWorkspace.module.css"),
-    /\.actionGrid > [^{]*:has\(> button\[aria-expanded="true"\]\)[^{]*\{\s*grid-column: 1 \/ -1/,
+    /\.actionGrid\s*\{[^}]*grid-template-columns: minmax\(0, 1fr\)/,
   );
 });
