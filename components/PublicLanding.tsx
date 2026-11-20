@@ -1,4 +1,5 @@
 "use client";
+import PublicPlaidOpening from "./PublicPlaidOpening";
 import { ContextLink } from "./ContextLink";
 import PaceInstrument from "./PaceInstrument";
 import experience from "./IntegratedExperience.module.css";
@@ -12,8 +13,6 @@ import {
   Sun,
   Moon,
   ChartNoAxesCombined,
-  Menu,
-  X,
   Check,
   ShieldCheck,
   Layers3,
@@ -870,7 +869,6 @@ export default function PublicLanding({
 }: {
   sampleOnly?: boolean;
 }) {
-  const [menu, setMenu] = useState(false);
   useEffect(() => {
     if (!sampleOnly) return;
     const tags = Array.from(
@@ -893,198 +891,10 @@ export default function PublicLanding({
       <a className="ap-skip-link" href="#ap-main">
         Skip to content
       </a>
-      <div className="ap-opening">
-        <header
-          className={`ap-header ${landing.header}`}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") setMenu(false);
-          }}
-        >
-          <div className="ap-header-inner ap-container">
-            <PublicBrand />
-            <nav className="ap-nav" aria-label="Main navigation">
-              <Link href="/#how-it-works">Product</Link>
-              <Link href="/#pace-public">Pace</Link>
-              <Link href="/#use-cases">Use cases</Link>
-              <Link href="/pricing">Pricing</Link>
-              <Link href="/methodology">Method</Link>
-            </nav>
-            <div className="ap-header-actions">
-              <PublicThemeToggle />
-              <Link className="ap-signin" href="/login">
-                Sign in
-              </Link>
-              <Link
-                className="ap-button ap-button-primary ap-header-cta"
-                href="/overview"
-              >
-                Explore workspace <ArrowRight size={16} aria-hidden="true" />
-              </Link>
-              <button
-                className="ap-menu-button"
-                type="button"
-                aria-label={menu ? "Close navigation" : "Open navigation"}
-                aria-expanded={menu}
-                aria-controls="ap-mobile-navigation"
-                onClick={() => setMenu(!menu)}
-              >
-                {menu ? (
-                  <X size={20} aria-hidden="true" />
-                ) : (
-                  <Menu size={20} aria-hidden="true" />
-                )}
-              </button>
-            </div>
-          </div>
-          {menu && (
-            <nav
-              id="ap-mobile-navigation"
-              className="ap-mobile-navigation"
-              aria-label="More public navigation"
-            >
-              <Link href="/#how-it-works" onClick={() => setMenu(false)}>
-                Product
-              </Link>
-              <Link href="/#pace-public" onClick={() => setMenu(false)}>
-                Pace
-              </Link>
-              <Link href="/#use-cases" onClick={() => setMenu(false)}>
-                Use cases
-              </Link>
-              <Link href="/pricing" onClick={() => setMenu(false)}>
-                Pricing
-              </Link>
-              <Link href="/methodology" onClick={() => setMenu(false)}>
-                Method
-              </Link>
-              <Link href="/login" onClick={() => setMenu(false)}>
-                Sign in
-              </Link>
-              <Link href="/overview" onClick={() => setMenu(false)}>
-                Explore workspace
-              </Link>
-              <Link href="/help" onClick={() => setMenu(false)}>
-                Help
-              </Link>
-            </nav>
-          )}
-        </header>
-        <section
-          className={landing.hero}
-          id="ap-main"
-          aria-labelledby="ap-hero-heading"
-        >
-          <div className={landing.heroCopy}>
-            <span className={landing.eyebrow}>
-              STOCK RESEARCH FOR THE DECISION, NOT THE DASHBOARD
-            </span>
-            <h1 id="ap-hero-heading">
-              {sampleOnly ? (
-                "Explore a more considered way to invest."
-              ) : (
-                <>
-                  Understand any stock
-                  <br />
-                  <span>in thirty seconds.</span>
-                </>
-              )}
-            </h1>
-            <p>
-              See the business, what the price assumes, what changed, who is
-              acting, and how fast to build. Then open the evidence behind each
-              conclusion.
-            </p>
-            <div className={landing.actions}>
-              <Link className={landing.primary} href="/login?mode=signup">
-                Get started <ArrowRight size={18} aria-hidden="true" />
-              </Link>
-              <a className={landing.secondary} href="#how-it-works">
-                See the method <ArrowRight size={17} aria-hidden="true" />
-              </a>
-            </div>
-            <div className={landing.heroPrinciples}>
-              <span>
-                <Check size={15} /> Evidence before conviction
-              </span>
-              <span>
-                <Check size={15} /> Your judgment, always
-              </span>
-            </div>
-          </div>
-          <div className={landing.heroVisual} id="product">
-            <section
-              className={landing.referenceBrief}
-              aria-label="Research framework · no live company scores"
-            >
-              <header>
-                <span>AURYN · DECISION BRIEF</span>
-                <small>Research framework · no live company scores</small>
-              </header>
-              <div>
-                <small>THE QUESTIONS THAT MATTER</small>
-                <h2>
-                  Understand the business.
-                  <br />
-                  Test the price. Plan your pace.
-                </h2>
-                <p>
-                  Financials, scenarios, events and ownership, connected to your
-                  next contribution.
-                </p>
-              </div>
-              <footer>
-                {[
-                  [
-                    "Business",
-                    "Read evidence",
-                    "Growth · profit · cash",
-                    Layers3,
-                  ],
-                  [
-                    "Expectations",
-                    "Test assumptions",
-                    "Bear · base · bull",
-                    Scale,
-                  ],
-                  [
-                    "Change",
-                    "Track the case",
-                    "News · events · filings",
-                    ChartNoAxesCombined,
-                  ],
-                  [
-                    "Pace",
-                    "Plan additions",
-                    "Price zones · your limits",
-                    ShieldCheck,
-                  ],
-                ].map(([name, action, detail, Icon], index) => {
-                  const StepIcon = Icon as typeof Layers3;
-                  return (
-                    <span key={name as string} className={landing.briefStep}>
-                      <span className={landing.briefIcon}>
-                        <StepIcon size={24} aria-hidden="true" />
-                      </span>
-                      <small>
-                        0{index + 1} / {name as string}
-                      </small>
-                      <strong>{action as string}</strong>
-                      <em>{detail as string}</em>
-                      {index < 3 && (
-                        <ArrowRight
-                          className={landing.briefConnector}
-                          size={18}
-                          aria-hidden="true"
-                        />
-                      )}
-                    </span>
-                  );
-                })}
-              </footer>
-            </section>
-          </div>
-        </section>
-      </div>
+      <PublicPlaidOpening
+        brand={<PublicBrand />}
+        themeControl={<PublicThemeToggle />}
+      />
 
       {sampleOnly && <ProductWalkthrough />}
       <section

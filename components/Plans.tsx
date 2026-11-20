@@ -319,6 +319,7 @@ export default function Plans({
 }) {
   return (
     <div
+      data-plaid-page="plans"
       className={`plans-page ${layout.page} ${publicPage ? "plans-public" : ""}`}
     >
       {publicPage && (

@@ -1,0 +1,137 @@
+/* Research-only layered stages. Charts and data keep their own semantic colors. */
+.root.root {
+  --ink: var(--plaid-ink, #172033);
+  --muted: var(--plaid-muted, #627086);
+  --line: var(--plaid-line, #d6dde8);
+  --research-chrome: var(--plaid-surface, var(--card));
+  --research-tab-ink: var(--plaid-muted, var(--muted));
+  --research-selection-mark: var(--plaid-focus, var(--blue));
+  background: transparent;
+  --research-stage: var(--plaid-card-blue, var(--card));
+  --research-raised: var(--plaid-surface, var(--card));
+  --research-edge: var(--plaid-line, var(--line));
+  min-width: 0;
+}
+.root [data-research-section="Thesis"],
+.root [data-research-section="Analysts"],
+.root [data-research-section="Valuation"] {
+  --research-stage: var(--plaid-card-purple, var(--card));
+}
+.root [data-research-section="Financials"],
+.root [data-research-section="News"],
+.root [data-research-section="Advanced"] {
+  --research-stage: var(--plaid-card-blue, var(--card));
+}
+.root [data-research-section="Technicals"],
+.root [data-research-section="Options"],
+.root [data-research-section="Pace"] {
+  --research-stage: var(--plaid-card-teal, var(--card));
+}
+.root.root [data-research-section]:not([hidden]) {
+  margin-top: 20px;
+  padding: clamp(12px, 1.6vw, 24px);
+  border: 1px solid var(--research-edge);
+  border-radius: 24px;
+  background: linear-gradient(
+    135deg,
+    var(--research-stage),
+    var(--research-raised)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--research-raised) 70%, transparent),
+    0 12px 32px #18234408;
+}
+/* Give actual chart/valuation instruments the inner, raised plane. */
+.root.root
+  :is(
+    :global(.accumulation-chart),
+    :global(.valuation-board),
+    :global(.decision-chart),
+    :global(.technical-dashboard),
+    [aria-label="Selected AURYN valuation model"]
+  ) {
+  min-width: 0;
+  padding: clamp(12px, 1.4vw, 20px);
+  border: 1px solid var(--research-edge);
+  border-radius: 18px;
+  background: var(--research-raised);
+  box-shadow: 0 6px 18px #1823440d;
+}
+.root.root :global(.valuation-board-grid) {
+  gap: 12px;
+}
+.root.root :global(.valuation-board-grid) > article {
+  min-width: 0;
+  border: 1px solid var(--research-edge);
+  border-radius: 14px;
+  background: var(--research-raised);
+}
+.root.root :is(:global(.auryn-view-tabs), :global(.auryn-detail-tabs)) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+  padding: 6px;
+  border: 1px solid var(--research-edge);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--research-raised) 75%, transparent);
+}
+.root.root
+  :is(:global(.auryn-view-tabs), :global(.auryn-detail-tabs))
+  > button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 9px 14px;
+  color: var(--plaid-muted, var(--muted));
+  background: transparent;
+}
+.root.root
+  :is(:global(.auryn-view-tabs), :global(.auryn-detail-tabs))
+  > button[aria-pressed="true"] {
+  color: var(--plaid-ink, var(--ink));
+  background: var(--research-raised);
+  border-color: var(--research-edge);
+  box-shadow: 0 2px 8px #18234414;
+  font-weight: 600;
+}
+.root.root
+  :is(:global(.auryn-view-tabs), :global(.auryn-detail-tabs))
+  > button:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}
+.root.root :global(.accumulation-desk) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.root.root :global(.accumulation-legend) {
+  margin-top: 14px;
+  gap: 10px 18px;
+}
+@media (max-width: 600px) {
+  .root.root [data-research-section]:not([hidden]) {
+    margin-top: 16px;
+    padding: 10px;
+    border-radius: 18px;
+  }
+  .root.root
+    :is(:global(.auryn-view-tabs), :global(.auryn-detail-tabs))
+    > button {
+    padding: 8px 10px;
+  }
+  .root.root
+    :is(
+      :global(.accumulation-chart),
+      :global(.valuation-board),
+      :global(.decision-chart),
+      :global(.technical-dashboard),
+      [aria-label="Selected AURYN valuation model"]
+    ) {
+    padding: 10px;
+    border-radius: 14px;
+  }
+}

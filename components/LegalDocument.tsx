@@ -21,6 +21,7 @@ export default function LegalDocument({ id }: { id: DocumentId }) {
     <main
       className={`legal-document atlas-document ${styles.document}`}
       data-document={id}
+      data-plaid-page="documents"
     >
       <header>
         <PublicHomeLink className="legal-brand">

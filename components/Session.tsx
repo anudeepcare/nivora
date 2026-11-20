@@ -591,7 +591,11 @@ function Login({ initialError }: { initialError: string }) {
     }
   }
   return (
-    <main className={`mp-auth ${experience.auth}`} data-auth-mode={mode}>
+    <main
+      className={`mp-auth ${experience.auth}`}
+      data-auth-mode={mode}
+      data-plaid-page="access"
+    >
       <aside className={experience.story} aria-label="About AURYN">
         <a href="/" aria-label="AURYN home">
           <img src="/icon.svg" alt="" width="30" height="30" /> AURYN

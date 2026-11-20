@@ -273,10 +273,12 @@ test("active Atlas has one leading navigation and no appended legacy decision fe
   assert.ok(
     s.indexOf("{evidenceToolbar}") < s.indexOf('id="research-overview"'),
   );
-  assert.match(
-    s,
-    /<Help label="Company facts and source dates">\s*<StockFacts research=\{r\} \/>/,
+  const companyFactsHelp = s.match(
+    /<Help label="Company facts and source dates">([\s\S]*?)<\/Help>/,
   );
+  assert.ok(companyFactsHelp, "Company facts retain their named disclosure");
+  assert.match(companyFactsHelp[1], /<StockFacts research=\{r\} \/>/);
+  assert.match(companyFactsHelp[1], /r\.company\.name/);
   assert.match(s, /<ReferenceAtlas research=\{r\}/);
   assert.match(s, /<DecisionWorkspace/);
   assert.match(s, /<DecisionWatch/);

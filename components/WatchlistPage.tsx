@@ -1,4 +1,5 @@
 "use client";
+import plaidDiscovery from "./PlaidDiscovery.module.css";
 import EvidenceDetails from "./EvidenceDetails";
 import DecisionAttention from "./DecisionAttention";
 import { customerText } from "@/lib/customer-language";
@@ -105,7 +106,7 @@ export function Watchlist() {
   }
   return (
     <section
-      className={`approved-workspace approved-watchlist ${workspaceVisuals.workspaceVisuals} ${decisionStyles.watchlist}`}
+      className={`approved-workspace approved-watchlist ${plaidDiscovery.watchlist} ${workspaceVisuals.workspaceVisuals} ${decisionStyles.watchlist}`}
     >
       <span className={decisionStyles.eyebrow}>DECISION QUEUE</span>
       <Heading
@@ -150,7 +151,7 @@ export function Watchlist() {
           </button>
         </div>
       )}
-      <div className="watch-summary">
+      <div className="watch-summary" data-plaid-tone="purple">
         <div>
           <span className="eyebrow">FOLLOWING</span>
           <strong>{all.length}</strong>
@@ -175,7 +176,7 @@ export function Watchlist() {
           loading={state.paceScan.loading}
         />
       </details>
-      <section className="card">
+      <section className="card" data-plaid-block="watch-queue">
         <SectionHead
           title="Your watchlist"
           subtitle={

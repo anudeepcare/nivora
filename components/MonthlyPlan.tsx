@@ -62,7 +62,7 @@ export default function MonthlyPlan() {
   const available = !!workspace && !workspaceError && result.complete;
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
-    <main className={s.page}>
+    <main data-plaid-page="monthly" className={s.page}>
       <p>Your monthly research routine</p>
       <h1>Plan a contribution around your holdings.</h1>
       <p>

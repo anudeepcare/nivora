@@ -571,3 +571,52 @@
     gap: 12px;
   }
 }
+
+/* A useful miniature market view, never a decorative synthetic sparkline. */
+.section {
+  color: var(--plaid-ink, var(--ink));
+  margin: 20px 0;
+}
+.heading h2 {
+  font-size: clamp(22px, 2vw, 28px);
+  letter-spacing: -0.035em;
+}
+.card.card {
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 22px;
+  background: linear-gradient(
+    135deg,
+    var(--plaid-card-blue, var(--card)),
+    var(--plaid-surface, var(--card))
+  );
+  padding: 20px;
+  box-shadow: none;
+}
+.card.card:nth-child(2n) {
+  background: linear-gradient(
+    135deg,
+    var(--plaid-card-purple, var(--card)),
+    var(--plaid-surface, var(--card))
+  );
+}
+.card.card:nth-child(3n) {
+  background: linear-gradient(
+    135deg,
+    var(--plaid-card-teal, var(--card)),
+    var(--plaid-surface, var(--card))
+  );
+}
+.company h3 {
+  font-size: 13px;
+  color: var(--plaid-muted, var(--muted));
+}
+.symbol {
+  font-size: 14px;
+  color: var(--plaid-ink, var(--ink));
+}
+@media (max-width: 700px) {
+  .card.card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+}

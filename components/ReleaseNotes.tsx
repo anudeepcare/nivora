@@ -6,7 +6,7 @@ import { DocumentBack, ContextLink } from "./ContextLink";
 import styles from "./ReleaseNotes.module.css";
 export default function ReleaseNotes() {
   return (
-    <main className={styles.page}>
+    <main data-plaid-page="updates" className={styles.page}>
       <header>
         <Link href="/" className="legal-brand">
           AURYN

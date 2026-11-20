@@ -115,6 +115,7 @@ const DcaResearch = dynamic(() => import("./DcaResearch"), {
 });
 import experience from "./IntegratedExperience.module.css";
 import tabVisuals from "./ResearchTabVisuals.module.css";
+import plaidResearch from "./ResearchPlaid.module.css";
 import deskLayout from "./ResearchDeskLayout.module.css";
 import { selectPriceReference } from "@/lib/price-reference";
 import { movementContext } from "@/lib/movement-context";
@@ -678,7 +679,7 @@ export default function Research({ symbol }: { symbol: string }) {
     ) : null;
   return (
     <article
-      className={`research-page approved-research-page ${cockpit.root}`}
+      className={`research-page approved-research-page ${cockpit.root} ${plaidResearch.root}`}
       data-research-mode={preferences.detail}
       data-active-lens={activeLens.sections[0]}
     >

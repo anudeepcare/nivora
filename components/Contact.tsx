@@ -102,7 +102,10 @@ export default function Contact() {
     }
   }
   return (
-    <main className={`contact-page atlas-support ${styles.page}`}>
+    <main
+      data-plaid-page="contact"
+      className={`contact-page atlas-support ${styles.page}`}
+    >
       <header>
         <Link href="/" className="legal-brand">
           <img src="/icon.svg" width="28" height="28" alt="" /> AURYN

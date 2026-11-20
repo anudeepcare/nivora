@@ -1,4 +1,5 @@
 "use client";
+import plaidDiscovery from "./PlaidDiscovery.module.css";
 import EvidenceDetails from "./EvidenceDetails";
 import ComparisonCharts from "./ComparisonCharts";
 import ContributionCompare from "./ContributionCompare";
@@ -114,7 +115,7 @@ export function Settings() {
     (demo ? "Design preview" : "Loading account…");
   return (
     <section
-      className={`settings-page workspace-settings ${settingsStyles.page}`}
+      data-plaid-page="settings" className={`settings-page workspace-settings ${settingsStyles.page}`}
     >
       <div className="settings-page-toolbar">
         <Link
@@ -419,8 +420,8 @@ export function Compare({ initialSymbols = "" }: { initialSymbols?: string }) {
     })),
   );
   return (
-    <section className={`${decisionStyles.compare} ${compareStyles.page}`}>
-      <header className={compareStyles.heading}>
+    <section className={`${decisionStyles.compare} ${compareStyles.page} ${plaidDiscovery.compare}`}>
+      <header className={compareStyles.heading} data-plaid-tone="purple">
         <div>
           <span className={compareStyles.eyebrow}>CONTRIBUTION COMPARISON</span>
           <h1>

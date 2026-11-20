@@ -61,7 +61,11 @@ export default function PasswordRecovery() {
     }
   }
   return (
-    <main className="mp-auth ap-auth" data-auth-mode="recovery">
+    <main
+      className="mp-auth ap-auth"
+      data-auth-mode="recovery"
+      data-plaid-page="access"
+    >
       <aside className="mp-auth-story" aria-label="About AURYN">
         <a className="mp-brand" href="/" aria-label="Auryn home">
           <span className="mp-brand-mark" aria-hidden="true">

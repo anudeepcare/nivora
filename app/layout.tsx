@@ -12,6 +12,8 @@ import "./core/mobile-glass.css";
 import "./core/table-interaction.css";
 import "./core/nested-navigation.css";
 import "./core/reference-tabs.css";
+import "./core/plaid-theme.css";
+import "./core/plaid-secondary.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {

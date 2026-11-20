@@ -78,6 +78,34 @@ const common = {
   useState: React.useState,
   useRouter: () => ({ replace() {} }),
 };
+function loadPlaid(hooks = React) {
+  const m = { exports: {} };
+  const js = ts.transpileModule(
+    fs.readFileSync("components/PublicPlaidOpening.tsx", "utf8"),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.React,
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2022,
+      },
+    },
+  ).outputText;
+  new Function("require", "module", "exports", "React", js)(
+    (n) =>
+      n === "react"
+        ? hooks
+        : n === "next/link"
+          ? { default: Link }
+          : n === "lucide-react"
+            ? icons
+            : { default: experience },
+    m,
+    m.exports,
+    React,
+  );
+  return m.exports.default;
+}
+common.PublicPlaidOpening = loadPlaid();
 const PublicSample = load(
   "components/PublicLanding.tsx",
   "PublicSample",
@@ -159,19 +187,19 @@ test("public home leads with the benefit and an account action without fabricate
   );
   const html = renderToStaticMarkup(React.createElement(PublicLanding));
   assert.match(html, /<main[^>]*class="mp-public/);
-  assert.match(html, /Understand any stock/);
+  assert.match(html, /Know what/);
   assert.match(html, /id="how-it-works"/);
   assert.match(html, /href="\/#how-it-works"/);
   assert.doesNotMatch(html, /Our approach/);
-  assert.match(html, /in thirty seconds\./);
-  assert.match(html, /href="#how-it-works"[^>]*>See the method/);
+  assert.match(html, /you own\./);
+  assert.match(html, /href="\/methodology"/);
   assert.match(html, /id="product"/);
   assert.match(html, /id="pace-public"/);
   assert.match(html, /id="use-cases"/);
   assert.match(html, /id="pricing"/);
-  assert.match(html, /Research framework · no live company scores/);
+  assert.match(html, /Method preview · not live data/);
 
-  assert.match(html, /href="\/login\?mode=signup"[^>]*>Get started/);
+  assert.match(html, /href="\/sample"[^>]*>Explore the demo/);
   assert.match(html, /AURYN Accumulation Pace/);
   assert.doesNotMatch(html, /id="investment-demo"/);
   assert.doesNotMatch(html, /class="ap-benefits/);
@@ -179,12 +207,22 @@ test("public home leads with the benefit and an account action without fabricate
   assert.match(html, /href="\/portfolio-check"/);
   assert.match(html, /What does this price need to be true/);
   assert.match(html, /growth, margins, horizon, and exit multiple/);
-  assert.match(html, /Pace separates business qualification from price conditions/);
+  assert.match(
+    html,
+    /Pace separates business qualification from price conditions/,
+  );
   assert.doesNotMatch(html, /Three questions before every contribution/);
   assert.match(html, /Turn earnings into questions/);
   assert.match(html, /alerts for supported conditions/);
   assert.match(html, /updates from the companies you follow/);
-  for (const title of ["Decision Atlas", "Scenario engine", "Catalyst calendar", "Ownership network", "Pace simulator"]) assert.match(html, new RegExp(title));
+  for (const title of [
+    "Decision Atlas",
+    "Scenario engine",
+    "Catalyst calendar",
+    "Ownership network",
+    "Pace simulator",
+  ])
+    assert.match(html, new RegExp(title));
   assert.match(html, /Live coverage, dates and missing evidence/);
   assert.match(html, /href="\/sample"/);
   assert.match(html, /href="\/pricing"/);
@@ -212,35 +250,44 @@ test("public and account previews explain Pace without fictional company results
 });
 
 test("public navigation opens accessibly, closes on Escape, and closes after a destination is chosen", () => {
-  let expanded = false;
-  const PublicLanding = load("components/PublicLanding.tsx", "PublicLanding", {
-    ...common,
-    useState: () => [
-      expanded,
-      (next) => {
-        expanded = next;
-      },
-    ],
+  const states = [false, 0];
+  let cursor = 0;
+  const PublicOpening = loadPlaid({
+    ...React,
+    useEffect: () => {},
+    useRef: () => ({ current: { focus() {} } }),
+    useState: () => {
+      const i = cursor++;
+      return [states[i], (v) => (states[i] = v)];
+    },
   });
-  const render = () => PublicLanding({});
+  const render = () => {
+    cursor = 0;
+    return PublicOpening({ brand: "AURYN", themeControl: null });
+  };
   const toggle = () =>
     nodes(
       render(),
       (n) =>
-        n.type === "button" &&
-        n.props["aria-controls"] === "ap-mobile-navigation",
+        n.type === "button" && n.props["aria-controls"] === "public-explore",
     )[0];
   assert.equal(toggle().props["aria-expanded"], false);
   toggle().props.onClick();
   assert.equal(toggle().props["aria-expanded"], true);
-  const navigation = nodes(
-    render(),
-    (n) => n.type === "nav" && n.props.id === "ap-mobile-navigation",
-  )[0];
+  const navigation = nodes(render(), (n) => n.props.id === "public-explore")[0];
   assert(navigation);
-  for (const href of ["/#how-it-works", "/#pace-public", "/#use-cases", "/pricing", "/methodology", "/overview"]) {
-    assert(nodes(navigation, (n) => n.type === Link && n.props.href === href).length, `Mobile menu must retain ${href}`);
-  }
+  for (const href of [
+    "/#how-it-works",
+    "/#pace-public",
+    "/#use-cases",
+    "/pricing",
+    "/methodology",
+    "/overview",
+  ])
+    assert(
+      nodes(navigation, (n) => n.type === Link && n.props.href === href).length,
+      `Explore menu retains ${href}`,
+    );
   nodes(render(), (n) => n.type === "header")[0].props.onKeyDown({
     key: "Escape",
   });
@@ -297,9 +344,12 @@ test("email sign-in trims email, keeps password intact and opens the account wor
   });
   harness.field("email", "  person@example.com  ");
   harness.field("password", " valid password ");
-  const remember = nodes(harness.render(), n => n.type === "input" && n.props.type === "checkbox")[0];
+  const remember = nodes(
+    harness.render(),
+    (n) => n.type === "input" && n.props.type === "checkbox",
+  )[0];
   assert.equal(remember.props.checked, true);
-  remember.props.onChange({target:{checked:false}});
+  remember.props.onChange({ target: { checked: false } });
   await harness.submit();
   assert.deepEqual(harness.persistence, [false]);
   assert.deepEqual(calls, [
@@ -444,7 +494,7 @@ test("available OAuth choices call their provider and disabled choices do not se
 
 test("recovery keeps both password fields and blocks mismatched passwords before contacting auth", async () => {
   let index = 0;
-  const values = ["","",false,"",true,false,"person@example.com",false],
+  const values = ["", "", false, "", true, false, "person@example.com", false],
     calls = [];
   const useState = (initial) => {
     const i = index++;
@@ -551,23 +601,71 @@ test("confirmation resend preserves the callback and suppresses a second request
 });
 
 test("password recovery verifies its account, saves through the recovery endpoint and never auto-redirects", async () => {
- for(const expired of [false,true]){
-  let index=0;const states=[],effects=[],calls=[];
-  const Recovery=load("components/PasswordRecovery.tsx","PasswordRecovery",{...common,PublicSample,
-   useState:initial=>{const i=index++;if(!(i in states))states[i]=initial;return [states[i],next=>{states[i]=next}]},
-   useEffect:fn=>{if(!effects.length)effects.push(fn)},
-   fetch:async(path,options)=>{calls.push([path,options.method||'GET']);return {ok:!expired,json:async()=>expired?{error:'Expired'}:options.method==='POST'?{ok:true}:{email:'verified@example.com'}}}
-  });
-  const render=()=>{index=0;return Recovery()};
-  render();effects[0]();await new Promise(resolve=>setTimeout(resolve,0));
-  if(expired){assert.equal(nodes(render(),n=>n.type==='form').length,0);assert.match(renderToStaticMarkup(render()),/Request a new reset link/);assert.equal(calls.length,1);continue;}
-  assert.match(renderToStaticMarkup(render()),/verified@example.com/);
-  nodes(render(),n=>n.type==='input').forEach(n=>n.props.onChange({target:{value:'new passphrase'}}));
-  await nodes(render(),n=>n.type==='form')[0].props.onSubmit({preventDefault(){}});
-  assert.deepEqual(calls,[['/api/auth/recovery','GET'],['/api/auth/recovery','POST']]);
-  assert.match(renderToStaticMarkup(render()),/Your password was updated/);
-  assert.equal(nodes(render(),n=>n.type==='form').length,0);
- }
+  for (const expired of [false, true]) {
+    let index = 0;
+    const states = [],
+      effects = [],
+      calls = [];
+    const Recovery = load(
+      "components/PasswordRecovery.tsx",
+      "PasswordRecovery",
+      {
+        ...common,
+        PublicSample,
+        useState: (initial) => {
+          const i = index++;
+          if (!(i in states)) states[i] = initial;
+          return [
+            states[i],
+            (next) => {
+              states[i] = next;
+            },
+          ];
+        },
+        useEffect: (fn) => {
+          if (!effects.length) effects.push(fn);
+        },
+        fetch: async (path, options) => {
+          calls.push([path, options.method || "GET"]);
+          return {
+            ok: !expired,
+            json: async () =>
+              expired
+                ? { error: "Expired" }
+                : options.method === "POST"
+                  ? { ok: true }
+                  : { email: "verified@example.com" },
+          };
+        },
+      },
+    );
+    const render = () => {
+      index = 0;
+      return Recovery();
+    };
+    render();
+    effects[0]();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    if (expired) {
+      assert.equal(nodes(render(), (n) => n.type === "form").length, 0);
+      assert.match(renderToStaticMarkup(render()), /Request a new reset link/);
+      assert.equal(calls.length, 1);
+      continue;
+    }
+    assert.match(renderToStaticMarkup(render()), /verified@example.com/);
+    nodes(render(), (n) => n.type === "input").forEach((n) =>
+      n.props.onChange({ target: { value: "new passphrase" } }),
+    );
+    await nodes(render(), (n) => n.type === "form")[0].props.onSubmit({
+      preventDefault() {},
+    });
+    assert.deepEqual(calls, [
+      ["/api/auth/recovery", "GET"],
+      ["/api/auth/recovery", "POST"],
+    ]);
+    assert.match(renderToStaticMarkup(render()), /Your password was updated/);
+    assert.equal(nodes(render(), (n) => n.type === "form").length, 0);
+  }
 });
 
 function preferencesHarness() {
@@ -773,7 +871,8 @@ test("help and methodology show their publication date without internal release 
     documents,
     legalConfiguration,
     styles: { document: "legal-document-owned" },
-    PublicHomeLink: ({children,...props}) => React.createElement("a", {...props,href:"/"},children),
+    PublicHomeLink: ({ children, ...props }) =>
+      React.createElement("a", { ...props, href: "/" }, children),
     DocumentBack: () => null,
   });
   for (const id of ["help", "methodology", "terms"]) {
@@ -794,29 +893,51 @@ test("reference product tour switches all five lenses and links to their real re
   let active = 0;
   const Tour = load("components/PublicLanding.tsx", "ReferenceProductTour", {
     ...common,
-    useState: () => [active, (next) => { active = next; }],
+    useState: () => [
+      active,
+      (next) => {
+        active = next;
+      },
+    ],
   });
   const expected = ["Snapshot", "Valuation", "News", "Thesis", "Pace"];
   for (let index = 0; index < expected.length; index++) {
-    const buttons = nodes(Tour(), n => n.props?.role === "tab");
+    const buttons = nodes(Tour(), (n) => n.props?.role === "tab");
     buttons[index].props.onClick();
-    const panels = nodes(Tour(), n => n.props?.role === "tabpanel");
-    assert.equal(panels.filter(n => !n.props.hidden).length, 1);
+    const panels = nodes(Tour(), (n) => n.props?.role === "tabpanel");
+    assert.equal(panels.filter((n) => !n.props.hidden).length, 1);
     assert.equal(panels[index].props.hidden, false);
-    assert(nodes(panels[index], n => n.type === Link && n.props.href === `/research/APP?tab=${expected[index]}`).length);
+    assert(
+      nodes(
+        panels[index],
+        (n) =>
+          n.type === Link &&
+          n.props.href === `/research/APP?tab=${expected[index]}`,
+      ).length,
+    );
   }
   let prevented = false;
-  nodes(Tour(), n => n.props?.role === "tab")[4].props.onKeyDown({key: "Home", preventDefault: () => {prevented = true;}, currentTarget: {parentElement: null}});
+  nodes(Tour(), (n) => n.props?.role === "tab")[4].props.onKeyDown({
+    key: "Home",
+    preventDefault: () => {
+      prevented = true;
+    },
+    currentTarget: { parentElement: null },
+  });
   assert.equal(active, 0);
   assert.equal(prevented, true);
 });
 
 test("each public research lens has a labeled explanatory diagram without invented market scores", () => {
- const Diagram = load("components/PublicLanding.tsx", "ResearchDiagram", common);
- for (let lens = 0; lens < 5; lens++) {
-   const html = renderToStaticMarkup(React.createElement(Diagram, {lens}));
-   assert.match(html, /role="img"/);
-   assert.match(html, /Framework illustration/);
-   assert.doesNotMatch(html, /\$\d|\d+%|APP entered|BUILD IN STAGES/);
- }
+  const Diagram = load(
+    "components/PublicLanding.tsx",
+    "ResearchDiagram",
+    common,
+  );
+  for (let lens = 0; lens < 5; lens++) {
+    const html = renderToStaticMarkup(React.createElement(Diagram, { lens }));
+    assert.match(html, /role="img"/);
+    assert.match(html, /Framework illustration/);
+    assert.doesNotMatch(html, /\$\d|\d+%|APP entered|BUILD IN STAGES/);
+  }
 });

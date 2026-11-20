@@ -197,6 +197,7 @@ export default function Shell({
       className={`product approved-product ${experience.shell}`}
       data-page={page}
       data-shell="mobile-first"
+      data-appearance="plaid"
     >
       <a className={experience.skip} href="#content">
         Skip to content

@@ -81,7 +81,7 @@ export default function ResearchLab() {
     URL.revokeObjectURL(u);
   }
   return (
-    <section>
+    <section data-plaid-page="lab">
       <PaceHelp trigger="Understand AURYN Pace" />
       <PageHeading
         title="Strategy lab"

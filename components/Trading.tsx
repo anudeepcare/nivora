@@ -105,7 +105,7 @@ function PaperTradingWorkspace() {
     }
   }
   return (
-    <article>
+    <article data-plaid-page="trading">
       <header className="page-heading">
         <div>
           <span className="eyebrow">ADMINISTRATOR WORKSPACE</span>

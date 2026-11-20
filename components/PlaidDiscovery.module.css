@@ -1,0 +1,159 @@
+/* Scoped to standalone discovery routes, never the ticker workspace. */
+.discovery.discovery,
+.watchlist.watchlist,
+.market.market,
+.compare.compare {
+  min-width: 0;
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  color: var(--plaid-ink, var(--ink));
+  padding-block: 16px 28px;
+  --discovery-radius: 24px;
+}
+.discovery.discovery > header,
+.market.market > header,
+.compare.compare > header,
+.watchlist.watchlist > :global(.watch-summary) {
+  position: relative;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: var(--discovery-radius);
+  padding: clamp(20px, 3vw, 36px);
+  margin: 0 0 18px;
+  text-align: left;
+  align-items: flex-start;
+  background: linear-gradient(
+    115deg,
+    color-mix(in srgb, #a98cff 14%, var(--card)),
+    color-mix(in srgb, #53d8ed 12%, var(--card))
+  );
+}
+.discovery.discovery > header h1,
+.market.market > header h1,
+.compare.compare > header h1 {
+  color: var(--plaid-ink, var(--ink));
+  font-size: clamp(28px, 3.5vw, 46px);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+  margin: 8px 0 12px;
+}
+.discovery.discovery > header p,
+.market.market > header p,
+.compare.compare > header p {
+  max-width: 66ch;
+  margin: 6px 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.discovery.discovery [data-plaid-layout="discovery"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.36fr);
+  gap: 18px;
+  align-items: start;
+}
+.discovery.discovery [data-plaid-block="results"],
+.watchlist.watchlist [data-plaid-block="watch-queue"],
+.market.market > section,
+.compare.compare > :global(.table-scroll) {
+  min-width: 0;
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: var(--discovery-radius);
+  padding: clamp(16px, 2vw, 24px);
+  background: var(--plaid-surface, var(--card));
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--ink) 5%, transparent);
+}
+.discovery.discovery [data-plaid-block="results"] :global(.table-scroll),
+.market.market :global(.table-scroll),
+.watchlist.watchlist ul[aria-label="Followed companies, scroll for more rows"] {
+  max-height: min(65svh, 620px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.market.market :global(.auryn-view-tabs) {
+  padding: 10px;
+  margin-block: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--plaid-surface, var(--card));
+}
+.market.market :global(.auryn-view-tabs) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.market.market :global(.auryn-view-tabs) button {
+  border-radius: 999px;
+  min-height: 44px;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  color: var(--ink);
+  background: transparent;
+}
+.market.market :global(.auryn-view-tabs) button[aria-pressed="true"] {
+  background: color-mix(in srgb, #a98cff 18%, var(--card));
+  border-color: color-mix(in srgb, #a98cff 50%, var(--line));
+  font-weight: 650;
+}
+.watchlist.watchlist > :global(.watch-summary) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.watchlist.watchlist [data-plaid-block="watch-queue"] ul > li {
+  border-bottom: 1px solid var(--line);
+  padding-block: 16px;
+  background: var(--card);
+}
+.market.market form {
+  border-radius: 18px;
+  background: color-mix(in srgb, #a98cff 6%, var(--card));
+}
+.market.market :is(input, select),
+.discovery.discovery :is(input, select) {
+  min-height: 44px;
+  border-radius: 12px;
+  color: var(--ink);
+  background: var(--card);
+}
+.discovery.discovery :focus-visible,
+.watchlist.watchlist :focus-visible,
+.market.market :focus-visible,
+.compare.compare :focus-visible {
+  outline: 2px solid var(--accent-text, var(--blue));
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .discovery.discovery [data-plaid-layout="discovery"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .discovery.discovery,
+  .watchlist.watchlist,
+  .market.market,
+  .compare.compare {
+    --discovery-radius: 18px;
+    padding-block: 8px 20px;
+  }
+  .compare.compare > header {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .market.market > header,
+  .discovery.discovery > header,
+  .compare.compare > header {
+    padding: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .discovery.discovery *,
+  .watchlist.watchlist *,
+  .market.market *,
+  .compare.compare * {
+    scroll-behavior: auto;
+  }
+}
+/* data-plaid-tone is retained as an explicit shared-theme hook. */

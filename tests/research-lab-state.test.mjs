@@ -58,6 +58,7 @@ test("a failed research-lab request clears the previous instrument result", asyn
     ContributionCompare: () => null,
     decisionStyles: new Proxy({}, { get: (_, key) => String(key) }),
     compareStyles: new Proxy({}, { get: (_, key) => String(key) }),
+    plaidDiscovery: new Proxy({}, { get: (_, key) => String(key) }),
     PaceHelp: () => null,
     providerSymbol,
     sameProviderSymbol,
@@ -132,6 +133,7 @@ test("a new comparison clears the preceding company set before loading", async (
     ContributionCompare: () => null,
     decisionStyles: new Proxy({}, { get: (_, key) => String(key) }),
     compareStyles: new Proxy({}, { get: (_, key) => String(key) }),
+    plaidDiscovery: new Proxy({}, { get: (_, key) => String(key) }),
     React,
     ...format,
     useState: () => {

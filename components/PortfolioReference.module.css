@@ -399,3 +399,103 @@
     font-size: 10px;
   }
 }
+
+/* Plaid-inspired working composition; keep account history, allocation and ledger. */
+.page.page.page.page {
+  color: var(--plaid-ink, var(--ink));
+  --workspace-title-size: clamp(30px, 3vw, 42px);
+  --portfolio-net: var(--plaid-ink, var(--ink));
+  --portfolio-net-bg: var(--plaid-card-blue, var(--card));
+  --portfolio-loss: var(--plaid-violet, var(--purple));
+  --red: var(--portfolio-loss);
+}
+.page .grid {
+  gap: 18px;
+  grid-template-columns: minmax(0, 2.4fr) minmax(260px, 1fr);
+}
+.page .history,
+.page .capitalOverview,
+.page .holdings {
+  border: 1px solid var(--plaid-line, var(--line));
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: none;
+  background: var(--plaid-surface, var(--card));
+}
+.page .history {
+  background: linear-gradient(
+    135deg,
+    var(--plaid-card-purple, var(--card)),
+    var(--plaid-surface, var(--card)) 65%
+  );
+}
+.page .capitalOverview {
+  background: linear-gradient(
+    135deg,
+    var(--plaid-card-teal, var(--card)),
+    var(--plaid-surface, var(--card)) 75%
+  );
+}
+.page .snapshot {
+  gap: 14px;
+  margin-block: 18px;
+}
+.page .snapshot > div {
+  border: 0;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: none;
+  background: var(--plaid-card-blue, var(--card));
+}
+.page .snapshot > div:nth-child(2) {
+  background: var(--plaid-card-purple, var(--card));
+}
+.page .snapshot > div:nth-child(3) {
+  background: var(--plaid-card-teal, var(--card));
+}
+.page .snapshot > div > strong {
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+}
+.page .snapshot > div > span,
+.page .snapshot > div > small {
+  color: var(--plaid-muted, var(--muted));
+}
+.page .holdingsScroll :is(th, td) {
+  font-variant-numeric: tabular-nums;
+}
+.page .holdingsScroll thead {
+  background: var(--plaid-surface, var(--card));
+}
+.page .holdingsScroll tbody tr:hover :is(th, td) {
+  background: var(--plaid-ice, var(--surface));
+}
+.page :is(a, button, summary, input, select):focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 3px;
+}
+@media (max-width: 860px) {
+  .page .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .page .history,
+  .page .capitalOverview,
+  .page .holdings {
+    padding: 16px;
+    border-radius: 18px;
+  }
+  .page .snapshot {
+    gap: 10px;
+  }
+  .page .snapshot > div {
+    padding: 15px;
+    border-radius: 16px;
+  }
+  .page .snapshot > div > strong {
+    font-size: clamp(22px, 5.5vw, 30px);
+  }
+}

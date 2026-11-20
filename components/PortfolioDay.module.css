@@ -236,3 +236,42 @@
     grid-template-columns: 72px minmax(70px, 1fr) max-content;
   }
 }
+
+/* Real position totals are the lead, with measured contribution bars below. */
+.root {
+  background: var(--plaid-card-blue, var(--card));
+  color: var(--plaid-ink, var(--ink));
+  border: 0;
+  border-radius: 22px;
+  padding: 22px;
+  --red: var(--plaid-violet, var(--purple));
+}
+.total strong {
+  font-size: clamp(28px, 3vw, 40px);
+  letter-spacing: -0.04em;
+  font-weight: 600;
+}
+.total {
+  gap: 14px 24px;
+  padding-bottom: 20px;
+}
+.eyebrow,
+.valueLabel,
+.changeLabel {
+  color: var(--plaid-muted, var(--muted));
+  font-size: 13px;
+}
+.open {
+  font-size: 13px;
+  color: var(--plaid-ink, var(--ink));
+}
+.open:focus-visible {
+  outline: 2px solid var(--plaid-focus, var(--blue));
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .root {
+    padding: 18px;
+    border-radius: 18px;
+  }
+}

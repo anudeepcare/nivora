@@ -84,7 +84,7 @@ export default function AlertCenter() {
     );
   }
   return (
-    <section className="alerts-studio">
+    <section data-plaid-page="alerts" className="alerts-studio">
       <PageHeading
         title="Alerts"
         subtitle="Track price levels, confirmed Pace changes and company filings."

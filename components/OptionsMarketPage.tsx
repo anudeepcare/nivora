@@ -1,4 +1,5 @@
 "use client";
+import plaidDiscovery from "./PlaidDiscovery.module.css";
 import Link from "next/link";
 import { useState } from "react";
 import dynamic from "next/dynamic";
@@ -22,8 +23,11 @@ export default function OptionsMarketPage() {
   const [view, setView] = useState("options");
   const prefix = demo && demo.routePrefix !== "" ? "/preview" : "";
   return (
-    <section className={layout.page} aria-labelledby="market-options-title">
-      <header className={layout.pageHeader}>
+    <section
+      className={`${layout.page} ${plaidDiscovery.market}`}
+      aria-labelledby="market-options-title"
+    >
+      <header className={layout.pageHeader} data-plaid-tone="teal">
         <h1 id="market-options-title">Explore the market</h1>
         <p>
           Screen stocks, inspect market-wide options, or open one categorized

@@ -1,4 +1,5 @@
 "use client";
+import plaidDiscovery from "./PlaidDiscovery.module.css";
 import EvidenceDetails from "./EvidenceDetails";
 import DiscoveryPlot from "./DiscoveryPlot";
 import SentiSenseCoverage from "./SentiSenseCoverage";
@@ -180,10 +181,10 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
   }
   return (
     <section
-      className={`discover-workspace ${embedded ? discoverStyles.embedded : discoverStyles.workspace}`}
+      className={`discover-workspace ${!embedded ? plaidDiscovery.discovery : ""} ${embedded ? discoverStyles.embedded : discoverStyles.workspace}`}
     >
       {!embedded && (
-        <header className={discoverStyles.hero}>
+        <header className={discoverStyles.hero} data-plaid-tone="blue">
           <span>DISCOVER</span>
           <h1>Find a reason to look closer.</h1>
           <p>
@@ -194,8 +195,9 @@ export default function Discover({ embedded = false }: { embedded?: boolean }) {
       )}
       <div
         className={embedded ? discoverStyles.embedded : discoverStyles.layout}
+        data-plaid-layout="discovery"
       >
-        <div className={discoverStyles.desk}>
+        <div className={discoverStyles.desk} data-plaid-block="results">
           <p className="small muted">
             Your selected universe only · up to 12 instruments per requested
             scan. No market-wide ranking or automatic background scan.

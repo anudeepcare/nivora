@@ -1099,3 +1099,83 @@
     padding-bottom: 0;
   }
 }
+
+/* Plaid workspace chrome: layered surfaces, not decorative accent strips.
+   Route selection, keyboard handling and the phone dock's geometry stay intact. */
+.shell[data-appearance="plaid"] {
+  --nav-ink: var(--plaid-muted);
+  --nav-active: var(--plaid-ink);
+  --nav-solid: var(--plaid-surface);
+  --nav-surface: var(--plaid-glass);
+  --nav-line: var(--plaid-line);
+  --nav-control: var(--plaid-surface);
+  --nav-control-ink: var(--plaid-ink);
+  --nav-control-line: var(--plaid-line);
+  background: var(--plaid-canvas);
+  color: var(--plaid-ink);
+}
+@media (min-width: 768px) {
+  .shell[data-appearance="plaid"] .header {
+    top: 10px;
+    width: calc(100% - 32px);
+    max-width: 1440px;
+    margin: 0 auto 10px;
+    padding: 10px 18px;
+    min-height: 68px;
+    border: 1px solid var(--plaid-line);
+    border-radius: 28px;
+    background: var(--plaid-glass);
+    box-shadow: var(--plaid-shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .shell[data-appearance="plaid"] .header .nav a {
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .shell[data-appearance="plaid"] .header .nav a[aria-current="page"] {
+    background: var(--plaid-ice);
+    color: var(--plaid-ink);
+    font-weight: 650;
+  }
+  .shell[data-appearance="plaid"] .header .nav a[aria-current="page"]::after {
+    display: none;
+  }
+  .shell[data-appearance="plaid"] .header .nav a:hover {
+    background: var(--plaid-card-purple);
+    color: var(--plaid-ink);
+  }
+}
+.shell[data-appearance="plaid"] .header .brand {
+  color: var(--plaid-ink);
+}
+.shell[data-appearance="plaid"] .header .searchTrigger {
+  border-radius: 999px;
+  color: var(--plaid-muted);
+  background: var(--plaid-surface);
+}
+.shell[data-appearance="plaid"] .header .actions :is(button, a) {
+  border-radius: 50%;
+  color: var(--plaid-ink);
+  background: var(--plaid-ice);
+}
+.shell[data-appearance="plaid"] .header .actions button:last-child {
+  color: var(--plaid-violet);
+  background: var(--plaid-card-purple);
+}
+@media (max-width: 767px) {
+  .shell[data-appearance="plaid"] .header {
+    background: var(--plaid-surface);
+    border-bottom-color: var(--plaid-line);
+  }
+  .shell[data-appearance="plaid"] .dock {
+    border-top-color: var(--plaid-line);
+    background: var(--plaid-surface);
+    box-shadow: 0 -6px 24px rgba(20, 30, 50, 0.04);
+  }
+  .shell[data-appearance="plaid"] .dock a[aria-current="page"] {
+    color: var(--plaid-focus);
+    background: var(--plaid-ice);
+    border-radius: 14px;
+  }
+}

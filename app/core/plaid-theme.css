@@ -1,0 +1,73 @@
+/* Shared appearance primitives. Financial signal colors and chart scales remain
+   owned by their components; these tones describe surfaces, never performance. */
+:root {
+  --plaid-ink: #13243e;
+  --plaid-muted: #53647e;
+  --plaid-line: #dce3ef;
+  --plaid-surface: #ffffff;
+  --plaid-ice: #e7effb;
+  --plaid-violet: #6547af;
+  --plaid-focus: #365ac5;
+  --plaid-card-blue: #eef4fd;
+  --plaid-card-purple: #f1edfc;
+  --plaid-card-teal: #e9f5f6;
+  --plaid-canvas: #f5f7fc;
+  --plaid-glass: rgba(248, 251, 255, 0.93);
+  --plaid-shadow: 0 10px 30px rgba(38, 57, 99, 0.07);
+}
+html[data-theme="dark"] {
+  --plaid-ink: #ecf0fa;
+  --plaid-muted: #b3bfd3;
+  --plaid-line: #344157;
+  --plaid-surface: #192132;
+  --plaid-ice: #263550;
+  --plaid-violet: #c6b7ff;
+  --plaid-focus: #acc3ff;
+  --plaid-card-blue: #1c2b43;
+  --plaid-card-purple: #2a2540;
+  --plaid-card-teal: #1c3039;
+  --plaid-canvas: #101522;
+  --plaid-glass: rgba(25, 33, 50, 0.95);
+  --plaid-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+[data-appearance="plaid"] {
+  color: var(--plaid-ink);
+  background: var(--plaid-canvas);
+}
+.plaid-surface {
+  color: var(--plaid-ink);
+  background: var(--plaid-surface);
+  border: 1px solid var(--plaid-line);
+  border-radius: 20px;
+  box-shadow: var(--plaid-shadow);
+}
+.plaid-surface[data-plaid-tone="blue"] {
+  background: var(--plaid-card-blue);
+}
+.plaid-surface[data-plaid-tone="purple"] {
+  background: var(--plaid-card-purple);
+}
+.plaid-surface[data-plaid-tone="teal"] {
+  background: var(--plaid-card-teal);
+}
+.plaid-metric {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.plaid-pill {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--plaid-ink);
+  background: var(--plaid-ice);
+}
+[data-appearance="plaid"] :is(a, button, input, select, summary):focus-visible,
+.plaid-surface :is(a, button, input, select, summary):focus-visible {
+  outline: 2px solid var(--plaid-focus);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-transparency: reduce) {
+  [data-appearance="plaid"] {
+    --plaid-glass: var(--plaid-surface);
+  }
+}

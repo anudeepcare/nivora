@@ -204,6 +204,7 @@ function researchMarkup(issues = [], options = {}) {
       growth: null,
       last: null,
       tech: { trend: "Weak" },
+      dca: { forming: null, confirmed: null, reason: "Insufficient monthly history" },
     }),
     rangeBars: () => [],
     retainResearchQuote,
@@ -305,9 +306,11 @@ function researchMarkup(issues = [], options = {}) {
   bindings.researchLenses = researchLenses;
   bindings.lensForSection = lensForSection;
   bindings.cockpit = new Proxy({}, { get: (_, key) => String(key) });
+  bindings.headerPaceStyles = new Proxy({}, { get: (_, key) => String(key) });
   bindings.ReferenceAtlas = () =>
     React.createElement("section", { "data-reference-atlas": true });
   bindings.tabVisuals = { root: "research-tab-visuals" };
+  bindings.plaidResearch = { root: "research-plaid" };
   bindings.deskLayout = { content: "research-desk-layout" };
   bindings.Help = (props) => {
     const Help = loadActualHelp(options.openHelp === true || options.openHelp === props.label ? {

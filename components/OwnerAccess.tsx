@@ -103,7 +103,7 @@ export default function OwnerAccess() {
       </section>
     );
   return (
-    <section className={styles.root}>
+    <section data-plaid-page="owner" className={styles.root}>
       <Link className={styles.back} href="/settings">
         ← Back to settings
       </Link>

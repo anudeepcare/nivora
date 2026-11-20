@@ -12,7 +12,7 @@ export default function PublicFrame({
   children: ReactNode;
 }) {
   return (
-    <main className={s.page}>
+    <main data-plaid-page="guide" className={s.page}>
       <header className={s.header}>
         <PublicHomeLink className={s.brand}>
           <img src="/icon.svg" width="28" height="28" alt="" />

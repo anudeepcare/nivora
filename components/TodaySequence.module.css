@@ -214,3 +214,46 @@
 .sequence p {
   font-size: 12px;
 }
+
+/* Calm editorial hierarchy, coordinated with the actual holdings snapshot. */
+.hero {
+  padding-block: 8px;
+}
+.sequence {
+  background: linear-gradient(
+    125deg,
+    var(--plaid-card-purple, var(--card)),
+    var(--plaid-card-blue, var(--card))
+  );
+  color: var(--plaid-ink, var(--ink));
+  border: 0;
+  border-radius: 22px;
+  margin: 0 0 14px;
+}
+.sequence article {
+  padding: 22px;
+}
+.sequence h2 {
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+.sequence article > span {
+  color: var(--plaid-muted, var(--muted));
+}
+.sequence a {
+  color: var(--plaid-ink, var(--ink));
+  font-size: 14px;
+}
+.sequence a:focus-visible {
+  outline-color: var(--plaid-focus, var(--blue));
+}
+.reading > b {
+  color: var(--plaid-violet, var(--blue));
+  font-size: 24px;
+}
+@media (max-width: 700px) {
+  .sequence article {
+    padding: 18px;
+  }
+}
