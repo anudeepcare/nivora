@@ -1,16 +1,19 @@
 .watch {
   min-width: 0;
+  padding: 11px;
+  border-radius: 14px;
+  background: var(--plaid-card-teal, var(--surface));
   color: var(--plaid-ink, var(--ink));
 }
 .heading {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 12px;
+  gap: 2px 9px;
 }
 .heading h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.35;
   letter-spacing: -0.02em;
 }
@@ -22,7 +25,7 @@
   line-height: 1.5;
 }
 .releases {
-  margin: 8px 0 0;
+  margin: 5px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -30,13 +33,12 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 12px;
+  gap: 1px 8px;
   margin: 0;
-  padding: 6px 0;
+  padding: 4px 0;
   font-size: 14px;
 }
 .releases time {
-  min-width: 104px;
   font-variant-numeric: tabular-nums;
 }
 .releases strong {

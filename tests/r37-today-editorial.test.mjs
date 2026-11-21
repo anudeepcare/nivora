@@ -6,7 +6,7 @@ const css = readFileSync("components/HomeWorkspace.module.css", "utf8");
 
 test("Today uses an inline calendar state and a genuine research link beside source updates", () => {
   assert.match(jsx, /className=\{homeStyles\.calendarState\}/);
-  assert.match(jsx, /Missing coverage does not mean no events/);
+  assert.match(jsx, /Calendar coverage is incomplete/);
   assert.match(
     jsx,
     /className=\{homeStyles\.updateAction\}[\s\S]+href=\{\`\$\{prefix\}\/research\`\}/,
@@ -37,6 +37,6 @@ test("cached empty earnings cannot be reported as current after a failed refresh
   assert.match(jsx, /: !calendarReady\s*\? "Calendar coverage is incomplete/);
   assert.match(
     jsx,
-    /!feed\.loading && !calendarReady && \([\s\S]{0,180}Retry calendar/,
+    /onClick=\{feed\.refresh\}\s+disabled=\{feed.loading\}\s+aria-label="Refresh company events"/,
   );
 });

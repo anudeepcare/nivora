@@ -246,6 +246,10 @@ function HomeOverview() {
         Number(heldSymbols.has(b.symbol)) - Number(heldSymbols.has(a.symbol)),
     ),
   }));
+  const nextGroup = eventGroups.find(
+    (group) => group.date >= day && marketDay(group.date) === group.date,
+  );
+  const nextEvent = nextGroup?.events[0];
   const loadedResearch = symbols.flatMap((symbol) => {
     const research = state.research(symbol);
     return research ? [research] : [];
@@ -279,7 +283,7 @@ function HomeOverview() {
     >
       <header className={`${todayStyles.hero} ${homeStyles.todayHeading}`}>
         <h1>Today</h1>
-        <span className="date-chip">
+        <span className={homeStyles.briefDate}>
           <time dateTime={day}>
             {new Date(`${day}T00:00:00Z`).toLocaleDateString(undefined, {
               weekday: "short",
@@ -296,121 +300,6 @@ function HomeOverview() {
         </span>
       </header>
       {state.workspaceError && <Notice error>{state.workspaceError}</Notice>}
-      <section
-        className={homeStyles.narrative}
-        data-story={story ? "evidence" : "empty"}
-        aria-label="Today’s story"
-      >
-        <div className={homeStyles.narrativeMain}>
-          <p className={homeStyles.storyLabel}>
-            {story?.kind === "report" ? (
-              <>
-                Reported earnings ·{" "}
-                <time dateTime={story.report.date}>
-                  {dateLabel(story.report.date)}
-                </time>
-              </>
-            ) : story?.kind === "headline" ? (
-              <>
-                {story.scope === "market"
-                  ? "SPY market coverage · Source headline"
-                  : `${story.headline.symbol} · Source headline`}{" "}
-                · {story.source} ·{" "}
-                <time dateTime={story.headline.date}>
-                  {dateLabel(story.headline.date)}
-                </time>
-              </>
-            ) : (
-              "Daily briefing"
-            )}
-          </p>
-          <h2>
-            {story?.kind === "report"
-              ? `${story.report.symbol} reported earnings`
-              : story?.kind === "headline"
-                ? story.headline.title
-                : "Start with what you can verify."}
-          </h2>
-          {story?.kind === "report" && (
-            <>
-              <dl className={homeStyles.storyFacts}>
-                <div>
-                  <dt>Reported EPS</dt>
-                  <dd>{story.report.actual?.toFixed(2)}</dd>
-                </div>
-                {typeof story.report.estimate === "number" &&
-                  Number.isFinite(story.report.estimate) && (
-                    <div>
-                      <dt>Feed estimate</dt>
-                      <dd>{story.report.estimate.toFixed(2)}</dd>
-                    </div>
-                  )}
-              </dl>
-              <p className={homeStyles.storyNote}>
-                From the earnings feed. Currency and EPS basis not supplied;
-                verify the filing before comparing.
-              </p>
-            </>
-          )}
-          {story ? (
-            <p className={homeStyles.storyReason}>
-              <strong>Why it matters</strong> {story.why}
-            </p>
-          ) : (
-            <p className={homeStyles.storyReason}>
-              {feed.loading || marketCoverage.loading
-                ? "Checking for dated company and market coverage."
-                : "No matching company report or market headline is available in this brief."}
-            </p>
-          )}
-          {story?.kind === "headline" ? (
-            <a
-              className={homeStyles.storyAction}
-              href={story.headline.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Read the source <ArrowUpRight size={16} aria-hidden="true" />
-            </a>
-          ) : (
-            <Link
-              className={homeStyles.storyAction}
-              href={
-                story?.kind === "report"
-                  ? `${researchLink(story.report.symbol, prefix)}?tab=News`
-                  : `${prefix}/research`
-              }
-            >
-              {story?.kind === "report"
-                ? "Open earnings evidence"
-                : "Open company research"}
-              <ArrowUpRight size={16} aria-hidden="true" />
-            </Link>
-          )}
-        </div>
-        {story?.next && (
-          <p className={homeStyles.storyCatalyst}>
-            <strong>
-              {story.next.date === day
-                ? "Scheduled today"
-                : "Next supplied event"}
-            </strong>{" "}
-            {story.next.kind} ·{" "}
-            <time dateTime={story.next.date}>{dateLabel(story.next.date)}</time>
-            {story.next.detail ? ` · ${story.next.detail}` : ""}
-          </p>
-        )}
-      </section>
-      <aside className={homeStyles.dailyThought} aria-label="Auryn thought">
-        <Lightbulb size={18} aria-hidden="true" />
-        <div>
-          <span>
-            <strong>Auryn thought</strong>{" "}
-            <time dateTime={day}>{dateLabel(day)}</time>
-          </span>
-          <p>{dailyPerspective(day)}</p>
-        </div>
-      </aside>
       <div className={homeStyles.briefContainer}>
         <section
           className={homeStyles.dailyBrief}
@@ -527,11 +416,6 @@ function HomeOverview() {
               >
                 <SectionHead
                   title="Earnings & events"
-                  subtitle={
-                    eventGroups.length
-                      ? "Next 7 days · held companies first on each date"
-                      : undefined
-                  }
                   className={homeStyles.calendarHeader}
                   action={
                     <button
@@ -549,91 +433,123 @@ function HomeOverview() {
                     </button>
                   }
                 />
-                {eventGroups.length ? (
-                  <div className="home-event-groups">
-                    {eventGroups.map((group) => (
-                      <div className="home-event-day" key={group.date}>
-                        <time dateTime={group.date}>
-                          {new Intl.DateTimeFormat("en-US", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                            timeZone: "UTC",
-                          }).format(Date.parse(group.date))}
-                        </time>
-                        <div>
-                          {group.events.map((event) => (
-                            <Link
-                              className="home-event-row"
-                              key={`${event.symbol}:${event.kind}`}
-                              href={researchLink(event.symbol, prefix)}
-                            >
-                              <span>
-                                <strong>{event.symbol}</strong>
-                                <span>
-                                  {event.kind}
-                                  {heldSymbols.has(event.symbol)
-                                    ? " · Held"
-                                    : ""}
-                                </span>
-                                {/earnings/i.test(event.kind) && (
-                                  <b
-                                    className={`earnings-status earnings-${earningsEventState(event, day).status}`}
-                                  >
-                                    {earningsEventState(event, day).label}
-                                  </b>
-                                )}
-                                <small>
-                                  {event.detail || "Time not confirmed"}
-                                </small>
-                                {/earnings/i.test(event.kind) && (
-                                  <EarningsNumbers event={event} today={day} />
-                                )}
-                              </span>
-                              <ArrowUpRight size={16} />
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                {nextEvent ? (
+                  <Link
+                    className={homeStyles.nextEvent}
+                    href={`${researchLink(nextEvent.symbol, prefix)}?tab=News`}
+                  >
+                    <span>
+                      <strong>{nextEvent.symbol}</strong>
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </span>
+                    <span>
+                      {nextEvent.kind}
+                      {heldSymbols.has(nextEvent.symbol) ? " · Held" : ""}
+                    </span>
+                    <time dateTime={nextEvent.date}>
+                      {nextEvent.date === day
+                        ? "Scheduled today"
+                        : dateLabel(nextEvent.date)}
+                    </time>
+                  </Link>
                 ) : (
                   <p className={homeStyles.calendarState} role="status">
                     <span>
                       {feed.loading
-                        ? "Checking dated events for the next 7 days…"
+                        ? "Checking upcoming events…"
                         : !calendarReady
-                          ? "Calendar coverage is incomplete. Missing coverage does not mean no events."
+                          ? "Calendar coverage is incomplete."
                           : "No upcoming events returned for the next 7 days."}
                     </span>
                   </p>
                 )}
-                {brief.reported.length > 0 && (
-                  <div
-                    className="home-reported-results"
-                    aria-label="Recently reported earnings"
-                  >
-                    <h3>
-                      Recently reported <span>{brief.reported.length}</span>
-                    </h3>
-                    {brief.reported.map((event) => (
-                      <Link
-                        className="home-event-row"
-                        key={`${event.symbol}:${event.date}`}
-                        href={researchLink(event.symbol, prefix)}
+                {(eventGroups.length > 0 || brief.reported.length > 0) && (
+                  <details className={homeStyles.calendarDetails}>
+                    <summary>Full company calendar</summary>
+                    <p className="home-source-note">
+                      Next 7 days · held companies first on each date. Recent
+                      earnings are listed separately.
+                    </p>
+                    {eventGroups.length ? (
+                      <div className="home-event-groups">
+                        {eventGroups.map((group) => (
+                          <div className="home-event-day" key={group.date}>
+                            <time dateTime={group.date}>
+                              {new Intl.DateTimeFormat("en-US", {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                                timeZone: "UTC",
+                              }).format(Date.parse(group.date))}
+                            </time>
+                            <div>
+                              {group.events.map((event) => (
+                                <Link
+                                  className="home-event-row"
+                                  key={`${event.symbol}:${event.kind}`}
+                                  href={researchLink(event.symbol, prefix)}
+                                >
+                                  <span>
+                                    <strong>{event.symbol}</strong>
+                                    <span>
+                                      {event.kind}
+                                      {heldSymbols.has(event.symbol)
+                                        ? " · Held"
+                                        : ""}
+                                    </span>
+                                    {/earnings/i.test(event.kind) && (
+                                      <b
+                                        className={`earnings-status earnings-${earningsEventState(event, day).status}`}
+                                      >
+                                        {earningsEventState(event, day).label}
+                                      </b>
+                                    )}
+                                    <small>
+                                      {event.detail || "Time not confirmed"}
+                                    </small>
+                                    {/earnings/i.test(event.kind) && (
+                                      <EarningsNumbers
+                                        event={event}
+                                        today={day}
+                                      />
+                                    )}
+                                  </span>
+                                  <ArrowUpRight size={16} />
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                    {brief.reported.length > 0 && (
+                      <div
+                        className="home-reported-results"
+                        aria-label="Recently reported earnings"
                       >
-                        <span>
-                          <strong>{event.symbol}</strong>
-                          <b className="earnings-status earnings-reported">
-                            Results reported
-                          </b>
-                          <small>{dateLabel(event.date)}</small>
-                          <EarningsNumbers event={event} today={day} />
-                        </span>
-                        <ArrowUpRight size={16} />
-                      </Link>
-                    ))}
-                  </div>
+                        <h3>
+                          Recently reported <span>{brief.reported.length}</span>
+                        </h3>
+                        {brief.reported.map((event) => (
+                          <Link
+                            className="home-event-row"
+                            key={`${event.symbol}:${event.date}`}
+                            href={researchLink(event.symbol, prefix)}
+                          >
+                            <span>
+                              <strong>{event.symbol}</strong>
+                              <b className="earnings-status earnings-reported">
+                                Results reported
+                              </b>
+                              <small>{dateLabel(event.date)}</small>
+                              <EarningsNumbers event={event} today={day} />
+                            </span>
+                            <ArrowUpRight size={16} />
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </details>
                 )}
                 {!feed.loading &&
                   eventGroups.length > 0 &&
@@ -650,16 +566,98 @@ function HomeOverview() {
                       : "Some events could not be checked."}
                   </p>
                 )}
-                {!feed.loading && !calendarReady && (
-                  <button className="text-link" onClick={feed.refresh}>
-                    Retry calendar <RefreshCw size={14} />
-                  </button>
-                )}
               </section>
             </div>
           )}
         </section>
       </div>
+      {story && (
+        <section className={homeStyles.narrative} aria-label="Today’s story">
+          <div className={homeStyles.narrativeMain}>
+            <p className={homeStyles.storyLabel}>
+              {story.kind === "report" ? (
+                <>
+                  Reported earnings ·{" "}
+                  <time dateTime={story.report.date}>
+                    {dateLabel(story.report.date)}
+                  </time>
+                </>
+              ) : (
+                <>
+                  {story.scope === "market"
+                    ? "SPY market coverage · Source headline"
+                    : `${story.headline.symbol} · Source headline`}{" "}
+                  · {story.source} ·{" "}
+                  <time dateTime={story.headline.date}>
+                    {dateLabel(story.headline.date)}
+                  </time>
+                </>
+              )}
+            </p>
+            <h2>
+              {story.kind === "report"
+                ? `${story.report.symbol} reported earnings`
+                : story.headline.title}
+            </h2>
+            {story.kind === "report" && (
+              <>
+                <dl className={homeStyles.storyFacts}>
+                  <div>
+                    <dt>Reported EPS</dt>
+                    <dd>{story.report.actual?.toFixed(2)}</dd>
+                  </div>
+                  {typeof story.report.estimate === "number" &&
+                    Number.isFinite(story.report.estimate) && (
+                      <div>
+                        <dt>Feed estimate</dt>
+                        <dd>{story.report.estimate.toFixed(2)}</dd>
+                      </div>
+                    )}
+                </dl>
+                <p className={homeStyles.storyNote}>
+                  From the earnings feed. Currency and EPS basis not supplied;
+                  verify the filing before comparing.
+                </p>
+              </>
+            )}
+            <p className={homeStyles.storyReason}>
+              <strong>Why it matters</strong> {story.why}
+            </p>
+            {story.kind === "headline" ? (
+              <a
+                className={homeStyles.storyAction}
+                href={story.headline.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Read the source <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            ) : (
+              <Link
+                className={homeStyles.storyAction}
+                href={`${researchLink(story.report.symbol, prefix)}?tab=News`}
+              >
+                Open earnings evidence
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </Link>
+            )}
+          </div>
+          {story.next && (
+            <p className={homeStyles.storyCatalyst}>
+              <strong>
+                {story.next.date === day
+                  ? "Scheduled today"
+                  : "Next supplied event"}
+              </strong>{" "}
+              {story.next.kind} ·{" "}
+              <time dateTime={story.next.date}>
+                {dateLabel(story.next.date)}
+              </time>
+              {story.next.detail ? ` · ${story.next.detail}` : ""}
+            </p>
+          )}
+        </section>
+      )}
       <div className={homeStyles.leadGrid}>
         <div className={homeStyles.dayOverview}>
           <div className={homeStyles.attentionColumn}>
@@ -753,6 +751,16 @@ function HomeOverview() {
         asOf={today.toISOString()}
         prefix={prefix}
       />
+      <aside className={homeStyles.dailyThought} aria-label="Auryn thought">
+        <Lightbulb size={18} aria-hidden="true" />
+        <div>
+          <span>
+            <strong>Auryn thought</strong>{" "}
+            <time dateTime={day}>{dateLabel(day)}</time>
+          </span>
+          <p>{dailyPerspective(day)}</p>
+        </div>
+      </aside>
       <section className={homeStyles.researchTools} aria-label="Research tools">
         <nav
           className={homeStyles.workspaceShortcuts}

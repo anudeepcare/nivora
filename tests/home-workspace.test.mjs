@@ -472,7 +472,9 @@ test("expanded Home headlines retain the same logo, timestamp and article layout
   const html = renderToStaticMarkup(React.createElement(Home));
   if (process.env.AURYN_HOME_NEWS_FIXTURE)
     fs.writeFileSync(process.env.AURYN_HOME_NEWS_FIXTURE, html);
-  const expanded = html.slice(html.indexOf('class="home-more-updates"'));
+  const expanded =
+    html.match(/<details class="home-more-updates">[\s\S]*?<\/details>/)?.[0] ??
+    "";
   assert.match(expanded, /class="home-news-list"/);
   assert.equal((expanded.match(/class="home-news-meta"/g) || []).length, 2);
   assert.equal((expanded.match(/class="home-news-title"/g) || []).length, 2);
@@ -538,7 +540,10 @@ test("daily briefing reuses followed benchmarks, labels the reported session and
   assert.match(html, /QQQ<\/a>[\s\S]*Quote unavailable/);
   assert.doesNotMatch(html, /2099|-5\.0%/);
   assert.match(html, new RegExp(`<time dateTime="${marketDay(new Date())}"`));
-  assert.match(html, /href="\/research">Open company research/);
+  assert.doesNotMatch(
+    html,
+    /aria-label="Today’s story"|Start with what you can verify/,
+  );
 });
 
 test("new users get scoped market context while preview or unentitled sessions never request it", () => {
@@ -599,7 +604,10 @@ test("new users get scoped market context while preview or unentitled sessions n
       assert.match(html, /href="https:\/\/example\.com\/macro"/);
       assert.doesNotMatch(html, /Next supplied event|Scheduled today/);
     } else {
-      assert.match(html, /Start with what you can verify/);
+      assert.doesNotMatch(
+        html,
+        /aria-label="Today’s story"|Start with what you can verify/,
+      );
       assert.doesNotMatch(html, /example\.com\/macro/);
     }
   }
@@ -679,5 +687,82 @@ test("a followed lead renders while market coverage loads and competes once a fr
     (settled.match(/href="https:\/\/example\.com\/nbis-outlook"/g) ?? [])
       .length,
     1,
+  );
+});
+
+test("Today puts benchmarks and a real held catalyst ahead of any story, without a fake lead or past appointment", () => {
+  const now = Date.now();
+  const day = (offset) => marketDay(new Date(now + offset * 86_400_000));
+  const holding = { symbol: "MSFT", quantity: 1, assetType: "stock" };
+  const event = (symbol, date) => ({
+    symbol,
+    date,
+    kind: "Earnings",
+    detail: "",
+  });
+  const events = [
+    event("WATCH", day(-1)),
+    event("WATCH", day(1)),
+    event("MSFT", day(1)),
+  ];
+  let error = "";
+  const Home = load("HomeOverview", {
+    useWorkspaceData: () => ({
+      research: empty,
+      workspace: { positions: [holding], watchlist: [{ symbol: "WATCH" }] },
+      quotes: { data: {} },
+      model: { allocations: [] },
+      prefix: "",
+    }),
+    useHomeFeed: () => ({
+      data: {
+        news: [],
+        events,
+        eventsReady: true,
+        newsReady: true,
+        issues: [],
+      },
+      loading: false,
+      error,
+      refresh: empty,
+    }),
+    groupMarketEvents,
+    marketDay,
+    earningsEventState,
+    homeFeedReadiness,
+    relevantHoldingHeadlines,
+    homeBrief,
+    researchLink: (symbol) => `/research/${symbol}`,
+    ...format,
+    SectionHead: ({ title, action }) =>
+      React.createElement("header", null, title, action),
+    RefreshCw: empty,
+    Coverage: empty,
+    Notice: empty,
+  });
+  const html = renderToStaticMarkup(React.createElement(Home));
+  assert.ok(
+    html.indexOf('aria-label="ETF market proxies"') <
+      html.indexOf('aria-label="Company earnings and events"'),
+  );
+  assert.match(html, /href="\/research\/MSFT\?tab=News"/);
+  assert.doesNotMatch(
+    html,
+    /href="\/research\/WATCH\?tab=News"|aria-label="Today’s story"|Start with what you can verify/,
+  );
+  assert.match(html, /aria-label="Refresh company events"/);
+  assert.match(html, /Full company calendar/);
+  assert.ok(
+    html.indexOf('aria-label="Auryn thought"') >
+      html.indexOf('aria-label="What changed"'),
+  );
+
+  events.splice(0);
+  error = "Provider timeout";
+  const unavailable = renderToStaticMarkup(React.createElement(Home));
+  assert.match(unavailable, /Calendar coverage is incomplete/);
+  assert.doesNotMatch(
+    unavailable,
+    /No upcoming events returned|Full company calendar|aria-label="Today’s story"/,
   );
 });

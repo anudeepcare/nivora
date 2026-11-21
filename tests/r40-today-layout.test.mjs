@@ -74,16 +74,16 @@ test("market quotes and calendars share a responsive primary briefing grid", () 
     home.slice(earnings),
     /<\/section>\s*<\/div>\s*\)\}\s*<\/section>/,
   );
-  assert.match(css, /\.dailyBrief\s*\{[^}]*align-items:\s*start/);
+  assert.match(css, /\.dailyBrief\s*\{[^}]*align-items:\s*stretch/);
   assert.match(
     css,
-    /@container daily-brief \(624px <= width < 948px\)[\s\S]*?\.dailyBrief:has\(> :nth-child\(3\)\)[^{}]*\{[^}]*grid-column:\s*1 \/ -1/,
+    /@container daily-brief \(width < 345px\)[\s\S]*?\.dailyBrief > :not\(\.marketSnapshot\)[^{}]*\{[^}]*grid-column:\s*1 \/ -1/,
   );
   assert.match(
     home,
     /<SectionHead\s+title="Earnings & events"[\s\S]*?className=\{homeStyles.calendarHeader\}/,
   );
-  assert.match(css, /\.calendarHeader\s*\{[^}]*align-items:\s*start/);
+  assert.match(css, /\.calendarHeader\s*\{[^}]*align-items:\s*center/);
   assert.match(
     source("components/WorkspaceShared.tsx"),
     /className=\{\s*className \? .*visual\.sectionHead.* : visual\.sectionHead\s*\}/s,
@@ -91,7 +91,7 @@ test("market quotes and calendars share a responsive primary briefing grid", () 
 
   assert.match(
     css,
-    /\.dailyBrief\s*\{[^}]*grid-template-columns:\s*repeat\(auto-fit, minmax\(min\(100%, 300px\), 1fr\)\)/,
+    /\.dailyBrief\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/,
   );
 });
 
@@ -110,10 +110,7 @@ test("Today has a compact evidence lead and routes to Portfolio instead of repea
     /<nav\s+className=\{homeStyles.workspaceShortcuts\}[\s\S]*?href=\{[^\n]+\/portfolio/,
   );
   assert.doesNotMatch(home, /<PortfolioDay|Your workspace/);
-  assert.match(
-    css,
-    /\.narrative\[data-story="empty"\]\s*\{[^}]*background: transparent/,
-  );
+  assert.match(home, /\{story && \(\s*<section/);
   assert.match(
     css,
     /\.quoteMeta \[data-freshness="older"\][^{}]*\{[^}]*var\(--amber\)/,

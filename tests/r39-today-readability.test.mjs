@@ -11,9 +11,9 @@ test("Today trims repeated intro copy and preserves exact event availability and
   );
   assert.match(
     view,
-    /title="Earnings & events"\s+subtitle=\{\s*eventGroups\.length/,
+    /title="Earnings & events"\s+className=\{homeStyles.calendarHeader\}/,
   );
-  assert.match(view, /Missing coverage does not mean no events/);
+  assert.match(view, /Calendar coverage is incomplete/);
   assert.match(view, /aria-label="Refresh company events"/);
   assert.match(
     css,
@@ -67,11 +67,13 @@ test("earnings refresh has a local 44px target and visible keyboard focus", () =
   );
 });
 
-test("Today presents one narrative before benchmarks and the full company evidence", () => {
+test("Today presents one narrative after benchmarks and company events", () => {
   const story = view.indexOf('aria-label="Today’s story"');
   const market = view.indexOf('aria-label="Daily market briefing"');
   assert.ok(
-    story > 0 && story < market && market < view.indexOf('id="home-earnings"'),
+    market > 0 &&
+      market < view.indexOf('id="home-earnings"') &&
+      view.indexOf('id="home-earnings"') < story,
   );
   assert.match(view, /\["SPY", "QQQ"\] as const/);
   assert.match(view, /useResource<QuoteRows>/);

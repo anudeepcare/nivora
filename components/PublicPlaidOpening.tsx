@@ -189,7 +189,6 @@ export default function PublicPlaidOpening({ brand }: { brand: ReactNode }) {
   return (
     <>
       <div className={s.opening}>
-        <Contours />
         <header
           data-public-menu
           className={s.header}
@@ -303,6 +302,7 @@ export default function PublicPlaidOpening({ brand }: { brand: ReactNode }) {
           aria-labelledby="ap-hero-heading"
           className={s.hero}
         >
+          <Contours />
           <div>
             <span className={s.eyebrow}>
               A CLEARER PERSPECTIVE ON INVESTING

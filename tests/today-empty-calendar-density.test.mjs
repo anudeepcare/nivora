@@ -12,13 +12,13 @@ test("empty calendar uses compact content-height status while keeping real news 
     css,
     /\[data-calendar-empty="true"\][^{]*\{[^}]*grid-template-columns: minmax\(0, 1fr\)/s,
   );
-  assert.match(css, /\.home-events-panel[\s\S]*align-self: start/);
   assert.match(
     css,
-    /\.dailyBrief\s*\{[^}]*grid-template-columns: repeat\(auto-fit,/,
+    /\.dailyBrief :global\(\.home-events-panel\) \{[^}]*align-content: start/,
   );
+  assert.match(css, /\.dailyBrief\s*\{[^}]*grid-template-columns: repeat\(2,/);
   assert.match(src, /Calendar coverage is incomplete/);
-  assert.match(src, /Missing coverage does not mean no events/);
+  assert.match(src, /No upcoming events returned/);
   assert.match(src, /secondaryHeadlines.slice\(0, 6\).map\(renderHeadline\)/);
   assert.ok(
     src.indexOf('title="What changed"') <

@@ -1386,13 +1386,7 @@
   }
 }
 
-/* Dated ETF observations stay below the evidence story. */
-.home .dailyBrief {
-  min-width: 0;
-  display: grid;
-  gap: 10px;
-  margin-block: 2px 18px;
-}
+/* Dated ETF observations lead the workspace. */
 .marketHead {
   display: flex;
   flex-wrap: wrap;
@@ -1413,19 +1407,19 @@
 .marketTape {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-radius: 18px;
-  background: linear-gradient(
-    120deg,
-    var(--plaid-card-blue, var(--surface)),
-    var(--plaid-card-teal, var(--card))
-  );
+  gap: 10px;
   margin: 0;
 }
 .marketTape > div {
-  padding: 13px clamp(12px, 2vw, 24px);
   display: grid;
   gap: 3px;
   min-width: 0;
+  align-content: start;
+  background: var(--plaid-card-blue, var(--surface));
+  border-radius: 14px;
+}
+.marketTape > div:nth-child(2) {
+  background: var(--plaid-ice, var(--surface));
 }
 .marketTape dt,
 .marketTape dd {
@@ -1473,7 +1467,7 @@
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 10px;
-  margin-block: 2px 14px;
+  margin-block: 12px 14px;
   padding: clamp(14px, 2.2vw, 26px);
   border-radius: 20px;
   background: linear-gradient(
@@ -1483,13 +1477,6 @@
   );
   color: var(--plaid-ink, var(--ink));
 }
-.home .narrative[data-story="empty"] {
-  background: transparent;
-  padding: 5px 0 8px;
-}
-.home .narrative[data-story="empty"] h2 {
-  font-size: clamp(19px, 2vw, 26px);
-}
 .narrativeMain {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -1497,7 +1484,7 @@
 .home .narrativeMain h2 {
   margin: 6px 0 12px;
   max-width: 64ch;
-  font-size: clamp(23px, 2.55vw, 36px);
+  font-size: clamp(19px, 2.15vw, 31px);
   line-height: 1.12;
   letter-spacing: -0.037em;
   text-wrap: balance;
@@ -1604,24 +1591,49 @@
   color: var(--plaid-ink, var(--ink));
 }
 
-/* Aligned market context: use only the columns that actually have content. */
+/* Today owns its canvas only while its authenticated workspace is mounted. */
+:global(.approved-product[data-shell="mobile-first"][data-page="overview"]):has(
+  .home
+) {
+  background: var(--plaid-canvas, var(--bg));
+}
+.home .briefDate {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  align-items: baseline;
+  gap: 1px 8px;
+  color: var(--plaid-muted, var(--muted));
+  font-size: 12px;
+}
+.briefDate time {
+  color: var(--plaid-ink, var(--ink));
+  font-weight: 600;
+}
+.briefDate small {
+  font-size: 11px;
+}
+
+/* Two metric tiles, then two genuine calendar tiles on a phone. */
 .briefContainer {
   container: daily-brief / inline-size;
 }
 .home .dailyBrief {
-  align-items: start;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: 16px 24px;
-  padding: 14px 0 16px;
-  border-block: 1px solid var(--plaid-line, var(--line));
+  display: grid;
+  min-width: 0;
+  align-items: stretch;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 10px;
 }
 .marketSnapshot {
   min-width: 0;
   display: grid;
-  gap: 8px;
+  gap: 6px;
+  grid-column: 1 / -1;
 }
 .home .marketHead h2 {
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: -0.02em;
   line-height: 1.35;
 }
@@ -1629,31 +1641,34 @@
   column-gap: 5px;
 }
 .home .marketTape > div {
-  padding: 8px 10px 10px;
+  padding: 5px 11px 10px;
 }
 .home .marketTape dd > strong {
-  font-size: clamp(17px, 1.6vw, 24px);
+  font-size: clamp(19px, 1.7vw, 24px);
 }
 .home.home.home.home .dailyBrief > :global(.home-evidence-layout) {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   margin: 0;
 }
 .home.home.home.home .dailyBrief :global(.home-events-panel) {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  align-self: stretch;
   justify-items: stretch;
-  gap: 6px;
-  padding: 0;
+  gap: 4px;
+  padding: 9px 11px;
   border: 0;
-  border-radius: 0;
+  border-radius: 14px;
   box-shadow: none;
-  background: transparent;
+  background: var(--plaid-card-purple, var(--surface));
 }
 .home .dailyBrief .calendarHeader {
   justify-content: space-between;
-  align-items: start;
+  align-items: center;
   flex-direction: row;
-  gap: 4px;
+  gap: 3px;
   margin: 0;
   text-align: start;
 }
@@ -1662,30 +1677,89 @@
   min-width: 0;
 }
 .home.home.home.home .dailyBrief :global(.home-events-panel) h2 {
-  font-size: 18px;
-  line-height: 1.35;
+  font-size: 15px;
+  line-height: 1.28;
+  margin: 0;
+}
+.home .dailyBrief .calendarHeader h2 svg {
+  display: none;
 }
 .home.home.home.home .dailyBrief :global(.home-events-panel) .calendarState {
   justify-content: flex-start;
   text-align: start;
 }
-/* Three modules on a two-track rail: give dated company events the whole next row. */
-@container daily-brief (624px <= width < 948px) {
-  .dailyBrief:has(> :nth-child(3)) > :last-child {
+.nextEvent {
+  display: grid;
+  justify-items: start;
+  min-height: 44px;
+  gap: 2px;
+  padding-block: 1px 3px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.nextEvent > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 15px;
+  color: var(--plaid-ink, var(--ink));
+}
+.nextEvent time {
+  color: var(--plaid-muted, var(--muted));
+  font-variant-numeric: tabular-nums;
+}
+.calendarDetails {
+  min-width: 0;
+}
+.calendarDetails summary {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  color: var(--plaid-focus, var(--ink));
+  font-size: 12px;
+  cursor: pointer;
+}
+.calendarDetails summary::before {
+  content: "›" / "";
+}
+.calendarDetails[open] summary::before {
+  transform: rotate(90deg);
+}
+.home.home.home.home .dailyBrief :global(.home-event-day) {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+}
+.home.home.home.home .dailyBrief :global(.home-event-day) > time {
+  grid-row: auto;
+  justify-self: start;
+  padding: 3px 7px;
+  margin: 0;
+}
+.home.home.home.home .dailyBrief :global(.home-event-groups) {
+  max-height: none;
+  overflow: visible;
+}
+@container daily-brief (width >= 820px) {
+  .home .dailyBrief:has(> :nth-child(3)) {
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+  }
+  .dailyBrief .marketSnapshot:not(:only-child) {
+    grid-column: auto;
+  }
+}
+@container daily-brief (width < 820px) {
+  .dailyBrief:not(:has(> :nth-child(3))) > :not(.marketSnapshot) {
     grid-column: 1 / -1;
   }
 }
-@container daily-brief (width < 624px) or (width >= 948px) {
-  .home.home.home.home .dailyBrief :global(.home-event-day) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 3px;
+@container daily-brief (width < 345px) {
+  .dailyBrief > :not(.marketSnapshot) {
+    grid-column: 1 / -1;
   }
-  .home.home.home.home .dailyBrief :global(.home-event-day) > time {
-    grid-row: auto;
-    justify-self: start;
-    padding: 3px 7px;
-    margin: 0;
-  }
+}
+.dailyBrief:has(.calendarDetails[open]) {
+  align-items: start;
 }
 /* One account workspace footer; avoid a nested card for each destination. */
 .home.home.home.home .researchTools {

@@ -1,9 +1,10 @@
 .opening.opening {
   position: relative;
   isolation: isolate;
-  background:
+  --opening-art:
     radial-gradient(ellipse at 95% 90%, #167a94 0, transparent 60%),
     linear-gradient(125deg, #173060, #122341 65%, #1d3865);
+  background: var(--opening-art);
   color: #f4f7ff;
   padding: 32px max(24px, calc((100vw - 1420px) / 2)) 0;
   overflow: clip;
@@ -569,26 +570,14 @@
 }
 @media (max-width: 760px) {
   .opening.opening {
-    /* Blend the page into the document's native status area, leaving only one inset. */
-    padding: max(12px, env(safe-area-inset-top, 0px))
-      max(16px, env(safe-area-inset-right, 0px)) 0
-      max(16px, env(safe-area-inset-left, 0px));
-    background:
-      linear-gradient(
-        180deg,
-        var(--chrome-surface) env(safe-area-inset-top, 0px),
-        transparent calc(env(safe-area-inset-top, 0px) + 64px)
-      ),
-      radial-gradient(ellipse at 95% 90%, #167a94 0, transparent 60%),
-      linear-gradient(125deg, #173060, #122341 65%, #1d3865);
+    /* Status and navigation share one solid plane; the artwork starts below. */
+    padding: max(8px, env(safe-area-inset-top, 0px)) 0 0;
+    background: var(--chrome-surface);
   }
-  .contours {
-    /* Fine contour strokes must not interrupt the transition at the system bar. */
-    mask-image: linear-gradient(
-      180deg,
-      transparent env(safe-area-inset-top, 0px),
-      #000 calc(env(safe-area-inset-top, 0px) + 64px)
-    );
+  .header {
+    margin-left: max(16px, env(safe-area-inset-left, 0px));
+    margin-right: max(16px, env(safe-area-inset-right, 0px));
+    margin-bottom: 12px;
   }
   .nav {
     flex-wrap: wrap;
@@ -651,10 +640,14 @@
     min-height: 44px;
   }
   .hero {
+    position: relative;
+    isolation: isolate;
     grid-template-columns: minmax(0, 1fr);
     gap: 18px;
-    padding: 50px 8px 32px;
+    padding: 44px max(24px, env(safe-area-inset-right, 0px)) 32px
+      max(24px, env(safe-area-inset-left, 0px));
     min-height: 0;
+    background: var(--opening-art);
   }
   .hero h1 {
     font-size: clamp(54px, 13vw, 82px);

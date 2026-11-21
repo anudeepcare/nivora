@@ -4,10 +4,10 @@ import { readFileSync } from "node:fs";
 const jsx = readFileSync("components/HomeWorkspace.tsx", "utf8");
 const css = readFileSync("components/HomeMarketCards.module.css", "utf8");
 
-test("Today opens with research priorities and dated events, ahead of price and account context", () => {
+test("Today opens with market and dated events, ahead of story and account context", () => {
   assert.ok(
-    jsx.indexOf('aria-label="Today’s story"') <
-      jsx.indexOf('id="home-earnings"'),
+    jsx.indexOf('id="home-earnings"') <
+      jsx.indexOf('aria-label="Today’s story"'),
   );
   assert.ok(
     jsx.indexOf('id="home-earnings"') < jsx.indexOf('title="What changed"'),

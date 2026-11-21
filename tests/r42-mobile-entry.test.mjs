@@ -23,22 +23,18 @@ function mobileDeclarations(file, selector) {
 test("the public phone opening shares the document chrome at the inset and places the nav below it", () => {
   const file = "components/PublicPlaidOpening.module.css";
   const opening = mobileDeclarations(file, ".opening.opening");
-  assert.match(
-    opening.background ?? "",
-    /linear-gradient\(\s*180deg,\s*var\(--chrome-surface\)\s+env\(safe-area-inset-top/,
-  );
-  assert.match(opening.padding ?? "", /^max\(12px, env\(safe-area-inset-top/);
-  assert.match(opening.padding ?? "", /safe-area-inset-left/);
+  assert.equal(opening.background, "var(--chrome-surface)");
+  assert.match(opening.padding ?? "", /^max\(8px, env\(safe-area-inset-top/);
+  const header = mobileDeclarations(file, ".header");
+  assert.match(header["margin-left"] ?? "", /safe-area-inset-left/);
+  assert.match(header["margin-right"] ?? "", /safe-area-inset-right/);
 });
 
 test("the phone sign-in owns a single top inset and its aligned header keeps both 44px controls", () => {
   const file = "components/SessionAccess.css";
   const access = '#auryn-app .mp-auth[data-plaid-page="access"]';
   const screen = mobileDeclarations(file, access);
-  assert.match(
-    screen.background ?? "",
-    /linear-gradient\(\s*180deg,\s*var\(--chrome-surface\)\s+env\(safe-area-inset-top/,
-  );
+  assert.equal(screen.background, "var(--chrome-surface)");
   assert.match(
     screen["padding-block-start"] ?? "",
     /^max\(6px, env\(safe-area-inset-top/,
